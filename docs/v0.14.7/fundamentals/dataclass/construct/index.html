@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Modality" href="../access/" /><link rel="prev" title="Dataclass" href="../" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/construct.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Construct - DocArray 0.14.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,7 +389,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="construct">
-<span id="mm-construct"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h1>
+<span id="mm-construct"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>In DocArray, a Document object can contain sub-Document in <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. If you are still unaware of this design, make sure to read <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">this chapter</span></a> before continuing.</p>
@@ -463,7 +463,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </pre></div>
 </div>
 <section id="dataclass-decorator">
-<h2>Dataclass decorator<a class="headerlink" href="#dataclass-decorator" title="Permalink to this headline">#</a></h2>
+<h2>Dataclass decorator<a class="headerlink" href="#dataclass-decorator" title="Permalink to this heading">#</a></h2>
 <p>First, you need to import <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> decorator from DocArray package:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 </pre></div>
@@ -517,7 +517,7 @@ False
 <p>In the sequel, unless otherwise specified <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> always refers to <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code>, not the Python built-in <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
 </section>
 <section id="annotate-class-fields">
-<h2>Annotate class fields<a class="headerlink" href="#annotate-class-fields" title="Permalink to this headline">#</a></h2>
+<h2>Annotate class fields<a class="headerlink" href="#annotate-class-fields" title="Permalink to this heading">#</a></h2>
 <p>DocArray provides <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> that allows one to annotate a class field as <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">JSON</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, <code class="docutils literal notranslate"><span class="pre">Video</span></code>, <code class="docutils literal notranslate"><span class="pre">Mesh</span></code>, <code class="docutils literal notranslate"><span class="pre">Tabular</span></code>, <code class="docutils literal notranslate"><span class="pre">Blob</span></code>; or as primitive Python types; or as other <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Audio</span>
@@ -581,7 +581,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </div>
 </details></section>
 <section id="behavior-of-field-annotation">
-<span id="mm-annotation"></span><h2>Behavior of field annotation<a class="headerlink" href="#behavior-of-field-annotation" title="Permalink to this headline">#</a></h2>
+<span id="mm-annotation"></span><h2>Behavior of field annotation<a class="headerlink" href="#behavior-of-field-annotation" title="Permalink to this heading">#</a></h2>
 <p>This section explains the behavior of field annotations in details.</p>
 <ul>
 <li><p>A <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> corresponds to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, let’s call it <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p></li>
@@ -860,7 +860,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </ul>
 </section>
 <section id="construct-from-to-document">
-<h2>Construct from/to Document<a class="headerlink" href="#construct-from-to-document" title="Permalink to this headline">#</a></h2>
+<h2>Construct from/to Document<a class="headerlink" href="#construct-from-to-document" title="Permalink to this heading">#</a></h2>
 <p>It is easy to convert a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> object from/to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span>
@@ -880,7 +880,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </div>
 </section>
 <section id="use-field-for-advanced-configs">
-<h2>Use <code class="docutils literal notranslate"><span class="pre">field()</span></code> for advanced configs<a class="headerlink" href="#use-field-for-advanced-configs" title="Permalink to this headline">#</a></h2>
+<h2>Use <code class="docutils literal notranslate"><span class="pre">field()</span></code> for advanced configs<a class="headerlink" href="#use-field-for-advanced-configs" title="Permalink to this heading">#</a></h2>
 <p>For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. To satisfy this need for additional information, you can replace the default field value with a call to the provided <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.field" title="docarray.dataclasses.types.field"><code class="xref py py-meth docutils literal notranslate"><span class="pre">field()</span></code></a> function.</p>
 <p>For example, mutable object is not allowed as the default value of any dataclass field. One can solve it via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
@@ -897,7 +897,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 <p>Other parameters from the standard the Python field such as <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">compare</span></code>, <code class="docutils literal notranslate"><span class="pre">hash</span></code>, <code class="docutils literal notranslate"><span class="pre">repr</span></code> are also supported. More details can be <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">found here</a>.</p>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
 <p>In this chapter, we have learned to use <code class="docutils literal notranslate"><span class="pre">&#64;dataclass</span></code> decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python builtin dataclass.</p>
 <p>Leveraging <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">the nested Document structure</span></a>, DocArray’s dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, tabular data in a very intuitive way. Converting a multimodal dataclass object from/to a Document is very straightforward.</p>
 <p>In the next chapter, we shall see how to select modality (aka sub-document) via the selector syntax.</p>
@@ -939,7 +939,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1007,7 +1007,9 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

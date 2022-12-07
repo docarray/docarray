@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.queryset.parser module" href="../docarray.array.queryset.parser/" /><link rel="prev" title="docarray.array.queryset package" href="../docarray.array.queryset/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.queryset.lookup.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.queryset.lookup module - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -179,7 +179,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -538,7 +538,7 @@
                     </label>
                 </div>
                 <section id="module-docarray.array.queryset.lookup">
-<span id="docarray-array-queryset-lookup-module"></span><h1>docarray.array.queryset.lookup module<a class="headerlink" href="#module-docarray.array.queryset.lookup" title="Permalink to this headline">#</a></h1>
+<span id="docarray-array-queryset-lookup-module"></span><h1>docarray.array.queryset.lookup module<a class="headerlink" href="#module-docarray.array.queryset.lookup" title="Permalink to this heading">#</a></h1>
 <p>Originally from <a class="reference external" href="https://github.com/naiquevin/lookupy">https://github.com/naiquevin/lookupy</a></p>
 <p>The library is provided as-is under the MIT License</p>
 <p>Copyright (c) 2013 Vineet Naik (<a class="reference external" href="mailto:naikvin&#37;&#52;&#48;gmail&#46;com">naikvin<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
@@ -597,7 +597,7 @@ if the lookup holds true for the document:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupNode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'and'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupNode" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem" title="docarray.array.queryset.lookup.LookupTreeElem"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.queryset.lookup.LookupTreeElem</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem" title="docarray.array.queryset.lookup.LookupTreeElem"><code class="xref py py-class docutils literal notranslate"><span class="pre">LookupTreeElem</span></code></a></p>
 <p>A node (element having children) in the lookup expression tree</p>
 <p>Typically it’s any object composed of two <code class="docutils literal notranslate"><span class="pre">Q</span></code> objects eg:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">(</span><span class="n">language__neq</span><span class="o">=</span><span class="s1">&#39;Ruby&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">framework__startswith</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
@@ -622,7 +622,7 @@ if the lookup holds true for the document:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupLeaf">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupLeaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupLeaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupLeaf" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem" title="docarray.array.queryset.lookup.LookupTreeElem"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.queryset.lookup.LookupTreeElem</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem" title="docarray.array.queryset.lookup.LookupTreeElem"><code class="xref py py-class docutils literal notranslate"><span class="pre">LookupTreeElem</span></code></a></p>
 <p>Class for a leaf in the lookup expression tree</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupLeaf.evaluate">
@@ -637,7 +637,7 @@ if the lookup holds true for the document:</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.Q">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">Q</span></span><a class="headerlink" href="#docarray.array.queryset.lookup.Q" title="Permalink to this definition">#</a></dt>
-<dd><p>alias of <a class="reference internal" href="#docarray.array.queryset.lookup.LookupLeaf" title="docarray.array.queryset.lookup.LookupLeaf"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.queryset.lookup.LookupLeaf</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#docarray.array.queryset.lookup.LookupLeaf" title="docarray.array.queryset.lookup.LookupLeaf"><code class="xref py py-class docutils literal notranslate"><span class="pre">LookupLeaf</span></code></a></p>
 </dd></dl>
 
 <dl class="py exception">
@@ -745,7 +745,7 @@ to create partial functions for commonly required preconditions</p>
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -771,6 +771,46 @@ to create partial functions for commonly required preconditions</p>
 
             <div class="toc-sticky toc-scroll">
                 
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.queryset.lookup module</a><ul>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.lookup"><code class="docutils literal notranslate"><span class="pre">lookup()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem"><code class="docutils literal notranslate"><span class="pre">LookupTreeElem</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem.evaluate"><code class="docutils literal notranslate"><span class="pre">LookupTreeElem.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupNode"><code class="docutils literal notranslate"><span class="pre">LookupNode</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupNode.add_child"><code class="docutils literal notranslate"><span class="pre">LookupNode.add_child()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupNode.evaluate"><code class="docutils literal notranslate"><span class="pre">LookupNode.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupLeaf"><code class="docutils literal notranslate"><span class="pre">LookupLeaf</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupLeaf.evaluate"><code class="docutils literal notranslate"><span class="pre">LookupLeaf.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.Q"><code class="docutils literal notranslate"><span class="pre">Q</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.LookupyError"><code class="docutils literal notranslate"><span class="pre">LookupyError</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.dunder_partition"><code class="docutils literal notranslate"><span class="pre">dunder_partition()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.iff"><code class="docutils literal notranslate"><span class="pre">iff()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.iff_not_none"><code class="docutils literal notranslate"><span class="pre">iff_not_none()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.guard_type"><code class="docutils literal notranslate"><span class="pre">guard_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.guard_str"><code class="docutils literal notranslate"><span class="pre">guard_str()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.guard_list"><code class="docutils literal notranslate"><span class="pre">guard_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.guard_Q"><code class="docutils literal notranslate"><span class="pre">guard_Q()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.queryset.lookup.guard_iter"><code class="docutils literal notranslate"><span class="pre">guard_iter()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
             </div>
 
             
@@ -791,7 +831,9 @@ to create partial functions for commonly required preconditions</p>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

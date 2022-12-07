@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Support New Modality" href="../new-type/" /><link rel="prev" title="Construct" href="../construct/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/access.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Access Modality - DocArray 0.12.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -567,7 +567,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="access-modality">
-<h1>Access Modality<a class="headerlink" href="#access-modality" title="Permalink to this headline">#</a></h1>
+<h1>Access Modality<a class="headerlink" href="#access-modality" title="Permalink to this heading">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>It is strongly recommended to go through the <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a> section first before continuing.</p>
@@ -620,7 +620,7 @@
 <p>A natural question would be, how do we select those Documents that correspond to <code class="docutils literal notranslate"><span class="pre">MMDoc.banner</span></code>?</p>
 <p>This chapter describes how to select the sub-documents that correspond to a modality from a DocumentArray. So let me reiterate the logic here: when calling <code class="docutils literal notranslate"><span class="pre">Document()</span></code> to build Document object from a dataclass object, each field in that dataclass will generate a sub-document nested under <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> or even <code class="docutils literal notranslate"><span class="pre">.chunks.chunks.chunks</span></code> at arbitrary level (except primitive types, which are stored in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> of the root Document). To process a dataclass field via existing DocArray API/Jina/Hub Executor, we need a way to accurately select those sub-documents from the nested structure, which is the purpose of this chapter.</p>
 <section id="selector-syntax">
-<h2>Selector Syntax<a class="headerlink" href="#selector-syntax" title="Permalink to this headline">#</a></h2>
+<h2>Selector Syntax<a class="headerlink" href="#selector-syntax" title="Permalink to this heading">#</a></h2>
 <p>Following the syntax convention described in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>, a modality selector also starts with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, it uses <code class="docutils literal notranslate"><span class="pre">.</span></code> to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...]
 ^^ ~~~~~~  ~~~~~~
@@ -694,7 +694,7 @@
 </div>
 </div>
 <section id="select-multiple-fields">
-<h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this headline">#</a></h3>
+<h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this heading">#</a></h3>
 <p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Select Documents correspond to two fields</label><div class="tab-content docutils">
@@ -734,7 +734,7 @@
 </div>
 </section>
 <section id="slice-dataclass-objects">
-<h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this headline">#</a></h3>
+<h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this heading">#</a></h3>
 <p>Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@r[slice].[field1, field2, ...]
 </pre></div>
@@ -776,7 +776,7 @@
 </div>
 </section>
 <section id="slice-list-type-fields">
-<h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this headline">#</a></h3>
+<h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this heading">#</a></h3>
 <p>If a field is annotated as a List of DocArray types, it will create a DocumentArray, one can add slicing after the field selector to further restrict the size of the sub-Documents.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
@@ -818,7 +818,7 @@ test-1.jpeg
 <p>To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.</p>
 </section>
 <section id="select-nested-fields">
-<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this headline">#</a></h3>
+<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this heading">#</a></h3>
 <p>A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former’s <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. To select the deeply nested field, one can simply follow:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...].[nested_field1, nested_field1, ...]
 </pre></div>
@@ -893,7 +893,7 @@ test-2.jpeg
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -960,7 +960,9 @@ test-2.jpeg
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

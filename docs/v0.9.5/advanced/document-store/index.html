@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Weaviate" href="weaviate/" /><link rel="prev" title="GraphQL" href="../graphql-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Document Store - DocArray 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -516,7 +516,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="document-store">
-<span id="doc-store"></span><h1>Document Store<a class="headerlink" href="#document-store" title="Permalink to this headline">#</a></h1>
+<span id="doc-store"></span><h1>Document Store<a class="headerlink" href="#document-store" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <p>Documents inside a DocumentArray can live in a <a class="reference external" href="https://en.wikipedia.org/wiki/Document-oriented_database">document store</a> instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval.</p>
@@ -546,7 +546,7 @@
 </div>
 <p>Creating, retrieving, updating, deleting Documents are identical to the regular <a class="reference internal" href="../../fundamentals/documentarray/#documentarray"><span class="std std-ref">DocumentArray</span></a>. All DocumentArray methods such as <code class="docutils literal notranslate"><span class="pre">.summary()</span></code>, <code class="docutils literal notranslate"><span class="pre">.embed()</span></code>, <code class="docutils literal notranslate"><span class="pre">.plot_embeddings()</span></code> should work out of the box.</p>
 <section id="construct">
-<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h2>
+<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h2>
 <p>There are two ways for initializing a DocumentArray with a store backend.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Specify storage</label><div class="tab-content docutils">
@@ -572,7 +572,7 @@
 </div>
 <p>Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as <code class="docutils literal notranslate"><span class="pre">DocumentArray.empty(10)</span></code>, then explicit importing <code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite</span></code> is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.</p>
 <section id="construct-with-config">
-<h3>Construct with config<a class="headerlink" href="#construct-with-config" title="Permalink to this headline">#</a></h3>
+<h3>Construct with config<a class="headerlink" href="#construct-with-config" title="Permalink to this heading">#</a></h3>
 <p>The config of a store backend is either store-specific dataclass object or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> that can be parsed into the former.</p>
 <p>One can pass the config in the constructor via <code class="docutils literal notranslate"><span class="pre">config</span></code>:</p>
 <div class="tab-set docutils">
@@ -598,9 +598,9 @@
 </section>
 </section>
 <section id="known-limitations">
-<h2>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this headline">#</a></h2>
+<h2>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this heading">#</a></h2>
 <section id="out-of-array-modification">
-<h3>Out-of-array modification<a class="headerlink" href="#out-of-array-modification" title="Permalink to this headline">#</a></h3>
+<h3>Out-of-array modification<a class="headerlink" href="#out-of-array-modification" title="Permalink to this heading">#</a></h3>
 <p>One can not take a Document <em>out</em> from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.</p>
 <p>Specifically, the pattern below is not supported by any external store backend:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -618,7 +618,7 @@
 </div>
 </section>
 <section id="elements-access-is-slower">
-<h3>Elements access is slower<a class="headerlink" href="#elements-access-is-slower" title="Permalink to this headline">#</a></h3>
+<h3>Elements access is slower<a class="headerlink" href="#elements-access-is-slower" title="Permalink to this heading">#</a></h3>
 <p>Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.</p>
 <p>Slowness can affect all functions of DocumentArray. On the bright side, they may not be that severe as you would expect. Modern database are highly optimized. Moreover, some database provides faster method for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features.</p>
 </section>
@@ -657,7 +657,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -719,7 +719,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

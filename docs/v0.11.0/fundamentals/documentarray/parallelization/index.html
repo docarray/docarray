@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Visualization" href="../visualization/" /><link rel="prev" title="Query by Conditions" href="../find/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/parallelization.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Parallelization - DocArray 0.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -538,7 +538,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="parallelization">
-<h1>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline">#</a></h1>
+<h1>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this heading">#</a></h1>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -604,7 +604,7 @@ apply ...	apply takes 3.5 seconds
 </ul>
 </div>
 <section id="use-map-to-overlap-cpu-gpu-computation">
-<h2>Use <code class="docutils literal notranslate"><span class="pre">map()</span></code> to overlap CPU &amp; GPU computation<a class="headerlink" href="#use-map-to-overlap-cpu-gpu-computation" title="Permalink to this headline">#</a></h2>
+<h2>Use <code class="docutils literal notranslate"><span class="pre">map()</span></code> to overlap CPU &amp; GPU computation<a class="headerlink" href="#use-map-to-overlap-cpu-gpu-computation" title="Permalink to this heading">#</a></h2>
 <p>As I said, <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a> / <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> has its own charm: it returns an iterator (of batch) where the partial result is immediately available, <em>regardless</em> if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.</p>
 <p>Let’s see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core as the total resources.</p>
 <p>Question: <strong>how long will it take to process 1024 Documents?</strong></p>
@@ -683,7 +683,7 @@ map: 129.326s
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -747,7 +747,9 @@ map: 129.326s
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

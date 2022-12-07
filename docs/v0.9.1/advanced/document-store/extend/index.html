@@ -33,10 +33,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="prev" title="Changelog" href="../../../changelog/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/extend.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Add New Document Store - DocArray 0.9.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -232,7 +232,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -515,7 +515,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="add-new-document-store">
-<h1>Add New Document Store<a class="headerlink" href="#add-new-document-store" title="Permalink to this headline">#</a></h1>
+<h1>Add New Document Store<a class="headerlink" href="#add-new-document-store" title="Permalink to this heading">#</a></h1>
 <p>DocumentArray can be easily extended to support different Document Store backend. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of onboarding a new Document Store backend is often:</p>
 <ul class="simple">
 <li><p>having persistence that better fits to the use case;</p></li>
@@ -531,7 +531,7 @@
 </div>
 <p>Let’s get started!</p>
 <section id="step-1-create-the-folder">
-<h2>Step 1: create the folder<a class="headerlink" href="#step-1-create-the-folder" title="Permalink to this headline">#</a></h2>
+<h2>Step 1: create the folder<a class="headerlink" href="#step-1-create-the-folder" title="Permalink to this heading">#</a></h2>
 <p>Go to <code class="docutils literal notranslate"><span class="pre">docarray/array/storage</span></code> folder, create a sub-folder for your document store. Let’s call it <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code>. You will need to create four empty files in that folder:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">README</span><span class="o">.</span><span class="n">md</span>
 <span class="n">docarray</span>
@@ -551,7 +551,7 @@
 <p>These four files consist of necessary interface for making the extension work on DocumentArray.</p>
 </section>
 <section id="step-2-implement-getsetdel-py">
-<h2>Step 2: implement <code class="docutils literal notranslate"><span class="pre">getsetdel.py</span></code><a class="headerlink" href="#step-2-implement-getsetdel-py" title="Permalink to this headline">#</a></h2>
+<h2>Step 2: implement <code class="docutils literal notranslate"><span class="pre">getsetdel.py</span></code><a class="headerlink" href="#step-2-implement-getsetdel-py" title="Permalink to this heading">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">getsetdel.py</span></code> should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.array.storage.base.getsetdel</span> <span class="kn">import</span> <span class="n">BaseGetSetDelMixin</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -595,7 +595,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 </div>
 </section>
 <section id="step-3-implement-seqlike-py">
-<h2>Step 3: implement <code class="docutils literal notranslate"><span class="pre">seqlike.py</span></code><a class="headerlink" href="#step-3-implement-seqlike-py" title="Permalink to this headline">#</a></h2>
+<h2>Step 3: implement <code class="docutils literal notranslate"><span class="pre">seqlike.py</span></code><a class="headerlink" href="#step-3-implement-seqlike-py" title="Permalink to this heading">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">seqlike.py</span></code> should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableSequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -645,7 +645,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 </div>
 </section>
 <section id="step-4-implement-backend-py">
-<h2>Step 4: implement <code class="docutils literal notranslate"><span class="pre">backend.py</span></code><a class="headerlink" href="#step-4-implement-backend-py" title="Permalink to this headline">#</a></h2>
+<h2>Step 4: implement <code class="docutils literal notranslate"><span class="pre">backend.py</span></code><a class="headerlink" href="#step-4-implement-backend-py" title="Permalink to this heading">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">backend.py</span></code> should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Optional</span><span class="p">,</span>
@@ -689,7 +689,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 </div>
 </section>
 <section id="step-4-summarize-everything-in-init-py">
-<h2>Step 4: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.<a class="headerlink" href="#step-4-summarize-everything-in-init-py" title="Permalink to this headline">#</a></h2>
+<h2>Step 4: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.<a class="headerlink" href="#step-4-summarize-everything-in-init-py" title="Permalink to this heading">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 
@@ -708,7 +708,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <p>Just copy-paste it will do the work.</p>
 </section>
 <section id="step-5-subclass-from-documentarray">
-<h2>Step 5: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-5-subclass-from-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>Step 5: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-5-subclass-from-documentarray" title="Permalink to this heading">#</a></h2>
 <p>Create a file <code class="docutils literal notranslate"><span class="pre">mydocstore.py</span></code> under <code class="docutils literal notranslate"><span class="pre">docarray/array/</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">README</span><span class="o">.</span><span class="n">md</span>
 <span class="n">docarray</span>
@@ -742,7 +742,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 </div>
 </section>
 <section id="step-6-add-entrypoint-to-documentarray">
-<h2>Step 6: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-6-add-entrypoint-to-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>Step 6: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-6-add-entrypoint-to-documentarray" title="Permalink to this heading">#</a></h2>
 <p>We are almost there! Now we need to add the entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> constructor to allow user to use the <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code> backend as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -768,7 +768,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <p>Done! Now you should be able to use it like <code class="docutils literal notranslate"><span class="pre">DocumentArrayMyDocStore</span></code>!</p>
 </section>
 <section id="contribute-add-tests-and-type-hint">
-<h2>Contribute: add tests and type-hint<a class="headerlink" href="#contribute-add-tests-and-type-hint" title="Permalink to this headline">#</a></h2>
+<h2>Contribute: add tests and type-hint<a class="headerlink" href="#contribute-add-tests-and-type-hint" title="Permalink to this heading">#</a></h2>
 <p>Welcome to contribute your extension back to DocArray. You will need to include <code class="docutils literal notranslate"><span class="pre">DocumentArrayMyDocStore</span></code> in at least the following tests:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>tests/unit/array/test_advance_indexing.py
 tests/unit/array/test_sequence.py
@@ -817,7 +817,7 @@ tests/unit/array/test_construct.py
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -879,7 +879,9 @@ tests/unit/array/test_construct.py
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

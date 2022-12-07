@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins/" />
 <meta property="og:site_name" content="DocArray 0.8.4 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module, docarray.array.mixins.io.common module, docarray.array.mixins.io.csv module, docarray.array.mixins.io.dataframe module, docarray.array.mixins.io.from_gen module, docarray.array.mixins.io.json module..." />
+<meta property="og:description" content="Subpackages: docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module- BinaryIOMixin., docarray.array.mixins.io.common module- CommonIOMixin., docarray.array.mixins.io.csv module- CsvIOMixin., docarray.array.mixins.io.dataframe module- DataframeIOMixin., docarray.array..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.8.4 Documentation" />
-<meta name="description" content="Subpackages: docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module, docarray.array.mixins.io.common module, docarray.array.mixins.io.csv module, docarray.array.mixins.io.dataframe module, docarray.array.mixins.io.from_gen module, docarray.array.mixins.io.json module..." />
+<meta name="description" content="Subpackages: docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module- BinaryIOMixin., docarray.array.mixins.io.common module- CommonIOMixin., docarray.array.mixins.io.csv module- CsvIOMixin., docarray.array.mixins.io.dataframe module- DataframeIOMixin., docarray.array..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,10 +33,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.io package" href="../docarray.array.mixins.io/" /><link rel="prev" title="docarray.array package" href="../docarray.array/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.mixins package - DocArray 0.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -232,7 +232,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -509,20 +509,41 @@
                     </label>
                 </div>
                 <section id="docarray-array-mixins-package">
-<h1>docarray.array.mixins package<a class="headerlink" href="#docarray-array-mixins-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.array.mixins package<a class="headerlink" href="#docarray-array-mixins-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io/">docarray.array.mixins.io package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/">docarray.array.mixins.io.binary module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/">docarray.array.mixins.io.dataframe module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/">docarray.array.mixins.io.binary module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin"><code class="docutils literal notranslate"><span class="pre">CommonIOMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin"><code class="docutils literal notranslate"><span class="pre">CsvIOMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/">docarray.array.mixins.io.dataframe module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin"><code class="docutils literal notranslate"><span class="pre">DataframeIOMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin"><code class="docutils literal notranslate"><span class="pre">PushPullMixin</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io/#module-docarray.array.mixins.io">Module contents</a></li>
@@ -532,37 +553,159 @@
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.content/">docarray.array.mixins.content module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.delitem/">docarray.array.mixins.delitem module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.embed/">docarray.array.mixins.embed module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.empty/">docarray.array.mixins.empty module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.evaluation/">docarray.array.mixins.evaluation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.find/">docarray.array.mixins.find module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.getattr/">docarray.array.mixins.getattr module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.getitem/">docarray.array.mixins.getitem module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.group/">docarray.array.mixins.group module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.match/">docarray.array.mixins.match module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.parallel/">docarray.array.mixins.parallel module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.plot/">docarray.array.mixins.plot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.pydantic/">docarray.array.mixins.pydantic module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.reduce/">docarray.array.mixins.reduce module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.sample/">docarray.array.mixins.sample module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.setitem/">docarray.array.mixins.setitem module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.strawberry/">docarray.array.mixins.strawberry module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.text/">docarray.array.mixins.text module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.traverse/">docarray.array.mixins.traverse module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.content/">docarray.array.mixins.content module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.embeddings"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.embeddings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.tensors"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.tensors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.texts"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.texts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.blobs"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.blobs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.contents"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.contents</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.delitem/">docarray.array.mixins.delitem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.delitem/#docarray.array.mixins.delitem.DelItemMixin"><code class="docutils literal notranslate"><span class="pre">DelItemMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.embed/">docarray.array.mixins.embed module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin"><code class="docutils literal notranslate"><span class="pre">EmbedMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed"><code class="docutils literal notranslate"><span class="pre">EmbedMixin.embed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.get_framework"><code class="docutils literal notranslate"><span class="pre">get_framework()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.empty/">docarray.array.mixins.empty module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.empty/#docarray.array.mixins.empty.EmptyMixin"><code class="docutils literal notranslate"><span class="pre">EmptyMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.empty/#docarray.array.mixins.empty.EmptyMixin.empty"><code class="docutils literal notranslate"><span class="pre">EmptyMixin.empty()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.evaluation/">docarray.array.mixins.evaluation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin"><code class="docutils literal notranslate"><span class="pre">EvaluationMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="docutils literal notranslate"><span class="pre">EvaluationMixin.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.find/">docarray.array.mixins.find module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find"><code class="docutils literal notranslate"><span class="pre">FindMixin.find()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.getattr/">docarray.array.mixins.getattr module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.getattr/#docarray.array.mixins.getattr.GetAttributeMixin"><code class="docutils literal notranslate"><span class="pre">GetAttributeMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.getitem/">docarray.array.mixins.getitem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.getitem/#docarray.array.mixins.getitem.GetItemMixin"><code class="docutils literal notranslate"><span class="pre">GetItemMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.group/">docarray.array.mixins.group module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin"><code class="docutils literal notranslate"><span class="pre">GroupMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.split_by_tag"><code class="docutils literal notranslate"><span class="pre">GroupMixin.split_by_tag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch"><code class="docutils literal notranslate"><span class="pre">GroupMixin.batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch_ids"><code class="docutils literal notranslate"><span class="pre">GroupMixin.batch_ids()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.match/">docarray.array.mixins.match module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin"><code class="docutils literal notranslate"><span class="pre">MatchMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match"><code class="docutils literal notranslate"><span class="pre">MatchMixin.match()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.parallel/">docarray.array.mixins.parallel module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin"><code class="docutils literal notranslate"><span class="pre">ParallelMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply"><code class="docutils literal notranslate"><span class="pre">ParallelMixin.apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map"><code class="docutils literal notranslate"><span class="pre">ParallelMixin.map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch"><code class="docutils literal notranslate"><span class="pre">ParallelMixin.apply_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="docutils literal notranslate"><span class="pre">ParallelMixin.map_batch()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.plot/">docarray.array.mixins.plot module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin"><code class="docutils literal notranslate"><span class="pre">PlotMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary"><code class="docutils literal notranslate"><span class="pre">PlotMixin.summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_embeddings"><code class="docutils literal notranslate"><span class="pre">PlotMixin.plot_embeddings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_image_sprites"><code class="docutils literal notranslate"><span class="pre">PlotMixin.plot_image_sprites()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.pydantic/">docarray.array.mixins.pydantic module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin"><code class="docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.get_json_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.to_pydantic_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.from_pydantic_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.reduce/">docarray.array.mixins.reduce module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin"><code class="docutils literal notranslate"><span class="pre">ReduceMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce"><code class="docutils literal notranslate"><span class="pre">ReduceMixin.reduce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce_all"><code class="docutils literal notranslate"><span class="pre">ReduceMixin.reduce_all()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.sample/">docarray.array.mixins.sample module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin"><code class="docutils literal notranslate"><span class="pre">SampleMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin.sample"><code class="docutils literal notranslate"><span class="pre">SampleMixin.sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin.shuffle"><code class="docutils literal notranslate"><span class="pre">SampleMixin.shuffle()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.setitem/">docarray.array.mixins.setitem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin"><code class="docutils literal notranslate"><span class="pre">SetItemMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.strawberry/">docarray.array.mixins.strawberry module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin.to_strawberry_type"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin.to_strawberry_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin.from_strawberry_type"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin.from_strawberry_type()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.text/">docarray.array.mixins.text module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.text/#docarray.array.mixins.text.TextToolsMixin"><code class="docutils literal notranslate"><span class="pre">TextToolsMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.text/#docarray.array.mixins.text.TextToolsMixin.get_vocabulary"><code class="docutils literal notranslate"><span class="pre">TextToolsMixin.get_vocabulary()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.traverse/">docarray.array.mixins.traverse module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin"><code class="docutils literal notranslate"><span class="pre">TraverseMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin.traverse"><code class="docutils literal notranslate"><span class="pre">TraverseMixin.traverse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin.traverse_flat_per_path"><code class="docutils literal notranslate"><span class="pre">TraverseMixin.traverse_flat_per_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin.traverse_flat"><code class="docutils literal notranslate"><span class="pre">TraverseMixin.traverse_flat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin.flatten"><code class="docutils literal notranslate"><span class="pre">TraverseMixin.flatten()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.array.mixins">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.mixins" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.mixins" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.mixins.AllMixins">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.</span></span><span class="sig-name descname"><span class="pre">AllMixins</span></span><a class="reference internal" href="../../_modules/docarray/array/mixins/#AllMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.AllMixins" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.array.mixins.getattr/#docarray.array.mixins.getattr.GetAttributeMixin" title="docarray.array.mixins.getattr.GetAttributeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.getattr.GetAttributeMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.getitem/#docarray.array.mixins.getitem.GetItemMixin" title="docarray.array.mixins.getitem.GetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.getitem.GetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin" title="docarray.array.mixins.setitem.SetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.setitem.SetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.delitem/#docarray.array.mixins.delitem.DelItemMixin" title="docarray.array.mixins.delitem.DelItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.delitem.DelItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin" title="docarray.array.mixins.content.ContentPropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.content.ContentPropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin" title="docarray.array.mixins.pydantic.PydanticMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.pydantic.PydanticMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin" title="docarray.array.mixins.strawberry.StrawberryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.strawberry.StrawberryMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin" title="docarray.array.mixins.group.GroupMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.group.GroupMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.empty/#docarray.array.mixins.empty.EmptyMixin" title="docarray.array.mixins.empty.EmptyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.empty.EmptyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin" title="docarray.array.mixins.io.csv.CsvIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.csv.CsvIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin" title="docarray.array.mixins.io.json.JsonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.json.JsonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin" title="docarray.array.mixins.io.binary.BinaryIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.binary.BinaryIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin" title="docarray.array.mixins.io.common.CommonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.common.CommonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin" title="docarray.array.mixins.embed.EmbedMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.embed.EmbedMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin" title="docarray.array.mixins.io.pushpull.PushPullMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.pushpull.PushPullMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin" title="docarray.array.mixins.io.from_gen.FromGeneratorMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.from_gen.FromGeneratorMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin" title="docarray.array.mixins.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.find.FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin" title="docarray.array.mixins.match.MatchMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.match.MatchMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin" title="docarray.array.mixins.traverse.TraverseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.traverse.TraverseMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin" title="docarray.array.mixins.plot.PlotMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.plot.PlotMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin" title="docarray.array.mixins.sample.SampleMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.sample.SampleMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.text/#docarray.array.mixins.text.TextToolsMixin" title="docarray.array.mixins.text.TextToolsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.text.TextToolsMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin" title="docarray.array.mixins.evaluation.EvaluationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.evaluation.EvaluationMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin" title="docarray.array.mixins.reduce.ReduceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.reduce.ReduceMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin" title="docarray.array.mixins.parallel.ParallelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.parallel.ParallelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin" title="docarray.array.mixins.io.dataframe.DataframeIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.io.dataframe.DataframeIOMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.mixins.getattr/#docarray.array.mixins.getattr.GetAttributeMixin" title="docarray.array.mixins.getattr.GetAttributeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetAttributeMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.getitem/#docarray.array.mixins.getitem.GetItemMixin" title="docarray.array.mixins.getitem.GetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin" title="docarray.array.mixins.setitem.SetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.delitem/#docarray.array.mixins.delitem.DelItemMixin" title="docarray.array.mixins.delitem.DelItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DelItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin" title="docarray.array.mixins.content.ContentPropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin" title="docarray.array.mixins.pydantic.PydanticMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin" title="docarray.array.mixins.strawberry.StrawberryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin" title="docarray.array.mixins.group.GroupMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.empty/#docarray.array.mixins.empty.EmptyMixin" title="docarray.array.mixins.empty.EmptyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin" title="docarray.array.mixins.io.csv.CsvIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsvIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin" title="docarray.array.mixins.io.json.JsonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin" title="docarray.array.mixins.io.binary.BinaryIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin" title="docarray.array.mixins.io.common.CommonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin" title="docarray.array.mixins.embed.EmbedMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbedMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin" title="docarray.array.mixins.io.pushpull.PushPullMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PushPullMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin" title="docarray.array.mixins.io.from_gen.FromGeneratorMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FromGeneratorMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin" title="docarray.array.mixins.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin" title="docarray.array.mixins.match.MatchMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatchMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin" title="docarray.array.mixins.traverse.TraverseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraverseMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin" title="docarray.array.mixins.plot.PlotMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlotMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin" title="docarray.array.mixins.sample.SampleMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SampleMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.text/#docarray.array.mixins.text.TextToolsMixin" title="docarray.array.mixins.text.TextToolsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextToolsMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin" title="docarray.array.mixins.evaluation.EvaluationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin" title="docarray.array.mixins.reduce.ReduceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReduceMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin" title="docarray.array.mixins.parallel.ParallelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin" title="docarray.array.mixins.io.dataframe.DataframeIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataframeIOMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>All plugins that can be used in <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p>
 </dd></dl>
 
@@ -601,7 +744,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -629,7 +772,10 @@
 <li><a class="reference internal" href="#">docarray.array.mixins package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.array.mixins">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.array.mixins">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.array.mixins.AllMixins"><code class="docutils literal notranslate"><span class="pre">AllMixins</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -658,7 +804,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

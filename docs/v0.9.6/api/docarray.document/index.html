@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document/" />
 <meta property="og:site_name" content="DocArray 0.9.6 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.document.mixins package- Submodules- docarray.document.mixins.attribute module, docarray.document.mixins.audio module, docarray.document.mixins.blob module, docarray.document.mixins.content module, docarray.document.mixins.convert module, docarray.document.mixins.dump module..." />
+<meta property="og:description" content="Subpackages: docarray.document.mixins package- Submodules- docarray.document.mixins.attribute module- GetAttributesMixin., docarray.document.mixins.audio module- AudioDataMixin., docarray.document.mixins.blob module- BlobDataMixin., docarray.document.mixins.content module- ContentPropertyMixin., ..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.9.6 Documentation" />
-<meta name="description" content="Subpackages: docarray.document.mixins package- Submodules- docarray.document.mixins.attribute module, docarray.document.mixins.audio module, docarray.document.mixins.blob module, docarray.document.mixins.content module, docarray.document.mixins.convert module, docarray.document.mixins.dump module..." />
+<meta name="description" content="Subpackages: docarray.document.mixins package- Submodules- docarray.document.mixins.attribute module- GetAttributesMixin., docarray.document.mixins.audio module- AudioDataMixin., docarray.document.mixins.blob module- BlobDataMixin., docarray.document.mixins.content module- ContentPropertyMixin., ..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins package" href="../docarray.document.mixins/" /><link rel="prev" title="docarray.array.weaviate module" href="../docarray.array.weaviate/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.document package - DocArray 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -516,53 +516,171 @@
                     </label>
                 </div>
                 <section id="docarray-document-package">
-<h1>docarray.document package<a class="headerlink" href="#docarray-document-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.document package<a class="headerlink" href="#docarray-document-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins/">docarray.document.mixins package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.featurehash/">docarray.document.mixins.featurehash module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.protobuf/">docarray.document.mixins.protobuf module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.pydantic/">docarray.document.mixins.pydantic module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.strawberry/">docarray.document.mixins.strawberry module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.sugar/">docarray.document.mixins.sugar module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/">docarray.document.mixins.text module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.video/">docarray.document.mixins.video module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.attribute/#docarray.document.mixins.attribute.GetAttributesMixin"><code class="docutils literal notranslate"><span class="pre">GetAttributesMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins/#module-docarray.document.mixins">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin"><code class="docutils literal notranslate"><span class="pre">AudioDataMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin"><code class="docutils literal notranslate"><span class="pre">BlobDataMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.content/">docarray.document.mixins.content module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.convert/">docarray.document.mixins.convert module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin"><code class="docutils literal notranslate"><span class="pre">ConvertMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.dump/">docarray.document.mixins.dump module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin"><code class="docutils literal notranslate"><span class="pre">UriFileMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.featurehash/">docarray.document.mixins.featurehash module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin"><code class="docutils literal notranslate"><span class="pre">FeatureHashMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin"><code class="docutils literal notranslate"><span class="pre">MeshDataMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin"><code class="docutils literal notranslate"><span class="pre">PlotMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin"><code class="docutils literal notranslate"><span class="pre">PortingMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin"><code class="docutils literal notranslate"><span class="pre">PropertyMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.protobuf/">docarray.document.mixins.protobuf module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin"><code class="docutils literal notranslate"><span class="pre">ProtobufMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.pydantic/">docarray.document.mixins.pydantic module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin"><code class="docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.strawberry/">docarray.document.mixins.strawberry module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.sugar/">docarray.document.mixins.sugar module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin"><code class="docutils literal notranslate"><span class="pre">SingletonSugarMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/">docarray.document.mixins.text module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin"><code class="docutils literal notranslate"><span class="pre">TextDataMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.video/">docarray.document.mixins.video module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin"><code class="docutils literal notranslate"><span class="pre">VideoDataMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins/#module-docarray.document.mixins">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins/#docarray.document.mixins.AllMixins"><code class="docutils literal notranslate"><span class="pre">AllMixins</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.data/">docarray.document.data module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.generators/">docarray.document.generators module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.pydantic_model/">docarray.document.pydantic_model module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.data/">docarray.document.data module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData"><code class="docutils literal notranslate"><span class="pre">DocumentData</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.id"><code class="docutils literal notranslate"><span class="pre">DocumentData.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.parent_id"><code class="docutils literal notranslate"><span class="pre">DocumentData.parent_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.granularity"><code class="docutils literal notranslate"><span class="pre">DocumentData.granularity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.adjacency"><code class="docutils literal notranslate"><span class="pre">DocumentData.adjacency</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob"><code class="docutils literal notranslate"><span class="pre">DocumentData.blob</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor"><code class="docutils literal notranslate"><span class="pre">DocumentData.tensor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.mime_type"><code class="docutils literal notranslate"><span class="pre">DocumentData.mime_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text"><code class="docutils literal notranslate"><span class="pre">DocumentData.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.content"><code class="docutils literal notranslate"><span class="pre">DocumentData.content</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.weight"><code class="docutils literal notranslate"><span class="pre">DocumentData.weight</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.uri"><code class="docutils literal notranslate"><span class="pre">DocumentData.uri</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tags"><code class="docutils literal notranslate"><span class="pre">DocumentData.tags</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.offset"><code class="docutils literal notranslate"><span class="pre">DocumentData.offset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.location"><code class="docutils literal notranslate"><span class="pre">DocumentData.location</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.embedding"><code class="docutils literal notranslate"><span class="pre">DocumentData.embedding</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.modality"><code class="docutils literal notranslate"><span class="pre">DocumentData.modality</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.evaluations"><code class="docutils literal notranslate"><span class="pre">DocumentData.evaluations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.scores"><code class="docutils literal notranslate"><span class="pre">DocumentData.scores</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.chunks"><code class="docutils literal notranslate"><span class="pre">DocumentData.chunks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.matches"><code class="docutils literal notranslate"><span class="pre">DocumentData.matches</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.generators/">docarray.document.generators module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_ndarray"><code class="docutils literal notranslate"><span class="pre">from_ndarray()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_files"><code class="docutils literal notranslate"><span class="pre">from_files()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_csv"><code class="docutils literal notranslate"><span class="pre">from_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_huggingface_datasets"><code class="docutils literal notranslate"><span class="pre">from_huggingface_datasets()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_ndjson"><code class="docutils literal notranslate"><span class="pre">from_ndjson()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.generators/#docarray.document.generators.from_lines"><code class="docutils literal notranslate"><span class="pre">from_lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.pydantic_model/">docarray.document.pydantic_model module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument"><code class="docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.id"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.parent_id"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.parent_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.granularity"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.granularity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.adjacency"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.adjacency</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.blob"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.blob</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.tensor"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.tensor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.mime_type"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.mime_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.text"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.weight"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.weight</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.uri"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.uri</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.tags"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.tags</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.offset"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.offset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.location"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.location</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.embedding"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.embedding</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.modality"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.modality</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.evaluations"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.evaluations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.scores"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.scores</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.chunks"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.chunks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.matches"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.matches</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.Config"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.Config</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument.Config.smart_union"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.Config.smart_union</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.document.strawberry_type/">docarray.document.strawberry_type module</a></li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.document">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.document" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.document" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.document.Document">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><a class="reference internal" href="../../_modules/docarray/document/#Document"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.Document" title="Permalink to this definition">#</a></dt>
@@ -580,7 +698,7 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span></dt>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ArrayType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DocumentContentType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StructValueType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ArrayType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StructValueType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StructValueType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.Document" title="docarray.document.Document"><span class="pre">Document</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.Document" title="docarray.document.Document"><span class="pre">Document</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.document.mixins/#docarray.document.mixins.AllMixins" title="docarray.document.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.AllMixins</span></code></a>, <a class="reference internal" href="../docarray.base/#docarray.base.BaseDCType" title="docarray.base.BaseDCType"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.base.BaseDCType</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.document.mixins/#docarray.document.mixins.AllMixins" title="docarray.document.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">AllMixins</span></code></a>, <a class="reference internal" href="../docarray.base/#docarray.base.BaseDCType" title="docarray.base.BaseDCType"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDCType</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -618,7 +736,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -646,7 +764,10 @@
 <li><a class="reference internal" href="#">docarray.document package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.document">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.document">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.document.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -674,7 +795,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

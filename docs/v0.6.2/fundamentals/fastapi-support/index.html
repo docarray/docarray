@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GraphQL" href="../../advanced/graphql-support/" /><link rel="prev" title="Jupyter Notebook/Colab" href="../notebook-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/fastapi-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>FastAPI/Pydantic - DocArray 0.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -493,7 +493,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="fastapi-pydantic">
-<span id="fastapi-support"></span><h1>FastAPI/Pydantic<a class="headerlink" href="#fastapi-pydantic" title="Permalink to this headline">#</a></h1>
+<span id="fastapi-support"></span><h1>FastAPI/Pydantic<a class="headerlink" href="#fastapi-pydantic" title="Permalink to this heading">#</a></h1>
 <p>Long story short, DocArray supports <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic data model</a> via <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code>.</p>
 <p>But this is probably too short to make any sense. So let’s take a step back and see what does this mean.</p>
 <p>When you want to send/receive Document or DocumentArray object via REST API, you can use <code class="docutils literal notranslate"><span class="pre">.from_json</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_json</span></code> that convert the Document/DocumentArray object into JSON. This has been introduced in the <a class="reference internal" href="../documentarray/serialization/#docarray-serialization"><span class="std std-ref">Serialization</span></a> section.</p>
@@ -506,7 +506,7 @@
 <p>Features introduced in this chapter require <code class="docutils literal notranslate"><span class="pre">fastapi</span></code> and <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> as dependency, please do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to enable it.</p>
 </div>
 <section id="json-schema">
-<span id="schema-gen"></span><h2>JSON Schema<a class="headerlink" href="#json-schema" title="Permalink to this headline">#</a></h2>
+<span id="schema-gen"></span><h2>JSON Schema<a class="headerlink" href="#json-schema" title="Permalink to this heading">#</a></h2>
 <p>You can get <a class="reference external" href="https://json-schema.org/">JSON Schema</a> (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema" title="docarray.array.mixins.pydantic.PydanticMixin.get_json_schema"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_json_schema()</span></code></a>.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Document</label><div class="tab-content docutils">
@@ -553,7 +553,7 @@
 <p>Give them to your engineer friends, they will be happy as now they can understand what data format you are working with. These schemas also help them to easily integrate DocArray into any webservice.</p>
 </section>
 <section id="validate-incoming-document-and-documentarray">
-<h2>Validate incoming Document and DocumentArray<a class="headerlink" href="#validate-incoming-document-and-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>Validate incoming Document and DocumentArray<a class="headerlink" href="#validate-incoming-document-and-documentarray" title="Permalink to this heading">#</a></h2>
 <p>You can import <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> pydantic data models, and use them to type hint your endpoint. This will enable the data validation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.document.pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span><span class="p">,</span> <span class="n">PydanticDocumentArray</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
@@ -586,7 +586,7 @@
 <p>Both got rejected (422 error) as they are not valid.</p>
 </section>
 <section id="convert-between-pydantic-model-and-docarray-objects">
-<h2>Convert between pydantic model and DocArray objects<a class="headerlink" href="#convert-between-pydantic-model-and-docarray-objects" title="Permalink to this headline">#</a></h2>
+<h2>Convert between pydantic model and DocArray objects<a class="headerlink" href="#convert-between-pydantic-model-and-docarray-objects" title="Permalink to this heading">#</a></h2>
 <p><a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> are mainly for data validation. When you want to implement real logics, you need to convert it into Document or DocumentArray. This can be easily achieved via <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_pydantic_model()</span></code></a>. When you are done with processing and want to send back, you can call <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pydantic_model()</span></code></a>.</p>
 <p>In a nutshell, the whole procedure looks like the following:</p>
 <figure class="align-default">
@@ -612,7 +612,7 @@
 </div>
 </section>
 <section id="limit-returned-fields-by-response-model">
-<h2>Limit returned fields by response model<a class="headerlink" href="#limit-returned-fields-by-response-model" title="Permalink to this headline">#</a></h2>
+<h2>Limit returned fields by response model<a class="headerlink" href="#limit-returned-fields-by-response-model" title="Permalink to this heading">#</a></h2>
 <p>Supporting pydantic data model means much more beyond data validation. One useful pattern is to define a smaller data model and restrict the response to certain fields of the Document.</p>
 <p>Imagine we have a DocumentArray with <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> on the server side. But we do not want to return them to the client for some reasons (1. meaningless to users; 2. too big to transfer). One can simply define the interested fields via
 <code class="docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code> and then use it in <code class="docutils literal notranslate"><span class="pre">response_model=</span></code>.</p>
@@ -634,7 +634,7 @@
 </div>
 </section>
 <section id="limit-returned-results-recursively">
-<h2>Limit returned results recursively<a class="headerlink" href="#limit-returned-results-recursively" title="Permalink to this headline">#</a></h2>
+<h2>Limit returned results recursively<a class="headerlink" href="#limit-returned-results-recursively" title="Permalink to this heading">#</a></h2>
 <p>The same idea applies to DocumentArray as well. Say after <a class="reference internal" href="../documentarray/matching/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">.match()</span></code></span></a>, you are only interested in <code class="docutils literal notranslate"><span class="pre">.id</span></code> - the parent <code class="docutils literal notranslate"><span class="pre">.id</span></code> and all matches <code class="docutils literal notranslate"><span class="pre">id</span></code>. You can declare a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
@@ -722,7 +722,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -769,7 +769,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

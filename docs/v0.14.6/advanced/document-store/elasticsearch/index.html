@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Add New Document Store" href="../extend/" /><link rel="prev" title="Annlite" href="../annlite/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/elasticsearch.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Elasticsearch - DocArray 0.14.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,16 +389,16 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="elasticsearch">
-<span id="id1"></span><h1>Elasticsearch<a class="headerlink" href="#elasticsearch" title="Permalink to this headline">#</a></h1>
+<span id="id1"></span><h1>Elasticsearch<a class="headerlink" href="#elasticsearch" title="Permalink to this heading">#</a></h1>
 <p>One can use <a class="reference external" href="https://www.elastic.co">Elasticsearch</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">elasticsearch</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[elasticsearch]&quot;.</span></code></p>
 </div>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">#</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
 <section id="start-elastic-service">
-<h3>Start Elastic service<a class="headerlink" href="#start-elastic-service" title="Permalink to this headline">#</a></h3>
+<h3>Start Elastic service<a class="headerlink" href="#start-elastic-service" title="Permalink to this heading">#</a></h3>
 <p>To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.3&quot;</span><span class="w"></span>
 <span class="nt">services</span><span class="p">:</span><span class="w"></span>
@@ -423,7 +423,7 @@
 </div>
 </section>
 <section id="create-documentarray-with-elasticsearch-backend">
-<h3>Create DocumentArray with Elasticsearch backend<a class="headerlink" href="#create-documentarray-with-elasticsearch-backend" title="Permalink to this headline">#</a></h3>
+<h3>Create DocumentArray with Elasticsearch backend<a class="headerlink" href="#create-documentarray-with-elasticsearch-backend" title="Permalink to this heading">#</a></h3>
 <p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:9200</span></code>), one can instantiate a DocumentArray with Elasticsearch storage as such:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -433,7 +433,7 @@
 <p>The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.</p>
 </section>
 <section id="secure-connection">
-<h3>Secure connection<a class="headerlink" href="#secure-connection" title="Permalink to this headline">#</a></h3>
+<h3>Secure connection<a class="headerlink" href="#secure-connection" title="Permalink to this heading">#</a></h3>
 <p>By default, Elasticsearch server runs with security layer that disables the plain HTTP connection. You can pass the <code class="docutils literal notranslate"><span class="pre">host</span></code> with <code class="docutils literal notranslate"><span class="pre">api_id</span></code> or <code class="docutils literal notranslate"><span class="pre">ca_certs</span></code> inside <code class="docutils literal notranslate"><span class="pre">es_config</span></code> to the constructor. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -495,7 +495,7 @@
 <p>Other functions behave the same as in-memory DocumentArray.</p>
 </section>
 <section id="vector-search-with-filter-query">
-<h3>Vector search with filter query<a class="headerlink" href="#vector-search-with-filter-query" title="Permalink to this headline">#</a></h3>
+<h3>Vector search with filter query<a class="headerlink" href="#vector-search-with-filter-query" title="Permalink to this heading">#</a></h3>
 <p>One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s DSL</a>.</p>
 <p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
 has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
@@ -551,7 +551,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 </div>
 </section>
 <section id="search-by-filter-query">
-<h3>Search by filter query<a class="headerlink" href="#search-by-filter-query" title="Permalink to this headline">#</a></h3>
+<h3>Search by filter query<a class="headerlink" href="#search-by-filter-query" title="Permalink to this heading">#</a></h3>
 <p>One can search with user-defined query filters using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method. Such queries can be constructed following the
 guidelines in <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s Documentation</a>.</p>
 <p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into ElasticSearch and you want to retrieve all Documents
@@ -606,7 +606,7 @@ filter:</p>
 </div>
 </section>
 <section id="search-by-text-field">
-<h3>Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field<a class="headerlink" href="#search-by-text-field" title="Permalink to this headline">#</a></h3>
+<h3>Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field<a class="headerlink" href="#search-by-text-field" title="Permalink to this heading">#</a></h3>
 <p>Text search can be easily leveraged in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with <code class="docutils literal notranslate"><span class="pre">storage='elasticsearch'</span></code>.
 To do this text needs to be indexed using the boolean flag <code class="docutils literal notranslate"><span class="pre">'index_text'</span></code> which is set when
 the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is created  with <code class="docutils literal notranslate"><span class="pre">config={'index_text':</span> <span class="pre">True,</span> <span class="pre">...}</span></code>.<br />
@@ -633,7 +633,7 @@ for those that have <code class="docutils literal notranslate"><span class="pre"
 </div>
 </section>
 <section id="search-by-tags-field">
-<h3>Search by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> field<a class="headerlink" href="#search-by-tags-field" title="Permalink to this headline">#</a></h3>
+<h3>Search by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> field<a class="headerlink" href="#search-by-tags-field" title="Permalink to this heading">#</a></h3>
 <p>Text can also be indexed when it is part of <code class="docutils literal notranslate"><span class="pre">tags</span></code>.
 This is mostly useful in applications where text data can be split into groups and applications might require
 retrieving items based on a text search in an specific tag.</p>
@@ -691,7 +691,7 @@ for search. If you want to use a specific tags field, make sure to specify it wi
 </section>
 </section>
 <section id="config">
-<h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">#</a></h2>
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this heading">#</a></h2>
 <p>The following configs can be set:</p>
 <table border="1" class="docutils">
 <thead>
@@ -800,7 +800,7 @@ for search. If you want to use a specific tags field, make sure to specify it wi
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -873,7 +873,9 @@ for search. If you want to use a specific tags field, make sure to specify it wi
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

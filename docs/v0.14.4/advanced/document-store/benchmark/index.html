@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Jina" href="../../../fundamentals/jina-support/" /><link rel="prev" title="Add New Document Store" href="../extend/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/benchmark.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>One Million Scale Benchmark - DocArray 0.14.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,7 +389,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="one-million-scale-benchmark">
-<h1>One Million Scale Benchmark<a class="headerlink" href="#one-million-scale-benchmark" title="Permalink to this headline">#</a></h1>
+<h1>One Million Scale Benchmark<a class="headerlink" href="#one-million-scale-benchmark" title="Permalink to this heading">#</a></h1>
 <figure class="align-default">
 <a class="reference internal image-reference" href="https://docarray.jina.ai/_images/benchmark-banner.gif"><img alt="https://docarray.jina.ai/_images/benchmark-banner.gif" src="https://docarray.jina.ai/_images/benchmark-banner.gif" style="width: 0.0%;" /></a>
 </figure>
@@ -459,7 +459,7 @@ This includes classic database and vector database, all under the same DocumentA
 </ul>
 </div>
 <section id="benchmark-result">
-<h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this headline">#</a></h2>
+<h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this heading">#</a></h2>
 <p>The following table summarizes the result. The smaller the values, the better (except for <code class="docutils literal notranslate"><span class="pre">Recall&#64;10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters (ef, ef_construct, max_connections)</label><div class="tab-content docutils">
@@ -780,7 +780,7 @@ This includes classic database and vector database, all under the same DocumentA
 </div>
 </section>
 <section id="benchmark-setup">
-<h2>Benchmark setup<a class="headerlink" href="#benchmark-setup" title="Permalink to this headline">#</a></h2>
+<h2>Benchmark setup<a class="headerlink" href="#benchmark-setup" title="Permalink to this heading">#</a></h2>
 <p>We now elaborate the setup of our benchmark. First the following parameters are used:</p>
 <table border="1" class="docutils">
 <thead>
@@ -826,7 +826,7 @@ capabilities of a single instance of the server.</p>
 <p>Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific
 backend provides a more efficient implementation.</p>
 <section id="settings-of-the-nearest-neighbour-search">
-<h3>Settings of the nearest neighbour search<a class="headerlink" href="#settings-of-the-nearest-neighbour-search" title="Permalink to this headline">#</a></h3>
+<h3>Settings of the nearest neighbour search<a class="headerlink" href="#settings-of-the-nearest-neighbour-search" title="Permalink to this heading">#</a></h3>
 <p>As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the “Find By Vector” task:</p>
 <ol class="simple">
 <li><p>Set up HNSW with the same set of parameters;</p></li>
@@ -841,7 +841,7 @@ backend provides a more efficient implementation.</p>
 <p>Finally, the full benchmark script is <a class="reference external" href="https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking.py">available here</a>.</p>
 </section>
 <section id="rationale-on-the-experiment-design">
-<h3>Rationale on the experiment design<a class="headerlink" href="#rationale-on-the-experiment-design" title="Permalink to this headline">#</a></h3>
+<h3>Rationale on the experiment design<a class="headerlink" href="#rationale-on-the-experiment-design" title="Permalink to this heading">#</a></h3>
 <p>Our experiments are designed to be fair and the same across all backends while favouring document stores that benefit
 DocArray users the most. Note that such a benchmark was impossible to set up before DocArray, as each store has its own API and the definition of a task varies.</p>
 <p>Our benchmark is based on the following principles:</p>
@@ -865,7 +865,7 @@ updating the benchmarks accordingly. If you believe we missed an optimization (e
 </ul>
 </section>
 <section id="incompleteness-on-the-stores">
-<h3>Incompleteness on the stores<a class="headerlink" href="#incompleteness-on-the-stores" title="Permalink to this headline">#</a></h3>
+<h3>Incompleteness on the stores<a class="headerlink" href="#incompleteness-on-the-stores" title="Permalink to this heading">#</a></h3>
 <p>We do not yet cover the following backends for various reasons:</p>
 <ul class="simple">
 <li><p><strong>Milvus</strong>: currently DocArray does not integrate with Milvus. We’re open for contributions to DocArray’s repository to
@@ -877,7 +877,7 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 </section>
 </section>
 <section id="conclusion">
-<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">#</a></h2>
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">#</a></h2>
 <p>We hope our benchmark result can help users select the store that suits their use cases. Depending on the dataset size and the needed quality, some stores may be preferable than others.</p>
 <p>If you’re experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).</p>
 <p>If your dataset does not fit in memory, and you <strong>do not</strong> care much about the speed of nearest neighbor search, you can use <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> as storage.</p>
@@ -930,7 +930,7 @@ slow and the in-memory is too fast to fit into the figure.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1000,7 +1000,9 @@ slow and the in-memory is too fast to fit into the figure.</p>
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

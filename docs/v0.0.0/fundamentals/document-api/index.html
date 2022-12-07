@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Fluent Interface" href="../fluent-interface/" /><link rel="prev" title="Welcome to DocArray!" href="../../" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document-api.html" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Document - DocArray 0.0.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -399,13 +399,13 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="document">
-<h1>Document<a class="headerlink" href="#document" title="Permalink to this headline">#</a></h1>
+<h1>Document<a class="headerlink" href="#document" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> is the basic data type in Jina. Whether you’re working with text, image, video, audio, or 3D meshes, they are
 all <code class="docutils literal notranslate"><span class="pre">Document</span></code>s in Jina.</p>
 <section id="construct">
-<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h2>
+<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h2>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Empty document</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -487,7 +487,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </div>
 </section>
 <section id="set-unset-attributes">
-<h2>Set/unset attributes<a class="headerlink" href="#set-unset-attributes" title="Permalink to this headline">#</a></h2>
+<h2>Set/unset attributes<a class="headerlink" href="#set-unset-attributes" title="Permalink to this heading">#</a></h2>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Set</label><div class="tab-content docutils">
 <p>Set an attribute as you would with any Python object:</p>
@@ -524,7 +524,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </div>
 </section>
 <section id="content">
-<h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">#</a></h2>
+<h2>Content<a class="headerlink" href="#content" title="Permalink to this heading">#</a></h2>
 <p><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">buffer</span></code> are the three content attributes of a Document. They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively. Each Document can contain only one type of content.</p>
 <table border="1" class="docutils">
 <thead>
@@ -577,7 +577,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 <p>There is also a <code class="docutils literal notranslate"><span class="pre">doc.content</span></code> sugar getter/setter of the above non-empty field. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">buffer</span></code>, or <code class="docutils literal notranslate"><span class="pre">blob</span></code> field based on the given type.</p>
 </div>
 <section id="load-content-from-uri">
-<h3>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this headline">#</a></h3>
+<h3>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this heading">#</a></h3>
 <p>Often, you need to load data from a URI instead of assigning them directly in your code, <code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code> is the attribute you must learn.</p>
 <p>After setting <code class="docutils literal notranslate"><span class="pre">.uri</span></code>, you can load data into <code class="docutils literal notranslate"><span class="pre">.text</span></code>/<code class="docutils literal notranslate"><span class="pre">.buffer</span></code>/<code class="docutils literal notranslate"><span class="pre">.blob</span></code> as follows.</p>
 <p>The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
@@ -641,7 +641,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </section>
 </section>
 <section id="embedding">
-<h2>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">#</a></h2>
+<h2>Embedding<a class="headerlink" href="#embedding" title="Permalink to this heading">#</a></h2>
 <p>Embedding is a multi-dimensional representation of a <code class="docutils literal notranslate"><span class="pre">Document</span></code> (often a <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">D]</span></code> vector). It serves as a very important piece in the neural search.</p>
 <p>Document has an attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code> to contain the embedding information.</p>
 <p>Like <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, you can assign it with a Python (nested) List/Tuple, Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, SciPy sparse matrix (<code class="docutils literal notranslate"><span class="pre">spmatrix</span></code>), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.</p>
@@ -660,7 +660,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </pre></div>
 </div>
 <section id="fill-embedding-from-dnn-model">
-<h3>Fill embedding from DNN model<a class="headerlink" href="#fill-embedding-from-dnn-model" title="Permalink to this headline">#</a></h3>
+<h3>Fill embedding from DNN model<a class="headerlink" href="#fill-embedding-from-dnn-model" title="Permalink to this heading">#</a></h3>
 <div class="tip admonition">
 <p class="admonition-title">On multiple Documents</p>
 <p>This is a syntax sugar on single Document, which leverages <code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code> underneath. To embed multiple Documents, do not use this feature in a for-loop. Instead, read more details in <a class="reference internal" href="../documentarray-api/#embed-via-model"><span class="std std-ref">Embed via model</span></a>.</p>
@@ -680,7 +680,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </div>
 </section>
 <section id="find-nearest-neighbours">
-<h3>Find nearest-neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this headline">#</a></h3>
+<h3>Find nearest-neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this heading">#</a></h3>
 <div class="tip admonition">
 <p class="admonition-title">On multiple Documents</p>
 <p>This is a syntax sugar on single Document, which leverages  <code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code> underneath. To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in <a class="reference internal" href="../documentarray-api/#match-documentarray"><span class="std std-ref">Find nearest neighbours</span></a>.</p>
@@ -704,7 +704,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </section>
 </section>
 <section id="nested-documents">
-<span id="recursive-nested-document"></span><h2>Nested Documents<a class="headerlink" href="#nested-documents" title="Permalink to this headline">#</a></h2>
+<span id="recursive-nested-document"></span><h2>Nested Documents<a class="headerlink" href="#nested-documents" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Document</span></code> can be nested both horizontally and vertically. The following graphic illustrates the recursive <code class="docutils literal notranslate"><span class="pre">Document</span></code> structure. Each <code class="docutils literal notranslate"><span class="pre">Document</span></code> can have multiple “chunks”
 and “matches”, which are <code class="docutils literal notranslate"><span class="pre">Document</span></code> as well.</p>
 <img src="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg">
@@ -795,7 +795,7 @@ of <a class="reference internal" href="../documentarray-api/#documentarray"><spa
 </div>
 </section>
 <section id="tags">
-<h2>Tags<a class="headerlink" href="#tags" title="Permalink to this headline">#</a></h2>
+<h2>Tags<a class="headerlink" href="#tags" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Document</span></code> contains the <code class="xref py py-attr docutils literal notranslate"><span class="pre">tags</span></code> attribute that can hold a map-like structure that can map arbitrary values.
 In practice, you can store meta information in <code class="docutils literal notranslate"><span class="pre">tags</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -875,7 +875,7 @@ sent to an Executor.</p>
 </div>
 </section>
 <section id="serialization">
-<h2>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">#</a></h2>
+<h2>Serialization<a class="headerlink" href="#serialization" title="Permalink to this heading">#</a></h2>
 <p>You can serialize a <code class="docutils literal notranslate"><span class="pre">Document</span></code> into JSON string via <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code> or Python dict via <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_dict()</span></code> or binary string via <code class="xref py py-meth docutils literal notranslate"><span class="pre">bytes()</span></code>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">JSON</label><div class="tab-content docutils">
@@ -920,7 +920,7 @@ sent to an Executor.</p>
 </div>
 </section>
 <section id="visualization">
-<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">#</a></h2>
+<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h2>
 <p>To better see the Document’s recursive structure, you can use <code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code> function. If you are using JupyterLab/Notebook,
 all <code class="docutils literal notranslate"><span class="pre">Document</span></code> objects will be auto-rendered:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -975,7 +975,7 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -1032,7 +1032,9 @@ all <code class="docutils literal notranslate"><span class="pre">Document</span>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.types/" />
 <meta property="og:site_name" content="DocArray 0.10.3 Documentation" />
-<meta property="og:description" content="Submodules: docarray.types.deserializers module, docarray.types.multimodal module, docarray.types.serializers module. Module contents:" />
+<meta property="og:description" content="Submodules: docarray.types.deserializers module- image_deserializer(), text_deserializer(), audio_deserializer(), json_deserializer()., docarray.types.multimodal module- is_dataclass(), Field- Field.name, Field.type, Field.default, Field.default_factory, Field.init, Field.repr, Field.hash, Field...." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.10.3 Documentation" />
-<meta name="description" content="Submodules: docarray.types.deserializers module, docarray.types.multimodal module, docarray.types.serializers module. Module contents:" />
+<meta name="description" content="Submodules: docarray.types.deserializers module- image_deserializer(), text_deserializer(), audio_deserializer(), json_deserializer()., docarray.types.multimodal module- is_dataclass(), Field- Field.name, Field.type, Field.default, Field.default_factory, Field.init, Field.repr, Field.hash, Field...." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.types.deserializers module" href="../docarray.types.deserializers/" /><link rel="prev" title="docarray.score.data module" href="../docarray.score.data/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.types.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.types package - DocArray 0.10.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -538,19 +538,48 @@
                     </label>
                 </div>
                 <section id="docarray-types-package">
-<h1>docarray.types package<a class="headerlink" href="#docarray-types-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.types package<a class="headerlink" href="#docarray-types-package" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.deserializers/#docarray.types.deserializers.image_deserializer"><code class="docutils literal notranslate"><span class="pre">image_deserializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.deserializers/#docarray.types.deserializers.text_deserializer"><code class="docutils literal notranslate"><span class="pre">text_deserializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.deserializers/#docarray.types.deserializers.audio_deserializer"><code class="docutils literal notranslate"><span class="pre">audio_deserializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.deserializers/#docarray.types.deserializers.json_deserializer"><code class="docutils literal notranslate"><span class="pre">json_deserializer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.is_dataclass"><code class="docutils literal notranslate"><span class="pre">is_dataclass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field"><code class="docutils literal notranslate"><span class="pre">Field</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.name"><code class="docutils literal notranslate"><span class="pre">Field.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.type"><code class="docutils literal notranslate"><span class="pre">Field.type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.default"><code class="docutils literal notranslate"><span class="pre">Field.default</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.default_factory"><code class="docutils literal notranslate"><span class="pre">Field.default_factory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.init"><code class="docutils literal notranslate"><span class="pre">Field.init</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.repr"><code class="docutils literal notranslate"><span class="pre">Field.repr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.hash"><code class="docutils literal notranslate"><span class="pre">Field.hash</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.compare"><code class="docutils literal notranslate"><span class="pre">Field.compare</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.Field.metadata"><code class="docutils literal notranslate"><span class="pre">Field.metadata</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.from_document"><code class="docutils literal notranslate"><span class="pre">from_document()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.multimodal/#docarray.types.multimodal.dataclass"><code class="docutils literal notranslate"><span class="pre">dataclass()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.serializers/#docarray.types.serializers.image_serializer"><code class="docutils literal notranslate"><span class="pre">image_serializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.serializers/#docarray.types.serializers.text_serializer"><code class="docutils literal notranslate"><span class="pre">text_serializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.serializers/#docarray.types.serializers.audio_serializer"><code class="docutils literal notranslate"><span class="pre">audio_serializer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.types.serializers/#docarray.types.serializers.json_serializer"><code class="docutils literal notranslate"><span class="pre">json_serializer()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.types">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.types" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.types" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -591,7 +620,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -655,7 +684,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

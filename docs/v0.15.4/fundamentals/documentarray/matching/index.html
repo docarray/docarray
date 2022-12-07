@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Search over Nested Structure" href="../subindex/" /><link rel="prev" title="Embed via Neural Network" href="../embedding/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/matching.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Find Nearest Neighbours - DocArray 0.15.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -390,31 +390,31 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="find-nearest-neighbours">
-<span id="match-documentarray"></span><h1>Find Nearest Neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this headline">#</a></h1>
+<span id="match-documentarray"></span><h1>Find Nearest Neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this heading">#</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> support both CPU &amp; GPU.</p>
 </div>
 <p>Once <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is set, one can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> or <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-func docutils literal notranslate"><span class="pre">match()</span></code></a> function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and distance metrics.</p>
 <section id="difference-between-find-and-match">
-<h2>Difference between find and match<a class="headerlink" href="#difference-between-find-and-match" title="Permalink to this headline">#</a></h2>
+<h2>Difference between find and match<a class="headerlink" href="#difference-between-find-and-match" title="Permalink to this heading">#</a></h2>
 <p>Though both <code class="docutils literal notranslate"><span class="pre">.find()</span></code> and <code class="docutils literal notranslate"><span class="pre">.match()</span></code> is about finding nearest neighbours of a given “query” and both accpet similar arguments, there are some differences between them:</p>
 <section id="which-side-is-the-query-at">
-<h3>Which side is the query at?<a class="headerlink" href="#which-side-is-the-query-at" title="Permalink to this headline">#</a></h3>
+<h3>Which side is the query at?<a class="headerlink" href="#which-side-is-the-query-at" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query’s nearest neighbours you should write <code class="docutils literal notranslate"><span class="pre">one_million_docs.find(query)</span></code>;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> assumes the query is on left-hand side. <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> semantically means “A matches against B and save the results to A”. So with <code class="docutils literal notranslate"><span class="pre">.match()</span></code> you should write <code class="docutils literal notranslate"><span class="pre">query.match(one_million_docs)</span></code>.</p></li>
 </ul>
 </section>
 <section id="what-is-the-type-of-the-query">
-<h3>What is the type of the query?<a class="headerlink" href="#what-is-the-type-of-the-query" title="Permalink to this headline">#</a></h3>
+<h3>What is the type of the query?<a class="headerlink" href="#what-is-the-type-of-the-query" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>query (RHS) in <code class="docutils literal notranslate"><span class="pre">.find()</span></code> can be plain NdArray-like object or a single Document or a DocumentArray.</p></li>
 <li><p>query (LHS) in <code class="docutils literal notranslate"><span class="pre">.match()</span></code> can be either a Document or a DocumentArray.</p></li>
 </ul>
 </section>
 <section id="what-is-the-return">
-<h3>What is the return?<a class="headerlink" href="#what-is-the-return" title="Permalink to this headline">#</a></h3>
+<h3>What is the return?<a class="headerlink" href="#what-is-the-return" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> returns a List of DocumentArray, each of which corresponds to one element/row in the query.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> do not return anything. Match results are stored inside left-hand side’s <code class="docutils literal notranslate"><span class="pre">.matches</span></code>.</p></li>
@@ -422,7 +422,7 @@
 <p>In the sequel, we will use <code class="docutils literal notranslate"><span class="pre">.match()</span></code> to describe the features. But keep in mind that <code class="docutils literal notranslate"><span class="pre">.find()</span></code> should also work by simply switching the right and left-hand sides.</p>
 </section>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">#</a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h3>
 <p>The following example finds for each element in <code class="docutils literal notranslate"><span class="pre">da1</span></code> the three closest Documents from the elements in <code class="docutils literal notranslate"><span class="pre">da2</span></code> according to Euclidean distance.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Dense embedding </label><div class="tab-content docutils">
@@ -554,7 +554,7 @@ match emb =   (0, 0)	1.0
 <p>By default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> will copy the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying them can be time-consuming. In this case, one can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.</p>
 </section>
 <section id="gpu-support">
-<h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">#</a></h3>
+<h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this heading">#</a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow tensor, PyTorch tensor or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function can work directly on GPU. To do that, simply set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -652,7 +652,7 @@ match emb =   (0, 0)	1.0
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -722,7 +722,9 @@ match emb =   (0, 0)	1.0
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Embed via Neural Network" href="../embedding/" /><link rel="prev" title="Access Elements" href="../access-elements/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-attributes.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Access Attributes - DocArray 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -498,11 +498,11 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="access-attributes">
-<span id="bulk-access"></span><h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this headline">#</a></h1>
+<span id="bulk-access"></span><h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this heading">#</a></h1>
 <p>DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk.</p>
 <p>In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector.</p>
 <section id="attribute-selector">
-<h2>Attribute selector<a class="headerlink" href="#attribute-selector" title="Permalink to this headline">#</a></h2>
+<h2>Attribute selector<a class="headerlink" href="#attribute-selector" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="n">element_selector</span><span class="p">,</span> <span class="n">attribute_selector</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -624,7 +624,7 @@
 </div>
 </section>
 <section id="auto-ravel-on-ndarray">
-<h2>Auto-ravel on NdArray<a class="headerlink" href="#auto-ravel-on-ndarray" title="Permalink to this headline">#</a></h2>
+<h2>Auto-ravel on NdArray<a class="headerlink" href="#auto-ravel-on-ndarray" title="Permalink to this heading">#</a></h2>
 <p>Attribute selectors <code class="docutils literal notranslate"><span class="pre">tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> behave a bit differently. Instead of relying on Python List for input &amp; return when get/set, they automatically ravel/unravel the NdArray-like object <a class="footnote-reference brackets" href="#id3" id="id1">1</a> for you.</p>
 <p>Here is an example, where one may expect that <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'embedding']</span></code> gives you a list of three <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">10)</span></code> COO matrices. But it auto ravels the results and returns as a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -655,7 +655,7 @@
 <p>Of course, this is not limited to scipy sparse matrix. Any NdArray-like<a class="footnote-reference brackets" href="#id3" id="id2">1</a> object would work. The same logic applies also to <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> attribute.</p>
 </section>
 <section id="dunder-syntax-for-nested-attributes">
-<h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this headline">#</a></h2>
+<h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this heading">#</a></h2>
 <p>Some attributes are nested by nature, e.g. <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>.</p>
 <p>Let’s see an example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -677,7 +677,7 @@
 </div>
 </section>
 <section id="content-and-embedding-sugary-attributes">
-<span id="da-content-embedding"></span><h2>Content and embedding sugary attributes<a class="headerlink" href="#content-and-embedding-sugary-attributes" title="Permalink to this headline">#</a></h2>
+<span id="da-content-embedding"></span><h2>Content and embedding sugary attributes<a class="headerlink" href="#content-and-embedding-sugary-attributes" title="Permalink to this heading">#</a></h2>
 <p>DocumentArray provides <code class="docutils literal notranslate"><span class="pre">.texts</span></code>, <code class="docutils literal notranslate"><span class="pre">.blobs</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensors</span></code>, <code class="docutils literal notranslate"><span class="pre">.contents</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -754,7 +754,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -800,7 +800,9 @@
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

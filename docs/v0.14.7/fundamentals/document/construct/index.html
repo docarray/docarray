@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Serialization" href="../serialization/" /><link rel="prev" title="Document" href="../" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/construct.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Construct - DocArray 0.14.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,10 +389,10 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="construct">
-<span id="construct-doc"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h1>
+<span id="construct-doc"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
 <p>Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
 <section id="construct-an-empty-document">
-<h2>Construct an empty Document<a class="headerlink" href="#construct-an-empty-document" title="Permalink to this headline">#</a></h2>
+<h2>Construct an empty Document<a class="headerlink" href="#construct-an-empty-document" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span>
@@ -414,7 +414,7 @@
 <p>Though possible, it is not recommended modifying <code class="docutils literal notranslate"><span class="pre">.id</span></code> of a Document frequently, as this will lead to unexpected behavior.</p>
 </section>
 <section id="construct-with-attributes">
-<span id="construct-from-dict"></span><h2>Construct with attributes<a class="headerlink" href="#construct-with-attributes" title="Permalink to this headline">#</a></h2>
+<span id="construct-from-dict"></span><h2>Construct with attributes<a class="headerlink" href="#construct-with-attributes" title="Permalink to this heading">#</a></h2>
 <p>This is the most common usage of the constructor: initializing a Document object with given attributes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -471,7 +471,7 @@
 </pre></div>
 </div>
 <section id="nested-document">
-<h3>Nested Document<a class="headerlink" href="#nested-document" title="Permalink to this headline">#</a></h3>
+<h3>Nested Document<a class="headerlink" href="#nested-document" title="Permalink to this heading">#</a></h3>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>This section describes how to manually construct a nested Document, for example to hold different modalities, such as text and image.
@@ -510,7 +510,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 </figure>
 </section>
 <section id="unknown-attributes-handling">
-<span id="unk-attribute"></span><h3>Unknown attributes handling<a class="headerlink" href="#unknown-attributes-handling" title="Permalink to this headline">#</a></h3>
+<span id="unk-attribute"></span><h3>Unknown attributes handling<a class="headerlink" href="#unknown-attributes-handling" title="Permalink to this heading">#</a></h3>
 <p>If you give an unknown attribute (i.e. not one of the built-in Document attributes), they will be automatically “caught” into <code class="docutils literal notranslate"><span class="pre">.tags</span></code> attributes. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -526,7 +526,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 <p>You can change this “<code class="docutils literal notranslate"><span class="pre">catch</span></code>” behavior to <code class="docutils literal notranslate"><span class="pre">drop</span></code> (silently drop unknown attributes) or <code class="docutils literal notranslate"><span class="pre">raise</span></code> (raise a <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>) by specifying <code class="docutils literal notranslate"><span class="pre">unknown_fields_handler</span></code>.</p>
 </section>
 <section id="resolve-unknown-attributes-with-rules">
-<h3>Resolve unknown attributes with rules<a class="headerlink" href="#resolve-unknown-attributes-with-rules" title="Permalink to this headline">#</a></h3>
+<h3>Resolve unknown attributes with rules<a class="headerlink" href="#resolve-unknown-attributes-with-rules" title="Permalink to this heading">#</a></h3>
 <p>One can resolve external fields into built-in attributes by specifying a mapping in <code class="docutils literal notranslate"><span class="pre">field_resolver</span></code>. For example, to resolve the field <code class="docutils literal notranslate"><span class="pre">hello</span></code> as the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -542,7 +542,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 </section>
 </section>
 <section id="copy-from-another-document">
-<h2>Copy from another Document<a class="headerlink" href="#copy-from-another-document" title="Permalink to this headline">#</a></h2>
+<h2>Copy from another Document<a class="headerlink" href="#copy-from-another-document" title="Permalink to this heading">#</a></h2>
 <p>To make a deep copy of a Document, use <code class="docutils literal notranslate"><span class="pre">copy=True</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -575,7 +575,7 @@ world
 </div>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
 <p>One can also construct Document from bytes, JSON, Protobuf message. These methods are introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
 </section>
 </section>
@@ -615,7 +615,7 @@ world
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -686,7 +686,9 @@ world
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

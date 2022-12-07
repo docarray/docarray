@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="SQLite" href="../sqlite/" /><link rel="prev" title="Document Store" href="../" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/weaviate.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Weaviate - DocArray 0.14.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,7 +389,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="weaviate">
-<span id="id1"></span><h1>Weaviate<a class="headerlink" href="#weaviate" title="Permalink to this headline">#</a></h1>
+<span id="id1"></span><h1>Weaviate<a class="headerlink" href="#weaviate" title="Permalink to this heading">#</a></h1>
 <p>One can use <a class="reference external" href="https://weaviate.io">Weaviate</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -400,9 +400,9 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rBKvoIGihnY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </center>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">#</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
 <section id="start-weaviate-service">
-<h3>Start Weaviate service<a class="headerlink" href="#start-weaviate-service" title="Permalink to this headline">#</a></h3>
+<h3>Start Weaviate service<a class="headerlink" href="#start-weaviate-service" title="Permalink to this heading">#</a></h3>
 <p>To use Weaviate as the storage backend, it is required to have the Weaviate service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
 <span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
@@ -435,7 +435,7 @@
 </div>
 </section>
 <section id="create-documentarray-with-weaviate-backend">
-<h3>Create DocumentArray with Weaviate backend<a class="headerlink" href="#create-documentarray-with-weaviate-backend" title="Permalink to this headline">#</a></h3>
+<h3>Create DocumentArray with Weaviate backend<a class="headerlink" href="#create-documentarray-with-weaviate-backend" title="Permalink to this heading">#</a></h3>
 <p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>), one can instantiate a DocumentArray with Weaviate storage as such:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -458,7 +458,7 @@
 </section>
 </section>
 <section id="config">
-<h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">#</a></h2>
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this heading">#</a></h2>
 <p>The following configs can be set:</p>
 <table border="1" class="docutils">
 <thead>
@@ -559,7 +559,7 @@
 <p>*You can read more about the HNSW parameters and their default values <a class="reference external" href="https://weaviate.io/developers/weaviate/current/vector-index-plugins/hnsw.html#how-to-use-hnsw-and-parameters">here</a></p>
 </section>
 <section id="minimum-example">
-<h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this headline">#</a></h2>
+<h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this heading">#</a></h2>
 <p>The following example shows how to use DocArray with Weaviate Document Store in order to index and search text
 Documents.</p>
 <p>First, let’s run the create the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instance (make sure a Weaviate server is up and running):</p>
@@ -612,11 +612,11 @@ Documents.</p>
 </div>
 </section>
 <section id="filtering">
-<h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">#</a></h2>
+<h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this heading">#</a></h2>
 <p>Search with <code class="docutils literal notranslate"><span class="pre">.find</span></code> can be restricted by user-defined filters. Such filters can be constructed following the guidelines
 in <a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html">Weaviate’s Documentation</a>.</p>
 <section id="example-of-find-with-a-filter-only">
-<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only<a class="headerlink" href="#example-of-find-with-a-filter-only" title="Permalink to this headline">#</a></h3>
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only<a class="headerlink" href="#example-of-find-with-a-filter-only" title="Permalink to this heading">#</a></h3>
 <p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into weaviate and you want to retrieve all Documents
 with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower or equal to  some <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
 <p>You can index such Documents as follows:</p>
@@ -664,7 +664,7 @@ filter:</p>
 </div>
 </section>
 <section id="example-of-find-with-query-vector-and-filter">
-<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter<a class="headerlink" href="#example-of-find-with-query-vector-and-filter" title="Permalink to this headline">#</a></h3>
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter<a class="headerlink" href="#example-of-find-with-query-vector-and-filter" title="Permalink to this heading">#</a></h3>
 <p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
 has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -720,14 +720,14 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 </section>
 </section>
 <section id="sorting">
-<h2>Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">#</a></h2>
+<h2>Sorting<a class="headerlink" href="#sorting" title="Permalink to this heading">#</a></h2>
 <p><em><strong>Note: Support for sorting was added to the weaviate-client v3.5.0. You can upgrade with the following command:
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">weaviate-client</span></code></strong></em></p>
 <p>You can sort results by any primitive property, typically a text, string, number, or int property. When a query has a
 natural order (e.g. because of a near vector search), adding a sort operator will override the order.</p>
 <p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/get.html#sorting">Further documentation here.</a></p>
 <section id="example-of-find-with-vector-and-sort">
-<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort<a class="headerlink" href="#example-of-find-with-vector-and-sort" title="Permalink to this headline">#</a></h3>
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort<a class="headerlink" href="#example-of-find-with-vector-and-sort" title="Permalink to this heading">#</a></h3>
 <p>Consider Documents with the column ‘price’ and on the return you want to sort these documents by highest price to lowest
 price. You can create an example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -793,7 +793,7 @@ price. You can create an example with the following code:</p>
 </section>
 </section>
 <section id="set-minimum-certainty-on-query-results">
-<h2>Set minimum certainty on query results<a class="headerlink" href="#set-minimum-certainty-on-query-results" title="Permalink to this headline">#</a></h2>
+<h2>Set minimum certainty on query results<a class="headerlink" href="#set-minimum-certainty-on-query-results" title="Permalink to this heading">#</a></h2>
 <p>The DocArray/Weaviate find class uses the NearVector search argument since Weaviate is only being used in this combination to store
 vectors generated by DocArray. Sometimes you want to set the certainty at a certain level to limit the return results.
 You can do this with the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">find()</span></code> method.</p>
@@ -868,7 +868,7 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
 </div>
 </section>
 <section id="include-additional-properties-in-the-return">
-<h2>Include additional properties in the return<a class="headerlink" href="#include-additional-properties-in-the-return" title="Permalink to this headline">#</a></h2>
+<h2>Include additional properties in the return<a class="headerlink" href="#include-additional-properties-in-the-return" title="Permalink to this heading">#</a></h2>
 <p>GraphQL additional properties can be used on data objects in Get{} Queries to get additional information about the
 returned data objects. Which additional properties are available depends on the modules that are attached to Weaviate.
 The fields id, certainty, featureProjection and classification are available from Weaviate Core. On nested GraphQL
@@ -970,7 +970,7 @@ You can run the following:</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1050,7 +1050,9 @@ You can run the following:</p>
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="FastAPI/Pydantic" href="../fastapi-support/" /><link rel="prev" title="Jina" href="../jina-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/notebook-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Jupyter Notebook/Colab - DocArray 0.9.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -517,14 +517,14 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="jupyter-notebook-colab">
-<h1>Jupyter Notebook/Colab<a class="headerlink" href="#jupyter-notebook-colab" title="Permalink to this headline">#</a></h1>
+<h1>Jupyter Notebook/Colab<a class="headerlink" href="#jupyter-notebook-colab" title="Permalink to this heading">#</a></h1>
 <p>Many data scientists work with Jupyter Notebook or Google Colab especially at the early prototyping stage. We understand that and that’s why we optimize DocArray’s user experience in these two environments. In this chapter, I use Jupyter Notebook as an example to demonstrate the features that can improve your productivity. On Google Colab, it is the same experience.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Some features require extra dependencies beyond the basic install of DocArray. Use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to enable them.</p>
 </div>
 <section id="display-document">
-<h2>Display Document<a class="headerlink" href="#display-document" title="Permalink to this headline">#</a></h2>
+<h2>Display Document<a class="headerlink" href="#display-document" title="Permalink to this heading">#</a></h2>
 <p>A cell with a Document object will be pretty-printed with its non-empty field and <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
 <figure class="align-default">
 <img alt="../../_images/single-doc.png" src="../../_images/single-doc.png" />
@@ -534,7 +534,7 @@
 <img alt="../../_images/single-doc-nested.png" src="../../_images/single-doc-nested.png" />
 </figure>
 <section id="display-rich-content">
-<h3>Display rich content<a class="headerlink" href="#display-rich-content" title="Permalink to this headline">#</a></h3>
+<h3>Display rich content<a class="headerlink" href="#display-rich-content" title="Permalink to this heading">#</a></h3>
 <p>If a Document is an image Document, you can use <a class="reference internal" href="../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display" title="docarray.document.mixins.plot.PlotMixin.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">display()</span></code></a> to visualize it.</p>
 <figure class="align-default">
 <img alt="../../_images/image-doc.png" src="../../_images/image-doc.png" />
@@ -554,20 +554,20 @@
 </section>
 </section>
 <section id="display-documentarray">
-<h2>Display DocumentArray<a class="headerlink" href="#display-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>Display DocumentArray<a class="headerlink" href="#display-documentarray" title="Permalink to this heading">#</a></h2>
 <p>A cell with a DocumentArray object can be pretty-printed automatically.</p>
 <figure class="align-default">
 <img alt="../../_images/doc-array.png" src="../../_images/doc-array.png" />
 </figure>
 <section id="display-image-sprite">
-<h3>Display image sprite<a class="headerlink" href="#display-image-sprite" title="Permalink to this headline">#</a></h3>
+<h3>Display image sprite<a class="headerlink" href="#display-image-sprite" title="Permalink to this heading">#</a></h3>
 <p>DocumentArray with all image Documents (image is either in <code class="docutils literal notranslate"><span class="pre">.uri</span></code> or <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>) can be plotted into one sprite image.</p>
 <figure class="align-default">
 <img alt="../../_images/image-sprite.png" src="../../_images/image-sprite.png" />
 </figure>
 </section>
 <section id="display-embeddings">
-<h3>Display embeddings<a class="headerlink" href="#display-embeddings" title="Permalink to this headline">#</a></h3>
+<h3>Display embeddings<a class="headerlink" href="#display-embeddings" title="Permalink to this heading">#</a></h3>
 <p>DocumentArray with non-empty <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> can be visualized interactively via <a class="reference internal" href="../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_embeddings" title="docarray.array.mixins.plot.PlotMixin.plot_embeddings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot_embeddings()</span></code></a></p>
 <figure class="align-default">
 <img alt="../../_images/embedding-ani1.gif" src="../../_images/embedding-ani1.gif" />
@@ -617,7 +617,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -688,7 +688,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

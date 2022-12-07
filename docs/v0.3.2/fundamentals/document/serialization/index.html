@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../attribute/" /><link rel="prev" title="Construct" href="../construct/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/serialization.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Serialization - DocArray 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -435,7 +435,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="serialization">
-<span id="serialize"></span><h1>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">#</a></h1>
+<span id="serialize"></span><h1>Serialization<a class="headerlink" href="#serialization" title="Permalink to this heading">#</a></h1>
 <p>DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -446,7 +446,7 @@
 <p>Some readers may wonder: why aren’t serialization a part of constructor? They do have similarity. Nonetheless, serialization often contains elements that do not really fit into constructor: input &amp; output model, data schema, compression, extra-dependencies. DocArray made a decision to separate the constructor and serialization for the sake of clarity and maintainability.</p>
 </div>
 <section id="from-to-json">
-<span id="doc-json"></span><h2>From/to JSON<a class="headerlink" href="#from-to-json" title="Permalink to this headline">#</a></h2>
+<span id="doc-json"></span><h2>From/to JSON<a class="headerlink" href="#from-to-json" title="Permalink to this heading">#</a></h2>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/pydantic Support</span></a> and follow the methods there.</p>
@@ -517,7 +517,7 @@
 </div>
 </section>
 <section id="from-to-bytes">
-<span id="doc-in-bytes"></span><h2>From/to bytes<a class="headerlink" href="#from-to-bytes" title="Permalink to this headline">#</a></h2>
+<span id="doc-in-bytes"></span><h2>From/to bytes<a class="headerlink" href="#from-to-bytes" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
@@ -559,7 +559,7 @@
 </div>
 </section>
 <section id="from-to-base64">
-<h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this headline">#</a></h2>
+<h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
@@ -589,7 +589,7 @@
 <p>Note that the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> must be followed when using <code class="docutils literal notranslate"><span class="pre">.from_base64</span></code>.</p>
 </section>
 <section id="from-to-dict">
-<span id="doc-dict"></span><h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this headline">#</a></h2>
+<span id="doc-dict"></span><h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
@@ -613,7 +613,7 @@
 <p>As the intermediate step of <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">from_json()</span></code> it is unlikely to use dict IO directly. Nonetheless, you can pass the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as described in <a class="reference internal" href="#doc-json"><span class="std std-ref">From/to JSON</span></a> to control the serialization behavior.</p>
 </section>
 <section id="from-to-protobuf">
-<h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this headline">#</a></h2>
+<h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
@@ -638,7 +638,7 @@ mime_type: &quot;image/jpeg&quot;
 <p>One can refer to the <a class="reference internal" href="../../../proto/"><span class="doc std std-doc">Protobuf specification of <code class="docutils literal notranslate"><span class="pre">Document</span></code></span></a> for details.</p>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
 <p>Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list" title="docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_list()</span></code></a> that allows one to <a class="reference internal" href="../../documentarray/serialization/"><span class="doc std std-doc">serialize multiple Documents much faster and more compact</span></a>.</p>
 </section>
 </section>
@@ -675,7 +675,7 @@ mime_type: &quot;image/jpeg&quot;
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -723,7 +723,9 @@ mime_type: &quot;image/jpeg&quot;
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

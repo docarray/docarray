@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Support New Modality" href="../new-type/" /><link rel="prev" title="Construct" href="../construct/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/access.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Access Modality - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -390,7 +390,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="access-modality">
-<h1>Access Modality<a class="headerlink" href="#access-modality" title="Permalink to this headline">#</a></h1>
+<h1>Access Modality<a class="headerlink" href="#access-modality" title="Permalink to this heading">#</a></h1>
 <p>After <a class="reference internal" href="../construct/#mm-construct"><span class="std std-ref">constructing a multi-modal Document or DocumentArray</span></a>, you can directly access your custom-defined
 modalities by their names.</p>
 <div class="seealso admonition">
@@ -400,7 +400,7 @@ This ensures maximum flexibility for the use.</p>
 <p>If you want to learn more about the rationale behind this design, you can read our <a class="reference external" href="https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0">blog post</a>.</p>
 </div>
 <section id="document-level-access">
-<span id="mm-access-doc"></span><h2>Document level access<a class="headerlink" href="#document-level-access" title="Permalink to this headline">#</a></h2>
+<span id="mm-access-doc"></span><h2>Document level access<a class="headerlink" href="#document-level-access" title="Permalink to this heading">#</a></h2>
 <p>Even after conversion to <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, custom-defines modalities can be accessed by their names, returning a
 <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> or, for list-types, a <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span>
@@ -444,7 +444,7 @@ This ensures maximum flexibility for the use.</p>
 </pre></div>
 </div>
 <section id="select-nested-fields">
-<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this headline">#</a></h3>
+<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this heading">#</a></h3>
 <p>Nested field, coming from <a class="reference internal" href="../construct/#mm-annotation"><span class="std std-ref">nested dataclasses</span></a>, can be accessed by selecting the outer field,
 and then selecting the inner field:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
@@ -477,7 +477,7 @@ this is a description
 </section>
 </section>
 <section id="documentarray-level-access">
-<span id="mm-access-da"></span><h2>DocumentArray level access<a class="headerlink" href="#documentarray-level-access" title="Permalink to this headline">#</a></h2>
+<span id="mm-access-da"></span><h2>DocumentArray level access<a class="headerlink" href="#documentarray-level-access" title="Permalink to this heading">#</a></h2>
 <p>Custom modalities can be accessed through the familiar <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">selector syntax</span></a>.</p>
 <p>Like all selectors, a selector for a multi-modal attribute begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.
 The fact that a custom modality is accessed is denoted through the addition of a <code class="docutils literal notranslate"><span class="pre">.</span></code>, coming before a list of modality names:</p>
@@ -593,7 +593,7 @@ Output<div class="sd-summary-down docutils">
 </details></div>
 </div>
 <section id="select-multiple-fields">
-<h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this headline">#</a></h3>
+<h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this heading">#</a></h3>
 <p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description, banner]&#39;</span><span class="p">]</span>
 </pre></div>
@@ -635,7 +635,7 @@ Output<div class="sd-summary-down docutils">
 </div>
 </details></section>
 <section id="slice-dataclass-objects">
-<h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this headline">#</a></h3>
+<h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this heading">#</a></h3>
 <p>Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@r[slice].[field1, field2, ...]
 </pre></div>
@@ -679,7 +679,7 @@ Output<div class="sd-summary-down docutils">
 </div>
 </details></section>
 <section id="slice-list-type-fields">
-<h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this headline">#</a></h3>
+<h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this heading">#</a></h3>
 <p>If a field is annotated as a List of DocArray types, it will create a DocumentArray, one can add slicing after the field selector to further restrict the size of the sub-Documents.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
@@ -721,7 +721,7 @@ test-1.jpeg
 <p>To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.</p>
 </section>
 <section id="id1">
-<h3>Select nested fields<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
+<h3>Select nested fields<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
 <p>A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former’s <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. To select the deeply nested field, one can simply follow:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...].[nested_field1, nested_field1, ...]
 </pre></div>
@@ -796,7 +796,7 @@ test-2.jpeg
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -869,7 +869,9 @@ test-2.jpeg
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

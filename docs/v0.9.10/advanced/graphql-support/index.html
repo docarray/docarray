@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Document Store" href="../document-store/" /><link rel="prev" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/graphql-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>GraphQL - DocArray 0.9.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -517,7 +517,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="graphql">
-<h1>GraphQL<a class="headerlink" href="#graphql" title="Permalink to this headline">#</a></h1>
+<h1>GraphQL<a class="headerlink" href="#graphql" title="Permalink to this heading">#</a></h1>
 <p>DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need: <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> is too big and too verbose, then don’t query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server.</p>
 <p>When integrating DocArray in a GraphQL app, you only need to implement the <em>query</em> (in GraphQL idiom, this is like the API endpoint that your server allows). The <em>schema</em> part is provided by DocArray and can be used out of the box.</p>
 <div class="admonition tip">
@@ -529,7 +529,7 @@
 <p>This article does <em>not</em> serve as the introduction to GraphQL. If you don’t have GraphQL background, it is stronly recommended to learn more about GraphQL in the <a class="reference external" href="https://graphql.org/">official GraphQL documentation</a>. You may also want to learn more about <a class="reference external" href="https://strawberry.rocks/">Strawberry</a>. Otherwise, you may get confused by the GraphQL idioms, e.g. query, schema.</p>
 </div>
 <section id="basic-example">
-<h2>Basic example<a class="headerlink" href="#basic-example" title="Permalink to this headline">#</a></h2>
+<h2>Basic example<a class="headerlink" href="#basic-example" title="Permalink to this heading">#</a></h2>
 <p>Let’s create dummy matches in a DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -604,7 +604,7 @@
 <p>Now we have one endpoint that allows user to selectively read fields from a DocumentArray. Additional endpoints can be added to <code class="docutils literal notranslate"><span class="pre">Query</span></code> class, to support advance filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users.</p>
 </section>
 <section id="integrate-with-fastapi">
-<h2>Integrate with FastAPI<a class="headerlink" href="#integrate-with-fastapi" title="Permalink to this headline">#</a></h2>
+<h2>Integrate with FastAPI<a class="headerlink" href="#integrate-with-fastapi" title="Permalink to this heading">#</a></h2>
 <p>Strawberry’s built-in server is perfect for prototyping an API. When it comes to production, you can use FastAPI. Here is a short example how you can wrap the above snippet it in a FastAPI app:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">strawberry.asgi</span> <span class="kn">import</span> <span class="n">GraphQL</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
@@ -657,7 +657,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -721,7 +721,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

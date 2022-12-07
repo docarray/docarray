@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage/" />
 <meta property="og:site_name" content="DocArray 0.14.4 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.array.storage.annlite package- Submodules- docarray.array.storage.annlite.backend module, docarray.array.storage.annlite.find module, docarray.array.storage.annlite.getsetdel module, docarray.array.storage.annlite.helper module, docarray.array.storage.annlite.seqlike module...." />
+<meta property="og:description" content="Subpackages: docarray.array.storage.annlite package- Submodules- docarray.array.storage.annlite.backend module- AnnliteConfig, BackendMixin., docarray.array.storage.annlite.find module- FindMixin., docarray.array.storage.annlite.getsetdel module- GetSetDelMixin., docarray.array.storage.annlite.he..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.14.4 Documentation" />
-<meta name="description" content="Subpackages: docarray.array.storage.annlite package- Submodules- docarray.array.storage.annlite.backend module, docarray.array.storage.annlite.find module, docarray.array.storage.annlite.getsetdel module, docarray.array.storage.annlite.helper module, docarray.array.storage.annlite.seqlike module...." />
+<meta name="description" content="Subpackages: docarray.array.storage.annlite package- Submodules- docarray.array.storage.annlite.backend module- AnnliteConfig, BackendMixin., docarray.array.storage.annlite.find module- FindMixin., docarray.array.storage.annlite.getsetdel module- GetSetDelMixin., docarray.array.storage.annlite.he..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.storage.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.storage package - DocArray 0.14.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,29 +389,84 @@
                 </div>
                 <article role="main">
                     <section id="docarray-array-storage-package">
-<h1>docarray.array.storage package<a class="headerlink" href="#docarray-array-storage-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.array.storage package<a class="headerlink" href="#docarray-array-storage-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.annlite/">docarray.array.storage.annlite package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.annlite/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.backend/">docarray.array.storage.annlite.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.find/">docarray.array.storage.annlite.find module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.getsetdel/">docarray.array.storage.annlite.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.helper/">docarray.array.storage.annlite.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.seqlike/">docarray.array.storage.annlite.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.backend/">docarray.array.storage.annlite.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.backend/#docarray.array.storage.annlite.backend.AnnliteConfig"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.backend/#docarray.array.storage.annlite.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.annlite/#module-docarray.array.storage.annlite">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.find/">docarray.array.storage.annlite.find module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.find/#docarray.array.storage.annlite.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.getsetdel/">docarray.array.storage.annlite.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.getsetdel/#docarray.array.storage.annlite.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.helper/">docarray.array.storage.annlite.helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.helper/#docarray.array.storage.annlite.helper.OffsetMapping"><code class="docutils literal notranslate"><span class="pre">OffsetMapping</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite.seqlike/">docarray.array.storage.annlite.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite.seqlike/#docarray.array.storage.annlite.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.annlite/#module-docarray.array.storage.annlite">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.n_dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.metric"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.metric</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.serialize_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.data_path"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.data_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.ef_construction"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.ef_construction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.ef_search"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.ef_search</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.max_connection"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.max_connection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.annlite/#docarray.array.storage.annlite.AnnliteConfig.columns"><code class="docutils literal notranslate"><span class="pre">AnnliteConfig.columns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.base/">docarray.array.storage.base package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.base/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.backend/">docarray.array.storage.base.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.getsetdel/">docarray.array.storage.base.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.helper/">docarray.array.storage.base.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.seqlike/">docarray.array.storage.base.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.backend/">docarray.array.storage.base.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap"><code class="docutils literal notranslate"><span class="pre">TypeMap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.BaseBackendMixin"><code class="docutils literal notranslate"><span class="pre">BaseBackendMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.getsetdel/">docarray.array.storage.base.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.helper/">docarray.array.storage.base.helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.base.helper/#docarray.array.storage.base.helper.Offset2ID"><code class="docutils literal notranslate"><span class="pre">Offset2ID</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.base.seqlike/">docarray.array.storage.base.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">BaseSequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.base/#module-docarray.array.storage.base">Module contents</a></li>
@@ -419,65 +474,277 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.elastic/">docarray.array.storage.elastic package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.elastic/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.backend/">docarray.array.storage.elastic.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.find/">docarray.array.storage.elastic.find module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.getsetdel/">docarray.array.storage.elastic.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.seqlike/">docarray.array.storage.elastic.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.backend/">docarray.array.storage.elastic.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic.backend/#docarray.array.storage.elastic.backend.ElasticConfig"><code class="docutils literal notranslate"><span class="pre">ElasticConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic.backend/#docarray.array.storage.elastic.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.elastic/#module-docarray.array.storage.elastic">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.find/">docarray.array.storage.elastic.find module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic.find/#docarray.array.storage.elastic.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.getsetdel/">docarray.array.storage.elastic.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic.getsetdel/#docarray.array.storage.elastic.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic.seqlike/">docarray.array.storage.elastic.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic.seqlike/#docarray.array.storage.elastic.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.elastic/#module-docarray.array.storage.elastic">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.find"><code class="docutils literal notranslate"><span class="pre">StorageMixins.find()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig"><code class="docutils literal notranslate"><span class="pre">ElasticConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.n_dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.distance"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.distance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.hosts"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.hosts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.index_name"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.index_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.es_config"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.es_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.index_text"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.index_text</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.tag_indices"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.tag_indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.batch_size"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.batch_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.ef_construction"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.ef_construction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.m"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.m</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.elastic/#docarray.array.storage.elastic.ElasticConfig.columns"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.columns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory/">docarray.array.storage.memory package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.find/">docarray.array.storage.memory.find module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.needs_id2offset_rebuild"><code class="docutils literal notranslate"><span class="pre">needs_id2offset_rebuild()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory/#module-docarray.array.storage.memory">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.find/">docarray.array.storage.memory.find module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory.find/#docarray.array.storage.memory.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/#docarray.array.storage.memory.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory/#module-docarray.array.storage.memory">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.qdrant/">docarray.array.storage.qdrant package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.qdrant/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.backend/">docarray.array.storage.qdrant.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.find/">docarray.array.storage.qdrant.find module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.getsetdel/">docarray.array.storage.qdrant.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.helper/">docarray.array.storage.qdrant.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.seqlike/">docarray.array.storage.qdrant.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.backend/">docarray.array.storage.qdrant.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant.backend/#docarray.array.storage.qdrant.backend.QdrantConfig"><code class="docutils literal notranslate"><span class="pre">QdrantConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant.backend/#docarray.array.storage.qdrant.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.qdrant/#module-docarray.array.storage.qdrant">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.find/">docarray.array.storage.qdrant.find module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant.find/#docarray.array.storage.qdrant.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.getsetdel/">docarray.array.storage.qdrant.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant.getsetdel/#docarray.array.storage.qdrant.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.helper/">docarray.array.storage.qdrant.helper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant.seqlike/">docarray.array.storage.qdrant.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant.seqlike/#docarray.array.storage.qdrant.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.qdrant/#module-docarray.array.storage.qdrant">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.serialize_config"><code class="docutils literal notranslate"><span class="pre">StorageMixins.serialize_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.distance"><code class="docutils literal notranslate"><span class="pre">StorageMixins.distance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.serialization_config"><code class="docutils literal notranslate"><span class="pre">StorageMixins.serialization_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.n_dim"><code class="docutils literal notranslate"><span class="pre">StorageMixins.n_dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.collection_name"><code class="docutils literal notranslate"><span class="pre">StorageMixins.collection_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.collection_name_meta"><code class="docutils literal notranslate"><span class="pre">StorageMixins.collection_name_meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.config"><code class="docutils literal notranslate"><span class="pre">StorageMixins.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.client"><code class="docutils literal notranslate"><span class="pre">StorageMixins.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.scroll_batch_size"><code class="docutils literal notranslate"><span class="pre">StorageMixins.scroll_batch_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.scan"><code class="docutils literal notranslate"><span class="pre">StorageMixins.scan()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig"><code class="docutils literal notranslate"><span class="pre">QdrantConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.n_dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.distance"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.distance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.collection_name"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.collection_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.host"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.port"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.port</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.serialize_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.scroll_batch_size"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.scroll_batch_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.ef_construct"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.ef_construct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.full_scan_threshold"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.full_scan_threshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.m"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.m</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.QdrantConfig.columns"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.columns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.sqlite/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.backend/">docarray.array.storage.sqlite.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.getsetdel/">docarray.array.storage.sqlite.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.helper/">docarray.array.storage.sqlite.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.seqlike/">docarray.array.storage.sqlite.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.backend/">docarray.array.storage.sqlite.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite.backend/#docarray.array.storage.sqlite.backend.SqliteConfig"><code class="docutils literal notranslate"><span class="pre">SqliteConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite.backend/#docarray.array.storage.sqlite.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.sqlite/#module-docarray.array.storage.sqlite">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.getsetdel/">docarray.array.storage.sqlite.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite.getsetdel/#docarray.array.storage.sqlite.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.helper/">docarray.array.storage.sqlite.helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite.helper/#docarray.array.storage.sqlite.helper.initialize_table"><code class="docutils literal notranslate"><span class="pre">initialize_table()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite.seqlike/">docarray.array.storage.sqlite.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.sqlite/#module-docarray.array.storage.sqlite">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.schema_version"><code class="docutils literal notranslate"><span class="pre">StorageMixins.schema_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig"><code class="docutils literal notranslate"><span class="pre">SqliteConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.connection"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.connection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.table_name"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.table_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.serialize_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.conn_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.conn_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.journal_mode"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.journal_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.synchronous"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.synchronous</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.weaviate/">docarray.array.storage.weaviate package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.weaviate/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.backend/">docarray.array.storage.weaviate.backend module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.find/">docarray.array.storage.weaviate.find module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.getsetdel/">docarray.array.storage.weaviate.getsetdel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.seqlike/">docarray.array.storage.weaviate.seqlike module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.backend/">docarray.array.storage.weaviate.backend module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate.backend/#docarray.array.storage.weaviate.backend.WeaviateConfig"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate.backend/#docarray.array.storage.weaviate.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.weaviate/#module-docarray.array.storage.weaviate">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.find/">docarray.array.storage.weaviate.find module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate.find/#docarray.array.storage.weaviate.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.getsetdel/">docarray.array.storage.weaviate.getsetdel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate.getsetdel/#docarray.array.storage.weaviate.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate.seqlike/">docarray.array.storage.weaviate.seqlike module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate.seqlike/#docarray.array.storage.weaviate.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.weaviate/#module-docarray.array.storage.weaviate">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.name"><code class="docutils literal notranslate"><span class="pre">StorageMixins.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.host"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.port"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.port</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.protocol"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.protocol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.name"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.serialize_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.n_dim</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.ef"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.ef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.ef_construction"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.ef_construction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.timeout_config"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.timeout_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.max_connections"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.max_connections</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.dynamic_ef_min"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.dynamic_ef_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.dynamic_ef_max"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.dynamic_ef_max</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.dynamic_ef_factor"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.dynamic_ef_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.vector_cache_max_objects"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.vector_cache_max_objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.flat_search_cutoff"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.flat_search_cutoff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.cleanup_interval_seconds"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.cleanup_interval_seconds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.skip"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.skip</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.columns"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.columns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.weaviate/#docarray.array.storage.weaviate.WeaviateConfig.distance"><code class="docutils literal notranslate"><span class="pre">WeaviateConfig.distance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.registry/">docarray.array.storage.registry module</a></li>
@@ -485,7 +752,7 @@
 </div>
 </section>
 <section id="module-docarray.array.storage">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.storage" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.storage" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -502,7 +769,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -567,7 +834,9 @@
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Examples" href="../../../datatypes/" /><link rel="prev" title="Support New Modality" href="../new-type/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/example.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Process Modality - DocArray 0.14.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,13 +389,13 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="process-modality">
-<h1>Process Modality<a class="headerlink" href="#process-modality" title="Permalink to this headline">#</a></h1>
+<h1>Process Modality<a class="headerlink" href="#process-modality" title="Permalink to this heading">#</a></h1>
 <p>So far we have learned how to construct and select multimodal Document, we are now ready to leverage DocArray API/Jina/Hub Executor to process the modalities.</p>
 <p>In a nutshell, you need to convert a multimodal dataclass to a Document object (or DocumentArray) before processing it. This is because DocArray API/Jina/Hub Executor always take Document/DocumentArray as the basic IO unit. The following figure illustrates the idea.</p>
 <figure class="align-default">
 <img alt="../../../_images/process-mmdoc.svg" src="../../../_images/process-mmdoc.svg" /></figure>
 <section id="embed-image-and-text-via-clip">
-<h2>Embed image and text via CLIP<a class="headerlink" href="#embed-image-and-text-via-clip" title="Permalink to this headline">#</a></h2>
+<h2>Embed image and text via CLIP<a class="headerlink" href="#embed-image-and-text-via-clip" title="Permalink to this heading">#</a></h2>
 <p>Developed by OpenAI, CLIP (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs. It is also a perfect model to showcase multimodal dataclass processing.</p>
 <p>Take the code snippet from <a class="reference external" href="https://github.com/openai/CLIP">the original CLIP repository</a> as an example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -462,7 +462,7 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
 </div>
 </section>
 <section id="embed-via-clip-as-service">
-<h2>Embed via CLIP-as-service<a class="headerlink" href="#embed-via-clip-as-service" title="Permalink to this headline">#</a></h2>
+<h2>Embed via CLIP-as-service<a class="headerlink" href="#embed-via-clip-as-service" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://github.com/jina-ai/clip-as-service">CLIP-as-service</a> is a low-latency high-scalability service for embedding images and text. It can be easily integrated as a microservice into neural search solutions.</p>
 <p>To use CLIP-as-service to process a dataclass object is extremely simple, which should also show you the idea to use existing Executors or services without touching their codebase.</p>
 <ol>
@@ -547,7 +547,7 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -611,7 +611,9 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

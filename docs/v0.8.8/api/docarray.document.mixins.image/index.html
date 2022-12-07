@@ -31,10 +31,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins.mesh module" href="../docarray.document.mixins.mesh/" /><link rel="prev" title="docarray.document.mixins.helper module" href="../docarray.document.mixins.helper/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.mixins.image.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.document.mixins.image module - DocArray 0.8.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -178,7 +178,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -230,7 +230,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -507,7 +507,7 @@
                     </label>
                 </div>
                 <section id="module-docarray.document.mixins.image">
-<span id="docarray-document-mixins-image-module"></span><h1>docarray.document.mixins.image module<a class="headerlink" href="#module-docarray.document.mixins.image" title="Permalink to this headline">#</a></h1>
+<span id="docarray-document-mixins-image-module"></span><h1>docarray.document.mixins.image module<a class="headerlink" href="#module-docarray.document.mixins.image" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.image.</span></span><span class="sig-name descname"><span class="pre">ImageDataMixin</span></span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin" title="Permalink to this definition">#</a></dt>
@@ -535,7 +535,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor">
-<span class="sig-name descname"><span class="pre">convert_blob_to_image_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_blob_to_image_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_blob_to_image_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_blob_to_image_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert an image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob" title="docarray.document.data.DocumentData.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a> to a ndarray <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -556,7 +556,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri">
-<span class="sig-name descname"><span class="pre">convert_image_tensor_to_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_image_tensor_to_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri" title="Permalink to this definition">#</a></dt>
 <dd><p>Assuming <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> is a _valid_ image, set <code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code> accordingly</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -576,7 +576,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob">
-<span class="sig-name descname"><span class="pre">convert_image_tensor_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_image_tensor_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob" title="Permalink to this definition">#</a></dt>
 <dd><p>Assuming <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> is a _valid_ image, set <code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code> accordingly</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -596,7 +596,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape">
-<span class="sig-name descname"><span class="pre">set_image_tensor_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_image_tensor_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape" title="Permalink to this definition">#</a></dt>
 <dd><p>Resample the image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into different size inplace.</p>
 <p>If your current image tensor has shape <code class="docutils literal notranslate"><span class="pre">[H,W,C]</span></code>, then the new tensor will be <code class="docutils literal notranslate"><span class="pre">[*shape,</span> <span class="pre">C]</span></code></p>
 <dl class="field-list simple">
@@ -617,7 +617,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file">
-<span class="sig-name descname"><span class="pre">save_image_tensor_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.save_image_tensor_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">save_image_tensor_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.save_image_tensor_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file" title="Permalink to this definition">#</a></dt>
 <dd><p>Save <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -638,7 +638,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.load_uri_to_image_tensor">
-<span class="sig-name descname"><span class="pre">load_uri_to_image_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.load_uri_to_image_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.load_uri_to_image_tensor" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">load_uri_to_image_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.load_uri_to_image_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.load_uri_to_image_tensor" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert the image-like <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.uri" title="docarray.document.data.DocumentData.uri"><code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code></a> into <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -659,7 +659,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization">
-<span class="sig-name descname"><span class="pre">set_image_tensor_inv_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.485,</span> <span class="pre">0.456,</span> <span class="pre">0.406)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.229,</span> <span class="pre">0.224,</span> <span class="pre">0.225)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_inv_normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_image_tensor_inv_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.485,</span> <span class="pre">0.456,</span> <span class="pre">0.406)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.229,</span> <span class="pre">0.224,</span> <span class="pre">0.225)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_inv_normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization" title="Permalink to this definition">#</a></dt>
 <dd><p>Inverse the normalization of a float32 image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a uint8 image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> inplace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -680,7 +680,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization">
-<span class="sig-name descname"><span class="pre">set_image_tensor_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.485,</span> <span class="pre">0.456,</span> <span class="pre">0.406)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.229,</span> <span class="pre">0.224,</span> <span class="pre">0.225)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_image_tensor_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.485,</span> <span class="pre">0.456,</span> <span class="pre">0.406)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.229,</span> <span class="pre">0.224,</span> <span class="pre">0.225)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.set_image_tensor_normalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization" title="Permalink to this definition">#</a></dt>
 <dd><p>Normalize a uint8 image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a float32 image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> inplace.</p>
 <p>Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and
 will be normalized in to a range of [0, 1] and then
@@ -712,7 +712,7 @@ non RGB image. if you look at their MNIST examples, the mean and stddev are 1-di
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_sliding_windows">
-<span class="sig-name descname"><span class="pre">convert_image_tensor_to_sliding_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(64,</span> <span class="pre">64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_sliding_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_sliding_windows" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_image_tensor_to_sliding_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(64,</span> <span class="pre">64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_sliding_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_sliding_windows" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a sliding window view with the given window shape <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> inplace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -774,7 +774,7 @@ extracted. Default is False.</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -790,6 +790,35 @@ extracted. Default is False.</p></li>
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.document.mixins.image module</a><ul>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_channel_axis"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_channel_axis()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_blob_to_image_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_uri()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_blob()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_shape()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.save_image_tensor_to_file()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.load_uri_to_image_tensor"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.load_uri_to_image_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_inv_normalization()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_normalization()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_sliding_windows"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_sliding_windows()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
                 <qa-bot
                     theme="auto"
@@ -812,7 +841,9 @@ extracted. Default is False.</p></li>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

@@ -30,10 +30,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.strawberry_type module" href="../docarray.document.strawberry_type/" /><link rel="prev" title="docarray.document.generators module" href="../docarray.document.generators/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.pydantic_model.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.document.pydantic_model module - DocArray 0.10.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -177,7 +177,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -229,7 +229,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -536,11 +536,11 @@
                     </label>
                 </div>
                 <section id="module-docarray.document.pydantic_model">
-<span id="docarray-document-pydantic-model-module"></span><h1>docarray.document.pydantic_model module<a class="headerlink" href="#module-docarray.document.pydantic_model" title="Permalink to this headline">#</a></h1>
+<span id="docarray-document-pydantic-model-module"></span><h1>docarray.document.pydantic_model module<a class="headerlink" href="#module-docarray.document.pydantic_model" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.document.pydantic_model.PydanticDocument">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.pydantic_model.</span></span><span class="sig-name descname"><span class="pre">PydanticDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/pydantic_model/#PydanticDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
@@ -620,22 +620,22 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.document.pydantic_model.PydanticDocument.evaluations">
-<span class="sig-name descname"><span class="pre">evaluations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">docarray.document.pydantic_model._NamedScore</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.evaluations" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">evaluations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NamedScore</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.evaluations" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.document.pydantic_model.PydanticDocument.scores">
-<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">docarray.document.pydantic_model._NamedScore</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.scores" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NamedScore</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.scores" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.document.pydantic_model.PydanticDocument.chunks">
-<span class="sig-name descname"><span class="pre">chunks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><span class="pre">docarray.document.pydantic_model.PydanticDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.chunks" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">chunks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><span class="pre">PydanticDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.chunks" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.document.pydantic_model.PydanticDocument.matches">
-<span class="sig-name descname"><span class="pre">matches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><span class="pre">docarray.document.pydantic_model.PydanticDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.matches" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">matches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><span class="pre">PydanticDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.document.pydantic_model.PydanticDocument.matches" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -690,7 +690,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -716,6 +716,48 @@
 
             <div class="toc-sticky toc-scroll">
                 
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.document.pydantic_model module</a><ul>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument"><code class="docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.id"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.id</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.parent_id"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.parent_id</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.granularity"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.granularity</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.adjacency"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.adjacency</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.blob"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.blob</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.tensor"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.tensor</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.mime_type"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.mime_type</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.text"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.text</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.weight"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.weight</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.uri"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.uri</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.tags"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.tags</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.offset"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.offset</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.location"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.location</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.embedding"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.embedding</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.modality"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.modality</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.evaluations"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.evaluations</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.scores"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.scores</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.chunks"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.chunks</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.matches"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.matches</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.Config"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.Config</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.document.pydantic_model.PydanticDocument.Config.smart_union"><code class="docutils literal notranslate"><span class="pre">PydanticDocument.Config.smart_union</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
             </div>
 
             
@@ -737,7 +779,9 @@
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

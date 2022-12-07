@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Serialization" href="../serialization/" /><link rel="prev" title="DocumentArray" href="../" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/construct.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Construct - DocArray 0.9.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -516,9 +516,9 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="construct">
-<span id="construct-array"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h1>
+<span id="construct-array"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
 <section id="construct-an-empty-array">
-<h2>Construct an empty array<a class="headerlink" href="#construct-an-empty-array" title="Permalink to this headline">#</a></h2>
+<h2>Construct an empty array<a class="headerlink" href="#construct-an-empty-array" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
@@ -556,7 +556,7 @@
 </div>
 </section>
 <section id="construct-with-empty-documents">
-<h2>Construct with empty Documents<a class="headerlink" href="#construct-with-empty-documents" title="Permalink to this headline">#</a></h2>
+<h2>Construct with empty Documents<a class="headerlink" href="#construct-with-empty-documents" title="Permalink to this heading">#</a></h2>
 <p>Like <code class="docutils literal notranslate"><span class="pre">numpy.zeros()</span></code>, you can quickly build a DocumentArray with only empty Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -568,7 +568,7 @@
 </div>
 </section>
 <section id="construct-from-list-like-objects">
-<h2>Construct from list-like objects<a class="headerlink" href="#construct-from-list-like-objects" title="Permalink to this headline">#</a></h2>
+<h2>Construct from list-like objects<a class="headerlink" href="#construct-from-list-like-objects" title="Permalink to this heading">#</a></h2>
 <p>You can construct DocumentArray from a <code class="docutils literal notranslate"><span class="pre">Sequence</span></code>, <code class="docutils literal notranslate"><span class="pre">List</span></code>, <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> or <code class="docutils literal notranslate"><span class="pre">Iterator</span></code> that yields <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">From list of Documents</label><div class="tab-content docutils">
@@ -599,7 +599,7 @@
 </div>
 </section>
 <section id="construct-from-multiple-documentarray">
-<h2>Construct from multiple DocumentArray<a class="headerlink" href="#construct-from-multiple-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>Construct from multiple DocumentArray<a class="headerlink" href="#construct-from-multiple-documentarray" title="Permalink to this heading">#</a></h2>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">+</span></code> or <code class="docutils literal notranslate"><span class="pre">+=</span></code> to concatenate DocumentArrays together:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -618,7 +618,7 @@
 </div>
 </section>
 <section id="construct-from-a-single-document">
-<h2>Construct from a single Document<a class="headerlink" href="#construct-from-a-single-document" title="Permalink to this headline">#</a></h2>
+<h2>Construct from a single Document<a class="headerlink" href="#construct-from-a-single-document" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
@@ -630,7 +630,7 @@
 </div>
 </section>
 <section id="deep-copy-on-elements">
-<h2>Deep copy on elements<a class="headerlink" href="#deep-copy-on-elements" title="Permalink to this headline">#</a></h2>
+<h2>Deep copy on elements<a class="headerlink" href="#deep-copy-on-elements" title="Permalink to this heading">#</a></h2>
 <p>Note that, as in Python list, adding Document object into DocumentArray only adds its memory reference. The original Document is <em>not</em> copied. If you change the original Document afterwards, then the one inside DocumentArray will also change. Here is an example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -676,7 +676,7 @@ hello
 </div>
 </section>
 <section id="construct-from-local-files">
-<h2>Construct from local files<a class="headerlink" href="#construct-from-local-files" title="Permalink to this headline">#</a></h2>
+<h2>Construct from local files<a class="headerlink" href="#construct-from-local-files" title="Permalink to this heading">#</a></h2>
 <p>You may recall the common pattern that <a class="reference internal" href="../../document/attribute/#content-uri"><span class="std std-ref">I mentioned here</span></a>. With <a class="reference internal" href="../../../api/docarray.document.generators/#docarray.document.generators.from_files" title="docarray.document.generators.from_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_files()</span></code></a> One can easily construct a DocumentArray object with all file paths defined by a glob expression.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -688,7 +688,7 @@ hello
 <p>This will scan all filenames that match the expression and construct Documents with filled <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. You can control if to read each as text or binary with <code class="docutils literal notranslate"><span class="pre">read_mode</span></code> argument.</p>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
 <p>In the next chapter, we will see how to construct DocumentArray from binary bytes, JSON, CSV, dataframe, Protobuf message.</p>
 </section>
 </section>
@@ -725,7 +725,7 @@ hello
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -786,7 +786,9 @@ hello
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

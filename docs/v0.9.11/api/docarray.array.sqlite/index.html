@@ -30,10 +30,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.weaviate module" href="../docarray.array.weaviate/" /><link rel="prev" title="docarray.array.qdrant module" href="../docarray.array.qdrant/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.sqlite.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.sqlite module - DocArray 0.9.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -177,7 +177,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -229,7 +229,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -515,14 +515,14 @@
                     </label>
                 </div>
                 <section id="module-docarray.array.sqlite">
-<span id="docarray-array-sqlite-module"></span><h1>docarray.array.sqlite module<a class="headerlink" href="#module-docarray.array.sqlite" title="Permalink to this headline">#</a></h1>
+<span id="docarray-array-sqlite-module"></span><h1>docarray.array.sqlite module<a class="headerlink" href="#module-docarray.array.sqlite" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.sqlite.SqliteConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.sqlite.</span></span><span class="sig-name descname"><span class="pre">SqliteConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal_mode='DELETE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronous='OFF'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/sqlite/backend/#SqliteConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.sqlite.SqliteConfig" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.sqlite.SqliteConfig.connection">
-<span class="sig-name descname"><span class="pre">connection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">sqlite3.Connection</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.array.sqlite.SqliteConfig.connection" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">connection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Connection</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.array.sqlite.SqliteConfig.connection" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -555,7 +555,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.sqlite.</span></span><span class="sig-name descname"><span class="pre">DocumentArraySqlite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'memory'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/sqlite/#DocumentArraySqlite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins" title="docarray.array.storage.sqlite.StorageMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.sqlite.StorageMixins</span></code></a>, <a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.document.DocumentArray</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins" title="docarray.array.storage.sqlite.StorageMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">StorageMixins</span></code></a>, <a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -597,7 +597,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -623,6 +623,32 @@
 
             <div class="toc-sticky toc-scroll">
                 
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.sqlite module</a><ul>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig"><code class="docutils literal notranslate"><span class="pre">SqliteConfig</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.connection"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.connection</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.table_name"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.table_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.serialize_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.conn_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.conn_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.journal_mode"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.journal_mode</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.synchronous"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.synchronous</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
             </div>
 
             
@@ -643,7 +669,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

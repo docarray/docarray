@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray package" href="../../api/docarray/" /><link rel="prev" title="Fluent Interface" href="../fluent-interface/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray-api.html" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>DocumentArray - DocArray 0.0.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -399,7 +399,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="documentarray">
-<span id="id1"></span><h1>DocumentArray<a class="headerlink" href="#documentarray" title="Permalink to this headline">#</a></h1>
+<span id="id1"></span><h1>DocumentArray<a class="headerlink" href="#documentarray" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> is a list of <code class="docutils literal notranslate"><span class="pre">Document</span></code> objects. You can construct, delete, insert, sort and traverse
@@ -409,7 +409,7 @@ a <code class="docutils literal notranslate"><span class="pre">DocumentArray</sp
 <p>We also provide a memory-efficient version of <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> coined as <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>. It shares <em>almost</em> the same API as <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, which means you can easily use it as a drop-in replacement when your data is big. You can <span class="xref std std-ref">can find more about here</span>.</p>
 </div>
 <section id="construct">
-<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h2>
+<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h2>
 <p>You can construct a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> in different ways:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">From empty Documents</label><div class="tab-content docutils">
@@ -454,7 +454,7 @@ a <code class="docutils literal notranslate"><span class="pre">DocumentArray</sp
 </div>
 </section>
 <section id="access-elements">
-<h2>Access elements<a class="headerlink" href="#access-elements" title="Permalink to this headline">#</a></h2>
+<h2>Access elements<a class="headerlink" href="#access-elements" title="Permalink to this heading">#</a></h2>
 <p>Like a <code class="docutils literal notranslate"><span class="pre">List</span></code> <em>and</em> a <code class="docutils literal notranslate"><span class="pre">Dict</span></code>, elements in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> can be accessed via integer index, string <code class="docutils literal notranslate"><span class="pre">id</span></code> or <code class="docutils literal notranslate"><span class="pre">slice</span></code> indices:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -476,7 +476,7 @@ a <code class="docutils literal notranslate"><span class="pre">DocumentArray</sp
 </div>
 </section>
 <section id="bulk-access-contents">
-<span id="bulk-access"></span><h2>Bulk access contents<a class="headerlink" href="#bulk-access-contents" title="Permalink to this headline">#</a></h2>
+<span id="bulk-access"></span><h2>Bulk access contents<a class="headerlink" href="#bulk-access-contents" title="Permalink to this heading">#</a></h2>
 <p>You can quickly access <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, <code class="docutils literal notranslate"><span class="pre">.buffer</span></code>, <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> of all Documents in the DocumentArray without writing a for-loop.</p>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provides the plural counterparts, i.e. <code class="xref py py-attr docutils literal notranslate"><span class="pre">texts</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">buffers</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">blobs</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">embeddings</span></code> that allows you to <strong>get</strong> and <strong>set</strong> these properties in one shot. It is much more efficient than looping.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -524,7 +524,7 @@ d.embedding.shape= (1, 256)
 </pre></div>
 </div>
 <section id="bulk-access-to-attributes">
-<h3>Bulk access to attributes<a class="headerlink" href="#bulk-access-to-attributes" title="Permalink to this headline">#</a></h3>
+<h3>Bulk access to attributes<a class="headerlink" href="#bulk-access-to-attributes" title="Permalink to this heading">#</a></h3>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_attributes()</span></code> let you fetch multiple attributes from the <code class="docutils literal notranslate"><span class="pre">Document</span></code>s in
 one shot:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -544,7 +544,7 @@ one shot:</p>
 </section>
 </section>
 <section id="import-export">
-<h2>Import/Export<a class="headerlink" href="#import-export" title="Permalink to this headline">#</a></h2>
+<h2>Import/Export<a class="headerlink" href="#import-export" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provides the following methods for importing from/exporting to different formats.</p>
 <table border="1" class="docutils">
 <thead>
@@ -597,7 +597,7 @@ one shot:</p>
 <p><code class="docutils literal notranslate"><span class="pre">.from_*()</span></code> functions often utlizes generators. When using independently, can be more memory-efficient. See <code class="xref py py-mod docutils literal notranslate"><span class="pre">generators</span></code>.</p>
 </div>
 <section id="sharing-documentarray-across-machines">
-<h3>Sharing DocumentArray across machines<a class="headerlink" href="#sharing-documentarray-across-machines" title="Permalink to this headline">#</a></h3>
+<h3>Sharing DocumentArray across machines<a class="headerlink" href="#sharing-documentarray-across-machines" title="Permalink to this heading">#</a></h3>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>This is an experimental feature introduced in Jina <code class="docutils literal notranslate"><span class="pre">2.5.4</span></code>. The behavior of this feature might change in the future.</p>
@@ -626,7 +626,7 @@ which allows you to share a DocumentArray object across machines.</p>
 </section>
 </section>
 <section id="embed-via-model">
-<span id="id2"></span><h2>Embed via model<a class="headerlink" href="#embed-via-model" title="Permalink to this headline">#</a></h2>
+<span id="id2"></span><h2>Embed via model<a class="headerlink" href="#embed-via-model" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code> function supports both CPU &amp; GPU, which can be specified by its <code class="docutils literal notranslate"><span class="pre">device</span></code> argument.</p>
@@ -737,7 +737,7 @@ For example let’s use the PyTorch one:</p>
 </div>
 </section>
 <section id="find-nearest-neighbours">
-<span id="match-documentarray"></span><h2>Find nearest neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this headline">#</a></h2>
+<span id="match-documentarray"></span><h2>Find nearest neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code> function supports both CPU &amp; GPU, which can be specified by its <code class="docutils literal notranslate"><span class="pre">device</span></code> argument.</p>
@@ -843,7 +843,7 @@ match emb =   (0, 0)	1.0
 </div>
 </div>
 <section id="keep-only-id">
-<h3>Keep only ID<a class="headerlink" href="#keep-only-id" title="Permalink to this headline">#</a></h3>
+<h3>Keep only ID<a class="headerlink" href="#keep-only-id" title="Permalink to this heading">#</a></h3>
 <p>Default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> will copy the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying them can be time-consuming. In this case, one can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -912,7 +912,7 @@ match emb =   (0, 0)	1.0
 </div>
 </section>
 <section id="gpu-support">
-<h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">#</a></h3>
+<h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this heading">#</a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow tensor, PyTorch tensor or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function can work directly on GPU. To do that, simply set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -981,7 +981,7 @@ match emb =   (0, 0)	1.0
 <p>And then in just use <code class="docutils literal notranslate"><span class="pre">.match(da)</span></code>.</p>
 </section>
 <section id="evaluate-matches">
-<h3>Evaluate matches<a class="headerlink" href="#evaluate-matches" title="Permalink to this headline">#</a></h3>
+<h3>Evaluate matches<a class="headerlink" href="#evaluate-matches" title="Permalink to this heading">#</a></h3>
 <p>You can easily evaluate the performance of matches via <code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate()</span></code>, provide that you have the groundtruth of the matches.</p>
 <p>Jina provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. These metrics include: precision, recall, R-precision, hit rate, NDCG, etc. The full list of functions can be found in <code class="xref py py-class docutils literal notranslate"><span class="pre">evaluation</span></code>.</p>
 <p>For example, let’s create a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with random embeddings and matching it to itself:</p>
@@ -1028,10 +1028,10 @@ match emb =   (0, 0)	1.0
 </section>
 </section>
 <section id="traverse-nested-elements">
-<span id="traverse-doc"></span><h2>Traverse nested elements<a class="headerlink" href="#traverse-nested-elements" title="Permalink to this headline">#</a></h2>
+<span id="traverse-doc"></span><h2>Traverse nested elements<a class="headerlink" href="#traverse-nested-elements" title="Permalink to this heading">#</a></h2>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">traverse_flat()</span></code> function is an extremely powerful tool for iterating over nested and recursive Documents. You get a generator as the return value, which generates <code class="docutils literal notranslate"><span class="pre">Document</span></code>s on the provided traversal paths. You can use or modify <code class="docutils literal notranslate"><span class="pre">Document</span></code>s and the change will be applied in-place.</p>
 <section id="syntax-of-traversal-path">
-<h3>Syntax of traversal path<a class="headerlink" href="#syntax-of-traversal-path" title="Permalink to this headline">#</a></h3>
+<h3>Syntax of traversal path<a class="headerlink" href="#syntax-of-traversal-path" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">.traverse_flat()</span></code> function accepts a <code class="docutils literal notranslate"><span class="pre">traversal_paths</span></code> string which can be defined as follow:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>path1,path2,path3,...
 </pre></div>
@@ -1050,7 +1050,7 @@ match emb =   (0, 0)	1.0
 </ul>
 </section>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">#</a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h3>
 <p>Let’s look at an example. Assume you have the following <code class="docutils literal notranslate"><span class="pre">Document</span></code> structure:</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
@@ -1173,12 +1173,12 @@ DocumentArray([
 </div>
 </section>
 <section id="flatten-document">
-<h3>Flatten Document<a class="headerlink" href="#flatten-document" title="Permalink to this headline">#</a></h3>
+<h3>Flatten Document<a class="headerlink" href="#flatten-document" title="Permalink to this heading">#</a></h3>
 <p>If you simply want to traverse <strong>all</strong> chunks and matches regardless their levels. You can simply use <code class="xref py py-meth docutils literal notranslate"><span class="pre">flatten()</span></code>. It will return a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with all chunks and matches flattened into the top-level, no more nested structure.</p>
 </section>
 </section>
 <section id="batching">
-<h2>Batching<a class="headerlink" href="#batching" title="Permalink to this headline">#</a></h2>
+<h2>Batching<a class="headerlink" href="#batching" title="Permalink to this heading">#</a></h2>
 <p>One can batch a large <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> into small ones via <code class="xref py py-func docutils literal notranslate"><span class="pre">batch()</span></code>. This is useful when a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is too big to process at once. It is particular useful on <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, which ensures the data gets loaded on-demand and in a conservative manner.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -1200,7 +1200,7 @@ DocumentArray([
 </div>
 </section>
 <section id="parallel-processing">
-<h2>Parallel processing<a class="headerlink" href="#parallel-processing" title="Permalink to this headline">#</a></h2>
+<h2>Parallel processing<a class="headerlink" href="#parallel-processing" title="Permalink to this heading">#</a></h2>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -1270,7 +1270,7 @@ foo-loop ...	foo-loop takes 18 seconds (18.52s)
 </div>
 </section>
 <section id="visualization">
-<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">#</a></h2>
+<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h2>
 <p>If a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> contains all image <code class="docutils literal notranslate"><span class="pre">Document</span></code>, you can plot all images in one sprite image using <code class="xref py py-meth docutils literal notranslate"><span class="pre">plot_image_sprites()</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;*.jpg&#39;</span><span class="p">)</span>
@@ -1302,7 +1302,7 @@ foo-loop ...	foo-loop takes 18 seconds (18.52s)
 </figure>
 </section>
 <section id="sampling">
-<h2>Sampling<a class="headerlink" href="#sampling" title="Permalink to this headline">#</a></h2>
+<h2>Sampling<a class="headerlink" href="#sampling" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provides a <code class="docutils literal notranslate"><span class="pre">.sample</span></code> function that samples <code class="docutils literal notranslate"><span class="pre">k</span></code> elements without replacement. It accepts two parameters, <code class="docutils literal notranslate"><span class="pre">k</span></code>
 and <code class="docutils literal notranslate"><span class="pre">seed</span></code>. <code class="docutils literal notranslate"><span class="pre">k</span></code> defines the number of elements to sample, and <code class="docutils literal notranslate"><span class="pre">seed</span></code>
 helps you generate pseudo-random results. Note that <code class="docutils literal notranslate"><span class="pre">k</span></code> should always be less than or equal to the length of the
@@ -1319,7 +1319,7 @@ helps you generate pseudo-random results. Note that <code class="docutils litera
 </div>
 </section>
 <section id="shuffle">
-<h2>Shuffle<a class="headerlink" href="#shuffle" title="Permalink to this headline">#</a></h2>
+<h2>Shuffle<a class="headerlink" href="#shuffle" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provides a <code class="docutils literal notranslate"><span class="pre">.shuffle</span></code> function that shuffles the entire <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>. It accepts the parameter <code class="docutils literal notranslate"><span class="pre">seed</span></code>
 .  <code class="docutils literal notranslate"><span class="pre">seed</span></code> helps you generate pseudo-random results. By default, <code class="docutils literal notranslate"><span class="pre">seed</span></code> is None.</p>
 <p>To make use of the function:</p>
@@ -1334,7 +1334,7 @@ helps you generate pseudo-random results. Note that <code class="docutils litera
 </div>
 </section>
 <section id="split-by-tags">
-<h2>Split by <code class="docutils literal notranslate"><span class="pre">.tags</span></code><a class="headerlink" href="#split-by-tags" title="Permalink to this headline">#</a></h2>
+<h2>Split by <code class="docutils literal notranslate"><span class="pre">.tags</span></code><a class="headerlink" href="#split-by-tags" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provides a <code class="docutils literal notranslate"><span class="pre">.split</span></code> function that splits the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> into multiple <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s according to the tag value (stored in <code class="docutils literal notranslate"><span class="pre">tags</span></code>) of each <code class="docutils literal notranslate"><span class="pre">Document</span></code>.
 It returns a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> where <code class="docutils literal notranslate"><span class="pre">Documents</span></code> with the same <code class="docutils literal notranslate"><span class="pre">tag</span></code> value are grouped together, with their orders preserved from the original <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p>
 <p>To make use of the function:</p>
@@ -1353,10 +1353,10 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 </div>
 </section>
 <section id="pythonic-list-interface">
-<h2>Pythonic list interface<a class="headerlink" href="#pythonic-list-interface" title="Permalink to this headline">#</a></h2>
+<h2>Pythonic list interface<a class="headerlink" href="#pythonic-list-interface" title="Permalink to this heading">#</a></h2>
 <p>One can see <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> as a Python list. Hence, many Python high-level iterator functions/tools can be used on <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> as well.</p>
 <section id="iterate-via-itertools">
-<h3>Iterate via <code class="docutils literal notranslate"><span class="pre">itertools</span></code><a class="headerlink" href="#iterate-via-itertools" title="Permalink to this headline">#</a></h3>
+<h3>Iterate via <code class="docutils literal notranslate"><span class="pre">itertools</span></code><a class="headerlink" href="#iterate-via-itertools" title="Permalink to this heading">#</a></h3>
 <p>As <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is an <code class="docutils literal notranslate"><span class="pre">Iterable</span></code>, you can also
 use <a class="reference external" href="https://docs.python.org/3/library/itertools.html">Python’s built-in <code class="docutils literal notranslate"><span class="pre">itertools</span></code> module</a> on it. This enables
 advanced “iterator algebra” on the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p>
@@ -1376,7 +1376,7 @@ advanced “iterator algebra” on the <code class="docutils literal notranslate
 </div>
 </section>
 <section id="filter">
-<h3>Filter<a class="headerlink" href="#filter" title="Permalink to this headline">#</a></h3>
+<h3>Filter<a class="headerlink" href="#filter" title="Permalink to this heading">#</a></h3>
 <p>You can use Python’s <a class="reference external" href="https://docs.python.org/3/library/functions.html#filter">built-in <code class="docutils literal notranslate"><span class="pre">filter()</span></code></a> to filter elements
 in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
@@ -1412,7 +1412,7 @@ in a <code class="docutils literal notranslate"><span class="pre">DocumentArray<
 </div>
 </section>
 <section id="sort">
-<h3>Sort<a class="headerlink" href="#sort" title="Permalink to this headline">#</a></h3>
+<h3>Sort<a class="headerlink" href="#sort" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is a subclass of <code class="docutils literal notranslate"><span class="pre">MutableSequence</span></code>, therefore you can use Python’s built-in <code class="docutils literal notranslate"><span class="pre">sort</span></code> to sort elements in
 a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
@@ -1473,7 +1473,7 @@ a <code class="docutils literal notranslate"><span class="pre">DocumentArray</sp
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -1550,7 +1550,9 @@ a <code class="docutils literal notranslate"><span class="pre">DocumentArray</sp
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

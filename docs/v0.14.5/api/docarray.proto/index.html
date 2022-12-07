@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.proto/" />
 <meta property="og:site_name" content="DocArray 0.14.5 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module., Module contents.. Submodules: docarray.proto.docarray_pb2 module. Module contents:" />
+<meta property="og:description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module- read_ndarray(), flush_ndarray().., Module contents- parse_proto(), flush_proto()... Submodules: docarray.proto.docarray_pb2 module. Module contents:" />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.14.5 Documentation" />
-<meta name="description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module., Module contents.. Submodules: docarray.proto.docarray_pb2 module. Module contents:" />
+<meta name="description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module- read_ndarray(), flush_ndarray().., Module contents- parse_proto(), flush_proto()... Submodules: docarray.proto.docarray_pb2 module. Module contents:" />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.proto.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.proto package - DocArray 0.14.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,24 +389,32 @@
                 </div>
                 <article role="main">
                     <section id="docarray-proto-package">
-<h1>docarray.proto package<a class="headerlink" href="#docarray-proto-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.proto package<a class="headerlink" href="#docarray-proto-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.proto.io/">docarray.proto.io package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.proto.io.ndarray/#docarray.proto.io.ndarray.read_ndarray"><code class="docutils literal notranslate"><span class="pre">read_ndarray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.proto.io.ndarray/#docarray.proto.io.ndarray.flush_ndarray"><code class="docutils literal notranslate"><span class="pre">flush_ndarray()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#module-docarray.proto.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#module-docarray.proto.io">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io/#docarray.proto.io.parse_proto"><code class="docutils literal notranslate"><span class="pre">parse_proto()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io/#docarray.proto.io.flush_proto"><code class="docutils literal notranslate"><span class="pre">flush_proto()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.proto.docarray_pb2/">docarray.proto.docarray_pb2 module</a></li>
@@ -414,7 +422,7 @@
 </div>
 </section>
 <section id="module-docarray.proto">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.proto" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.proto" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -431,7 +439,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -496,7 +504,9 @@
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

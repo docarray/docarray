@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Document" href="../../fundamentals/document/" /><link rel="prev" title="Welcome to DocArray!" href="../../" />
         <link rel="canonical" href="https://docarray.jina.ai/get-started/what-is.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>What is DocArray? - DocArray 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -551,7 +551,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="what-is-docarray">
-<h1>What is DocArray?<a class="headerlink" href="#what-is-docarray" title="Permalink to this headline">#</a></h1>
+<h1>What is DocArray?<a class="headerlink" href="#what-is-docarray" title="Permalink to this heading">#</a></h1>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/docarray-vs-banner.gif"><img alt="../../_images/docarray-vs-banner.gif" src="../../_images/docarray-vs-banner.gif" style="width: 0.0px; height: 0.0px;" /></a>
 </figure>
@@ -565,7 +565,7 @@
 <p>If you are a <strong>deep learning engineer</strong> who works on scalable deep learning service, you should use DocArray: it can be the basic building block of your system. Its portable data structure can be wired in Protobuf, compressed bytes, JSON; allowing your engineer friends to happily integrate it into the production system.</p>
 <p>This is DocArray: a unique one, aiming to be <em>your data structure for unstructured data</em>.</p>
 <section id="design">
-<h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">#</a></h2>
+<h2>Design<a class="headerlink" href="#design" title="Permalink to this heading">#</a></h2>
 <p>DocArray consists of two simple concepts:</p>
 <ul class="simple">
 <li><p><strong>Document</strong>: a data structure for easily representing nested, unstructured data.</p></li>
@@ -581,7 +581,7 @@
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="comparing-to-alternatives">
-<h1>Comparing to Alternatives<a class="headerlink" href="#comparing-to-alternatives" title="Permalink to this headline">#</a></h1>
+<h1>Comparing to Alternatives<a class="headerlink" href="#comparing-to-alternatives" title="Permalink to this heading">#</a></h1>
 <p>✅ Full support ✔ limited support ❌ no support</p>
 <table border="1" class="docutils">
 <thead>
@@ -695,7 +695,7 @@
 </table>
 <p>There are three other packages that people often compare DocArray to, yet I haven’t used them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them.</p>
 <section id="to-huggingface-datasets">
-<h2>To Huggingface Datasets<a class="headerlink" href="#to-huggingface-datasets" title="Permalink to this headline">#</a></h2>
+<h2>To Huggingface Datasets<a class="headerlink" href="#to-huggingface-datasets" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://huggingface.co/docs/datasets/">Huggingface datasets</a> is a library for easily accessing and sharing datasets for NLP, computer vision, and audio tasks. One of the highlights is its efficient loading on large dataset, which is highly appreciated during training.</p>
 <p>In DocArray, there will also be a couple of feature release soon to allow big data loading with constant memory consumption. However, the biggest difference is that DocArray is focused on <strong>data in transit</strong>, whereas HF Datasets is about <strong>data at rest</strong>. DocArray is focused on active data that subject to frequent change; and allows efficient transfer between threads, processes and microservices. Data in transit often traverses a network or temporarily resides in memory to be read or updated. It is as opposed to Datasets, where training data is stored physically and statically that subject to very occasional changes. The figure below depicts the differences.</p>
 <figure class="align-default">
@@ -703,7 +703,7 @@
 </figure>
 </section>
 <section id="to-awkwardarray">
-<h2>To AwkwardArray<a class="headerlink" href="#to-awkwardarray" title="Permalink to this headline">#</a></h2>
+<h2>To AwkwardArray<a class="headerlink" href="#to-awkwardarray" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://awkward-array.org/quickstart.html">AwkwardArray</a> is a library for manipulating JSON/dict data via Numpy idioms. Instead of working with Python dynamically typed object, AwkwardArray converts the data into precompiled routines on contiguous data. Hence, it is highly efficient.</p>
 <p>DocArray and AwkwardArray are designed with different purposes. DocArray comes from the context of deep learning engineering that works on a stream of multi/cross-modal Documents. AwkwardArray comes from particle physics where with high-performance number-crunching is the priority. Both shares the idea of having generic data structure, but are designed differently to maximize the productivity of their own domains. This results in different sets of feature functions.</p>
 <p>When it comes to the speed, AwkwardArray is fast at column access whereas DocArray is fast at row access (streaming):</p>
@@ -743,12 +743,12 @@ access text via awkward ...	0.000s
 <p>As one can see, you can convert a DocumentArray into AwkwardArray via <code class="docutils literal notranslate"><span class="pre">.to_list()</span></code>.</p>
 </section>
 <section id="to-zarr">
-<h2>To Zarr<a class="headerlink" href="#to-zarr" title="Permalink to this headline">#</a></h2>
+<h2>To Zarr<a class="headerlink" href="#to-zarr" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://zarr.readthedocs.io/en/stable/">Zarr</a> is a format for the storage of chunked, compressed, N-dimensional arrays. I know Zarr quite long time ago, to me it is the package when a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> is so big to fit into memory. Zarr provides a comprehensive set of functions that allows one to chunk, compress, stream large NdArray. Hence, from that perspective, Zarr like <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> focuses on numerical representation and computation.</p>
 <p>In DocArray, the basic element one would work with is a Document, not <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>. The support of <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> is important, but not the full story: in the context of deep learning engineering, <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> is often an intermediate representation of Document for computing, then throw away. Therefore, having a consistent data structure that lives <em>long enough</em> to cover creating, storing, computing, transferring, returning and rendering is one of the major motivations of DocArray.</p>
 </section>
 <section id="to-jina-users">
-<h2>To Jina Users<a class="headerlink" href="#to-jina-users" title="Permalink to this headline">#</a></h2>
+<h2>To Jina Users<a class="headerlink" href="#to-jina-users" title="Permalink to this heading">#</a></h2>
 <p>DocArray focuses on the local &amp; monolith developer experience. Jina scales DocArray to the Cloud. More details on their relations can be <a class="reference internal" href="../../fundamentals/jina-support/#jina-support"><span class="std std-ref">found here</span></a>.</p>
 <p>Jina 2.0-2.6 <em>kind of</em> have their own “DocArray”, with very similar <code class="docutils literal notranslate"><span class="pre">Document</span></code> and <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> interface. However, it is an old design and codebase. Since then, many redesigns and improvements have been made to boost its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as future Jina 3.x and Finetuner will rely on.</p>
 <p>The first good reason to use DocArray is its efficiency. Here is a side-by-side speed comparison of Jina 2.6 vs. DocArray on some common tasks.</p>
@@ -807,7 +807,7 @@ access text via awkward ...	0.000s
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -878,7 +878,9 @@ access text via awkward ...	0.000s
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

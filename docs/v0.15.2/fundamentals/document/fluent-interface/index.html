@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="DocumentArray" href="../../documentarray/" /><link rel="prev" title="Visualization" href="../visualization/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/fluent-interface.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Fluent Interface - DocArray 0.15.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -390,7 +390,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="fluent-interface">
-<h1>Fluent Interface<a class="headerlink" href="#fluent-interface" title="Permalink to this headline">#</a></h1>
+<h1>Fluent Interface<a class="headerlink" href="#fluent-interface" title="Permalink to this heading">#</a></h1>
 <p>Document provides a simple fluent interface that allows one to process (often preprocess) a Document object by chaining methods. For example to read an image file as <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, resize it, normalize it and then store it to another file; one can simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -429,11 +429,11 @@
 </pre></div>
 </div>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">#</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">#</a></h2>
 <p>All the following methods can be chained.</p>
 <!-- fluent-interface-start -->
 <section id="blobdata">
-<h3>BlobData<a class="headerlink" href="#blobdata" title="Permalink to this headline">#</a></h3>
+<h3>BlobData<a class="headerlink" href="#blobdata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to handle binary data.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri" title="docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_blob_to_datauri()</span></code></a></p></li>
@@ -442,7 +442,7 @@
 </ul>
 </section>
 <section id="imagedata">
-<h3>ImageData<a class="headerlink" href="#imagedata" title="Permalink to this headline">#</a></h3>
+<h3>ImageData<a class="headerlink" href="#imagedata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support image data.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor" title="docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_blob_to_image_tensor()</span></code></a></p></li>
@@ -458,7 +458,7 @@
 </ul>
 </section>
 <section id="convert">
-<h3>Convert<a class="headerlink" href="#convert" title="Permalink to this headline">#</a></h3>
+<h3>Convert<a class="headerlink" href="#convert" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support conversion between <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document.tensor" title="docarray.document.Document.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a>, <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document.text" title="docarray.document.Document.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a>
 and <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document.blob" title="docarray.document.Document.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a>.</p>
 <ul class="simple">
@@ -468,14 +468,14 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="contentproperty">
-<h3>ContentProperty<a class="headerlink" href="#contentproperty" title="Permalink to this headline">#</a></h3>
+<h3>ContentProperty<a class="headerlink" href="#contentproperty" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to allow universal content property access.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin.convert_content_to_datauri" title="docarray.document.mixins.content.ContentPropertyMixin.convert_content_to_datauri"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_content_to_datauri()</span></code></a></p></li>
 </ul>
 </section>
 <section id="textdata">
-<h3>TextData<a class="headerlink" href="#textdata" title="Permalink to this headline">#</a></h3>
+<h3>TextData<a class="headerlink" href="#textdata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support text data.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text" title="docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tensor_to_text()</span></code></a></p></li>
@@ -485,7 +485,7 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="singletonsugar">
-<h3>SingletonSugar<a class="headerlink" href="#singletonsugar" title="Permalink to this headline">#</a></h3>
+<h3>SingletonSugar<a class="headerlink" href="#singletonsugar" title="Permalink to this heading">#</a></h3>
 <p>Provide sugary syntax for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> by inheriting methods from <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.embed" title="docarray.document.mixins.sugar.SingletonSugarMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a></p></li>
@@ -493,14 +493,14 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="featurehash">
-<h3>FeatureHash<a class="headerlink" href="#featurehash" title="Permalink to this headline">#</a></h3>
+<h3>FeatureHash<a class="headerlink" href="#featurehash" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for feature hashing.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin.embed_feature_hashing" title="docarray.document.mixins.featurehash.FeatureHashMixin.embed_feature_hashing"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed_feature_hashing()</span></code></a></p></li>
 </ul>
 </section>
 <section id="porting">
-<h3>Porting<a class="headerlink" href="#porting" title="Permalink to this headline">#</a></h3>
+<h3>Porting<a class="headerlink" href="#porting" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64" title="docarray.document.mixins.porting.PortingMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes" title="docarray.document.mixins.porting.PortingMixin.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code></a></p></li>
@@ -509,27 +509,27 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="protobuf">
-<h3>Protobuf<a class="headerlink" href="#protobuf" title="Permalink to this headline">#</a></h3>
+<h3>Protobuf<a class="headerlink" href="#protobuf" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin.from_protobuf" title="docarray.document.mixins.protobuf.ProtobufMixin.from_protobuf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_protobuf()</span></code></a></p></li>
 </ul>
 </section>
 <section id="pydantic">
-<h3>Pydantic<a class="headerlink" href="#pydantic" title="Permalink to this headline">#</a></h3>
+<h3>Pydantic<a class="headerlink" href="#pydantic" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions to convert to/from a Pydantic model</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model" title="docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_pydantic_model()</span></code></a></p></li>
 </ul>
 </section>
 <section id="strawberry">
-<h3>Strawberry<a class="headerlink" href="#strawberry" title="Permalink to this headline">#</a></h3>
+<h3>Strawberry<a class="headerlink" href="#strawberry" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions to convert to/from a Strawberry model</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin.from_strawberry_type" title="docarray.document.mixins.strawberry.StrawberryMixin.from_strawberry_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_strawberry_type()</span></code></a></p></li>
 </ul>
 </section>
 <section id="audiodata">
-<h3>AudioData<a class="headerlink" href="#audiodata" title="Permalink to this headline">#</a></h3>
+<h3>AudioData<a class="headerlink" href="#audiodata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support audio data.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin.load_uri_to_audio_tensor" title="docarray.document.mixins.audio.AudioDataMixin.load_uri_to_audio_tensor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_uri_to_audio_tensor()</span></code></a></p></li>
@@ -537,14 +537,14 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="meshdata">
-<h3>MeshData<a class="headerlink" href="#meshdata" title="Permalink to this headline">#</a></h3>
+<h3>MeshData<a class="headerlink" href="#meshdata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support 3D mesh data and point cloud.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin.load_uri_to_point_cloud_tensor" title="docarray.document.mixins.mesh.MeshDataMixin.load_uri_to_point_cloud_tensor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_uri_to_point_cloud_tensor()</span></code></a></p></li>
 </ul>
 </section>
 <section id="videodata">
-<h3>VideoData<a class="headerlink" href="#videodata" title="Permalink to this headline">#</a></h3>
+<h3>VideoData<a class="headerlink" href="#videodata" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support video data.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor" title="docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_uri_to_video_tensor()</span></code></a></p></li>
@@ -552,7 +552,7 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
 </ul>
 </section>
 <section id="urifile">
-<h3>UriFile<a class="headerlink" href="#urifile" title="Permalink to this headline">#</a></h3>
+<h3>UriFile<a class="headerlink" href="#urifile" title="Permalink to this heading">#</a></h3>
 <p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to dump content to a file.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin.save_uri_to_file" title="docarray.document.mixins.dump.UriFileMixin.save_uri_to_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_uri_to_file()</span></code></a></p></li>
@@ -597,7 +597,7 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -677,7 +677,9 @@ and <a class="reference internal" href="../../../api/docarray.document/#docarray
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

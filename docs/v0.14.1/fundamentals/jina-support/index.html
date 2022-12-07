@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Jupyter Notebook/Colab" href="../notebook-support/" /><link rel="prev" title="One Million Scale Benchmark" href="../../advanced/document-store/benchmark/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/jina-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Jina - DocArray 0.14.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,7 +389,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="jina">
-<span id="jina-support"></span><h1>Jina<a class="headerlink" href="#jina" title="Permalink to this headline">#</a></h1>
+<span id="jina-support"></span><h1>Jina<a class="headerlink" href="#jina" title="Permalink to this heading">#</a></h1>
 <p>DocArray is an upstream dependency of Jina. Without DocArray, Jina can not run.</p>
 <p>DocArray focuses on the local &amp; monolith developer experience. <a class="reference external" href="https://github.com/jina-ai/jina">Jina</a> scales DocArray to the Cloud. DocArray is also the default transit format in Jina, Executors talk to each other via serialized DocArray. The picture below shows their relations.</p>
 <figure class="align-default">
@@ -400,7 +400,7 @@
 <a class="reference internal image-reference" href="../../_images/position-jina-docarray-2.svg"><img alt="../../_images/position-jina-docarray-2.svg" src="../../_images/position-jina-docarray-2.svg" width="80%" /></a>
 </figure>
 <section id="package-dependency">
-<h2>Package dependency<a class="headerlink" href="#package-dependency" title="Permalink to this headline">#</a></h2>
+<h2>Package dependency<a class="headerlink" href="#package-dependency" title="Permalink to this heading">#</a></h2>
 <p>If you are a Jina 3 user, you don’t need to install <code class="docutils literal notranslate"><span class="pre">docarray</span></code> independently, as it is included in <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jina</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">-v</span></code> in the terminal to check if you are using <code class="docutils literal notranslate"><span class="pre">3.x</span></code>.</p>
 <p>When starting a Jina project, you can write imports either as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
@@ -415,11 +415,11 @@
 <p>You can update DocArray package without updating Jina via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">docarray</span></code>. This often works unless otherwise specified in the release note of Jina.</p>
 </section>
 <section id="direct-invoke-jina-hub-executor">
-<h2>Direct invoke Jina/Hub Executor<a class="headerlink" href="#direct-invoke-jina-hub-executor" title="Permalink to this headline">#</a></h2>
+<h2>Direct invoke Jina/Hub Executor<a class="headerlink" href="#direct-invoke-jina-hub-executor" title="Permalink to this heading">#</a></h2>
 <p>As described <a class="reference internal" href="../documentarray/post-external/#da-post"><span class="std std-ref">here</span></a>, one can simply use an external Jina Flow/Executor as a regular function to process a DocumentArray.</p>
 </section>
 <section id="local-code-as-a-service">
-<h2>Local code as a service<a class="headerlink" href="#local-code-as-a-service" title="Permalink to this headline">#</a></h2>
+<h2>Local code as a service<a class="headerlink" href="#local-code-as-a-service" title="Permalink to this heading">#</a></h2>
 <p>Considering the example below, where we use DocArray to pre-process an image DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -488,10 +488,10 @@
 </div>
 </section>
 <section id="three-good-reasons-to-use-jina">
-<h2>Three good reasons to use Jina<a class="headerlink" href="#three-good-reasons-to-use-jina" title="Permalink to this headline">#</a></h2>
+<h2>Three good reasons to use Jina<a class="headerlink" href="#three-good-reasons-to-use-jina" title="Permalink to this heading">#</a></h2>
 <p>Okay, so I refactor the code from 10 lines to 24 lines, what’s the deal? Here are three reasons to use Jina:</p>
 <section id="a-client-server-architecture">
-<h3>A client-server architecture<a class="headerlink" href="#a-client-server-architecture" title="Permalink to this headline">#</a></h3>
+<h3>A client-server architecture<a class="headerlink" href="#a-client-server-architecture" title="Permalink to this heading">#</a></h3>
 <p>One immediate consequence is now your logic works as a service. You can host it remotely on a server and start client to query it:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Server</label><div class="tab-content docutils">
@@ -516,7 +516,7 @@
 <p>You can also use <code class="docutils literal notranslate"><span class="pre">websockets</span></code>, <code class="docutils literal notranslate"><span class="pre">http</span></code>, GraphQL API to query it. More details can be found in <a class="reference external" href="https://docs.jina.ai/">Jina Documentation</a>.</p>
 </section>
 <section id="scale-it-out">
-<h3>Scale it out<a class="headerlink" href="#scale-it-out" title="Permalink to this headline">#</a></h3>
+<h3>Scale it out<a class="headerlink" href="#scale-it-out" title="Permalink to this heading">#</a></h3>
 <p>Scaling your server is as easy as adding <code class="docutils literal notranslate"><span class="pre">replicas</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
 
@@ -529,7 +529,7 @@
 <p>This will start three parallels can improve the overall throughput. <a class="reference external" href="https://docs.jina.ai/fundamentals/flow/create-flow/#replicate-executors">More details can be found here.</a></p>
 </section>
 <section id="share-and-reuse-it">
-<h3>Share and reuse it<a class="headerlink" href="#share-and-reuse-it" title="Permalink to this headline">#</a></h3>
+<h3>Share and reuse it<a class="headerlink" href="#share-and-reuse-it" title="Permalink to this heading">#</a></h3>
 <p>One can share and reuse it via <a class="reference external" href="https://hub.jina.ai">Hub</a>. Save your Executor in a folder say <code class="docutils literal notranslate"><span class="pre">foo</span></code> and then:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina hub push foo
 </pre></div>
@@ -552,7 +552,7 @@
 </section>
 </section>
 <section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
 <p>If you start something new, start with DocArray. If you want to scale it out and make it a public available cloud-service, then use Jina.</p>
 </section>
 </section>
@@ -592,7 +592,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -664,7 +664,9 @@
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

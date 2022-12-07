@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Evaluate Matches" href="../evaluation/" /><link rel="prev" title="Embed via Neural Network" href="../embedding/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/matching.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Match Nearest Neighbours - DocArray 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -495,7 +495,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="match-nearest-neighbours">
-<span id="match-documentarray"></span><h1>Match Nearest Neighbours<a class="headerlink" href="#match-nearest-neighbours" title="Permalink to this headline">#</a></h1>
+<span id="match-documentarray"></span><h1>Match Nearest Neighbours<a class="headerlink" href="#match-nearest-neighbours" title="Permalink to this heading">#</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a> supports both CPU &amp; GPU.</p>
@@ -619,7 +619,7 @@ match emb =   (0, 0)	1.0
 <p>Note that framework is auto-chosen based on the type of <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, if <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, you can choose to use Numpy or Scipy (by specify <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">use_scipy=True)</span></code>) for computing.</p>
 <p>By default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> will copy the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying them can be time-consuming. In this case, one can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.</p>
 <section id="gpu-support">
-<h2>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">#</a></h2>
+<h2>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this heading">#</a></h2>
 <p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow tensor, PyTorch tensor or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function can work directly on GPU. To do that, simply set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -713,7 +713,7 @@ match emb =   (0, 0)	1.0
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -756,7 +756,9 @@ match emb =   (0, 0)	1.0
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

@@ -33,10 +33,10 @@
 <link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="next" title="Add New Document Store" href="../advanced/document-store/extend/" /><link rel="prev" title="Protocol Documentation" href="../proto/" />
         <link rel="canonical" href="https://docarray.jina.ai/changelog/index.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Changelog - DocArray 0.8.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -232,7 +232,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -509,15 +509,15 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">#</a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
 <p>DocArray follows semantic versioning. However, before the project reach 1.0.0, any breaking change will only bump the minor version.  An automated release note is <a class="reference external" href="https://github.com/jina-ai/docarray/releases">generated on every release</a>. The release note includes features, bugs, refactorings etc.</p>
 <p>This chapter only tracks the most important breaking changes and explain the rationale behind them.</p>
 <section id="add-storage-backend-to-documentarray">
-<h2>0.5.0: add storage backend to DocumentArray<a class="headerlink" href="#add-storage-backend-to-documentarray" title="Permalink to this headline">#</a></h2>
+<h2>0.5.0: add storage backend to DocumentArray<a class="headerlink" href="#add-storage-backend-to-documentarray" title="Permalink to this heading">#</a></h2>
 <p>0.5 introduces an important feature that enables external Document Store as the backend of DocumentArray. It also refactors the implementation of DocumentArray. The change should be backward-compatible; and the version bumping is mainly because of the introduction of the new concept “<code class="docutils literal notranslate"><span class="pre">storage</span></code>”.</p>
 </section>
 <section id="change-on-the-documentarray-serialization-format">
-<h2>0.4.0: change on the DocumentArray serialization format<a class="headerlink" href="#change-on-the-documentarray-serialization-format" title="Permalink to this headline">#</a></h2>
+<h2>0.4.0: change on the DocumentArray serialization format<a class="headerlink" href="#change-on-the-documentarray-serialization-format" title="Permalink to this heading">#</a></h2>
 <p>This change affects <code class="docutils literal notranslate"><span class="pre">DocumentArray.load_binary</span></code>, <code class="docutils literal notranslate"><span class="pre">DocumentArray.from_bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">DocumentArray.to_bytes</span></code> and users can not load old DocumentArray back if they store it with <code class="docutils literal notranslate"><span class="pre">protocol='pickle'</span></code> and <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> under old version.</p>
 <p>The major change of 0.4.0 is the serialization format of DocumentArray when <code class="docutils literal notranslate"><span class="pre">protocol</span></code> is set to <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code>. The new format enables streaming for large on-disk serialization, however the format itself is not back-compatible. One can read more details from <a class="reference internal" href="../fundamentals/documentarray/serialization/#wire-format"><span class="std std-ref">Wire format of pickle and protobuf</span></a>.</p>
 <p>Migration guide:</p>
@@ -526,7 +526,7 @@
 </ul>
 </section>
 <section id="change-on-the-default-json-dict-serialization-strategy">
-<h2>0.3.0: change on the default JSON/dict serialization strategy<a class="headerlink" href="#change-on-the-default-json-dict-serialization-strategy" title="Permalink to this headline">#</a></h2>
+<h2>0.3.0: change on the default JSON/dict serialization strategy<a class="headerlink" href="#change-on-the-default-json-dict-serialization-strategy" title="Permalink to this heading">#</a></h2>
 <p>This change is a breaking change and is not back-compatible.</p>
 <p>Document/DocumentArray now favors schema-ed JSON over “unschema-ed” JSON in both JSON &amp; dict IO interfaces. Specifically, 0.3.0 introduces <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code> (as default) and <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> to allow user to control the serialization behavior.</p>
 <p>Migration guide:</p>
@@ -538,7 +538,7 @@
 </ul>
 </section>
 <section id="change-on-the-content-field-name">
-<h2>0.2.0: change on the content field name<a class="headerlink" href="#change-on-the-content-field-name" title="Permalink to this headline">#</a></h2>
+<h2>0.2.0: change on the content field name<a class="headerlink" href="#change-on-the-content-field-name" title="Permalink to this heading">#</a></h2>
 <p><strong>This change is a breaking change and is not back-compatible.</strong></p>
 <p>The Document schema is changed as follows:</p>
 <table border="1" class="docutils">
@@ -643,7 +643,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -701,7 +701,9 @@
 </div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/furo.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>

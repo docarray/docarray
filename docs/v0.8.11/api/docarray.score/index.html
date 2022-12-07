@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.score/" />
 <meta property="og:site_name" content="DocArray 0.8.11 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.score.mixins package- Submodules- docarray.score.mixins.property module, docarray.score.mixins.representer module., Module contents.. Submodules: docarray.score.data module. Module contents:" />
+<meta property="og:description" content="Subpackages: docarray.score.mixins package- Submodules- docarray.score.mixins.property module- PropertyMixin., docarray.score.mixins.representer module- RepresentMixin.., Module contents- AllMixins... Submodules: docarray.score.data module- NamedScoreData- NamedScoreData.value, NamedScoreData.op_..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.8.11 Documentation" />
-<meta name="description" content="Subpackages: docarray.score.mixins package- Submodules- docarray.score.mixins.property module, docarray.score.mixins.representer module., Module contents.. Submodules: docarray.score.data module. Module contents:" />
+<meta name="description" content="Subpackages: docarray.score.mixins package- Submodules- docarray.score.mixins.property module- PropertyMixin., docarray.score.mixins.representer module- RepresentMixin.., Module contents- AllMixins... Submodules: docarray.score.data module- NamedScoreData- NamedScoreData.value, NamedScoreData.op_..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,10 +33,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.score.mixins package" href="../docarray.score.mixins/" /><link rel="prev" title="docarray.proto.docarray_pb2 module" href="../docarray.proto.docarray_pb2/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.score.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.score package - DocArray 0.8.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -232,7 +232,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -509,37 +509,55 @@
                     </label>
                 </div>
                 <section id="docarray-score-package">
-<h1>docarray.score package<a class="headerlink" href="#docarray-score-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.score package<a class="headerlink" href="#docarray-score-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.score.mixins/">docarray.score.mixins package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.score.mixins/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.property/">docarray.score.mixins.property module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.representer/">docarray.score.mixins.representer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.property/">docarray.score.mixins.property module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.property/#docarray.score.mixins.property.PropertyMixin"><code class="docutils literal notranslate"><span class="pre">PropertyMixin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.score.mixins/#module-docarray.score.mixins">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.representer/">docarray.score.mixins.representer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.representer/#docarray.score.mixins.representer.RepresentMixin"><code class="docutils literal notranslate"><span class="pre">RepresentMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.score.mixins/#module-docarray.score.mixins">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins"><code class="docutils literal notranslate"><span class="pre">AllMixins</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData"><code class="docutils literal notranslate"><span class="pre">NamedScoreData</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.value"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.op_name"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.op_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.description"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.ref_id"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.ref_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.score">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.score" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.score" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.score.NamedScore">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.score.</span></span><span class="sig-name descname"><span class="pre">NamedScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown_fields_handler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'catch'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/score/#NamedScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.score.NamedScore" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins" title="docarray.score.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.score.mixins.AllMixins</span></code></a>, <a class="reference internal" href="../docarray.base/#docarray.base.BaseDCType" title="docarray.base.BaseDCType"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.base.BaseDCType</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins" title="docarray.score.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">AllMixins</span></code></a>, <a class="reference internal" href="../docarray.base/#docarray.base.BaseDCType" title="docarray.base.BaseDCType"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDCType</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -577,7 +595,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -605,7 +623,10 @@
 <li><a class="reference internal" href="#">docarray.score package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.score">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.score">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.score.NamedScore"><code class="docutils literal notranslate"><span class="pre">NamedScore</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -634,7 +655,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

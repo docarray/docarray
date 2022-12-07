@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../access-attributes/" /><link rel="prev" title="Serialization" href="../serialization/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-elements.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Access Documents - DocArray 0.10.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -538,7 +538,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="access-documents">
-<span id="access-elements"></span><h1>Access Documents<a class="headerlink" href="#access-documents" title="Permalink to this headline">#</a></h1>
+<span id="access-elements"></span><h1>Access Documents<a class="headerlink" href="#access-documents" title="Permalink to this heading">#</a></h1>
 <p>This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal?</p>
 <p>If it is just a <code class="docutils literal notranslate"><span class="pre">list</span></code> and you can only access elements via <code class="docutils literal notranslate"><span class="pre">[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[-1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1:3]</span></code>, then it is no big deal. However, DocumentArray offers much more than simple indexing. It allows you to fully exploit the rich &amp; nested data structure of Document in an easy and efficient way.</p>
 <p>The table below summarizes all indexing routines that DocumentArray supports. You can use them to <strong>get, set, and delete</strong> items in DocumentArray.</p>
@@ -607,7 +607,7 @@
 </div>
 </div>
 <section id="basic-indexing">
-<h2>Basic indexing<a class="headerlink" href="#basic-indexing" title="Permalink to this headline">#</a></h2>
+<h2>Basic indexing<a class="headerlink" href="#basic-indexing" title="Permalink to this heading">#</a></h2>
 <p>Basic indexing such as by the integer offset, the slices are so common that I don’t think we need more words. You can just use it as in Python List.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -627,7 +627,7 @@
 </div>
 </section>
 <section id="index-by-document-id">
-<h2>Index by Document <code class="docutils literal notranslate"><span class="pre">id</span></code><a class="headerlink" href="#index-by-document-id" title="Permalink to this headline">#</a></h2>
+<h2>Index by Document <code class="docutils literal notranslate"><span class="pre">id</span></code><a class="headerlink" href="#index-by-document-id" title="Permalink to this heading">#</a></h2>
 <p>A more interesting one is selecting Documents by their <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -664,7 +664,7 @@ False
 </div>
 </section>
 <section id="index-by-boolean-mask">
-<h2>Index by boolean mask<a class="headerlink" href="#index-by-boolean-mask" title="Permalink to this headline">#</a></h2>
+<h2>Index by boolean mask<a class="headerlink" href="#index-by-boolean-mask" title="Permalink to this heading">#</a></h2>
 <p>You can use a boolean mask to select Documents. This becomes useful when you want to update or filter our certain Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -682,7 +682,7 @@ False
 <p>Note that if the length of the boolean mask is smaller than the length of a DocumentArray, then the remaining part is padded to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </section>
 <section id="index-by-nested-structure">
-<span id="path-string"></span><h2>Index by nested structure<a class="headerlink" href="#index-by-nested-structure" title="Permalink to this headline">#</a></h2>
+<span id="path-string"></span><h2>Index by nested structure<a class="headerlink" href="#index-by-nested-structure" title="Permalink to this heading">#</a></h2>
 <p>From early chapter, we already know <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">Document can be nested</span></a>. DocumentArray provides very easy way to traverse over the nested structure and select Documents. All you need to do is following the syntax below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@path1,path2,path3&#39;</span><span class="p">]</span>
 </pre></div>
@@ -763,7 +763,7 @@ False
 <p>You can add space in the path-string for a better readability.</p>
 </section>
 <section id="index-by-flatten">
-<h2>Index by flatten<a class="headerlink" href="#index-by-flatten" title="Permalink to this headline">#</a></h2>
+<h2>Index by flatten<a class="headerlink" href="#index-by-flatten" title="Permalink to this heading">#</a></h2>
 <p>What if I just want a flat DocumentArray without all nested structure, can I select all Documents regardless their nested structure?</p>
 <p>Yes! Simply use ellipsis literal as the selector <code class="docutils literal notranslate"><span class="pre">da[...]</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -798,9 +798,9 @@ False
 <p>Documents in <code class="docutils literal notranslate"><span class="pre">da[...]</span></code> are in the chunks-and-depth-first order, i.e depth-first traversing to all chunks and then to all matches.</p>
 </section>
 <section id="other-handy-helpers">
-<h2>Other Handy Helpers<a class="headerlink" href="#other-handy-helpers" title="Permalink to this headline">#</a></h2>
+<h2>Other Handy Helpers<a class="headerlink" href="#other-handy-helpers" title="Permalink to this heading">#</a></h2>
 <section id="batching">
-<h3>Batching<a class="headerlink" href="#batching" title="Permalink to this headline">#</a></h3>
+<h3>Batching<a class="headerlink" href="#batching" title="Permalink to this heading">#</a></h3>
 <p>One can batch a large DocumentArray into small ones via <a class="reference internal" href="../../../api/docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch" title="docarray.array.mixins.group.GroupMixin.batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">batch()</span></code></a>. This is useful when a DocumentArray is too big to process at once.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -818,7 +818,7 @@ False
 </div>
 </section>
 <section id="sampling">
-<h3>Sampling<a class="headerlink" href="#sampling" title="Permalink to this headline">#</a></h3>
+<h3>Sampling<a class="headerlink" href="#sampling" title="Permalink to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -829,7 +829,7 @@ False
 </div>
 </section>
 <section id="shuffling">
-<h3>Shuffling<a class="headerlink" href="#shuffling" title="Permalink to this headline">#</a></h3>
+<h3>Shuffling<a class="headerlink" href="#shuffling" title="Permalink to this heading">#</a></h3>
 <p>Shuffling a DocumentArray inplace:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -839,7 +839,7 @@ False
 </div>
 </section>
 <section id="splitting-by-tags">
-<h3>Splitting by <code class="docutils literal notranslate"><span class="pre">.tags</span></code><a class="headerlink" href="#splitting-by-tags" title="Permalink to this headline">#</a></h3>
+<h3>Splitting by <code class="docutils literal notranslate"><span class="pre">.tags</span></code><a class="headerlink" href="#splitting-by-tags" title="Permalink to this heading">#</a></h3>
 <p>One can split a DocumentArray into multiple DocumentArrays according to the tag value (stored in <code class="docutils literal notranslate"><span class="pre">tags</span></code>) of each Document.
 It returns a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> where Documents with the same <code class="docutils literal notranslate"><span class="pre">tag</span></code> value are grouped together in a new DocumentArray, with their orders preserved from the original DocumentArray.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -861,7 +861,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 </section>
 </section>
 <section id="what-s-next">
-<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
 <p>Now we know how to select Documents from DocumentArray, next we learn how to <a class="reference internal" href="../access-attributes/#bulk-access"><span class="std std-ref">select attributes from DocumentArray</span></a>. Spoiler alert, it follows the same syntax.</p>
 </section>
 </section>
@@ -903,7 +903,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -979,7 +979,9 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

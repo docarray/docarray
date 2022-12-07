@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="SQLite" href="sqlite/" /><link rel="prev" title="Multi-modal" href="../../datatypes/multimodal/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Document Store - DocArray 0.15.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -390,7 +390,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="document-store">
-<span id="doc-store"></span><h1>Document Store<a class="headerlink" href="#document-store" title="Permalink to this headline">#</a></h1>
+<span id="doc-store"></span><h1>Document Store<a class="headerlink" href="#document-store" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <p>Documents inside a DocumentArray can live in a <a class="reference external" href="https://en.wikipedia.org/wiki/Document-oriented_database">document store</a> instead of in memory, e.g. in SQLite, Redis.
@@ -440,7 +440,7 @@ This is the recommended default usage to modify a DocumentArray that lives on a 
 unexpected behaviors that can yield to, for example, inaccessible elements by position.</p>
 <p>Creating, retrieving, updating, deleting Documents are identical to the regular <a class="reference internal" href="../../fundamentals/documentarray/#documentarray"><span class="std std-ref">DocumentArray</span></a>. All DocumentArray methods such as <code class="docutils literal notranslate"><span class="pre">.summary()</span></code>, <code class="docutils literal notranslate"><span class="pre">.embed()</span></code>, <code class="docutils literal notranslate"><span class="pre">.plot_embeddings()</span></code> should work out of the box.</p>
 <section id="construct">
-<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h2>
+<h2>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h2>
 <p>There are two ways for initializing a DocumentArray with a store backend.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Specify storage</label><div class="tab-content docutils">
@@ -472,7 +472,7 @@ unexpected behaviors that can yield to, for example, inaccessible elements by po
 To learn how to do that, see <a class="reference internal" href="../../fundamentals/documentarray/subindex/#subindex"><span class="std std-ref">here</span></a>.</p>
 </div>
 <section id="construct-with-config">
-<h3>Construct with config<a class="headerlink" href="#construct-with-config" title="Permalink to this headline">#</a></h3>
+<h3>Construct with config<a class="headerlink" href="#construct-with-config" title="Permalink to this heading">#</a></h3>
 <p>The config of a store backend is either store-specific dataclass object or a <code class="docutils literal notranslate"><span class="pre">dict</span></code> that can be parsed into the former.</p>
 <p>One can pass the config in the constructor via <code class="docutils literal notranslate"><span class="pre">config</span></code>:</p>
 <div class="tab-set docutils">
@@ -500,7 +500,7 @@ To learn how to do that, see <a class="reference internal" href="../../fundament
 </section>
 </section>
 <section id="search-summary">
-<h2>Search summary<a class="headerlink" href="#search-summary" title="Permalink to this headline">#</a></h2>
+<h2>Search summary<a class="headerlink" href="#search-summary" title="Permalink to this heading">#</a></h2>
 <p>DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:</p>
 <table border="1" class="docutils">
 <thead>
@@ -567,7 +567,7 @@ To learn how to do that, see <a class="reference internal" href="../../fundament
 The <strong>filter</strong> functionality is available using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
 A detailed explanation of the differences between <code class="docutils literal notranslate"><span class="pre">.find</span></code> and <code class="docutils literal notranslate"><span class="pre">.match</span></code> can be found <a class="reference internal" href="../../fundamentals/documentarray/matching/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">here</span></code></span></a></p>
 <section id="vector-search-example">
-<h3>Vector search example<a class="headerlink" href="#vector-search-example" title="Permalink to this headline">#</a></h3>
+<h3>Vector search example<a class="headerlink" href="#vector-search-example" title="Permalink to this heading">#</a></h3>
 <p>Example of  <strong>vector search</strong></p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">.find</label><div class="tab-content docutils">
@@ -618,7 +618,7 @@ A detailed explanation of the differences between <code class="docutils literal 
 </div>
 </section>
 <section id="vector-search-with-filter-example">
-<h3>Vector search with filter example<a class="headerlink" href="#vector-search-with-filter-example" title="Permalink to this headline">#</a></h3>
+<h3>Vector search with filter example<a class="headerlink" href="#vector-search-with-filter-example" title="Permalink to this heading">#</a></h3>
 <p>Example of <strong>vector search + filter</strong></p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">.find</label><div class="tab-content docutils">
@@ -690,7 +690,7 @@ A detailed explanation of the differences between <code class="docutils literal 
 </div>
 </section>
 <section id="filter-example">
-<h3>Filter example<a class="headerlink" href="#filter-example" title="Permalink to this headline">#</a></h3>
+<h3>Filter example<a class="headerlink" href="#filter-example" title="Permalink to this heading">#</a></h3>
 <p>Example of <strong>filter</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -728,9 +728,9 @@ A detailed explanation of the differences between <code class="docutils literal 
 </section>
 </section>
 <section id="known-limitations">
-<h2>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this headline">#</a></h2>
+<h2>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this heading">#</a></h2>
 <section id="multiple-references-to-the-same-storage-backend">
-<h3>Multiple references to the same storage backend<a class="headerlink" href="#multiple-references-to-the-same-storage-backend" title="Permalink to this headline">#</a></h3>
+<h3>Multiple references to the same storage backend<a class="headerlink" href="#multiple-references-to-the-same-storage-backend" title="Permalink to this heading">#</a></h3>
 <p>Let’s see an example with ANNLite storage backend, other storage backends would also have the same problem. Let’s create two DocumentArrays <code class="docutils literal notranslate"><span class="pre">da</span></code> and <code class="docutils literal notranslate"><span class="pre">db</span></code> that point the same storage backend:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -779,7 +779,7 @@ As a consequence, your multiple references to the same backend  would look diffe
 <p>Take home message is, use the context manager and put your write operations into the <code class="docutils literal notranslate"><span class="pre">with</span></code> block, when you work with multiple references in a row.</p>
 </section>
 <section id="out-of-array-modification">
-<h3>Out-of-array modification<a class="headerlink" href="#out-of-array-modification" title="Permalink to this headline">#</a></h3>
+<h3>Out-of-array modification<a class="headerlink" href="#out-of-array-modification" title="Permalink to this heading">#</a></h3>
 <p>One can not take a Document <em>out</em> from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.</p>
 <p>Specifically, the pattern below is not supported by any external store backend:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -797,7 +797,7 @@ As a consequence, your multiple references to the same backend  would look diffe
 </div>
 </section>
 <section id="elements-access-is-slower">
-<h3>Elements access is slower<a class="headerlink" href="#elements-access-is-slower" title="Permalink to this headline">#</a></h3>
+<h3>Elements access is slower<a class="headerlink" href="#elements-access-is-slower" title="Permalink to this heading">#</a></h3>
 <p>Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.</p>
 <p>Slowness can affect all functions of DocumentArray. On the bright side, they may not be that severe as you would expect. Modern database are highly optimized. Moreover, some database provides faster method for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features.</p>
 </section>
@@ -839,7 +839,7 @@ As a consequence, your multiple references to the same backend  would look diffe
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -917,7 +917,9 @@ As a consequence, your multiple references to the same backend  would look diffe
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

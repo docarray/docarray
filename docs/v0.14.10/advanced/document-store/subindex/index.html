@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Add New Document Store" href="../extend/" /><link rel="prev" title="Elasticsearch" href="../elasticsearch/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/subindex.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Subindices - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -390,7 +390,7 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="subindices">
-<span id="subindex"></span><h1>Subindices<a class="headerlink" href="#subindices" title="Permalink to this headline">#</a></h1>
+<span id="subindex"></span><h1>Subindices<a class="headerlink" href="#subindices" title="Permalink to this heading">#</a></h1>
 <p>Subindices allow you to efficiently search through multimodal or nested Documents.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -403,7 +403,7 @@ Under the hood, subindices are fully fledged DocumentArrays with their own Docum
 <p>Subindices are available for all DocumentArray types, including in-memory, but are most useful in combination with a <a class="reference internal" href="../#doc-store"><span class="std std-ref">Document Store</span></a>.</p>
 </div>
 <section id="construct-subindices">
-<h2>Construct subindices<a class="headerlink" href="#construct-subindices" title="Permalink to this headline">#</a></h2>
+<h2>Construct subindices<a class="headerlink" href="#construct-subindices" title="Permalink to this heading">#</a></h2>
 <p>Subindices are constructed when creating a DocumentArray,
 by passing a configuration for each desired subindex to the <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> parameter:</p>
 <div class="tab-set docutils">
@@ -458,7 +458,7 @@ Fields that are not given in the subindex configuration will be inherited from t
 </ul>
 </section>
 <section id="modify-subindices">
-<h2>Modify subindices<a class="headerlink" href="#modify-subindices" title="Permalink to this headline">#</a></h2>
+<h2>Modify subindices<a class="headerlink" href="#modify-subindices" title="Permalink to this heading">#</a></h2>
 <p>Once a DocumentArray with subindices has been constructed, any modifications to the parent DocumentArray will automatically update the subindices.</p>
 <p>This means that you can insert, extend, delete etc. it like any other DocumentArray. For example:</p>
 <div class="tab-set docutils">
@@ -511,7 +511,7 @@ Fields that are not given in the subindex configuration will be inherited from t
 </div>
 </section>
 <section id="search-through-subindices">
-<h2>Search through subindices<a class="headerlink" href="#search-through-subindices" title="Permalink to this headline">#</a></h2>
+<h2>Search through subindices<a class="headerlink" href="#search-through-subindices" title="Permalink to this heading">#</a></h2>
 <p>You can search through a subindex using the <code class="docutils literal notranslate"><span class="pre">on=</span></code> keyword in <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray.find" title="docarray.array.document.DocumentArray.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray.match" title="docarray.array.document.DocumentArray.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">Subindex with dataclass modalities</label><div class="tab-content docutils">
@@ -585,7 +585,7 @@ a match, you can retrieve them using <code class="docutils literal notranslate">
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -650,7 +650,9 @@ a match, you can retrieve them using <code class="docutils literal notranslate">
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

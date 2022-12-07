@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage.memory/" />
 <meta property="og:site_name" content="DocArray 0.14.5 Documentation" />
-<meta property="og:description" content="Submodules: docarray.array.storage.memory.backend module, docarray.array.storage.memory.find module, docarray.array.storage.memory.getsetdel module, docarray.array.storage.memory.seqlike module. Module contents:" />
+<meta property="og:description" content="Submodules: docarray.array.storage.memory.backend module- needs_id2offset_rebuild(), BackendMixin- BackendMixin.TYPE_MAP.., docarray.array.storage.memory.find module- FindMixin., docarray.array.storage.memory.getsetdel module- GetSetDelMixin., docarray.array.storage.memory.seqlike module- Sequenc..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.14.5 Documentation" />
-<meta name="description" content="Submodules: docarray.array.storage.memory.backend module, docarray.array.storage.memory.find module, docarray.array.storage.memory.getsetdel module, docarray.array.storage.memory.seqlike module. Module contents:" />
+<meta name="description" content="Submodules: docarray.array.storage.memory.backend module- needs_id2offset_rebuild(), BackendMixin- BackendMixin.TYPE_MAP.., docarray.array.storage.memory.find module- FindMixin., docarray.array.storage.memory.getsetdel module- GetSetDelMixin., docarray.array.storage.memory.seqlike module- Sequenc..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.storage.memory.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.storage.memory package - DocArray 0.14.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,24 +389,51 @@
                 </div>
                 <article role="main">
                     <section id="docarray-array-storage-memory-package">
-<h1>docarray.array.storage.memory package<a class="headerlink" href="#docarray-array-storage-memory-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.array.storage.memory package<a class="headerlink" href="#docarray-array-storage-memory-package" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.find/">docarray.array.storage.memory.find module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.needs_id2offset_rebuild"><code class="docutils literal notranslate"><span class="pre">needs_id2offset_rebuild()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">BackendMixin.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.find/">docarray.array.storage.memory.find module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory.find/#docarray.array.storage.memory.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/#docarray.array.storage.memory.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.insert"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.append"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.append()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.extend"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.extend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.clear"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.clear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.count"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.index"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.pop"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.pop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.remove"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.remove()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.reverse"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.reverse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.array.storage.memory">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.storage.memory" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.storage.memory" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.storage.memory.StorageMixins">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.memory.</span></span><span class="sig-name descname"><span class="pre">StorageMixins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/memory/#StorageMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.memory.StorageMixins" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.memory.find/#docarray.array.storage.memory.find.FindMixin" title="docarray.array.storage.memory.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.memory.find.FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin" title="docarray.array.storage.memory.backend.BackendMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.memory.backend.BackendMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.getsetdel/#docarray.array.storage.memory.getsetdel.GetSetDelMixin" title="docarray.array.storage.memory.getsetdel.GetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.memory.getsetdel.GetSetDelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin" title="docarray.array.storage.memory.seqlike.SequenceLikeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.memory.seqlike.SequenceLikeMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.memory.find/#docarray.array.storage.memory.find.FindMixin" title="docarray.array.storage.memory.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin" title="docarray.array.storage.memory.backend.BackendMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.getsetdel/#docarray.array.storage.memory.getsetdel.GetSetDelMixin" title="docarray.array.storage.memory.getsetdel.GetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin" title="docarray.array.storage.memory.seqlike.SequenceLikeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.storage.memory.StorageMixins.append">
 <span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.memory.StorageMixins.append" title="Permalink to this definition">#</a></dt>
@@ -483,7 +510,7 @@ Raise ValueError if the value is not present.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.storage.memory.StorageMixins.TYPE_MAP">
-<span class="sig-name descname"><span class="pre">TYPE_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap" title="docarray.array.storage.base.backend.TypeMap"><span class="pre">docarray.array.storage.base.backend.TypeMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.array.storage.memory.StorageMixins.TYPE_MAP" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">TYPE_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap" title="docarray.array.storage.base.backend.TypeMap"><span class="pre">TypeMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.array.storage.memory.StorageMixins.TYPE_MAP" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -504,7 +531,7 @@ Raise ValueError if the value is not present.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -538,7 +565,22 @@ Raise ValueError if the value is not present.</p>
                         <ul>
 <li><a class="reference internal" href="#">docarray.array.storage.memory package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.array.storage.memory">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.array.storage.memory">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.memory.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -568,7 +610,9 @@ Raise ValueError if the value is not present.</p>
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

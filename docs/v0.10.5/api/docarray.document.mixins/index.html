@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins/" />
 <meta property="og:site_name" content="DocArray 0.10.5 Documentation" />
-<meta property="og:description" content="Submodules: docarray.document.mixins.attribute module, docarray.document.mixins.audio module, docarray.document.mixins.blob module, docarray.document.mixins.content module, docarray.document.mixins.convert module, docarray.document.mixins.dump module, docarray.document.mixins.featurehash module, ..." />
+<meta property="og:description" content="Submodules: docarray.document.mixins.attribute module- GetAttributesMixin., docarray.document.mixins.audio module- AudioDataMixin- AudioDataMixin.save_audio_tensor_to_file(), AudioDataMixin.load_uri_to_audio_tensor().., docarray.document.mixins.blob module- BlobDataMixin- BlobDataMixin.load_uri_t..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.10.5 Documentation" />
-<meta name="description" content="Submodules: docarray.document.mixins.attribute module, docarray.document.mixins.audio module, docarray.document.mixins.blob module, docarray.document.mixins.content module, docarray.document.mixins.convert module, docarray.document.mixins.dump module, docarray.document.mixins.featurehash module, ..." />
+<meta name="description" content="Submodules: docarray.document.mixins.attribute module- GetAttributesMixin., docarray.document.mixins.audio module- AudioDataMixin- AudioDataMixin.save_audio_tensor_to_file(), AudioDataMixin.load_uri_to_audio_tensor().., docarray.document.mixins.blob module- BlobDataMixin- BlobDataMixin.load_uri_t..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins.attribute module" href="../docarray.document.mixins.attribute/" /><link rel="prev" title="docarray.document package" href="../docarray.document/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.mixins.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.document.mixins package - DocArray 0.10.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -538,41 +538,207 @@
                     </label>
                 </div>
                 <section id="docarray-document-mixins-package">
-<h1>docarray.document.mixins package<a class="headerlink" href="#docarray-document-mixins-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.document.mixins package<a class="headerlink" href="#docarray-document-mixins-package" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.featurehash/">docarray.document.mixins.featurehash module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.attribute/#docarray.document.mixins.attribute.GetAttributesMixin"><code class="docutils literal notranslate"><span class="pre">GetAttributesMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin"><code class="docutils literal notranslate"><span class="pre">AudioDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin.save_audio_tensor_to_file"><code class="docutils literal notranslate"><span class="pre">AudioDataMixin.save_audio_tensor_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin.load_uri_to_audio_tensor"><code class="docutils literal notranslate"><span class="pre">AudioDataMixin.load_uri_to_audio_tensor()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin"><code class="docutils literal notranslate"><span class="pre">BlobDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.load_uri_to_blob"><code class="docutils literal notranslate"><span class="pre">BlobDataMixin.load_uri_to_blob()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri"><code class="docutils literal notranslate"><span class="pre">BlobDataMixin.convert_blob_to_datauri()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.save_blob_to_file"><code class="docutils literal notranslate"><span class="pre">BlobDataMixin.save_blob_to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.content/">docarray.document.mixins.content module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin.content_hash"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.content_hash</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin.convert_content_to_datauri"><code class="docutils literal notranslate"><span class="pre">ContentPropertyMixin.convert_content_to_datauri()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.convert/">docarray.document.mixins.convert module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin"><code class="docutils literal notranslate"><span class="pre">ConvertMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_blob_to_tensor"><code class="docutils literal notranslate"><span class="pre">ConvertMixin.convert_blob_to_tensor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_tensor_to_blob"><code class="docutils literal notranslate"><span class="pre">ConvertMixin.convert_tensor_to_blob()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_uri_to_datauri"><code class="docutils literal notranslate"><span class="pre">ConvertMixin.convert_uri_to_datauri()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.dump/">docarray.document.mixins.dump module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin"><code class="docutils literal notranslate"><span class="pre">UriFileMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin.save_uri_to_file"><code class="docutils literal notranslate"><span class="pre">UriFileMixin.save_uri_to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.featurehash/">docarray.document.mixins.featurehash module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin"><code class="docutils literal notranslate"><span class="pre">FeatureHashMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin.embed_feature_hashing"><code class="docutils literal notranslate"><span class="pre">FeatureHashMixin.embed_feature_hashing()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.protobuf/">docarray.document.mixins.protobuf module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.pydantic/">docarray.document.mixins.pydantic module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.rich_embedding/">docarray.document.mixins.rich_embedding module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.strawberry/">docarray.document.mixins.strawberry module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.sugar/">docarray.document.mixins.sugar module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.text/">docarray.document.mixins.text module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.video/">docarray.document.mixins.video module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_channel_axis"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_channel_axis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_blob_to_image_tensor"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_blob_to_image_tensor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_uri()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_blob()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_shape()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.save_image_tensor_to_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.load_uri_to_image_tensor"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.load_uri_to_image_tensor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_inv_normalization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.set_image_tensor_normalization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_sliding_windows"><code class="docutils literal notranslate"><span class="pre">ImageDataMixin.convert_image_tensor_to_sliding_windows()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin"><code class="docutils literal notranslate"><span class="pre">MeshDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin.load_uri_to_point_cloud_tensor"><code class="docutils literal notranslate"><span class="pre">MeshDataMixin.load_uri_to_point_cloud_tensor()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType"><code class="docutils literal notranslate"><span class="pre">AttributeType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.DOCUMENT"><code class="docutils literal notranslate"><span class="pre">AttributeType.DOCUMENT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.PRIMITIVE"><code class="docutils literal notranslate"><span class="pre">AttributeType.PRIMITIVE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.ITERABLE_PRIMITIVE"><code class="docutils literal notranslate"><span class="pre">AttributeType.ITERABLE_PRIMITIVE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.ITERABLE_DOCUMENT"><code class="docutils literal notranslate"><span class="pre">AttributeType.ITERABLE_DOCUMENT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.NESTED"><code class="docutils literal notranslate"><span class="pre">AttributeType.NESTED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.AttributeType.ITERABLE_NESTED"><code class="docutils literal notranslate"><span class="pre">AttributeType.ITERABLE_NESTED</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.MultiModalMixin"><code class="docutils literal notranslate"><span class="pre">MultiModalMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.MultiModalMixin.from_dataclass"><code class="docutils literal notranslate"><span class="pre">MultiModalMixin.from_dataclass()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.MultiModalMixin.get_multi_modal_attribute"><code class="docutils literal notranslate"><span class="pre">MultiModalMixin.get_multi_modal_attribute()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin"><code class="docutils literal notranslate"><span class="pre">PlotMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary"><code class="docutils literal notranslate"><span class="pre">PlotMixin.summary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display"><code class="docutils literal notranslate"><span class="pre">PlotMixin.display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.plot"><code class="docutils literal notranslate"><span class="pre">PlotMixin.plot()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin"><code class="docutils literal notranslate"><span class="pre">PortingMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict"><code class="docutils literal notranslate"><span class="pre">PortingMixin.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json"><code class="docutils literal notranslate"><span class="pre">PortingMixin.from_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict"><code class="docutils literal notranslate"><span class="pre">PortingMixin.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes"><code class="docutils literal notranslate"><span class="pre">PortingMixin.to_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes"><code class="docutils literal notranslate"><span class="pre">PortingMixin.from_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json"><code class="docutils literal notranslate"><span class="pre">PortingMixin.to_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64"><code class="docutils literal notranslate"><span class="pre">PortingMixin.to_base64()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64"><code class="docutils literal notranslate"><span class="pre">PortingMixin.from_base64()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin"><code class="docutils literal notranslate"><span class="pre">PropertyMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.text"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.text</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.blob"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.blob</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.tensor"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.tensor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.content"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.content</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.uri"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.uri</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.mime_type"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.mime_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.chunks"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.chunks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.matches"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.matches</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.content_type"><code class="docutils literal notranslate"><span class="pre">PropertyMixin.content_type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.protobuf/">docarray.document.mixins.protobuf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin"><code class="docutils literal notranslate"><span class="pre">ProtobufMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin.from_protobuf"><code class="docutils literal notranslate"><span class="pre">ProtobufMixin.from_protobuf()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin.to_protobuf"><code class="docutils literal notranslate"><span class="pre">ProtobufMixin.to_protobuf()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.pydantic/">docarray.document.mixins.pydantic module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin"><code class="docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.get_json_schema"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.get_json_schema()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.to_pydantic_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="docutils literal notranslate"><span class="pre">PydanticMixin.from_pydantic_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.rich_embedding/">docarray.document.mixins.rich_embedding module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.rich_embedding/#docarray.document.mixins.rich_embedding.ColorBoxEmbedding"><code class="docutils literal notranslate"><span class="pre">ColorBoxEmbedding</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.strawberry/">docarray.document.mixins.strawberry module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin.to_strawberry_type"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin.to_strawberry_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin.from_strawberry_type"><code class="docutils literal notranslate"><span class="pre">StrawberryMixin.from_strawberry_type()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.sugar/">docarray.document.mixins.sugar module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin"><code class="docutils literal notranslate"><span class="pre">SingletonSugarMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.match"><code class="docutils literal notranslate"><span class="pre">SingletonSugarMixin.match()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.embed"><code class="docutils literal notranslate"><span class="pre">SingletonSugarMixin.embed()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.text/">docarray.document.mixins.text module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin"><code class="docutils literal notranslate"><span class="pre">TextDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.load_uri_to_text"><code class="docutils literal notranslate"><span class="pre">TextDataMixin.load_uri_to_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.get_vocabulary"><code class="docutils literal notranslate"><span class="pre">TextDataMixin.get_vocabulary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_text_to_tensor"><code class="docutils literal notranslate"><span class="pre">TextDataMixin.convert_text_to_tensor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text"><code class="docutils literal notranslate"><span class="pre">TextDataMixin.convert_tensor_to_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_text_to_datauri"><code class="docutils literal notranslate"><span class="pre">TextDataMixin.convert_text_to_datauri()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.document.mixins.video/">docarray.document.mixins.video module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin"><code class="docutils literal notranslate"><span class="pre">VideoDataMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor"><code class="docutils literal notranslate"><span class="pre">VideoDataMixin.load_uri_to_video_tensor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file"><code class="docutils literal notranslate"><span class="pre">VideoDataMixin.save_video_tensor_to_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.document.mixins">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.document.mixins" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.document.mixins" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.document.mixins.AllMixins">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.</span></span><span class="sig-name descname"><span class="pre">AllMixins</span></span><a class="reference internal" href="../../_modules/docarray/document/mixins/#AllMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.AllMixins" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin" title="docarray.document.mixins.protobuf.ProtobufMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.protobuf.ProtobufMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin" title="docarray.document.mixins.pydantic.PydanticMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.pydantic.PydanticMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin" title="docarray.document.mixins.strawberry.StrawberryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.strawberry.StrawberryMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin" title="docarray.document.mixins.property.PropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.property.PropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin" title="docarray.document.mixins.content.ContentPropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.content.ContentPropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin" title="docarray.document.mixins.convert.ConvertMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.convert.ConvertMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin" title="docarray.document.mixins.audio.AudioDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.audio.AudioDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin" title="docarray.document.mixins.image.ImageDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.image.ImageDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin" title="docarray.document.mixins.text.TextDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.text.TextDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin" title="docarray.document.mixins.mesh.MeshDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.mesh.MeshDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin" title="docarray.document.mixins.video.VideoDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.video.VideoDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin" title="docarray.document.mixins.blob.BlobDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.blob.BlobDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin" title="docarray.document.mixins.plot.PlotMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.plot.PlotMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin" title="docarray.document.mixins.dump.UriFileMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.dump.UriFileMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin" title="docarray.document.mixins.sugar.SingletonSugarMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.sugar.SingletonSugarMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin" title="docarray.document.mixins.porting.PortingMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.porting.PortingMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin" title="docarray.document.mixins.featurehash.FeatureHashMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.featurehash.FeatureHashMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.attribute/#docarray.document.mixins.attribute.GetAttributesMixin" title="docarray.document.mixins.attribute.GetAttributesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.attribute.GetAttributesMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.MultiModalMixin" title="docarray.document.mixins.multimodal.MultiModalMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.mixins.multimodal.MultiModalMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.document.mixins.protobuf/#docarray.document.mixins.protobuf.ProtobufMixin" title="docarray.document.mixins.protobuf.ProtobufMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtobufMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin" title="docarray.document.mixins.pydantic.PydanticMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.strawberry/#docarray.document.mixins.strawberry.StrawberryMixin" title="docarray.document.mixins.strawberry.StrawberryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin" title="docarray.document.mixins.property.PropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin" title="docarray.document.mixins.content.ContentPropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin" title="docarray.document.mixins.convert.ConvertMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvertMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.audio/#docarray.document.mixins.audio.AudioDataMixin" title="docarray.document.mixins.audio.AudioDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">AudioDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin" title="docarray.document.mixins.image.ImageDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin" title="docarray.document.mixins.text.TextDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin" title="docarray.document.mixins.mesh.MeshDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin" title="docarray.document.mixins.video.VideoDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin" title="docarray.document.mixins.blob.BlobDataMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlobDataMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin" title="docarray.document.mixins.plot.PlotMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlotMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.dump/#docarray.document.mixins.dump.UriFileMixin" title="docarray.document.mixins.dump.UriFileMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">UriFileMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin" title="docarray.document.mixins.sugar.SingletonSugarMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingletonSugarMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin" title="docarray.document.mixins.porting.PortingMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PortingMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin" title="docarray.document.mixins.featurehash.FeatureHashMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureHashMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.attribute/#docarray.document.mixins.attribute.GetAttributesMixin" title="docarray.document.mixins.attribute.GetAttributesMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetAttributesMixin</span></code></a>, <a class="reference internal" href="../docarray.document.mixins.multimodal/#docarray.document.mixins.multimodal.MultiModalMixin" title="docarray.document.mixins.multimodal.MultiModalMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiModalMixin</span></code></a></p>
 <p>All plugins that can be used in <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
 </dd></dl>
 
@@ -616,7 +782,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Nov 24, 2022.
+                            Last updated on Dec 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -652,7 +818,10 @@
                         <ul>
 <li><a class="reference internal" href="#">docarray.document.mixins package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.document.mixins">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.document.mixins">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.document.mixins.AllMixins"><code class="docutils literal notranslate"><span class="pre">AllMixins</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -681,7 +850,9 @@
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

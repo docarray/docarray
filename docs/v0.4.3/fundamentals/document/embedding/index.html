@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Nested Structure" href="../nested/" /><link rel="prev" title="Access Attributes" href="../attribute/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/embedding.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Embedding - DocArray 0.4.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -435,7 +435,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="embedding">
-<h1>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">#</a></h1>
+<h1>Embedding<a class="headerlink" href="#embedding" title="Permalink to this heading">#</a></h1>
 <p>Embedding is a multi-dimensional representation of a Document (often a <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">D]</span></code> vector). It serves as a very important piece in machine learning. The attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code> is designed to contain the embedding information of a Document.</p>
 <p>Like <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, you can assign it with a Python (nested) List/Tuple, Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, SciPy sparse matrix (<code class="docutils literal notranslate"><span class="pre">spmatrix</span></code>), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -456,7 +456,7 @@
 <p>Unlike some other packages, DocArray will not actively cast <code class="docutils literal notranslate"><span class="pre">dtype</span></code> into <code class="docutils literal notranslate"><span class="pre">float32</span></code>. If the right-hand assigment <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">float64</span></code> in PyTorch, it will stay as a PyTorch <code class="docutils literal notranslate"><span class="pre">float64</span></code> tensor.</p>
 <p>To assign multiple Documents <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> in bulk, you <a class="reference internal" href="../../documentarray/access-attributes/#da-content-embedding"><span class="std std-ref">should use DocumentArray</span></a>. It is much faster and smarter than using for-loop.</p>
 <section id="fill-embedding-via-neural-network">
-<h2>Fill embedding via neural network<a class="headerlink" href="#fill-embedding-via-neural-network" title="Permalink to this headline">#</a></h2>
+<h2>Fill embedding via neural network<a class="headerlink" href="#fill-embedding-via-neural-network" title="Permalink to this heading">#</a></h2>
 <div class="tip admonition">
 <p class="admonition-title">On multiple Documents use DocumentArray</p>
 <p>To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call <code class="docutils literal notranslate"><span class="pre">.embed()</span></code>. You can find out more in <a class="reference internal" href="../../documentarray/embedding/#embed-via-model"><span class="std std-ref">Embed via Neural Network</span></a>.</p>
@@ -482,7 +482,7 @@ d.blob /
 </div>
 </section>
 <section id="find-nearest-neighbours">
-<h2>Find nearest-neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this headline">#</a></h2>
+<h2>Find nearest-neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this heading">#</a></h2>
 <div class="tip admonition">
 <p class="admonition-title">On multiple Documents use DocumentArray</p>
 <p>To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in <a class="reference internal" href="../../documentarray/matching/#match-documentarray"><span class="std std-ref">Match Nearest Neighbours</span></a>.</p>
@@ -549,7 +549,7 @@ d.blob /
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -593,7 +593,9 @@ d.blob /
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

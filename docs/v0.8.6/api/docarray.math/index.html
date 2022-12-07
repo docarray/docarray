@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.math/" />
 <meta property="og:site_name" content="DocArray 0.8.6 Documentation" />
-<meta property="og:description" content="Subpackages: docarray.math.distance package- Submodules- docarray.math.distance.numpy module, docarray.math.distance.paddle module, docarray.math.distance.tensorflow module, docarray.math.distance.torch module., Module contents.. Submodules: docarray.math.evaluation module, docarray.math.helper m..." />
+<meta property="og:description" content="Subpackages: docarray.math.distance package- Submodules- docarray.math.distance.numpy module- cosine(), sqeuclidean(), sparse_cosine(), sparse_sqeuclidean(), sparse_euclidean(), euclidean()., docarray.math.distance.paddle module, docarray.math.distance.tensorflow module- cosine(), sqeuclidean(), ..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="DocArray 0.8.6 Documentation" />
-<meta name="description" content="Subpackages: docarray.math.distance package- Submodules- docarray.math.distance.numpy module, docarray.math.distance.paddle module, docarray.math.distance.tensorflow module, docarray.math.distance.torch module., Module contents.. Submodules: docarray.math.evaluation module, docarray.math.helper m..." />
+<meta name="description" content="Subpackages: docarray.math.distance package- Submodules- docarray.math.distance.numpy module- cosine(), sqeuclidean(), sparse_cosine(), sparse_sqeuclidean(), sparse_euclidean(), euclidean()., docarray.math.distance.paddle module, docarray.math.distance.tensorflow module- cosine(), sqeuclidean(), ..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,10 +33,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.math.distance package" href="../docarray.math.distance/" /><link rel="prev" title="docarray.document.strawberry_type module" href="../docarray.document.strawberry_type/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.math.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.math package - DocArray 0.8.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -232,7 +232,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -509,37 +509,83 @@
                     </label>
                 </div>
                 <section id="docarray-math-package">
-<h1>docarray.math package<a class="headerlink" href="#docarray-math-package" title="Permalink to this headline">#</a></h1>
+<h1>docarray.math package<a class="headerlink" href="#docarray-math-package" title="Permalink to this heading">#</a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">#</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.math.distance/">docarray.math.distance package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.math.distance/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.numpy/">docarray.math.distance.numpy module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.paddle/">docarray.math.distance.paddle module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.tensorflow/">docarray.math.distance.tensorflow module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.torch/">docarray.math.distance.torch module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.numpy/">docarray.math.distance.numpy module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.cosine"><code class="docutils literal notranslate"><span class="pre">cosine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.sqeuclidean"><code class="docutils literal notranslate"><span class="pre">sqeuclidean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.sparse_cosine"><code class="docutils literal notranslate"><span class="pre">sparse_cosine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.sparse_sqeuclidean"><code class="docutils literal notranslate"><span class="pre">sparse_sqeuclidean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.sparse_euclidean"><code class="docutils literal notranslate"><span class="pre">sparse_euclidean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/#docarray.math.distance.numpy.euclidean"><code class="docutils literal notranslate"><span class="pre">euclidean()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.math.distance/#module-docarray.math.distance">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.paddle/">docarray.math.distance.paddle module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.tensorflow/">docarray.math.distance.tensorflow module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.tensorflow/#docarray.math.distance.tensorflow.cosine"><code class="docutils literal notranslate"><span class="pre">cosine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.tensorflow/#docarray.math.distance.tensorflow.sqeuclidean"><code class="docutils literal notranslate"><span class="pre">sqeuclidean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.tensorflow/#docarray.math.distance.tensorflow.euclidean"><code class="docutils literal notranslate"><span class="pre">euclidean()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance.torch/">docarray.math.distance.torch module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.torch/#docarray.math.distance.torch.cosine"><code class="docutils literal notranslate"><span class="pre">cosine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.torch/#docarray.math.distance.torch.euclidean"><code class="docutils literal notranslate"><span class="pre">euclidean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.torch/#docarray.math.distance.torch.sqeuclidean"><code class="docutils literal notranslate"><span class="pre">sqeuclidean()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.distance/#module-docarray.math.distance">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance/#docarray.math.distance.pdist"><code class="docutils literal notranslate"><span class="pre">pdist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.math.distance/#docarray.math.distance.cdist"><code class="docutils literal notranslate"><span class="pre">cdist()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.math.evaluation/">docarray.math.evaluation module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.math.helper/">docarray.math.helper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.math.ndarray/">docarray.math.ndarray module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.math.evaluation/">docarray.math.evaluation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.r_precision"><code class="docutils literal notranslate"><span class="pre">r_precision()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.precision_at_k"><code class="docutils literal notranslate"><span class="pre">precision_at_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.hit_at_k"><code class="docutils literal notranslate"><span class="pre">hit_at_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.average_precision"><code class="docutils literal notranslate"><span class="pre">average_precision()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.reciprocal_rank"><code class="docutils literal notranslate"><span class="pre">reciprocal_rank()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.recall_at_k"><code class="docutils literal notranslate"><span class="pre">recall_at_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.f1_score_at_k"><code class="docutils literal notranslate"><span class="pre">f1_score_at_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.dcg_at_k"><code class="docutils literal notranslate"><span class="pre">dcg_at_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.evaluation/#docarray.math.evaluation.ndcg_at_k"><code class="docutils literal notranslate"><span class="pre">ndcg_at_k()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.math.helper/">docarray.math.helper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.helper/#docarray.math.helper.minmax_normalize"><code class="docutils literal notranslate"><span class="pre">minmax_normalize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.helper/#docarray.math.helper.top_k"><code class="docutils literal notranslate"><span class="pre">top_k()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.helper/#docarray.math.helper.update_rows_x_mat_best"><code class="docutils literal notranslate"><span class="pre">update_rows_x_mat_best()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.math.ndarray/">docarray.math.ndarray module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.unravel"><code class="docutils literal notranslate"><span class="pre">unravel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.ravel"><code class="docutils literal notranslate"><span class="pre">ravel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.get_array_type"><code class="docutils literal notranslate"><span class="pre">get_array_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.to_numpy_array"><code class="docutils literal notranslate"><span class="pre">to_numpy_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.to_list"><code class="docutils literal notranslate"><span class="pre">to_list()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.math.ndarray/#docarray.math.ndarray.get_array_rows"><code class="docutils literal notranslate"><span class="pre">get_array_rows()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-docarray.math">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.math" title="Permalink to this headline">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.math" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -575,7 +621,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -632,7 +678,9 @@
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

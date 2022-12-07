@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Embedding" href="../embedding/" /><link rel="prev" title="Serialization" href="../serialization/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/attribute.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>Access Attributes - DocArray 0.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -231,7 +231,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -429,7 +429,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="access-attributes">
-<h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this headline">#</a></h1>
+<h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this heading">#</a></h1>
 <p>Use <code class="docutils literal notranslate"><span class="pre">.</span></code> expression to get/set the value of an attribute as you would with any Python object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -456,7 +456,7 @@
 </div>
 <p>You can check which attributes are set by <code class="docutils literal notranslate"><span class="pre">.non_empty_fields</span></code>.</p>
 <section id="content-attributes">
-<h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this headline">#</a></h2>
+<h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this heading">#</a></h2>
 <p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, and <code class="docutils literal notranslate"><span class="pre">.buffer</span></code> are super important as they contain the actual content.</p>
 <p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively.</p>
 <table border="1" class="docutils">
@@ -525,7 +525,7 @@
 <p>You can also check which content field is set by <code class="docutils literal notranslate"><span class="pre">.content_type</span></code>.</p>
 </section>
 <section id="load-content-from-uri">
-<span id="content-uri"></span><h2>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this headline">#</a></h2>
+<span id="content-uri"></span><h2>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this heading">#</a></h2>
 <p>A quite common pattern is loading content from a URI instead of assigning them directly in the code.</p>
 <p>This can be easily done with <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
 <div class="tab-set docutils">
@@ -623,7 +623,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2022.
+                    Last updated on Dec 07, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -667,7 +667,9 @@
 </div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>

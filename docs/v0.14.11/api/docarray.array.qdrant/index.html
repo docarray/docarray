@@ -30,10 +30,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.qdrant.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
         <title>docarray.array.qdrant module - DocArray 0.14.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -182,7 +182,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -234,7 +234,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -376,7 +376,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon no-toc"
+                    <label class="toc-overlay-icon toc-content-icon"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -388,11 +388,11 @@
                 </div>
                 <article role="main">
                     <section id="module-docarray.array.qdrant">
-<span id="docarray-array-qdrant-module"></span><h1>docarray.array.qdrant module<a class="headerlink" href="#module-docarray.array.qdrant" title="Permalink to this headline">#</a></h1>
+<span id="docarray-array-qdrant-module"></span><h1>docarray.array.qdrant module<a class="headerlink" href="#module-docarray.array.qdrant" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.qdrant.DocumentArrayQdrant">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.qdrant.</span></span><span class="sig-name descname"><span class="pre">DocumentArrayQdrant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'memory'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/qdrant/#DocumentArrayQdrant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins" title="docarray.array.storage.qdrant.StorageMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.storage.qdrant.StorageMixins</span></code></a>, <a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.document.DocumentArray</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.qdrant/#docarray.array.storage.qdrant.StorageMixins" title="docarray.array.storage.qdrant.StorageMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">StorageMixins</span></code></a>, <a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></p>
 <p>DocumentArray that stores Documents in a <a class="reference external" href="https://weaviate.io/">Qdrant</a> vector search engine.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1283,7 +1283,7 @@ on sparse matrix.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.qdrant.DocumentArrayQdrant.plot_embeddings">
-<span class="sig-name descname"><span class="pre">plot_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MyDocumentArray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_sprites</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_image_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_embeddings" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MyDocumentArray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_sprites</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_image_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_embeddings" title="Permalink to this definition">#</a></dt>
 <dd><p>Interactively visualize <a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.embeddings" title="docarray.array.qdrant.DocumentArrayQdrant.embeddings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embeddings</span></code></a> using the Embedding Projector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1312,7 +1312,7 @@ embeddings at the same time. Make sure to use a different <code class="docutils 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.qdrant.DocumentArrayQdrant.plot_image_sprites">
-<span class="sig-name descname"><span class="pre">plot_image_sprites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_aspect_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_image_sprites" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_image_sprites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_aspect_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_image_sprites" title="Permalink to this definition">#</a></dt>
 <dd><p>Generate a sprite image for all image tensors in this DocumentArray-like object.</p>
 <p>An image sprite is a collection of images put into a single image. It is always square-sized.
 Each sub-image is also square-sized and equally-sized.</p>
@@ -1608,7 +1608,7 @@ parameters together.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.qdrant.DocumentArrayQdrant.save_gif">
-<span class="sig-name descname"><span class="pre">save_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.save_gif" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">save_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.save_gif" title="Permalink to this definition">#</a></dt>
 <dd><p>Save a gif of the DocumentArray. Each frame corresponds to a Document.uri/.tensor in the DocumentArray.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2004,7 +2004,7 @@ with all Documents, that are reached by the path.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.qdrant.DocumentArrayQdrant.TYPE_MAP">
-<span class="sig-name descname"><span class="pre">TYPE_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap" title="docarray.array.storage.base.backend.TypeMap"><span class="pre">docarray.array.storage.base.backend.TypeMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.TYPE_MAP" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">TYPE_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap" title="docarray.array.storage.base.backend.TypeMap"><span class="pre">TypeMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.array.qdrant.DocumentArrayQdrant.TYPE_MAP" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2085,7 +2085,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -2105,8 +2105,131 @@ with all Documents, that are reached by the path.</p>
                 
             </footer>
         </div>
-        <aside class="toc-drawer no-toc">
+        <aside class="toc-drawer">
             
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.qdrant module</a><ul>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.append"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.append()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.apply"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.apply()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.apply_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.apply_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.batch_ids"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.batch_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.blobs"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.blobs</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.clear"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.client"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.client</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.collection_name"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.collection_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.collection_name_meta"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.collection_name_meta</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.config"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.contents"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.contents</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.count"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.count()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.dataloader"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.distance"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.distance</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.embed"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.embed()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.embeddings"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.embeddings</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.empty"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.empty()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.evaluate"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.extend"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.extend()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.find"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.find()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.flatten"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.flatten()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_base64"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_bytes"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_dataframe"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_dict"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_files"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_files()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_huggingface_datasets"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_huggingface_datasets()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_json"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_lines"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_lines()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_list"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_ndarray"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_ndarray()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_ndjson"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_ndjson()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_protobuf"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_pydantic_model"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.from_strawberry_type"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.from_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.get_json_schema"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.get_json_schema()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.get_vocabulary"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.get_vocabulary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.index"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.index()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.insert"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.insert()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.load"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.load()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.load_binary"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.load_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.load_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.load_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.load_json"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.load_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.map"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.map()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.map_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.map_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.match"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.match()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.n_dim"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.n_dim</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_embeddings"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.plot_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.plot_image_sprites"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.plot_image_sprites()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.pop"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.post"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.post()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.pull"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.pull()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.push"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.push()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.reduce"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.reduce()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.reduce_all"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.reduce_all()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.remove"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.remove()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.reverse"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.reverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.sample"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.sample()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save_binary"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save_embeddings_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save_embeddings_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save_gif"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save_gif()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.save_json"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.save_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.scan"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.scan()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.scroll_batch_size"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.scroll_batch_size</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.serialization_config"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.serialization_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.serialize_config"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.serialize_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.shuffle"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.shuffle()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.split_by_tag"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.split_by_tag()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.summary"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.summary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.tensors"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.tensors</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.texts"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.texts</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_base64"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_bytes"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_dataframe"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_dict"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_json"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_list"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_protobuf"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_pydantic_model"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.to_strawberry_type"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.to_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.traverse"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.traverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.traverse_flat"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.traverse_flat()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.traverse_flat_per_path"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.traverse_flat_per_path()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.DocumentArrayQdrant.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">DocumentArrayQdrant.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig"><code class="docutils literal notranslate"><span class="pre">QdrantConfig</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.n_dim</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.distance"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.distance</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.collection_name"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.collection_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.host"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.host</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.port"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.port</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.serialize_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.scroll_batch_size"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.scroll_batch_size</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.ef_construct"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.ef_construct</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.full_scan_threshold"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.full_scan_threshold</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.m"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.m</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.qdrant.QdrantConfig.columns"><code class="docutils literal notranslate"><span class="pre">QdrantConfig.columns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
             
             
         </aside>
@@ -2129,7 +2252,9 @@ with all Documents, that are reached by the path.</p>
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
