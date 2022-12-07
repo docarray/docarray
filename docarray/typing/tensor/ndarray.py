@@ -17,10 +17,10 @@ import numpy as np
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
     from pydantic import BaseConfig
+    from pydantic.fields import ModelField
 
-from docarray.proto import NdArrayProto, NodeProto
+    from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -158,13 +158,15 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         """
         return self.view(np.ndarray)
 
-    def _to_node_protobuf(self: T, field: str = 'ndarray') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'ndarray') -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
+        from docarray.proto import NdArrayProto, NodeProto
+
         nd_proto = NdArrayProto()
         self._flush_tensor_to_proto(nd_proto, value=self)
         return NodeProto(**{field: nd_proto})

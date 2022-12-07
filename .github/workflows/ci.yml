@@ -58,7 +58,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install poetry
-          poetry install --all-extras --without dev
+          poetry install -E torch --without dev
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocumentArray, Document'
 

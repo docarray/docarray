@@ -22,9 +22,9 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
     import numpy as np
+    from docarray.proto import NdArrayProto, NodeProto
 
 from docarray.document.base_node import BaseNode
-from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -189,13 +189,15 @@ class TorchTensor(
         """
         return cls.from_native_torch_tensor(torch.from_numpy(value))
 
-    def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
+        from docarray.proto import NdArrayProto, NodeProto
+
         nd_proto = NdArrayProto()
         self._flush_tensor_to_proto(nd_proto, value=self)
         return NodeProto(**{field: nd_proto})

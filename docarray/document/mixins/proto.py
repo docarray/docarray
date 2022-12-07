@@ -1,8 +1,11 @@
-from typing import Any, Dict, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
-from docarray.proto import DocumentProto, NodeProto
+
+if TYPE_CHECKING:
+    from docarray.proto import DocumentProto, NodeProto
+
 from docarray.typing import (
     ID,
     AnyUrl,
@@ -20,7 +23,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-
         fields: Dict[str, Any] = {}
 
         for field in pb_msg.data:
@@ -69,6 +71,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         :return: the protobuf message
         """
+        from docarray.proto import DocumentProto, NodeProto
+
         data = {}
         for field, value in self:
             try:
@@ -103,7 +107,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return DocumentProto(data=data)
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
+        from docarray.proto import NodeProto
+
         """Convert Document into a NodeProto protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf
