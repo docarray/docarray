@@ -1,7 +1,8 @@
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from docarray.typing.tensor.ndarray import NdArray
 
-# from docarray.typing.tensor.torch_tensor import TorchTensor
+if TYPE_CHECKING:
+    from docarray.typing.tensor.torch_tensor import TorchTensor
 
-Tensor = Union[NdArray]  # , TorchTensor]
+Tensor = Union[NdArray, 'TorchTensor']
