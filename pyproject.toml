@@ -10,10 +10,12 @@ python = "^3.8"
 pydantic = "^1.10.2"
 numpy = "^1.23.4"
 protobuf = { version = "^4.21.9", optional = true }
-torch = { version = "^1.0.0", optional = true }
+torch = {version = "*", optional = true }
 orjson = "^3.8.2"
 pillow = {version = "^9.3.0", optional = true }
 types-pillow = {version = "^9.3.0.1", optional = true }
+poethepoet = "*"
+
 
 [tool.poetry.extras]
 common = ["protobuf"]
@@ -35,6 +37,11 @@ fastapi = "^0.87.0"
 uvicorn = "^0.19.0"
 httpx = "^0.23.0"
 pytest-asyncio = "^0.20.2"
+
+[tool.poe.tasks]
+install-ltt = "python3 -m pip install light-the-torch"
+run-ltt = "python3 -m light_the_torch install --upgrade torch torchaudio torchvision"
+autoinstall-torch-cuda = ["install-ltt", "run-ltt"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
