@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/video.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.document.mixins.video - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>docarray.document.mixins.video - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -209,7 +209,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -477,7 +477,8 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.</span>
 
-<span class="sd">        :param only_keyframes: only keep the keyframes in the video</span>
+<span class="sd">        :param only_keyframes: if True keep only the keyframes, if False keep all frames and store the</span>
+<span class="sd">            indices of the keyframes in :attr:`.tags`</span>
 <span class="sd">        :param kwargs: supports all keyword arguments that are being supported by av.open() as</span>
 <span class="sd">            described in: https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open</span>
 <span class="sd">        :return: Document itself after processed</span>
@@ -490,11 +491,18 @@
                 <span class="n">stream</span><span class="o">.</span><span class="n">codec_context</span><span class="o">.</span><span class="n">skip_frame</span> <span class="o">=</span> <span class="s1">&#39;NONKEY&#39;</span>
 
             <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">keyframe_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="mi">0</span><span class="p">)):</span>
+
                 <span class="n">img</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">to_image</span><span class="p">()</span>
-                <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+                <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">only_keyframes</span> <span class="ow">and</span> <span class="n">frame</span><span class="o">.</span><span class="n">key_frame</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">keyframe_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">only_keyframes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;keyframe_indices&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyframe_indices</span>
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="VideoDataMixin.save_video_tensor_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_video_tensor_to_file</span><span class="p">(</span>
@@ -549,7 +557,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

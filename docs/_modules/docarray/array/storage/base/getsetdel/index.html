@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/base/getsetdel.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.storage.base.getsetdel - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>docarray.array.storage.base.getsetdel - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -209,7 +209,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -575,13 +575,25 @@
             <span class="n">_check_valid_values_nested_set</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">set_index</span><span class="p">],</span> <span class="n">docs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">set_index</span> <span class="ow">in</span> <span class="n">subindices</span><span class="p">:</span>
                 <span class="n">subindex_da</span> <span class="o">=</span> <span class="n">subindices</span><span class="p">[</span><span class="n">set_index</span><span class="p">]</span>
+
                 <span class="n">subindex_da</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="n">subindex_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># root level set, update subindices iteratively</span>
             <span class="k">for</span> <span class="n">subindex_selector</span><span class="p">,</span> <span class="n">subindex_da</span> <span class="ow">in</span> <span class="n">subindices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">old_ids</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">set_index</span><span class="p">])[</span><span class="n">subindex_selector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]</span>
                 <span class="k">del</span> <span class="n">subindex_da</span><span class="p">[</span><span class="n">old_ids</span><span class="p">]</span>
-                <span class="n">subindex_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">)[</span><span class="n">subindex_selector</span><span class="p">])</span>
+
+                <span class="n">value</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">subindex_da</span><span class="p">,</span> <span class="s1">&#39;_config&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># checks if in-memory da</span>
+                    <span class="ow">and</span> <span class="n">subindex_da</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">root_id</span>
+                <span class="p">):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="n">subindex_selector</span><span class="p">]:</span>
+                            <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;_root_id_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">id</span>
+
+                <span class="n">subindex_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">subindex_selector</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_set_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
         <span class="n">docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
@@ -716,7 +728,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

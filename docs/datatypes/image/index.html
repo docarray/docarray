@@ -6,11 +6,11 @@
 <meta property="og:title" content=" Image" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/image/" />
-<meta property="og:site_name" content="DocArray 0.19.1 Documentation" />
-<meta property="og:description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API Simple image processing: DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you ca..." />
+<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
+<meta property="og:description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API DocArray also supports loading multi-page tiff files. In this case, the image tensors are stored to the.tensor attributes at the chunk-level instead of the top-level. Sim..." />
 <meta property="og:image" content="https://docarray.jina.ai/_images/apple.png" />
-<meta property="og:image:alt" content="DocArray 0.19.1 Documentation" />
-<meta name="description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API Simple image processing: DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you ca..." />
+<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
+<meta name="description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API DocArray also supports loading multi-page tiff files. In this case, the image tensors are stored to the.tensor attributes at the chunk-level instead of the top-level. Sim..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Video" href="../video/" /><link rel="prev" title="Text" href="../text/" />
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/image/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>Image - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>Image - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -427,6 +427,22 @@
 (618, 641, 3)
 </pre></div>
 </div>
+<p>DocArray also supports loading multi-page tiff files. In this case, the image tensors are stored to the <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> attributes at the chunk-level instead of the top-level.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;muti_page_tiff_file.tiff&#39;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;uri&#39;, &#39;chunks&#39;) at 7f907d786d6c11ec840a1e008a366d49&gt;
+    └─ chunks
+          ├─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;) at 7aa4c0ba66cf6c300b7f07fdcbc2fdc8&gt;
+          ├─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;) at bc94a3e3ca60352f2e4c9ab1b1bb9c22&gt;
+          └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;) at 36fe0d1daf4442ad6461c619f8bb25b7&gt;
+</pre></div>
+</div>
 </section>
 <section id="simple-image-processing">
 <h2>Simple image processing<a class="headerlink" href="#simple-image-processing" title="Permalink to this heading">#</a></h2>
@@ -517,7 +533,9 @@
 <a class="reference internal image-reference" href="../../_images/simpsons-chunks.png"><img alt="../../_images/simpsons-chunks.png" src="../../_images/simpsons-chunks.png" style="width: 80%;" /></a>
 </figure>
 <p>Hmm, doesn’t change so much. This is because we scan the whole image using sliding windows with no overlap (i.e. stride). Let’s do a bit oversampling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">convert_image_tensor_to_sliding_windows</span><span class="p">(</span><span class="n">window_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">as_chunks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">convert_image_tensor_to_sliding_windows</span><span class="p">(</span>
+    <span class="n">window_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">as_chunks</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">&#39;simpsons-chunks-stride-10.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -563,7 +581,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -6,10 +6,10 @@
 <meta property="og:title" content="Weaviate" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/weaviate/" />
-<meta property="og:site_name" content="DocArray 0.19.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
 <meta property="og:description" content="One can use Weaviate as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray. Usage: Start Weaviate service: To u..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.19.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
 <meta name="description" content="One can use Weaviate as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray. Usage: Start Weaviate service: To u..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Redis" href="../redis/" /><link rel="prev" title="Elasticsearch" href="../elasticsearch/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/weaviate.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>Weaviate - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>Weaviate - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -553,6 +553,10 @@ docker-compose up
 <td><p>Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance.</p></td>
 <td><p>True</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">root_id</span></code></p></td>
+<td><p>Boolean flag indicating whether to store <code class="docutils literal notranslate"><span class="pre">root_id</span></code> in the tags of chunk level Documents</p></td>
+<td><p>True</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -866,10 +870,10 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
         <span class="n">model</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">query_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;certainty&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">},</span>
+    <span class="n">query_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;certainty&quot;</span><span class="p">:</span> <span class="mf">0.995</span><span class="p">},</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only results that have a &#39;weaviate_certainty&#39; of higher than 0.9 should show:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only results that have a &#39;weaviate_certainty&#39; of higher than 0.995 should show:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> text=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -878,8 +882,12 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
 <p>This should return something similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only results that have a <span class="s1">&#39;weaviate_certainty&#39;</span> of higher than <span class="m">0</span>.9 should show:
          <span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
-         <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;weaviate_certainty&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000001<span class="o">}</span>, <span class="s1">&#39;cosine_similarity&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000002000000001<span class="o">}}]</span>
+         <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;distance&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: -3.5762787e-07<span class="o">}}]</span>
 </pre></div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Note</p>
+<p>For Weaviate, the distance scores can be accessed in the Document’s <code class="docutils literal notranslate"><span class="pre">.scores</span></code> dictionary under the key <code class="docutils literal notranslate"><span class="pre">'distance'</span></code>.</p>
 </div>
 </section>
 <section id="include-additional-properties-in-the-return">
@@ -985,7 +993,7 @@ You can run the following:</p>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

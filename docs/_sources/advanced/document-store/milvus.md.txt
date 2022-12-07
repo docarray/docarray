@@ -128,10 +128,11 @@ The following configs can be set:
 | `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                                    | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
 | `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                       | {}                                                   |
 | `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                          | {}                                                   |
- | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                       | 'Session'                                            |
+| `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                       | 'Session'                                            |
 | `batch_size`        | Default batch size for CRUD operations.                                                                                                                                                                                           | -1 (no batching)                                     |
 | `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                       | None                                                 |
 | `list_like`         | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance.                                                                                            | True                                                 |
+| `root_id`           | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                                                                                                           | True                                                 |
 
 ## Minimal example
 
@@ -252,6 +253,21 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
 ```
+
+You can access the scores as follows:
+
+````python
+for doc in results:
+    print(f"score = {doc.scores[distance].value}")
+````
+
+```
+score = 3.0
+score = 12.0
+score = 27.0
+score = 48.0
+```
+
 ### Example of `.find` with only a filter
 
 The following example shows how to use DocArray with Milvus Document Store in order to filter text documents.

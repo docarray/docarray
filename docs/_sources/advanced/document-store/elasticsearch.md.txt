@@ -193,7 +193,12 @@ Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the res
 prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in ElasticSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
 
-Then the search with the proposed filter can be implemented and used with the following code:
+Then the search with the proposed filter can be implemented and used with the following code. 
+
+````{admonition} Note
+:class: note
+For Elasticsearch, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
 
 ```python
 max_price = 7
@@ -404,6 +409,7 @@ The following configs can be set:
 | `tag_indices`     | List of tags to index                                                                                                                  | False                                                  |
 | `batch_size`      | Batch size used to handle storage refreshes/updates                                                                                    | 64                                                     |
 | `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                   |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                                   |
 
 ```{tip}
 You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)

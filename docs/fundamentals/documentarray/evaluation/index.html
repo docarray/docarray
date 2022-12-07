@@ -6,10 +6,10 @@
 <meta property="og:title" content="Evaluate Matches" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/evaluation/" />
-<meta property="og:site_name" content="DocArray 0.19.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
 <meta property="og:description" content="After the execution of match(), your DocumentArray receives a.matches attribute. You can evaluate those matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant and can be provided in two formats: (1) a ground truth array or (2) in th..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.19.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
 <meta name="description" content="After the execution of match(), your DocumentArray receives a.matches attribute. You can evaluate those matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant and can be provided in two formats: (1) a ground truth array or (2) in th..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Dataclass" href="../../dataclass/" /><link rel="prev" title="Search over Nested Structure" href="../subindex/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/evaluation.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>Evaluate Matches - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>Evaluate Matches - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -236,7 +236,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -462,10 +462,10 @@ To make our scenario more interesting, we mix in ten “noise Documents” to ev
 <section id="evaluation-against-a-ground-truth-array">
 <h2>Evaluation against a ground truth array<a class="headerlink" href="#evaluation-against-a-ground-truth-array" title="Permalink to this heading">#</a></h2>
 <p>To evaluate the matches against a ground truth array, you simply provide a DocumentArray to the evaluate function like <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> in the call below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_predict</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Thereby, <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> should contain the same documents as in <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> where each <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute contains exactly those documents which are relevant to the respective root document.
+<p>Thereby, <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> should contain the same Documents as in <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> where each <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute contains exactly those Documents which are relevant to the respective root Document.
 The <code class="docutils literal notranslate"><span class="pre">metrics</span></code> argument determines the metric you want to use for your evaluation, e.g., <code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code>.</p>
 <p>In the code cell below, we evaluate the array <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> with the noisy matches against the original one <code class="docutils literal notranslate"><span class="pre">da_original</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -497,7 +497,8 @@ If you want to look at the individual evaluation values, you can check the <code
 <h3>Document identifier<a class="headerlink" href="#document-identifier" title="Permalink to this heading">#</a></h3>
 <p>Note that the evaluation against a ground truth DocumentArray only works if both DocumentArrays have the same length and their nested structure is the same.
 It makes no sense to evaluate with a completely different DocumentArray.</p>
-<p>While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, it simply uses <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>. One can customize this behavior by specifying <code class="docutils literal notranslate"><span class="pre">hash_fn</span></code>.</p>
+<p>While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, it simply uses <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.
+You can customize this behavior by specifying <code class="docutils literal notranslate"><span class="pre">hash_fn</span></code>.</p>
 <p>Let’s see an example by creating two DocumentArrays with some matches with identical texts.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -532,8 +533,8 @@ It is a valid point because our two DocumentArrays have completely random <code 
 </section>
 <section id="evaluation-via-labels">
 <h2>Evaluation via labels<a class="headerlink" href="#evaluation-via-labels" title="Permalink to this heading">#</a></h2>
-<p>Alternatively, you can add labels to your documents to evaluate them.
-In this case, a match is considered relevant to its root document if it has the same label:</p>
+<p>Alternatively, you can add labels to your Documents to evaluate them.
+In this case, a match is considered relevant to its root Document if it has the same label:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -595,7 +596,7 @@ Some of those metrics accept additional arguments as <code class="docutils liter
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
 <p>These metric scores might change if the <code class="docutils literal notranslate"><span class="pre">limit</span></code> argument of the match function is set differently.</p>
-<p><strong>Note:</strong> Not all of these metrics can be applied to a Top-K result, i.e., <code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">r_precision</span></code> are calculated correctly only if the limit is set equal or higher than the number of documents in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provided to the match function.</p>
+<p><strong>Note:</strong> Not all of these metrics can be applied to a Top-K result, i.e., <code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">r_precision</span></code> are calculated correctly only if the limit is set equal or higher than the number of Documents in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provided to the match function.</p>
 </div>
 <p>You can evaluate multiple metric functions at once, as you can see below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
@@ -607,12 +608,48 @@ Some of those metrics accept additional arguments as <code class="docutils liter
 </pre></div>
 </div>
 <p>In this case, the keyword argument <code class="docutils literal notranslate"><span class="pre">k</span></code> is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.</p>
+<section id="the-max-rel-parameter">
+<h3>The max_rel parameter<a class="headerlink" href="#the-max-rel-parameter" title="Permalink to this heading">#</a></h3>
+<p>Some metric functions shown in the table above require a <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> parameter.
+This parameter should be set to the number of relevant Documents in the Document collection.
+Without the knowledge of this number, metrics like <code class="docutils literal notranslate"><span class="pre">recall_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">f1_score_at_k</span></code> cannot be calculated.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> function, you can provide a keyword argument <code class="docutils literal notranslate"><span class="pre">max_rel</span></code>, which is then used for all queries.
+In the example below, we can use the datasets <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> and <code class="docutils literal notranslate"><span class="pre">da_original</span></code> from the beginning, where each query has nine relevant Documents.
+Therefore, we set <code class="docutils literal notranslate"><span class="pre">max_rel=9</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;recall_at_k&#39;</span><span class="p">],</span> <span class="n">max_rel</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;recall_at_k&#39;: 1.0}
+</pre></div>
+</div>
+<p>Since all relevant Documents are in the matches, the recall is one.
+However, this only makes sense if the number of relevant Documents is equal for each query.
+If you provide a <code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> parameter to the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> function, <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> is set to the number of matches of the query Document.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;recall_at_k&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;recall_at_k&#39;: 1.0}
+</pre></div>
+</div>
+<p>For labeled datasets, this is not possible.
+Here, you can set the <code class="docutils literal notranslate"><span class="pre">num_relevant_documents_per_label</span></code> parameter of <code class="docutils literal notranslate"><span class="pre">evaluate</span></code>.
+It accepts a dictionary that contains the number of relevant Documents for each label.
+In this way, the function can set <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> to the correct value for each query Document.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">example_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;recall_at_k&#39;</span><span class="p">],</span> <span class="n">num_relevant_documents_per_label</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;recall_at_k&#39;: 1.0}
+</pre></div>
+</div>
+</section>
 <section id="custom-metrics">
 <h3>Custom metrics<a class="headerlink" href="#custom-metrics" title="Permalink to this heading">#</a></h3>
 <p>If the pre-defined metrics do not fit your use-case, you can define a custom metric function.
 It should take as input a list of binary relevance judgements of a query (<code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code> values).
 The evaluate function already calculates this binary list from the <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute so that each number represents the relevancy of a match.</p>
-<p>Let’s write a custom metric function, which counts the number of relevant documents per query:</p>
+<p>Let’s write a custom metric function, which counts the number of relevant Documents per query:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_relevant</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">)</span>
 
@@ -666,20 +703,21 @@ The second one <code class="docutils literal notranslate"><span class="pre">exam
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;reciprocal_rank&#39;: 0.7583333333333333}
 </pre></div>
 </div>
+<p>For metric functions which require a <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> parameter, the <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> function (described later in this section) automatically constructs the dictionary for <code class="docutils literal notranslate"><span class="pre">num_relevant_documents_per_label</span></code> based on the <code class="docutils literal notranslate"><span class="pre">index_data</span></code> argument.</p>
 <section id="batch-wise-matching">
 <h3>Batch-wise matching<a class="headerlink" href="#batch-wise-matching" title="Permalink to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> function is especially useful, when you need to evaluate the queries on a very large document collection (<code class="docutils literal notranslate"><span class="pre">example_index</span></code> in the code snippet above), which is too large to store the embeddings of all documents in main-memory.
-In this case, <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> matches the queries to batches of the document collection.
+<p>The <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> function is especially useful, when you need to evaluate the queries on a very large Document collection (<code class="docutils literal notranslate"><span class="pre">example_index</span></code> in the code snippet above), which is too large to store the embeddings of all Documents in main-memory.
+In this case, <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> matches the queries to batches of the Document collection.
 After the batch is processed all embeddings are deleted.
 By default, the batch size for the matching (<code class="docutils literal notranslate"><span class="pre">match_batch_size</span></code>) is set to <code class="docutils literal notranslate"><span class="pre">100_000</span></code>.
 If you want to reduce the memory footprint, you can set it to a lower value.</p>
 </section>
 <section id="sampling-queries">
 <h3>Sampling Queries<a class="headerlink" href="#sampling-queries" title="Permalink to this heading">#</a></h3>
-<p>If you want to evaluate a large dataset, it might be useful to sample query documents.
+<p>If you want to evaluate a large dataset, it might be useful to sample query Documents.
 Since the metric values returned by the <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> are mean values, sampling should not change the result significantly if the sample is large enough.
-By default, sampling is applied for <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects with more than 1,000 documents.
-However, it is only applied on the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> itself and not on the document provided in <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
+By default, sampling is applied for <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects with more than 1,000 Documents.
+However, it is only applied on the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> itself and not on the Documents provided in <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
 If you want to change the number of samples, you can ajust the <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> argument.
 In the following code block an evaluation is done with 100 samples:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -704,7 +742,7 @@ In the following code block an evaluation is done with 100 samples:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.13649999999999998}
 </pre></div>
 </div>
-<p>Please note that in this way only documents which are actually evaluated obtain an <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> attribute.</p>
+<p>Please note that in this way only Documents which are actually evaluated obtain an <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> attribute.</p>
 <p>To test how close it is to the exact result, we execute the function again with <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> set to 1,000:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">embed_and_evaluate</span><span class="p">(</span>
     <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span> <span class="n">embed_funcs</span><span class="o">=</span><span class="n">emb_func</span><span class="p">,</span> <span class="n">query_sample_size</span><span class="o">=</span><span class="mi">1_000</span>
@@ -753,7 +791,7 @@ In the following code block an evaluation is done with 100 samples:</p>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -792,6 +830,7 @@ In the following code block an evaluation is done with 100 samples:</p>
 </li>
 <li><a class="reference internal" href="#evaluation-via-labels">Evaluation via labels</a></li>
 <li><a class="reference internal" href="#metric-functions">Metric functions</a><ul>
+<li><a class="reference internal" href="#the-max-rel-parameter">The max_rel parameter</a></li>
 <li><a class="reference internal" href="#custom-metrics">Custom metrics</a></li>
 <li><a class="reference internal" href="#custom-names">Custom names</a></li>
 </ul>

@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/qdrant/backend.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.storage.qdrant.backend - DocArray 0.19.1 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>docarray.array.storage.qdrant.backend - DocArray 0.20.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.19.1 documentation</div>
+                <div class="brand">DocArray 0.20.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -209,7 +209,7 @@
     <option value="/">latest</option>
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../../../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -389,6 +389,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qdrant_client</span> <span class="kn">import</span> <span class="n">QdrantClient</span>
+<span class="kn">from</span> <span class="nn">qdrant_client.http</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">qdrant_client.http.models.models</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Distance</span><span class="p">,</span>
     <span class="n">CreateCollection</span><span class="p">,</span>
@@ -399,7 +400,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="kn">from</span> <span class="nn">docarray.array.storage.base.backend</span> <span class="kn">import</span> <span class="n">BaseBackendMixin</span>
+<span class="kn">from</span> <span class="nn">docarray.array.storage.base.backend</span> <span class="kn">import</span> <span class="n">BaseBackendMixin</span><span class="p">,</span> <span class="n">TypeMap</span>
 <span class="kn">from</span> <span class="nn">docarray.array.storage.qdrant.helper</span> <span class="kn">import</span> <span class="n">DISTANCES</span>
 <span class="kn">from</span> <span class="nn">docarray.helper</span> <span class="kn">import</span> <span class="n">dataclass_from_dict</span><span class="p">,</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">docarray.math.helper</span> <span class="kn">import</span> <span class="n">EPSILON</span>
@@ -425,7 +426,8 @@
     <span class="n">ef_construct</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">full_scan_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">m</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">root_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="BackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.qdrant.backend/#docarray.array.qdrant.BackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
@@ -447,6 +449,15 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_tmp_collection_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+
+    <span class="n">TYPE_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;int&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+        <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+        <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span>
+        <span class="s1">&#39;str&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;keyword&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
+        <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
+        <span class="s1">&#39;geo&#39;</span><span class="p">:</span> <span class="n">TypeMap</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;geo&#39;</span><span class="p">,</span> <span class="n">converter</span><span class="o">=</span><span class="nb">dict</span><span class="p">),</span>
+    <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -503,7 +514,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_qdrant_schema</span><span class="p">()</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_init_storage</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_init_storage</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">docs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">collection_name</span><span class="p">:</span>
             <span class="k">return</span>
@@ -545,6 +556,23 @@
                 <span class="p">),</span>
                 <span class="n">hnsw_config</span><span class="o">=</span><span class="n">hnsw_config</span><span class="p">,</span>
             <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">coltype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">coltype</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_payload_index</span><span class="p">(</span>
+                        <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span>
+                        <span class="n">field_name</span><span class="o">=</span><span class="n">col</span><span class="p">,</span>
+                        <span class="n">field_schema</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">TextIndexParams</span><span class="p">(</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+                            <span class="n">tokenizer</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">TokenizerType</span><span class="o">.</span><span class="n">WORD</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_payload_index</span><span class="p">(</span>
+                        <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span>
+                        <span class="n">field_name</span><span class="o">=</span><span class="n">col</span><span class="p">,</span>
+                        <span class="n">field_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_type</span><span class="p">(</span><span class="n">coltype</span><span class="p">),</span>
+                    <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_collection_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_collections</span><span class="p">()</span>
@@ -632,7 +660,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Nov 24, 2022</div>
+                            Last updated on Dec 07, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
