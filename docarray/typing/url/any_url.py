@@ -3,11 +3,12 @@ from typing import TYPE_CHECKING, Type, TypeVar
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
-from docarray.proto import NodeProto
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
     from pydantic.networks import Parts
+
+    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='AnyUrl')
 
@@ -17,13 +18,15 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         False  # turn off host requirement to allow passing of local paths as URL
     )
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to
         be converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(any_url=str(self))
 
     @classmethod

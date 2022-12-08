@@ -1,12 +1,34 @@
 from collections import defaultdict
 from contextlib import contextmanager
 from functools import wraps
-from typing import DefaultDict, Dict, Iterable, List, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.typing import NdArray, TorchTensor
+from docarray.typing import NdArray
+
+if TYPE_CHECKING:
+    from docarray.typing import TorchTensor
+
+try:
+    import torch
+except ImportError:
+    torch_imported = False
+else:
+    from docarray.typing import TorchTensor
+
+    torch_imported = True
 
 
 def _stacked_mode_blocker(func):
@@ -115,7 +137,7 @@ class DocumentArray(
         super().__init__(doc_ for doc_ in docs)
 
         self._columns: Optional[
-            Dict[str, Union[TorchTensor, AbstractDocumentArray, NdArray, None]]
+            Dict[str, Union['TorchTensor', AbstractDocumentArray, NdArray, None]]
         ] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
@@ -220,15 +242,20 @@ class DocumentArray(
             self._columns = dict()
 
             for field_name, field in self.document_type.__fields__.items():
+
+                is_torch_subclass = (
+                    issubclass(field.type_, torch.Tensor) if torch_imported else False
+                )
+
                 if (
-                    issubclass(field.type_, TorchTensor)
+                    is_torch_subclass
                     or issubclass(field.type_, BaseDocument)
                     or issubclass(field.type_, NdArray)
                 ):
                     self._columns[field_name] = None
 
             columns_to_stack: DefaultDict[
-                str, Union[List[TorchTensor], List[NdArray], List[BaseDocument]]
+                str, Union[List['TorchTensor'], List[NdArray], List[BaseDocument]]
             ] = defaultdict(  # type: ignore
                 list  # type: ignore
             )  # type: ignore

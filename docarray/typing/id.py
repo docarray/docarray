@@ -1,9 +1,12 @@
-from typing import Type, TypeVar, Union
+from typing import TYPE_CHECKING, Type, TypeVar, Union
 from uuid import UUID
+
 from pydantic import BaseConfig, parse_obj_as
 from pydantic.fields import ModelField
 
-from docarray.proto import NodeProto
+if TYPE_CHECKING:
+    from docarray.proto import NodeProto
+
 from docarray.typing.abstract_type import AbstractType
 
 T = TypeVar('T', bound='ID')
@@ -32,13 +35,15 @@ class ID(str, AbstractType):
         except Exception:
             raise ValueError(f'Expected a str, int or UUID, got {type(value)}')
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert an ID into a NodeProto message. This function should
         be called when the self is nested into another Document that need to be
         converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(id=self)
 
     @classmethod

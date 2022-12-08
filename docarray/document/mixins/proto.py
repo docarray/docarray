@@ -1,17 +1,21 @@
-from typing import Any, Dict, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
-from docarray.proto import DocumentProto, NodeProto
-from docarray.typing import (
-    ID,
-    AnyUrl,
-    Embedding,
-    ImageUrl,
-    NdArray,
-    TextUrl,
-    TorchTensor,
-)
+
+if TYPE_CHECKING:
+    from docarray.proto import DocumentProto, NodeProto
+
+
+try:
+    import torch  # noqa: F401
+except ImportError:
+    torch_imported = False
+else:
+    from docarray.typing import TorchTensor
+
+    torch_imported = True
+
 
 T = TypeVar('T', bound='ProtoMixin')
 
@@ -20,6 +24,14 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
+        from docarray.typing import (  # TorchTensor,
+            ID,
+            AnyUrl,
+            Embedding,
+            ImageUrl,
+            NdArray,
+            TextUrl,
+        )
 
         fields: Dict[str, Any] = {}
 
@@ -32,13 +44,16 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # the check should be delegated to the type level
             content_type_dict = dict(
                 ndarray=NdArray,
-                torch_tensor=TorchTensor,
                 embedding=Embedding,
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,
                 id=ID,
             )
+
+            if torch_imported:
+                content_type_dict['torch_tensor'] = TorchTensor
+
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
                     getattr(value, content_type)
@@ -69,6 +84,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         :return: the protobuf message
         """
+        from docarray.proto import DocumentProto, NodeProto
+
         data = {}
         for field, value in self:
             try:
@@ -103,7 +120,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return DocumentProto(data=data)
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
+        from docarray.proto import NodeProto
+
         """Convert Document into a NodeProto protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf

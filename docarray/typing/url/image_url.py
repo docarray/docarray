@@ -1,10 +1,9 @@
 import io
 import struct
-from typing import TYPE_CHECKING, Optional, Tuple, TypeVar, Union, Type, Any
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.proto import NodeProto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
 
@@ -12,6 +11,8 @@ if TYPE_CHECKING:
     import PIL
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
+
+    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='ImageUrl')
 
@@ -24,13 +25,15 @@ class ImageUrl(AnyUrl):
     Cane be remote (web) URL, or a local file path.
     """
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to
         be converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(image_url=str(self))
 
     @classmethod
