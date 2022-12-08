@@ -1,8 +1,13 @@
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 from docarray.typing.tensor.ndarray import NdArray
 
-if TYPE_CHECKING:
-    from docarray.typing.tensor.torch_tensor import TorchTensor
+try:
+    import torch  # noqa: F401
+except ImportError:
+    Tensor = Union[NdArray]  # type: ignore
 
-Tensor = Union[NdArray, 'TorchTensor']
+else:
+    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
+
+    Tensor = Union[NdArray, TorchTensor]  # type: ignore
