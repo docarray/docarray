@@ -1,6 +1,6 @@
 # Fluent Interface
 
-Document provides a simple fluent interface that allows one to process (often preprocess) a Document object by chaining methods. For example to read an image file as `numpy.ndarray`, resize it, normalize it and then store it to another file; one can simply do:
+Documents provide a simple fluent interface that let you process (often preprocess) a Document object by chaining methods. For example to read an image file as `numpy.ndarray`, resize it, normalize it and then store it to another file:
 
 ```python
 from docarray import Document
@@ -27,7 +27,7 @@ Processed `apple1.png`
 ```
 
 
-Note that, chaining methods always modify the original Document in-place. That means the above example is equivalent to:
+Note that chaining methods always modifies the original Document in-place. That means the above example is equivalent to:
 
 ```python
 from docarray import Document
@@ -92,7 +92,7 @@ Provide helper functions for {class}`Document` to support text data.
 
 
 ### SingletonSugar
-Provide sugary syntax for {class}`Document` by inheriting methods from {class}`DocumentArray`
+Provide sugary syntax for {class}`Document` by inheriting methods from {class}`DocumentArray`.
 - {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed`
 - {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.match`
 
@@ -103,6 +103,7 @@ Provide helper functions for feature hashing.
 
 
 ### Porting
+Provide helper functions for {class}`Document` to convert between serialization types.
 
 - {meth}`~docarray.document.mixins.porting.PortingMixin.from_base64`
 - {meth}`~docarray.document.mixins.porting.PortingMixin.from_bytes`
@@ -116,12 +117,12 @@ Provide helper functions for feature hashing.
 
 
 ### Pydantic
-Provide helper functions to convert to/from a Pydantic model
+Provide helper functions to convert to/from a Pydantic model.
 - {meth}`~docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model`
 
 
 ### Strawberry
-Provide helper functions to convert to/from a Strawberry model
+Provide helper functions to convert to/from a Strawberry model.
 - {meth}`~docarray.document.mixins.strawberry.StrawberryMixin.from_strawberry_type`
 
 
