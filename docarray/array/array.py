@@ -16,9 +16,10 @@ from typing import (
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
+from docarray.typing import NdArray
 
 if TYPE_CHECKING:
-    from docarray.typing import NdArray, TorchTensor
+    from docarray.typing import TorchTensor
 
 try:
     import torch
