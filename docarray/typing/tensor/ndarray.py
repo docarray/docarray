@@ -180,7 +180,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         """
         source = pb_msg.dense
         if source.buffer:
-            x = np.frombuffer(source.buffer, dtype=source.dtype)
+            x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
             return cls.from_ndarray(x.reshape(source.shape))
         elif len(source.shape) > 0:
             return cls.from_ndarray(np.zeros(source.shape))
