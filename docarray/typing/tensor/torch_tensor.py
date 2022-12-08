@@ -207,7 +207,7 @@ class TorchTensor(
         """
         read ndarray from a proto msg
         :param pb_msg:
-        :return: a numpy array
+        :return: a torch tensor
         """
         source = pb_msg.dense
         if source.buffer:
