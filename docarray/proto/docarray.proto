@@ -79,7 +79,7 @@ message DocumentArrayListProto {
 }
 
 message DocumentArrayStackedProto{
-  repeated DocumentProto docs = 1; // a list of Documents
+  DocumentArrayListProto list_ = 1; // a list of Documents
 }
 
 message DocumentArrayProto{

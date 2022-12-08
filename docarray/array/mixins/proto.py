@@ -18,7 +18,9 @@ class ProtoArrayMixin(AbstractDocumentArray):
         if content_type == 'list_':
             return cls(cls.document_type.from_protobuf(od) for od in pb_msg.list_.docs)
         elif content_type == 'stack':
-            return cls(cls.document_type.from_protobuf(od) for od in pb_msg.stack.docs)
+            return cls(
+                cls.document_type.from_protobuf(od) for od in pb_msg.stack.list_.docs
+            )
         else:
             raise ValueError(
                 f'proto message content jey {content_type} is not supported'
@@ -33,19 +35,19 @@ class ProtoArrayMixin(AbstractDocumentArray):
         :return: the protobuf message
         """
 
-        from docarray.proto import DocumentArrayProto
+        from docarray.proto import (
+            DocumentArrayListProto,
+            DocumentArrayProto,
+            DocumentArrayStackedProto,
+        )
 
         if self.is_stacked():
-            from docarray.proto import DocumentArrayStackedProto
-
-            da_proto = DocumentArrayStackedProto()
+            da_proto = DocumentArrayListProto()
             for doc in self:
                 da_proto.docs.append(doc.to_protobuf())
-
+            da_proto = DocumentArrayStackedProto(list_=da_proto)
             return DocumentArrayProto(stack=da_proto)
         else:
-            from docarray.proto import DocumentArrayListProto
-
             da_proto = DocumentArrayListProto()
             for doc in self:
                 da_proto.docs.append(doc.to_protobuf())
