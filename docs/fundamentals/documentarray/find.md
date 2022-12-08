@@ -1,19 +1,18 @@
 (find-documentarray)=
 # Query by Conditions
 
-We can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the conditions specified in a `query` object. One can use `da.find(query)` to filter Documents and get nearest neighbours from `da`:
+You can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based on conditions specified in a `query` object.
 
 - To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
-- To find nearest neighbours, the `query` object needs to be a NdArray-like, a Document, or a DocumentArray object that defines embedding. One can also use `.match()` function for this purpose, and there is a minor interface difference between these two functions, which will be described {ref}`in the next chapter<match-documentarray>`.
+- To find nearest neighbours, the `query` object needs to be an ndarray-like, Document, or DocumentArray that defines embedding(s). You can also use the `.match()` function for this purpose, and there's a minor interface difference between these two functions which is covered {ref}`in the next chapter<match-documentarray>`.
 
 ```{admonition} filter query syntax
 :class: note
 
-The syntax to define filter queries is dependant of the {ref}`Document store <doc-store>` used. Some will have their own query language 
-depending on the supporting backend.
+The filter query syntax depends on which {ref}`document store <doc-store>` you use. Some may have their own query language.
 ```
 
-Let's see some examples in action. First, let's prepare a DocumentArray we will use.
+Let's see some examples in action. First, let's prepare a DocumentArray:
 
 ```python
 from jina import Document, DocumentArray
@@ -76,13 +75,13 @@ da.summary()
 
 ## Filter with query operators
 
-A query filter document can use the query operators to specify conditions in the following form:
+A query filter document uses query operators to specify conditions:
 
 ```text
 { <field1>: { <operator1>: <value1> }, ... }
 ```
 
-Here `field1` is {ref}`any field name<doc-fields>` of a Document object.  To access nested fields, one can use the dunder expression. For example, `tags__timestamp` is to access `doc.tags['timestamp']` field.
+Here `field1` is {ref}`any field name<doc-fields>` of a Document object.  To access nested fields, you can use the dunder expression. For example, `tags__timestamp` accesses the `doc.tags['timestamp']` field.
 
 `value1` can be either a user given Python object, or a substitution field with curly bracket `{field}`   
 
@@ -103,7 +102,7 @@ Finally, `operator1` can be one of the following:
 | `$exists`      | Matches documents that have the specified field. And empty string content is also considered as not exists. |
 
 
-For example, to select all `modality='D'` Documents,
+To select all `modality='D'` Documents:
 
 ```python
 r = da.find({'modality': {'$eq': 'D'}})
@@ -143,7 +142,7 @@ r = da.find({'tags__h': {'$gt': 10}})
   "weight": 75.0}]
 ```
 
-Beside using a predefined value, one can also use a substitution with `{field}`, notice the curly brackets there. For example,
+Beside using a predefined value, you can also use a substitution with `{field}`. Notice those curly braces. For example:
 
 ```python
 r = da.find({'tags__h': {'$gt': '{tags__w}'}})
@@ -157,20 +156,15 @@ r = da.find({'tags__h': {'$gt': '{tags__w}'}})
   "weight": 25.0}]
 ```
 
-
-
 ## Combine multiple conditions
 
-
-You can combine multiple conditions using the following operators
+You can combine multiple conditions using the following operators:
 
 | Boolean Operator | Description                                        |
 |------------------|----------------------------------------------------|
 | `$and`           | Join query clauses with a logical AND              |
 | `$or`            | Join query clauses with a logical OR               |
 | `$not`           | Inverts the effect of a query expression           |
-
-
 
 ```python
 r = da.find({'$or': [{'weight': {'$eq': 45}}, {'modality': {'$eq': 'D'}}]})
