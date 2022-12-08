@@ -12,6 +12,8 @@ CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_TXT = os.path.join(CUR_DIR, '..', '..', '..', 'toydata', 'penal_colony.txt')
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize(
     'url,expected_beginning',
     [(REMOTE_TXT, '<!DOCTYPE html>'), (LOCAL_TXT, '“It’s a peculiar apparatus,”')],
@@ -23,6 +25,8 @@ def test_load(url, expected_beginning):
     assert txt.startswith(expected_beginning)
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize('url', [REMOTE_TXT, LOCAL_TXT])
 def test_load_to_bytes(url):
     uri = parse_obj_as(TextUrl, url)
