@@ -1,7 +1,7 @@
 (redis)=
 # Redis
 
-You can use [Redis](https://redis.io) as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Redis](https://redis.io) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `redis`. You can install it via `pip install "docarray[redis]".`

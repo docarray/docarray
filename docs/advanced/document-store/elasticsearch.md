@@ -2,7 +2,7 @@
 
 # Elasticsearch
 
-One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Elasticsearch](https://www.elastic.co) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `elasticsearch`. You can install it via `pip install "docarray[elasticsearch]".`

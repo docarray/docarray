@@ -1,7 +1,7 @@
 (annlite)=
 # Annlite
 
-One can use [Annlite](https://github.com/jina-ai/annlite) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Annlite](https://github.com/jina-ai/annlite) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `annlite`. You can install it via `pip install "docarray[annlite]".` 
