@@ -1,7 +1,8 @@
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
-from docarray.typing.tensor.embedding.embedding_ndarray import NdArrayEmbedding
+from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
 
-# from docarray.typing.tensor.embedding.embedding_torch import TorchEmbedding
+if TYPE_CHECKING:
+    from docarray.typing.tensor.embedding.torch import TorchEmbedding
 
-Embedding = Union[NdArrayEmbedding]  # , TorchEmbedding]
+Embedding = Union[NdArrayEmbedding, 'TorchEmbedding']
