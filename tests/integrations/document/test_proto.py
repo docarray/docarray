@@ -74,6 +74,7 @@ def test_all_types():
 
     assert (doc.np_array == np.zeros((3, 224, 224))).all()
     assert isinstance(doc.np_array, np.ndarray)
+    assert doc.np_array.flags.writeable
 
     assert (doc.np_array_param == np.zeros((224, 224, 3))).all()
     assert isinstance(doc.np_array_param, np.ndarray)

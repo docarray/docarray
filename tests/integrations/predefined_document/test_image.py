@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from docarray import Image
 
@@ -8,6 +9,8 @@ REMOTE_JPG = (
 )
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_image():
 
     image = Image(url=REMOTE_JPG)

@@ -1,6 +1,17 @@
 import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import torch  # type: ignore
@@ -11,9 +22,9 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
     import numpy as np
+    from docarray.proto import NdArrayProto, NodeProto
 
 from docarray.document.base_node import BaseNode
-from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -73,6 +84,8 @@ class TorchTensor(
 
     """
 
+    __parametrized_meta__ = metaTorchAndNode
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
@@ -80,10 +93,8 @@ class TorchTensor(
         # the value returned from the previous validator
         yield cls.validate
 
-    __parametrized_meta__ = metaTorchAndNode
-
     @classmethod
-    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
         if t.shape == shape:
             return t
         else:
@@ -178,13 +189,15 @@ class TorchTensor(
         """
         return cls.from_native_torch_tensor(torch.from_numpy(value))
 
-    def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
+        from docarray.proto import NdArrayProto, NodeProto
+
         nd_proto = NdArrayProto()
         self._flush_tensor_to_proto(nd_proto, value=self)
         return NodeProto(**{field: nd_proto})
@@ -194,11 +207,11 @@ class TorchTensor(
         """
         read ndarray from a proto msg
         :param pb_msg:
-        :return: a numpy array
+        :return: a torch tensor
         """
         source = pb_msg.dense
         if source.buffer:
-            x = np.frombuffer(source.buffer, dtype=source.dtype)
+            x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
             return cls.from_ndarray(x.reshape(source.shape))
         elif len(source.shape) > 0:
             return cls.from_ndarray(np.zeros(source.shape))
@@ -212,3 +225,10 @@ class TorchTensor(
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value_np.shape))
         pb_msg.dense.dtype = value_np.dtype.str
+
+    @classmethod
+    def __docarray_stack__(
+        cls: Type[T], seq: Union[Tuple['TorchTensor'], List['TorchTensor']]
+    ) -> T:
+        """Stack a sequence of ndarray into a single ndarray."""
+        return cls.from_native_torch_tensor(torch.stack(seq))  # type: ignore

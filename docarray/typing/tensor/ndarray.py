@@ -17,10 +17,10 @@ import numpy as np
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
     from pydantic import BaseConfig
+    from pydantic.fields import ModelField
 
-from docarray.proto import NdArrayProto, NodeProto
+    from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -77,7 +77,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         yield cls.validate
 
     @classmethod
-    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
         if t.shape == shape:
             return t
         else:
@@ -158,13 +158,15 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         """
         return self.view(np.ndarray)
 
-    def _to_node_protobuf(self: T, field: str = 'ndarray') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'ndarray') -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
+        from docarray.proto import NdArrayProto, NodeProto
+
         nd_proto = NdArrayProto()
         self._flush_tensor_to_proto(nd_proto, value=self)
         return NodeProto(**{field: nd_proto})
@@ -178,7 +180,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         """
         source = pb_msg.dense
         if source.buffer:
-            x = np.frombuffer(source.buffer, dtype=source.dtype)
+            x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
             return cls.from_ndarray(x.reshape(source.shape))
         elif len(source.shape) > 0:
             return cls.from_ndarray(np.zeros(source.shape))
@@ -191,3 +193,10 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))
         pb_msg.dense.dtype = value.dtype.str
+
+    @classmethod
+    def __docarray_stack__(
+        cls: Type[T], seq: Union[List['NdArray'], Tuple['NdArray']]
+    ) -> T:
+        """Stack a sequence of ndarrays into a single ndarray."""
+        return cls.from_ndarray(np.stack(seq))

@@ -1,7 +1,9 @@
-from typing import Type
+from typing import TYPE_CHECKING, Type
 
 from docarray.array.abstract_array import AbstractDocumentArray
-from docarray.proto import DocumentArrayProto, NodeProto
+
+if TYPE_CHECKING:
+    from docarray.proto import DocumentArrayProto, NodeProto
 
 
 class ProtoArrayMixin(AbstractDocumentArray):
@@ -22,16 +24,20 @@ class ProtoArrayMixin(AbstractDocumentArray):
         :return: the protobuf message
         """
 
+        from docarray.proto import DocumentArrayProto
+
         dap = DocumentArrayProto()
         for doc in self:
             dap.docs.append(doc.to_protobuf())
         return dap
 
-    def _to_node_protobuf(self) -> NodeProto:
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert a DocumentArray into a NodeProto protobuf message.
          This function should be called when a DocumentArray
         is nested into another Document that need to be converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(chunks=self.to_protobuf())

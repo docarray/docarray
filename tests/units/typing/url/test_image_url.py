@@ -22,6 +22,8 @@ REMOTE_JPG = (
 )
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_image_url():
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)
 
@@ -46,6 +48,8 @@ def test_dump_json():
     orjson_dumps(url)
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
     [
@@ -61,6 +65,8 @@ def test_load(image_format, path_to_img):
     assert isinstance(tensor, np.ndarray)
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
     [
@@ -83,6 +89,8 @@ def test_load_width_height(image_format, path_to_img, width, height):
         assert shape[0] == height
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
     [
@@ -120,6 +128,8 @@ def test_load_timeout():
         _ = url.load(timeout=0.001)
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
     [

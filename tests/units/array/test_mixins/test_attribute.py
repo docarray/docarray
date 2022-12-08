@@ -16,17 +16,37 @@ def test_get_bulk_attributes_function():
         (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
     )
 
-    tensors = da._get_documents_attribute('tensor')
+    tensors = da._get_array_attribute('tensor')
 
     assert len(tensors) == N
     for tensor in tensors:
         assert tensor.shape == (3, 224, 224)
 
-    texts = da._get_documents_attribute('text')
+    texts = da._get_array_attribute('text')
 
     assert len(texts) == N
     for i, text in enumerate(texts):
         assert text == f'hello{i}'
+
+
+def test_set_attributes():
+    class InnerDoc(BaseDocument):
+        text: str
+
+    class Mmdoc(BaseDocument):
+        inner: InnerDoc
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(inner=InnerDoc(text=f'hello{i}')) for i in range(N))
+    )
+
+    list_docs = [InnerDoc(text=f'hello{i}') for i in range(N)]
+    da._set_array_attribute('inner', list_docs)
+
+    for doc, list_doc in zip(da, list_docs):
+        assert doc.inner is list_doc
 
 
 def test_get_bulk_attributes():
