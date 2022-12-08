@@ -13,7 +13,16 @@ class ProtoArrayMixin(AbstractDocumentArray):
     ) -> AbstractDocumentArray:
         """create a Document from a protobuf message"""
 
-        return cls(cls.document_type.from_protobuf(od) for od in pb_msg.docs)
+        content_type = pb_msg.WhichOneof('content')
+
+        if content_type == 'list_':
+            return cls(cls.document_type.from_protobuf(od) for od in pb_msg.list_.docs)
+        elif content_type == 'stack':
+            return cls(cls.document_type.from_protobuf(od) for od in pb_msg.stack.docs)
+        else:
+            raise ValueError(
+                f'proto message content jey {content_type} is not supported'
+            )
 
     def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocumentArray into a Protobuf message.
@@ -26,10 +35,22 @@ class ProtoArrayMixin(AbstractDocumentArray):
 
         from docarray.proto import DocumentArrayProto
 
-        dap = DocumentArrayProto()
-        for doc in self:
-            dap.docs.append(doc.to_protobuf())
-        return dap
+        if self.is_stacked():
+            from docarray.proto import DocumentArrayStackedProto
+
+            da_proto = DocumentArrayStackedProto()
+            for doc in self:
+                da_proto.docs.append(doc.to_protobuf())
+
+            return DocumentArrayProto(stack=da_proto)
+        else:
+            from docarray.proto import DocumentArrayListProto
+
+            da_proto = DocumentArrayListProto()
+            for doc in self:
+                da_proto.docs.append(doc.to_protobuf())
+
+            return DocumentArrayProto(list_=da_proto)
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert a DocumentArray into a NodeProto protobuf message.

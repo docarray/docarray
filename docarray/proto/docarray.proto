@@ -74,6 +74,17 @@ message DocumentProto {
 
 }
 
-message DocumentArrayProto {
+message DocumentArrayListProto {
     repeated DocumentProto docs = 1; // a list of Documents
+}
+
+message DocumentArrayStackedProto{
+  repeated DocumentProto docs = 1; // a list of Documents
+}
+
+message DocumentArrayProto{
+  oneof content {
+    DocumentArrayListProto list_ = 1;
+    DocumentArrayStackedProto stack = 2;
+  }
 }
