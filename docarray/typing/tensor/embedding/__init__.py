@@ -3,7 +3,7 @@ try:
 except ImportError:
     pass
 else:
-    from docarray.typing.tensor import TorchEmbedding  # type: ignore # noqa: F401
+    from docarray.typing.tensor.embedding.embedding_torch import TorchEmbedding  # type: ignore # noqa: [F401,E510]
 
 
 from docarray.typing.tensor.embedding.embedding import Embedding
