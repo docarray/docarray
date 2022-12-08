@@ -73,8 +73,6 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
             _docarray_target_shape = shape
-            __name__ = f'{cls.__name__}[{shape_str}]'
-            __qualname__ = f'{cls.__qualname__}[{shape_str}]'
 
             @classmethod
             def validate(
@@ -85,6 +83,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
             ):
                 t = super().validate(value, field, config)
                 return _cls.__docarray_validate_shape__(t, _cls._docarray_target_shape)
+
+        _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
+        _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
 
         return _ParametrizedTensor
 
