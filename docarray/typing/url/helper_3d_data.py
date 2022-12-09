@@ -1,12 +1,13 @@
-from typing import Union
+from typing import TYPE_CHECKING, Optional, Union
 
-import trimesh
+if TYPE_CHECKING:
+    import trimesh
 
 MESH_FILE_FORMATS = ('obj', 'glb', 'ply')
 
 
 def load_trimesh_instance(
-    uri: str, force: str = None
+    uri: str, force: Optional[str] = None
 ) -> Union[trimesh.Trimesh, trimesh.Scene]:
     """
     Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
