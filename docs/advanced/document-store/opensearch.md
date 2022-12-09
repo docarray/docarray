@@ -2,7 +2,7 @@
 
 # Opensearch
 
-One can use [Opensearch](https://opensearch.org/) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Opensearch](https://opensearch.org/) as the document store for DocumentArray. It is useful when you wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `opensearch`. You can install it via `pip install "docarray[opensearch]".`
@@ -41,7 +41,7 @@ docker-compose up
 
 ### Create DocumentArray with Opensearch backend
 
-Assuming service is started using the default configuration (i.e. server address is `http://localhost:9200`), one can instantiate a DocumentArray with Opensearch storage as such:
+Assuming service is started using the default configuration (i.e. server address is `http://localhost:9200`), you can instantiate a DocumentArray with Opensearch storage as such:
 
 ```python
 from docarray import DocumentArray
@@ -70,7 +70,7 @@ da = DocumentArray(
 
 Here is [the official Documentation](https://opensearch.org/docs/2.0/security-plugin/configuration/generate-certificates/) for you to get certificate, password etc.
 
-To access a DocumentArray formerly persisted, one can specify `index_name` and the hosts.
+To access a DocumentArray formerly persisted, you can specify `index_name` and the hosts.
 
 The following example will build a DocumentArray with previously stored data from `old_stuff` on `http://localhost:9200`:
 
@@ -123,7 +123,7 @@ Other functions behave the same as in-memory DocumentArray.
 
 ### Bulk request customization
 
-You can customize how bulk requests is being sent to Opensearch when adding documents by adding additional `kwargs` on `extend` method call. See [the official Documentation](https://opensearch.org/docs/1.2/opensearch/rest-api/document-apis/bulk/) for more details. See the following code for example:
+You can customize how bulk requests are sent to Opensearch when adding Documents by adding additional `kwargs` on `extend` method call. See [the official documentation](https://opensearch.org/docs/1.2/opensearch/rest-api/document-apis/bulk/) for more details. See the following code for example:
 
 ```python
 from docarray import Document, DocumentArray
@@ -160,9 +160,9 @@ You can read more about parallel bulk config and their default values [here](htt
 
 ### Vector search with filter query
 
-One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query .
+You can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query .
 
-Consider Documents with embeddings `[0,0,0]` up to `[9,9,9]` where the document with embedding `[i,i,i]`
+Consider Documents with embeddings `[0,0,0]` up to `[9,9,9]` where the Document with embedding `[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
 
 ```python
@@ -190,7 +190,7 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
+prices must follow a filter. As an example, let's consider that retrieved Documents must have `price` value lower
 or equal than `max_price`. We can encode this information in OpenSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
 
 Then the search with the proposed filter can be implemented and used with the following code:
@@ -233,7 +233,7 @@ You can read more about approximate kNN tuning [here](https://opensearch.org/doc
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
+You can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
 guidelines in [OpenSearch's Documentation](https://opensearch.org/docs/latest/search-plugins/knn/knn-score-script/).
 
 Consider you store Documents with a certain tag `price` into OpenSearch and you want to retrieve all Documents
@@ -261,7 +261,7 @@ for price in da[:, 'tags__price']:
     print(f'\t price={price}')
 ```
 
-Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following
+Then you can retrieve all Documents whose price is lower than or equal to `max_price` by applying the following
 filter:
 
 ```python
@@ -298,7 +298,7 @@ This would print
 Text search can be easily leveraged in a `DocumentArray` with `storage='opensearch'`.
 To do this text needs to be indexed using the boolean flag `'index_text'` which is set when
 the `DocumentArray` is created  with `config={'index_text': True, ...}`.
-The following example builds a `DocumentArray` with several documents containing text and searches
+The following example builds a `DocumentArray` with several Documents containing text and searches
 for those that have `pizza` in their text description.
 
 ```python
@@ -387,9 +387,7 @@ results = da.find('cheap', index='price')
 ```
 ````
 
-## Config
-
-The following configs can be set:
+## Configuration
 
 | Name                | Description                                                                                                                            | Default                                              |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
