@@ -58,9 +58,8 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
-@pytest.mark.parametrize(
-    'shape', [(3, 224, 224), (224, 224, 3)]
-)
+
+@pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
     tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(shape))
 
