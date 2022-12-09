@@ -58,15 +58,15 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
+@pytest.mark.parametrize(
+    'shape', [(3, 224, 224), (224, 224, 3)]
+)
+def test_parameterized_tensor_class_name(shape):
+    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(shape))
 
-def test_parameterized_tensor_class_name():
-    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(3, 224, 224))
     assert tensor.__class__.__name__ == 'TorchTensor[3, 224, 224]'
     assert tensor.__class__.__qualname__ == 'TorchTensor[3, 224, 224]'
-
-    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224, 3))
-    assert tensor.__class__.__name__ == 'TorchTensor[3, 224, 224]'
-    assert tensor.__class__.__qualname__ == 'TorchTensor[3, 224, 224]'
+    assert f'{tensor[0][0][0]}' == 'TorchTensor[3, 224, 224](0.)'
 
 
 def test_torch_embedding():
