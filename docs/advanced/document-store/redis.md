@@ -225,7 +225,7 @@ for doc in results:
     )
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
@@ -370,7 +370,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -401,7 +401,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -437,7 +437,7 @@ results = da.find('token1')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 ['token1 token2 token3', 'token1 token2']
@@ -455,7 +455,7 @@ print('scorer=BM25:')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 scorer=TFIDF.DOCNORM:
@@ -509,7 +509,7 @@ results_italian = da.find('italian', index='food_type')
 print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_type'])
 ```
 
-This will print:
+This prints:
 
 ```console
 searching "cheap" in <price>:

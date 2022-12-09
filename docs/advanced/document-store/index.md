@@ -372,7 +372,7 @@ When you run the line `da1.append(Document())`, you expect the DocumentArray wit
 However, when you try to create another view of the DocumentArray in `da2`, you get a fresh DocumentArray.
 
 You would also expect the script to increment the length of the DocumentArrays every time you run it.
-This is because the previous run _should_ have saved the length of the DocumentArray with `index_name="my_index"` and your most recent run will append a new Document, incrementing the length by `1` each time.
+This is because the previous run _should_ have saved the length of the DocumentArray with `index_name="my_index"` and your most recent run appends a new Document, incrementing the length by `1` each time.
 
 However, it seems like your append operation is also not being persisted.
 
@@ -432,7 +432,7 @@ print(f"Length of da2 is {len(da2)}")
 
 ````{tab} Use sync
 
-Explicitly calling the `sync` method of the DocumentArray will save the data to the document store.
+Explicitly calling the `sync` method of the DocumentArray saves the data to the document store.
 
 ```python
 from docarray import DocumentArray, Document
@@ -566,7 +566,7 @@ from docarray import DocumentArray
 da = DocumentArray(storage='annlite', config={'n_dim': 2, 'list_like': False})
 ```
 
-When `list_like` is disabled, list-like operations will not be allowed and raise errors:
+When `list_like` is disabled, list-like operations are not allowed and raise errors:
 
 ```python
 from docarray import DocumentArray, Document
@@ -581,11 +581,11 @@ def docs():
 
 
 da = DocumentArray(docs, storage='annlite', config={'n_dim': 2, 'list_like': False})
-da[0]  # This will raise an error.
+da[0]  # This raises an error.
 ```
 
 ```{admonition} Hint
-By default, `list_like` will be true.
+By default, `list_like` is true.
 ```
 
 

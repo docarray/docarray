@@ -1,7 +1,7 @@
 (subindex)=
 # Search over Nested Structure
 
-To use {meth}`~docarray.array.mixins.find.FindMixin.find` on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you will need "subindices". The word "subindices" represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable.
+To use {meth}`~docarray.array.mixins.find.FindMixin.find` on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you need "subindices". The word "subindices" represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable.
 
 Each subindex indexes and stores one nesting level (like `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`) and makes it directly searchable. Under the hood, subindices are fully fledged DocumentArrays with their own {ref}`document store<doc-store>`.
 

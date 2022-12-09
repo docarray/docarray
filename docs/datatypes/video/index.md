@@ -110,7 +110,7 @@ for d in Document.generator_from_webcam():
     pass
 ```
 
-This will create a generator that yields a Document for each frame. You can control the framerate via `fps` parameter. Note that the upper bound of the framerate is determined by the hardware of webcam, not the software. Press `Esc` to exit.
+This creates a generator that yields a Document for each frame. You can control the framerate via `fps` parameter. Note that the upper bound of the framerate is determined by the hardware of webcam, not the software. Press `Esc` to exit.
 
 <video controls width="60%">
 <source src="../../_static/webcam.mp4" type="video/mp4">
