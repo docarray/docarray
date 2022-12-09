@@ -94,7 +94,7 @@ upper level. Also, make sure that `_set_doc_by_id` performs an **upsert operatio
 ```{tip}
 Let's call the above five functions as **the essentials**.
 
-If you aim for high performance, it is recommeneded to implement other methods *without* leveraging your essentials. They are: `_get_docs_by_ids`, `_del_docs_by_ids`, `_clear_storage`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_docs_by_ids`. One can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
+If you aim for high performance, it is recommeneded to implement other methods *without* leveraging your essentials. They are: `_get_docs_by_ids`, `_del_docs_by_ids`, `_clear_storage`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_docs_by_ids`. You can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
 
 Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that is based on your five essentials.
 ```

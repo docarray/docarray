@@ -144,7 +144,7 @@ async def create_array(items: PydanticDocumentArray):
 
 Supporting the pydantic data model means much more than data validation. One useful pattern is to define a smaller data model and restrict the response to certain fields of the Document.
 
-Imagine we have a DocumentArray with `.embeddings` on the server side, but we do not want to return them to the client for various reasons (for example, they may be meaningless to users, or too big to transfer). One can simply define the fields of interest via 
+Imagine we have a DocumentArray with `.embeddings` on the server side, but we do not want to return them to the client for various reasons (for example, they may be meaningless to users, or too big to transfer). You can simply define the fields of interest via 
  `pydantic.BaseModel` and then use it in `response_model=`.
 
 ```python

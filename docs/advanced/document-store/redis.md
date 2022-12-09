@@ -245,7 +245,7 @@ integer in `columns` configuration (`'field': 'int'`) and use a filter query tha
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
+You can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
 Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents with `price` less than or equal to  some `max_price` value.
 

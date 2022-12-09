@@ -123,7 +123,7 @@ print(d.tensor.shape)
 (180, 64, 64, 3)
 ```
 
-As one can see, it converts the single image tensor into 180 image tensors, each with the size of (64, 64, 3). You can also add all 180 image tensors into the chunks of this `Document`, simply do:
+As you can see, it converts the single image tensor into 180 image tensors, each with the size of (64, 64, 3). You can also add all 180 image tensors into the chunks of this `Document`, simply do:
 
 ```python
 d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64), as_chunks=True)

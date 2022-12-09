@@ -15,7 +15,7 @@ da1 = DocumentArray(
 )  # with customize config
 ```
 
-To reconnect a formerly persisted database, one can need to specify *both* `connection` and `table_name` in `config`:
+To reconnect a formerly persisted database, you can need to specify *both* `connection` and `table_name` in `config`:
 
 ```python
 from docarray import DocumentArray
