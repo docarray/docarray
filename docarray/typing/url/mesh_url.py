@@ -39,9 +39,6 @@ class MeshUrl(AnyUrl):
             assert isinstance(vertices, np.ndarray)
             assert isinstance(faces, np.ndarray)
 
-
-        :param timeout: timeout (sec) for urlopen network request.
-            Only relevant if URL is not local
         :return: np.ndarray representing the image as RGB values
         """
 
