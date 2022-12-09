@@ -2,8 +2,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from pydantic.tools import parse_obj_as
+from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import MeshUrl
 
 REPO_ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent.absolute()
@@ -15,17 +16,6 @@ MESH_FILES = {
     'ply': str(TOYDATA_DIR / 'cube.ply'),
 }
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
-
-
-@pytest.mark.slow
-@pytest.mark.internet
-def test_image_url():
-    uri = parse_obj_as(MeshUrl, REMOTE_OBJ_FILE)
-
-    vertices, faces = uri.load()
-
-    assert isinstance(vertices, np.ndarray)
-    assert isinstance(faces, np.ndarray)
 
 
 @pytest.mark.slow
@@ -42,5 +32,17 @@ def test_image_url():
 def test_load(file_format, file_path):
     url = parse_obj_as(MeshUrl, file_path)
     vertices, faces = url.load()
+
     assert isinstance(vertices, np.ndarray)
     assert isinstance(faces, np.ndarray)
+    assert vertices.shape[1] == 3
+    assert faces.shape[1] == 3
+
+
+def test_json_schema():
+    schema_json_of(MeshUrl)
+
+
+def test_dump_json():
+    url = parse_obj_as(MeshUrl, REMOTE_OBJ_FILE)
+    orjson_dumps(url)
