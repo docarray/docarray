@@ -22,6 +22,7 @@ from docarray import DocumentArray, Document
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -61,6 +62,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storage):
@@ -139,6 +141,7 @@ def test_eval_mixin_perfect_match_labeled(
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -189,8 +192,41 @@ def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
     da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
     for d in da:
         d.matches = da
-    r = da.evaluate([metric_fn], label_tag=label_tag)[metric_fn]
+    r = da.evaluate([metric_fn], label_tag=label_tag, max_rel=3)[metric_fn]
     assert abs(r - metric_score) < 0.001
+
+
+@pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
+@pytest.mark.parametrize(
+    'metric_fn, metric_score',
+    [
+        ('recall_at_k', 1.0),
+        ('f1_score_at_k', 0.5),
+    ],
+)
+def test_num_relevant_documents_per_label(metric_fn, metric_score, label_tag):
+    da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
+    num_relevant_documents_per_label = {i: 1 for i in range(3)}
+    for d in da:
+        d.matches = da
+    r = da.evaluate(
+        [metric_fn],
+        label_tag=label_tag,
+        num_relevant_documents_per_label=num_relevant_documents_per_label,
+    )[metric_fn]
+    assert abs(r - metric_score) < 0.001
+
+
+def test_missing_max_rel_should_raise():
+    da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    num_relevant_documents_per_label = {i: 1 for i in range(2)}
+    for d in da:
+        d.matches = da
+    with pytest.raises(ValueError):
+        da.evaluate(
+            ['recall_at_k'],
+            num_relevant_documents_per_label=num_relevant_documents_per_label,
+        )
 
 
 @pytest.mark.parametrize(
@@ -203,6 +239,7 @@ def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -247,6 +284,7 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_diff_len_should_raise(storage, config, start_storage):
@@ -269,6 +307,7 @@ def test_diff_len_should_raise(storage, config, start_storage):
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_diff_hash_fun_should_raise(storage, config, start_storage):
@@ -291,6 +330,7 @@ def test_diff_hash_fun_should_raise(storage, config, start_storage):
         ('qdrant', {'n_dim': 3}),
         ('elasticsearch', {'n_dim': 3}),
         ('redis', {'n_dim': 3}),
+        ('milvus', {'n_dim': 3}),
     ],
 )
 def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
@@ -320,6 +360,7 @@ def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
         ('qdrant', {'n_dim': 3}),
         ('elasticsearch', {'n_dim': 3}),
         ('redis', {'n_dim': 3}),
+        ('milvus', {'n_dim': 3}),
     ],
 )
 def test_adding_noise(storage, config, start_storage):
@@ -356,6 +397,7 @@ def test_adding_noise(storage, config, start_storage):
         ('qdrant', {'n_dim': 128}),
         ('elasticsearch', {'n_dim': 128}),
         ('redis', {'n_dim': 128}),
+        ('milvus', {'n_dim': 128}),
     ],
 )
 @pytest.mark.parametrize(
@@ -397,6 +439,7 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_empty_da_should_raise(storage, config, start_storage):
@@ -415,6 +458,7 @@ def test_empty_da_should_raise(storage, config, start_storage):
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_missing_groundtruth_should_raise(storage, config, start_storage):
@@ -433,6 +477,7 @@ def test_missing_groundtruth_should_raise(storage, config, start_storage):
         ('qdrant', {'n_dim': 256}),
         ('elasticsearch', {'n_dim': 256}),
         ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
     ],
 )
 def test_useless_groundtruth_warning_should_raise(storage, config, start_storage):
@@ -528,7 +573,11 @@ def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage)
         (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}, 'label'),
         (
             True,
-            {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0},
+            {
+                'precision_at_k': 1.0 / 3,
+                'reciprocal_rank': 11.0 / 18.0,
+                'recall_at_k': 1.0,
+            },
             'custom_tag',
         ),
     ],

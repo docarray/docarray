@@ -63,6 +63,10 @@ class SetItemMixin:
         index: 'DocumentArrayIndexType',
         value: Union['Document', Sequence['Document']],
     ):
+        from docarray.helper import check_root_id
+
+        if getattr(self, '_is_subindex', None):
+            check_root_id(self, value)
 
         self._update_subindices_set(index, value)
         # set by offset

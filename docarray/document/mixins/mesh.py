@@ -112,3 +112,34 @@ class MeshDataMixin:
             )
 
         return self
+
+    def load_uris_to_rgbd_tensor(self: 'T') -> 'T':
+        """Load RGB image from :attr:`.uri` of :attr:`.chunks[0]` and depth image from :attr:`.uri` of :attr:`.chunks[1]` and merge them into :attr:`.tensor`.
+
+        :return: itself after processed
+        """
+        from PIL import Image
+
+        if len(self.chunks) != 2:
+            raise ValueError(
+                f'The provided Document does not have two chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.'
+            )
+        for chunk in self.chunks:
+            if chunk.uri == '':
+                raise ValueError(
+                    'A chunk of the given Document does not provide a uri.'
+                )
+
+        rgb_img = np.array(Image.open(self.chunks[0].uri).convert('RGB'))
+        depth_img = np.array(Image.open(self.chunks[1].uri))
+
+        if rgb_img.shape[0:2] != depth_img.shape:
+            raise ValueError(
+                f'The provided RGB image and depth image are not of the same shapes: {rgb_img.shape[0:2]} != {depth_img.shape}'
+            )
+
+        self.tensor = np.concatenate(
+            (rgb_img, np.expand_dims(depth_img, axis=2)), axis=-1
+        )
+
+        return self

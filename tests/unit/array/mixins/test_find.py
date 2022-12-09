@@ -34,6 +34,7 @@ def test_customize_metric_fn():
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
         ('redis', {'n_dim': 32}),
+        ('milvus', {'n_dim': 32}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -73,31 +74,55 @@ def test_find(storage, config, limit, query, start_storage):
     # annlite uses cosine distance by default
     if n_dim == 1:
         if storage == 'weaviate':
+            distances = [t['distance'].value for t in result[:, 'scores']]
+            assert sorted(distances, reverse=False) == distances
+            assert len(distances) == limit
+        elif storage == 'qdrant':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
-            assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
-            cosine_distances = [t['score'].value for t in da[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True)
+            assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            cosine_similarities = [t['score'].value for t in result[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+            assert len(cosine_similarities) == limit
+        elif storage == 'redis':
+            cosine_distances = [t['score'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
-            cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
+            assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
+            cosine_distances = [t['cosine'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
+            assert len(cosine_distances) == limit
     else:
         if storage == 'weaviate':
+            for da in result:
+                distances = [t['distance'].value for t in da[:, 'scores']]
+                assert sorted(distances, reverse=False) == distances
+                assert len(distances) == limit
+        elif storage == 'qdrant':
             for da in result:
                 cosine_similarities = [
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
-                assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
+                assert sorted(cosine_similarities, reverse=True)
+                assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            for da in result:
+                cosine_similarities = [t['score'].value for t in da[:, 'scores']]
+                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+                assert len(cosine_similarities) == limit
+        elif storage == 'redis':
             for da in result:
                 cosine_distances = [t['score'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
+                assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
+                assert len(cosine_distances) == limit
 
 
 @pytest.mark.parametrize(
@@ -340,6 +365,16 @@ numeric_operators_redis = {
 }
 
 
+numeric_operators_milvus = {
+    '>=': operator.ge,
+    '>': operator.gt,
+    '<=': operator.le,
+    '<': operator.lt,
+    '==': operator.eq,
+    '!=': operator.ne,
+}
+
+
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
@@ -456,6 +491,15 @@ numeric_operators_redis = {
                 numeric_operators_redis,
                 'ne',
             ),
+        ],
+        *[
+            (
+                'milvus',
+                lambda operator, threshold: f'price {operator} {threshold}',
+                numeric_operators_milvus,
+                operator,
+            )
+            for operator in numeric_operators_milvus.keys()
         ],
     ],
 )
@@ -584,6 +628,15 @@ def test_search_pre_filtering(
                 'ne',
             ),
         ],
+        *[
+            (
+                'milvus',
+                lambda operator, threshold: f'price {operator} {threshold}',
+                numeric_operators_milvus,
+                operator,
+            )
+            for operator in numeric_operators_milvus.keys()
+        ],
     ],
 )
 @pytest.mark.parametrize('columns', [[('price', 'float')], {'price': 'float'}])
@@ -610,39 +663,104 @@ def test_filtering(
 
 
 @pytest.mark.parametrize(
-    'storage,filter_gen,numeric_operators,operator',
+    'columns',
     [
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'match': {'value': threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    'eq',
-                ]
-            )
+        [
+            ('price', 'float'),
+            ('category', 'str'),
+            ('info', 'text'),
+            ('location', 'geo'),
         ],
+        {'price': 'float', 'category': 'str', 'info': 'text', 'location': 'geo'},
     ],
 )
-@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
-def test_qdrant_filter_function(
-    storage, filter_gen, operator, numeric_operators, start_storage, columns
-):
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                'must': [
+                    {"key": "category", "match": {"value": "Shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['category'] == "Shoes" and r.tags['price'] >= 5.0,
+        ),
+        (
+            {
+                'must_not': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {
+                        "key": "location",
+                        "geo_radius": {
+                            "center": {"lon": -98.17, "lat": 38.71},
+                            "radius": 500.0 * 1000,
+                        },
+                    },
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") == -1
+            and (
+                haversine_distances(
+                    [
+                        [-98.17, 38.71],
+                        [r.tags['location']['lon'], r.tags['location']['lat']],
+                    ]
+                )
+                * 6371
+            )[0][1]
+            > 500.0,
+        ),
+        (
+            {
+                'should': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") != -1 or r.tags['price'] >= 5.0,
+        ),
+    ],
+)
+def test_qdrant_filter_query(filter, checker, columns, start_storage):
     n_dim = 128
     da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
-    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
-    thresholds = [10, 20, 30]
-    for threshold in thresholds:
-        filter = filter_gen(operator, threshold)
-        results = da._filter(filter=filter)
 
-        assert len(results) > 0
+    da.extend(
+        [
+            Document(
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Shoes',
+                    'info': f'shoes {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
 
-        assert all(
-            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
-        )
+    da.extend(
+        [
+            Document(
+                id=f'r{i+10}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Jeans',
+                    'info': 'jeans {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+    assert all([checker(r) for r in results])
 
 
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
@@ -823,14 +941,22 @@ def test_elastic_id_filter(storage, config, limit):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
-def test_find_subindex(storage, config):
+def test_find_subindex(storage, config, start_storage):
     n_dim = 3
     subindex_configs = {'@c': None}
     if storage == 'sqlite':
         subindex_configs['@c'] = dict()
-    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis']:
+    elif storage in [
+        'weaviate',
+        'annlite',
+        'qdrant',
+        'elasticsearch',
+        'redis',
+        'milvus',
+    ]:
         subindex_configs['@c'] = {'n_dim': 2}
 
     da = DocumentArray(
@@ -878,9 +1004,10 @@ def test_find_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
-def test_find_subindex_multimodal(storage, config):
+def test_find_subindex_multimodal(storage, config, start_storage):
     from docarray import dataclass
     from docarray.typing import Text
 
@@ -949,3 +1076,121 @@ def test_find_subindex_multimodal(storage, config):
     assert (closest_docs[0].embedding == np.array([3, 3])).all()
     for d in closest_docs:
         assert d.id.endswith('_2')
+
+
+@pytest.mark.parametrize(
+    'storage, config, subindex_configs',
+    [
+        ('memory', None, {'@c': None}),
+        (
+            'weaviate',
+            {
+                'n_dim': 3,
+            },
+            {'@c': {'n_dim': 3}},
+        ),
+        ('annlite', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('sqlite', dict(), {'@c': dict()}),
+        ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('milvus', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+    ],
+)
+def test_find_return_root(storage, config, subindex_configs, start_storage):
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=f'{i}',
+                    chunks=[
+                        Document(id=f'sub{i}', embedding=np.random.random(3)),
+                    ],
+                )
+                for i in range(9)
+            ]
+        )
+
+    da[0] = Document(
+        id='9',
+        embedding=np.random.random(3),
+        chunks=[
+            Document(id=f'sub9', embedding=np.random.random(3)),
+        ],
+    )
+
+    if storage != 'memory':
+        assert all(
+            d.tags['_root_id_'] in [f'{i}' for i in range(1, 10)] for d in da['@c']
+        )
+
+    query = np.random.random(3)
+    res = da.find(query, on='@c')
+    root_level_res = da.find(query, on='@c', return_root=True)
+
+    res_root_id = [i.id[3] for i in res]
+    assert res_root_id == root_level_res[:, 'id']
+    assert res[:, 'scores'] == root_level_res[:, 'scores']
+
+    assert len(root_level_res) > 0
+    assert all(d.id in [f'{i}' for i in range(1, 10)] for d in root_level_res)
+
+
+@pytest.mark.parametrize(
+    'storage, config, subindex_configs',
+    [
+        ('memory', None, {'@c': None}),
+        (
+            'weaviate',
+            {
+                'n_dim': 3,
+            },
+            {'@c': {'n_dim': 3}},
+        ),
+        ('annlite', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('sqlite', dict(), {'@c': dict()}),
+        ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('milvus', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+    ],
+)
+def test_subindex_root_id(storage, config, subindex_configs, start_storage):
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=f'{i}',
+                    chunks=[
+                        Document(id=f'sub{i}_0'),
+                        Document(id=f'sub{i}_1'),
+                    ],
+                )
+                for i in range(5)
+            ]
+        )
+
+    with pytest.warns(UserWarning):
+        new_da = DocumentArray([Document(id=f'temp{i}') for i in range(10)])
+        new_da[:, 'id'] = da['@c'][:, 'id']
+        da['@c'] = new_da
+    with pytest.warns(UserWarning):
+        da['@c'].extend([Document(id='sub_extra')])
+    with pytest.warns(UserWarning):
+        da['@c']['sub0_0'] = Document(id='sub0_new')
+    with pytest.warns(UserWarning):
+        da['@c'][0] = Document(id='sub0_new')
+    with pytest.warns(UserWarning):
+        da['@c'][0:] = [Document(id='sub0_new'), Document(id='sub0_new2')]

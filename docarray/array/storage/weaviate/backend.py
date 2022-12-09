@@ -52,6 +52,7 @@ class WeaviateConfig:
     # weaviate python client parameters
     batch_size: Optional[int] = field(default=50)
     dynamic_batching: Optional[bool] = field(default=False)
+    root_id: bool = True
 
     def __post_init__(self):
         if isinstance(self.timeout_config, list):

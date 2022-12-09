@@ -180,3 +180,19 @@ class FindMixin:
         idx = np.take_along_axis(top_inds, permutation, axis=1)
 
         return dist, idx
+
+    def _get_root_docs(self, docs: 'DocumentArray') -> 'DocumentArray':
+        """Get the root documents of the current DocumentArray.
+
+        :return: a `DocumentArray` containing the root documents.
+        """
+        from docarray import DocumentArray
+
+        root_da_flat = self[...]
+        da = DocumentArray()
+        for doc in docs:
+            result = doc
+            while getattr(result, 'parent_id', None):
+                result = root_da_flat[result.parent_id]
+            da.append(result)
+        return da

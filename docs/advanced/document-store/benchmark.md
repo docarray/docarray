@@ -9,90 +9,113 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the document stores summarized below.
+## Methodology
 
-This includes classic database and vector database, all under the same DocumentArray API:
+We created a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects (each of 128 dimensions) and using L2 distance metrics. 
 
-| Name                                | Usage                                    | Client Version    | Database Version |
+We benchmarked the document stores as summarized below:
+
+| Name                                | Usage                                    | Client version    | Database version |
 |-------------------------------------|------------------------------------------|-------------------|------------------|
 | In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.18.2` | N/A              |
-| [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           | N/A              |
+| [`SQLite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           | N/A              |
 | [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.9.0`           | `1.16.1`         |
 | [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.10.3`          | `0.10.1`         |
-| [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          | N/A              |
+| [`AnnLite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          | N/A              |
 | [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.4.3`           | `8.2.0`          |
 | [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.4`           | `2.6.0`          |
 
-We focus on the following tasks:
+### Core tasks
 
-1. **Create**: add one million Documents to the document store via {meth}`~docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend` and backend capabilities when applicable.
-2. **Read**: retrieve existing Documents from the document store by `.id`, i.e. `da['some_id']`.
-3. **Update**: update existing Documents in the document store by `.id`, i.e. `da['some_id'] = Document(...)`.
-4. **Delete**: delete Documents from the document store by `.id`, i.e. `del da['some_id']`
-5. **Find by condition**: search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters and use backend side filtering when possible, as described in {ref}`find-documentarray`.
-6. **Find by vector**: retrieve existing Documents by `.embedding` via {meth}`~docarray.array.mixins.find`  using  nearest neighbor search or approximate nearest neighbor search, as described in {ref}`match-documentarray`.
+We focused on the following tasks:
 
-The above tasks are often atomic operations in high-level DocArray API. Hence, understanding their performance gives user a good estimation of the experience when using DocumentArray with different backends.
+1. **Create**: Add one million Documents to the document store via {meth}`~docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend` and backend capabilities when applicable.
+2. **Read**: Retrieve existing Documents from the document store by `.id`, i.e. `da['some_id']`.
+3. **Update**: Update existing Documents in the document store by `.id`, i.e. `da['some_id'] = Document(...)`.
+4. **Delete**: Delete Documents from the document store by `.id`, i.e. `del da['some_id']`
+5. **Find by condition**: Search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters and use backend side filtering when possible, as described in {ref}`find-documentarray`.
+6. **Find by vector**: Retrieve existing Documents by `.embedding` via {meth}`~docarray.array.mixins.find`  using nearest neighbor search or approximate nearest neighbor search, as described in {ref}`match-documentarray`.
 
-We are interested in the single query performance on the above tasks, which means tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly. We report the average number.
+The above tasks are often atomic operations in the high-level DocArray API. Hence, understanding their performance gives users a good estimation of the experience when using DocumentArray with different backends.
+
+### Parametric combinations
+
+Most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
+
+1. `ef_construct` - the HNSW build parameter that controls the index time/index accuracy. Higher `ef_construct` leads to longer construction, but better index quality.
+2. `m` - maximum connections, the number of bi-directional links created for every new element during construction. Higher `m` works better on datasets with high intrinsic dimensionality and/or high recall, while lower `m` works better for datasets with low intrinsic dimensionality and/or low recall.
+3. `ef` - the size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accuracy but slower performance.
 
 
-```{attention}
+## Experiment setup
 
-* **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
-* **We use similar underlying search algorithms but different implementations**: In this benchmark we try a set of parameters ef, ef_construct and max_connections from HNSW applied equally on all backends. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
-* **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
+We are interested in the **single query performance** on the above six tasks with different combinations of the above three parameters. Single query performance is measured by evaluating one Document at a time, repeatedly for tasks 2, 3, 4, 5, and 6. Finally the average number is reported.
+
+We now elaborate the setup of our experiments. First some high-level statistics of the experiment:
+
+| Parameter                                       | Value     |
+|-------------------------------------------------|-----------|
+| Number of created Documents                     | 1,000,000 |
+| Number of Documents on tasks 2, 3, 4, 5, 6      | 1         |
+| Dimension of `.embedding`                       | 128       |
+| Number of results for the task "Find by vector" | 10,000    |
+
+Each Document follows the structure: 
+
+```json
+{
+  "id": "94ee6627ee7f582e5e28124e78c3d2f9",
+  "tags": {"i": 10},
+  "embedding": [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
+}
 ```
 
+We use `Recall@K` value as an indicator of search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
-## Benchmark result
+The experiments were conducted on an AWS EC2 t2.2xlarge instance (Intel Xeon CPU E5-2676 v3 @ 2.40GHz) with Python 3.10.6 and DocArray 0.18.2.
 
-The following chart and table summarize the result. The chart depicts Recall@10 (the fraction of true nearest neighbors found, on average over all queries) against QPS (find by vector queries per second). The smaller the time values and the more upper-right in the chart, the better.
+As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we set them up with their official Docker images in a **single node** configuration, with 32 GB of RAM allocated. That is, only 1 replica and shard are operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the capabilities of a single instance of the server.
 
 
-## Charts
-
-```{include} benchmark.html
-```
-
+## Latency result
 
 ````{tab} In-Memory
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
 | N/A |          N/A |  N/A |     1.000 |               2.37 |                 11.17 |          1.06 |      0.17 |       0.05  |        0.14 |
 ````
 
-````{tab} Annlite
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
-|-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
-|  16 |           64 |   32 |     0.873 |                1.42 |                   0.40 |        114.30 |      0.36 |       12.93 |       18.01 |
-|  16 |           64 |   64 |     0.942 |                1.51 |                   0.37 |        114.18 |      0.38 |       14.43 |       15.38 |
-|  16 |           64 |  128 |     0.977 |                1.76 |                   0.39 |        135.75 |      0.35 |       12.30 |       13.66 |
-|  16 |           64 |  256 |     0.986 |                1.98 |                   0.36 |        111.66 |      0.32 |       12.39 |       14.51 |
-|  16 |          128 |   32 |     0.897 |                1.43 |                   0.37 |        134.94 |      0.34 |       17.82 |       18.08 |
-|  16 |          128 |   64 |     0.960 |                1.53 |                   0.38 |        148.67 |      0.36 |       24.42 |       46.17 |
-|  16 |          128 |  128 |     0.988 |                1.67 |                   0.37 |        136.90 |      0.37 |       13.76 |       31.10 |
-|  16 |          128 |  256 |     0.996 |                1.99 |                   0.37 |        134.40 |      0.36 |       13.95 |       30.39 |
-|  16 |          256 |   32 |     0.905 |                1.51 |                   0.37 |        200.29 |      0.37 |       16.94 |       18.10 |
-|  16 |          256 |   64 |     0.965 |                1.54 |                   0.37 |        186.36 |      0.36 |       32.40 |       45.42 |
-|  16 |          256 |  128 |     0.990 |                1.68 |                   0.39 |        173.68 |      0.37 |       12.42 |       14.60 |
-|  16 |          256 |  256 |     0.997 |                2.07 |                   0.36 |        183.66 |      0.36 |       18.86 |       35.82 |
-|  32 |           64 |   32 |     0.895 |                1.49 |                   0.37 |        116.49 |      0.33 |       12.63 |       17.55 |
-|  32 |           64 |   64 |     0.954 |                1.59 |                   0.37 |        112.83 |      0.34 |       11.74 |       12.26 |
-|  32 |           64 |  128 |     0.983 |                1.75 |                   0.36 |        114.32 |      0.37 |       17.26 |       16.86 |
-|  32 |           64 |  256 |     0.993 |                2.06 |                   0.37 |        114.64 |      0.34 |       14.64 |       15.88 |
-|  32 |          128 |   32 |     0.930 |                1.52 |                   0.38 |        142.51 |      0.35 |       14.17 |       15.93 |
-|  32 |          128 |   64 |     0.975 |                1.58 |                   0.40 |        156.41 |      0.34 |       16.17 |       31.42 |
-|  32 |          128 |  128 |     0.993 |                1.81 |                   0.37 |        147.05 |      0.35 |       19.81 |       39.87 |
-|  32 |          128 |  256 |     0.998 |                2.15 |                   0.38 |        144.64 |      0.34 |       29.62 |       40.21 |
-|  32 |          256 |   32 |     0.946 |                1.49 |                   0.38 |        196.37 |      0.36 |       20.55 |       15.37 |
-|  32 |          256 |   64 |     0.984 |                1.62 |                   0.37 |        211.81 |      0.35 |       32.65 |       35.15 |
-|  32 |          256 |  128 |     0.996 |                1.88 |                   0.37 |        194.97 |      0.33 |       12.72 |       13.93 |
-|  32 |          256 |  256 |     0.999 |                2.25 |                   0.37 |        204.65 |      0.35 |       22.13 |       31.54 |
+````{tab} AnnLite
+| `m` | `ef_construct` | `ef` | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----|---------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
+| 16  |             64 |   32 |     0.873 |                1.42 |                   0.40 |        114.30 |      0.36 |       12.93 |       18.01 |
+| 16  |             64 |   64 |     0.942 |                1.51 |                   0.37 |        114.18 |      0.38 |       14.43 |       15.38 |
+| 16  |             64 |  128 |     0.977 |                1.76 |                   0.39 |        135.75 |      0.35 |       12.30 |       13.66 |
+| 16  |             64 |  256 |     0.986 |                1.98 |                   0.36 |        111.66 |      0.32 |       12.39 |       14.51 |
+| 16  |            128 |   32 |     0.897 |                1.43 |                   0.37 |        134.94 |      0.34 |       17.82 |       18.08 |
+| 16  |            128 |   64 |     0.960 |                1.53 |                   0.38 |        148.67 |      0.36 |       24.42 |       46.17 |
+| 16  |            128 |  128 |     0.988 |                1.67 |                   0.37 |        136.90 |      0.37 |       13.76 |       31.10 |
+| 16  |            128 |  256 |     0.996 |                1.99 |                   0.37 |        134.40 |      0.36 |       13.95 |       30.39 |
+| 16  |            256 |   32 |     0.905 |                1.51 |                   0.37 |        200.29 |      0.37 |       16.94 |       18.10 |
+| 16  |            256 |   64 |     0.965 |                1.54 |                   0.37 |        186.36 |      0.36 |       32.40 |       45.42 |
+| 16  |            256 |  128 |     0.990 |                1.68 |                   0.39 |        173.68 |      0.37 |       12.42 |       14.60 |
+| 16  |            256 |  256 |     0.997 |                2.07 |                   0.36 |        183.66 |      0.36 |       18.86 |       35.82 |
+| 32  |             64 |   32 |     0.895 |                1.49 |                   0.37 |        116.49 |      0.33 |       12.63 |       17.55 |
+| 32  |             64 |   64 |     0.954 |                1.59 |                   0.37 |        112.83 |      0.34 |       11.74 |       12.26 |
+| 32  |             64 |  128 |     0.983 |                1.75 |                   0.36 |        114.32 |      0.37 |       17.26 |       16.86 |
+| 32  |             64 |  256 |     0.993 |                2.06 |                   0.37 |        114.64 |      0.34 |       14.64 |       15.88 |
+| 32  |            128 |   32 |     0.930 |                1.52 |                   0.38 |        142.51 |      0.35 |       14.17 |       15.93 |
+| 32  |            128 |   64 |     0.975 |                1.58 |                   0.40 |        156.41 |      0.34 |       16.17 |       31.42 |
+| 32  |            128 |  128 |     0.993 |                1.81 |                   0.37 |        147.05 |      0.35 |       19.81 |       39.87 |
+| 32  |            128 |  256 |     0.998 |                2.15 |                   0.38 |        144.64 |      0.34 |       29.62 |       40.21 |
+| 32  |            256 |   32 |     0.946 |                1.49 |                   0.38 |        196.37 |      0.36 |       20.55 |       15.37 |
+| 32  |            256 |   64 |     0.984 |                1.62 |                   0.37 |        211.81 |      0.35 |       32.65 |       35.15 |
+| 32  |            256 |  128 |     0.996 |                1.88 |                   0.37 |        194.97 |      0.33 |       12.72 |       13.93 |
+| 32  |            256 |  256 |     0.999 |                2.25 |                   0.37 |        204.65 |      0.35 |       22.13 |       31.54 |
 ````
 
 ````{tab} Qdrant
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.965 |                3.50 |                 403.70 |        448.99 |      3.74 |        1.88 |        3.74 |
 |  16 |           64 |   64 |     0.986 |                4.11 |                 396.10 |        453.71 |      3.25 |        1.80 |        3.95 |
@@ -121,7 +144,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 ````{tab} Weaviate
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.871 |                4.84 |                   2.30 |        574.92 |      7.80 |        4.88 |       19.43 |
 |  16 |           64 |   64 |     0.939 |                4.99 |                   2.38 |        580.66 |      4.52 |        4.15 |        9.42 |
@@ -150,7 +173,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 ````{tab} ElasticSearch
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.889 |                4.39 |                   7.50 |        508.94 |     14.04 |       70.96 |       69.41 |
 |  16 |           64 |   64 |     0.947 |                5.51 |                   6.31 |        449.22 |     11.92 |       41.26 |       34.40 |
@@ -179,8 +202,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 ````{tab} Redis
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.872 |                1.67 |                   0.63 |        563.15 |      1.00 |        1.88 |       25.58 |
 |  16 |           64 |   64 |     0.941 |                1.78 |                   0.63 |        563.27 |      0.98 |        1.85 |       25.17 |
@@ -206,31 +228,27 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 |  32 |          256 |   64 |     0.984 |                2.28 |                   0.79 |       1489.83 |      1.05 |        4.92 |       29.27 |
 |  32 |          256 |  128 |     0.996 |                2.75 |                   0.79 |       1511.17 |      1.05 |        4.03 |       28.48 |
 |  32 |          256 |  256 |     0.999 |                3.15 |                   0.63 |       1534.68 |      1.03 |        3.26 |       28.19 |
-
 ````
 
-````{tab} Sqlite
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (s) |
+````{tab} SQLite
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (s) |
 |-----|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|-----------:|
 | N/A |          N/A |  N/A |     1.000 |              54.32 |                 78.63 |     16,421.51 |      1.09 |       0.40  |      28.87 |
-
 ````
 
+
+## QPS result
 
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better. 
 
-````{tab} In-Memory in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} In-Memory
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 | N/A |          N/A |  N/A |     1.000 |           0.42 |              0.09 |   947,284 |  6,061 | 21,505 |  7,246 |
-
 ````
 
-````{tab} Annlite in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} AnnLite
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.873 |            706 |             2,519 |     8,749 |  2,762 |     77 |     56 |
 |  16 |           64 |   64 |     0.942 |            662 |             2,674 |     8,758 |  2,625 |     69 |     65 |
@@ -256,12 +274,10 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.984 |            618 |             2,703 |     4,721 |  2,874 |     31 |     28 |
 |  32 |          256 |  128 |     0.996 |            531 |             2,734 |     5,129 |  3,040 |     79 |     72 |
 |  32 |          256 |  256 |     0.999 |            445 |             2,740 |     4,886 |  2,874 |     45 |     32 |
-
 ````
 
-````{tab} Qdrant in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} Qdrant
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.965 |            286 |              2.48 |     2,227 |    267 |    532 |    267 |
 |  16 |           64 |   64 |     0.986 |            244 |              2.52 |     2,204 |    308 |    557 |    253 |
@@ -287,12 +303,10 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.997 |            252 |              2.52 |     2,161 |    685 |    535 |    255 |
 |  32 |          256 |  128 |     0.999 |            262 |              2.66 |     2,154 |    687 |    560 |    253 |
 |  32 |          256 |  256 |     0.999 |            226 |              2.62 |     2,163 |    676 |    598 |    261 |
-
 ````
 
-````{tab} Weaviate in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} Weaviate
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.871 |            207 |               436 |     1,739 |    128 |    205 |     51 |
 |  16 |           64 |   64 |     0.939 |            200 |               421 |     1,722 |    221 |    241 |    106 |
@@ -320,9 +334,8 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |  256 |     0.999 |            151 |               387 |       508 |    378 |    169 |     45 |
 ````
 
-````{tab} ElasticSearch in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} ElasticSearch
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.889 |            228 |               133 |     1,965 |     71 |     14 |     14 |
 |  16 |           64 |   64 |     0.947 |            182 |               159 |     2,226 |     84 |     24 |     29 |
@@ -348,13 +361,10 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.987 |            165 |               133 |       664 |     64 |     15 |     18 |
 |  32 |          256 |  128 |     0.997 |            125 |               151 |       710 |     84 |     14 |     15 |
 |  32 |          256 |  256 |     0.999 |             87 |               130 |       672 |     75 |     20 |     17 |
-
 ````
 
-
-````{tab} Redis in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} Redis
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.872 |            600 |             1,585 |     1,776 |  1,001 |    533 |     39 |
 |  16 |           64 |   64 |     0.941 |            563 |             1,595 |     1,775 |  1,018 |    541 |     40 |
@@ -380,104 +390,50 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.984 |            438 |             1,266 |       671 |    951 |    203 |     34 |
 |  32 |          256 |  128 |     0.996 |            364 |             1,263 |       662 |    952 |    248 |     35 |
 |  32 |          256 |  256 |     0.999 |            318 |             1,600 |       652 |    971 |    306 |     35 |
-
 ````
 
-````{tab} Sqlite in QPS
-
-|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+````{tab} SQLite
+|  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 | N/A |          N/A |  N/A |     1.000 |           0.02 |              0.01 |        61 |    915 |  2,476 |   0.03 |
-
 ````
 
-## Benchmark setup
 
-We now elaborate the setup of our benchmark. First the following parameters are used:
+## Recall@10 vs QPS
 
-| Parameter                                       | Value     |
-|-------------------------------------------------|-----------|
-| Number of created Documents                     | 1,000,000 |
-| Number of Document on task 2,3,4,5,6            | 1         |
-| The dimension of `.embedding`                   | 128       |
-| Number of results for the task "Find by vector" | 10,000    |
+In particular to the find by vector queries task, the chart below depicts Recall@10 (the fraction of true nearest neighbors found, on average over all queries) against the QPS. **The smaller the time values and the more upper-right in the chart, the better.**
 
-We choose sift1m dataset, which has been commonly used for evaluating the approximate nearest neighbor search methods.
-
-Each Document follows the structure: 
-
-```json
-{
-  "id": "94ee6627ee7f582e5e28124e78c3d2f9",
-  "tags": {"i": 10},
-  "embedding": [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
-}
+```{include} benchmark.html
 ```
 
 
-We use `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
-
-The experiments were conducted on an AWS EC2 t2.2xlarge instance (Intel Xeon CPU E5-2676 v3 @ 2.40GHz) with Python 3.10.6 and DocArray 0.18.2.
-
-As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we set them up with their official Docker images in a **single node** configuration, with 32 GB of RAM allocated. That is, only 1 replica and shard are operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the capabilities of a single instance of the server.
-
-Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific backend provides a more efficient implementation.
-
-### Settings of the nearest neighbor search
-
-Most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
-1. `ef_construct` - the HNSW build parameter that controls the index time/index accuracy. Bigger `ef_construct` leads to longer construction, but better index quality.
-2. `m` - max connections, the number of bi-directional links created for every new element during construction. Higher `m` work better on datasets with high intrinsic dimensionality and/or high recall, while low `m` work better for datasets with low intrinsic dimensionality and/or low recall.
-3. `ef` - the size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accurate but slower search.
-
-Finally, the full benchmark script is [available here](https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking_sift1m.py).
-
-### Rationale on the experiment design
+## Rationale on experiment design
 
 Our experiments are designed to be fair and the same across all backends while favouring document stores that benefit 
 DocArray users the most. Note that such a benchmark was impossible to set up before DocArray, as each store has its own API and the definition of a task varies. 
 
 Our benchmark is based on the following principles:
 
-* **Cover the most important operations**: We understand that some backends are better at some operations than others, and 
-some offer better quality. Therefore, we try to benchmark on 6 operations (CRUD + Find by vector + Find by condition)
-and report quality measurement (`Recall@K`).
+* **Cover the most important operations**: We understand that some backends are better at some operations than others, and some offer better quality. Therefore, we try to benchmark on six operations (CRUD + Find by vector + Find by condition) and report quality measurement (`Recall@K`).
 * **Not just speed, but also quality**: We show the trade-off between quality and speed as you tune your parameters in each document store.
-* **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the 
-same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support 
-approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client 
-which allows having similar network overhead. We also allocate the same resources for those Docker containers and all 
-servers are run in a single node setup.
-* **Benefit the user as much as possible**: We offer the same conditions and resources to all backends, but our experiment 
-favours the backends that use the resources efficiently. Therefore, some backends might not use the network, or use 
-GRPC instead of HTTP, or use batch operations. We're okay with that, as long as it benefits the DocArray and Jina 
-user.
-* **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and 
-updating the benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
+* **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client which allows having similar network overhead. We also allocate the same resources for those Docker containers and all servers are run in a single node setup.
+* **Benefit users as much as possible**: We offer the same conditions and resources to all backends, but our experiment favors backends that use resources efficiently. Therefore, some backends might not use the network, or use gRPC instead of HTTP, or use batch operations. We're okay with that, as long as it benefits the DocArray and Jina user.
+* **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and updating benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
 
-### Limitations
 
-#### Incompleteness on the storess
+## Known limitations
 
-We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, Scann**. We only benchmark backends that can be used as 
-Document stores. Actually we do not benchmark HNSW itself, but it is used by some backends internally.
+* **Incompleteness on the stores**: We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, ScaNN**. We only benchmark backends that can be used as document stores. In fact, we do not benchmark HNSW itself, but it is used by some backends internally. Other storage backends that support vector search are not yet integrated with DocArray. We're open to contributions to DocArray's repository to support them.
+* **Client/server setup introduces random network latency**: Although a real-life scenario would be the clients and server living on different machines with potentially multiple clients in parallel, we chose to keep both on the same machine and have only one client process to minimize network overhead.
+* **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you spot bottlenecks we would be thrilled to know about them and improve our code accordingly.
+* **We use similar underlying search algorithms but different implementations**: In this benchmark we try a set of parameters `ef`, `ef_construct` and `max_connections` from HNSW applied equally on all backends. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
+* **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
 
-Other storage backends that support vector search are not integrated with DocArray yet. We're open to contributions to DocArray's repository to support them.
 
-#### Client/Server setup
+## Conclusions
 
-Although a real life scenario would be clients and server living on different machines with potentially multiple clients in parallel, we choose to keep both in the same machine and have only 1 client process to minimize network overhead.
+We hope our benchmark result can help users select the store that suits their use cases. Depending on the dataset size and the desired quality, some stores may be preferable than others. Here are some of our conclusions:
 
-## Conclusion
-
-We hope our benchmark result can help users select the store that suits their use cases. Depending on the dataset size and the needed quality, some stores may be preferable than others. 
-
-If you're experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).
-
-If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
-
-Redis offers great speed if your data fits in memory and you need an isolated server to store your data.
-
-AnnLite offers good speed in CRUD and vector search operations, but keep in mind that AnnLite is a library and does not follow a client-server design. This means that AnnLite operations do not include network overhead unlike other backends.
-
-Moreover, AnnLite is a local monolithic package and does not offer scaling. However, you can still scale using [Jina's scaling features](https://docs.jina.ai/how-to/scale-out/).
+* If you're experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).
+* If your dataset is large but still fits into memory (say 1 million Documents), Redis and AnnLite offer great speed in CRUD and vector search operations. In particular, AnnLite is designed as a monolithic package, which saves a lot network overhead unlike other backends. Unfortunately, this also means one can not scale-out AnnLite natively. Nonetheless, if you are using DocArray with Jina together, you can always leverage [Jina’s sharding features](https://docs.jina.ai/how-to/scale-out/), an agnostic solution to scale out any document store. This of course also includes AnnLite.
+* Finally, if your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use SQLite as storage. Otherwise, Weaviate, Qdrant and Elasticsearch are good options.

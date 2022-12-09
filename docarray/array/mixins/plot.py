@@ -7,7 +7,7 @@ import time
 import warnings
 from collections import Counter
 from math import sqrt, ceil, floor
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import numpy as np
 
@@ -126,8 +126,9 @@ class PlotMixin:
         host: str = '127.0.0.1',
         port: Optional[int] = None,
         image_source: str = 'tensor',
+        exclude_fields_metas: Optional[List[str]] = None,
     ) -> str:
-        """Interactively visualize :attr:`.embeddings` using the Embedding Projector.
+        """Interactively visualize :attr:`.embeddings` using the Embedding Projector and store the visualization informations.
 
         :param title: the title of this visualization. If you want to compare multiple embeddings at the same time,
                 make sure to give different names each time and set ``path`` to the same value.
@@ -140,6 +141,7 @@ class PlotMixin:
         :param channel_axis: only used when `image_sprites=True`. the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param start_server: if set, start a HTTP server and open the frontend directly. Otherwise, you need to rely on ``return`` path and serve by yourself.
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
+        :param exclude_fields_metas: specify the fields that you want to exclude from metadata tsv file
         :return: the path to the embeddings visualization info.
         """
         from docarray.helper import random_port, __resources_path__
@@ -178,14 +180,20 @@ class PlotMixin:
 
         self.save_embeddings_csv(os.path.join(path, emb_fn), delimiter='\t')
 
-        _exclude_fields = ('embedding', 'tensor', 'scores')
+        _exclude_fields_metas = ['embedding', 'tensor', 'scores'] + (
+            exclude_fields_metas or []
+        )
+
         with_header = True
-        if len(set(self[0].non_empty_fields).difference(set(_exclude_fields))) <= 1:
+        if (
+            len(set(self[0].non_empty_fields).difference(set(_exclude_fields_metas)))
+            <= 1
+        ):
             with_header = False
 
         self.save_csv(
             os.path.join(path, meta_fn),
-            exclude_fields=_exclude_fields,
+            exclude_fields=_exclude_fields_metas,
             dialect='excel-tab',
             with_header=with_header,
         )
