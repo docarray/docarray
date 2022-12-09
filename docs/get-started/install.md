@@ -164,7 +164,7 @@ brew install protobuf numpy
 
 ### Install DocArray
 
-Now we can install Jina via `pip`. Note you need to use the right one:
+Now you can install Jina via `pip`. Note you need to use the right one:
 
 ```bash
 /opt/homebrew/opt/python@3.10/libexec/bin/pip install docarray

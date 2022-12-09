@@ -20,7 +20,7 @@ d4 = Document(embedding=torch.tensor([1, 2, 3]))
 d5 = Document(embedding=tf.sparse.from_dense(np.array([[1, 2, 3], [4, 5, 6]])))
 ```
 
-Unlike some other packages, DocArray doesn't actively cast `dtype` into `float32`. If the right-hand assignment `dtype` is `float64` in PyTorch, it will stay as a PyTorch `float64` tensor.
+Unlike some other packages, DocArray doesn't actively cast `dtype` into `float32`. If the right-hand assignment `dtype` is `float64` in PyTorch, it stays as a PyTorch `float64` tensor.
 
 To assign `.tensor`s and `.embedding`s to multiple Documents in bulk, {ref}`use DocumentArray<da-content-embedding>`. It's much faster and smarter than using a for-loop.
 
