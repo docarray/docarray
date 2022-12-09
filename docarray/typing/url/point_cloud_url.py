@@ -14,7 +14,7 @@ class PointCloudUrl(AnyUrl):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load(self: 'T', samples: int, multiple_geometries: bool = False) -> np.array:
+    def load(self: 'T', samples: int, multiple_geometries: bool = False) -> np.ndarray:
         """
         Load the data from the url into a numpy.ndarray containing point cloud
         information.
