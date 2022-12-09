@@ -59,6 +59,16 @@ def test_parametrized():
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
 
+def test_parameterized_tensor_class_name():
+    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(3, 224, 224))
+    assert tensor.__class__.__name__ == 'TorchTensor[3, 224, 224]'
+    assert tensor.__class__.__qualname__ == 'TorchTensor[3, 224, 224]'
+
+    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224, 3))
+    assert tensor.__class__.__name__ == 'TorchTensor[3, 224, 224]'
+    assert tensor.__class__.__qualname__ == 'TorchTensor[3, 224, 224]'
+
+
 def test_torch_embedding():
     # correct shape
     tensor = parse_obj_as(TorchEmbedding[128], torch.zeros(128))
