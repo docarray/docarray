@@ -402,7 +402,7 @@ We now elaborate the setup of our benchmark. First the following parameters are 
 | The dimension of `.embedding`                   | 128       |
 | Number of results for the task "Find by vector" | 10,000    |
 
-We choose sift1m dataset, which has been commonly used for evaluating the approximate nearest neighbour search methods.
+We choose sift1m dataset, which has been commonly used for evaluating the approximate nearest neighbor search methods.
 
 Each Document follows the structure: 
 
@@ -423,7 +423,7 @@ As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we
 
 Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific backend provides a more efficient implementation.
 
-### Settings of the nearest neighbour search
+### Settings of the nearest neighbor search
 
 Most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
 1. `ef_construct` - the HNSW build parameter that controls the index time/index accuracy. Bigger `ef_construct` leads to longer construction, but better index quality.

@@ -58,7 +58,7 @@ model = torchvision.models.resnet50(pretrained=True)
 q.embed(model)
 ```
 
-## Find nearest-neighbours
+## Find nearest-neighbors
 
 ```{admonition} On multiple Documents use DocumentArray
 :class: tip

@@ -4,7 +4,7 @@
 You can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based on conditions specified in a `query` object.
 
 - To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
-- To find nearest neighbours, the `query` object needs to be an ndarray-like, Document, or DocumentArray that defines embedding(s). You can also use the `.match()` function for this purpose, and there's a minor interface difference between these two functions which is covered {ref}`in the next chapter<match-documentarray>`.
+- To find nearest neighbors, the `query` object needs to be an ndarray-like, Document, or DocumentArray that defines embedding(s). You can also use the `.match()` function for this purpose, and there's a minor interface difference between these two functions which is covered {ref}`in the next chapter<match-documentarray>`.
 
 ```{admonition} filter query syntax
 :class: note

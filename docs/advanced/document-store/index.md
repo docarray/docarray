@@ -155,9 +155,9 @@ Creating DocumentArrays without indexes is useful during prototyping but shouldn
 
 Each document store supports different functionalities. The three key ones are:
 
-- **vector search**: perform approximate nearest neighbour search (or exact full scan search). The search function's input is a numpy array or a DocumentArray containing an embedding. 
+- **vector search**: perform approximate nearest neighbor search (or exact full scan search). The search function's input is a numpy array or a DocumentArray containing an embedding. 
 
-- **vector search + filter**: perform approximate nearest neighbour search (or exact full scan search). The search function's input is a numpy array or a DocumentArray containing an embedding and a filter. 
+- **vector search + filter**: perform approximate nearest neighbor search (or exact full scan search). The search function's input is a numpy array or a DocumentArray containing an embedding and a filter. 
 
 - **filter**: perform a filter step over the data. The search function's input is a filter. 
 
@@ -594,4 +594,4 @@ By default, `list_like` will be true.
 
 Obviously, a DocumentArray with on-disk storage is slower than an in-memory DocumentArray. However, if you choose on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.
  
-Slowness can affect all functions of DocumentArray. On the bright side, they may not be as severe as you would expect -- modern databases are highly optimized. Moreover, some databases provide faster methods for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features. 
+Slowness can affect all functions of DocumentArray. On the bright side, they may not be as severe as you would expect -- modern databases are highly optimized. Moreover, some databases provide faster methods for resolving certain queries, e.g. nearest-neighbor queries. We are actively and continuously improving DocArray to better leverage those features. 

@@ -13,7 +13,7 @@ Documents can be nested both horizontally and vertically via `.matches` and `.ch
 | `doc.granularity` | The "depth" of the nested chunks structure                                                       |
 | `doc.adjacency`   | The "width" of the nested match structure                                                        |
 
-You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a Document:
+You can add **chunks** (sub-Document) and **matches** (neighbor-Document) to a Document:
 
 - Add in constructor:
 

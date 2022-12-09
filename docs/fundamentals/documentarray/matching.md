@@ -1,20 +1,20 @@
 (match-documentarray)=
-# Find Nearest Neighbours
+# Find Nearest Neighbors
 
 ```{important}
 
 {meth}`~docarray.array.mixins.match.MatchMixin.match` and {meth}`~docarray.array.mixins.find.FindMixin.find` support both CPU & GPU.
 ```
 
-Once `.embeddings` is set, you can use the {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` method to find the nearest-neighbour Documents from another DocumentArray (or the current DocumentArray itself) based on their `.embeddings` and distance metrics.  
+Once `.embeddings` is set, you can use the {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` method to find the nearest-neighbor Documents from another DocumentArray (or the current DocumentArray itself) based on their `.embeddings` and distance metrics.  
 
 ## Difference between find and match
 
-Though both `.find()` and `.match()` are about finding nearest neighbours of a given "query" and both accept similar arguments, there are some differences:
+Though both `.find()` and `.match()` are about finding nearest neighbors of a given "query" and both accept similar arguments, there are some differences:
 
 ##### Which side is the query on?
 
-- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find a query's nearest neighbours you should use `one_million_docs.find(query)`;  
+- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find a query's nearest neighbors you should use `one_million_docs.find(query)`;  
 - `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and saves the results to A". So with `.match()` you should use `query.match(one_million_docs)`.
 
 ##### What's the query type?
