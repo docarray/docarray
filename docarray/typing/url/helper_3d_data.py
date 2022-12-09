@@ -8,7 +8,7 @@ MESH_FILE_FORMATS = ('obj', 'glb', 'ply')
 
 def load_trimesh_instance(
     uri: str, force: Optional[str] = None
-) -> Union[trimesh.Trimesh, trimesh.Scene]:
+) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
     """
     Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
 
