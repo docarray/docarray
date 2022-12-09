@@ -19,6 +19,8 @@ def load_trimesh_instance(
     """
     import urllib.parse
 
+    import trimesh
+
     scheme = urllib.parse.urlparse(uri).scheme
     loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
