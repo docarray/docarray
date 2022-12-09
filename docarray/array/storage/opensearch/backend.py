@@ -117,7 +117,6 @@ class BackendMixin(BaseBackendMixin):
         config_joined: dict,
         subindex_name: str,
     ) -> dict:
-        ...  # ensure unique identifiers here
         if 'index_name' not in config_subindex:
             unique_index_name = _sanitize_index_name(
                 config_joined['index_name'] + '_subindex_' + subindex_name
