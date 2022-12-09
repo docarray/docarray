@@ -1496,6 +1496,22 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["pre-commit", "pytest"]
 
 [[package]]
+name = "trimesh"
+version = "3.17.1"
+description = "Import, export, process, analyze and view triangular meshes."
+category = "main"
+optional = true
+python-versions = "*"
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+all = ["chardet", "colorlog", "glooey", "jsonschema", "lxml", "mapbox-earcut", "meshio", "msgpack", "networkx", "pillow", "psutil", "pycollada", "pyglet (<2)", "python-fcl", "requests", "rtree", "scikit-image", "scipy", "setuptools", "shapely", "svg.path", "sympy", "xatlas", "xxhash"]
+easy = ["chardet", "colorlog", "jsonschema", "lxml", "mapbox-earcut", "msgpack", "networkx", "pillow", "pycollada", "pyglet (<2)", "requests", "rtree", "scipy", "setuptools", "shapely", "svg.path", "sympy", "xxhash"]
+test = ["coveralls", "ezdxf", "pyinstrument", "pytest", "pytest-cov"]
+
+[[package]]
 name = "types-pillow"
 version = "9.3.0.1"
 description = "Typing stubs for Pillow"
@@ -1619,12 +1635,13 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [extras]
 common = ["protobuf"]
 image = ["pillow", "types-pillow"]
+mesh = ["trimesh"]
 torch = ["torch"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8f0b17062844e04dab10d345e8e430128e21e49de667e405a4f6f532d231805b"
+content-hash = "1b52fed9287336da07ee1fdb96a0c79a7ade0a9183871300b209094e66f9c8e4"
 
 [metadata.files]
 anyio = [
@@ -2650,6 +2667,10 @@ tornado = [
 traitlets = [
     {file = "traitlets-5.5.0-py3-none-any.whl", hash = "sha256:1201b2c9f76097195989cdf7f65db9897593b0dfd69e4ac96016661bb6f0d30f"},
     {file = "traitlets-5.5.0.tar.gz", hash = "sha256:b122f9ff2f2f6c1709dab289a05555be011c87828e911c0cf4074b85cb780a79"},
+]
+trimesh = [
+    {file = "trimesh-3.17.1-py3-none-any.whl", hash = "sha256:a09460ee4e11c32bf9f0643b86241b3e3e2aa86296c4912a0738b76da3034c00"},
+    {file = "trimesh-3.17.1.tar.gz", hash = "sha256:025bb2fa3a2e87bdd6873f11db45a7ca19216f2f8b6aed29140fca57e32c298e"},
 ]
 types-pillow = [
     {file = "types-Pillow-9.3.0.1.tar.gz", hash = "sha256:f3b7cada3fa496c78d75253c6b1f07a843d625f42e5639b320a72acaff6f7cfb"},
