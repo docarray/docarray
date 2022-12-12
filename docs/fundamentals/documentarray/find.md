@@ -2,15 +2,15 @@
 
 # Query by Conditions
 
-We can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the
-conditions specified in a `query` object. One can use `da.find(query)` to filter Documents and get nearest neighbours
+You can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the
+conditions specified in a `query` object. You can use `da.find(query)` to filter Documents and get nearest neighbors
 from `da`:
 
 - To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using
   a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
 - To find nearest neighbours, the `query` object needs to be a NdArray-like, a Document, or a DocumentArray object that
-  defines embedding. One can also use `.match()` function for this purpose, and there is a minor interface difference
-  between these two functions, which will be described {ref}`in the next chapter<match-documentarray>`.
+  defines embedding. You can also use `.match()` function for this purpose, and there is a minor interface difference
+  between these two functions, which is described {ref}`in the next chapter<match-documentarray>`.
 
 ```{admonition} filter query syntax
 :class: note
@@ -88,7 +88,7 @@ A query filter document can use the query operators to specify conditions in the
 { <field1>: { <operator1>: <value1> }, ... }
 ```
 
-Here `field1` is {ref}`any field name<doc-fields>` of a Document object. To access nested fields, one can use the dunder
+Here `field1` is {ref}`any field name<doc-fields>` of a Document object. To access nested fields, you can use the dunder
 expression. For example, `tags__timestamp` is to access `doc.tags['timestamp']` field.
 
 `value1` can be either a user given Python object, or a substitution field with curly bracket `{field}`
@@ -177,7 +177,7 @@ r = da.find({'tags__h': {'$gt': 10}})
 ]
 ```
 
-Beside using a predefined value, one can also use a substitution with `{field}`, notice the curly brackets there. For
+Besides using a predefined value, you can also use a substitution with `{field}`, notice the curly brackets there. For
 example,
 
 ```python
