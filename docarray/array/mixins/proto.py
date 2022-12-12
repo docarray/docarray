@@ -24,9 +24,7 @@ class ProtoArrayMixin(AbstractDocumentArray):
             da._columns = pb_msg.stack.columns
             return da
         else:
-            raise ValueError(
-                f'proto message content jey {content_type} is not supported'
-            )
+            raise ValueError(f'proto message content {content_type} is not supported')
 
     def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocumentArray into a Protobuf message.
