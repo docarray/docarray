@@ -141,6 +141,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3562,4 +3563,29 @@
  - [[```b62d2036```](https://github.com/jina-ai/docarray/commit/b62d2036918ea1fa78df4f58e4042f9f3dce5108)] __-__ upload gifs for release notes 019 (#792) (*Alex Cureton-Griffiths*)
  - [[```42617825```](https://github.com/jina-ai/docarray/commit/426178252bf61b9f49d2a6e613250da31810f166)] __-__ __version__: the next version will be 0.19.1 (*Jina Dev Bot*)
  - [[```1409e52e```](https://github.com/jina-ai/docarray/commit/1409e52e85adbac6af33e65d1d061b7e196b206c)] __-__ update docarray version (#791) (*Joan Fontanals*)
+
+<a name=release-note-0-20-1></a>
+## Release Note (`0.20.1`)
+
+> Release time: 2022-12-12 09:32:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alex Cureton-Griffiths,  Nan Wang,  anna-charlotte,  Anne Yang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```d9e5b26a```](https://github.com/jina-ai/docarray/commit/d9e5b26a6efbfa8f801ef9c712cba71e5c91cceb)] __-__ add multiple connections to milvus (#904) (*anna-charlotte*)
+ - [[```07cb522b```](https://github.com/jina-ai/docarray/commit/07cb522b2d87f8dbc88146d2be2d1a061c763fe0)] __-__ backwards compatibility for _is_subindex (#903) (*Anne Yang*)
+
+### 📗 Documentation
+
+ - [[```59606d8b```](https://github.com/jina-ai/docarray/commit/59606d8ba9fa6667b3ff51fc03d00b4b9d34aa25)] __-__ polish throughout (#895) (*Alex Cureton-Griffiths*)
+
+### 🍹 Other Improvements
+
+ - [[```245d8329```](https://github.com/jina-ai/docarray/commit/245d8329c9878d8d7cf0ffd0dbbd928c18e38784)] __-__ rename license to be consist with lfai standards (#921) (*Nan Wang*)
+ - [[```a9edde28```](https://github.com/jina-ai/docarray/commit/a9edde28cb9df79adeaf3955909d0ef8d96396ca)] __-__ __version__: the next version will be 0.20.1 (*Jina Dev Bot*)
 
