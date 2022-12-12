@@ -5,6 +5,7 @@ from docarray.proto.pb2.docarray_pb2 import (
     DocumentProto,
     NdArrayProto,
     NodeProto,
+    UnionArrayProto,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     'NodeProto',
     'DocumentArrayStackedProto',
     'DocumentArrayListProto',
+    'UnionArrayProto',
 ]

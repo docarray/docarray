@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Dict, Type
 
 from docarray.array.abstract_array import AbstractDocumentArray
 
@@ -18,9 +18,11 @@ class ProtoArrayMixin(AbstractDocumentArray):
         if content_type == 'list_':
             return cls(cls.document_type.from_protobuf(od) for od in pb_msg.list_.docs)
         elif content_type == 'stack':
-            return cls(
+            da = cls(
                 cls.document_type.from_protobuf(od) for od in pb_msg.stack.list_.docs
             )
+            da._columns = pb_msg.stack.columns
+            return da
         else:
             raise ValueError(
                 f'proto message content jey {content_type} is not supported'
@@ -39,13 +41,28 @@ class ProtoArrayMixin(AbstractDocumentArray):
             DocumentArrayListProto,
             DocumentArrayProto,
             DocumentArrayStackedProto,
+            NdArrayProto,
+            UnionArrayProto,
         )
 
         if self.is_stacked():
             da_proto = DocumentArrayListProto()
-            for doc in self:
+            for doc in self.__true_iter__():
                 da_proto.docs.append(doc.to_protobuf())
-            da_proto = DocumentArrayStackedProto(list_=da_proto)
+
+            columns_proto: Dict[str, UnionArrayProto] = dict()
+            for field, column in self._columns.items():
+                if isinstance(column, ProtoArrayMixin):
+                    columns_proto[field] = UnionArrayProto(
+                        document_array=DocumentArrayProto(stack=column.to_protobuf())
+                    )
+                else:
+                    ndarray = NdArrayProto()
+                    columns_proto[field] = UnionArrayProto(
+                        ndarray=column._flush_tensor_to_proto(ndarray, column)
+                    )
+
+            da_proto = DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
             return DocumentArrayProto(stack=da_proto)
         else:
             da_proto = DocumentArrayListProto()
