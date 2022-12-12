@@ -66,3 +66,31 @@ def test_json_schema():
 def test_dump_json():
     url = parse_obj_as(PointCloudUrl, REMOTE_OBJ_FILE)
     orjson_dumps(url)
+
+
+@pytest.mark.parametrize(
+    'image_format,path_to_img',
+    [
+        ('obj', MESH_FILES['obj']),
+        ('glb', MESH_FILES['glb']),
+        ('ply', MESH_FILES['ply']),
+        ('obj', REMOTE_OBJ_FILE),
+        ('illegal', 'illegal'),
+        ('illegal', 'https://www.google.com'),
+        ('illegal', 'my/local/text/file.txt'),
+        ('illegal', 'my/local/text/file.png'),
+    ],
+)
+def test_validation(image_format, path_to_img):
+    if image_format == 'illegal':
+        with pytest.raises(ValueError):
+            parse_obj_as(PointCloudUrl, path_to_img)
+    else:
+        url = parse_obj_as(PointCloudUrl, path_to_img)
+        assert isinstance(url, PointCloudUrl)
+        assert isinstance(url, str)
+
+
+def test_proto_point_cloud_url():
+    uri = parse_obj_as(PointCloudUrl, REMOTE_OBJ_FILE)
+    uri._to_node_protobuf()
