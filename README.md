@@ -101,7 +101,7 @@ async with AsyncClient(app=app, base_url="http://test") as ac:
     response = await ac.post("/doc/", data=input_doc.json())
 
 # (de)serialize from/to protobuf
-Image.from_protobuf(doc.__columns__())
+Image.from_protobuf(doc.to_protobuf())
 ```
 
 ## Store
