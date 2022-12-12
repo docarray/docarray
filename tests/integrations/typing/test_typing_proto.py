@@ -24,7 +24,7 @@ def test_proto_all_types():
         text_url='http://jina.ai',
     )
 
-    new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
+    new_doc = AnyDocument.from_protobuf(doc.__columns__())
 
     for field, value in new_doc:
         if field == 'embedding':

@@ -14,7 +14,7 @@ def test_proto_simple():
 
     doc = CustomDoc(text='hello')
 
-    CustomDoc.from_protobuf(doc.to_protobuf())
+    CustomDoc.from_protobuf(doc.__columns__())
 
 
 def test_proto_ndarray():
@@ -24,7 +24,7 @@ def test_proto_ndarray():
     tensor = np.zeros((3, 224, 224))
     doc = CustomDoc(tensor=tensor)
 
-    new_doc = CustomDoc.from_protobuf(doc.to_protobuf())
+    new_doc = CustomDoc.from_protobuf(doc.__columns__())
 
     assert (new_doc.tensor == tensor).all()
 
@@ -39,7 +39,7 @@ def test_proto_with_nested_doc():
 
     doc = CustomDoc(text='hello', inner=CustomInnerDoc(tensor=np.zeros((3, 224, 224))))
 
-    CustomDoc.from_protobuf(doc.to_protobuf())
+    CustomDoc.from_protobuf(doc.__columns__())
 
 
 def test_proto_with_chunks_doc():
@@ -57,7 +57,7 @@ def test_proto_with_chunks_doc():
         ),
     )
 
-    new_doc = CustomDoc.from_protobuf(doc.to_protobuf())
+    new_doc = CustomDoc.from_protobuf(doc.__columns__())
 
     for chunk1, chunk2 in zip(doc.chunks, new_doc.chunks):
 
@@ -76,7 +76,7 @@ def test_proto_with_nested_doc_pytorch():
         text='hello', inner=CustomInnerDoc(tensor=torch.zeros((3, 224, 224)))
     )
 
-    CustomDoc.from_protobuf(doc.to_protobuf())
+    CustomDoc.from_protobuf(doc.__columns__())
 
 
 def test_proto_with_chunks_doc_pytorch():
@@ -94,7 +94,7 @@ def test_proto_with_chunks_doc_pytorch():
         ),
     )
 
-    new_doc = CustomDoc.from_protobuf(doc.to_protobuf())
+    new_doc = CustomDoc.from_protobuf(doc.__columns__())
 
     for chunk1, chunk2 in zip(doc.chunks, new_doc.chunks):
 
@@ -105,7 +105,7 @@ def test_optional_field_in_doc():
     class CustomDoc(BaseDocument):
         text: Optional[str]
 
-    CustomDoc.from_protobuf(CustomDoc().to_protobuf())
+    CustomDoc.from_protobuf(CustomDoc().__columns__())
 
 
 def test_optional_field_nested_in_doc():
@@ -115,4 +115,4 @@ def test_optional_field_nested_in_doc():
     class CustomDoc(BaseDocument):
         text: Optional[InnerDoc]
 
-    CustomDoc.from_protobuf(CustomDoc().to_protobuf())
+    CustomDoc.from_protobuf(CustomDoc().__columns__())
