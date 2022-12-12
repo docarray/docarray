@@ -1,9 +1,13 @@
-from typing import Tuple, TypeVar
+from typing import TYPE_CHECKING, Any, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.typing.url.any_url import AnyUrl
-from docarray.typing.url.helper_3d_data import load_trimesh_instance
+from docarray.typing.url.helper_3d_data import MESH_FILE_FORMATS, _load_trimesh_instance
+
+if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
 
 T = TypeVar('T', bound='MeshUrl')
 
@@ -13,6 +17,22 @@ class MeshUrl(AnyUrl):
     URL to a .obj, .glb, or .ply file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        url = super().validate(value, field, config)  # basic url validation
+        has_image_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
+        if not has_image_extension:
+            raise ValueError(
+                f'Mesh URL must have one of the following extensions:'
+                f'{MESH_FILE_FORMATS}'
+            )
+        return cls(str(url), scheme=None)
 
     def load(self) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -39,10 +59,10 @@ class MeshUrl(AnyUrl):
             assert isinstance(vertices, np.ndarray)
             assert isinstance(faces, np.ndarray)
 
-        :return: np.ndarray representing the image as RGB values
+        :return: tuple of two np.ndarrays representing the mesh's vertices and faces
         """
 
-        mesh = load_trimesh_instance(uri=self, force='mesh')
+        mesh = _load_trimesh_instance(uri=self, force='mesh')
 
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 MESH_FILE_FORMATS = ('obj', 'glb', 'ply')
 
 
-def load_trimesh_instance(
+def _load_trimesh_instance(
     uri: str, force: Optional[str] = None
 ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
     """
