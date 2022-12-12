@@ -6,7 +6,7 @@
 {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` supports both CPU & GPU.
 ```
 
-When DocumentArray has `.tensors` set, you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into vector representations, i.e. filling `.embeddings`. For example, our DocumentArray looks like the following:
+When DocumentArray has `.tensors` set, you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into vector representations, i.e. filling `.embeddings`. For example, let's assume we have the following DocumentArray:
 
 ```python
 from docarray import DocumentArray
@@ -16,7 +16,7 @@ docs = DocumentArray.empty(10)
 docs.tensors = np.random.random([10, 128]).astype(np.float32)
 ```
 
-Let's use a simple MLP in Pytorch/Keras/ONNX/Paddle as our embedding model:
+Let's use a simple MLP in PyTorch/Keras/ONNX/Paddle as our embedding model:
 
 ````{tab} PyTorch
 
@@ -90,7 +90,7 @@ model = paddle.nn.Sequential(
 ```
 ````
 
-Now, you can simply do
+Now, you can create the embeddings:
 
 ```python
 docs.embed(model)
@@ -104,13 +104,13 @@ tensor([[-0.1234,  0.0506, -0.0015,  0.1154, -0.1630, -0.2376,  0.0576, -0.4109,
          -0.2312, -0.0068, -0.0991,  0.0767, -0.0501, -0.1393,  0.0965, -0.2062,
 ```
 
-By default, the filled `.embeddings` is in the given model framework's format. If you want it always be `numpy.ndarray`, use `.embed(..., to_numpy=True)`.
+By default, the filled `.embeddings` are in the given model framework's format. If you want them to always be `numpy.ndarray`, use `.embed(..., to_numpy=True)`.
 
-You can specify `.embed(..., device='cuda')` when working with GPU. The device name identifier depends on the model framework that you are using.
+You can specify `.embed(..., device='cuda')` when working with a GPU. The device name identifier depends on the model framework that you're using.
 
-On large DocumentArray that does not fit into GPU memory, you can set `batch_size` via `.embed(..., batch_size=128)`.
+On large DocumentArrays that don't fit into GPU memory, you can set `batch_size` with `.embed(..., batch_size=128)`.
 
-You can use pretrained model from Keras/PyTorch/PaddlePaddle/ONNX for embedding:
+You can use a pretrained model from Keras/PyTorch/PaddlePaddle/ONNX for embedding:
 
 ```python
 import torchvision
@@ -118,9 +118,9 @@ model = torchvision.models.resnet50(pretrained=True)
 docs.embed(model)
 ```
 
-After getting `.embeddings`, you can visualize it using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`, {ref}`find more details here<visualize-embeddings>`.
+After getting `.embeddings`, you can visualize them using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`, {ref}`find more details here<visualize-embeddings>`.
 
-Note that `.embed()` only works when you have `.tensors` set, if you have `.texts` set and your model function supports string as the input, then you can always do the following to get embeddings:
+Note that `.embed()` only works when you have `.tensors` set, if you have `.texts` set and your model function supports strings as input, then you can do the following to generate embeddings:
 
 ```python
 from docarray import DocumentArray
