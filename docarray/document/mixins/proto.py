@@ -79,7 +79,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return cls.construct(**fields)
 
-    def __columns__(self) -> 'DocumentProto':
+    def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.
 
         :return: the protobuf message
@@ -129,4 +129,4 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(nested=self.__columns__())
+        return NodeProto(nested=self.to_protobuf())

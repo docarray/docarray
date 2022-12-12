@@ -13,7 +13,7 @@ def test_simple_proto():
         [CustomDoc(text='hello', tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    new_da = DocumentArray[CustomDoc].from_protobuf(da.__columns__())
+    new_da = DocumentArray[CustomDoc].from_protobuf(da.to_protobuf())
 
     for doc1, doc2 in zip(da, new_da):
         assert doc1.text == doc2.text
@@ -34,7 +34,7 @@ def test_nested_proto():
         ]
     )
 
-    DocumentArray[CustomDocument].from_protobuf(da.__columns__())
+    DocumentArray[CustomDocument].from_protobuf(da.to_protobuf())
 
 
 def test_nested_proto_any_doc():
@@ -51,4 +51,4 @@ def test_nested_proto_any_doc():
         ]
     )
 
-    DocumentArray.from_protobuf(da.__columns__())
+    DocumentArray.from_protobuf(da.to_protobuf())

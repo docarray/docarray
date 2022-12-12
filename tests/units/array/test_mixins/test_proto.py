@@ -15,7 +15,7 @@ def test_proto_stacked_mode_torch():
 
     da.stack()
 
-    da.from_protobuf(da.__columns__())
+    da.from_protobuf(da.to_protobuf())
 
 
 def test_proto_stacked_mode_numpy():
@@ -28,4 +28,4 @@ def test_proto_stacked_mode_numpy():
 
     da.stack()
 
-    da.from_protobuf(da.__columns__())
+    da.from_protobuf(da.to_protobuf())

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Dict, Type
 
 from docarray.array.abstract_array import AbstractDocumentArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
@@ -26,7 +27,7 @@ class ProtoArrayMixin(AbstractDocumentArray):
         else:
             raise ValueError(f'proto message content {content_type} is not supported')
 
-    def __columns__(self) -> 'DocumentArrayProto':
+    def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocumentArray into a Protobuf message.
 
         :param ndarray_type: can be ``list`` or ``numpy``,
@@ -45,15 +46,15 @@ class ProtoArrayMixin(AbstractDocumentArray):
         if self.is_stacked() and self._columns is not None:
             da_proto = DocumentArrayListProto()
             for doc in self.__true_iter__():
-                da_proto.docs.append(doc.__columns__())
+                da_proto.docs.append(doc.to_protobuf())
 
             columns_proto: Dict[str, UnionArrayProto] = dict()
             for field, column in self._columns.items():
                 if isinstance(column, ProtoArrayMixin):
                     columns_proto[field] = UnionArrayProto(
-                        document_array=DocumentArrayProto(stack=column.__columns__())
+                        document_array=DocumentArrayProto(stack=column.to_protobuf())
                     )
-                else:
+                elif isinstance(column, AbstractTensor):
                     columns_proto[field] = UnionArrayProto(ndarray=column.to_protobuf())
 
             da_proto = DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
@@ -61,7 +62,7 @@ class ProtoArrayMixin(AbstractDocumentArray):
         else:
             da_proto = DocumentArrayListProto()
             for doc in self:
-                da_proto.docs.append(doc.__columns__())
+                da_proto.docs.append(doc.to_protobuf())
 
             return DocumentArrayProto(list_=da_proto)
 
@@ -74,4 +75,4 @@ class ProtoArrayMixin(AbstractDocumentArray):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(chunks=self.__columns__())
+        return NodeProto(chunks=self.to_protobuf())

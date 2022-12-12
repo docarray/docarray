@@ -28,7 +28,7 @@ def test_multi_modal_doc_proto():
         image=Image(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
     )
 
-    MyMultiModalDoc.from_protobuf(doc.__columns__())
+    MyMultiModalDoc.from_protobuf(doc.to_protobuf())
 
 
 def test_all_types():
@@ -60,7 +60,7 @@ def test_all_types():
         torch_embedding=torch.zeros((128,)),
         np_embedding=np.zeros((128,)),
     )
-    doc = MyDoc.from_protobuf(doc.__columns__())
+    doc = MyDoc.from_protobuf(doc.to_protobuf())
 
     assert doc.img_url == 'test.png'
     assert doc.txt_url == 'test.txt'
