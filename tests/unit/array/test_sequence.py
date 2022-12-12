@@ -6,10 +6,12 @@ import pytest
 from docarray import Document, DocumentArray
 from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.opensearch import DocumentArrayOpenSearch
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.redis import DocumentArrayRedis
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.storage.elastic import ElasticConfig
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.redis import RedisConfig
 from docarray.array.storage.sqlite import SqliteConfig
@@ -29,6 +31,7 @@ from tests.conftest import tmpfile
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=1)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=1)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=1)),
     ],
 )
 def test_insert(da_cls, config, start_storage):
@@ -86,6 +89,7 @@ def update_config_inplace(config, tmpdir, tmpfile):
         ('weaviate', {'n_dim': 3, 'name': 'Weaviate'}),
         ('qdrant', {'n_dim': 3, 'collection_name': 'qdrant'}),
         ('elasticsearch', {'n_dim': 3, 'index_name': 'elasticsearch'}),
+        ('opensearch', {'n_dim': 3, 'index_name': 'opensearch'}),
         ('redis', {'n_dim': 3, 'index_name': 'redis'}),
         ('milvus', {'n_dim': 3, 'collection_name': 'redis'}),
     ],
@@ -125,6 +129,7 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
+        ('opensearch', {'n_dim': 3, 'distance': 'l2'}),
     ],
 )
 def test_extend_subindex(storage, config, start_storage):
@@ -172,6 +177,7 @@ def test_extend_subindex(storage, config, start_storage):
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
+        ('opensearch', {'n_dim': 3, 'distance': 'l2'}),
     ],
 )
 def test_append_subindex(storage, config, start_storage):
@@ -223,6 +229,7 @@ def embeddings_eq(emb1, emb2):
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
+        ('opensearch', {'n_dim': 3, 'distance': 'l2'}),
     ],
 )
 @pytest.mark.parametrize(
@@ -251,6 +258,7 @@ def test_del_and_append(index, storage, config, start_storage):
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
+        ('opensearch', {'n_dim': 3, 'distance': 'l2'}),
     ],
 )
 @pytest.mark.parametrize(

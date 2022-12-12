@@ -2,9 +2,11 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.opensearch import DocumentArrayOpenSearch
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -32,6 +34,7 @@ def docs():
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
@@ -62,6 +65,7 @@ def test_da_vocabulary(da_cls, config, docs, min_freq, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
@@ -92,6 +96,7 @@ def test_da_text_to_tensor_non_max_len(docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
@@ -124,6 +129,7 @@ def test_da_text_to_tensor_max_len_3(docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
@@ -156,6 +162,7 @@ def test_da_text_to_tensor_max_len_1(docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],

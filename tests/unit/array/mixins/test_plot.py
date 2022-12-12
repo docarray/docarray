@@ -6,8 +6,10 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.opensearch import DocumentArrayOpenSearch
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -29,6 +31,7 @@ from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         # (DocumentArrayMilvus, MilvusConfig(n_dim=128)),  # tensor is too large to handle
     ],
@@ -69,6 +72,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=128)),
         # (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=128)),
     ],
@@ -158,6 +162,7 @@ def _test_plot_embeddings(da):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=5)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=5)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=5)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=5)),
     ],
@@ -191,6 +196,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
@@ -221,6 +227,7 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],

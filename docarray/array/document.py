@@ -13,12 +13,14 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray.array.elastic import DocumentArrayElastic
     from docarray.array.redis import DocumentArrayRedis
     from docarray.array.milvus import DocumentArrayMilvus
+    from docarray.array.opensearch import DocumentArrayOpenSearch
     from docarray.array.storage.sqlite import SqliteConfig
     from docarray.array.storage.annlite import AnnliteConfig
     from docarray.array.storage.weaviate import WeaviateConfig
     from docarray.array.storage.elastic import ElasticConfig
     from docarray.array.storage.redis import RedisConfig
     from docarray.array.storage.milvus import MilvusConfig
+    from docarray.array.storage.opensearch import OpenSearchConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
@@ -150,6 +152,15 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         config: Optional[Union['MilvusConfig', Dict]] = None,
     ) -> 'DocumentArrayMilvus':
         """Create a Milvus-powered DocumentArray object."""
+
+    @overload
+    def __new__(
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        storage: str = 'opensearch',
+        config: Optional[Union['OpenSearchConfig', Dict]] = None,
+    ) -> 'DocumentArrayOpenSearch':
+        """Create an OpenSearch-powered DocumentArray object."""
         ...
 
     def __enter__(self):
@@ -200,6 +211,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .milvus import DocumentArrayMilvus
 
                 instance = super().__new__(DocumentArrayMilvus)
+            elif storage == 'opensearch':
+                from docarray.array.opensearch import DocumentArrayOpenSearch
+
+                instance = super().__new__(DocumentArrayOpenSearch)
 
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')

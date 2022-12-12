@@ -279,7 +279,7 @@ class FindMixin:
         ...
 
     def _find(
-        self, query: 'ElasticArrayType', limit: int = 10, **kwargs
+        self, query: 'OpenSearchArrayType', limit: int = 10, **kwargs
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns `limit` approximate nearest neighbors given a batch of input queries.
         If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing

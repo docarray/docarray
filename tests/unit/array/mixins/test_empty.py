@@ -1,6 +1,7 @@
 import pytest
 
 from docarray import DocumentArray
+from docarray.array.opensearch import DocumentArrayOpenSearch, OpenSearchConfig
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
@@ -23,6 +24,7 @@ from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
         (DocumentArrayElastic, ElasticConfig(n_dim=5)),
         (DocumentArrayRedis, RedisConfig(n_dim=5)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=5)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=5)),
     ],
 )
 def test_empty_non_zero(da_cls, config, start_storage):
