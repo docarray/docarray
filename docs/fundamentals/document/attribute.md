@@ -15,19 +15,19 @@ print(d.text)
 hello world
 ```
 
-To unset attribute, simply assign it to `None`:
+To unset an attribute, assign it to `None`:
 
 ```python
 d.text = None
 ```
 
-or use {meth}`~docarray.base.BaseDCType.pop`:
+Or use {meth}`~docarray.base.BaseDCType.pop`:
 
 ```python
 d.pop('text')
 ```
 
-One can unset multiple attributes with `.pop()`:
+You can unset multiple attributes with `.pop()`:
 
 ```python
 d.pop('text', 'id', 'mime_type')
@@ -38,16 +38,16 @@ You can check which attributes are set by `.non_empty_fields`.
 
 ## Content attributes
 
-Among all attributes, content attributes, namely `.text`, `.tensor`, and `.blob`, are super important. They contain the actual content.
+Among all attributes, the most important are content attributes, namely `.text`, `.tensor`, and `.blob`. They contain the actual content.
 
 ```{seealso}
-If you are working with a Document that was created through DocArray's {ref}`dataclass <dataclass>` API,
-you can not only access the attributes that are described here, but also the attributes that you defined yourself.
+If you're working with a Document that was created through DocArray's {ref}`dataclass <dataclass>` API,
+you can not only access the attributes described here, but also attributes that you defined yourself.
 
 To see how to do that, see {ref}`here <mm-access-doc>`.
 ```
 
-They correspond to string-like data (e.g. for natural language), `ndarray`-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively. 
+They correspond to string-like data (e.g. for natural language), `ndarray`-like data (e.g. for image/audio/video data), and binary data (for general purpose), respectively. 
 
 
 | Attribute    | Accept type                                                                                                                                                                             | Use case                         |
@@ -76,7 +76,7 @@ print(d)
 
 As you can see, the `text` field is reset to empty.
 
-But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use {ref}`nested Document<recursive-nested-document>`s and store image in one sub-Document, and text in another sub-Document.
+But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use {ref}`nested Document<recursive-nested-document>`s and store the image in one sub-Document, and text in another sub-Document.
 
 ```python
 from docarray import Document
@@ -84,9 +84,9 @@ from docarray import Document
 d = Document(chunks=[Document(tensor=...), Document(text=...)])
 ```
 
-The principle is: each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.
+The principle is: Each Document contains only one modality of information. In practice, this makes your full solution clearer and easier to maintain.
 
-There is also a `.content` getter/setter of the content fields. The content will be automatically grabbed or assigned to either `text`, `blob`, or `tensor` field, based on the given type.
+There's also a `.content` getter/setter for the content fields. Content is automatically grabbed or assigned to either the `text`, `blob`, or `tensor` field, based on the given type.
 
 ```python
 from docarray import Document
@@ -111,11 +111,11 @@ print(d)
 You can also check which content field is set by `.content_type`.
 
 (content-uri)=
-## Load content from URI
+## Load content from a URI
 
 A common pattern is loading content from a URI instead of assigning it directly in the code.
 
-This can easily be done with `.uri` attribute. The value of `.uri` can point to either a local URI, remote URI or [data URI](https://en.wikipedia.org/wiki/Data_URI_scheme).
+You can do this with the `.uri` attribute. The value of `.uri` can point to either a local URI, remote URI or [data URI](https://en.wikipedia.org/wiki/Data_URI_scheme).
 
 ````{tab} Local image URI
 
@@ -188,7 +188,7 @@ There are more `.load_uri_to_*` functions that allow you to read {ref}`text<text
 
 ```{admonition} Convert content to data URI
 :class: tip
-Inline data URI is helpful when you need a quick visualization in HTML, as it embeds all resources directly into that HTML. 
+An inline data URI is helpful when you need a quick visualization in HTML, as it embeds all resources directly into that HTML. 
 
-You can convert a URI to a data URI using `doc.convert_uri_to_datauri()`. This will fetch the resource and make it inline.
+You can convert a URI to a data URI using `doc.convert_uri_to_datauri()`. This fetches the resource and makes it inline.
 ```

@@ -50,7 +50,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         ...
 
     def __len__(self):
-        return len(self._offset2ids)
+        ...
 
     def __iter__(self) -> Iterator['Document']:
         for _id in self._offset2ids:
@@ -75,7 +75,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
         from docarray.helper import check_root_id
 
-        if self._is_subindex:
+        if getattr(self, '_is_subindex', None):
             check_root_id(self, values)
 
         self._extend(values, **kwargs)

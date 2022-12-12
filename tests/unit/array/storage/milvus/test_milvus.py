@@ -73,6 +73,8 @@ def test_memory_cntxt_mngr(start_storage):
 @pytest.fixture()
 def mock_response():
     class MockHit:
+        score = 1.0
+
         @property
         def entity(self):
             return {'serialized': Document().to_base64()}
@@ -167,3 +169,19 @@ def test_batching(start_storage, mocker, method, meth_input, mock_response):
         for args, kwargs in mock_meth.call_args_list:
             if 'batch_size' in kwargs:
                 assert kwargs['batch_size'] == new_batch_size
+
+
+def test_len_not_listlike(start_storage):
+    da = DocumentArrayMilvus(
+        config={
+            'n_dim': 10,
+            'list_like': False,
+        },
+    )
+    assert len(da) == 0
+    da.extend([Document() for _ in range(10)])
+    assert len(da) == 10
+    da.extend([Document() for _ in range(5)])
+    assert len(da) == 15
+    da.clear()
+    assert len(da) == 0

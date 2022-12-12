@@ -1,7 +1,7 @@
 (sqlite)=
 # SQLite
 
-One can use SQLite as the document store for DocumentArray. It is useful when you want to access a large number Document which can not fit into memory.
+You can use SQLite as a document store for DocumentArray. It's suitable for accessing a large number of Documents which can't fit in memory.
 
 ## Usage
 
@@ -15,7 +15,7 @@ da1 = DocumentArray(
 )  # with customize config
 ```
 
-To reconnect a formerly persisted database, one can need to specify *both* `connection` and `table_name` in `config`:
+To reconnect a formerly persisted database, you can need to specify *both* `connection` and `table_name` in `config`:
 
 ```python
 from docarray import DocumentArray

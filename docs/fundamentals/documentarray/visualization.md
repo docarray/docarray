@@ -2,7 +2,7 @@
 
 ## Summary in table
 
-We are already pretty familiar with {meth}`~docarray.array.mixins.plot.PlotMixin.summary`, which prints a table of summary for DocumentArray and its attributes:
+You are already familiar with {meth}`~docarray.array.mixins.plot.PlotMixin.summary`, which prints a summary table for a DocumentArray and its attributes:
 
 ```python
 from docarray import DocumentArray
@@ -28,7 +28,7 @@ da.summary()
 
 ## Image sprites
 
-If a DocumentArray contains all image Documents, you can plot all images in one sprite image using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_image_sprites`.
+If a DocumentArray contains only image Documents, you can plot them all in one sprite image using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_image_sprites`.
 
 ```python
 from docarray import DocumentArray
@@ -43,7 +43,7 @@ docs.plot_image_sprites()
 (plot-matches)=
 ### Plot Matches
 
-If an image Document contains the matching images in its `.matches` attribute, you can visualise the matching results using {meth}`~docarray.document.mixins.plot.PlotMixin.plot_matches_sprites`.
+If an image Document contains images in its `.matches` attribute, you can visualise the matching results using {meth}`~docarray.document.mixins.plot.PlotMixin.plot_matches_sprites`.
 
 ```python
 import numpy as np
@@ -63,10 +63,10 @@ da[0].plot_matches_sprites(top_k=5, channel_axis=-1, inv_normalize=False)
 ## Embedding projector
 
 ```{important}
-This feature requires `fastapi` dependency. You can do `pip install "docarray[full]"` to install it.
+This feature requires `fastapi` dependency. You can run `pip install "docarray[full]"` to install it.
 ```
 
-If a DocumentArray has `.embeddings`, you can visualize the embeddings interactively using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`.
+If a DocumentArray has `.embeddings`, you can visualize them interactively using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`.
 
 ```python
 import numpy as np
@@ -82,7 +82,7 @@ docs.plot_embeddings()
 :align: center
 ```
 
-For image DocumentArray, you can do one step more to attach the image sprite on to the visualization points.
+For an image DocumentArray, you can pass the `image_sprites` parameter to set the visualization points to images.
 
 ```python
 da.plot_embeddings(image_sprites=True)
@@ -91,3 +91,8 @@ da.plot_embeddings(image_sprites=True)
 ```{figure} images/embedding-projector.gif
 :align: center
 ```
+
+````{admonition} Note
+:class: note
+If you have a lot of metadata, plotting may be slow since that metadata is stored in a corresponding TSV file. You can speed up plotting with the `exclude_fields_metas` parameter, preventing fields (like `chunks` or `matches`) from being written to the TSV.
+````

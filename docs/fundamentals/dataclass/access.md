@@ -7,16 +7,16 @@ modalities by their names.
 :class: seealso
 
 Accessing a modality always returns a Document or a DocumentArray, instead of directly returning the data stored in them.
-This ensures maximum flexibility for the use.
+This ensures maximum flexibility.
 
-If you want to learn more about the rationale behind this design, you can read our [blog post](https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0).
+To learn more about the rationale behind this design, read our [blog post](https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0).
 ```
 
 (mm-access-doc)=
 ## Document level access
 
-Even after conversion to {class}`~docarray.document.Document`, custom-defines modalities can be accessed by their names, returning a
-{class}`~docarray.document.Document` or, for list-types, a {class}`~docarray.array.document.DocumentArray`.
+Even after conversion to {class}`~docarray.document.Document`, custom-defined modalities can be accessed by their names, returning a
+{class}`~docarray.document.Document` or, for list-types, a {class}`~docarray.array.document.DocumentArray`:
 
 ```python
 from docarray import Document, dataclass
@@ -38,9 +38,9 @@ doc = Document(
 )
 
 print(doc.banner)  # returns a Document with the test.jpg image tensor
-print(doc.banner.tensor)  # returns the image tensor
+print(doc.banner.tensor)  # returns the image tensor directly
 print(doc.paragraphs)  # returns a DocumentArray with one Document per paragraph
-print(doc.paragraphs.texts)  # returns the paragraph texts
+print(doc.paragraphs.texts)  # returns the paragraph texts directly
 ```
 
 
@@ -65,7 +65,7 @@ doc.banner.embedding = model(banner_tensor)
 
 ### Select nested fields
 
-Nested field, coming from {ref}`nested dataclasses <mm-annotation>`, can be accessed by selecting the outer field,
+Nested fields, coming from {ref}`nested dataclasses <mm-annotation>`, can be accessed by selecting the outer field,
 and then selecting the inner field:
 
 ```python
@@ -98,7 +98,7 @@ this is a description
 ```
 
 (mm-access-da)=
-## DocumentArray level access
+## DocumentArray-level access
 
 Custom modalities can be accessed through the familiar {ref}`selector syntax <access-elements>`.
 
@@ -111,14 +111,14 @@ The fact that a custom modality is accessed is denoted through the addition of a
 ||   |       |
 ||   |-------|
 ||       |
-||       | --- indicate the field of dataclass (modality name)
+||       | --- dataclass field (modality name)
 ||
-|| ------ indicate the start of modality selector
+|| ------ start of modality selector
 |
-| ---- indicate the start of selector
+| ---- start of selector
 ```
 
-Selecting a modality form a DocumentArray always results in another DocumentArray:
+Selecting a modality from a DocumentArray always results in another DocumentArray:
 
 ```python
 from docarray import Document, dataclass, DocumentArray
@@ -218,7 +218,7 @@ da['@.[description]']
 
 ### Select multiple fields
 
-You can select multiple fields by including them in the square brackets, separated by a comma `,`:
+You can select multiple fields by including them in the square brackets, separated by commas `,`:
 
 ```python
 da['@.[description, banner]']
@@ -258,7 +258,7 @@ da['@.[description, banner]']
 
 ### Slice dataclass objects
 
-Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do:
+Remember each dataclass object corresponds to one Document object. You can first slice the DocumentArray before selecting the field. Specifically, you can do:
 
 ```text
 @r[slice].[field1, field2, ...]
@@ -306,7 +306,7 @@ da['@r[:1].[banner]']
 
 ### Slice `List[Type]` fields
 
-If a field is annotated as a List of DocArray types, it will create a DocumentArray, one can add slicing after the field selector to further restrict the size of the sub-Documents.
+If a field is annotated as a List of DocArray types, it creates a DocumentArray. You can add slicing after the field selector to further restrict the number of sub-Documents.
 
 ```{code-block} python
 ---
@@ -351,17 +351,17 @@ test-1.jpeg
 test-1.jpeg
 ```
 
-To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.
+To summarize, slicing can be put in front of the field selector to restrict the number of dataclass objects, or after the field selector to restrict the number of sub-Documents.
 
 ### Select nested fields
 
-A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former's `.chunks`. To select the deeply nested field, one can simply follow:
+A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former's `.chunks`. To select the deeply nested field, you can simply follow:
 
 ```text
 @.[field1, field2, ...].[nested_field1, nested_field1, ...]
 ```
 
-For example,
+For example:
 
 ```{code-block} python
 ---

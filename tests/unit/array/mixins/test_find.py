@@ -74,31 +74,55 @@ def test_find(storage, config, limit, query, start_storage):
     # annlite uses cosine distance by default
     if n_dim == 1:
         if storage == 'weaviate':
+            distances = [t['distance'].value for t in result[:, 'scores']]
+            assert sorted(distances, reverse=False) == distances
+            assert len(distances) == limit
+        elif storage == 'qdrant':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
-            assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
-            cosine_distances = [t['score'].value for t in da[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True)
+            assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            cosine_similarities = [t['score'].value for t in result[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+            assert len(cosine_similarities) == limit
+        elif storage == 'redis':
+            cosine_distances = [t['score'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
-            cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
+            assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
+            cosine_distances = [t['cosine'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
+            assert len(cosine_distances) == limit
     else:
         if storage == 'weaviate':
+            for da in result:
+                distances = [t['distance'].value for t in da[:, 'scores']]
+                assert sorted(distances, reverse=False) == distances
+                assert len(distances) == limit
+        elif storage == 'qdrant':
             for da in result:
                 cosine_similarities = [
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
-                assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
+                assert sorted(cosine_similarities, reverse=True)
+                assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            for da in result:
+                cosine_similarities = [t['score'].value for t in da[:, 'scores']]
+                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+                assert len(cosine_similarities) == limit
+        elif storage == 'redis':
             for da in result:
                 cosine_distances = [t['score'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
+                assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
+                assert len(cosine_distances) == limit
 
 
 @pytest.mark.parametrize(
@@ -639,39 +663,104 @@ def test_filtering(
 
 
 @pytest.mark.parametrize(
-    'storage,filter_gen,numeric_operators,operator',
+    'columns',
     [
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'match': {'value': threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    'eq',
-                ]
-            )
+        [
+            ('price', 'float'),
+            ('category', 'str'),
+            ('info', 'text'),
+            ('location', 'geo'),
         ],
+        {'price': 'float', 'category': 'str', 'info': 'text', 'location': 'geo'},
     ],
 )
-@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
-def test_qdrant_filter_function(
-    storage, filter_gen, operator, numeric_operators, start_storage, columns
-):
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                'must': [
+                    {"key": "category", "match": {"value": "Shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['category'] == "Shoes" and r.tags['price'] >= 5.0,
+        ),
+        (
+            {
+                'must_not': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {
+                        "key": "location",
+                        "geo_radius": {
+                            "center": {"lon": -98.17, "lat": 38.71},
+                            "radius": 500.0 * 1000,
+                        },
+                    },
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") == -1
+            and (
+                haversine_distances(
+                    [
+                        [-98.17, 38.71],
+                        [r.tags['location']['lon'], r.tags['location']['lat']],
+                    ]
+                )
+                * 6371
+            )[0][1]
+            > 500.0,
+        ),
+        (
+            {
+                'should': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") != -1 or r.tags['price'] >= 5.0,
+        ),
+    ],
+)
+def test_qdrant_filter_query(filter, checker, columns, start_storage):
     n_dim = 128
     da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
-    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
-    thresholds = [10, 20, 30]
-    for threshold in thresholds:
-        filter = filter_gen(operator, threshold)
-        results = da._filter(filter=filter)
 
-        assert len(results) > 0
+    da.extend(
+        [
+            Document(
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Shoes',
+                    'info': f'shoes {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
 
-        assert all(
-            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
-        )
+    da.extend(
+        [
+            Document(
+                id=f'r{i+10}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Jeans',
+                    'info': 'jeans {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+    assert all([checker(r) for r in results])
 
 
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
