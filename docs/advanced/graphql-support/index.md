@@ -83,13 +83,13 @@ Finally, save all code snippets above into `toy.py` and run it from the console 
 strawberry server toy
 ```
 
-You will see 
+This output:
 ```text
 Running strawberry on http://0.0.0.0:8000/graphql 🍓
 ```
 
 
-Now open `http://0.0.0.0:8000/graphql` in your browser. You should be able to see a GraphiQL playground at this url.
+Now open `http://0.0.0.0:8000/graphql` in your browser. You should be able to see a GraphQL playground at this URL.
 
 Try the following query
 ```gql

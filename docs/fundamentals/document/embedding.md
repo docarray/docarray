@@ -1,6 +1,6 @@
 # Embedding
 
-Embedding is a multi-dimensional representation of a Document (often a `[1, D]` vector). It serves as a very important piece in machine learning. The attribute {attr}`~docarray.Document.embedding` is designed to contain the embedding information of a Document.
+An embedding is a multi-dimensional representation of a Document (often a `[1, D]` vector). It serves as a very important piece of machine learning. The attribute {attr}`~docarray.Document.embedding` is designed to contain a Document's embedding information.
 
 Like `.tensor`, you can assign it with a Python (nested) List/Tuple, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
 
@@ -20,9 +20,9 @@ d4 = Document(embedding=torch.tensor([1, 2, 3]))
 d5 = Document(embedding=tf.sparse.from_dense(np.array([[1, 2, 3], [4, 5, 6]])))
 ```
 
-Unlike some other packages, DocArray will not actively cast `dtype` into `float32`. If the right-hand assigment `dtype` is `float64` in PyTorch, it will stay as a PyTorch `float64` tensor.
+Unlike some other packages, DocArray doesn't actively cast `dtype` into `float32`. If the right-hand assignment `dtype` is `float64` in PyTorch, it stays as a PyTorch `float64` tensor.
 
-To assign multiple Documents `.tensor` and `.embedding` in bulk, you {ref}`should use DocumentArray<da-content-embedding>`. It is much faster and smarter than using for-loop.
+To assign `.tensor`s and `.embedding`s to multiple Documents in bulk, {ref}`use DocumentArray<da-content-embedding>`. It's much faster and smarter than using a for-loop.
 
 
 ## Fill embedding via neural network
@@ -30,10 +30,10 @@ To assign multiple Documents `.tensor` and `.embedding` in bulk, you {ref}`shoul
 ```{admonition} On multiple Documents use DocumentArray
 :class: tip
 
-To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call `.embed()`. You can find out more in {ref}`embed-via-model`.
+To embed multiple Documents, don't use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call `.embed()`. You can find out more in {ref}`embed-via-model`.
 ```
 
-Usually you don't want to assign embedding manually, but instead doing something like:
+Usually you don't want to assign an embedding manually, but instead doing something like:
 
 ```text
 d.tensor   \
@@ -41,7 +41,7 @@ d.text   ---> some DNN model ---> d.embedding
 d.blob /
 ```
 
-Once a Document has content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling `.embedding`. For example, our Document looks like the following:
+Once a Document has its content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling its `.embedding`. For example, take this Document:
 
 ```python
 q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
@@ -50,7 +50,7 @@ q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
      .set_image_tensor_channel_axis(-1, 0))
 ```
 
-Let's embed it into vector via ResNet50:
+Let's embed it into a vector with ResNet50:
 
 ```python
 import torchvision
@@ -58,15 +58,15 @@ model = torchvision.models.resnet50(pretrained=True)
 q.embed(model)
 ```
 
-## Find nearest-neighbours
+## Find nearest-neighbors
 
 ```{admonition} On multiple Documents use DocumentArray
 :class: tip
 
-To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in {ref}`match-documentarray`.  
+To match multiple Documents, don't use this feature in a for-loop. Instead, find out more in {ref}`match-documentarray`.  
 ```
 
-Documents have `.embedding` set can be "matched" against each other. In this example, we build ten Documents and put them into a {ref}`DocumentArray<da-intro>`, and then use another Document to search against them.
+Documents with an `.embedding` can be "matched" against each other. In this example, we create ten Documents and put them into a {ref}`DocumentArray<da-intro>`, and then use another Document to search against them.
 
 ```python
 from docarray import DocumentArray, Document
@@ -95,6 +95,3 @@ q.summary()
           ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a399046d6911eca6fa1e008a366d49>
           └─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a399546d6911eca6fa1e008a366d49>
 ```
-
-
-

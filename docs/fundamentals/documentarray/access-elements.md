@@ -1,11 +1,11 @@
 (access-elements)=
 # Access Documents
 
-This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what's the big deal?
+This is probably my favorite chapter so far. If you've come this far, you may be thinking: Okay, so you've re-implemented the Python List and called it DocumentArray. What's the big deal?
 
-If it is just a `list` and you can only access elements via `[1]`, `[-1]`, `[1:3]`, then it is no big deal. However, DocumentArray offers much more than simple indexing. It allows you to fully exploit the rich & nested data structure of Document in an easy and efficient way. 
+If it really were just a `list` and you can only access elements via `[1]`, `[-1]`, `[1:3]`, then you'd be right. However, DocumentArray offers _much_ more than simple indexing. It lets you fully exploit the rich and nested data structure of Documents in an easy and efficient way. 
 
-The table below summarizes all indexing routines that DocumentArray supports. You can use them to **get, set, and delete** items in DocumentArray.
+The table below summarizes all the indexing routines that DocumentArray supports. You can use them to **get, set, and delete** items in a DocumentArray.
 
 | Indexing routine                        | Example                                                                      | Return        |
 |-----------------------------------------|------------------------------------------------------------------------------|---------------|
@@ -22,7 +22,7 @@ The table below summarizes all indexing routines that DocumentArray supports. Yo
 Sounds exciting? Let's continue then.
 
 ````{tip}
-Most of the examples below only show getting Documents for the sake of clarity. Note that you can always use the same syntax for get/set/delete Documents. For example,
+Most of the examples below only show getting Documents for the sake of clarity. Note that you can always use the same syntax to get/set/delete Documents. For example:
 
 ```python
 da = DocumentArray(...)
@@ -37,7 +37,7 @@ del da[index]
 
 ## Basic indexing
 
-Basic indexing such as by the integer offset, the slices are so common that I don't think we need more words. You can just use it as in Python List.
+Basic indexing such as by integer offset or slices are so common that we think they can go without saying. You can just use them like you would in a Python List:
 
 ```python
 from docarray import DocumentArray
@@ -59,7 +59,7 @@ da[1:100:10]
 
 ## Index by Document `id`
 
-A more interesting one is selecting Documents by their `id`. 
+A more interesting use case is selecting Documents by their `id`s:
 
 ```python
 from docarray import DocumentArray
@@ -84,9 +84,9 @@ print(da['7e27fa246e6611ec9a441e008a366d49', '7e27fb826e6611ec9a441e008a366d49']
 <DocumentArray (length=2) at 4874066256>
 ```
 
-No need to worry about efficiency here, it is `O(1)`.
+No need to worry about efficiency here: It's `O(1)`.
 
-Based on the same technique, one can check if a Document is inside a DocumentArray via Python `in` syntax:
+Based on the same technique, you can check if a Document is inside a DocumentArray using Python's `in` syntax:
 
 ```python
 from docarray import DocumentArray, Document
@@ -105,7 +105,7 @@ False
 
 ## Index by boolean mask
 
-You can use a boolean mask to select Documents. This becomes useful when you want to update or filter our certain Documents:
+Using a boolean mask to select Documents is useful for updating or filtering certain Documents:
 
 ```python
 from docarray import DocumentArray
@@ -122,31 +122,31 @@ print(da)
 <DocumentArray (length=50) at 4513619088>
 ```
 
-Note that if the length of the boolean mask is smaller than the length of a DocumentArray, then the remaining part is padded to `False`. 
+Note that if the boolean mask's length is smaller than the DocumentArray's length, the remaining part is padded to `False`. 
 
 (path-string)=
 ## Index by nested structure
 
-From early chapter, we already know {ref}`Document can be nested<recursive-nested-document>`. DocumentArray provides very easy way to traverse over the nested structure and select Documents. All you need to do is following the syntax below:
+From an earlier chapter, we already know {ref}`Documents can be nested<recursive-nested-document>`. DocumentArray provides makes it easy to traverse over the nested structure and select Documents:
 
 ```python
 da['@path1,path2,path3']
 ```
 
-- The path-string must starts with `@`.
-- Multiple paths are separated by comma `,`.
-- A path represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select chunks of the matches, `r` to select the top-level Documents.
-- A path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
-- Optionally, you can specify a slice or offset at each level, for example, `r[-1]m[:3]` will select the first 3 matches of the last root document.
+- The path-string must start with `@`.
+- Multiple paths are separated by commas `,`.
+- A path represents the route from the top-level Documents to the destination. Use `c` to select chunks, `cc` to select chunks of chunks, `m` to select matches, `mc` to select chunks of matches, `r` to select top-level Documents.
+- A path can only go deeper, not shallower. You can use commas `,` to start a new path from the very top-level.
+- Optionally, specifying a slice or offset at each level (for example, `r[-1]m[:3]`) selects the first 3 matches of the last root document.
 
 ```{seealso}
-If you are working with a DocumentArray that was created through DocArray's {ref}`dataclass <dataclass>` API,
-you can also directly access sub-documents by specifying the modality name that you have assigend to them.
+If you're working with a DocumentArray that was created through DocArray's {ref}`dataclass <dataclass>` API,
+you can also directly access sub-documents by specifying the modality name that you assigend to them.
 
 To see how to do that, see {ref}`here <mm-access-da>`.
 ```
 
-Let's practice a bit. First construct a DocumentArray with nested Documents:
+Let's practice. First construct a DocumentArray with nested Documents:
 
 ```python
 from docarray import DocumentArray
@@ -176,7 +176,7 @@ da.summary()
   matches     ('MatchArray',)   3                False  
 ```
 
-This simple DocumentArray contains 3 Documents, each of which contains 2 matches and 2 chunks. Let's plot one of them.
+This simple DocumentArray contains three Documents, each of which contains two matches and two chunks. Let's plot one of them.
 
 ```text
  <Document ('id', 'chunks', 'matches') at 2f94c1426ee511ecbb491e008a366d49>
@@ -188,13 +188,13 @@ This simple DocumentArray contains 3 Documents, each of which contains 2 matches
           └─ <Document ('id', 'parent_id', 'granularity') at 2f94c46c6ee511ecbb491e008a366d49>
 ```
 
-That's still too much information, let's minimize it.
+That's still too much information, let's minimize it:
 
 ```{figure} images/docarray-index-example.svg
 :width: 10%
 ```
 
-Now let's use the red circle to depict our intended selection. Here is what you can with the path-syntax:
+Now let's use the red dot to depict our intended selection. Here's where we use the path-syntax:
 
 ```{figure} images/docarray-index-example-full1.svg
 ```
@@ -213,29 +213,29 @@ print(da['@c,m,r'])
 <DocumentArray (length=15) at 4912623312>
 ```
 
-Let's now consider a deeper nested structure and use the path syntax to select Documents.
+Let's now consider a deeper nested structure and use the path syntax to select Documents:
 
 ```{figure} images/docarray-index-example-full2.svg
 ```
 
-Last but not the least, you can use integer, or integer slice to restrict the selection.
+Last but not the least, you can use integer, or integer slice to restrict the selection:
 ```{figure} images/docarray-index-example-full3.svg
 :width: 60%
 ```
 
-This can be useful when you want to get top matches of all matches from all Documents, e.g.:
+This is useful to get the top matches of all matches from all Documents:
 
 ```python
 da['@m[:5]']
 ```
 
-You can add space in the path-string for a better readability.
+You can add spaces in the path-string for better readability.
 
 ## Index by flatten
 
-What if I just want a flat DocumentArray without all nested structure, can I select all Documents regardless their nested structure?
+What if I just want a flat DocumentArray without all nested structure? Can I select all Documents regardless of their nested structure?
 
-Yes! Simply use ellipsis literal as the selector `da[...]`:
+Yes! Simply use the ellipsis literal as the selector `da[...]`:
 
 ```python
 from docarray import DocumentArray
@@ -267,21 +267,21 @@ da[...].summary()
   parent_id     ('str',)    4                False 
 ```
 
-Note that there is no `chunks` and `matches` in any of the Document from `da[...]` anymore. They are all flattened.
+Note that there are no `chunks` or `matches` in any of the Documents from `da[...]` anymore. They have all been flattened.
 
 Documents in `da[...]` are in the chunks-and-depth-first order, i.e depth-first traversing to all chunks and then to all matches.
 
 
-## Other Handy Helpers
+## Other handy helpers
 
 ### Batching
 
 
 ```{tip}
-To batch and process DocumentArray in parallel in a non-blocking way, please use {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` and refer to {ref}`map-batch`.
+To batch and process a DocumentArray in parallel in a non-blocking way, use {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` and refer to {ref}`map-batch`.
 ```
 
-One can batch a large DocumentArray into small ones via {meth}`~docarray.array.mixins.group.GroupMixin.batch`. This is useful when a DocumentArray is too big to process at once.
+You can batch a large DocumentArray into smaller ones with {meth}`~docarray.array.mixins.group.GroupMixin.batch`. This is useful when a DocumentArray is too big to process at once.
 
 ```python
 from docarray import DocumentArray
@@ -314,7 +314,7 @@ da = DocumentArray.empty(1000).sample(10)
 
 ### Shuffling
 
-Shuffling a DocumentArray inplace:
+To shuffle a DocumentArray in-place:
 
 ```python
 from docarray import DocumentArray
@@ -325,7 +325,7 @@ da.shuffle()
 
 ### Splitting by `.tags`
 
-One can split a DocumentArray into multiple DocumentArrays according to the tag value (stored in `tags`) of each Document.
+You can split a DocumentArray into multiple DocumentArrays according to a tag value (stored in `tags`) of each Document.
 It returns a Python `dict` where Documents with the same `tag` value are grouped together in a new DocumentArray, with their orders preserved from the original DocumentArray.
 
 ```python
@@ -350,7 +350,6 @@ rv = da.split_by_tag(tag='category')
  'a': <DocumentArray (length=2) at 4876735056>}
 ```
 
-
 ## What's next?
 
-Now we know how to select Documents from DocumentArray, next we learn how to {ref}`select attributes from DocumentArray<bulk-access>`. Spoiler alert, it follows the same syntax. 
+Now you know how to select Documents from DocumentArray, next you'll learn how to {ref}`select attributes from DocumentArray<bulk-access>`. Spoiler alert: it follows the same syntax. 
