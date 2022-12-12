@@ -6,11 +6,11 @@
 <meta property="og:title" content="Elasticsearch" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/elasticsearch/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="One can use Elasticsearch as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="You can use Elasticsearch as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started. Create docker-comp..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="One can use Elasticsearch as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="You can use Elasticsearch as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started. Create docker-comp..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/elasticsearch.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Elasticsearch - DocArray 0.20.0 documentation</title>
+        <title>Elasticsearch - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,7 +401,7 @@
                 <article role="main">
                     <section id="elasticsearch">
 <span id="id1"></span><h1>Elasticsearch<a class="headerlink" href="#elasticsearch" title="Permalink to this heading">#</a></h1>
-<p>One can use <a class="reference external" href="https://www.elastic.co">Elasticsearch</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
+<p>You can use <a class="reference external" href="https://www.elastic.co">Elasticsearch</a> as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">elasticsearch</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[elasticsearch]&quot;.</span></code></p>
@@ -436,7 +436,7 @@ docker-compose up
 </section>
 <section id="create-documentarray-with-elasticsearch-backend">
 <h3>Create DocumentArray with Elasticsearch backend<a class="headerlink" href="#create-documentarray-with-elasticsearch-backend" title="Permalink to this heading">#</a></h3>
-<p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:9200</span></code>), one can instantiate a DocumentArray with Elasticsearch storage as such:</p>
+<p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:9200</span></code>), you can instantiate a DocumentArray with Elasticsearch storage as such:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">})</span>
@@ -460,7 +460,7 @@ docker-compose up
 </pre></div>
 </div>
 <p>Here is <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#elasticsearch-security-certificates">the official Documentation</a> for you to get certificate, password etc.</p>
-<p>To access a DocumentArray formerly persisted, one can specify <code class="docutils literal notranslate"><span class="pre">index_name</span></code> and the hosts.</p>
+<p>To access a DocumentArray formerly persisted, you can specify <code class="docutils literal notranslate"><span class="pre">index_name</span></code> and the hosts.</p>
 <p>The following example will build a DocumentArray with previously stored data from <code class="docutils literal notranslate"><span class="pre">old_stuff</span></code> on <code class="docutils literal notranslate"><span class="pre">http://localhost:9200</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -544,7 +544,7 @@ docker-compose up
 </section>
 <section id="vector-search-with-filter-query">
 <h3>Vector search with filter query<a class="headerlink" href="#vector-search-with-filter-query" title="Permalink to this heading">#</a></h3>
-<p>One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s DSL</a>.</p>
+<p>You can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s DSL</a>.</p>
 <p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"><span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
 has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -612,7 +612,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 </section>
 <section id="search-by-filter-query">
 <h3>Search by filter query<a class="headerlink" href="#search-by-filter-query" title="Permalink to this heading">#</a></h3>
-<p>One can search with user-defined query filters using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method. Such queries can be constructed following the
+<p>You can search with user-defined query filters using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method. Such queries can be constructed following the
 guidelines in <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s Documentation</a>.</p>
 <p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into ElasticSearch and you want to retrieve all Documents
 with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower or equal to  some <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
@@ -861,7 +861,7 @@ for search. If you want to use a specific tags field, make sure to specify it wi
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

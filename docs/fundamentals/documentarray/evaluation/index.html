@@ -6,11 +6,11 @@
 <meta property="og:title" content="Evaluate Matches" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/evaluation/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="After the execution of match(), your DocumentArray receives a.matches attribute. You can evaluate those matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant and can be provided in two formats: (1) a ground truth array or (2) in th..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="After executing match(), your DocumentArray receives a.matches attribute. You can evaluate these matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant, and can be provided in two formats: as a ground truth array or as labels. To de..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="After the execution of match(), your DocumentArray receives a.matches attribute. You can evaluate those matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant and can be provided in two formats: (1) a ground truth array or (2) in th..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="After executing match(), your DocumentArray receives a.matches attribute. You can evaluate these matches against the ground truth via evaluate(). The ground truth describes which matches are relevant and non-relevant, and can be provided in two formats: as a ground truth array or as labels. To de..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/evaluation.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Evaluate Matches - DocArray 0.20.0 documentation</title>
+        <title>Evaluate Matches - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Evaluate Matches</a></li>
 </ul>
@@ -401,9 +401,9 @@
                 <article role="main">
                     <section id="evaluate-matches">
 <h1>Evaluate Matches<a class="headerlink" href="#evaluate-matches" title="Permalink to this heading">#</a></h1>
-<p>After the execution of <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a>, your <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> receives a <code class="docutils literal notranslate"><span class="pre">.matches</span></code> attribute.
-You can evaluate those matches against the ground truth via <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a>.
-The ground truth describes which matches are relevant and non-relevant and can be provided in two formats: (1) a ground truth array or (2) in the form of labels.</p>
+<p>After executing <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a>, your <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> receives a <code class="docutils literal notranslate"><span class="pre">.matches</span></code> attribute.
+You can evaluate these matches against the ground truth via <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a>.
+The ground truth describes which matches are relevant and non-relevant, and can be provided in two formats: as a ground truth array or as labels.</p>
 <p>To demonstrate this, let’s create a DocumentArray with random embeddings and match it to itself:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -431,8 +431,8 @@ The ground truth describes which matches are relevant and non-relevant and can b
   matches     (&#39;MatchArray&#39;,)   10               False                
 </pre></div>
 </div>
-<p>Now <code class="docutils literal notranslate"><span class="pre">da.matches</span></code> contains the nearest neighbours.
-To make our scenario more interesting, we mix in ten “noise Documents” to every <code class="docutils literal notranslate"><span class="pre">d.matches</span></code>:</p>
+<p>Now <code class="docutils literal notranslate"><span class="pre">da.matches</span></code> contains the nearest neighbors.
+To make this more interesting, let’s mix in ten “noise Documents” in every <code class="docutils literal notranslate"><span class="pre">d.matches</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">da_original</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da_prediction</span><span class="p">:</span>
@@ -461,22 +461,21 @@ To make our scenario more interesting, we mix in ten “noise Documents” to ev
 </div>
 <section id="evaluation-against-a-ground-truth-array">
 <h2>Evaluation against a ground truth array<a class="headerlink" href="#evaluation-against-a-ground-truth-array" title="Permalink to this heading">#</a></h2>
-<p>To evaluate the matches against a ground truth array, you simply provide a DocumentArray to the evaluate function like <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> in the call below:</p>
+<p>To evaluate the matches against a ground-truth array, you pass a DocumentArray (like <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code>) to the <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Thereby, <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> should contain the same Documents as in <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> where each <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute contains exactly those Documents which are relevant to the respective root Document.
-The <code class="docutils literal notranslate"><span class="pre">metrics</span></code> argument determines the metric you want to use for your evaluation, e.g., <code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code>.</p>
-<p>In the code cell below, we evaluate the array <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> with the noisy matches against the original one <code class="docutils literal notranslate"><span class="pre">da_original</span></code>:</p>
+<p>Thereby, <code class="docutils literal notranslate"><span class="pre">da_groundtruth</span></code> should contain the same Documents as in <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code>. Each <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute contains exactly those Documents which are relevant to the respective root document.</p>
+<p>You define the metrics you want to use for your evaluation (e.g. <code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code>) with the <code class="docutils literal notranslate"><span class="pre">metrics</span></code> parameter.</p>
+<p>Let’s evaluate the <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code> DocumentArray (with the noisy matches) against <code class="docutils literal notranslate"><span class="pre">da_original</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.45}
 </pre></div>
 </div>
-<p>It returns the average value for the <code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code> metric.
-The average is calculated over all Documents of <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code>.
-If you want to look at the individual evaluation values, you can check the <code class="xref py py-attr docutils literal notranslate"><span class="pre">evaluations</span></code> attribute, e.g.:</p>
+<p>This returns the average value for the <code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code> metric, calculated over all Documents of <code class="docutils literal notranslate"><span class="pre">da_prediction</span></code>.
+To see the individual evaluation values, check the <code class="xref py py-attr docutils literal notranslate"><span class="pre">evaluations</span></code> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da_prediction</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </pre></div>
@@ -495,11 +494,10 @@ If you want to look at the individual evaluation values, you can check the <code
 </div>
 <section id="document-identifier">
 <h3>Document identifier<a class="headerlink" href="#document-identifier" title="Permalink to this heading">#</a></h3>
-<p>Note that the evaluation against a ground truth DocumentArray only works if both DocumentArrays have the same length and their nested structure is the same.
+<p>Note that evaluating a DocumentArray against a ground truth DocumentArray only works if both have the same length and nested structure.
 It makes no sense to evaluate with a completely different DocumentArray.</p>
-<p>While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, it simply uses <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.
-You can customize this behavior by specifying <code class="docutils literal notranslate"><span class="pre">hash_fn</span></code>.</p>
-<p>Let’s see an example by creating two DocumentArrays with some matches with identical texts.</p>
+<p>While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, this is just <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>. You can customize this by specifying <code class="docutils literal notranslate"><span class="pre">hash_fn</span></code>.</p>
+<p>Let’s see an example by creating two DocumentArrays. Each DocumentArray has matches that are identical to each other, but differ from the matches of the other DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">p_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -512,29 +510,29 @@ You can customize this behavior by specifying <code class="docutils literal notr
     <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;my ground truth&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Now when you do evaluate, you will receive an error:</p>
+<p>Now when you evaluate, you’ll receive an error:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">ground_truth</span><span class="o">=</span><span class="n">g_da</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ValueError: Document &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc84b26fab11ecbc181e008a366d49&gt; from the left-hand side and &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc98086fab11ecbc181e008a366d49&gt; from the right-hand are not hashed to the same value. This means your left and right DocumentArray may not be aligned; or it means your `hash_fn` is badly designed.
 </pre></div>
 </div>
-<p>This says that based on <code class="docutils literal notranslate"><span class="pre">.id</span></code> (default identifier), the given two DocumentArrays are so different that they can’t be evaluated.
-It is a valid point because our two DocumentArrays have completely random <code class="docutils literal notranslate"><span class="pre">.id</span></code>.</p>
-<p>If we override the hash function as follows, the evaluation can be conducted:</p>
+<p>This says that based on <code class="docutils literal notranslate"><span class="pre">.id</span></code> (the default identifier), the two DocumentArrays are so different that they can’t be evaluated.
+It is a valid point because our two DocumentArrays have completely random <code class="docutils literal notranslate"><span class="pre">.id</span></code>s.</p>
+<p>If we override the hash function, the evaluation can proceed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">ground_truth</span><span class="o">=</span><span class="n">g_da</span><span class="p">,</span> <span class="n">hash_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;average_precision&#39;: 1.0}
 </pre></div>
 </div>
-<p>It is correct as we define the evaluation as checking if the first two characters in <code class="docutils literal notranslate"><span class="pre">.text</span></code> are the same.</p>
+<p>This is correct, as we define evaluation as checking if the first two characters in <code class="docutils literal notranslate"><span class="pre">.text</span></code> (in this case, <code class="docutils literal notranslate"><span class="pre">my</span></code>) are the same.</p>
 </section>
 </section>
 <section id="evaluation-via-labels">
 <h2>Evaluation via labels<a class="headerlink" href="#evaluation-via-labels" title="Permalink to this heading">#</a></h2>
-<p>Alternatively, you can add labels to your Documents to evaluate them.
-In this case, a match is considered relevant to its root Document if it has the same label:</p>
+<p>Alternatively, you can evaluate your Documents by adding labels.
+A match is considered relevant to its root Document if it has the same label:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -549,12 +547,12 @@ In this case, a match is considered relevant to its root Document if it has the 
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.5}
 </pre></div>
 </div>
-<p>Also here, the results are stored in the <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> field of each Document.</p>
+<p>Also here, results are stored in the <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> attribute of each Document.</p>
 </section>
 <section id="metric-functions">
 <h2>Metric functions<a class="headerlink" href="#metric-functions" title="Permalink to this heading">#</a></h2>
-<p>DocArray provides common metrics used in the information retrieval community for evaluating the nearest-neighbour matches.
-Some of those metrics accept additional arguments as <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> which you can simply add to the call of the evaluate function:</p>
+<p>DocArray provides common metrics used in the information retrieval community to evaluate nearest-neighbor matches.
+Some of those metrics accept additional arguments as <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> which you can add to the call of the <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> method:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -595,10 +593,10 @@ Some of those metrics accept additional arguments as <code class="docutils liter
 </div>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
-<p>These metric scores might change if the <code class="docutils literal notranslate"><span class="pre">limit</span></code> argument of the match function is set differently.</p>
-<p><strong>Note:</strong> Not all of these metrics can be applied to a Top-K result, i.e., <code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">r_precision</span></code> are calculated correctly only if the limit is set equal or higher than the number of Documents in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provided to the match function.</p>
+<p>These metric scores might change if you set the <code class="docutils literal notranslate"><span class="pre">limit</span></code> argument of the match method differently.</p>
+<p><strong>Note:</strong> Not all of these metrics can be applied to a top-K result, i.e., <code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">r_precision</span></code> are calculated correctly only if the limit is set equal to or higher than the number of Documents in the DocumentArray provided to the match method.</p>
 </div>
-<p>You can evaluate multiple metric functions at once, as you can see below:</p>
+<p>You can evaluate multiple metric functions at once:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
     <span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">,</span> <span class="s1">&#39;reciprocal_rank&#39;</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span>
 <span class="p">)</span>
@@ -607,7 +605,7 @@ Some of those metrics accept additional arguments as <code class="docutils liter
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.45, &#39;reciprocal_rank&#39;: 0.8166666666666667}
 </pre></div>
 </div>
-<p>In this case, the keyword argument <code class="docutils literal notranslate"><span class="pre">k</span></code> is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.</p>
+<p>In this case, the keyword argument <code class="docutils literal notranslate"><span class="pre">k</span></code> is passed to all metric functions, even though it fulfills no specific function for calculating the reciprocal rank.</p>
 <section id="the-max-rel-parameter">
 <h3>The max_rel parameter<a class="headerlink" href="#the-max-rel-parameter" title="Permalink to this heading">#</a></h3>
 <p>Some metric functions shown in the table above require a <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> parameter.
@@ -646,8 +644,7 @@ In this way, the function can set <code class="docutils literal notranslate"><sp
 </section>
 <section id="custom-metrics">
 <h3>Custom metrics<a class="headerlink" href="#custom-metrics" title="Permalink to this heading">#</a></h3>
-<p>If the pre-defined metrics do not fit your use-case, you can define a custom metric function.
-It should take as input a list of binary relevance judgements of a query (<code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code> values).
+<p>If pre-defined metrics don’t fit your use case, you can define a custom metric function, taking as input a list of binary relevance judgements of a query (<code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code> values).
 The evaluate function already calculates this binary list from the <code class="docutils literal notranslate"><span class="pre">matches</span></code> attribute so that each number represents the relevancy of a match.</p>
 <p>Let’s write a custom metric function, which counts the number of relevant Documents per query:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_relevant</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">):</span>
@@ -660,12 +657,12 @@ The evaluate function already calculates this binary list from the <code class="
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;count_relevant&#39;: 9.0}
 </pre></div>
 </div>
-<p>For an inspiration for writing your own metric function, you can take a look at DocArray’s <a class="reference internal" href="../../../api/docarray.math.evaluation/#module-docarray.math.evaluation" title="docarray.math.evaluation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">evaluation</span></code></a> module, which contains the implementations of the custom metric functions.</p>
+<p>As inspiration for writing your own metric function, see DocArray’s <a class="reference internal" href="../../../api/docarray.math.evaluation/#module-docarray.math.evaluation" title="docarray.math.evaluation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">evaluation</span></code></a> module, which contains the implementations of the custom metric functions.</p>
 </section>
 <section id="custom-names">
 <h3>Custom names<a class="headerlink" href="#custom-names" title="Permalink to this heading">#</a></h3>
-<p>By default, the metrics are stored with the name of the metric function.
-Alternatively, you can customize those names via the <code class="docutils literal notranslate"><span class="pre">metric_names</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> function:</p>
+<p>By default, metrics are stored with the name of the metric function.
+Alternatively, you can customize those names with the <code class="docutils literal notranslate"><span class="pre">metric_names</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_prediction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
     <span class="n">ground_truth</span><span class="o">=</span><span class="n">da_original</span><span class="p">,</span>
     <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">count_relevant</span><span class="p">,</span> <span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span>
@@ -678,11 +675,10 @@ Alternatively, you can customize those names via the <code class="docutils liter
 </div>
 </section>
 </section>
-<section id="embed-match-evaluate-at-once">
-<h2>Embed, match &amp; evaluate at once<a class="headerlink" href="#embed-match-evaluate-at-once" title="Permalink to this heading">#</a></h2>
-<p>Instead of executing the functions <a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a> separately from each other, you can also execute them all at once by using <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed_and_evaluate()</span></code></a>.
-To demonstrate this, we constuct two labeled DocumentArrays <code class="docutils literal notranslate"><span class="pre">example_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">example_index</span></code>.
-The second one <code class="docutils literal notranslate"><span class="pre">example_index</span></code> should be matched with <code class="docutils literal notranslate"><span class="pre">example_queries</span></code> and afterwards, we want to evaluate the reciprocal rank based on the labels of the matches in <code class="docutils literal notranslate"><span class="pre">example_queries</span></code>.</p>
+<section id="embed-match-and-evaluate-at-once">
+<h2>Embed, match and evaluate at once<a class="headerlink" href="#embed-match-and-evaluate-at-once" title="Permalink to this heading">#</a></h2>
+<p>Instead of executing the methods <a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a> separately, you can execute them all at once with <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed_and_evaluate()</span></code></a>.</p>
+<p>To demonstrate this, let’s construct two labeled DocumentArrays <code class="docutils literal notranslate"><span class="pre">example_queries</span></code> and <code class="docutils literal notranslate"><span class="pre">example_index</span></code>. <code class="docutils literal notranslate"><span class="pre">example_index</span></code> should be matched with <code class="docutils literal notranslate"><span class="pre">example_queries</span></code> and then we want to evaluate the reciprocal rank based on the matches’ labels in <code class="docutils literal notranslate"><span class="pre">example_queries</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -706,20 +702,15 @@ The second one <code class="docutils literal notranslate"><span class="pre">exam
 <p>For metric functions which require a <code class="docutils literal notranslate"><span class="pre">max_rel</span></code> parameter, the <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> function (described later in this section) automatically constructs the dictionary for <code class="docutils literal notranslate"><span class="pre">num_relevant_documents_per_label</span></code> based on the <code class="docutils literal notranslate"><span class="pre">index_data</span></code> argument.</p>
 <section id="batch-wise-matching">
 <h3>Batch-wise matching<a class="headerlink" href="#batch-wise-matching" title="Permalink to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> function is especially useful, when you need to evaluate the queries on a very large Document collection (<code class="docutils literal notranslate"><span class="pre">example_index</span></code> in the code snippet above), which is too large to store the embeddings of all Documents in main-memory.
-In this case, <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> matches the queries to batches of the Document collection.
-After the batch is processed all embeddings are deleted.
-By default, the batch size for the matching (<code class="docutils literal notranslate"><span class="pre">match_batch_size</span></code>) is set to <code class="docutils literal notranslate"><span class="pre">100_000</span></code>.
-If you want to reduce the memory footprint, you can set it to a lower value.</p>
+<p><code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> is especially useful to evaluate queries on a Document collection (like <code class="docutils literal notranslate"><span class="pre">example_index</span></code>) which is too large to fit the embeddings of all Documents in main memory. In this case, the method matches queries to batches of the Document collection, then deletes embeddings after processing each batch.</p>
+<p>By default, the batch size for the matching (<code class="docutils literal notranslate"><span class="pre">match_batch_size</span></code>) is set to <code class="docutils literal notranslate"><span class="pre">100_000</span></code>. To reduce the memory footprint, you can set it to a lower value.</p>
 </section>
 <section id="sampling-queries">
 <h3>Sampling Queries<a class="headerlink" href="#sampling-queries" title="Permalink to this heading">#</a></h3>
-<p>If you want to evaluate a large dataset, it might be useful to sample query Documents.
-Since the metric values returned by the <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> are mean values, sampling should not change the result significantly if the sample is large enough.
-By default, sampling is applied for <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects with more than 1,000 Documents.
-However, it is only applied on the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> itself and not on the Documents provided in <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
-If you want to change the number of samples, you can ajust the <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> argument.
-In the following code block an evaluation is done with 100 samples:</p>
+<p>To evaluate a large dataset, it might be useful to sample query Documents.
+Since the metric values returned by <code class="docutils literal notranslate"><span class="pre">embed_and_evaluate</span></code> are mean values, sampling shouldn’t significantly change the result if the sample is large enough.
+By default, sampling is applied for DocumentArrays with over 1,000 Documents. However, it’s only applied on the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> itself and not on the Document provided in <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.</p>
+<p>To change the number of samples, you can adjust the <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> argument. In the following code block an evaluation is performed with 100 samples:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -742,8 +733,8 @@ In the following code block an evaluation is done with 100 samples:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.13649999999999998}
 </pre></div>
 </div>
-<p>Please note that in this way only Documents which are actually evaluated obtain an <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> attribute.</p>
-<p>To test how close it is to the exact result, we execute the function again with <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> set to 1,000:</p>
+<p>Note that in this way, only Documents which are actually evaluated obtain an <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> attribute.</p>
+<p>To test how close it is to the exact result, you can execute the function again with <code class="docutils literal notranslate"><span class="pre">query_sample_size</span></code> set to <code class="docutils literal notranslate"><span class="pre">1_000</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">embed_and_evaluate</span><span class="p">(</span>
     <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span> <span class="n">embed_funcs</span><span class="o">=</span><span class="n">emb_func</span><span class="p">,</span> <span class="n">query_sample_size</span><span class="o">=</span><span class="mi">1_000</span>
 <span class="p">)</span>
@@ -791,7 +782,7 @@ In the following code block an evaluation is done with 100 samples:</p>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -835,7 +826,7 @@ In the following code block an evaluation is done with 100 samples:</p>
 <li><a class="reference internal" href="#custom-names">Custom names</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#embed-match-evaluate-at-once">Embed, match &amp; evaluate at once</a><ul>
+<li><a class="reference internal" href="#embed-match-and-evaluate-at-once">Embed, match and evaluate at once</a><ul>
 <li><a class="reference internal" href="#batch-wise-matching">Batch-wise matching</a></li>
 <li><a class="reference internal" href="#sampling-queries">Sampling Queries</a></li>
 </ul>

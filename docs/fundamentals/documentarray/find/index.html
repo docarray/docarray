@@ -6,11 +6,11 @@
 <meta property="og:title" content="Query by Conditions" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/find/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="We can use find() to select Documents from a DocumentArray based the conditions specified in a query object. One can use da.find(query) to filter Documents and get nearest neighbours from da: To filter Documents, the query object is a Python dictionary object that defines the filtering conditions..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="You can use find() to select Documents from a DocumentArray based on conditions specified in a query object. To filter Documents, the query object is a Python dictionary object that defines the filtering conditions using a MongoDB-like query language., To find nearest neighbors, the query object ..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="We can use find() to select Documents from a DocumentArray based the conditions specified in a query object. One can use da.find(query) to filter Documents and get nearest neighbours from da: To filter Documents, the query object is a Python dictionary object that defines the filtering conditions..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="You can use find() to select Documents from a DocumentArray based on conditions specified in a query object. To filter Documents, the query object is a Python dictionary object that defines the filtering conditions using a MongoDB-like query language., To find nearest neighbors, the query object ..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/find.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Query by Conditions - DocArray 0.20.0 documentation</title>
+        <title>Query by Conditions - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,17 +401,16 @@
                 <article role="main">
                     <section id="query-by-conditions">
 <span id="find-documentarray"></span><h1>Query by Conditions<a class="headerlink" href="#query-by-conditions" title="Permalink to this heading">#</a></h1>
-<p>We can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> to select Documents from a DocumentArray based the conditions specified in a <code class="docutils literal notranslate"><span class="pre">query</span></code> object. One can use <code class="docutils literal notranslate"><span class="pre">da.find(query)</span></code> to filter Documents and get nearest neighbours from <code class="docutils literal notranslate"><span class="pre">da</span></code>:</p>
+<p>You can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> to select Documents from a DocumentArray based on conditions specified in a <code class="docutils literal notranslate"><span class="pre">query</span></code> object.</p>
 <ul class="simple">
 <li><p>To filter Documents, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object is a Python dictionary object that defines the filtering conditions using a <a class="reference external" href="https://docs.mongodb.com/manual/reference/operator/query/">MongoDB</a>-like query language.</p></li>
-<li><p>To find nearest neighbours, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object needs to be a NdArray-like, a Document, or a DocumentArray object that defines embedding. One can also use <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function for this purpose, and there is a minor interface difference between these two functions, which will be described <a class="reference internal" href="../matching/#match-documentarray"><span class="std std-ref">in the next chapter</span></a>.</p></li>
+<li><p>To find nearest neighbors, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object needs to be an ndarray-like, Document, or DocumentArray that defines embedding(s). You can also use the <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function for this purpose, and there’s a minor interface difference between these two functions which is covered <a class="reference internal" href="../matching/#match-documentarray"><span class="std std-ref">in the next chapter</span></a>.</p></li>
 </ul>
 <div class="note admonition">
 <p class="admonition-title">filter query syntax</p>
-<p>The syntax to define filter queries is dependant of the <a class="reference internal" href="../../../advanced/document-store/#doc-store"><span class="std std-ref">Document store</span></a> used. Some will have their own query language
-depending on the supporting backend.</p>
+<p>The filter query syntax depends on which <a class="reference internal" href="../../../advanced/document-store/#doc-store"><span class="std std-ref">document store</span></a> you use. Some may have their own query language.</p>
 </div>
-<p>Let’s see some examples in action. First, let’s prepare a DocumentArray we will use.</p>
+<p>Let’s see some examples in action. First, let’s prepare a DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
@@ -471,11 +470,11 @@ depending on the supporting backend.</p>
 </div>
 <section id="filter-with-query-operators">
 <h2>Filter with query operators<a class="headerlink" href="#filter-with-query-operators" title="Permalink to this heading">#</a></h2>
-<p>A query filter document can use the query operators to specify conditions in the following form:</p>
+<p>A query filter document uses query operators to specify conditions:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{ &lt;field1&gt;: { &lt;operator1&gt;: &lt;value1&gt; }, ... }
 </pre></div>
 </div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">field1</span></code> is <a class="reference internal" href="../../document/#doc-fields"><span class="std std-ref">any field name</span></a> of a Document object.  To access nested fields, one can use the dunder expression. For example, <code class="docutils literal notranslate"><span class="pre">tags__timestamp</span></code> is to access <code class="docutils literal notranslate"><span class="pre">doc.tags['timestamp']</span></code> field.</p>
+<p>Here <code class="docutils literal notranslate"><span class="pre">field1</span></code> is <a class="reference internal" href="../../document/#doc-fields"><span class="std std-ref">any field name</span></a> of a Document object.  To access nested fields, you can use the dunder expression. For example, <code class="docutils literal notranslate"><span class="pre">tags__timestamp</span></code> accesses the <code class="docutils literal notranslate"><span class="pre">doc.tags['timestamp']</span></code> field.</p>
 <p><code class="docutils literal notranslate"><span class="pre">value1</span></code> can be either a user given Python object, or a substitution field with curly bracket <code class="docutils literal notranslate"><span class="pre">{field}</span></code></p>
 <p>Finally, <code class="docutils literal notranslate"><span class="pre">operator1</span></code> can be one of the following:</p>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -522,7 +521,7 @@ depending on the supporting backend.</p>
 </tbody>
 </table>
 </div>
-<p>For example, to select all <code class="docutils literal notranslate"><span class="pre">modality='D'</span></code> Documents,</p>
+<p>To select all <code class="docutils literal notranslate"><span class="pre">modality='D'</span></code> Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;modality&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$eq&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">}})</span>
 
 <span class="n">pprint</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># just for pretty print</span>
@@ -556,7 +555,7 @@ depending on the supporting backend.</p>
 <span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="p">}]</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Beside using a predefined value, one can also use a substitution with <code class="docutils literal notranslate"><span class="pre">{field}</span></code>, notice the curly brackets there. For example,</p>
+<p>Beside using a predefined value, you can also use a substitution with <code class="docutils literal notranslate"><span class="pre">{field}</span></code>. Notice those curly braces. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;tags__h&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gt&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{tags__w}</span><span class="s1">&#39;</span><span class="p">}})</span>
 </pre></div>
 </div>
@@ -570,7 +569,7 @@ depending on the supporting backend.</p>
 </section>
 <section id="combine-multiple-conditions">
 <h2>Combine multiple conditions<a class="headerlink" href="#combine-multiple-conditions" title="Permalink to this heading">#</a></h2>
-<p>You can combine multiple conditions using the following operators</p>
+<p>You can combine multiple conditions using the following operators:</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -649,7 +648,7 @@ depending on the supporting backend.</p>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

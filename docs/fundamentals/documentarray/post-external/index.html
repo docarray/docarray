@@ -6,11 +6,11 @@
 <meta property="og:title" content="Process via External Flow or Executor" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/post-external/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via post(). The external Flow/Executor can be either local, remote, or inside Docker container. For example, to use an existing Flow on 192.168.2.3 on port 12345 to process a DocumentArray: One can also use any Executor f..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via post(). The external Flow/Executor can be local, remote, or inside a Docker container. For example, to process a DocumentArray with an existing Flow at 192.168.2.3 on port 12345: You can also use any Executor from Exe..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via post(). The external Flow/Executor can be either local, remote, or inside Docker container. For example, to use an existing Flow on 192.168.2.3 on port 12345 to process a DocumentArray: One can also use any Executor f..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via post(). The external Flow/Executor can be local, remote, or inside a Docker container. For example, to process a DocumentArray with an existing Flow at 192.168.2.3 on port 12345: You can also use any Executor from Exe..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/post-external.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Process via External Flow or Executor - DocArray 0.20.0 documentation</title>
+        <title>Process via External Flow or Executor - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -403,10 +403,10 @@
 <span id="da-post"></span><h1>Process via External Flow or Executor<a class="headerlink" href="#process-via-external-flow-or-executor" title="Permalink to this heading">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">jina</span></code> dependency. Please install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">jina</span></code>.</p>
+<p>This feature requires the <code class="docutils literal notranslate"><span class="pre">jina</span></code> dependency. Please install it by running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">jina</span></code>.</p>
 </div>
-<p>You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via <a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a>. The external Flow/Executor can be either local, remote, or inside Docker container.</p>
-<p>For example, to use an existing Flow on <code class="docutils literal notranslate"><span class="pre">192.168.2.3</span></code> on port <code class="docutils literal notranslate"><span class="pre">12345</span></code> to process a DocumentArray:</p>
+<p>You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via <a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a>. The external Flow/Executor can be local, remote, or inside a Docker container.</p>
+<p>For example, to process a DocumentArray with an existing Flow at <code class="docutils literal notranslate"><span class="pre">192.168.2.3</span></code> on port <code class="docutils literal notranslate"><span class="pre">12345</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -415,7 +415,7 @@
 <span class="n">r</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>One can also use any <a class="reference external" href="https://cloud.jina.ai">Executor from Jina Hub</a>, e.g.</p>
+<p>You can also use any Executor from <a class="reference external" href="https://cloud.jina.ai">Executor Hub</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hi Alex, are you with your laptop?&#39;</span><span class="p">)])</span>
@@ -440,7 +440,7 @@
   uri         (&#39;str&#39;,)    1                False
 </pre></div>
 </div>
-<p>Single Document has a sugar syntax that leverages this feature. Hence the above example can be also written as follows:</p>
+<p>Single Documents have syntactic sugar that leverages this processing, meaning you can also write the above example as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Hi Alex, are you with your laptop?&#39;</span><span class="p">)</span>
@@ -449,7 +449,7 @@
 </div>
 <section id="accept-schemes">
 <h2>Accept schemes<a class="headerlink" href="#accept-schemes" title="Permalink to this heading">#</a></h2>
-<p><a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a> accepts a URI-like scheme that supports a wide range of Flow/Hub Executor. It is described as below:</p>
+<p><a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a> accepts a URI-like scheme, supporting a wide range of Flows/Hub Executors:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>scheme://netloc[:port][/path]
 </pre></div>
 </div>
@@ -464,47 +464,47 @@
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scheme</span></code></p></td>
 <td><p>1. One of <code class="docutils literal notranslate"><span class="pre">grpc</span></code>, <code class="docutils literal notranslate"><span class="pre">websocket</span></code>, <code class="docutils literal notranslate"><span class="pre">http</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">protocol</span></code> of the connected Flow</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">protocol</span></code> of connected Flow</p></td>
 </tr>
 <tr class="row-odd"><td><p></p></td>
-<td><p>2. One of <code class="docutils literal notranslate"><span class="pre">jinahub</span></code>, <code class="docutils literal notranslate"><span class="pre">jinahub+docker</span></code>, <code class="docutils literal notranslate"><span class="pre">jinhub+sandbox</span></code></p></td>
-<td><p>Jina hub executor in source code, Docker container, sandbox</p></td>
+<td><p>2. One of <code class="docutils literal notranslate"><span class="pre">jinaai</span></code>, <code class="docutils literal notranslate"><span class="pre">jinaai+docker</span></code>, <code class="docutils literal notranslate"><span class="pre">jinaai+sandbox</span></code></p></td>
+<td><p>Executor Hub Executor in source code/Docker container/sandbox</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">netloc</span></code></p></td>
 <td><p>1. Host address</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">host</span></code> of the connected Flow</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">host</span></code> of connected Flow</p></td>
 </tr>
 <tr class="row-odd"><td><p></p></td>
 <td><p>2. Hub Executor name</p></td>
-<td><p>Any Executor <a class="reference external" href="https://cloud.jina.ai">listed here</a></p></td>
+<td><p>Any <a class="reference external" href="https://cloud.jina.ai">Hub Executor</a></p></td>
 </tr>
 <tr class="row-even"><td><p></p></td>
-<td><p>3. Executor version(optional)</p></td>
-<td><p>Such as v0.1.1, v0.1.1-gpu, by default latest</p></td>
+<td><p>3. Executor version (optional)</p></td>
+<td><p>e.g. <code class="docutils literal notranslate"><span class="pre">v0.1.1</span></code>, <code class="docutils literal notranslate"><span class="pre">v0.1.1-gpu</span></code>. <code class="docutils literal notranslate"><span class="pre">latest</span></code> by default</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">:port</span></code></p></td>
 <td><p>e.g. <code class="docutils literal notranslate"><span class="pre">:55566</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">port</span></code> of the connected Flow. This is required when using <code class="docutils literal notranslate"><span class="pre">scheme</span></code> type (1) ; it is ignored when using hub-related <code class="docutils literal notranslate"><span class="pre">scheme</span></code> type (2)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">port</span></code> of connected Flow. Required when using <code class="docutils literal notranslate"><span class="pre">scheme</span></code> type (1); ignored when using Hub-related <code class="docutils literal notranslate"><span class="pre">scheme</span></code> type (2)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/path</span></code></p></td>
 <td><p>e.g. <code class="docutils literal notranslate"><span class="pre">/foo</span></code></p></td>
-<td><p>The endpoint of the Executor you want to call.</p></td>
+<td><p>Endpoint of Executor you want to call.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p>Some examples:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.post('websocket://localhost:8081/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Flow on <code class="docutils literal notranslate"><span class="pre">localhost</span></code> port <code class="docutils literal notranslate"><span class="pre">8081</span></code> with <code class="docutils literal notranslate"><span class="pre">websocket</span></code> protocol to process the DocumentArray; processing is on local.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.post('grpc://192.168.12.2:12345/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Flow on <code class="docutils literal notranslate"><span class="pre">192.168.12.2</span></code> port <code class="docutils literal notranslate"><span class="pre">12345</span></code> with <code class="docutils literal notranslate"><span class="pre">grpc</span></code> protocol to process the DocumentArray; processing is on remote.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Executor <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; porcessing is on local.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+sandbox://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; porcessing is on remote.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+docker://Hello/v0.5.0/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> of version <code class="docutils literal notranslate"><span class="pre">v0.5.0</span></code> to process the DocumentArray; porcessing in container.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('websocket://localhost:8081/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Flow at <code class="docutils literal notranslate"><span class="pre">localhost</span></code> port <code class="docutils literal notranslate"><span class="pre">8081</span></code> with <code class="docutils literal notranslate"><span class="pre">websocket</span></code> protocol to process the DocumentArray; processing is local.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('grpc://192.168.12.2:12345/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Flow at <code class="docutils literal notranslate"><span class="pre">192.168.12.2</span></code> port <code class="docutils literal notranslate"><span class="pre">12345</span></code> with <code class="docutils literal notranslate"><span class="pre">grpc</span></code> protocol to process the DocumentArray; processing is remote.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Executor <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; processing is local.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+sandbox://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; processing is remote.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+docker://Hello/v0.5.0/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> of version <code class="docutils literal notranslate"><span class="pre">v0.5.0</span></code> to process the DocumentArray; processing in container.</p></li>
 </ul>
 </section>
 <section id="read-more">
 <h2>Read more<a class="headerlink" href="#read-more" title="Permalink to this heading">#</a></h2>
-<p>For more explanation of Flow, Hub Executor and Sandbox, please refer to <a class="reference external" href="https://docs.jina.ai">Jina docs</a>.</p>
+<p>For a deeper explanation of Flow, Hub Executor and Sandbox, refer to <a class="reference external" href="https://docs.jina.ai">Jina’s docs</a>.</p>
 </section>
 </section>
 
@@ -543,7 +543,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

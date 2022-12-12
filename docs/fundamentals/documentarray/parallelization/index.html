@@ -6,11 +6,11 @@
 <meta property="og:title" content="Parallelization" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/parallelization/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides map() to speed up things quite a lot. It is like Python built-in map() function but mapping the function to every element of the Docu..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Working with large DocumentArrays in an element-wise manner can be time-consuming. The naive way is to run a for-loop and enumerate Documents one by one. DocArray provides map() to speed up things a lot. It’s like Python’s built-in map() function but maps the function to every element of the Docu..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides map() to speed up things quite a lot. It is like Python built-in map() function but mapping the function to every element of the Docu..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Working with large DocumentArrays in an element-wise manner can be time-consuming. The naive way is to run a for-loop and enumerate Documents one by one. DocArray provides map() to speed up things a lot. It’s like Python’s built-in map() function but maps the function to every element of the Docu..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/parallelization.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Parallelization - DocArray 0.20.0 documentation</title>
+        <title>Parallelization - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -406,13 +406,13 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a>: to parallel process Document by Document, return an interator of elements;</p></li>
 <li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a>: to parallel process minibatch DocumentArray, return an iterator of DocumentArray;</p></li>
-<li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply" title="docarray.array.mixins.parallel.ParallelMixin.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code></a>: like <code class="docutils literal notranslate"><span class="pre">.map()</span></code>, modify DocumentArray inplace;</p></li>
-<li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch" title="docarray.array.mixins.parallel.ParallelMixin.apply_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_batch()</span></code></a>: like <code class="docutils literal notranslate"><span class="pre">.map_batch()</span></code>, modify DocumentArray inplace.</p></li>
+<li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply" title="docarray.array.mixins.parallel.ParallelMixin.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code></a>: like <code class="docutils literal notranslate"><span class="pre">.map()</span></code>, modify a DocumentArray inplace;</p></li>
+<li><p><a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch" title="docarray.array.mixins.parallel.ParallelMixin.apply_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_batch()</span></code></a>: like <code class="docutils literal notranslate"><span class="pre">.map_batch()</span></code>, modify a DocumentArray inplace.</p></li>
 </ul>
 </div>
-<p>Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a> to speed up things quite a lot. It is like Python
-built-in <code class="docutils literal notranslate"><span class="pre">map()</span></code> function but mapping the function to every element of the DocumentArray in parallel. There is also <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> that works on the minibatch level.</p>
-<p><code class="docutils literal notranslate"><span class="pre">map()</span></code> returns an iterator of processed Documents. If you only modify elements in-place, and do not need the return values, you can use <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply" title="docarray.array.mixins.parallel.ParallelMixin.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code></a> instead:</p>
+<p>Working with large DocumentArrays in an element-wise manner can be time-consuming. The naive way is to run a for-loop and enumerate Documents one by one. DocArray provides <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a> to speed up things a lot. It’s like Python’s
+built-in <code class="docutils literal notranslate"><span class="pre">map()</span></code> function but maps the function to every element of the DocumentArray in parallel. There is also <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> that works on the minibatch level.</p>
+<p><code class="docutils literal notranslate"><span class="pre">map()</span></code> returns an iterator of processed Documents. If you only modify elements in-place, and don’t need the return values, you can use <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply" title="docarray.array.mixins.parallel.ParallelMixin.apply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code></a> instead:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -421,13 +421,13 @@ built-in <code class="docutils literal notranslate"><span class="pre">map()</spa
 </pre></div>
 </div>
 <p>This is often more popular than <code class="docutils literal notranslate"><span class="pre">map()</span></code> in practice. However, <code class="docutils literal notranslate"><span class="pre">map()</span></code> has its own charm as we shall see in the next section.</p>
-<p>Let’s see an example, where we want to preprocess ~6000 image Documents. First we fill the URI to each Document.</p>
+<p>Let’s see an example, where we want to preprocess about 6,000 image Documents. First we fill the URI of each Document:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;*.jpg&#39;</span><span class="p">)</span>  <span class="c1"># 6016 image Documents with .uri set</span>
 </pre></div>
 </div>
-<p>To load and preprocess <code class="docutils literal notranslate"><span class="pre">docs</span></code>, we have:</p>
+<p>Now let’s load and preprocess the Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
@@ -436,7 +436,7 @@ built-in <code class="docutils literal notranslate"><span class="pre">map()</spa
     <span class="p">)</span>
 </pre></div>
 </div>
-<p>This load the image from file into <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> do some normalization and set the channel axis. Now, let’s compare the time difference when we do things sequentially and use <code class="docutils literal notranslate"><span class="pre">.apply()</span></code>:</p>
+<p>This loads the image from the file into the <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> does some normalization and sets the channel axis. Now, let’s see the time difference when we do things sequentially compared to using <code class="docutils literal notranslate"><span class="pre">.apply()</span></code>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">For-loop</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
@@ -454,22 +454,22 @@ built-in <code class="docutils literal notranslate"><span class="pre">map()</spa
 apply ...	apply takes 3.5 seconds
 </pre></div>
 </div>
-<p>One can see a significant speedup with <code class="docutils literal notranslate"><span class="pre">.apply()</span></code>.</p>
+<p>You can see a significant speedup with <code class="docutils literal notranslate"><span class="pre">.apply()</span></code>.</p>
 <p>By default, parallelization is conducted with <code class="docutils literal notranslate"><span class="pre">thread</span></code> backend, i.e. multi-threading. It also supports <code class="docutils literal notranslate"><span class="pre">process</span></code> backend by setting <code class="docutils literal notranslate"><span class="pre">.apply(...,</span> <span class="pre">backend='process')</span></code>.</p>
 <div class="important admonition">
 <p class="admonition-title">When to choose process or thread backend?</p>
-<p>It depends on how your <code class="docutils literal notranslate"><span class="pre">func</span></code> in <code class="docutils literal notranslate"><span class="pre">.apply(func)</span></code> look like, here are some tips:</p>
+<p>It depends on your <code class="docutils literal notranslate"><span class="pre">func</span></code> in <code class="docutils literal notranslate"><span class="pre">.apply(func)</span></code>. There are three options:</p>
 <ul class="simple">
-<li><p>First, if you want <code class="docutils literal notranslate"><span class="pre">func</span></code> to modify elements inplace, the you can only use <code class="docutils literal notranslate"><span class="pre">thread</span></code> backend. With <code class="docutils literal notranslate"><span class="pre">process</span></code> backend you can only rely on the return values of <code class="docutils literal notranslate"><span class="pre">.map()</span></code>, the modification happens inside <code class="docutils literal notranslate"><span class="pre">func</span></code> is lost.</p></li>
-<li><p>Second, follow what people often suggests: IO-bound <code class="docutils literal notranslate"><span class="pre">func</span></code> uses <code class="docutils literal notranslate"><span class="pre">thread</span></code>, CPU-bound <code class="docutils literal notranslate"><span class="pre">func</span></code> uses <code class="docutils literal notranslate"><span class="pre">process</span></code>.</p></li>
-<li><p>Last, ignore the second rule and what people told you. Test it by yourself and use whatever faster.</p></li>
+<li><p>First, if you want <code class="docutils literal notranslate"><span class="pre">func</span></code> to modify elements inplace, then only use the <code class="docutils literal notranslate"><span class="pre">thread</span></code> backend. With the <code class="docutils literal notranslate"><span class="pre">process</span></code> backend you can only rely on the return values of <code class="docutils literal notranslate"><span class="pre">.map()</span></code> – the modification that happens inside <code class="docutils literal notranslate"><span class="pre">func</span></code> is lost.</p></li>
+<li><p>Second, follow what people often suggest: IO-bound <code class="docutils literal notranslate"><span class="pre">func</span></code> uses <code class="docutils literal notranslate"><span class="pre">thread</span></code>, CPU-bound <code class="docutils literal notranslate"><span class="pre">func</span></code> uses <code class="docutils literal notranslate"><span class="pre">process</span></code>.</p></li>
+<li><p>Last, ignore everything above. Test it for yourself and use whatever’s faster.</p></li>
 </ul>
 </div>
 <section id="use-map-batch-to-overlap-cpu-gpu-computation">
 <span id="map-batch"></span><h2>Use <code class="docutils literal notranslate"><span class="pre">map_batch()</span></code> to overlap CPU &amp; GPU computation<a class="headerlink" href="#use-map-batch-to-overlap-cpu-gpu-computation" title="Permalink to this heading">#</a></h2>
-<p>As I said, <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a> / <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> has its own charm: it returns an iterator (of batch) where the partial result is immediately available, <em>regardless</em> if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.</p>
-<p>Let’s see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core as the total resources.</p>
-<p>Question: <strong>how long will it take to process 1024 Documents?</strong></p>
+<p>As I said, <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a>/<a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> has its own charm: it returns an iterator (of a batch) where the partial result is immediately available, <em>regardless</em> of whether your function is still running. You can leverage this to speed up computation, especially when working with a CPU-GPU pipeline.</p>
+<p>Let’s see an example: Say we have a DocumentArray with 1,024 Documents. Assuming we can run a CPU job for a 16-Document batch in 1 second per core; and we can run a GPU job for a 16-Document batch in 2 seconds per core. Say we have four CPU cores and one GPU core as the total resources.</p>
+<p>Question: <strong>how long will it take to process 1,024 Documents?</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -488,18 +488,18 @@ apply ...	apply takes 3.5 seconds
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Before jump to the code, lets first whiteboard it, do a simple math:</p>
+<p>Before jumping to the code, let’s first whiteboard it with simple math:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CPU time: 1024/16/4 * 1s = 16s
 GPU time: 1024/16 * 2s   = 128s
 Total time: 16s + 128s   = 144s   
 </pre></div>
 </div>
 <p>So 144s, right? Yes, if we implement with <code class="docutils literal notranslate"><span class="pre">apply()</span></code>, it is around 144s.</p>
-<p>However, we can do better. What if we overlap the computation of CPU and GPU? The whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch <strong>right away</strong> when it is ready from CPU, rather than waits until all batches are ready from CPU, then we can save a lot of time. To be precise, we could do it in <em>129s</em>.</p>
+<p>However, we can do better. What if we overlap the computation of CPU and GPU? The whole procedure is GPU-bounded anyway. If we can ensure the GPU works on every batch <strong>right away</strong> when it’s ready from the CPU, rather than wait until all batches are ready from the CPU, then we can save a lot of time. To be precise, we could do it in <em>129s</em>.</p>
 <div class="tip admonition">
-<p class="admonition-title">Why 129s? Why not 128s</p>
-<p>Btw, if you immedidately know the answer you should <a class="reference external" href="https://jobs.jina.ai/">send your CV to us</a>.</p>
-<p>Because the very first batch must be done by the CPU first, this is inevitible, which makes the 1 second non-overlapping. The rest of the time will be overlapped and dominated by GPU’s 128s. Hence, 1s + 128s = 129s.</p>
+<p class="admonition-title">Why 129s? Why not 128s?</p>
+<p>If you immediately know the answer, <a class="reference external" href="https://jobs.jina.ai/">send your CV to us</a>!</p>
+<p>Because the very first batch must be done by the CPU first. This is inevitable, which makes the first second non-overlapping. The rest of the time will be overlapped and dominated by the GPU’s 128s. Hence, 1s + 128s = 129s.</p>
 </div>
 <p>Okay, let’s program these two ways and validate our guess:</p>
 <div class="tab-set docutils">
@@ -517,16 +517,16 @@ Total time: 16s + 128s   = 144s
 </div>
 </div>
 </div>
-<p>Which gives you,</p>
+<p>Which gives you:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>apply: 144.476s
 map: 129.326s
 </pre></div>
 </div>
-<p>Hope this sheds the light on solving the data-draining/blocking problem when you use DocArray in a CPU-GPU pipeline.</p>
+<p>Hopefully this sheds light on solving the data-draining/blocking problem when you use DocArray in a CPU-GPU pipeline.</p>
 </section>
 <section id="use-map-batch-to-overlap-cpu-and-network-time">
 <h2>Use <code class="docutils literal notranslate"><span class="pre">map_batch()</span></code> to overlap CPU and network time<a class="headerlink" href="#use-map-batch-to-overlap-cpu-and-network-time" title="Permalink to this heading">#</a></h2>
-<p>Such technique and mindset can be extended to other pipeline that has potential data-blocking issue. For example, in the implementation of <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a>, you will find code similar to below:</p>
+<p>Such a technique and mindset can be extended to other pipelines that have potential data-blocking issues. For example, in the implementation of <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a>, you find code similar to below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
     
     <span class="k">yield</span> <span class="n">_head</span>
@@ -549,7 +549,7 @@ map: 129.326s
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>This overlaps the time of sending network request (IO-bounded) with the time of serializing DocumentArray (CPU-bounded) and hence improve the performance a lot.</p>
+<p>This overlaps the time of sending network requests (IO-bounded) with the time of serializing DocumentArrays (CPU-bounded) and hence improves performance a lot.</p>
 </section>
 </section>
 
@@ -588,7 +588,7 @@ map: 129.326s
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

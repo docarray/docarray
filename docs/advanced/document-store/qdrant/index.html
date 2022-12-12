@@ -6,11 +6,11 @@
 <meta property="og:title" content="Qdrant" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/qdrant/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="One can use Qdrant as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Qdrant service: To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image t..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="You can use Qdrant as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Qdrant service: To use Qdrant as the storage backend, you need a running Qdrant server. You can create docker-compose.yml to use the Qdrant Docke..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="One can use Qdrant as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Qdrant service: To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image t..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="You can use Qdrant as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Qdrant service: To use Qdrant as the storage backend, you need a running Qdrant server. You can create docker-compose.yml to use the Qdrant Docke..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/qdrant.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Qdrant - DocArray 0.20.0 documentation</title>
+        <title>Qdrant - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,17 +401,16 @@
                 <article role="main">
                     <section id="qdrant">
 <span id="id1"></span><h1>Qdrant<a class="headerlink" href="#qdrant" title="Permalink to this heading">#</a></h1>
-<p>One can use <a class="reference external" href="https://qdrant.tech">Qdrant</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
+<p>You can use <a class="reference external" href="https://qdrant.tech">Qdrant</a> as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">qdrant-client</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[qdrant]&quot;.</span></code></p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">qdrant-client</span></code>. You can install it with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[qdrant]&quot;.</span></code></p>
 </div>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
 <section id="start-qdrant-service">
 <h3>Start Qdrant service<a class="headerlink" href="#start-qdrant-service" title="Permalink to this heading">#</a></h3>
-<p>To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image to run a
-server. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
+<p>To use Qdrant as the storage backend, you need a running Qdrant server. You can create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> to use the Qdrant Docker image:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
 <span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
 <span class="nt">services</span><span class="p">:</span><span class="w"></span>
@@ -434,15 +433,15 @@ server. Create <code class="docutils literal notranslate"><span class="pre">dock
 </section>
 <section id="create-documentarray-with-qdrant-backend">
 <h3>Create DocumentArray with Qdrant backend<a class="headerlink" href="#create-documentarray-with-qdrant-backend" title="Permalink to this heading">#</a></h3>
-<p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:6333</span></code>), one can
+<p>Assuming you start the service with the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:6333</span></code>), you can
 instantiate a DocumentArray with Qdrant storage like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;qdrant&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
 </pre></div>
 </div>
-<p>The usage would be the same as the ordinary DocumentArray.</p>
-<p>To access a DocumentArray formerly persisted, one can specify the <code class="docutils literal notranslate"><span class="pre">collection_name</span></code>, the <code class="docutils literal notranslate"><span class="pre">host</span></code>  and the <code class="docutils literal notranslate"><span class="pre">port</span></code>.</p>
+<p>The usage is the same as an ordinary DocumentArray.</p>
+<p>To access a formerly-persisted DocumentArray, you can specify the <code class="docutils literal notranslate"><span class="pre">collection_name</span></code>, <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">port</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
@@ -458,13 +457,12 @@ instantiate a DocumentArray with Qdrant storage like so:</p>
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Note that specifying the <code class="docutils literal notranslate"><span class="pre">n_dim</span></code> is mandatory before using Qdrant as a backend for DocumentArray.</p>
-<p>Other functions behave the same as in-memory DocumentArray.</p>
+<p>Note that you must specify <code class="docutils literal notranslate"><span class="pre">n_dim</span></code> before using Qdrant as a backend for DocumentArray.</p>
+<p>Other functions behave the same as an in-memory DocumentArray.</p>
 </section>
 </section>
-<section id="config">
-<h2>Config<a class="headerlink" href="#config" title="Permalink to this heading">#</a></h2>
-<p>The following configs can be set:</p>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -591,10 +589,10 @@ docker-compose up
 <section id="vector-search-with-filter">
 <span id="qdrant-filter"></span><h2>Vector search with filter<a class="headerlink" href="#vector-search-with-filter" title="Permalink to this heading">#</a></h2>
 <p>Search with <code class="docutils literal notranslate"><span class="pre">.find</span></code> can be restricted by user-defined filters. The supported tag types for filter are <code class="docutils literal notranslate"><span class="pre">'int'</span></code>, <code class="docutils literal notranslate"><span class="pre">'float'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bool'</span></code>, <code class="docutils literal notranslate"><span class="pre">'str'</span></code>, <code class="docutils literal notranslate"><span class="pre">'text'</span></code> and <code class="docutils literal notranslate"><span class="pre">'geo'</span></code> as in <a class="reference external" href="https://qdrant.tech/documentation/payload/">Qdrant</a>. Such filters can be constructed following the guidelines in <a class="reference external" href="https://qdrant.tech/documentation/filtering/">Qdrant’s Documentation</a></p>
-<section id="example-of-find-with-a-filter">
-<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter<a class="headerlink" href="#example-of-find-with-a-filter" title="Permalink to this heading">#</a></h3>
-<p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
-has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
+<section id="example-of-find-with-filter">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with filter<a class="headerlink" href="#example-of-find-with-filter" title="Permalink to this heading">#</a></h3>
+<p>Let’s create Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"><span class="pre">[9,9,9]</span></code>, where each Document (which has an embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>)
+has a tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -621,8 +619,8 @@ has as tag <code class="docutils literal notranslate"><span class="pre">price</s
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that prices must follow a filter. As an example, retrieved Documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'must':</span> <span class="pre">[{'key':</span> <span class="pre">'price',</span> <span class="pre">'range':</span> <span class="pre">{'lte':</span> <span class="pre">max_price}}]}</span></code>. You can also pass additional <code class="docutils literal notranslate"><span class="pre">search_params</span></code> following <a class="reference external" href="https://qdrant.tech/documentation/search/#search-api">Qdrant’s Search API</a>.</p>
-<p>Then you can implement and use the search with the proposed filter:</p>
+<p>We want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that prices must follow a filter. For example, retrieved Documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. You can encode this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'must':</span> <span class="pre">[{'key':</span> <span class="pre">'price',</span> <span class="pre">'range':</span> <span class="pre">{'lte':</span> <span class="pre">max_price}}]}</span></code>. You can also pass additional <code class="docutils literal notranslate"><span class="pre">search_params</span></code> following <a class="reference external" href="https://qdrant.tech/documentation/search/#search-api">Qdrant’s Search API</a>.</p>
+<p>You can then implement and search with the proposed filter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -637,7 +635,7 @@ has as tag <code class="docutils literal notranslate"><span class="pre">price</s
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print:</p>
+<p>This prints:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Query</span> <span class="n">vector</span><span class="p">:</span> 	<span class="p">[</span><span class="mf">8.</span> <span class="mf">8.</span> <span class="mf">8.</span><span class="p">]</span>
 
 <span class="n">Embeddings</span> <span class="n">Nearest</span> <span class="n">Neighbours</span> <span class="k">with</span> <span class="s2">&quot;price&quot;</span> <span class="n">at</span> <span class="n">most</span> <span class="mi">7</span><span class="p">:</span>
@@ -655,8 +653,8 @@ has as tag <code class="docutils literal notranslate"><span class="pre">price</s
 </section>
 <section id="example-of-filter-with-a-filter">
 <h3>Example of <code class="docutils literal notranslate"><span class="pre">.filter</span></code> with a filter<a class="headerlink" href="#example-of-filter-with-a-filter" title="Permalink to this heading">#</a></h3>
-<p>The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.
-Consider Documents have the tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create these with the following code:</p>
+<p>The following example shows how to use DocArray with Qdrant document store to filter text documents.
+Let’s create Documents with the tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">i</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -680,10 +678,10 @@ Consider Documents have the tag <code class="docutils literal notranslate"><span
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For example, suppose we want to filter results such that
-retrieved documents must have a <code class="docutils literal notranslate"><span class="pre">price</span></code> value less than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode
-this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
-<p>Then you can implement and use the search with the proposed filter:</p>
+<p>If you want to filter only for results
+with a <code class="docutils literal notranslate"><span class="pre">price</span></code> less than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>, you can encode
+this information using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
+<p>You can then implement and search with the proposed filter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -744,7 +742,7 @@ this information in Qdrant using <code class="docutils literal notranslate"><spa
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -782,10 +780,10 @@ this information in Qdrant using <code class="docutils literal notranslate"><spa
 <li><a class="reference internal" href="#create-documentarray-with-qdrant-backend">Create DocumentArray with Qdrant backend</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
 <li><a class="reference internal" href="#minimum-example">Minimum example</a></li>
 <li><a class="reference internal" href="#vector-search-with-filter">Vector search with filter</a><ul>
-<li><a class="reference internal" href="#example-of-find-with-a-filter">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter</a></li>
+<li><a class="reference internal" href="#example-of-find-with-filter">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with filter</a></li>
 <li><a class="reference internal" href="#example-of-filter-with-a-filter">Example of <code class="docutils literal notranslate"><span class="pre">.filter</span></code> with a filter</a></li>
 </ul>
 </li>

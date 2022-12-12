@@ -3,14 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="Find Nearest Neighbours" />
+<meta property="og:title" content="Find Nearest Neighbors" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/matching/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Once.embeddings is set, one can use find() or match() function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() is about finding nearest neighbours of a ..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Once.embeddings is set, you can use the find() or match() method to find the nearest-neighbor Documents from another DocumentArray (or the current DocumentArray itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() are about find..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Once.embeddings is set, one can use find() or match() function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() is about finding nearest neighbours of a ..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Once.embeddings is set, you can use the find() or match() method to find the nearest-neighbor Documents from another DocumentArray (or the current DocumentArray itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() are about find..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/matching.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Find Nearest Neighbours - DocArray 0.20.0 documentation</title>
+        <title>Find Nearest Neighbors - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Find Nearest Neighbours</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -399,41 +399,41 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="find-nearest-neighbours">
-<span id="match-documentarray"></span><h1>Find Nearest Neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this heading">#</a></h1>
+                    <section id="find-nearest-neighbors">
+<span id="match-documentarray"></span><h1>Find Nearest Neighbors<a class="headerlink" href="#find-nearest-neighbors" title="Permalink to this heading">#</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> support both CPU &amp; GPU.</p>
 </div>
-<p>Once <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is set, one can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> or <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-func docutils literal notranslate"><span class="pre">match()</span></code></a> function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and distance metrics.</p>
+<p>Once <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is set, you can use the <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> or <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-func docutils literal notranslate"><span class="pre">match()</span></code></a> method to find the nearest-neighbor Documents from another DocumentArray (or the current DocumentArray itself) based on their <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and distance metrics.</p>
 <section id="difference-between-find-and-match">
 <h2>Difference between find and match<a class="headerlink" href="#difference-between-find-and-match" title="Permalink to this heading">#</a></h2>
-<p>Though both <code class="docutils literal notranslate"><span class="pre">.find()</span></code> and <code class="docutils literal notranslate"><span class="pre">.match()</span></code> is about finding nearest neighbours of a given “query” and both accpet similar arguments, there are some differences between them:</p>
-<section id="which-side-is-the-query-at">
-<h3>Which side is the query at?<a class="headerlink" href="#which-side-is-the-query-at" title="Permalink to this heading">#</a></h3>
+<p>Though both <code class="docutils literal notranslate"><span class="pre">.find()</span></code> and <code class="docutils literal notranslate"><span class="pre">.match()</span></code> are about finding nearest neighbors of a given “query” and both accept similar arguments, there are some differences:</p>
+<section id="which-side-is-the-query-on">
+<h3>Which side is the query on?<a class="headerlink" href="#which-side-is-the-query-on" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query’s nearest neighbours you should write <code class="docutils literal notranslate"><span class="pre">one_million_docs.find(query)</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> assumes the query is on left-hand side. <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> semantically means “A matches against B and save the results to A”. So with <code class="docutils literal notranslate"><span class="pre">.match()</span></code> you should write <code class="docutils literal notranslate"><span class="pre">query.match(one_million_docs)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find a query’s nearest neighbors you should use <code class="docutils literal notranslate"><span class="pre">one_million_docs.find(query)</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> assumes the query is on left-hand side. <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> semantically means “A matches against B and saves the results to A”. So with <code class="docutils literal notranslate"><span class="pre">.match()</span></code> you should use <code class="docutils literal notranslate"><span class="pre">query.match(one_million_docs)</span></code>.</p></li>
 </ul>
 </section>
-<section id="what-is-the-type-of-the-query">
-<h3>What is the type of the query?<a class="headerlink" href="#what-is-the-type-of-the-query" title="Permalink to this heading">#</a></h3>
+<section id="what-s-the-query-type">
+<h3>What’s the query type?<a class="headerlink" href="#what-s-the-query-type" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>query (RHS) in <code class="docutils literal notranslate"><span class="pre">.find()</span></code> can be plain NdArray-like object or a single Document or a DocumentArray.</p></li>
-<li><p>query (LHS) in <code class="docutils literal notranslate"><span class="pre">.match()</span></code> can be either a Document or a DocumentArray.</p></li>
+<li><p>The query (on the right) in <code class="docutils literal notranslate"><span class="pre">.find()</span></code> can be a plain ndarray-like object, single Document, or DocumentArray.</p></li>
+<li><p>The query (on the left) in <code class="docutils literal notranslate"><span class="pre">.match()</span></code> can be either a Document or DocumentArray.</p></li>
 </ul>
 </section>
 <section id="what-is-the-return">
 <h3>What is the return?<a class="headerlink" href="#what-is-the-return" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> returns a List of DocumentArray, each of which corresponds to one element/row in the query.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> do not return anything. Match results are stored inside left-hand side’s <code class="docutils literal notranslate"><span class="pre">.matches</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.find()</span></code> returns a List of DocumentArrays, each of which corresponds to one element/row in the query.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.match()</span></code> doesn’t return anything. Matched results are stored inside the left-hand side’s <code class="docutils literal notranslate"><span class="pre">.matches</span></code>.</p></li>
 </ul>
-<p>In the sequel, we will use <code class="docutils literal notranslate"><span class="pre">.match()</span></code> to describe the features. But keep in mind that <code class="docutils literal notranslate"><span class="pre">.find()</span></code> should also work by simply switching the right and left-hand sides.</p>
+<p>Moving forwards, we’ll use <code class="docutils literal notranslate"><span class="pre">.match()</span></code>. But bear in mind you could also use <code class="docutils literal notranslate"><span class="pre">.find()</span></code> by switching the right and left-hand sides.</p>
 </section>
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h3>
-<p>The following example finds for each element in <code class="docutils literal notranslate"><span class="pre">da1</span></code> the three closest Documents from the elements in <code class="docutils literal notranslate"><span class="pre">da2</span></code> according to Euclidean distance.</p>
+<p>In the following example, for each element in <code class="docutils literal notranslate"><span class="pre">da1</span></code>, we’ll find the three closest Documents from the elements in <code class="docutils literal notranslate"><span class="pre">da2</span></code> based on Euclidean distance.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Dense embedding </label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -517,11 +517,11 @@ match emb =   (0, 0)	1.0
 </div>
 </div>
 </div>
-<p>The above example when writing with <code class="docutils literal notranslate"><span class="pre">.find()</span></code>:</p>
+<p>The above example when using <code class="docutils literal notranslate"><span class="pre">.find()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">da1</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or simply:</p>
+<p>Or simply:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]),</span>
     <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span>
@@ -539,16 +539,16 @@ match emb =   (0, 0)	1.0
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cosine</span></code></p></td>
-<td><p>Scipy, Numpy, Tensorflow, Pytorch, Paddle</p></td>
+<td><p>SciPy, NumPy, TensorFlow, PyTorch, Paddle</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sqeuclidean</span></code></p></td>
-<td><p>Scipy, Numpy, Tensorflow, Pytorch, Paddle</p></td>
+<td><p>SciPy, NumPy, TensorFlow, PyTorch, Paddle</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">euclidean</span></code></p></td>
-<td><p>Scipy, Numpy, Tensorflow, Pytorch, Paddle</p></td>
+<td><p>SciPy, NumPy, TensorFlow, PyTorch, Paddle</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html">Metrics supported by Scipy</a></p></td>
-<td><p>Scipy</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html">Metrics supported by SciPy</a></p></td>
+<td><p>SciPy</p></td>
 </tr>
 <tr class="row-even"><td><p>User defined callable</p></td>
 <td><p>Depending on the callable</p></td>
@@ -556,12 +556,12 @@ match emb =   (0, 0)	1.0
 </tbody>
 </table>
 </div>
-<p>Note that framework is auto-chosen based on the type of <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, if <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, you can choose to use Numpy or Scipy (by specify <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">use_scipy=True)</span></code>) for computing.</p>
-<p>By default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> will copy the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying them can be time-consuming. In this case, one can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.</p>
+<p>Note that the framework is chosen automatically based on the type of <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, if <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a TensorFlow Tensor, then TensorFlow is used for computing. One exception is when <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a NumPy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, you can choose to compute with either NumPy or SciPy (by specifying <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">use_scipy=True)</span></code>).</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> copies the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying can be time-consuming. In this case, you can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.</p>
 </section>
 <section id="gpu-support">
 <h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this heading">#</a></h3>
-<p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow tensor, PyTorch tensor or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function can work directly on GPU. To do that, simply set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>. For example,</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a TensorFlow, PyTorch, or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> can work directly on the GPU. To do this, set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -574,7 +574,7 @@ match emb =   (0, 0)	1.0
 <span class="n">da1</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">da2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Similar as in <a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a>, if a DocumentArray is too large to fit into GPU memory, one can set <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> to alleviate the problem of OOM on GPU.</p>
+<p>Like <a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a>, if a DocumentArray is too large to fit into GPU memory, you can set <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> to alleviate the problem of OOM on GPU:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da1</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">da2</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -590,7 +590,7 @@ match emb =   (0, 0)	1.0
 </pre></div>
 </div>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">on CPU via Numpy</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">on CPU via NumPy</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">da1</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">Q</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -658,7 +658,7 @@ match emb =   (0, 0)	1.0
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -690,10 +690,10 @@ match emb =   (0, 0)	1.0
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Find Nearest Neighbours</a><ul>
+<li><a class="reference internal" href="#">Find Nearest Neighbors</a><ul>
 <li><a class="reference internal" href="#difference-between-find-and-match">Difference between find and match</a><ul>
-<li><a class="reference internal" href="#which-side-is-the-query-at">Which side is the query at?</a></li>
-<li><a class="reference internal" href="#what-is-the-type-of-the-query">What is the type of the query?</a></li>
+<li><a class="reference internal" href="#which-side-is-the-query-on">Which side is the query on?</a></li>
+<li><a class="reference internal" href="#what-s-the-query-type">What’s the query type?</a></li>
 <li><a class="reference internal" href="#what-is-the-return">What is the return?</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
 <li><a class="reference internal" href="#gpu-support">GPU support</a></li>

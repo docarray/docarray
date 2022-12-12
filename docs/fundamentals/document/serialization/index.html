@@ -6,11 +6,11 @@
 <meta property="og:title" content="Serialization" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/serialization/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. From/to JSON: You can serialize a Document..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Documents over the network across microservices. This chapter introduces a Document’s multiple serialization methods. From/to JSON: You can serialize a Document as a JSON string with to_json(), and then read fr..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. From/to JSON: You can serialize a Document..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Documents over the network across microservices. This chapter introduces a Document’s multiple serialization methods. From/to JSON: You can serialize a Document as a JSON string with to_json(), and then read fr..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/serialization.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Serialization - DocArray 0.20.0 documentation</title>
+        <title>Serialization - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,26 +401,26 @@
                 <article role="main">
                     <section id="serialization">
 <span id="serialize"></span><h1>Serialization<a class="headerlink" href="#serialization" title="Permalink to this heading">#</a></h1>
-<p>DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document.</p>
+<p>DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Documents over the network across microservices. This chapter introduces a Document’s multiple serialization methods.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>One should use <a class="reference internal" href="../../documentarray/serialization/#docarray-serialization"><span class="std std-ref">DocumentArray for serializing multiple Documents</span></a>, instead of looping over Documents one by one. The former is much faster and yield more compact serialization.</p>
+<p>You should use <a class="reference internal" href="../../documentarray/serialization/#docarray-serialization"><span class="std std-ref">DocumentArray for serializing multiple Documents</span></a>, instead of looping over Documents one by one. The former is much faster and yields more compact serialization.</p>
 </div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>Some readers may wonder: why aren’t serialization a part of constructor? They do have similarity. Nonetheless, serialization often contains elements that do not really fit into constructor: input &amp; output model, data schema, compression, extra-dependencies. DocArray made a decision to separate the constructor and serialization for the sake of clarity and maintainability.</p>
+<p>You may wonder: why isn’t serialization part of constructor? Both are similar. Nonetheless, serialization often contains elements that don’t really fit into constructor: input &amp; output model, data schema, compression, extra-dependencies. We made a decision with DocArray to separate the constructor and serialization for the sake of clarity and maintainability.</p>
 </div>
 <section id="from-to-json">
 <span id="doc-json"></span><h2>From/to JSON<a class="headerlink" href="#from-to-json" title="Permalink to this heading">#</a></h2>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/Pydantic</span></a> and follow the methods there.</p>
+<p>If you’re building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, we highly recommend checking out <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/Pydantic</span></a> and following the methods there.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Depending on which protocol you use, this feature requires <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
-<p>You can serialize a Document as a JSON string via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json" title="docarray.document.mixins.porting.PortingMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and then read from it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json" title="docarray.document.mixins.porting.PortingMixin.from_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_json()</span></code></a>.</p>
+<p>You can serialize a Document as a JSON string with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json" title="docarray.document.mixins.porting.PortingMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and then read from it with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json" title="docarray.document.mixins.porting.PortingMixin.from_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_json()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -436,7 +436,7 @@
 &lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 641032d677b311ecb67a1e008a366d49&gt;
 </pre></div>
 </div>
-<p>By default, it uses <a class="reference internal" href="../../fastapi-support/#schema-gen"><span class="std std-ref">JSON Schema and pydantic model</span></a> for serialization, i.e. <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code>. You can switch the method to <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code>, which leverages Protobuf as the JSON serialization backend.</p>
+<p>By default, Documents use <a class="reference internal" href="../../fastapi-support/#schema-gen"><span class="std std-ref">JSON Schema and pydantic model</span></a> for serialization, i.e. <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code>. To use Protobuf as the JSON serialization backend, pass <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> to the method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
@@ -460,8 +460,8 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>When using it for REST API, it is recommended to use <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code> as the resulted JSON will follow a pre-defined schema. This is highly appreciated for modern webservice engineering.</p>
-<p>Note that you can pass extra arguments to control the include/exclude fields, lower/uppercase of the resulted JSON. For example, we can remove those fields that are empty or <code class="docutils literal notranslate"><span class="pre">none</span></code> from JSON via:</p>
+<p>When using a RESTful API, you should use <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code> as the resulting JSON will follow a pre-defined schema. This is highly appreciated for modern webservice engineering.</p>
+<p>Note that you can pass extra arguments to control field inclusion/exclusion, lower/uppercase. For example, you can remove fields that are empty or <code class="docutils literal notranslate"><span class="pre">none</span></code> with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
@@ -471,10 +471,10 @@
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cdbc4f7a77b411ec96ad1e008a366d49&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mime_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hello, world&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;embedding&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>It is easier to eyes. But when building REST API, you do not need to explicitly do this, pydantic model handle everything for you. More information can be found in <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/Pydantic</span></a>.</p>
+<p>This is easier on the eyes. But when building a RESTful API, you don’t need to explicitly do this – the pydantic model handles everything for you. More information can be found in <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/Pydantic</span></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>To find out what extra parameters you can pass to <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>, please check out:</p>
+<p>To find out what extra parameters you can pass to <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>, check out:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson"><code class="docutils literal notranslate"><span class="pre">protocol='jsonschema',</span> <span class="pre">**kwargs</span></code></a></p></li>
 <li><p><a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson"><code class="docutils literal notranslate"><span class="pre">protocol='protobuf',</span> <span class="pre">**kwargs</span></code></a></p></li>
@@ -482,10 +482,10 @@
 </div>
 <section id="from-to-arbitrary-json">
 <span id="arbitrary-json"></span><h3>From/to arbitrary JSON<a class="headerlink" href="#from-to-arbitrary-json" title="Permalink to this heading">#</a></h3>
-<p>Arbitrary JSON is unschema-ed JSON. It often comes from a handcrafted JSON, or an export file from other libraries. Its schema is unknown to DocArray, so by principle we can not load it.</p>
-<p>But load it, we do. To load an arbitrary JSON file set <code class="docutils literal notranslate"><span class="pre">protocol=None</span></code>.</p>
-<p>As an <em>arbitrary</em> JSON, you should not expect it always works smoothly. DocArray will try its best reasonable effort to parse its fields: by first loading the JSON into a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object; and then building a Document via <code class="docutils literal notranslate"><span class="pre">Document(dict)</span></code>; when encountering unknown attributes it follows the behavior <a class="reference internal" href="../construct/#unk-attribute"><span class="std std-ref">described here</span></a>.</p>
-<p>Rule of thumb, if you only work inside DocArray’s ecosystem, please always prefer schema-ed JSON (<code class="docutils literal notranslate"><span class="pre">.to_json(protocol='jsonschema')</span></code>, or <code class="docutils literal notranslate"><span class="pre">.to_json(protocol='protobuf')</span></code>) over unschema-ed JSON. If you are exporting DocArray’s JSON to other ecosystems, also prefer schema-ed JSON. Your engineer friends will appreciate it as it is easier for integration. In fact, DocArray does <strong>not</strong> unschema-ed JSON export, and your engineer friends will never be upset.</p>
+<p>Arbitrary JSON is unschema-ed JSON. It often comes from handcrafted JSON, or an export file from other libraries. Its schema is unknown to DocArray, so by principle you can’t load it.</p>
+<p>But principles be damned. To load an arbitrary JSON file set <code class="docutils literal notranslate"><span class="pre">protocol=None</span></code>.</p>
+<p>As an <em>arbitrary</em> JSON, don’t expect it to work smoothly. DocArray will try its best to parse the fields: by first loading the JSON into a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object; and then building a Document with <code class="docutils literal notranslate"><span class="pre">Document(dict)</span></code>; when encountering unknown attributes it follows the behavior <a class="reference internal" href="../construct/#unk-attribute"><span class="std std-ref">described here</span></a>.</p>
+<p>As a rule of thumb, if you only work inside DocArray’s ecosystem, always use schema-ed JSON (<code class="docutils literal notranslate"><span class="pre">.to_json(protocol='jsonschema')</span></code>, or <code class="docutils literal notranslate"><span class="pre">.to_json(protocol='protobuf')</span></code>) over unschema-ed JSON. If you’re exporting DocArray’s JSON to other ecosystems, also use schema-ed JSON. Your engineer friends will appreciate it as it is easier to integrate. In fact, DocArray does <strong>not</strong> offer unschema-ed JSON export, so your engineer friends will never be upset.</p>
 <p>Read more about <a class="reference internal" href="../../fastapi-support/#schema-gen"><span class="std std-ref">JSON Schema</span></a> support in DocArray.</p>
 </section>
 </section>
@@ -493,9 +493,9 @@
 <span id="doc-in-bytes"></span><h2>From/to bytes<a class="headerlink" href="#from-to-bytes" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
+<p>Depending on your <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> argument values, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
-<p>Bytes or binary or buffer, how ever you want to call it, it probably the most common &amp; compact wire format. DocArray provides <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes" title="docarray.document.mixins.porting.PortingMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a> and <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes" title="docarray.document.mixins.porting.PortingMixin.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code></a> to serialize Document object into bytes.</p>
+<p>Bytes or binary or buffer, however you want to call it, is probably the most common and compact wire format. DocArray provides <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes" title="docarray.document.mixins.porting.PortingMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a> and <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes" title="docarray.document.mixins.porting.PortingMixin.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code></a> to serialize Document objects into bytes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -512,7 +512,7 @@
 &lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 3644c0fa6d5a11ecbb081e008a366d49&gt;
 </pre></div>
 </div>
-<p>Default serialization protocol is <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, you can change it to <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> by specifying <code class="docutils literal notranslate"><span class="pre">.to_bytes(protocol='protobuf')</span></code>. You can also add compression to it and make the result bytes smaller. For example,</p>
+<p>The default serialization protocol is <code class="docutils literal notranslate"><span class="pre">pickle</span></code> – you can change it to <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> by specifying <code class="docutils literal notranslate"><span class="pre">.to_bytes(protocol='protobuf')</span></code>. You can also add compression to make the resulting bytes smaller:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)))</span>
 </pre></div>
@@ -521,8 +521,8 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>110
 </pre></div>
 </div>
-<p>whereas the default <code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code> gives <code class="docutils literal notranslate"><span class="pre">666</span></code> (spooky~).</p>
-<p>Note that when deserializing from a non-default binary serialization, you need to specify the correct <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments used at the serialization time:</p>
+<p>whereas the default <code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code> gives <code class="docutils literal notranslate"><span class="pre">666</span></code>.</p>
+<p>Note that when deserializing from a non-default binary serialization, you need to specify the correct <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments used at serialization time:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d_bytes</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -535,9 +535,9 @@
 <h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
+<p>Depending on your <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> argument values, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
-<p>In some cases such as in REST API, you are allowed only to send/receive string not bytes. You can serialize Document into base64 string via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64" title="docarray.document.mixins.porting.PortingMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and load it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64" title="docarray.document.mixins.porting.PortingMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>.</p>
+<p>Sometimes, such as with RESTful APIs, you can only send/receive strings, not bytes. You can serialize a Document into a base64 string with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64" title="docarray.document.mixins.porting.PortingMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and load it with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64" title="docarray.document.mixins.porting.PortingMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
@@ -559,15 +559,15 @@
 156
 </pre></div>
 </div>
-<p>Note that the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> must be followed when using <code class="docutils literal notranslate"><span class="pre">.from_base64</span></code>.</p>
+<p>Note that you must follow the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> when using <code class="docutils literal notranslate"><span class="pre">.from_base64</span></code>.</p>
 </section>
 <section id="from-to-dict">
 <span id="doc-dict"></span><h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
+<p>This feature requires the <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
-<p>You can serialize a Document as a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict" title="docarray.document.mixins.porting.PortingMixin.to_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_dict()</span></code></a>, and then read from it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict" title="docarray.document.mixins.porting.PortingMixin.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dict()</span></code></a>.</p>
+<p>You can serialize a Document as a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict" title="docarray.document.mixins.porting.PortingMixin.to_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_dict()</span></code></a>, and then read from it with <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict" title="docarray.document.mixins.porting.PortingMixin.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dict()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -583,15 +583,15 @@
 &lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 5596c84c77b711ecafed1e008a366d49&gt;
 </pre></div>
 </div>
-<p>As the intermediate step of <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">from_json()</span></code> it is unlikely to use dict IO directly. Nonetheless, you can pass the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as described in <a class="reference internal" href="#doc-json"><span class="std std-ref">From/to JSON</span></a> to control the serialization behavior.</p>
+<p>As the intermediate step of <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">from_json()</span></code> it’s unlikely you’ll use dict IO directly. Nonetheless, you can pass the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as described in <a class="reference internal" href="#doc-json"><span class="std std-ref">From/to JSON</span></a> to control serialization behavior.</p>
 </section>
 <section id="from-to-protobuf">
 <h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this heading">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
-<p>You can also serialize a Document object into a Protobuf Message object. This is less frequently used as it is often an intermediate step when serializing into bytes, as in <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>. However, if you work with Python Protobuf API, having a Python Protobuf Message object at hand can be useful.</p>
+<p>You can also serialize a Document object into a Protobuf Message object. This is used less frequently as it’s often an intermediate step when serializing into bytes, as in <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>. However, if you work with Python’s Protobuf API, having a Python Protobuf Message object at hand can be useful.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d_proto</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;apple.jpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span>
@@ -608,12 +608,12 @@ mime_type: &quot;image/jpeg&quot;
 &lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;uri&#39;) at e4b215106d6a11ecb28b1e008a366d49&gt;
 </pre></div>
 </div>
-<p>One can refer to the <a class="reference internal" href="../../../proto/"><span class="doc std std-doc">Protobuf specification of <code class="docutils literal notranslate"><span class="pre">Document</span></code></span></a> for details.</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> or <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> contains frameworks-specific ndarray-like object, you can use <code class="docutils literal notranslate"><span class="pre">.to_protobuf(...,</span> <span class="pre">ndarray_type='numpy')</span></code> or <code class="docutils literal notranslate"><span class="pre">.to_protobuf(...,</span> <span class="pre">ndarray_type='list')</span></code> to cast them into <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> automatically. This will help to ensure the maximum compatability between different microservices.</p>
+<p>Refer to the <a class="reference internal" href="../../../proto/"><span class="doc std std-doc">Protobuf specification of <code class="docutils literal notranslate"><span class="pre">Document</span></code></span></a> for details.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> or <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> contains a framework-specific ndarray-like object, you can use <code class="docutils literal notranslate"><span class="pre">.to_protobuf(...,</span> <span class="pre">ndarray_type='numpy')</span></code> or <code class="docutils literal notranslate"><span class="pre">.to_protobuf(...,</span> <span class="pre">ndarray_type='list')</span></code> to cast them into <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> automatically. This helps ensure maximum compatibility between different microservices.</p>
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
-<p>Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list" title="docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_list()</span></code></a> that allows one to <a class="reference internal" href="../../documentarray/serialization/"><span class="doc std std-doc">serialize multiple Documents much faster and more compact</span></a>.</p>
+<p>Serializing a single Document can be useful, but often you want to do things in bulk, say one hundred or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we introduce the similar interfaces <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list" title="docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_list()</span></code></a> that let you <a class="reference internal" href="../../documentarray/serialization/"><span class="doc std std-doc">serialize multiple Documents more quickly and compactly</span></a>.</p>
 </section>
 </section>
 
@@ -652,7 +652,7 @@ mime_type: &quot;image/jpeg&quot;
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

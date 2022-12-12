@@ -6,11 +6,11 @@
 <meta property="og:title" content="Construct" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/construct/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Construct an empty array: Now you can use list-like interfaces such as.append() and.extend() as you would add elements to a Python List. Directly printing a DocumentArray does not show you too much useful information, you can use summary(). Construct with empty Documents: Like numpy.zeros(), you ..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Construct an empty DocumentArray: Now you can use methods like.append() and.extend() just like you would in a Python List. Directly printing a DocumentArray doesn’t show much useful information. For that you can use summary(). Construct with empty Documents: Like numpy.zeros(), you can quickly bu..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Construct an empty array: Now you can use list-like interfaces such as.append() and.extend() as you would add elements to a Python List. Directly printing a DocumentArray does not show you too much useful information, you can use summary(). Construct with empty Documents: Like numpy.zeros(), you ..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Construct an empty DocumentArray: Now you can use methods like.append() and.extend() just like you would in a Python List. Directly printing a DocumentArray doesn’t show much useful information. For that you can use summary(). Construct with empty Documents: Like numpy.zeros(), you can quickly bu..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/construct.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Construct - DocArray 0.20.0 documentation</title>
+        <title>Construct - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,8 +401,8 @@
                 <article role="main">
                     <section id="construct">
 <span id="construct-array"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
-<section id="construct-an-empty-array">
-<h2>Construct an empty array<a class="headerlink" href="#construct-an-empty-array" title="Permalink to this heading">#</a></h2>
+<section id="construct-an-empty-documentarray">
+<h2>Construct an empty DocumentArray<a class="headerlink" href="#construct-an-empty-documentarray" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
@@ -411,7 +411,7 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray (length=0) at 4453362704&gt;
 </pre></div>
 </div>
-<p>Now you can use list-like interfaces such as <code class="docutils literal notranslate"><span class="pre">.append()</span></code> and <code class="docutils literal notranslate"><span class="pre">.extend()</span></code> as you would add elements to a Python List.</p>
+<p>Now you can use methods like <code class="docutils literal notranslate"><span class="pre">.append()</span></code> and <code class="docutils literal notranslate"><span class="pre">.extend()</span></code> just like you would in a Python List.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello world!&#39;</span><span class="p">))</span>
 <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;world!&#39;</span><span class="p">)])</span>
 </pre></div>
@@ -419,7 +419,7 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray (length=3) at 4446140816&gt;
 </pre></div>
 </div>
-<p>Directly printing a DocumentArray does not show you too much useful information, you can use <a class="reference internal" href="../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary" title="docarray.array.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
+<p>Directly printing a DocumentArray doesn’t show much useful information. For that you can use <a class="reference internal" href="../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary" title="docarray.array.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -453,7 +453,7 @@
 </section>
 <section id="construct-from-list-like-objects">
 <h2>Construct from list-like objects<a class="headerlink" href="#construct-from-list-like-objects" title="Permalink to this heading">#</a></h2>
-<p>You can construct DocumentArray from a <code class="docutils literal notranslate"><span class="pre">Sequence</span></code>, <code class="docutils literal notranslate"><span class="pre">List</span></code>, <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> or <code class="docutils literal notranslate"><span class="pre">Iterator</span></code> that yields <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
+<p>You can construct DocumentArray from a <code class="docutils literal notranslate"><span class="pre">Sequence</span></code>, <code class="docutils literal notranslate"><span class="pre">List</span></code>, <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> or <code class="docutils literal notranslate"><span class="pre">Iterator</span></code> that yields <code class="docutils literal notranslate"><span class="pre">Document</span></code> objects.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">From list of Documents</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
@@ -476,7 +476,7 @@
 </div>
 </div>
 </div>
-<p>As DocumentArray itself is also a “list-like object that yields <code class="docutils literal notranslate"><span class="pre">Document</span></code>”, you can also construct DocumentArray from another DocumentArray:</p>
+<p>As DocumentArray itself is also a “list-like object that yields <code class="docutils literal notranslate"><span class="pre">Document</span></code>s”, you can also construct a DocumentArray from another DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">da1</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
 </pre></div>
@@ -515,7 +515,7 @@
 </section>
 <section id="deep-copy-on-elements">
 <h2>Deep copy on elements<a class="headerlink" href="#deep-copy-on-elements" title="Permalink to this heading">#</a></h2>
-<p>Note that, as in Python list, adding Document object into DocumentArray only adds its memory reference. The original Document is <em>not</em> copied. If you change the original Document afterwards, then the one inside DocumentArray will also change. Here is an example,</p>
+<p>Note that, as in Python lists, adding a Document object into a DocumentArray only adds its memory reference. The original Document is <em>not</em> copied. If you change the original Document later, then the Document inside the DocumentArray will also change:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
@@ -530,7 +530,7 @@
 world
 </pre></div>
 </div>
-<p>This may surprise some users, but considering the following Python code, you will find this behavior is very natural and authentic.</p>
+<p>This may be surprising, but considering the following Python code, you’ll see this behavior is very natural and authentic:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
 
@@ -543,7 +543,7 @@ world
 world
 </pre></div>
 </div>
-<p>To make a deep copy, set <code class="docutils literal notranslate"><span class="pre">DocumentArray(...,</span> <span class="pre">copy=True)</span></code>. Now all Documents in this DocumentArray are completely new objects with identical contents as the original ones.</p>
+<p>To make a deep copy, set <code class="docutils literal notranslate"><span class="pre">DocumentArray(...,</span> <span class="pre">copy=True)</span></code>. Now all Documents in this DocumentArray are completely new objects with contents identical to the original Documents.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
@@ -561,7 +561,7 @@ hello
 </section>
 <section id="construct-from-local-files">
 <h2>Construct from local files<a class="headerlink" href="#construct-from-local-files" title="Permalink to this heading">#</a></h2>
-<p>You may recall the common pattern that <a class="reference internal" href="../../document/attribute/#content-uri"><span class="std std-ref">I mentioned here</span></a>. With <a class="reference internal" href="../../../api/docarray.document.generators/#docarray.document.generators.from_files" title="docarray.document.generators.from_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_files()</span></code></a> One can easily construct a DocumentArray object with all file paths defined by a glob expression.</p>
+<p>You may recall the common pattern that <a class="reference internal" href="../../document/attribute/#content-uri"><span class="std std-ref">we mentioned here</span></a>. With <a class="reference internal" href="../../../api/docarray.document.generators/#docarray.document.generators.from_files" title="docarray.document.generators.from_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_files()</span></code></a> You can easily construct a DocumentArray object with all file paths defined by a glob expression.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da_jpg</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;images/*.jpg&#39;</span><span class="p">)</span>
@@ -569,11 +569,11 @@ hello
 <span class="n">da_all</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">([</span><span class="s1">&#39;images/**/*.png&#39;</span><span class="p">,</span> <span class="s1">&#39;images/**/*.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;images/**/*.jpeg&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>This will scan all filenames that match the expression and construct Documents with filled <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. You can control if to read each as text or binary with <code class="docutils literal notranslate"><span class="pre">read_mode</span></code> argument.</p>
+<p>This scans all filenames that match the expression and constructs Documents with filled <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attributes. You can control whether to read file as text or binary using the <code class="docutils literal notranslate"><span class="pre">read_mode</span></code> argument.</p>
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
-<p>In the next chapter, we will see how to construct DocumentArray from binary bytes, JSON, CSV, dataframe, Protobuf message.</p>
+<p>In the next chapter, we’ll see how to construct a DocumentArray from binary bytes, JSON, CSV, DataFrame, or Protobuf message.</p>
 </section>
 </section>
 
@@ -612,7 +612,7 @@ hello
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -645,7 +645,7 @@ hello
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Construct</a><ul>
-<li><a class="reference internal" href="#construct-an-empty-array">Construct an empty array</a></li>
+<li><a class="reference internal" href="#construct-an-empty-documentarray">Construct an empty DocumentArray</a></li>
 <li><a class="reference internal" href="#construct-with-empty-documents">Construct with empty Documents</a></li>
 <li><a class="reference internal" href="#construct-from-list-like-objects">Construct from list-like objects</a></li>
 <li><a class="reference internal" href="#construct-from-multiple-documentarray">Construct from multiple DocumentArray</a></li>

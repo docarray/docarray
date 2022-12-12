@@ -1,7 +1,7 @@
 (redis)=
 # Redis
 
-You can use [Redis](https://redis.io) as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Redis](https://redis.io) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `redis`. You can install it via `pip install "docarray[redis]".`
@@ -232,7 +232,7 @@ for doc in results:
     )
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
@@ -252,7 +252,7 @@ integer in `columns` configuration (`'field': 'int'`) and use a filter query tha
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
+You can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
 Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents with `price` less than or equal to  some `max_price` value.
 
@@ -377,7 +377,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -408,7 +408,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -444,7 +444,7 @@ results = da.find('token1')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 ['token1 token2 token3', 'token1 token2']
@@ -462,7 +462,7 @@ print('scorer=BM25:')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 scorer=TFIDF.DOCNORM:
@@ -516,7 +516,7 @@ results_italian = da.find('italian', index='food_type')
 print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_type'])
 ```
 
-This will print:
+This prints:
 
 ```console
 searching "cheap" in <price>:

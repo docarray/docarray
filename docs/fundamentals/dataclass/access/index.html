@@ -6,11 +6,11 @@
 <meta property="og:title" content="Access Modality" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/access/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="After constructing a multi-modal Document or DocumentArray, you can directly access your custom-defined modalities by their names. Document level access: Even after conversion to Document, custom-defines modalities can be accessed by their names, returning a Document or, for list-types, a Documen..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="After constructing a multi-modal Document or DocumentArray, you can directly access your custom-defined modalities by their names. Document level access: Even after conversion to Document, custom-defined modalities can be accessed by their names, returning a Document or, for list-types, a Documen..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="After constructing a multi-modal Document or DocumentArray, you can directly access your custom-defined modalities by their names. Document level access: Even after conversion to Document, custom-defines modalities can be accessed by their names, returning a Document or, for list-types, a Documen..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="After constructing a multi-modal Document or DocumentArray, you can directly access your custom-defined modalities by their names. Document level access: Even after conversion to Document, custom-defined modalities can be accessed by their names, returning a Document or, for list-types, a Documen..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/access.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Access Modality - DocArray 0.20.0 documentation</title>
+        <title>Access Modality - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -406,13 +406,13 @@ modalities by their names.</p>
 <div class="seealso admonition">
 <p class="admonition-title">Return types</p>
 <p>Accessing a modality always returns a Document or a DocumentArray, instead of directly returning the data stored in them.
-This ensures maximum flexibility for the use.</p>
-<p>If you want to learn more about the rationale behind this design, you can read our <a class="reference external" href="https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0">blog post</a>.</p>
+This ensures maximum flexibility.</p>
+<p>To learn more about the rationale behind this design, read our <a class="reference external" href="https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0">blog post</a>.</p>
 </div>
 <section id="document-level-access">
 <span id="mm-access-doc"></span><h2>Document level access<a class="headerlink" href="#document-level-access" title="Permalink to this heading">#</a></h2>
-<p>Even after conversion to <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, custom-defines modalities can be accessed by their names, returning a
-<a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> or, for list-types, a <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.</p>
+<p>Even after conversion to <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, custom-defined modalities can be accessed by their names, returning a
+<a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> or, for list-types, a <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
@@ -432,9 +432,9 @@ This ensures maximum flexibility for the use.</p>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="p">)</span>  <span class="c1"># returns a Document with the test.jpg image tensor</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>  <span class="c1"># returns the image tensor</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>  <span class="c1"># returns the image tensor directly</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">)</span>  <span class="c1"># returns a DocumentArray with one Document per paragraph</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>  <span class="c1"># returns the paragraph texts</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>  <span class="c1"># returns the paragraph texts directly</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;, &#39;mime_type&#39;, &#39;uri&#39;, &#39;_metadata&#39;, &#39;modality&#39;) at eaccc9c573c07f13b7ee8aa04a83c9eb&gt;
@@ -455,7 +455,7 @@ This ensures maximum flexibility for the use.</p>
 </div>
 <section id="select-nested-fields">
 <h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this heading">#</a></h3>
-<p>Nested field, coming from <a class="reference internal" href="../construct/#mm-annotation"><span class="std std-ref">nested dataclasses</span></a>, can be accessed by selecting the outer field,
+<p>Nested fields, coming from <a class="reference internal" href="../construct/#mm-annotation"><span class="std std-ref">nested dataclasses</span></a>, can be accessed by selecting the outer field,
 and then selecting the inner field:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
@@ -487,7 +487,7 @@ this is a description
 </section>
 </section>
 <section id="documentarray-level-access">
-<span id="mm-access-da"></span><h2>DocumentArray level access<a class="headerlink" href="#documentarray-level-access" title="Permalink to this heading">#</a></h2>
+<span id="mm-access-da"></span><h2>DocumentArray-level access<a class="headerlink" href="#documentarray-level-access" title="Permalink to this heading">#</a></h2>
 <p>Custom modalities can be accessed through the familiar <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">selector syntax</span></a>.</p>
 <p>Like all selectors, a selector for a multi-modal attribute begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.
 The fact that a custom modality is accessed is denoted through the addition of a <code class="docutils literal notranslate"><span class="pre">.</span></code>, coming before a list of modality names:</p>
@@ -496,14 +496,14 @@ The fact that a custom modality is accessed is denoted through the addition of a
 ||   |       |
 ||   |-------|
 ||       |
-||       | --- indicate the field of dataclass (modality name)
+||       | --- dataclass field (modality name)
 ||
-|| ------ indicate the start of modality selector
+|| ------ start of modality selector
 |
-| ---- indicate the start of selector
+| ---- start of selector
 </pre></div>
 </div>
-<p>Selecting a modality form a DocumentArray always results in another DocumentArray:</p>
+<p>Selecting a modality from a DocumentArray always results in another DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -604,7 +604,7 @@ Output<div class="sd-summary-down docutils">
 </div>
 <section id="select-multiple-fields">
 <h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this heading">#</a></h3>
-<p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>:</p>
+<p>You can select multiple fields by including them in the square brackets, separated by commas <code class="docutils literal notranslate"><span class="pre">,</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description, banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -646,7 +646,7 @@ Output<div class="sd-summary-down docutils">
 </details></section>
 <section id="slice-dataclass-objects">
 <h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this heading">#</a></h3>
-<p>Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do:</p>
+<p>Remember each dataclass object corresponds to one Document object. You can first slice the DocumentArray before selecting the field. Specifically, you can do:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@r[slice].[field1, field2, ...]
 </pre></div>
 </div>
@@ -690,7 +690,7 @@ Output<div class="sd-summary-down docutils">
 </details></section>
 <section id="slice-list-type-fields">
 <h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this heading">#</a></h3>
-<p>If a field is annotated as a List of DocArray types, it will create a DocumentArray, one can add slicing after the field selector to further restrict the size of the sub-Documents.</p>
+<p>If a field is annotated as a List of DocArray types, it creates a DocumentArray. You can add slicing after the field selector to further restrict the number of sub-Documents.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -728,15 +728,15 @@ Output<div class="sd-summary-down docutils">
 test-1.jpeg
 </pre></div>
 </div>
-<p>To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.</p>
+<p>To summarize, slicing can be put in front of the field selector to restrict the number of dataclass objects, or after the field selector to restrict the number of sub-Documents.</p>
 </section>
 <section id="id1">
 <h3>Select nested fields<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
-<p>A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former’s <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. To select the deeply nested field, one can simply follow:</p>
+<p>A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former’s <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. To select the deeply nested field, you can simply follow:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...].[nested_field1, nested_field1, ...]
 </pre></div>
 </div>
-<p>For example,</p>
+<p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -806,7 +806,7 @@ test-2.jpeg
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -843,7 +843,7 @@ test-2.jpeg
 <li><a class="reference internal" href="#select-nested-fields">Select nested fields</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#documentarray-level-access">DocumentArray level access</a><ul>
+<li><a class="reference internal" href="#documentarray-level-access">DocumentArray-level access</a><ul>
 <li><a class="reference internal" href="#select-multiple-fields">Select multiple fields</a></li>
 <li><a class="reference internal" href="#slice-dataclass-objects">Slice dataclass objects</a></li>
 <li><a class="reference internal" href="#slice-list-type-fields">Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields</a></li>

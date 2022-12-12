@@ -6,11 +6,11 @@
 <meta property="og:title" content="Weaviate" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/weaviate/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="One can use Weaviate as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray. Usage: Start Weaviate service: To u..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="You can use Weaviate as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Here’s a video tutorial on building a simple image search using Weaviate and DocArray: Usage: Start Weaviate service: To use Weaviate as the storage backend..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="One can use Weaviate as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray. Usage: Start Weaviate service: To u..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="You can use Weaviate as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e..match(),.find(). Here’s a video tutorial on building a simple image search using Weaviate and DocArray: Usage: Start Weaviate service: To use Weaviate as the storage backend..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/weaviate.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Weaviate - DocArray 0.20.0 documentation</title>
+        <title>Weaviate - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,12 +401,12 @@
                 <article role="main">
                     <section id="weaviate">
 <span id="id1"></span><h1>Weaviate<a class="headerlink" href="#weaviate" title="Permalink to this heading">#</a></h1>
-<p>One can use <a class="reference external" href="https://weaviate.io">Weaviate</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
+<p>You can use <a class="reference external" href="https://weaviate.io">Weaviate</a> as a document store for DocumentArray. It’s suitable for faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">weaviate-client</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[weaviate]&quot;.</span></code></p>
 </div>
-<p>Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray.</p>
+<p>Here’s a video tutorial on building a simple image search using Weaviate and DocArray:</p>
 <center>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rBKvoIGihnY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </center>
@@ -414,7 +414,7 @@
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
 <section id="start-weaviate-service">
 <h3>Start Weaviate service<a class="headerlink" href="#start-weaviate-service" title="Permalink to this heading">#</a></h3>
-<p>To use Weaviate as the storage backend, it is required to have the Weaviate service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
+<p>To use Weaviate as the storage backend, you need to start the Weaviate service. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
 <span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
 <span class="nt">services</span><span class="p">:</span><span class="w"></span>
@@ -448,15 +448,15 @@ docker-compose up
 </section>
 <section id="create-documentarray-with-weaviate-backend">
 <h3>Create DocumentArray with Weaviate backend<a class="headerlink" href="#create-documentarray-with-weaviate-backend" title="Permalink to this heading">#</a></h3>
-<p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>), one can instantiate a DocumentArray with Weaviate storage as such:</p>
+<p>Assuming you’ve started the service with the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>), you can instantiate a DocumentArray with Weaviate storage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The usage would be the same as the ordinary DocumentArray.</p>
-<p>To access a DocumentArray formerly persisted, one can specify the name, the host, the port and the protocol to connect to the server. <code class="docutils literal notranslate"><span class="pre">name</span></code> is required in this case but other connection parameters are optional. If they are not provided, then it will connect to the Weaviate service bound to <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>.</p>
-<p>Note, that the <code class="docutils literal notranslate"><span class="pre">name</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">config</span></code> needs to be capitalized.</p>
+<p>You can use it just the same as an ordinary DocumentArray.</p>
+<p>To access a formerly-persisted DocumentArray, you can specify the name, host, port and protocol to connect to the server. <code class="docutils literal notranslate"><span class="pre">name</span></code> is required in this case but other connection parameters are optional. If you don’t provide them, it will connect to the Weaviate service bound to <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">name</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">config</span></code> needs to be capitalized.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
@@ -466,12 +466,11 @@ docker-compose up
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Other functions behave the same as in-memory DocumentArray.</p>
+<p>Other functions behave the same as an in-memory DocumentArray.</p>
 </section>
 </section>
-<section id="config">
-<h2>Config<a class="headerlink" href="#config" title="Permalink to this heading">#</a></h2>
-<p>The following configs can be set:</p>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -486,15 +485,15 @@ docker-compose up
 <td><p>‘localhost’</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">port</span></code></p></td>
-<td><p>port of the Weaviate server</p></td>
+<td><p>Port of the Weaviate server</p></td>
 <td><p>8080</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">protocol</span></code></p></td>
-<td><p>protocol to be used. Can be ‘http’ or ‘https’</p></td>
+<td><p>Protocol to use. Can be ‘http’ or ‘https’</p></td>
 <td><p>‘http’</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
-<td><p>Weaviate class name; the class name of Weaviate object to presesent this DocumentArray</p></td>
+<td><p>Weaviate class name; the class name of Weaviate object to present this DocumentArray</p></td>
 <td><p>None</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">serialize_config</span></code></p></td>
@@ -564,9 +563,9 @@ docker-compose up
 </section>
 <section id="minimum-example">
 <h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this heading">#</a></h2>
-<p>The following example shows how to use DocArray with Weaviate Document Store in order to index and search text
+<p>The following example shows how to use DocArray with Weaviate Document Store to index and search text
 Documents.</p>
-<p>First, let’s run the create the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instance (make sure a Weaviate server is up and running):</p>
+<p>First, let’s create the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instance (ensure a Weaviate server is up and running):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
@@ -587,7 +586,7 @@ Documents.</p>
     <span class="p">)</span>
 </pre></div>
 </div>
-<p>Now, we can generate embeddings inside the database using BERT model:</p>
+<p>Now, we can generate embeddings inside the database using the BERT model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
 
 <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
@@ -618,12 +617,12 @@ Documents.</p>
 </section>
 <section id="filtering">
 <h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this heading">#</a></h2>
-<p>Search with <code class="docutils literal notranslate"><span class="pre">.find</span></code> can be restricted by user-defined filters. Such filters can be constructed following the guidelines
-in <a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html">Weaviate’s Documentation</a>.</p>
+<p>You can restrict search with <code class="docutils literal notranslate"><span class="pre">.find</span></code> using user-defined filters. You can construct these filters by following the guidelines
+in <a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html">Weaviate’s documentation</a>.</p>
 <section id="example-of-find-with-a-filter-only">
 <h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only<a class="headerlink" href="#example-of-find-with-a-filter-only" title="Permalink to this heading">#</a></h3>
-<p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into weaviate and you want to retrieve all Documents
-with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower or equal to  some <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
+<p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into Weaviate and want to retrieve all Documents
+with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower then or equal to a <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
 <p>You can index such Documents as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -645,7 +644,7 @@ with <code class="docutils literal notranslate"><span class="pre">price</span></
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then you can retrieve all documents whose price is lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code> by applying the following
+<p>Then you can retrieve all Documents whose price is lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code> by applying the following
 filter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
@@ -658,7 +657,7 @@ filter:</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print</p>
+<p>This prints:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Returned</span> <span class="n">examples</span> <span class="n">that</span> <span class="n">satisfy</span> <span class="n">condition</span> <span class="s2">&quot;price at most 3&quot;</span><span class="p">:</span>
 
 	 <span class="n">price</span><span class="o">=</span><span class="mi">0</span>
@@ -670,8 +669,8 @@ filter:</p>
 </section>
 <section id="example-of-find-with-query-vector-and-filter">
 <h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter<a class="headerlink" href="#example-of-find-with-query-vector-and-filter" title="Permalink to this heading">#</a></h3>
-<p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
-has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
+<p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the Document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
+has a tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such an example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -713,7 +712,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print:</p>
+<p>This prints:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Embeddings Nearest Neighbours with <span class="s2">&quot;price&quot;</span> at most <span class="m">7</span>:
 
 	<span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
@@ -729,11 +728,11 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 <p><em><strong>Note: Support for sorting was added to the weaviate-client v3.5.0. You can upgrade with the following command:
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">weaviate-client</span></code></strong></em></p>
 <p>You can sort results by any primitive property, typically a text, string, number, or int property. When a query has a
-natural order (e.g. because of a near vector search), adding a sort operator will override the order.</p>
+natural order (e.g. because of a near vector search), adding a sort operator overrides the order.</p>
 <p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/get.html#sorting">Further documentation here.</a></p>
 <section id="example-of-find-with-vector-and-sort">
 <h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort<a class="headerlink" href="#example-of-find-with-vector-and-sort" title="Permalink to this heading">#</a></h3>
-<p>Consider Documents with the column ‘price’ and on the return you want to sort these documents by highest price to lowest
+<p>Consider Documents with the column ‘price’ and on the return you want to sort these Documents by highest price to lowest
 price. You can create an example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -778,7 +777,7 @@ price. You can create an example with the following code:</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print:</p>
+<p>This prints:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Returned examples that verify results are <span class="k">in</span> order from highest price to lowest:
     
     <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
@@ -793,7 +792,7 @@ price. You can create an example with the following code:</p>
     <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
-<p>For ascending the results would be as expected:</p>
+<p>In ascending order the results would be as expected:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
     <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
     <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
@@ -810,12 +809,12 @@ price. You can create an example with the following code:</p>
 </section>
 <section id="set-minimum-certainty-on-query-results">
 <h2>Set minimum certainty on query results<a class="headerlink" href="#set-minimum-certainty-on-query-results" title="Permalink to this heading">#</a></h2>
-<p>The DocArray/Weaviate find class uses the NearVector search argument since Weaviate is only being used in this combination to store
-vectors generated by DocArray. Sometimes you want to set the certainty at a certain level to limit the return results.
+<p>The DocArray/Weaviate find class uses the NearVector search argument since Weaviate is only used in this combination to store
+vectors generated by DocArray. Sometimes you want to set the certainty at a certain level to limit the returned results.
 You can do this with the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">find()</span></code> method.</p>
-<p><code class="docutils literal notranslate"><span class="pre">query_params</span></code> is a Dictionary element that combines itself with the request body. To set you must pass the value as a
+<p><code class="docutils literal notranslate"><span class="pre">query_params</span></code> is a Dictionary element that combines itself with the request body. To set this you must pass the value as a
 Dict (<code class="docutils literal notranslate"><span class="pre">query_params={&quot;key&quot;:</span> <span class="pre">&quot;value}</span></code>) within the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function</p>
-<p>If you are familiar with Weaviates GraphQL structure then you can see where the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> goes:</p>
+<p>If you are familiar with Weaviate’s GraphQL structure then you can see where the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> goes:</p>
 <div class="highlight-grapql notranslate"><div class="highlight"><pre><span></span>{
   Get{
     Persisted(
@@ -879,7 +878,7 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This should return something similar to:</p>
+<p>This returns something similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only results that have a <span class="s1">&#39;weaviate_certainty&#39;</span> of higher than <span class="m">0</span>.9 should show:
          <span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
          <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;distance&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: -3.5762787e-07<span class="o">}}]</span>
@@ -892,16 +891,16 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
 </section>
 <section id="include-additional-properties-in-the-return">
 <h2>Include additional properties in the return<a class="headerlink" href="#include-additional-properties-in-the-return" title="Permalink to this heading">#</a></h2>
-<p>GraphQL additional properties can be used on data objects in Get{} Queries to get additional information about the
+<p>GraphQL additional properties can be used on data objects in <code class="docutils literal notranslate"><span class="pre">Get{}</span></code> queries to get additional information about the
 returned data objects. Which additional properties are available depends on the modules that are attached to Weaviate.
-The fields id, certainty, featureProjection and classification are available from Weaviate Core. On nested GraphQL
-fields (references to other data classes), only the id can be returned. Explanation on specific additional properties
+The fields <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">certainty</span></code>, <code class="docutils literal notranslate"><span class="pre">featureProjection</span></code> and <code class="docutils literal notranslate"><span class="pre">classification</span></code> are available from Weaviate Core. On nested GraphQL
+fields (references to other data classes), only the <code class="docutils literal notranslate"><span class="pre">id</span></code> can be returned. An explanation on specific additional properties
 can be found on the module pages, see for example
 <a class="reference external" href="https://weaviate.io/developers/weaviate/current/modules/text2vec-contextionary.html#additional-graphql-api-properties">text2vec-contextionary</a>.</p>
 <p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/additional-properties.html">Further documentation here</a></p>
-<p>In order to include additional properties on the request you can use the <code class="docutils literal notranslate"><span class="pre">additional</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function.
+<p>To include additional properties on the request you can use the <code class="docutils literal notranslate"><span class="pre">additional</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function.
 These will be included as Tags on the response.</p>
-<p>Assume you want to know when the document was inserted and last updated in the DB.
+<p>Assume you want to know when the Document was inserted and last updated in the database.
 You can run the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
@@ -948,7 +947,7 @@ You can run the following:</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> lastUpdateTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__lastUpdateTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This should return:</p>
+<p>This returns:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> See when the Document was created and updated:
 
          <span class="nv">creationTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
@@ -993,7 +992,7 @@ You can run the following:</p>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1031,7 +1030,7 @@ You can run the following:</p>
 <li><a class="reference internal" href="#create-documentarray-with-weaviate-backend">Create DocumentArray with Weaviate backend</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
 <li><a class="reference internal" href="#minimum-example">Minimum example</a></li>
 <li><a class="reference internal" href="#filtering">Filtering</a><ul>
 <li><a class="reference internal" href="#example-of-find-with-a-filter-only">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only</a></li>

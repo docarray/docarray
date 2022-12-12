@@ -6,11 +6,11 @@
 <meta property="og:title" content="Construct" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/construct/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Just like the Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Just like the Python dataclasses module, DocArray provides a dataclass() decorator and a set of type annotations in docarray.typing like Image, Text, Audio, that let you construct a multimodal Document: Each field is a modality. The above example contains two modalities: image and text. To conver..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Just like the Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Just like the Python dataclasses module, DocArray provides a dataclass() decorator and a set of type annotations in docarray.typing like Image, Text, Audio, that let you construct a multimodal Document: Each field is a modality. The above example contains two modalities: image and text. To conver..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/construct.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Construct - DocArray 0.20.0 documentation</title>
+        <title>Construct - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -403,9 +403,9 @@
 <span id="mm-construct"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>In DocArray, a Document object can contain sub-Document in <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. If you are still unaware of this design, make sure to read <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">this chapter</span></a> before continuing.</p>
+<p>In DocArray, a Document object can contain sub-Documents in <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. If you’re unaware of this design, read <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">this chapter</span></a> before continuing.</p>
 </div>
-<p>Just like the Python dataclasses module, DocArray provides a decorator <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.dataclass" title="docarray.dataclasses.types.dataclass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataclass()</span></code></a> and a set of type annotations in <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> such as <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, that allow you to construct multimodal Document in the following way:</p>
+<p>Just like the Python dataclasses module, DocArray provides a <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.dataclass" title="docarray.dataclasses.types.dataclass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataclass()</span></code></a> decorator and a set of type annotations in <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> like <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, that let you construct a multimodal Document:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -423,13 +423,13 @@
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>Be careful when assigning names to your modalities.</p>
-<p>Do not use names that are properties of <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, such as
+<p>Don’t use names that are properties of <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, like
 <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">tensor</span></code>, <code class="docutils literal notranslate"><span class="pre">embedding</span></code>, etc.
-Instead, use more specific names that fit your domain, such as <code class="docutils literal notranslate"><span class="pre">avatar</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code> in the example above.</p>
-<p>If there is a conflict between the name of a modality and a property of <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>,
-no guarantees about the behavior while <a class="reference internal" href="../access/#mm-access-doc"><span class="std std-ref">accessing</span></a> such a name can be made.</p>
+Instead, use more specific names that fit your domain, like <code class="docutils literal notranslate"><span class="pre">avatar</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code> in the example above.</p>
+<p>If there’s a conflict between a modality name and a <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> property,
+there may be unexpected behavior when <a class="reference internal" href="../access/#mm-access-doc"><span class="std std-ref">accessing</span></a> such a name.</p>
 </div>
-<p>To convert it into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, simply:</p>
+<p>To convert a <code class="docutils literal notranslate"><span class="pre">MyMultiModalDoc</span></code> to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, simply:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -469,13 +469,13 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </pre></div>
 </div>
 </div>
-</details><p>To convert a Document object back to a <code class="docutils literal notranslate"><span class="pre">MyMultiModalDoc</span></code> object, do:</p>
+</details><p>To convert a Document object back to a <code class="docutils literal notranslate"><span class="pre">MyMultiModalDoc</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">MyMultiModalDoc</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="dataclass-decorator">
 <h2>Dataclass decorator<a class="headerlink" href="#dataclass-decorator" title="Permalink to this heading">#</a></h2>
-<p>First, you need to import <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> decorator from DocArray package:</p>
+<p>First, import <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> decorator from the DocArray package:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 </pre></div>
 </div>
@@ -498,8 +498,8 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 True
 </pre></div>
 </div>
-<p>That means, <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">arguments accepted by standard <code class="docutils literal notranslate"><span class="pre">dataclass</span></code></a> are also accepted here. Methods that can be applied to Python <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> can be also be applied to DocArray <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
-<p>To tell if a class or object is DocArray’s dataclass, you can use <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.is_multimodal" title="docarray.dataclasses.types.is_multimodal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multimodal()</span></code></a>:</p>
+<p>That means, <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">arguments accepted by standard <code class="docutils literal notranslate"><span class="pre">dataclass</span></code></a> are also accepted here. Methods that can be applied to Python’s <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> can be also be applied to DocArray’s <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
+<p>To tell if a class or object is a DocArray dataclass, you can use <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.is_multimodal" title="docarray.dataclasses.types.is_multimodal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multimodal()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 
@@ -525,11 +525,16 @@ True
 False
 </pre></div>
 </div>
-<p>In the sequel, unless otherwise specified <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> always refers to <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code>, not the Python built-in <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
+<p>Moving forwards, unless otherwise specified, <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> always refers to <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code>, not Python’s built-in <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
 </section>
 <section id="annotate-class-fields">
 <h2>Annotate class fields<a class="headerlink" href="#annotate-class-fields" title="Permalink to this heading">#</a></h2>
-<p>DocArray provides <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> that allows one to annotate a class field as <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">JSON</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, <code class="docutils literal notranslate"><span class="pre">Video</span></code>, <code class="docutils literal notranslate"><span class="pre">Mesh</span></code>, <code class="docutils literal notranslate"><span class="pre">Tabular</span></code>, <code class="docutils literal notranslate"><span class="pre">Blob</span></code>; or as primitive Python types; or as other <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code>.</p>
+<p>DocArray provides <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> that allows you to annotate class fields as</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">JSON</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, <code class="docutils literal notranslate"><span class="pre">Video</span></code>, <code class="docutils literal notranslate"><span class="pre">Mesh</span></code>, <code class="docutils literal notranslate"><span class="pre">Tabular</span></code>, <code class="docutils literal notranslate"><span class="pre">Blob</span></code></p></li>
+<li><p>primitive Python types</p></li>
+<li><p>other <code class="docutils literal notranslate"><span class="pre">docarray.dataclass</span></code></p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Audio</span>
 
@@ -541,14 +546,14 @@ False
     <span class="n">soundfx</span><span class="p">:</span> <span class="n">Audio</span> <span class="o">=</span> <span class="s1">&#39;white-noise.wav&#39;</span>
 </pre></div>
 </div>
-<p>Convert <code class="docutils literal notranslate"><span class="pre">MMDoc2</span></code> object into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object is easy, simply via</p>
+<p>Converting <code class="docutils literal notranslate"><span class="pre">MMDoc2</span></code> object into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object is easy:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">m</span> <span class="o">=</span> <span class="n">MMDoc2</span><span class="p">()</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can look at the structure of <code class="docutils literal notranslate"><span class="pre">d</span></code> via <code class="docutils literal notranslate"><span class="pre">d.summary()</span></code>:</p>
+<p>You can look at the structure of <code class="docutils literal notranslate"><span class="pre">d</span></code> via <code class="docutils literal notranslate"><span class="pre">d.summary()</span></code>:</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 Nested structure (chunks)<div class="sd-summary-down docutils">
@@ -593,7 +598,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </details></section>
 <section id="behavior-of-field-annotation">
 <span id="mm-annotation"></span><h2>Behavior of field annotation<a class="headerlink" href="#behavior-of-field-annotation" title="Permalink to this heading">#</a></h2>
-<p>This section explains the behavior of field annotations in details.</p>
+<p>This section explains the behavior of field annotations in detail.</p>
 <ul>
 <li><p>A <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> corresponds to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, let’s call it <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p></li>
 <li><p>Unannotated fields are ignored.</p>
@@ -707,11 +712,11 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Text</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='text'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> from the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='text'</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">URI</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.uri</span></code> by the given value</p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.uri</span></code> from the given value</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Audio</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
@@ -719,7 +724,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">JSON</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dict</span></code></p></td>
-<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='json'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> from the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='json'</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Video</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
@@ -731,11 +736,11 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Blob</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">bytes</span></code></p></td>
-<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.blob</span></code> by the given value or reading from the path</p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.blob</span></code> from the given value or reading from the path</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Tabular</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code> (file name)</p></td>
-<td><p>Reads a CSV file, creates a sub-Document for each line and fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by considering the first row as the column names and mapping the following lines into the corresponding values.</p></td>
+<td><p>Reads a CSV file, creates a sub-Document for each line and fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by considering the first row as column names and mapping subsequent rows into corresponding values.</p></td>
 </tr>
 </tbody>
 </table>
@@ -797,7 +802,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </div>
 </div>
 </li>
-<li><p>A field annotated with another <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> will create the full nested structure under the corresponding chunk.</p>
+<li><p>A field annotated with another <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> will create the full nested structure under the corresponding chunk:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">Field in another dataclass</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
@@ -871,12 +876,12 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </div>
 </div>
 </li>
-<li><p>A dataclass that has only one field annotated with <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code> will still create a nested structure under <code class="docutils literal notranslate"><span class="pre">root.chunks</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">len(root.chunks)=1</span></code> and your multimodal Document has basically a single modality, which may encourage you to think if this is really necessary to use a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>. After all, each Document represents single modality, and you can just use <code class="docutils literal notranslate"><span class="pre">Document</span></code>.</p></li>
+<li><p>A dataclass that has only one field annotated with <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code> will still create a nested structure under <code class="docutils literal notranslate"><span class="pre">root.chunks</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">len(root.chunks)=1</span></code> and your multimodal Document has basically a single modality, which may encourage you to consider if you really need to use a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>. After all, each Document represents a single modality, so in this case you could just use <code class="docutils literal notranslate"><span class="pre">Document</span></code>.</p></li>
 </ul>
 </section>
 <section id="construct-from-to-document">
 <h2>Construct from/to Document<a class="headerlink" href="#construct-from-to-document" title="Permalink to this heading">#</a></h2>
-<p>It is easy to convert a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> object from/to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
+<p>It’s easy to convert a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> object from/to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span>
 
@@ -896,8 +901,8 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 </section>
 <section id="use-field-for-advanced-configs">
 <h2>Use <code class="docutils literal notranslate"><span class="pre">field()</span></code> for advanced configs<a class="headerlink" href="#use-field-for-advanced-configs" title="Permalink to this heading">#</a></h2>
-<p>For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. To satisfy this need for additional information, you can replace the default field value with a call to the provided <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.field" title="docarray.dataclasses.types.field"><code class="xref py py-meth docutils literal notranslate"><span class="pre">field()</span></code></a> function.</p>
-<p>For example, mutable object is not allowed as the default value of any dataclass field. One can solve it via:</p>
+<p>For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. For this, you can replace the default field value with a call to the provided <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.field" title="docarray.dataclasses.types.field"><code class="xref py py-meth docutils literal notranslate"><span class="pre">field()</span></code></a> function.</p>
+<p>For example, a mutable object is not allowed as the default value of any dataclass field. You can solve it via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
@@ -909,13 +914,13 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
     <span class="n">banner</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;test-2.jpeg&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>Other parameters from the standard the Python field such as <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">compare</span></code>, <code class="docutils literal notranslate"><span class="pre">hash</span></code>, <code class="docutils literal notranslate"><span class="pre">repr</span></code> are also supported. More details can be <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">found here</a>.</p>
+<p>Other parameters from the standard the Python field like <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">compare</span></code>, <code class="docutils literal notranslate"><span class="pre">hash</span></code>, <code class="docutils literal notranslate"><span class="pre">repr</span></code> are also supported. More details can be <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">found here</a>.</p>
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
-<p>In this chapter, we have learned to use <code class="docutils literal notranslate"><span class="pre">&#64;dataclass</span></code> decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python builtin dataclass.</p>
-<p>Leveraging <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">the nested Document structure</span></a>, DocArray’s dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, tabular data in a very intuitive way. Converting a multimodal dataclass object from/to a Document is very straightforward.</p>
-<p>In the next chapter, we shall see how to select modality (aka sub-document) via the selector syntax.</p>
+<p>In this chapter, we’ve learned to use the <code class="docutils literal notranslate"><span class="pre">&#64;dataclass</span></code> decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python’s builtin dataclass.</p>
+<p>Leveraging <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">the nested Document structure</span></a>, DocArray’s dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, and tabular data in an intuitive way. Converting a multimodal dataclass object from/to a Document is straightforward.</p>
+<p>In the next chapter, we’ll see how to select modality (aka sub-Document) via selector syntax.</p>
 </section>
 </section>
 
@@ -954,7 +959,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

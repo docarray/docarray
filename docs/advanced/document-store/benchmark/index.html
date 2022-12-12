@@ -6,10 +6,10 @@
 <meta property="og:title" content="One Million Scale Benchmark" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/benchmark/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
 <meta property="og:description" content="Methodology: We created a DocumentArray with one million Documents based on sift1m, a dataset containing 1 million objects (each of 128 dimensions) and using L2 distance metrics. We benchmarked the document stores as summarized below:,,,, Name, Usage, Client version, Database version,,, In-memory..." />
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
 <meta name="description" content="Methodology: We created a DocumentArray with one million Documents based on sift1m, a dataset containing 1 million objects (each of 128 dimensions) and using L2 distance metrics. We benchmarked the document stores as summarized below:,,,, Name, Usage, Client version, Database version,,, In-memory..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/benchmark.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>One Million Scale Benchmark - DocArray 0.20.0 documentation</title>
+        <title>One Million Scale Benchmark - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -468,7 +468,7 @@
 <li><p><strong>Update</strong>: Update existing Documents in the document store by <code class="docutils literal notranslate"><span class="pre">.id</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">da['some_id']</span> <span class="pre">=</span> <span class="pre">Document(...)</span></code>.</p></li>
 <li><p><strong>Delete</strong>: Delete Documents from the document store by <code class="docutils literal notranslate"><span class="pre">.id</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">da['some_id']</span></code></p></li>
 <li><p><strong>Find by condition</strong>: Search existing Documents by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> in the document store by boolean filters and use backend side filtering when possible, as described in <a class="reference internal" href="../../../fundamentals/documentarray/find/#find-documentarray"><span class="std std-ref">Query by Conditions</span></a>.</p></li>
-<li><p><strong>Find by vector</strong>: Retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Find Nearest Neighbours</span></a>.</p></li>
+<li><p><strong>Find by vector</strong>: Retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Find Nearest Neighbors</span></a>.</p></li>
 </ol>
 <p>The above tasks are often atomic operations in the high-level DocArray API. Hence, understanding their performance gives users a good estimation of the experience when using DocumentArray with different backends.</p>
 </section>
@@ -3585,7 +3585,7 @@ DocArray users the most. Note that such a benchmark was impossible to set up bef
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -6,11 +6,11 @@
 <meta property="og:title" content="Visualization" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/visualization/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="If you have an image Document (with possible image data in.uri/.tensor), you can directly visualize it via display(). To better see the Document’s nested structure, you can use summary(). When using Notebook/Colab, this is auto-rendered." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="If you have an image Document (with image data in.uri/.tensor), you can visualize it with display(). To better see a Document’s nested structure, you can use summary(). When using Notebook/Colab, this is auto-rendered:" />
 <meta property="og:image" content="https://docarray.jina.ai/_images/doc-plot-in-jupyter.jpg" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="If you have an image Document (with possible image data in.uri/.tensor), you can directly visualize it via display(). To better see the Document’s nested structure, you can use summary(). When using Notebook/Colab, this is auto-rendered." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="If you have an image Document (with image data in.uri/.tensor), you can visualize it with display(). To better see a Document’s nested structure, you can use summary(). When using Notebook/Colab, this is auto-rendered:" />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/visualization.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Visualization - DocArray 0.20.0 documentation</title>
+        <title>Visualization - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,11 +401,11 @@
                 <article role="main">
                     <section id="visualization">
 <h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h1>
-<p>If you have an image Document (with possible image data in <code class="docutils literal notranslate"><span class="pre">.uri</span></code>/<code class="docutils literal notranslate"><span class="pre">.tensor</span></code>), you can directly visualize it via <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display" title="docarray.document.mixins.plot.PlotMixin.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">display()</span></code></a>.</p>
+<p>If you have an image Document (with image data in <code class="docutils literal notranslate"><span class="pre">.uri</span></code>/<code class="docutils literal notranslate"><span class="pre">.tensor</span></code>), you can visualize it with <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display" title="docarray.document.mixins.plot.PlotMixin.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">display()</span></code></a>.</p>
 <figure class="align-default">
 <img alt="../../../_images/doc-plot-in-jupyter.jpg" src="../../../_images/doc-plot-in-jupyter.jpg" />
 </figure>
-<p>To better see the Document’s nested structure, you can use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
+<p>To better see a Document’s nested structure, you can use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -430,7 +430,7 @@
                     └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;embedding&#39;) at 🐢&gt;
 </pre></div>
 </div>
-<p>When using Notebook/Colab, this is auto-rendered.</p>
+<p>When using Notebook/Colab, this is auto-rendered:</p>
 <figure class="align-default">
 <img alt="../../../_images/doc-auto-summary.png" src="../../../_images/doc-auto-summary.png" />
 </figure>
@@ -471,7 +471,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

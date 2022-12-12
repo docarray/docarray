@@ -1,14 +1,14 @@
 (text-type)=
 # {octicon}`typography` Text
 
-Representing text in DocArray is easy. Simply do:
+Representing text in DocArray is as easy as:
 ```python
 from docarray import Document
 
 Document(text='hello, world.')
 ```
 
-If your text data is big and can not be written inline, or it comes from a URI, then you can also define `uri` first and load the text into Document later.
+If your text data is larger and can't be written inline, or comes from a URI, then you can also define `uri` first and load the text into a Document later:
 
 ```python
 from docarray import Document
@@ -23,7 +23,7 @@ d.summary()
 <Document ('id', 'mime_type', 'text', 'uri') at 3c128f326fbf11ec90821e008a366d49>
 ```
 
-And of course, you can have characters from different languages.
+And of course, you can use characters from different languages:
 
 ```python
 from docarray import Document
@@ -32,9 +32,9 @@ d = Document(text='👋	नमस्ते दुनिया!	你好世界！�
 ```
 
 
-## Segment long documents
+## Segment long Documents
 
-Often times when you index/search textual document, you don't want to consider thousands of words as one document, some finer granularity would be nice. You can do these by leveraging `chunks` of Document. For example, let's segment this simple document by `!` mark:
+Often times when you index/search textual Documents, you don't want to consider thousands of words as one huge Document -- some finer granularity would be nice. You can do this by leveraging Document `chunks`. For example, let's split this simple Document at each `!` mark:
 
 ```python
 from docarray import Document
@@ -56,11 +56,11 @@ d.summary()
           └─ <Document ('id',) at 5a12e4966fbf11ec99a21e008a366d49>
 ```
 
-Which creates five sub-documents under the original documents and stores them under `.chunks`.
+This creates five sub-Documents under the original Document and stores them under the original Document's `.chunks`.
 
-## Convert text into `ndarray`
+## Convert text to `ndarray`
 
-Sometimes you may need to encode the text into a `numpy.ndarray` before further computation. We provide some helper functions in Document and DocumentArray that allow you to convert easily.
+Sometimes you need to encode the text into a `numpy.ndarray` before further computation. We provide some helper functions in Document and DocumentArray that allow you to do that easily.
 
 For example, we have a DocumentArray with three Documents:
 ```python
@@ -85,9 +85,9 @@ vocab = da.get_vocabulary()
 {'hello': 2, 'world': 3, 'goodbye': 4}
 ```
 
-The vocabulary is 2-indexed as `0` is reserved for padding symbol and `1` is reserved for unknown symbol.
+The vocabulary is 2-indexed as `0` is reserved for the padding symbol and `1` for the unknown symbol.
 
-One can further use this vocabulary to convert `.text` field into `.tensor` via:
+You can further use this vocabulary to convert `.text` field into `.tensor`:
 
 ```python
 for d in da:
@@ -101,7 +101,7 @@ for d in da:
 [2 4]
 ```
 
-When you have text in different length and you want the output `.tensor` to have the same length, you can define `max_length` during converting:
+When you have text of different lengths and want output `.tensor`s to have the same length, you can define `max_length` during conversion:
 
 ```python
 from docarray import Document, DocumentArray
@@ -126,7 +126,7 @@ for d in da:
 [ 0  0  0  0  6  7  2  8  9 10]
 ```
 
-You can get also use `.tensors` of DocumentArray to get all tensors in one `ndarray`.
+You can get also use a DocumentArray's `.tensors` to get all tensors in one `ndarray`.
 
 ```python
 print(da.tensors)
@@ -140,7 +140,7 @@ print(da.tensors)
 
 ## Convert `ndarray` back to text
 
-As a bonus, you can also easily convert an integer `ndarray` back to text based on some given vocabulary. This procedure is often termed as "decoding". 
+As a bonus, you can also easily convert an integer `ndarray` back to text based on a given vocabulary. This is often termed "decoding". 
 
 ```python
 from docarray import Document, DocumentArray
@@ -171,7 +171,7 @@ this is a much longer sentence
 ```
 
 
-## Simple text matching via feature hashing
+## Simple text matching with feature hashing
 
 Let's search for `"she entered the room"` in *Pride and Prejudice*:
 
@@ -208,9 +208,9 @@ print(q.matches[:, ('text', 'scores__jaccard')])
 ## Searching at chunk level with subindex
 
 You can create applications that search at chunk level using a subindex. 
-Imagine you want an application that searches at a sentences granularity and returns the document title of the document
-containing the sentence closest to the query. For example, you can have a database of lyrics of songs and you want to
-search the song title of a song from which you might remember a small part of it (likely the chorus).
+Imagine you want an application that searches at a sentence granularity and returns the title of the Document
+containing the closest sentence to the query. For example, you have a database of song lyrics and want to
+search a title from which you remember a small part of the lyrics (like the chorus).
 
 ```{admonition} Multi-modal Documents
 :class: seealso
@@ -222,10 +222,10 @@ You can find the corresponding example {ref}`here <multimodal-example>`.
 ```
 
 ```python
-song1_title = 'Old Macdougal Had a Farm'
+song1_title = 'Old MacDonald Had a Farm'
 
 song1 = """
-Old Macdougal had a farm, E-I-E-I-O
+Old MacDonald had a farm, E-I-E-I-O
 And on that farm he had some dogs, E-I-E-I-O
 With a bow-wow here, and a bow-wow there,
 Here a bow, there a bow, everywhere a bow-wow.
@@ -245,7 +245,7 @@ wo dein sanfter Flügel weilt.
 """
 ```
 
-We can now create one document for each of the songs, containing as chunks the song sentences.
+We can create one Document for each song, containing the song's lines as chunks:
 
 ```python
 from docarray import Document, DocumentArray
@@ -261,7 +261,7 @@ da.extend([doc1, doc2])
 ```
 
 Now we can build a feature vector for each line of each song. Here we use a very simple Bag of Words descriptor as 
-feature vector.
+the feature vector.
 
 ```python
 import re
@@ -288,7 +288,7 @@ for d in da['@c']:
     d.embedding = bow_feature_vector(d, vocab, tokenizer)
 ```
 
-Once we have the data prepared, we can store it into a DocumentArray that supports a subindex.
+Once we've prepared the data, we can store it in a DocumentArray that supports a subindex:
 
 ```buildoutcfg
 n_features = len(vocab)+2
@@ -305,7 +305,7 @@ with da_backend:
     da_backend.extend(da)
 ```
 
-Given a query such as `into death` we want to search which song contained a similar sentence.
+Given a query like `into death` we want to search songs that contain a similar sentence.
 
 ```python
 def find_song_name_from_song_snippet(query: Document, da_backend) -> str:
@@ -320,7 +320,7 @@ query.embedding = bow_feature_vector(query, vocab, tokenizer)
 similar_items = find_song_name_from_song_snippet(query, da_backend)
 print(similar_items)
 ```
-Will print 
+This prints:
 ```text
-{'song_title': 'Old Macdougal Had a Farm'}
+{'song_title': 'Old MacDonald Had a Farm'}
 ```

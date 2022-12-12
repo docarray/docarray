@@ -6,11 +6,11 @@
 <meta property="og:title" content="Search over Nested Structure" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/subindex/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="To use find() on multimodal or nested Documents (a multimodal Document is intrinsic nested Documents), you will need “subindices”. The word “subindcies” represents that you are adding a new sublevel of indexing to the DocumentArray and make it searchable. Each subindex indexes and stores one nest..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="To use find() on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you need “subindices”. The word “subindices” represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable. Each subindex indexes and stores one n..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="To use find() on multimodal or nested Documents (a multimodal Document is intrinsic nested Documents), you will need “subindices”. The word “subindcies” represents that you are adding a new sublevel of indexing to the DocumentArray and make it searchable. Each subindex indexes and stores one nest..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="To use find() on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you need “subindices”. The word “subindices” represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable. Each subindex indexes and stores one n..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -29,11 +29,11 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Evaluate Matches" href="../evaluation/" /><link rel="prev" title="Find Nearest Neighbours" href="../matching/" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Evaluate Matches" href="../evaluation/" /><link rel="prev" title="Find Nearest Neighbors" href="../matching/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/subindex.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Search over Nested Structure - DocArray 0.20.0 documentation</title>
+        <title>Search over Nested Structure - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,16 +401,16 @@
                 <article role="main">
                     <section id="search-over-nested-structure">
 <span id="subindex"></span><h1>Search over Nested Structure<a class="headerlink" href="#search-over-nested-structure" title="Permalink to this heading">#</a></h1>
-<p>To use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> on multimodal or nested Documents (a multimodal Document is intrinsic nested Documents), you will need “subindices”. The word “subindcies” represents that you are adding a new sublevel of indexing to the DocumentArray and make it searchable.</p>
-<p>Each subindex indexes and stores one nesting level, such as <code class="docutils literal notranslate"><span class="pre">'&#64;c'</span></code> or a <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">custom modality</span></a> like <code class="docutils literal notranslate"><span class="pre">'&#64;.[image]'</span></code>, and makes it directly searchable. Under the hood, subindices are fully fledged DocumentArrays with their own <a class="reference internal" href="../../../advanced/document-store/#doc-store"><span class="std std-ref">Document Store</span></a>.</p>
+<p>To use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you need “subindices”. The word “subindices” represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable.</p>
+<p>Each subindex indexes and stores one nesting level (like <code class="docutils literal notranslate"><span class="pre">'&#64;c'</span></code> or a <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">custom modality</span></a> like <code class="docutils literal notranslate"><span class="pre">'&#64;.[image]'</span></code>) and makes it directly searchable. Under the hood, subindices are fully fledged DocumentArrays with their own <a class="reference internal" href="../../../advanced/document-store/#doc-store"><span class="std std-ref">document store</span></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>To see an example of subindices in action, see <a class="reference internal" href="../../../datatypes/multimodal/#multimodal-search-example"><span class="std std-ref">here</span></a>.</p>
+<p>To see subindices in action, check <a class="reference internal" href="../../../datatypes/multimodal/#multimodal-search-example"><span class="std std-ref">here</span></a>.</p>
 </div>
 <section id="construct-subindices">
 <h2>Construct subindices<a class="headerlink" href="#construct-subindices" title="Permalink to this heading">#</a></h2>
-<p>Subindices are specified when creating a DocumentArray,
-by passing a configuration for each desired subindex to the <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> parameter:</p>
+<p>You can specify subindices when you create a DocumentArray
+by passing configuration for each desired subindex to the <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> parameter:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Subindex with dataclass modalities</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">dataclass</span>
@@ -529,17 +529,17 @@ by passing a configuration for each desired subindex to the <code class="docutil
 </div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> dictionary is structured in the following way:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> dictionary is structured as follows:</p>
 <ul class="simple">
-<li><p><strong>Keys:</strong> Each key in <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> is the <em>name</em> of a subindex. It has to be a valid DocumentArray access path (such as <code class="docutils literal notranslate"><span class="pre">'&#64;.[image]'</span></code>, <code class="docutils literal notranslate"><span class="pre">'&#64;.[image,</span> <span class="pre">paragraph]'</span></code>, <code class="docutils literal notranslate"><span class="pre">'&#64;c'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'&#64;cc'</span></code>).</p></li>
-<li><p><strong>Values:</strong> Each value in <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> is the <em>configuration</em> of a subindex. It can be any configuration that is valid for the given DocumentArray type.
-Fields that are not given in the subindex configuration will be inherited from the parent configuration.</p></li>
+<li><p><strong>Keys:</strong> Each key in <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> is the <em>name</em> of a subindex. It must be a valid DocumentArray access path (like <code class="docutils literal notranslate"><span class="pre">'&#64;.[image]'</span></code>, <code class="docutils literal notranslate"><span class="pre">'&#64;.[image,</span> <span class="pre">paragraph]'</span></code>, <code class="docutils literal notranslate"><span class="pre">'&#64;c'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'&#64;cc'</span></code>).</p></li>
+<li><p><strong>Values:</strong> Each value in <code class="docutils literal notranslate"><span class="pre">subindex_configs</span></code> is the <em>configuration</em> of a subindex. It can be any valid configuration for the given DocumentArray type.
+Fields that are not given in the subindex configuration are inherited from the parent configuration.</p></li>
 </ul>
 </section>
 <section id="modify-subindices">
 <h2>Modify subindices<a class="headerlink" href="#modify-subindices" title="Permalink to this heading">#</a></h2>
-<p>Once a DocumentArray with subindices has been constructed, any modifications to the parent DocumentArray will automatically update the subindices.</p>
-<p>This means that you can insert, extend, delete etc. it like any other DocumentArray. For example:</p>
+<p>Once you’ve constructed a DocumentArray with subindices, modifying the parent DocumentArray automatically updates the subindices.</p>
+<p>This means you can insert, extend, delete (etc.) it like any other DocumentArray:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Subindex with dataclass modalities</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -660,7 +660,7 @@ Fields that are not given in the subindex configuration will be inherited from t
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Find Nearest Neighbours</div>
+                            <div class="title">Find Nearest Neighbors</div>
                             
                         </div>
                     </a>
@@ -670,7 +670,7 @@ Fields that are not given in the subindex configuration will be inherited from t
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

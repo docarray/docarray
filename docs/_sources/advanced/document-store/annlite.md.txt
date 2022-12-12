@@ -1,7 +1,7 @@
 (annlite)=
 # Annlite
 
-One can use [Annlite](https://github.com/jina-ai/annlite) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Annlite](https://github.com/jina-ai/annlite) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `annlite`. You can install it via `pip install "docarray[annlite]".` 
@@ -10,7 +10,7 @@ This feature requires `annlite`. You can install it via `pip install "docarray[a
 
 ## Usage
 
-One can instantiate a DocumentArray with Annlite storage like so:
+You can instantiate a DocumentArray with Annlite storage like so:
 
 ```python
 from docarray import DocumentArray
@@ -20,7 +20,7 @@ da = DocumentArray(storage='annlite', config={'n_dim': 10})
 
 The usage would be the same as the ordinary DocumentArray.
 
-To access a DocumentArray formerly persisted, one can specify the `data_path` in `config`. 
+To access a DocumentArray formerly persisted, you can specify the `data_path` in `config`. 
 
 ```python
 from docarray import DocumentArray

@@ -1,12 +1,12 @@
 # Support New Modality
 
-Each type in `docarray.typing` corresponds to one modality. Supporting a new modality means adding a new type, and specifying how it is translated from/to Document.
+Each type in `docarray.typing` corresponds to one modality. Supporting a new modality means adding a new type, and specifying how it is translated to/from Document.
 
-Whether it is about adding a new type, or changing the behavior of an existing type, you can leverage the {meth}`~docarray.dataclasses.types.field` function.
+Whether you're adding a new type or changing the behavior of an existing type, you can leverage the {meth}`~docarray.dataclasses.types.field` function.
 
-## Create new types
+## Create a new type
 
-Say you want to define a new type `MyImage`, where image is accepted as a URI, but instead of loading it to `.tensor` of the sub-document, you want to load it to `.blob`. This is different from the built-in `Image` type {ref}`behavior<type-list>`. 
+Say you want to define a new type `MyImage`, where image is accepted as a URI. However, instead of loading it to `.tensor` of the sub-document, you want to load it to `.blob`. This is different from the built-in `Image` type {ref}`behavior<type-list>`. 
 
 All you need to do is:
 
@@ -63,13 +63,13 @@ Document(MMDoc()).summary()
 
 ````
 
-Specifically, `setter` defines how you want to store the value in the sub-document. Usually you need to process it and fill the value into one of the attributes {ref}`defined by the Document schema<doc-fields>`. You may also want to keep the original value so that you can recover it in `getter` later. `setter` will be invoked when calling `Document()` on this dataclass.
+Specifically, `setter` defines how you want to store the value in the sub-Document. Usually you need to process it and store the value in one of the attributes {ref}`defined by the Document schema<doc-fields>`. You may also want to keep the original value so that you can recover it in `getter` later. `setter` is invoked when calling `Document()` on this dataclass.
 
-`getter` defines how you want to recover the original value from the sub-Document. `getter` will be invoked when calling dataclass constructor given a Document object.
+`getter` defines how you want to recover the original value from the sub-Document. `getter` is invoked when calling the dataclass constructor given a Document object.
 
 ## Override existing types
 
-To override `getter`, `setter` behavior of the existing types, you can define a map and pass it to the argument of `type_var_map` in the {meth}`~docarray.dataclasses.types.dataclass` function.
+To override the `getter` and `setter` behaviors of existing types, define a map and pass it to the argument of `type_var_map` in the {meth}`~docarray.dataclasses.types.dataclass` function:
 
 ```python
 from docarray import dataclass, field, Document

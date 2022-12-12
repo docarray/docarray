@@ -6,11 +6,11 @@
 <meta property="og:title" content="Access Attributes" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/attribute/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes,..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset an attribute, assign it to None: Or use pop(): You can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes, the..." />
 <meta property="og:image" content="https://docarray.jina.ai/_images/doc-load-autocomplete.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes,..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset an attribute, assign it to None: Or use pop(): You can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes, the..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/attribute.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Access Attributes - DocArray 0.20.0 documentation</title>
+        <title>Access Attributes - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -413,29 +413,29 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hello world
 </pre></div>
 </div>
-<p>To unset attribute, simply assign it to <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<p>To unset an attribute, assign it to <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
-<p>or use <a class="reference internal" href="../../../api/docarray.base/#docarray.base.BaseDCType.pop" title="docarray.base.BaseDCType.pop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pop()</span></code></a>:</p>
+<p>Or use <a class="reference internal" href="../../../api/docarray.base/#docarray.base.BaseDCType.pop" title="docarray.base.BaseDCType.pop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pop()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can unset multiple attributes with <code class="docutils literal notranslate"><span class="pre">.pop()</span></code>:</p>
+<p>You can unset multiple attributes with <code class="docutils literal notranslate"><span class="pre">.pop()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can check which attributes are set by <code class="docutils literal notranslate"><span class="pre">.non_empty_fields</span></code>.</p>
 <section id="content-attributes">
 <h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this heading">#</a></h2>
-<p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, are super important. They contain the actual content.</p>
+<p>Among all attributes, the most important are content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code>. They contain the actual content.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>If you are working with a Document that was created through DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API,
-you can not only access the attributes that are described here, but also the attributes that you defined yourself.</p>
+<p>If you’re working with a Document that was created through DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API,
+you can not only access the attributes described here, but also attributes that you defined yourself.</p>
 <p>To see how to do that, see <a class="reference internal" href="../../dataclass/access/#mm-access-doc"><span class="std std-ref">here</span></a>.</p>
 </div>
-<p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively.</p>
+<p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data (for general purpose), respectively.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -474,14 +474,14 @@ you can not only access the attributes that are described here, but also the att
 </pre></div>
 </div>
 <p>As you can see, the <code class="docutils literal notranslate"><span class="pre">text</span></code> field is reset to empty.</p>
-<p>But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">nested Document</span></a>s and store image in one sub-Document, and text in another sub-Document.</p>
+<p>But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">nested Document</span></a>s and store the image in one sub-Document, and text in another sub-Document.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">tensor</span><span class="o">=...</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=...</span><span class="p">)])</span>
 </pre></div>
 </div>
-<p>The principle is: each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.</p>
-<p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field, based on the given type.</p>
+<p>The principle is: Each Document contains only one modality of information. In practice, this makes your full solution clearer and easier to maintain.</p>
+<p>There’s also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> getter/setter for the content fields. Content is automatically grabbed or assigned to either the <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field, based on the given type.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
@@ -500,10 +500,10 @@ you can not only access the attributes that are described here, but also the att
 </div>
 <p>You can also check which content field is set by <code class="docutils literal notranslate"><span class="pre">.content_type</span></code>.</p>
 </section>
-<section id="load-content-from-uri">
-<span id="content-uri"></span><h2>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this heading">#</a></h2>
+<section id="load-content-from-a-uri">
+<span id="content-uri"></span><h2>Load content from a URI<a class="headerlink" href="#load-content-from-a-uri" title="Permalink to this heading">#</a></h2>
 <p>A common pattern is loading content from a URI instead of assigning it directly in the code.</p>
-<p>This can easily be done with <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either a local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
+<p>You can do this with the <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either a local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Local image URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -563,8 +563,8 @@ you can not only access the attributes that are described here, but also the att
 </figure>
 <div class="tip admonition">
 <p class="admonition-title">Convert content to data URI</p>
-<p>Inline data URI is helpful when you need a quick visualization in HTML, as it embeds all resources directly into that HTML.</p>
-<p>You can convert a URI to a data URI using <code class="docutils literal notranslate"><span class="pre">doc.convert_uri_to_datauri()</span></code>. This will fetch the resource and make it inline.</p>
+<p>An inline data URI is helpful when you need a quick visualization in HTML, as it embeds all resources directly into that HTML.</p>
+<p>You can convert a URI to a data URI using <code class="docutils literal notranslate"><span class="pre">doc.convert_uri_to_datauri()</span></code>. This fetches the resource and makes it inline.</p>
 </div>
 </section>
 </section>
@@ -604,7 +604,7 @@ you can not only access the attributes that are described here, but also the att
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -638,7 +638,7 @@ you can not only access the attributes that are described here, but also the att
                         <ul>
 <li><a class="reference internal" href="#">Access Attributes</a><ul>
 <li><a class="reference internal" href="#content-attributes">Content attributes</a></li>
-<li><a class="reference internal" href="#load-content-from-uri">Load content from URI</a></li>
+<li><a class="reference internal" href="#load-content-from-a-uri">Load content from a URI</a></li>
 </ul>
 </li>
 </ul>

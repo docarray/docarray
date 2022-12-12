@@ -6,11 +6,11 @@
 <meta property="og:title" content="Construct" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/construct/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced in the next chapter. Construct an empty Document: Every Document will have a unique rand..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="Initializing a Document object is easy. This chapter introduces the ways of constructing both empty and filled Documents. You can also construct Documents from bytes, JSON, or Protobuf message as introduced in the next chapter. Construct an empty Document: Each Document has a unique random id to ..." />
 <meta property="og:image" content="https://docarray.jina.ai/_images/ide-autocomplete.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced in the next chapter. Construct an empty Document: Every Document will have a unique rand..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="Initializing a Document object is easy. This chapter introduces the ways of constructing both empty and filled Documents. You can also construct Documents from bytes, JSON, or Protobuf message as introduced in the next chapter. Construct an empty Document: Each Document has a unique random id to ..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/construct.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Construct - DocArray 0.20.0 documentation</title>
+        <title>Construct - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,7 +401,7 @@
                 <article role="main">
                     <section id="construct">
 <span id="construct-doc"></span><h1>Construct<a class="headerlink" href="#construct" title="Permalink to this heading">#</a></h1>
-<p>Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
+<p>Initializing a Document object is easy. This chapter introduces the ways of constructing both empty and filled Documents. You can also construct Documents from bytes, JSON, or Protobuf message as introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
 <section id="construct-an-empty-document">
 <h2>Construct an empty Document<a class="headerlink" href="#construct-an-empty-document" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -412,21 +412,21 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;,) at 5dd542406d3f11eca3241e008a366d49&gt;
 </pre></div>
 </div>
-<p>Every Document will have a unique random <code class="docutils literal notranslate"><span class="pre">id</span></code> that helps you identify this Document. It can be used to <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">access this Document inside a DocumentArray</span></a>.</p>
+<p>Each Document has a unique random <code class="docutils literal notranslate"><span class="pre">id</span></code> to identify it. It can be used to <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">access the Document inside a DocumentArray</span></a>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>The random <code class="docutils literal notranslate"><span class="pre">id</span></code> is the hex value of <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.uuid1">UUID1</a>. To convert it into the string of UUID:</p>
+<p>The random <code class="docutils literal notranslate"><span class="pre">id</span></code> is the hex value of <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.uuid1">UUID1</a>. To convert it into the a UUID string:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
-<p>Though possible, it is not recommended modifying <code class="docutils literal notranslate"><span class="pre">.id</span></code> of a Document frequently, as this will lead to unexpected behavior.</p>
+<p>Though possible, we don’t recommended modifying the <code class="docutils literal notranslate"><span class="pre">.id</span></code> of a Document frequently, as this leads to unexpected behavior.</p>
 </section>
 <section id="construct-with-attributes">
 <span id="construct-from-dict"></span><h2>Construct with attributes<a class="headerlink" href="#construct-with-attributes" title="Permalink to this heading">#</a></h2>
-<p>This is the most common usage of the constructor: initializing a Document object with given attributes.</p>
+<p>This is the constructor’s most common use: initializing a Document object with the given attributes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
@@ -454,7 +454,7 @@
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>When you <code class="docutils literal notranslate"><span class="pre">print()</span></code> a Document, you get a string representation such as <code class="docutils literal notranslate"><span class="pre">&lt;Document</span> <span class="pre">('id',</span> <span class="pre">'tensor')</span> <span class="pre">at</span> <span class="pre">a14f01a66d3e11ec8bde1e008a366d49&gt;</span></code>. It shows the non-empty attributes of that Document as well as its <code class="docutils literal notranslate"><span class="pre">id</span></code>, which helps you understand the content of that Document.</p>
+<p>When you <code class="docutils literal notranslate"><span class="pre">print()</span></code> a Document, you get a string representation like <code class="docutils literal notranslate"><span class="pre">&lt;Document</span> <span class="pre">('id',</span> <span class="pre">'tensor')</span> <span class="pre">at</span> <span class="pre">a14f01a66d3e11ec8bde1e008a366d49&gt;</span></code>. This shows the Document’s non-empty attributes as well as its <code class="docutils literal notranslate"><span class="pre">id</span></code>. All of this helps you understand the content of that Document.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;tensor&#39;) at a14f01a66d3e11ec8bde1e008a366d49&gt;
           ^^^^^^^^^^^^^^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                  |                          |
@@ -464,7 +464,7 @@
 </pre></div>
 </div>
 </div>
-<p>One can also wrap the keyword arguments into <code class="docutils literal notranslate"><span class="pre">dict</span></code>. The following ways of initialization have the same effect:</p>
+<p>You can also wrap keyword arguments into a <code class="docutils literal notranslate"><span class="pre">dict</span></code>. The following ways of initialization have the same effect:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
     <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://docarray.jina.ai&#39;</span><span class="p">,</span> <span class="n">mime_type</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">granularity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="mi">3</span>
 <span class="p">)</span>
@@ -492,12 +492,12 @@
 <h3>Nested Document<a class="headerlink" href="#nested-document" title="Permalink to this heading">#</a></h3>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>This section describes how to manually construct a nested Document, for example to hold different modalities, such as text and image.
+<p>This section describes how to manually construct a nested Document, for example to hold different modalities, like text and image.
 <br />
-To construct such multi-modal Documents in a more comfortabe, readable, and idiomatic way you should use DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API.</p>
-<p>To learn more about nested Document, please read <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">Nested Structure</span></a>.</p>
+To construct multimodal Documents in a more comfortabe, readable, and idiomatic way you should use DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API.</p>
+<p>To learn more about nested Documents, please read <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">Nested Structure</span></a>.</p>
 </div>
-<p>Document can be nested inside <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. The nested structure can be specified directly during construction:</p>
+<p>Documents can be nested inside <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. You can specify this nested structure directly during construction:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
@@ -512,7 +512,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;) at d0&gt;
 </pre></div>
 </div>
-<p>For a nested Document, print its root does not give you much information. You can use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>. For example, <code class="docutils literal notranslate"><span class="pre">d.summary()</span></code> gives you a more intuitive overview of the structure.</p>
+<p>For a nested Document, printing its root doesn’t give much information. Instead, you can use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a> – for example, <code class="docutils literal notranslate"><span class="pre">d.summary()</span></code> gives a more intuitive overview of the Document’s structure.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;) at d0&gt;
     └─ matches
           └─ &lt;Document (&#39;id&#39;,) at d3&gt;
@@ -522,14 +522,14 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
                     └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at d2&gt;
 </pre></div>
 </div>
-<p>When using in Jupyter notebook/Google Colab, Document is automatically prettified.</p>
+<p>When using in Jupyter notebook/Google Colab, Documents are automatically prettified.</p>
 <figure class="align-default">
 <img alt="../../../_images/doc-in-jupyter.png" src="../../../_images/doc-in-jupyter.png" />
 </figure>
 </section>
-<section id="unknown-attributes-handling">
-<span id="unk-attribute"></span><h3>Unknown attributes handling<a class="headerlink" href="#unknown-attributes-handling" title="Permalink to this heading">#</a></h3>
-<p>If you give an unknown attribute (i.e. not one of the built-in Document attributes), they will be automatically “caught” into <code class="docutils literal notranslate"><span class="pre">.tags</span></code> attributes. For example,</p>
+<section id="unknown-attribute-handling">
+<span id="unk-attribute"></span><h3>Unknown attribute handling<a class="headerlink" href="#unknown-attribute-handling" title="Permalink to this heading">#</a></h3>
+<p>If you give an unknown attribute (i.e. not one of the built-in Document attributes), it is automatically “caught” into the <code class="docutils literal notranslate"><span class="pre">.tags</span></code> attribute. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">hello</span><span class="o">=</span><span class="s1">&#39;world&#39;</span><span class="p">)</span>
@@ -541,11 +541,11 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 {&#39;hello&#39;: &#39;world&#39;}
 </pre></div>
 </div>
-<p>You can change this “<code class="docutils literal notranslate"><span class="pre">catch</span></code>” behavior to <code class="docutils literal notranslate"><span class="pre">drop</span></code> (silently drop unknown attributes) or <code class="docutils literal notranslate"><span class="pre">raise</span></code> (raise a <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>) by specifying <code class="docutils literal notranslate"><span class="pre">unknown_fields_handler</span></code>.</p>
+<p>You can change this <code class="docutils literal notranslate"><span class="pre">catch</span></code> behavior to <code class="docutils literal notranslate"><span class="pre">drop</span></code> (silently drop unknown attributes) or <code class="docutils literal notranslate"><span class="pre">raise</span></code> (raise an <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>) by specifying <code class="docutils literal notranslate"><span class="pre">unknown_fields_handler</span></code>.</p>
 </section>
 <section id="resolve-unknown-attributes-with-rules">
 <h3>Resolve unknown attributes with rules<a class="headerlink" href="#resolve-unknown-attributes-with-rules" title="Permalink to this heading">#</a></h3>
-<p>One can resolve external fields into built-in attributes by specifying a mapping in <code class="docutils literal notranslate"><span class="pre">field_resolver</span></code>. For example, to resolve the field <code class="docutils literal notranslate"><span class="pre">hello</span></code> as the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute:</p>
+<p>You can resolve external fields into built-in attributes by specifying a mapping in <code class="docutils literal notranslate"><span class="pre">field_resolver</span></code>. For example, to resolve the field <code class="docutils literal notranslate"><span class="pre">hello</span></code> as the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">hello</span><span class="o">=</span><span class="s1">&#39;world&#39;</span><span class="p">,</span> <span class="n">field_resolver</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="s1">&#39;id&#39;</span><span class="p">})</span>
@@ -556,7 +556,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;,) at world&gt;
 </pre></div>
 </div>
-<p>One can see <code class="docutils literal notranslate"><span class="pre">id</span></code> of the Document object is set to <code class="docutils literal notranslate"><span class="pre">world</span></code>.</p>
+<p>You can see <code class="docutils literal notranslate"><span class="pre">id</span></code> of the Document object is set to <code class="docutils literal notranslate"><span class="pre">world</span></code>.</p>
 </section>
 </section>
 <section id="copy-from-another-document">
@@ -573,7 +573,7 @@ To construct such multi-modal Documents in a more comfortabe, readable, and idio
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>True False
 </pre></div>
 </div>
-<p>That indicates <code class="docutils literal notranslate"><span class="pre">d</span></code> and <code class="docutils literal notranslate"><span class="pre">d1</span></code> have identical content, but they are different objects in memory.</p>
+<p>This indicates <code class="docutils literal notranslate"><span class="pre">d</span></code> and <code class="docutils literal notranslate"><span class="pre">d1</span></code> have identical content, but they are different objects in memory.</p>
 <p>If you want to keep the memory address of a Document object while only copying the content from another Document, you can use <a class="reference internal" href="../../../api/docarray.base/#docarray.base.BaseDCType.copy_from" title="docarray.base.BaseDCType.copy_from"><code class="xref py py-meth docutils literal notranslate"><span class="pre">copy_from()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -594,7 +594,7 @@ world
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
-<p>One can also construct Document from bytes, JSON, Protobuf message. These methods are introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
+<p>You can also construct Documents from bytes, JSON, and Protobuf message. These methods are introduced <a class="reference internal" href="../serialization/#serialize"><span class="std std-ref">in the next chapter</span></a>.</p>
 </section>
 </section>
 
@@ -633,7 +633,7 @@ world
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -669,7 +669,7 @@ world
 <li><a class="reference internal" href="#construct-an-empty-document">Construct an empty Document</a></li>
 <li><a class="reference internal" href="#construct-with-attributes">Construct with attributes</a><ul>
 <li><a class="reference internal" href="#nested-document">Nested Document</a></li>
-<li><a class="reference internal" href="#unknown-attributes-handling">Unknown attributes handling</a></li>
+<li><a class="reference internal" href="#unknown-attribute-handling">Unknown attribute handling</a></li>
 <li><a class="reference internal" href="#resolve-unknown-attributes-with-rules">Resolve unknown attributes with rules</a></li>
 </ul>
 </li>

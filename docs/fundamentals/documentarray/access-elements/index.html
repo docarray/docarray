@@ -6,11 +6,11 @@
 <meta property="og:title" content="Access Documents" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/access-elements/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal? If it is just a list and you can only access elements via[1],[-1],[1:3], then it is no big deal. However, DocumentArray offers much more ..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="This is probably my favorite chapter so far. If you’ve come this far, you may be thinking: Okay, so you’ve re-implemented the Python List and called it DocumentArray. What’s the big deal? If it really were just a list and you can only access elements via[1],[-1],[1:3], then you’d be right. Howeve..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal? If it is just a list and you can only access elements via[1],[-1],[1:3], then it is no big deal. However, DocumentArray offers much more ..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="This is probably my favorite chapter so far. If you’ve come this far, you may be thinking: Okay, so you’ve re-implemented the Python List and called it DocumentArray. What’s the big deal? If it really were just a list and you can only access elements via[1],[-1],[1:3], then you’d be right. Howeve..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-elements.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Access Documents - DocArray 0.20.0 documentation</title>
+        <title>Access Documents - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,9 +401,9 @@
                 <article role="main">
                     <section id="access-documents">
 <span id="access-elements"></span><h1>Access Documents<a class="headerlink" href="#access-documents" title="Permalink to this heading">#</a></h1>
-<p>This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal?</p>
-<p>If it is just a <code class="docutils literal notranslate"><span class="pre">list</span></code> and you can only access elements via <code class="docutils literal notranslate"><span class="pre">[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[-1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1:3]</span></code>, then it is no big deal. However, DocumentArray offers much more than simple indexing. It allows you to fully exploit the rich &amp; nested data structure of Document in an easy and efficient way.</p>
-<p>The table below summarizes all indexing routines that DocumentArray supports. You can use them to <strong>get, set, and delete</strong> items in DocumentArray.</p>
+<p>This is probably my favorite chapter so far. If you’ve come this far, you may be thinking: Okay, so you’ve re-implemented the Python List and called it DocumentArray. What’s the big deal?</p>
+<p>If it really were just a <code class="docutils literal notranslate"><span class="pre">list</span></code> and you can only access elements via <code class="docutils literal notranslate"><span class="pre">[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[-1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1:3]</span></code>, then you’d be right. However, DocumentArray offers <em>much</em> more than simple indexing. It lets you fully exploit the rich and nested data structure of Documents in an easy and efficient way.</p>
+<p>The table below summarizes all the indexing routines that DocumentArray supports. You can use them to <strong>get, set, and delete</strong> items in a DocumentArray.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -455,7 +455,7 @@
 <p>Sounds exciting? Let’s continue then.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Most of the examples below only show getting Documents for the sake of clarity. Note that you can always use the same syntax for get/set/delete Documents. For example,</p>
+<p>Most of the examples below only show getting Documents for the sake of clarity. Note that you can always use the same syntax to get/set/delete Documents. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
 <span class="n">da</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
@@ -467,7 +467,7 @@
 </div>
 <section id="basic-indexing">
 <h2>Basic indexing<a class="headerlink" href="#basic-indexing" title="Permalink to this heading">#</a></h2>
-<p>Basic indexing such as by the integer offset, the slices are so common that I don’t think we need more words. You can just use it as in Python List.</p>
+<p>Basic indexing such as by integer offset or slices are so common that we think they can go without saying. You can just use them like you would in a Python List:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
@@ -487,7 +487,7 @@
 </section>
 <section id="index-by-document-id">
 <h2>Index by Document <code class="docutils literal notranslate"><span class="pre">id</span></code><a class="headerlink" href="#index-by-document-id" title="Permalink to this heading">#</a></h2>
-<p>A more interesting one is selecting Documents by their <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
+<p>A more interesting use case is selecting Documents by their <code class="docutils literal notranslate"><span class="pre">id</span></code>s:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
@@ -507,8 +507,8 @@
 &lt;DocumentArray (length=2) at 4874066256&gt;
 </pre></div>
 </div>
-<p>No need to worry about efficiency here, it is <code class="docutils literal notranslate"><span class="pre">O(1)</span></code>.</p>
-<p>Based on the same technique, one can check if a Document is inside a DocumentArray via Python <code class="docutils literal notranslate"><span class="pre">in</span></code> syntax:</p>
+<p>No need to worry about efficiency here: It’s <code class="docutils literal notranslate"><span class="pre">O(1)</span></code>.</p>
+<p>Based on the same technique, you can check if a Document is inside a DocumentArray using Python’s <code class="docutils literal notranslate"><span class="pre">in</span></code> syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -524,7 +524,7 @@ False
 </section>
 <section id="index-by-boolean-mask">
 <h2>Index by boolean mask<a class="headerlink" href="#index-by-boolean-mask" title="Permalink to this heading">#</a></h2>
-<p>You can use a boolean mask to select Documents. This becomes useful when you want to update or filter our certain Documents:</p>
+<p>Using a boolean mask to select Documents is useful for updating or filtering certain Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
@@ -538,28 +538,28 @@ False
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray (length=50) at 4513619088&gt;
 </pre></div>
 </div>
-<p>Note that if the length of the boolean mask is smaller than the length of a DocumentArray, then the remaining part is padded to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Note that if the boolean mask’s length is smaller than the DocumentArray’s length, the remaining part is padded to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </section>
 <section id="index-by-nested-structure">
 <span id="path-string"></span><h2>Index by nested structure<a class="headerlink" href="#index-by-nested-structure" title="Permalink to this heading">#</a></h2>
-<p>From early chapter, we already know <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">Document can be nested</span></a>. DocumentArray provides very easy way to traverse over the nested structure and select Documents. All you need to do is following the syntax below:</p>
+<p>From an earlier chapter, we already know <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">Documents can be nested</span></a>. DocumentArray provides makes it easy to traverse over the nested structure and select Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@path1,path2,path3&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>The path-string must starts with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.</p></li>
-<li><p>Multiple paths are separated by comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p></li>
-<li><p>A path represents the route from the top-level Documents to the destination. You can use <code class="docutils literal notranslate"><span class="pre">c</span></code> to select chunks, <code class="docutils literal notranslate"><span class="pre">cc</span></code> to select chunks of the chunks, <code class="docutils literal notranslate"><span class="pre">m</span></code> to select matches, <code class="docutils literal notranslate"><span class="pre">mc</span></code> to select chunks of the matches, <code class="docutils literal notranslate"><span class="pre">r</span></code> to select the top-level Documents.</p></li>
-<li><p>A path can only go deep, not go back. You can use comma <code class="docutils literal notranslate"><span class="pre">,</span></code> to start a new path from the very top-level.</p></li>
-<li><p>Optionally, you can specify a slice or offset at each level, for example, <code class="docutils literal notranslate"><span class="pre">r[-1]m[:3]</span></code> will select the first 3 matches of the last root document.</p></li>
+<li><p>The path-string must start with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.</p></li>
+<li><p>Multiple paths are separated by commas <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p></li>
+<li><p>A path represents the route from the top-level Documents to the destination. Use <code class="docutils literal notranslate"><span class="pre">c</span></code> to select chunks, <code class="docutils literal notranslate"><span class="pre">cc</span></code> to select chunks of chunks, <code class="docutils literal notranslate"><span class="pre">m</span></code> to select matches, <code class="docutils literal notranslate"><span class="pre">mc</span></code> to select chunks of matches, <code class="docutils literal notranslate"><span class="pre">r</span></code> to select top-level Documents.</p></li>
+<li><p>A path can only go deeper, not shallower. You can use commas <code class="docutils literal notranslate"><span class="pre">,</span></code> to start a new path from the very top-level.</p></li>
+<li><p>Optionally, specifying a slice or offset at each level (for example, <code class="docutils literal notranslate"><span class="pre">r[-1]m[:3]</span></code>) selects the first 3 matches of the last root document.</p></li>
 </ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>If you are working with a DocumentArray that was created through DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API,
-you can also directly access sub-documents by specifying the modality name that you have assigend to them.</p>
+<p>If you’re working with a DocumentArray that was created through DocArray’s <a class="reference internal" href="../../dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> API,
+you can also directly access sub-documents by specifying the modality name that you assigend to them.</p>
 <p>To see how to do that, see <a class="reference internal" href="../../dataclass/access/#mm-access-da"><span class="std std-ref">here</span></a>.</p>
 </div>
-<p>Let’s practice a bit. First construct a DocumentArray with nested Documents:</p>
+<p>Let’s practice. First construct a DocumentArray with nested Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -586,7 +586,7 @@ you can also directly access sub-documents by specifying the modality name that 
   matches     (&#39;MatchArray&#39;,)   3                False  
 </pre></div>
 </div>
-<p>This simple DocumentArray contains 3 Documents, each of which contains 2 matches and 2 chunks. Let’s plot one of them.</p>
+<p>This simple DocumentArray contains three Documents, each of which contains two matches and two chunks. Let’s plot one of them.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;) at 2f94c1426ee511ecbb491e008a366d49&gt;
     └─ matches
           ├─ &lt;Document (&#39;id&#39;, &#39;adjacency&#39;) at 2f94cd9a6ee511ecbb491e008a366d49&gt;
@@ -596,11 +596,11 @@ you can also directly access sub-documents by specifying the modality name that 
           └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at 2f94c46c6ee511ecbb491e008a366d49&gt;
 </pre></div>
 </div>
-<p>That’s still too much information, let’s minimize it.</p>
+<p>That’s still too much information, let’s minimize it:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../../_images/docarray-index-example.svg"><img alt="../../../_images/docarray-index-example.svg" src="../../../_images/docarray-index-example.svg" width="10%" /></a>
 </figure>
-<p>Now let’s use the red circle to depict our intended selection. Here is what you can with the path-syntax:</p>
+<p>Now let’s use the red dot to depict our intended selection. Here’s where we use the path-syntax:</p>
 <figure class="align-default">
 <img alt="../../../_images/docarray-index-example-full1.svg" src="../../../_images/docarray-index-example-full1.svg" /></figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">])</span>
@@ -615,23 +615,23 @@ you can also directly access sub-documents by specifying the modality name that 
 &lt;DocumentArray (length=15) at 4912623312&gt;
 </pre></div>
 </div>
-<p>Let’s now consider a deeper nested structure and use the path syntax to select Documents.</p>
+<p>Let’s now consider a deeper nested structure and use the path syntax to select Documents:</p>
 <figure class="align-default">
 <img alt="../../../_images/docarray-index-example-full2.svg" src="../../../_images/docarray-index-example-full2.svg" /></figure>
-<p>Last but not the least, you can use integer, or integer slice to restrict the selection.</p>
+<p>Last but not the least, you can use integer, or integer slice to restrict the selection:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../../_images/docarray-index-example-full3.svg"><img alt="../../../_images/docarray-index-example-full3.svg" src="../../../_images/docarray-index-example-full3.svg" width="60%" /></a>
 </figure>
-<p>This can be useful when you want to get top matches of all matches from all Documents, e.g.:</p>
+<p>This is useful to get the top matches of all matches from all Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m[:5]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>You can add space in the path-string for a better readability.</p>
+<p>You can add spaces in the path-string for better readability.</p>
 </section>
 <section id="index-by-flatten">
 <h2>Index by flatten<a class="headerlink" href="#index-by-flatten" title="Permalink to this heading">#</a></h2>
-<p>What if I just want a flat DocumentArray without all nested structure, can I select all Documents regardless their nested structure?</p>
-<p>Yes! Simply use ellipsis literal as the selector <code class="docutils literal notranslate"><span class="pre">da[...]</span></code>:</p>
+<p>What if I just want a flat DocumentArray without all nested structure? Can I select all Documents regardless of their nested structure?</p>
+<p>Yes! Simply use the ellipsis literal as the selector <code class="docutils literal notranslate"><span class="pre">da[...]</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -660,18 +660,18 @@ you can also directly access sub-documents by specifying the modality name that 
   parent_id     (&#39;str&#39;,)    4                False 
 </pre></div>
 </div>
-<p>Note that there is no <code class="docutils literal notranslate"><span class="pre">chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">matches</span></code> in any of the Document from <code class="docutils literal notranslate"><span class="pre">da[...]</span></code> anymore. They are all flattened.</p>
+<p>Note that there are no <code class="docutils literal notranslate"><span class="pre">chunks</span></code> or <code class="docutils literal notranslate"><span class="pre">matches</span></code> in any of the Documents from <code class="docutils literal notranslate"><span class="pre">da[...]</span></code> anymore. They have all been flattened.</p>
 <p>Documents in <code class="docutils literal notranslate"><span class="pre">da[...]</span></code> are in the chunks-and-depth-first order, i.e depth-first traversing to all chunks and then to all matches.</p>
 </section>
 <section id="other-handy-helpers">
-<h2>Other Handy Helpers<a class="headerlink" href="#other-handy-helpers" title="Permalink to this heading">#</a></h2>
+<h2>Other handy helpers<a class="headerlink" href="#other-handy-helpers" title="Permalink to this heading">#</a></h2>
 <section id="batching">
 <h3>Batching<a class="headerlink" href="#batching" title="Permalink to this heading">#</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>To batch and process DocumentArray in parallel in a non-blocking way, please use <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> and refer to <a class="reference internal" href="../parallelization/#map-batch"><span class="std std-ref">Use map_batch() to overlap CPU &amp; GPU computation</span></a>.</p>
+<p>To batch and process a DocumentArray in parallel in a non-blocking way, use <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> and refer to <a class="reference internal" href="../parallelization/#map-batch"><span class="std std-ref">Use map_batch() to overlap CPU &amp; GPU computation</span></a>.</p>
 </div>
-<p>One can batch a large DocumentArray into small ones via <a class="reference internal" href="../../../api/docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch" title="docarray.array.mixins.group.GroupMixin.batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">batch()</span></code></a>. This is useful when a DocumentArray is too big to process at once.</p>
+<p>You can batch a large DocumentArray into smaller ones with <a class="reference internal" href="../../../api/docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch" title="docarray.array.mixins.group.GroupMixin.batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">batch()</span></code></a>. This is useful when a DocumentArray is too big to process at once.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
@@ -700,7 +700,7 @@ you can also directly access sub-documents by specifying the modality name that 
 </section>
 <section id="shuffling">
 <h3>Shuffling<a class="headerlink" href="#shuffling" title="Permalink to this heading">#</a></h3>
-<p>Shuffling a DocumentArray inplace:</p>
+<p>To shuffle a DocumentArray in-place:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
@@ -710,7 +710,7 @@ you can also directly access sub-documents by specifying the modality name that 
 </section>
 <section id="splitting-by-tags">
 <h3>Splitting by <code class="docutils literal notranslate"><span class="pre">.tags</span></code><a class="headerlink" href="#splitting-by-tags" title="Permalink to this heading">#</a></h3>
-<p>One can split a DocumentArray into multiple DocumentArrays according to the tag value (stored in <code class="docutils literal notranslate"><span class="pre">tags</span></code>) of each Document.
+<p>You can split a DocumentArray into multiple DocumentArrays according to a tag value (stored in <code class="docutils literal notranslate"><span class="pre">tags</span></code>) of each Document.
 It returns a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> where Documents with the same <code class="docutils literal notranslate"><span class="pre">tag</span></code> value are grouped together in a new DocumentArray, with their orders preserved from the original DocumentArray.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -736,7 +736,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading">#</a></h2>
-<p>Now we know how to select Documents from DocumentArray, next we learn how to <a class="reference internal" href="../access-attributes/#bulk-access"><span class="std std-ref">select attributes from DocumentArray</span></a>. Spoiler alert, it follows the same syntax.</p>
+<p>Now you know how to select Documents from DocumentArray, next you’ll learn how to <a class="reference internal" href="../access-attributes/#bulk-access"><span class="std std-ref">select attributes from DocumentArray</span></a>. Spoiler alert: it follows the same syntax.</p>
 </section>
 </section>
 
@@ -775,7 +775,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -813,7 +813,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 <li><a class="reference internal" href="#index-by-boolean-mask">Index by boolean mask</a></li>
 <li><a class="reference internal" href="#index-by-nested-structure">Index by nested structure</a></li>
 <li><a class="reference internal" href="#index-by-flatten">Index by flatten</a></li>
-<li><a class="reference internal" href="#other-handy-helpers">Other Handy Helpers</a><ul>
+<li><a class="reference internal" href="#other-handy-helpers">Other handy helpers</a><ul>
 <li><a class="reference internal" href="#batching">Batching</a></li>
 <li><a class="reference internal" href="#sampling">Sampling</a></li>
 <li><a class="reference internal" href="#shuffling">Shuffling</a></li>

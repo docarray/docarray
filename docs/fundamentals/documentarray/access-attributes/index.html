@@ -6,11 +6,11 @@
 <meta property="og:title" content="Access Attributes" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/access-attributes/" />
-<meta property="og:site_name" content="DocArray 0.20.0 Documentation" />
-<meta property="og:description" content="DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk. In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector. Attri..." />
+<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
+<meta property="og:description" content="A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk. In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector. Attribute se..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.0 Documentation" />
-<meta name="description" content="DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk. In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector. Attri..." />
+<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
+<meta name="description" content="A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk. In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector. Attribute se..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-attributes.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Access Attributes - DocArray 0.20.0 documentation</title>
+        <title>Access Attributes - DocArray 0.20.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.0 documentation</div>
+                <div class="brand">DocArray 0.20.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -282,7 +282,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
@@ -401,15 +401,15 @@
                 <article role="main">
                     <section id="access-attributes">
 <span id="bulk-access"></span><h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this heading">#</a></h1>
-<p>DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk.</p>
-<p>In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector.</p>
+<p>A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk.</p>
+<p>In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector.</p>
 <section id="attribute-selector">
 <h2>Attribute selector<a class="headerlink" href="#attribute-selector" title="Permalink to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="n">element_selector</span><span class="p">,</span> <span class="n">attribute_selector</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">element_selector</span></code> are the ones introduced <a class="reference internal" href="../access-elements/#access-elements"><span class="std std-ref">in the last chapter</span></a>. The attribute selector can be a string, or a list/tuple of string that represents the names of the attributes.</p>
-<p>As in element selector, one can use attribute selector to <strong>get/set/delete</strong> attributes in a DocumentArray.</p>
+<p>Here the <code class="docutils literal notranslate"><span class="pre">element_selector</span></code>s can be any element selector introduced <a class="reference internal" href="../access-elements/#access-elements"><span class="std std-ref">in the last chapter</span></a>. The attribute selector can be a string, or a list/tuple of string that represents attribute names.</p>
+<p>As with element selectors, you can use attribute selectors to <strong>get/set/delete</strong> attributes in a DocumentArray.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -442,7 +442,7 @@
 </tbody>
 </table>
 </div>
-<p>Let’s see an example.</p>
+<p>Let’s see an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -456,7 +456,7 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;8d41ce5c6f0d11eca2181e008a366d49&#39;, &#39;8d41cfa66f0d11eca2181e008a366d49&#39;, &#39;8d41cff66f0d11eca2181e008a366d49&#39;]
 </pre></div>
 </div>
-<p>Of course you can use it with <a class="reference internal" href="../access-elements/#path-string"><span class="std std-ref">the path-string selector</span></a>.</p>
+<p>Of course you can use it with <a class="reference internal" href="../access-elements/#path-string"><span class="std std-ref">the path-string selector</span></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -492,19 +492,19 @@
   mime_type   (&#39;str&#39;,)          2                False            
 </pre></div>
 </div>
-<p>We can see <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> are set.</p>
+<p>You can see the <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> is set for each Document.</p>
 <p>If you want to set an attribute of all Documents to the same value without looping:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
 </pre></div>
 </div>
-<p>One can also select multiple attributes in one-shot:</p>
+<p>You can also select multiple attributes in one shot:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;mime_type&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[&#39;image/jpg&#39;, &#39;image/png&#39;, &#39;image/jpg&#39;], [&#39;095cd76a6f0f11ec82211e008a366d49&#39;, &#39;095cd8d26f0f11ec82211e008a366d49&#39;, &#39;095cd92c6f0f11ec82211e008a366d49&#39;]]
 </pre></div>
 </div>
-<p>Now let’s remove them.</p>
+<p>Now let’s remove them:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span>
 
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
@@ -530,8 +530,8 @@
 </section>
 <section id="auto-ravel-on-ndarray">
 <h2>Auto-ravel on NdArray<a class="headerlink" href="#auto-ravel-on-ndarray" title="Permalink to this heading">#</a></h2>
-<p>Attribute selectors <code class="docutils literal notranslate"><span class="pre">tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> behave a bit differently. Instead of relying on Python List for input &amp; return when get/set, they automatically ravel/unravel the NdArray-like object <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for you.</p>
-<p>Here is an example, where one may expect that <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'embedding']</span></code> gives you a list of three <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">10)</span></code> COO matrices. But it auto ravels the results and returns as a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> attribute selectors behave a little differently. Instead of relying on Python List for input and return when get/set, they automatically ravel/unravel the ndarray-like object <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for you.</p>
+<p>Here’s an example, where you may expect that <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'embedding']</span></code> gives you a list of three <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">10)</span></code> COO matrices. But it auto-ravels the results and returns them as a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -556,13 +556,12 @@
 &lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
 </pre></div>
 </div>
-<p>Auto unravel works in a similar way, we just assign a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix as <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and it auto breaks into three and assign them into the three Documents.</p>
-<p>Of course, this is not limited to scipy sparse matrix. Any NdArray-like<a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> object would work. The same logic applies also to <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> attribute.</p>
+<p>Auto-unravel works in a similar way: We just assign a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix as <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and it auto-breaks into three and assigns them into the three Documents.</p>
+<p>Of course, this isn’t limited to SciPy sparse matrices. Any ndarray-like<a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> object will work. The same logic also applies to the <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> attribute.</p>
 </section>
 <section id="dunder-syntax-for-nested-attributes">
 <h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this heading">#</a></h2>
-<p>Some attributes are nested by nature, e.g. <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>.</p>
-<p>Let’s see an example,</p>
+<p>Some attributes are nested by nature, like <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -572,7 +571,7 @@
 <span class="n">da</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now to print <code class="docutils literal notranslate"><span class="pre">id</span></code> and matched score, one can simply do:</p>
+<p>Now to print <code class="docutils literal notranslate"><span class="pre">id</span></code> and match score:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;scores__cosine__value&#39;</span><span class="p">)])</span>
 </pre></div>
 </div>
@@ -583,7 +582,7 @@
 </section>
 <section id="content-and-embedding-sugary-attributes">
 <span id="da-content-embedding"></span><h2>Content and embedding sugary attributes<a class="headerlink" href="#content-and-embedding-sugary-attributes" title="Permalink to this heading">#</a></h2>
-<p>DocumentArray provides <code class="docutils literal notranslate"><span class="pre">.texts</span></code>, <code class="docutils literal notranslate"><span class="pre">.blobs</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensors</span></code>, <code class="docutils literal notranslate"><span class="pre">.contents</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.</p>
+<p>DocumentArray provides <code class="docutils literal notranslate"><span class="pre">.texts</span></code>, <code class="docutils literal notranslate"><span class="pre">.blobs</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensors</span></code>, <code class="docutils literal notranslate"><span class="pre">.contents</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> sugary attributes for quickly accessing the content and embeddings of Documents. You can use them to get/set/delete attributes of all top-level Documents.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -595,8 +594,8 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;hello&#39;, &#39;world&#39;]
 </pre></div>
 </div>
-<p>This is same as <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'text']</span> <span class="pre">=</span> <span class="pre">['hello',</span> <span class="pre">'world']</span></code> and then <code class="docutils literal notranslate"><span class="pre">print(da[:,</span> <span class="pre">'text'])</span></code> but more compact and probably more Pythonic.</p>
-<p>Same for <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>:</p>
+<p>This is the same as <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'text']</span> <span class="pre">=</span> <span class="pre">['hello',</span> <span class="pre">'world']</span></code> followed by <code class="docutils literal notranslate"><span class="pre">print(da[:,</span> <span class="pre">'text'])</span></code>, but more compact and probably more Pythonic.</p>
+<p>It’s the same for <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -623,7 +622,7 @@
 <aside class="footnote brackets" id="id3" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
-<p>NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse &amp; dense array.</p>
+<p>ndarray-like can be NumPy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse and dense array.</p>
 </aside>
 </aside>
 </section>
@@ -664,7 +663,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 07, 2022</div>
+                            Last updated on Dec 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
