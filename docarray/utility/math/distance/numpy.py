@@ -1,7 +1,24 @@
 import warnings
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
+
+
+def _expand_if_single_axis(*matrices: 'np.array') -> List['np.array']:
+    """Expands arrays that only have one axis, at dim 0.
+    This ensures that all outputs can be treated as matrices, not vectors.
+
+    :param matrices: Matrices to be expanded
+    :return: List of the input matrices,
+        where single axis matrices are expanded at dim 0.
+    """
+    expanded = []
+    for m in matrices:
+        if len(m.shape) == 1:
+            expanded.append(np.expand_dims(m, axis=0))
+        else:
+            expanded.append(m)
+    return expanded
 
 
 def cosine(
@@ -25,6 +42,9 @@ def cosine(
     """
     if device is not None:
         warnings.warn('`device` is not supported for numpy operations')
+
+    x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
+
     return 1 - np.clip(
         (np.dot(x_mat, y_mat.T) + eps)
         / (
@@ -53,6 +73,9 @@ def sqeuclidean(
     """
     if device is not None:
         warnings.warn('`device` is not supported for numpy operations')
+
+    x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
+
     return (
         np.sum(y_mat**2, axis=1)
         + np.sum(x_mat**2, axis=1)[:, np.newaxis]
@@ -78,4 +101,7 @@ def euclidean(
     """
     if device is not None:
         warnings.warn('`device` is not supported for numpy operations')
+
+    x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
+
     return np.sqrt(sqeuclidean(x_mat, y_mat))

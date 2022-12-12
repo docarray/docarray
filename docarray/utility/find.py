@@ -1,5 +1,7 @@
 import importlib
-from typing import Callable, NamedTuple, Optional, Type, Union
+from typing import Callable, List, NamedTuple, Optional, Type, Union
+
+import torch
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
@@ -7,7 +9,8 @@ from docarray.typing.tensor import type_to_framework
 
 
 class FindResult(NamedTuple):
-    documents: DocumentArray
+    #             for single query | for multiple queries
+    documents: Union[DocumentArray, List[DocumentArray]]
     scores: Tensor
 
 
@@ -53,18 +56,79 @@ def find(
     distance_fn = _get_distance_fn(embedding_type, metric)
     top_k_fn = _get_topk_fn(embedding_type)
 
-    index_embeddings = getattr(index, embedding_field)
-    if not index.is_stacked():
-        index_embeddings = embedding_type.__docarray_stack__(index_embeddings)
+    # extract embeddings from query and index
+    index_embeddings = _extraxt_embeddings(index, embedding_field, embedding_type)
+    query_embeddings = _extraxt_embeddings(query, embedding_field, embedding_type)
 
-    dists = distance_fn(
-        index_embeddings, getattr(query, embedding_field), device=device
-    )
+    # compute distances and return top results
+    dists = distance_fn(query_embeddings, index_embeddings, device=device)
     top_scores, top_indices = top_k_fn(dists, k=limit, device=device)
-    results_docs = DocumentArray(
-        index[i] for i in top_indices
-    )  # workaround until #930 is fixed
-    return FindResult(documents=results_docs, scores=top_scores)
+
+    result_docs = []
+    to_da = True
+    for top_idx in top_indices:  # workaround until #930 is fixed
+        if len(top_idx) == 0:
+            result_docs.append(index[top_idx])
+        else:
+            inner_result_docs = []
+            to_da = False
+            for inner_top_idx in top_idx:
+                inner_result_docs.append(index[inner_top_idx])
+    if to_da:
+        result_docs = DocumentArray(result_docs)
+
+    return FindResult(documents=result_docs, scores=top_scores)
+
+
+def _extraxt_embeddings(
+    data: Union[DocumentArray, Document, Tensor],
+    embedding_field: str,
+    embedding_type: Type,
+) -> Tensor:
+    """Extract the embeddings from the data.
+
+    :param data: the data
+    :param embedding_field: the embedding field
+    :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
+    :return: the embeddings
+    """
+    # TODO(johannes) put docarray stack in the computational backend
+    if isinstance(data, DocumentArray):
+        emb = getattr(data, embedding_field)
+        if not data.is_stacked():
+            emb = embedding_type.__docarray_stack__(emb)
+    elif isinstance(data, Document):
+        emb = getattr(data, embedding_field)
+    else:  # treat data as tensor
+        emb = data
+
+    if len(emb.shape) == 1:
+        # TODO(johannes) solve this with computational backend,
+        #  this is ugly hack for now
+        if isinstance(emb, torch.Tensor):
+            emb = emb.unsqueeze(0)
+        else:
+            import numpy as np
+
+            if isinstance(emb, np.ndarray):
+                emb = np.expand_dims(emb, axis=0)
+    return emb
+
+
+def _to_documentarray_query(
+    query: Union[Tensor, Document, DocumentArray], embedding_field: str
+) -> DocumentArray:
+    """Convert the query to a DocumentArray.
+
+    :param query: the query
+    :return: the query as DocumentArray
+    """
+    if isinstance(query, DocumentArray):
+        return query
+    elif isinstance(query, Document):
+        return DocumentArray([query])
+    else:
+        return DocumentArray([Document(**{embedding_field: query})])
 
 
 def _da_attr_type(da: DocumentArray, attr: str) -> Type:

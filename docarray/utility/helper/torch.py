@@ -15,7 +15,7 @@ def top_k(
     by setting the `descending` flag.
 
     :param values: Torch tensor of values to rank.
-        Should be a vector (single axis), or squeezable.
+        Has to be of shape (n_queries, n_values_per_query)
     :param k: number of values to retrieve
     :param descending: retrieve largest values instead of smallest values
     :param device: the computational device to use,
@@ -24,6 +24,5 @@ def top_k(
     """
     if device is not None:
         values = values.to(device)
-    values = values.squeeze()
-    k = max(k, len(values))
-    return torch.topk(input=values, k=k, largest=descending, sorted=True)
+    k = max(k, len(values[-1]))
+    return torch.topk(input=values, k=k, largest=descending, sorted=True, dim=-1)
