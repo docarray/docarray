@@ -6,7 +6,9 @@ from docarray.typing import (
     AnyUrl,
     Embedding,
     ImageUrl,
+    MeshUrl,
     NdArray,
+    PointCloudUrl,
     Tensor,
     TextUrl,
     TorchEmbedding,
@@ -35,6 +37,8 @@ def test_all_types():
     class MyDoc(Document):
         img_url: ImageUrl
         txt_url: TextUrl
+        mesh_url: MeshUrl
+        point_cloud_url: PointCloudUrl
         any_url: AnyUrl
         torch_tensor: TorchTensor
         torch_tensor_param: TorchTensor[224, 224, 3]
@@ -49,6 +53,8 @@ def test_all_types():
     doc = MyDoc(
         img_url='test.png',
         txt_url='test.txt',
+        mesh_url='mesh.obj',
+        point_cloud_url='mesh.obj',
         any_url='www.jina.ai',
         torch_tensor=torch.zeros((3, 224, 224)),
         torch_tensor_param=torch.zeros((3, 224, 224)),
@@ -64,6 +70,8 @@ def test_all_types():
 
     assert doc.img_url == 'test.png'
     assert doc.txt_url == 'test.txt'
+    assert doc.mesh_url == 'mesh.obj'
+    assert doc.point_cloud_url == 'mesh.obj'
     assert doc.any_url == 'www.jina.ai'
 
     assert (doc.torch_tensor == torch.zeros((3, 224, 224))).all()

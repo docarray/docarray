@@ -39,8 +39,8 @@ class MeshUrl(AnyUrl):
         config: 'BaseConfig',
     ) -> T:
         url = super().validate(value, field, config)  # basic url validation
-        has_image_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
-        if not has_image_extension:
+        has_mesh_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
+        if not has_mesh_extension:
             raise ValueError(
                 f'Mesh URL must have one of the following extensions:'
                 f'{MESH_FILE_FORMATS}'

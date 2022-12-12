@@ -39,8 +39,8 @@ class PointCloudUrl(AnyUrl):
         config: 'BaseConfig',
     ) -> T:
         url = super().validate(value, field, config)  # basic url validation
-        has_image_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
-        if not has_image_extension:
+        has_3d_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
+        if not has_3d_extension:
             raise ValueError(
                 f'Point Cloud URL must have one of the following extensions:'
                 f'{MESH_FILE_FORMATS}'

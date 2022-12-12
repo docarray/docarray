@@ -29,7 +29,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
             AnyUrl,
             Embedding,
             ImageUrl,
+            MeshUrl,
             NdArray,
+            PointCloudUrl,
             TextUrl,
         )
 
@@ -48,6 +50,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,
+                mesh_url=MeshUrl,
+                point_cloud_url=PointCloudUrl,
                 id=ID,
             )
 
