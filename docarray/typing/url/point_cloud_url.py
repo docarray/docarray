@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
     from docarray.proto import NodeProto
 
-T = TypeVar('T', bound='PointCloudUrl')
+T = TypeVar('T', bound='PointCloud3DUrl')
 
 
-class PointCloudUrl(AnyUrl):
+class PointCloud3DUrl(AnyUrl):
     """
     URL to a .obj, .glb, or .ply file.
     Can be remote (web) URL, or a local file path.
@@ -42,7 +42,7 @@ class PointCloudUrl(AnyUrl):
         has_3d_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
         if not has_3d_extension:
             raise ValueError(
-                f'Point Cloud URL must have one of the following extensions:'
+                f'PointCloud3DURL must have one of the following extensions:'
                 f'{MESH_FILE_FORMATS}'
             )
         return cls(str(url), scheme=None)
@@ -59,11 +59,11 @@ class PointCloudUrl(AnyUrl):
             import numpy as np
             from docarray import Document
 
-            from docarray.typing import PointCloudUrl
+            from docarray.typing import PointCloud3DUrl
 
 
             class MyDoc(Document):
-                point_cloud_url: PointCloudUrl
+                point_cloud_url: PointCloud3DvUrl
 
 
             doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")

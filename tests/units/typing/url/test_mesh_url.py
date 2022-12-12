@@ -5,7 +5,7 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import MeshUrl
+from docarray.typing import Mesh3DUrl
 
 REPO_ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent.absolute()
 TOYDATA_DIR = REPO_ROOT_DIR / 'tests' / 'toydata'
@@ -30,7 +30,7 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
     ],
 )
 def test_load(file_format, file_path):
-    url = parse_obj_as(MeshUrl, file_path)
+    url = parse_obj_as(Mesh3DUrl, file_path)
     vertices, faces = url.load()
 
     assert isinstance(vertices, np.ndarray)
@@ -40,11 +40,11 @@ def test_load(file_format, file_path):
 
 
 def test_json_schema():
-    schema_json_of(MeshUrl)
+    schema_json_of(Mesh3DUrl)
 
 
 def test_dump_json():
-    url = parse_obj_as(MeshUrl, REMOTE_OBJ_FILE)
+    url = parse_obj_as(Mesh3DUrl, REMOTE_OBJ_FILE)
     orjson_dumps(url)
 
 
@@ -64,13 +64,13 @@ def test_dump_json():
 def test_validation(file_format, path_to_file):
     if file_format == 'illegal':
         with pytest.raises(ValueError):
-            parse_obj_as(MeshUrl, path_to_file)
+            parse_obj_as(Mesh3DUrl, path_to_file)
     else:
-        url = parse_obj_as(MeshUrl, path_to_file)
-        assert isinstance(url, MeshUrl)
+        url = parse_obj_as(Mesh3DUrl, path_to_file)
+        assert isinstance(url, Mesh3DUrl)
         assert isinstance(url, str)
 
 
 def test_proto_mesh_url():
-    uri = parse_obj_as(MeshUrl, REMOTE_OBJ_FILE)
+    uri = parse_obj_as(Mesh3DUrl, REMOTE_OBJ_FILE)
     uri._to_node_protobuf()

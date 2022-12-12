@@ -6,9 +6,9 @@ from docarray.typing import (
     AnyUrl,
     Embedding,
     ImageUrl,
-    MeshUrl,
+    Mesh3DUrl,
     NdArray,
-    PointCloudUrl,
+    PointCloud3DUrl,
     Tensor,
     TextUrl,
     TorchEmbedding,
@@ -37,8 +37,8 @@ def test_all_types():
     class MyDoc(Document):
         img_url: ImageUrl
         txt_url: TextUrl
-        mesh_url: MeshUrl
-        point_cloud_url: PointCloudUrl
+        mesh_url: Mesh3DUrl
+        point_cloud_url: PointCloud3DUrl
         any_url: AnyUrl
         torch_tensor: TorchTensor
         torch_tensor_param: TorchTensor[224, 224, 3]

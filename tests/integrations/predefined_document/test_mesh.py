@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray import Mesh
+from docarray import Mesh3D
 
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 
@@ -10,7 +10,7 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 @pytest.mark.internet
 def test_mesh():
 
-    mesh = Mesh(url=REMOTE_OBJ_FILE)
+    mesh = Mesh3D(url=REMOTE_OBJ_FILE)
 
     mesh.vertices, mesh.faces = mesh.url.load()
 

@@ -7,9 +7,9 @@ from docarray.typing import (
     AnyUrl,
     Embedding,
     ImageUrl,
-    MeshUrl,
+    Mesh3DUrl,
     NdArray,
-    PointCloudUrl,
+    PointCloud3DUrl,
     TextUrl,
     TorchTensor,
 )
@@ -23,8 +23,8 @@ def test_proto_all_types():
         any_url: AnyUrl
         image_url: ImageUrl
         text_url: TextUrl
-        mesh_url: MeshUrl
-        point_cloud_url: PointCloudUrl
+        mesh_url: Mesh3DUrl
+        point_cloud_url: PointCloud3DUrl
 
     doc = Mymmdoc(
         tensor=np.zeros((3, 224, 224)),

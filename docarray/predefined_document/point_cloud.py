@@ -1,14 +1,14 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, PointCloudUrl, Tensor
+from docarray.typing import Embedding, PointCloud3DUrl, Tensor
 
 
-class PointCloud(BaseDocument):
+class PointCloud3D(BaseDocument):
     """
     Document for handling point clouds for 3D data representation.
-    It can contain an PointCloudUrl (`PointCloud.url`), a Tensor (`PointCloud.tensor`),
-    and an Embedding (`PointCloud.embedding`).
+    It can contain an PointCloud3DUrl (`PointCloud3D.url`), a Tensor
+    (`PointCloud3D.tensor`), and an Embedding (`PointCloud3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -16,10 +16,10 @@ class PointCloud(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import PointCloud
+        from docarray import PointCloud3D
 
         # use it directly
-        pc = PointCloud(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+        pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
         pc.tensor = pc.url.load(samples=100)
         model = MyEmbeddingModel()
         pc.embedding = model(pc.tensor)
@@ -28,16 +28,16 @@ class PointCloud(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import PointCloud
+        from docarray import PointCloud3D
         from docarray.typing import Embedding
         from typing import Optional
 
         # extend it
-        class MyPointCloud(PointCloud):
+        class MyPointCloud3D(PointCloud3D):
             second_embedding: Optional[Embedding]
 
 
-        pc = MyPointCloud(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+        pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
         pc.tensor = pc.url.load(samples=100)
         model = MyEmbeddingModel()
         pc.embedding = model(pc.tensor)
@@ -48,21 +48,23 @@ class PointCloud(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, PointCloud, Text
+        from docarray import Document, PointCloud3D, Text
 
         # compose it
         class MultiModalDoc(Document):
-            point_cloud: PointCloud
+            point_cloud: PointCloud3D
             text: Text
 
 
         mmdoc = MultiModalDoc(
-            point_cloud=PointCloud(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'),
+            point_cloud=PointCloud3D(
+                url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
+            ),
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.point_cloud.tensor = mmdoc.point_cloud.url.load(samples=100)
     """
 
-    url: Optional[PointCloudUrl]
+    url: Optional[PointCloud3DUrl]
     tensor: Optional[Tensor]
     embedding: Optional[Embedding]

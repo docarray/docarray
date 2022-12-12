@@ -5,7 +5,7 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import PointCloudUrl
+from docarray.typing import PointCloud3DUrl
 
 REPO_ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent.absolute()
 TOYDATA_DIR = REPO_ROOT_DIR / 'tests' / 'toydata'
@@ -31,7 +31,7 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 )
 def test_load(file_format, file_path):
     n_samples = 100
-    url = parse_obj_as(PointCloudUrl, file_path)
+    url = parse_obj_as(PointCloud3DUrl, file_path)
     point_cloud = url.load(samples=n_samples)
 
     assert isinstance(point_cloud, np.ndarray)
@@ -51,7 +51,7 @@ def test_load(file_format, file_path):
 )
 def test_load_with_multiple_geometries_true(file_format, file_path):
     n_samples = 100
-    url = parse_obj_as(PointCloudUrl, file_path)
+    url = parse_obj_as(PointCloud3DUrl, file_path)
     point_cloud = url.load(samples=n_samples, multiple_geometries=True)
 
     assert isinstance(point_cloud, np.ndarray)
@@ -60,11 +60,11 @@ def test_load_with_multiple_geometries_true(file_format, file_path):
 
 
 def test_json_schema():
-    schema_json_of(PointCloudUrl)
+    schema_json_of(PointCloud3DUrl)
 
 
 def test_dump_json():
-    url = parse_obj_as(PointCloudUrl, REMOTE_OBJ_FILE)
+    url = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
     orjson_dumps(url)
 
 
@@ -84,13 +84,13 @@ def test_dump_json():
 def test_validation(file_format, path_to_file):
     if file_format == 'illegal':
         with pytest.raises(ValueError):
-            parse_obj_as(PointCloudUrl, path_to_file)
+            parse_obj_as(PointCloud3DUrl, path_to_file)
     else:
-        url = parse_obj_as(PointCloudUrl, path_to_file)
-        assert isinstance(url, PointCloudUrl)
+        url = parse_obj_as(PointCloud3DUrl, path_to_file)
+        assert isinstance(url, PointCloud3DUrl)
         assert isinstance(url, str)
 
 
 def test_proto_point_cloud_url():
-    uri = parse_obj_as(PointCloudUrl, REMOTE_OBJ_FILE)
+    uri = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
     uri._to_node_protobuf()

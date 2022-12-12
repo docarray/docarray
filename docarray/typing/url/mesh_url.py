@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
     from docarray.proto import NodeProto
 
-T = TypeVar('T', bound='MeshUrl')
+T = TypeVar('T', bound='Mesh3DUrl')
 
 
-class MeshUrl(AnyUrl):
+class Mesh3DUrl(AnyUrl):
     """
     URL to a .obj, .glb, or .ply file.
     Can be remote (web) URL, or a local file path.
@@ -42,7 +42,7 @@ class MeshUrl(AnyUrl):
         has_mesh_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
         if not has_mesh_extension:
             raise ValueError(
-                f'Mesh URL must have one of the following extensions:'
+                f'Mesh3DURL must have one of the following extensions:'
                 f'{MESH_FILE_FORMATS}'
             )
         return cls(str(url), scheme=None)
@@ -59,11 +59,11 @@ class MeshUrl(AnyUrl):
             from docarray import Document
             import numpy as np
 
-            from docarray.typing.url.mesh_url import MeshUrl
+            from docarray.typing.url.mesh_url import Mesh3DUrl
 
 
             class MyDoc(Document):
-                mesh_url: MeshUrl
+                mesh_url: Mesh3DUrl
 
 
             doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
