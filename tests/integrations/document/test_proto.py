@@ -53,8 +53,8 @@ def test_all_types():
     doc = MyDoc(
         img_url='test.png',
         txt_url='test.txt',
-        mesh_url='mesh.obj',
-        point_cloud_url='mesh.obj',
+        mesh_url='test.obj',
+        point_cloud_url='test.obj',
         any_url='www.jina.ai',
         torch_tensor=torch.zeros((3, 224, 224)),
         torch_tensor_param=torch.zeros((3, 224, 224)),
@@ -70,8 +70,8 @@ def test_all_types():
 
     assert doc.img_url == 'test.png'
     assert doc.txt_url == 'test.txt'
-    assert doc.mesh_url == 'mesh.obj'
-    assert doc.point_cloud_url == 'mesh.obj'
+    assert doc.mesh_url == 'test.obj'
+    assert doc.point_cloud_url == 'test.obj'
     assert doc.any_url == 'www.jina.ai'
 
     assert (doc.torch_tensor == torch.zeros((3, 224, 224))).all()

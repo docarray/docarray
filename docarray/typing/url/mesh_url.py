@@ -38,7 +38,7 @@ class MeshUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        url = super().validate(value, field, config)  # basic url validation
+        url = super().validate(value, field, config)
         has_mesh_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
         if not has_mesh_extension:
             raise ValueError(
@@ -75,7 +75,7 @@ class MeshUrl(AnyUrl):
         :return: tuple of two np.ndarrays representing the mesh's vertices and faces
         """
 
-        mesh = _load_trimesh_instance(uri=self, force='mesh')
+        mesh = _load_trimesh_instance(url=self, force='mesh')
 
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)

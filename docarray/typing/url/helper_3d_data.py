@@ -7,12 +7,12 @@ MESH_FILE_FORMATS = ('obj', 'glb', 'ply')
 
 
 def _load_trimesh_instance(
-    uri: str, force: Optional[str] = None
+    url: str, force: Optional[str] = None
 ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
     """
     Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
 
-    :param uri: uri to load data from
+    :param url: url to load data from
     :param force: str or None. For 'mesh' try to coerce scenes into a single mesh.
         For 'scene' try to coerce everything into a scene.
     :return: trimesh.Mesh or trimesh.Scene object
@@ -21,9 +21,9 @@ def _load_trimesh_instance(
 
     import trimesh
 
-    scheme = urllib.parse.urlparse(uri).scheme
+    scheme = urllib.parse.urlparse(url).scheme
     loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
-    mesh = loader(uri, force=force)
+    mesh = loader(url, force=force)
 
     return mesh

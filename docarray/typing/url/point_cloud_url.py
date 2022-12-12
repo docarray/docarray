@@ -38,7 +38,7 @@ class PointCloudUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        url = super().validate(value, field, config)  # basic url validation
+        url = super().validate(value, field, config)
         has_3d_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
         if not has_3d_extension:
             raise ValueError(
@@ -63,33 +63,33 @@ class PointCloudUrl(AnyUrl):
 
 
             class MyDoc(Document):
-                mesh_url: PointCloudUrl
+                point_cloud_url: PointCloudUrl
 
 
-            doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
+            doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
 
-            point_cloud = doc.mesh_url.load(samples=100)
+            point_cloud = doc.point_cloud_url.load(samples=100)
 
             assert isinstance(point_cloud, np.ndarray)
             assert point_cloud.shape == (100, 3)
 
         :param samples: number of points to sample from the mesh
-        :param multiple_geometries: when multiple geometry stored in one mesh file,
-            then store geometries in a list.
+        :param multiple_geometries: if False, store point cloud in 2D np.ndarray.
+            If True, store point clouds from multiple geometries in 3D np.ndarray.
 
         :return: np.ndarray representing the point cloud
         """
 
         if multiple_geometries:
             # try to coerce everything into a scene
-            scene = _load_trimesh_instance(uri=self, force='scene')
+            scene = _load_trimesh_instance(url=self, force='scene')
             point_cloud = np.stack(
                 [np.array(geo.sample(samples)) for geo in scene.geometry.values()],
                 axis=0,
             )
         else:
             # combine a scene into a single mesh
-            mesh = _load_trimesh_instance(uri=self, force='mesh')
+            mesh = _load_trimesh_instance(url=self, force='mesh')
             point_cloud = np.array(mesh.sample(samples))
 
         return point_cloud
