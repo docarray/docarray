@@ -20,9 +20,9 @@ class Mesh(BaseDocument):
 
         # use it directly
         mesh = Mesh(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        mesh.tensor = mesh.url.load()
+        mesh.vertices, mesh.faces = mesh.url.load()
         model = MyEmbeddingModel()
-        mesh.embedding = model(mesh.tensor)
+        mesh.embedding = model(mesh.vertices)
 
     You can extend this Document:
 
@@ -34,14 +34,14 @@ class Mesh(BaseDocument):
 
         # extend it
         class MyMesh(Mesh):
-            second_embedding: Optional[Embedding]
+            name: Optional[Text]
 
 
         mesh = MyMesh(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        mesh.tensor = mesh.url.load()
+        mesh.vertices, mesh.faces = mesh.url.load()
         model = MyEmbeddingModel()
-        mesh.embedding = model(mesh.tensor)
-        mesh.second_embedding = model(mesh.tensor)
+        mesh.embedding = model(mesh.vertices)
+        mesh.name = 'my first mesh'
 
 
     You can use this Document for composition:
@@ -57,10 +57,10 @@ class Mesh(BaseDocument):
 
 
         mmdoc = MultiModalDoc(
-            mesh=Mesh(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj"),
-            text=Text(text="hello world, how are you doing?"),
+            mesh=Mesh(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'),
+            text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.mesh.tensor = mmdoc.mesh.url.load()
+        mmdoc.mesh.vertices, mmdoc.mesh.faces = mmdoc.mesh.url.load()
     """
 
     url: Optional[MeshUrl]

@@ -69,7 +69,7 @@ def test_dump_json():
 
 
 @pytest.mark.parametrize(
-    'image_format,path_to_img',
+    'file_format,path_to_file',
     [
         ('obj', MESH_FILES['obj']),
         ('glb', MESH_FILES['glb']),
@@ -81,12 +81,12 @@ def test_dump_json():
         ('illegal', 'my/local/text/file.png'),
     ],
 )
-def test_validation(image_format, path_to_img):
-    if image_format == 'illegal':
+def test_validation(file_format, path_to_file):
+    if file_format == 'illegal':
         with pytest.raises(ValueError):
-            parse_obj_as(PointCloudUrl, path_to_img)
+            parse_obj_as(PointCloudUrl, path_to_file)
     else:
-        url = parse_obj_as(PointCloudUrl, path_to_img)
+        url = parse_obj_as(PointCloudUrl, path_to_file)
         assert isinstance(url, PointCloudUrl)
         assert isinstance(url, str)
 

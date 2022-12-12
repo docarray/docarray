@@ -57,8 +57,8 @@ class PointCloud(BaseDocument):
 
 
         mmdoc = MultiModalDoc(
-            point_cloud=PointCloud(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj"),
-            text=Text(text="hello world, how are you doing?"),
+            point_cloud=PointCloud(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'),
+            text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.point_cloud.tensor = mmdoc.point_cloud.url.load(samples=100)
     """
