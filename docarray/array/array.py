@@ -182,7 +182,7 @@ class DocumentArray(
         else:
             return self.__list_getitem__(item)
 
-    def __get_true_item__(self, item):
+    def __get_stacked_document__(self, item):
         """
         In stacked mode this return the Document where the filed stacked are put to None
         In unstacked mode (default) this is the same as __getitem__
@@ -205,13 +205,13 @@ class DocumentArray(
         for i in range(len(self)):
             yield self[i]
 
-    def __true_iter__(self):
+    def __iter_over_stacked_documents__(self):
         """
         This iterates over the document but with the field stacked put to None
         :return:
         """
         for i in range(len(self)):
-            yield self.__get_true_item__(i)
+            yield self.__get_stacked_document__(i)
 
     def stack(self: T) -> T:
         """

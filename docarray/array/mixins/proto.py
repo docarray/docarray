@@ -45,7 +45,7 @@ class ProtoArrayMixin(AbstractDocumentArray):
 
         if self.is_stacked() and self._columns is not None:
             da_proto = DocumentArrayListProto()
-            for doc in self.__true_iter__():
+            for doc in self.__iter_over_stacked_documents__():
                 da_proto.docs.append(doc.to_protobuf())
 
             columns_proto: Dict[str, UnionArrayProto] = dict()

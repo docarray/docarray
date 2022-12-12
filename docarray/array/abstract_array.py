@@ -33,5 +33,5 @@ class AbstractDocumentArray(Sequence):
         ...
 
     @abstractmethod
-    def __true_iter__(self) -> Iterable[BaseDocument]:
+    def __iter_over_stacked_documents__(self) -> Iterable[BaseDocument]:
         ...
