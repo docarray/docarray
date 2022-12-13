@@ -17,10 +17,14 @@ class ProtoArrayMixin(AbstractDocumentArray):
         content_type = pb_msg.WhichOneof('content')
 
         if content_type == 'list_':
-            return cls(cls.document_type.from_protobuf(od) for od in pb_msg.list_.docs)
+            return cls(
+                cls.document_type.from_protobuf(doc_proto)
+                for doc_proto in pb_msg.list_.docs
+            )
         elif content_type == 'stack':
             da = cls(
-                cls.document_type.from_protobuf(od) for od in pb_msg.stack.list_.docs
+                cls.document_type.from_protobuf(doc_proto)
+                for doc_proto in pb_msg.stack.list_.docs
             )
             da._columns = pb_msg.stack.columns
             return da
