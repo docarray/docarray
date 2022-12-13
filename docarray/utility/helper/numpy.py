@@ -26,6 +26,9 @@ def top_k(
     if device is not None:
         warnings.warn('`device` is not supported for numpy operations')
 
+    if len(values.shape) == 1:
+        values = np.expand_dims(values, axis=0)
+
     if descending:
         values = -values
 
@@ -42,4 +45,4 @@ def top_k(
     if descending:
         values = -values
 
-    return values, idx
+    return values.squeeze(), idx.squeeze()

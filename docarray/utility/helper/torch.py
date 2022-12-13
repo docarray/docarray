@@ -24,5 +24,6 @@ def top_k(
     """
     if device is not None:
         values = values.to(device)
-    k = max(k, len(values[-1]))
+    len_values = values.shape[-1] if len(values.shape) > 1 else len(values)
+    k = min(k, len_values)
     return torch.topk(input=values, k=k, largest=descending, sorted=True, dim=-1)

@@ -35,7 +35,7 @@ def random_nd_index():
     return DocumentArray[NdDoc](NdDoc(tensor=np.random.rand(128)) for _ in range(10))
 
 
-@pytest.mark.parametrize('metric', ['cosine', 'euclidean', 'sqeuclidean'])
+@pytest.mark.parametrize('metric', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
 def test_find_torch(random_torch_query, random_torch_index, metric):
     top_k, scores = find(
         random_torch_index,
@@ -46,10 +46,13 @@ def test_find_torch(random_torch_query, random_torch_index, metric):
     )
     assert len(top_k) == 7
     assert len(scores) == 7
-    assert sorted(scores) == scores
+    if metric.endswith('_dist'):
+        assert (torch.stack(sorted(scores)) == scores).all()
+    else:
+        assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
 
 
-@pytest.mark.parametrize('metric', ['cosine', 'euclidean', 'sqeuclidean'])
+@pytest.mark.parametrize('metric', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
 def test_find_np(random_nd_query, random_nd_index, metric):
     top_k, scores = find(
         random_nd_index,
@@ -60,4 +63,7 @@ def test_find_np(random_nd_query, random_nd_index, metric):
     )
     assert len(top_k) == 7
     assert len(scores) == 7
-    assert sorted(scores) == scores
+    if metric.endswith('_dist'):
+        assert (sorted(scores) == scores).all()
+    else:
+        assert (sorted(scores, reverse=True) == scores).all()

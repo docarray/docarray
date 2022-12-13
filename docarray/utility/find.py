@@ -75,9 +75,9 @@ def find(
     result_docs = []
     to_da = True
     for top_idx in top_indices:  # workaround until #930 is fixed
-        if len(top_idx) == 0:
+        if top_idx.shape == () or len(top_idx) == 0:  # single result for single query
             result_docs.append(index[top_idx])
-        else:
+        else:  # there were multiple queries, so multiple results
             inner_result_docs = []
             to_da = False
             for inner_top_idx in top_idx:
@@ -173,6 +173,6 @@ def _get_distance_fn(embedding_type: Type, distance_name: str) -> Callable:
     """
     framework = type_to_framework[embedding_type]
     return getattr(
-        importlib.import_module(f'docarray.utility.math.distance.{framework}'),
+        importlib.import_module(f'docarray.utility.math.metrics.{framework}'),
         f'{distance_name}',
     )
