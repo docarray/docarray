@@ -184,7 +184,7 @@ class DocumentArray(
 
     def __get_stacked_document__(self, item):
         """
-        In stacked mode this return the Document where the filed stacked are put to None
+        In stacked mode this returns the Document where the stacked fields are put to None
         In unstacked mode (default) this is the same as __getitem__
 
         :param item:
@@ -207,7 +207,7 @@ class DocumentArray(
 
     def __iter_over_stacked_documents__(self):
         """
-        This iterates over the document but with the field stacked put to None
+        This iterates over the document but with the stacked fields put to None
         :return:
         """
         for i in range(len(self)):
