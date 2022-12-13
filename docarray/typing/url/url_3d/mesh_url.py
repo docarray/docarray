@@ -1,20 +1,16 @@
-from typing import TYPE_CHECKING, Any, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Tuple, TypeVar
 
 import numpy as np
 
-from docarray.typing.url.any_url import AnyUrl
-from docarray.typing.url.helper_3d_data import MESH_FILE_FORMATS, _load_trimesh_instance
+from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='Mesh3DUrl')
 
 
-class Mesh3DUrl(AnyUrl):
+class Mesh3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file.
     Can be remote (web) URL, or a local file path.
@@ -30,22 +26,6 @@ class Mesh3DUrl(AnyUrl):
         from docarray.proto import NodeProto
 
         return NodeProto(mesh_url=str(self))
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        url = super().validate(value, field, config)
-        has_mesh_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
-        if not has_mesh_extension:
-            raise ValueError(
-                f'Mesh3DURL must have one of the following extensions:'
-                f'{MESH_FILE_FORMATS}'
-            )
-        return cls(str(url), scheme=None)
 
     def load(self) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -75,7 +55,7 @@ class Mesh3DUrl(AnyUrl):
         :return: tuple of two np.ndarrays representing the mesh's vertices and faces
         """
 
-        mesh = _load_trimesh_instance(url=self, force='mesh')
+        mesh = self._load_trimesh_instance(force='mesh')
 
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)

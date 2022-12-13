@@ -1,20 +1,16 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
+from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
 
-from docarray.typing.url.any_url import AnyUrl
-from docarray.typing.url.helper_3d_data import MESH_FILE_FORMATS, _load_trimesh_instance
+from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='PointCloud3DUrl')
 
 
-class PointCloud3DUrl(AnyUrl):
+class PointCloud3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file.
     Can be remote (web) URL, or a local file path.
@@ -30,22 +26,6 @@ class PointCloud3DUrl(AnyUrl):
         from docarray.proto import NodeProto
 
         return NodeProto(point_cloud_url=str(self))
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        url = super().validate(value, field, config)
-        has_3d_extension = any(url.endswith(ext) for ext in MESH_FILE_FORMATS)
-        if not has_3d_extension:
-            raise ValueError(
-                f'PointCloud3DURL must have one of the following extensions:'
-                f'{MESH_FILE_FORMATS}'
-            )
-        return cls(str(url), scheme=None)
 
     def load(self: 'T', samples: int, multiple_geometries: bool = False) -> np.ndarray:
         """
@@ -79,17 +59,16 @@ class PointCloud3DUrl(AnyUrl):
 
         :return: np.ndarray representing the point cloud
         """
-
         if multiple_geometries:
             # try to coerce everything into a scene
-            scene = _load_trimesh_instance(url=self, force='scene')
+            scene = self._load_trimesh_instance(force='scene')
             point_cloud = np.stack(
                 [np.array(geo.sample(samples)) for geo in scene.geometry.values()],
                 axis=0,
             )
         else:
             # combine a scene into a single mesh
-            mesh = _load_trimesh_instance(url=self, force='mesh')
+            mesh = self._load_trimesh_instance(force='mesh')
             point_cloud = np.array(mesh.sample(samples))
 
         return point_cloud

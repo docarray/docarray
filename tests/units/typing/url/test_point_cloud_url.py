@@ -79,7 +79,7 @@ def test_dump_json():
 )
 def test_validation(file_format, path_to_file):
     if file_format == 'illegal':
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='PointCloud3DUrl'):
             parse_obj_as(PointCloud3DUrl, path_to_file)
     else:
         url = parse_obj_as(PointCloud3DUrl, path_to_file)

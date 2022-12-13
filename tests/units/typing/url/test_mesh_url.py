@@ -3,7 +3,7 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import Mesh3DUrl
+from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
@@ -59,7 +59,7 @@ def test_dump_json():
 )
 def test_validation(file_format, path_to_file):
     if file_format == 'illegal':
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='Mesh3DUrl'):
             parse_obj_as(Mesh3DUrl, path_to_file)
     else:
         url = parse_obj_as(Mesh3DUrl, path_to_file)
