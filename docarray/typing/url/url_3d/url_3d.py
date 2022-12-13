@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
@@ -36,10 +36,6 @@ class Url3D(AnyUrl, ABC):
                 f'{MESH_FILE_FORMATS}'
             )
         return cls(str(url), scheme=None)
-
-    @abstractmethod
-    def load(self):
-        ...
 
     def _load_trimesh_instance(
         self, force: Optional[str] = None
