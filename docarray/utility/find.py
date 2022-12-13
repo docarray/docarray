@@ -16,14 +16,15 @@ class FindResult(NamedTuple):
 def find(
     index: DocumentArray,
     query: Union[Tensor, Document],
-    embedding_field: Optional[str] = 'embedding',
-    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
+    embedding_field: str = 'embedding',
+    metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
+    Supports PyTorch and NumPy embeddings.
 
     .. note::
         This utility function is likely to be removed once
@@ -37,14 +38,49 @@ def find(
         hybrid (multi-vector) search. These shortcoming will be addressed in future
         versions.
 
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import DocumentArray, Document
+        from docarray.typing import TorchTensor
+        from docarray.utility.find import find
+
+
+        class MyDocument(Document):
+            embedding: TorchTensor
+
+
+        index = DocumentArray[MyDocument](
+            [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
+        )
+
+        # use Document as query
+        query = MyDocument(embedding=torch.rand(128))
+        top_matches, scores = find(
+            index=index,
+            query=query,
+            embedding_field='tensor',
+            metric='cosine_sim',
+        )
+
+        # use tensor as query
+        query = torch.rand(128)
+        top_matches, scores = find(
+            index=index,
+            query=query,
+            embedding_field='tensor',
+            metric='cosine_sim',
+        )
+
     :param index: the index of Documents to search in
     :param query: the query to search for
     :param embedding_field: the tensor-like field in the index to use
         for the similarity computation
     :param metric: the distance metric to use for the similarity computation.
-        Can be a string specifying a predefined metric
-        (TODO(johannes) specify) or a callable that takes two tensors and returns
-        a tensor of distances. TODO(johannes) implement passing a callable
+        Can be one of the following strings:
+        'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance,
+        'sqeuclidean_dist' for squared euclidean distance
     :param limit: return the top `limit` results
     :param device: the computational device to use,
         can be either `cpu` or a `cuda` device.
@@ -69,7 +105,7 @@ def find(
 def find_batched(
     index: DocumentArray,
     query: Union[Tensor, DocumentArray],
-    embedding_field: Optional[str] = 'embedding',
+    embedding_field: str = 'embedding',
     metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
@@ -77,6 +113,7 @@ def find_batched(
 ) -> List[FindResult]:
     """
     Find the closest Documents in the index to the queries.
+    Supports PyTorch and NumPy embeddings.
 
     .. note::
         This utility function is likely to be removed once
@@ -90,14 +127,53 @@ def find_batched(
         hybrid (multi-vector) search. These shortcoming will be addressed in future
         versions.
 
+        EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import DocumentArray, Document
+        from docarray.typing import TorchTensor
+        from docarray.utility.find import find
+
+
+        class MyDocument(Document):
+            embedding: TorchTensor
+
+
+        index = DocumentArray[MyDocument](
+            [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
+        )
+
+        # use DocumentArray as query
+        query = DocumentArray[MyDocument](
+            [MyDocument(embedding=torch.rand(128)) for _ in range(3)]
+        )
+        results = find(
+            index=index,
+            query=query,
+            embedding_field='tensor',
+            metric='cosine_sim',
+        )
+        top_matches, scores = results[0]
+
+        # use tensor as query
+        query = torch.rand(3, 128)
+        results, scores = find(
+            index=index,
+            query=query,
+            embedding_field='tensor',
+            metric='cosine_sim',
+        )
+        top_matches, scores = results[0]
+
     :param index: the index of Documents to search in
     :param query: the query to search for
     :param embedding_field: the tensor-like field in the index to use
         for the similarity computation
     :param metric: the distance metric to use for the similarity computation.
-        Can be a string specifying a predefined metric
-        (TODO(johannes) specify) or a callable that takes two tensors and returns
-        a tensor of distances. TODO(johannes) implement passing a callable
+        Can be one of the following strings:
+        'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance,
+        'sqeuclidean_dist' for squared euclidean distance
     :param limit: return the top `limit` results
     :param device: the computational device to use,
         can be either `cpu` or a `cuda` device.
@@ -113,7 +189,7 @@ def find_batched(
     embedding_type = _da_attr_type(index, embedding_field)
 
     # get framework-specific distance and top_k function
-    distance_fn = _get_distance_fn(embedding_type, metric)
+    metric_fn = _get_metric_fn(embedding_type, metric)
     top_k_fn = _get_topk_fn(embedding_type)
 
     # extract embeddings from query and index
@@ -121,7 +197,7 @@ def find_batched(
     query_embeddings = _extraxt_embeddings(query, embedding_field, embedding_type)
 
     # compute distances and return top results
-    dists = distance_fn(query_embeddings, index_embeddings, device=device)
+    dists = metric_fn(query_embeddings, index_embeddings, device=device)
     top_scores, top_indices = top_k_fn(
         dists, k=limit, device=device, descending=descending
     )
@@ -225,15 +301,17 @@ def _get_topk_fn(embedding_type: Type) -> Callable:
     )
 
 
-def _get_distance_fn(embedding_type: Type, distance_name: str) -> Callable:
+def _get_metric_fn(embedding_type: Type, metric: Union[str, Callable]) -> Callable:
     """Dynamically import the distance function from the framework-specific module.
 
     :param embedding_type: the type of the embedding
-    :param distance_name: the name of the distance function
-    :return: the framework-specific distance function
+    :param metric: the name of the metric, or the metric itself
+    :return: the framework-specific metric
     """
+    if callable(metric):
+        return metric
     framework = type_to_framework[embedding_type]
     return getattr(
         importlib.import_module(f'docarray.utility.math.metrics.{framework}'),
-        f'{distance_name}',
+        f'{metric}',
     )
