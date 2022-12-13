@@ -33,5 +33,5 @@ class AbstractType(BaseNode):
         ...
 
     @abstractmethod
-    def _to_node_protobuf(self) -> 'NodeProto':
+    def _to_node_protobuf(self: T) -> 'NodeProto':
         ...
