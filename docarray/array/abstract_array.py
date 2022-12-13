@@ -14,10 +14,6 @@ T = TypeVar('T', bound='AbstractDocumentArray')
 class AbstractDocumentArray(Sequence[BaseDocument], BaseNode):
     document_type: Type[BaseDocument]
 
-    @abstractmethod
-    def __init__(self, docs: Iterable[BaseDocument]):
-        ...
-
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
             raise ValueError(
