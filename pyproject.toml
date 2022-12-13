@@ -19,7 +19,7 @@ trimesh = {version = "^3.17.1", optional = true}
 [tool.poetry.extras]
 common = ["protobuf"]
 torch = ["torch"]
-image = ["pillow"]
+image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
 
 [tool.poetry.dev-dependencies]

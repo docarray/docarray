@@ -1634,14 +1634,14 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [extras]
 common = ["protobuf"]
-image = ["pillow"]
+image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
 torch = ["torch"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "98f458c6f3db83e5c349f6417d18f33bf4ac70bda5569ab93804684c607c44d6"
+content-hash = "1b52fed9287336da07ee1fdb96a0c79a7ade0a9183871300b209094e66f9c8e4"
 
 [metadata.files]
 anyio = [
