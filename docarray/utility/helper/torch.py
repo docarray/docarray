@@ -15,15 +15,20 @@ def top_k(
     by setting the `descending` flag.
 
     :param values: Torch tensor of values to rank.
-        Has to be of shape (n_queries, n_values_per_query)
+        Should be of shape (n_queries, n_values_per_query).
+        Inputs of shape (n_values_per_query,) will be expanded
+        to (1, n_values_per_query).
     :param k: number of values to retrieve
     :param descending: retrieve largest values instead of smallest values
     :param device: the computational device to use,
         can be either `cpu` or a `cuda` device.
-    :return: Tuple containing the retrieved values, and their indices
+    :return: Tuple containing the retrieved values, and their indices.
+        Both ar of shape (n_queries, k)
     """
     if device is not None:
         values = values.to(device)
+    if len(values.shape) <= 1:
+        values = values.view(1, -1)
     len_values = values.shape[-1] if len(values.shape) > 1 else len(values)
     k = min(k, len_values)
     return torch.topk(input=values, k=k, largest=descending, sorted=True, dim=-1)

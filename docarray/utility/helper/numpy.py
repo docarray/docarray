@@ -16,12 +16,14 @@ def top_k(
     by setting the `descending` flag.
 
     :param values: Torch tensor of values to rank.
-        Should be a vector (single axis), or squeezable.
-        TODO(johannes) is squeezable a term understood in np land?
+        Should be of shape (n_queries, n_values_per_query).
+        Inputs of shape (n_values_per_query,) will be expanded
+        to (1, n_values_per_query).
     :param k: number of values to retrieve
     :param descending: retrieve largest values instead of smallest values
     :param device: Not supported for this backend
-    :return: Tuple containing the retrieved values, and their indices
+    :return: Tuple containing the retrieved values, and their indices.
+        Both ar of shape (n_queries, k)
     """
     if device is not None:
         warnings.warn('`device` is not supported for numpy operations')
@@ -45,4 +47,4 @@ def top_k(
     if descending:
         values = -values
 
-    return values.squeeze(), idx.squeeze()
+    return values, idx

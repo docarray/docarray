@@ -9,20 +9,40 @@ from docarray.typing.tensor import type_to_framework
 
 
 class FindResult(NamedTuple):
-    #             for single query | for multiple queries
-    documents: Union[DocumentArray, List[DocumentArray]]
+    documents: DocumentArray
     scores: Tensor
 
 
 def find(
     index: DocumentArray,
-    query: Union[Tensor, Document, DocumentArray],
+    query: Union[Tensor, Document],
     embedding_field: Optional[str] = 'embedding',
     metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
 ) -> FindResult:
+    query = _extract_embedding_single(query, embedding_field)
+    return find_batched(
+        index=index,
+        query=query,
+        embedding_field=embedding_field,
+        metric=metric,
+        limit=limit,
+        device=device,
+        descending=descending,
+    )[0]
+
+
+def find_batched(
+    index: DocumentArray,
+    query: Union[Tensor, DocumentArray],
+    embedding_field: Optional[str] = 'embedding',
+    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
+    limit: int = 10,
+    device: Optional[str] = None,
+    descending: Optional[bool] = None,
+) -> List[FindResult]:
     """
     Find the closest Documents in the index to the query.
 
@@ -72,6 +92,7 @@ def find(
         dists, k=limit, device=device, descending=descending
     )
 
+    # results = []
     result_docs = []
     to_da = True
     for top_idx in top_indices:  # workaround until #930 is fixed
@@ -86,6 +107,35 @@ def find(
         result_docs = DocumentArray(result_docs)
 
     return FindResult(documents=result_docs, scores=top_scores)
+
+
+def _extract_embedding_single(
+    data: Union[DocumentArray, Document, Tensor],
+    embedding_field: str,
+) -> Tensor:
+    """Extract the embeddings from a single query,
+    and return it in a batched representation.
+
+    :param data: the data
+    :param embedding_field: the embedding field
+    :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
+    :return: the embeddings
+    """
+    if isinstance(data, Document):
+        emb = getattr(data, embedding_field)
+    else:  # treat data as tensor
+        emb = data
+    if len(emb.shape) == 1:
+        # TODO(johannes) solve this with computational backend,
+        #  this is ugly hack for now
+        if isinstance(emb, torch.Tensor):
+            emb = emb.unsqueeze(0)
+        else:
+            import numpy as np
+
+            if isinstance(emb, np.ndarray):
+                emb = np.expand_dims(emb, axis=0)
+    return emb
 
 
 def _extraxt_embeddings(
