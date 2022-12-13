@@ -121,6 +121,7 @@ class BaseGetSetDelMixin(ABC):
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """This function is derived and may not have the most efficient implementation.
         Override this function if there is a more efficient logic
+
         :param mask: the boolean mask used for indexing
         """
         ids = list(itertools.compress(self._offset2ids, (_i for _i in mask)))
@@ -129,7 +130,7 @@ class BaseGetSetDelMixin(ABC):
     def _del_all_docs(self):
         self._clear_subindices()
         self._clear_storage()
-        self._offset2ids = Offset2ID()
+        self._offset2ids = Offset2ID(list_like=getattr(self, '_list_like', True))
 
     def _del_docs_by_ids(self, ids):
         """This function is derived from :meth:`_del_doc_by_id`
@@ -199,13 +200,25 @@ class BaseGetSetDelMixin(ABC):
             _check_valid_values_nested_set(self[set_index], docs)
             if set_index in subindices:
                 subindex_da = subindices[set_index]
+
                 subindex_da.clear()
                 subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
                 del subindex_da[old_ids]
-                subindex_da.extend(DocumentArray(docs)[subindex_selector])
+
+                value = DocumentArray(docs)
+
+                if (
+                    getattr(subindex_da, '_config', None)  # checks if in-memory da
+                    and subindex_da._config.root_id
+                ):
+                    for v in value:
+                        for doc in DocumentArray(v)[subindex_selector]:
+                            doc.tags['_root_id_'] = v.id
+
+                subindex_da.extend(value[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)

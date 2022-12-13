@@ -79,7 +79,11 @@ class FindMixin(BaseFindMixin):
         return da
 
     def _find_similar_documents_from_text(
-        self, query: str, index: str = 'text', limit: int = 10
+        self,
+        query: str,
+        index: str = 'text',
+        filter: Union[dict, list] = None,
+        limit: int = 10,
     ):
         """
         Return keyword matches for the input query
@@ -89,9 +93,18 @@ class FindMixin(BaseFindMixin):
            the closest Document objects for each of the queries in `query`.
         """
 
+        query = {
+            "bool": {
+                "must": [
+                    {"match": {index: query}},
+                ],
+                "filter": filter,
+            }
+        }
+
         resp = self._client.search(
             index=self._config.index_name,
-            query={'match': {index: query}},
+            query=query,
             source=['id', 'blob', 'text'],
             size=limit,
         )
@@ -106,7 +119,11 @@ class FindMixin(BaseFindMixin):
         return da
 
     def _find_by_text(
-        self, query: Union[str, List[str]], index: str = 'text', limit: int = 10
+        self,
+        query: Union[str, List[str]],
+        index: str = 'text',
+        filter: Union[dict, list] = None,
+        limit: int = 10,
     ):
         if isinstance(query, str):
             query = [query]
@@ -115,6 +132,7 @@ class FindMixin(BaseFindMixin):
             self._find_similar_documents_from_text(
                 q,
                 index=index,
+                filter=filter,
                 limit=limit,
             )
             for q in query

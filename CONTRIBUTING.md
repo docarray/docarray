@@ -202,6 +202,16 @@ feat: add remote api
 | `fix(array):fix array serialization`                                                            | Missing space after `:`            |
 | `hello: add hello-world`                                                                        | Type `hello` is not allowed        |
 
+#### DCO and Signed commit
+
+Commit need to be signed. Indeed the DocArray repo enforce the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) github app
+
+To do so you need to use the `-s` argument when commiting:
+
+```
+git commit -m -s 'feat: add a new feature'
+```
+
 #### What if I Mess Up?
 
 We all make mistakes. GitHub has a guide on [rewriting commit messages](https://docs.github.com/en/free-pro-team@latest/github/committing-changes-to-your-project/changing-a-commit-message) so they can adhere to our standards.

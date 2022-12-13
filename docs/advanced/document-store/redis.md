@@ -1,7 +1,7 @@
 (redis)=
 # Redis
 
-You can use [Redis](https://redis.io) as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Redis](https://redis.io) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `redis`. You can install it via `pip install "docarray[redis]".`
@@ -117,25 +117,27 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name              | Description                                                                                       | Default                                           |
-|-------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------- |
-| `host`            | Host address of the Redis server                                                                  | `'localhost'`                                     |
-| `port`            | Port of the Redis Server                                                                          | `6379`                                            |
-| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`| `{}`                                              |
-| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `None`                                            |
-| `n_dim`           | Dimensionality of the embeddings                                                                  | `None`                                            |
-| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
-| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
-| `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
-| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
-| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`  | `None`                                            |
-| `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
-| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
-| `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
-| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
-| `block_size`      | Optional parameter for Redis FLAT algorithm                                                       | `1048576`                                         |
-| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                              | `None`, defaults to the default value in Redis    |
-| `columns`         | Other fields to store in Document and build schema                                                | `None`                                            |
+| Name              | Description                                                                                                                            | Default                                           |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------- |
+| `host`            | Host address of the Redis server                                                                                                       | `'localhost'`                                     |
+| `port`            | Port of the Redis Server                                                                                                               | `6379`                                            |
+| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`                                     | `{}`                                              |
+| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                                                              | `None`                                            |
+| `n_dim`           | Dimensionality of the embeddings                                                                                                       | `None`                                            |
+| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                                                          | `True`                                            |
+| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                                                               | `'COSINE'`                                        |
+| `batch_size`      | Batch size used to handle storage updates                                                                                              | `64`                                              |
+| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                                                                    | `'HNSW'`                                          |
+| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`                                       | `None`                                            |
+| `tag_indices`     | List of tags to index as text field                                                                                                    | `[]`                                              |
+| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                                                            | `200`                                             |
+| `m`               | Optional parameter for Redis HNSW algorithm                                                                                            | `16`                                              |
+| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                                                            | `10`                                              |
+| `block_size`      | Optional parameter for Redis FLAT algorithm                                                                                            | `1048576`                                         |
+| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                                                                   | `None`, defaults to the default value in Redis    |
+| `columns`         | Other fields to store in Document and build schema                                                                                     | `None`                                            |
+| `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | `True`                                            |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | `True`                                            |
 
 You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py).
 For vector search configurations, default values are those of the database backend, which you can find in the [Redis documentation](https://redis.io/docs/stack/search/reference/vectors/).
@@ -202,7 +204,13 @@ Consider the case where you want the nearest vectors to the embedding `[8.,  8.,
 @price:[-inf {max_price}] @color:{color} @stock:[1 1]
 ```
 
-Then the search with the proposed filter can be used as follows:
+Then the search with the proposed filter can be used as follows. 
+
+````{admonition} Note
+:class: note
+For Redis, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
+
 ```python
 max_price = 7
 color = "blue"
@@ -224,7 +232,7 @@ for doc in results:
     )
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
@@ -244,7 +252,7 @@ integer in `columns` configuration (`'field': 'int'`) and use a filter query tha
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
+You can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
 Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents with `price` less than or equal to  some `max_price` value.
 
@@ -369,7 +377,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -400,7 +408,7 @@ for doc in results:
     print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
-This will print:
+This prints:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
@@ -436,7 +444,7 @@ results = da.find('token1')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 ['token1 token2 token3', 'token1 token2']
@@ -454,7 +462,7 @@ print('scorer=BM25:')
 print(results[:, 'text'])
 ```
 
-This will print:
+This prints:
 
 ```console
 scorer=TFIDF.DOCNORM:
@@ -508,7 +516,7 @@ results_italian = da.find('italian', index='food_type')
 print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_type'])
 ```
 
-This will print:
+This prints:
 
 ```console
 searching "cheap" in <price>:

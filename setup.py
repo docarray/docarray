@@ -81,9 +81,15 @@ setup(
         'redis': [
             'redis>=4.3.0',
         ],
+        'milvus': [
+            'pymilvus~=2.1.0',
+        ],
+        'opensearch': ['opensearch-py==2.0.1'],
         'benchmark': [
             'pandas',
+            'matplotlib',
             'seaborn',
+            'h5py',
         ],
         'test': [
             'protobuf>=3.13.0,<=3.20.0',  # pip dependency resolution does not respect this restriction from paddle
@@ -109,7 +115,10 @@ setup(
             'annlite',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
+            'pymilvus==2.1.3',
+            'opensearch-py==2.0.1',
             'jina',
+            'pytest-mock',
         ],
     },
     classifiers=[

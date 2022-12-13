@@ -111,14 +111,19 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return payload
 
     def _load_offset2ids(self):
-        ids = self._get_offset2ids_meta()
-        self._offset2ids = Offset2ID(ids)
+        if self._list_like:
+            ids = self._get_offset2ids_meta()
+            self._offset2ids = Offset2ID(ids, list_like=self._list_like)
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
-        self._update_offset2ids_meta()
+        if self._list_like:
+            self._update_offset2ids_meta()
 
     def _clear_storage(self):
         self._client.ft(index_name=self._config.index_name).dropindex(
             delete_documents=True
         )
+        self._build_index(rebuild=True)
         self._client.delete(self._offset2id_key)

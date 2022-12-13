@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   weaviate:
-    image: semitechnologies/weaviate:1.16.0
+    image: semitechnologies/weaviate:1.16.1
     ports:
       - "8080:8080"
     environment:
@@ -31,7 +31,19 @@ services:
     image: redislabs/redisearch:2.6.0
     ports:
       - "6379:6379"
+  opensearch:
+    image: opensearchproject/opensearch:2.4.0
+    environment:
+      - plugins.security.disabled=true
+      - discovery.type=single-node
+    ports:
+      - "9900:9200"
+    networks:
+      - os
+
       
 networks:
   elastic:
     name: elastic
+  os:
+    name: os

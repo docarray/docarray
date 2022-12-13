@@ -23,6 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class AnnliteConfig:
     n_dim: int
     metric: str = 'cosine'
+    list_like: bool = True
     serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
     ef_construction: Optional[int] = None
@@ -30,6 +31,7 @@ class AnnliteConfig:
     max_connection: Optional[int] = None
     n_components: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -98,12 +100,12 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
-
+        self._list_like = config.pop("list_like")
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

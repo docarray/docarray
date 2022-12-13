@@ -1,6 +1,7 @@
-import pytest
-from docarray import Document
 import numpy as np
+import pytest
+
+from docarray import Document
 
 
 @pytest.fixture
@@ -9,6 +10,8 @@ def doc():
         text='test',
         embedding=np.random.random(10),
         tags={
+            'v': np.zeros(3),
+            'w': 0,
             'x': 0.1,
             'y': 1.5,
             'z': 1,
@@ -43,13 +46,15 @@ def test_lookup_ops(doc):
     assert lookup('text__regex', '^test', doc)
     assert not lookup('text__regex', '^est', doc)
 
-    assert lookup('tags__size', 6, doc)
+    assert lookup('tags__size', 8, doc)
     assert lookup('tags__labels__size', 3, doc)
 
     assert lookup('tags__exists', True, doc)
     assert lookup('tags__z__exists', True, doc)
+    assert lookup('tags__v__exists', True, doc)
+    assert lookup('tags__w__exists', True, doc)
     assert lookup('tags__foo__exists', False, doc)
-    assert lookup('tags__bar__exists', False, doc)
+    assert lookup('tags__bar__exists', True, doc)
     assert lookup('embedding__exists', True, doc)
     assert lookup('tensor__exists', False, doc)
     assert lookup('blob__exists', False, doc)

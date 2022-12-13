@@ -33,6 +33,26 @@ print(d.tensor, d.tensor.shape)
 (618, 641, 3)
 ```
 
+DocArray also supports loading multi-page tiff files. In this case, the image tensors are stored to the `.tensor` attributes at the chunk-level instead of the top-level.
+
+```python
+from docarray import Document
+
+d = Document(uri='muti_page_tiff_file.tiff')
+d.load_uri_to_image_tensor()
+
+d.summary()
+```
+
+```text
+<Document ('id', 'uri', 'chunks') at 7f907d786d6c11ec840a1e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity', 'tensor') at 7aa4c0ba66cf6c300b7f07fdcbc2fdc8>
+          ├─ <Document ('id', 'parent_id', 'granularity', 'tensor') at bc94a3e3ca60352f2e4c9ab1b1bb9c22>
+          └─ <Document ('id', 'parent_id', 'granularity', 'tensor') at 36fe0d1daf4442ad6461c619f8bb25b7>
+```
+
+
 ## Simple image processing
 
 DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you can switch the channel axis of the `.tensor` to meet certain requirements of other framework; and finally you can chain all these preprocessing steps together in one line. For example, before feeding data into a Pytorch-based ResNet Executor, the image needs to be normalized and the color axis should be at first, not at the last. You can do this via:
@@ -123,7 +143,7 @@ print(d.tensor.shape)
 (180, 64, 64, 3)
 ```
 
-As one can see, it converts the single image tensor into 180 image tensors, each with the size of (64, 64, 3). You can also add all 180 image tensors into the chunks of this `Document`, simply do:
+As you can see, it converts the single image tensor into 180 image tensors, each with the size of (64, 64, 3). You can also add all 180 image tensors into the chunks of this `Document`, simply do:
 
 ```python
 d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64), as_chunks=True)
@@ -150,7 +170,9 @@ d.chunks.plot_image_sprites('simpsons-chunks.png')
 Hmm, doesn't change so much. This is because we scan the whole image using sliding windows with no overlap (i.e. stride). Let's do a bit oversampling:
 
 ```python
-d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64), strides=(10, 10), as_chunks=True)
+d.convert_image_tensor_to_sliding_windows(
+    window_shape=(64, 64), strides=(10, 10), as_chunks=True
+)
 d.chunks.plot_image_sprites('simpsons-chunks-stride-10.png')
 ```
 

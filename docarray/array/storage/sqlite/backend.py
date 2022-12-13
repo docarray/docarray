@@ -24,10 +24,12 @@ def _sanitize_table_name(table_name: str, raise_warning=True) -> str:
 class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
+    list_like: bool = True
     serialize_config: Dict = field(default_factory=dict)
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'WAL'
     synchronous: str = 'OFF'
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -99,8 +101,8 @@ class BackendMixin(BaseBackendMixin):
         )
         self._connection.commit()
         self._config = config
-
-        super()._init_storage()
+        self._list_like = config.list_like
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

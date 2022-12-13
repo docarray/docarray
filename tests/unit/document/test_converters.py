@@ -23,6 +23,19 @@ def test_video_convert_pipe(pytestconfig, tmpdir):
     assert os.path.exists(fname)
 
 
+def test_video_convert_pipe_key_frame_indices(pytestconfig, tmpdir):
+    num_d = 0
+    fname = str(tmpdir / f'tmp{num_d}.mp4')
+    d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
+    d.load_uri_to_video_tensor()
+    d.save_video_tensor_to_file(fname)
+
+    assert os.path.exists(fname)
+    assert 'keyframe_indices' in d.tags.keys()
+    assert len(d.tags['keyframe_indices']) == 2
+    assert d.tags['keyframe_indices'] == [0, 95]
+
+
 def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     for d in from_files(f'{cur_dir}/toydata/*.wav'):
@@ -54,6 +67,18 @@ def test_uri_to_tensor():
     assert isinstance(doc.tensor, np.ndarray)
     assert doc.tensor.shape == (85, 152, 3)  # h,w,c
     assert doc.mime_type == 'image/png'
+
+
+def test_uri_to_tensors_with_multi_page_tiff():
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/multi-page.tif'))
+    doc.load_uri_to_image_tensor()
+
+    assert doc.tensor is None
+    assert len(doc.chunks) == 3
+    for chunk in doc.chunks:
+        assert isinstance(chunk.tensor, np.ndarray)
+        assert chunk.tensor.ndim == 3
+        assert chunk.tensor.shape[-1] == 3
 
 
 def test_datauri_to_tensor():
@@ -330,3 +355,61 @@ def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
         AttributeError, match='vertices and faces chunk tensor have not been set'
     ):
         doc.load_vertices_and_faces_to_point_cloud(100)
+
+
+@pytest.mark.parametrize(
+    'uri_rgb, uri_depth',
+    [
+        (
+            os.path.join(cur_dir, 'toydata/test_rgb.jpg'),
+            os.path.join(cur_dir, 'toydata/test_depth.png'),
+        )
+    ],
+)
+def test_load_uris_to_rgbd_tensor(uri_rgb, uri_depth):
+    doc = Document(
+        chunks=[
+            Document(uri=uri_rgb),
+            Document(uri=uri_depth),
+        ]
+    )
+    doc.load_uris_to_rgbd_tensor()
+
+    assert doc.tensor.shape[-1] == 4
+
+
+@pytest.mark.parametrize(
+    'uri_rgb, uri_depth',
+    [
+        (
+            os.path.join(cur_dir, 'toydata/test.png'),
+            os.path.join(cur_dir, 'toydata/test_depth.png'),
+        )
+    ],
+)
+def test_load_uris_to_rgbd_tensor_different_shapes_raise_exception(uri_rgb, uri_depth):
+    doc = Document(
+        chunks=[
+            Document(uri=uri_rgb),
+            Document(uri=uri_depth),
+        ]
+    )
+    with pytest.raises(
+        ValueError,
+        match='The provided RGB image and depth image are not of the same shapes',
+    ):
+        doc.load_uris_to_rgbd_tensor()
+
+
+def test_load_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
+    doc = Document(
+        chunks=[
+            Document(),
+            Document(),
+        ]
+    )
+    with pytest.raises(
+        ValueError,
+        match='A chunk of the given Document does not provide a uri.',
+    ):
+        doc.load_uris_to_rgbd_tensor()

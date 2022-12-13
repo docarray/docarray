@@ -187,7 +187,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
-        timeout-minutes: 30
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
@@ -224,12 +224,12 @@ jobs:
           python -m pip install wheel
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
           pip install --no-cache-dir ".[test]"
-          pip install --no-cache-dir ".[full]"
           pip install --no-cache-dir ".[qdrant]"
           pip install --no-cache-dir ".[annlite]"
           pip install --no-cache-dir ".[weaviate]"
           pip install --no-cache-dir ".[elasticsearch]"
           pip install --no-cache-dir ".[redis]"
+          pip install --no-cache-dir ".[full]"
           pip install --no-cache-dir "protobuf<3.20.0"
           sudo apt-get install libsndfile1
       - name: Test
@@ -238,7 +238,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "::set-output name=codecov_flag::docarray"
-        timeout-minutes: 40
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file

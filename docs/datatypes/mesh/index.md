@@ -7,7 +7,14 @@ This feature requires `trimesh`. You can install it via `pip install "docarray[f
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 
-DocArray supports .obj, .glb and .ply files.
+DocArray supports the following file formats for 3D data handling: .obj, .glb and .ply.
+
+You can explore interactive 3D data visualization with DocArray in the following Google Colab Notebook:
+<p>
+<a target="_blank" href="https://colab.research.google.com/drive/17uHgNVndRlfAAV9CAB_HEHHuRdGgsBW2?usp=sharing">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+</p>
 
 ## Vertices and faces representation 
 
@@ -44,7 +51,7 @@ chunk.tags = {'name': 'faces'}
 ```
 
 
-You can display your 3d object and interact with it via:
+You can display your 3D object and interact with it via:
 ```python
 doc.display()
 ```
@@ -1314,7 +1321,7 @@ print(doc.tensor.shape)
 (1000, 3)
 ```
 
-You can display your 3d object and interact with it via:
+You can display your 3D object and interact with it via:
 
 ```python
 doc.display()
@@ -2567,3 +2574,35 @@ function animate(){requestAnimationFrame(animate);controls.update();}
 function render(){tracklight.position.copy(camera.position);renderer.render(scene,camera);}
 init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
+
+
+## RGB-D image representation
+
+The RGB-D image representation includes an RGB image of shape (w, h, 3) and a corresponding depth image (w, h). The depth image describes the distance between the image plane and the corresponding object for each pixel in the RGB image. Since the RGB and depth image are of identical width and height, they can be easily concatenated and stored in a tensor of shape (w, h, 4). Due to their fixed size, RGB-D images are suitable for 3D data representations for input to machine learning models.
+
+With DocArray you can store the uris of an RGB image and its corresponding depth image to the `.uri` attribute of a Document's `.chunks`. You can then load the uris to the Document's `.tensor` attribute at top-level: 
+
+```python
+from docarray import Document
+
+doc = Document(chunks=[Document(uri='rgb_000.jpg'), Document(uri='depth_000.jpg')])
+doc.load_uris_to_rgbd_tensor()
+
+doc.summary()
+```
+
+```text
+<Document ('id', 'chunks', 'tensor') at 7f907d786d6c11ec840a1e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity', 'uri') at 7f907ab26d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity', 'uri') at 7f907c106d6c11ec840a1e008a366d49>
+```
+
+To display the RGB image and its corresponding depth image:
+
+```python
+doc.display()
+```
+
+```{figure} rgbd_chair.png
+```
