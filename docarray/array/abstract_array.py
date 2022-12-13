@@ -31,3 +31,7 @@ class AbstractDocumentArray(Sequence):
     @abstractmethod
     def _column_fields(self) -> List[str]:
         ...
+
+    @abstractmethod
+    def __iter_over_stacked_documents__(self) -> Iterable[BaseDocument]:
+        ...
