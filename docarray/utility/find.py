@@ -92,21 +92,14 @@ def find_batched(
         dists, k=limit, device=device, descending=descending
     )
 
-    # results = []
-    result_docs = []
-    to_da = True
-    for top_idx in top_indices:  # workaround until #930 is fixed
-        if top_idx.shape == () or len(top_idx) == 0:  # single result for single query
-            result_docs.append(index[top_idx])
-        else:  # there were multiple queries, so multiple results
-            inner_result_docs = []
-            to_da = False
-            for inner_top_idx in top_idx:
-                inner_result_docs.append(index[inner_top_idx])
-    if to_da:
-        result_docs = DocumentArray(result_docs)
-
-    return FindResult(documents=result_docs, scores=top_scores)
+    results = []
+    for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+        docs_per_query = []
+        for idx in indices_per_query:  # workaround until #930 is fixed
+            docs_per_query.append(index[idx])
+        docs_per_query = DocumentArray(docs_per_query)
+        results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
+    return results
 
 
 def _extract_embedding_single(
@@ -171,22 +164,6 @@ def _extraxt_embeddings(
             if isinstance(emb, np.ndarray):
                 emb = np.expand_dims(emb, axis=0)
     return emb
-
-
-def _to_documentarray_query(
-    query: Union[Tensor, Document, DocumentArray], embedding_field: str
-) -> DocumentArray:
-    """Convert the query to a DocumentArray.
-
-    :param query: the query
-    :return: the query as DocumentArray
-    """
-    if isinstance(query, DocumentArray):
-        return query
-    elif isinstance(query, Document):
-        return DocumentArray([query])
-    else:
-        return DocumentArray([Document(**{embedding_field: query})])
 
 
 def _da_attr_type(da: DocumentArray, attr: str) -> Type:
