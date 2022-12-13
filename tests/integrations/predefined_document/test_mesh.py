@@ -4,7 +4,7 @@ import pytest
 from docarray import Mesh3D
 from tests import TOYDATA_DIR
 
-LOCAL_OBJ_FILE = TOYDATA_DIR / 'tetrahedron.obj'
+LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 
 
