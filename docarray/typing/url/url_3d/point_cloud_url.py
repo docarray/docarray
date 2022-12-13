@@ -16,7 +16,7 @@ class PointCloud3DUrl(Url3D):
     Can be remote (web) URL, or a local file path.
     """
 
-    def _to_node_protobuf(self) -> 'NodeProto':
+    def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that needs to
         be converted into a protobuf
@@ -27,7 +27,7 @@ class PointCloud3DUrl(Url3D):
 
         return NodeProto(point_cloud_url=str(self))
 
-    def load(self: 'T', samples: int, multiple_geometries: bool = False) -> np.ndarray:
+    def load(self: T, samples: int, multiple_geometries: bool = False) -> np.ndarray:
         """
         Load the data from the url into a numpy.ndarray containing point cloud
         information.

@@ -38,7 +38,7 @@ class Url3D(AnyUrl, ABC):
         return cls(str(url), scheme=None)
 
     def _load_trimesh_instance(
-        self, force: Optional[str] = None
+        self: T, force: Optional[str] = None
     ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """
         Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
