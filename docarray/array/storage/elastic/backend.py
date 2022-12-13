@@ -126,7 +126,9 @@ class BackendMixin(BaseBackendMixin):
         return config_joined
 
     def _build_offset2id_index(self):
-        if not self._client.indices.exists(index=self._index_name_offset2id):
+        if self._list_like and not self._client.indices.exists(
+            index=self._index_name_offset2id
+        ):
             self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
 
     def _build_schema_from_elastic_config(self, elastic_config):
