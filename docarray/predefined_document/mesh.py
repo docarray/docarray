@@ -8,7 +8,7 @@ class Mesh3D(BaseDocument):
     """
     Document for handling meshes for 3D data representation.
 
-    A mesh is a representation for 3D data containing vertices and faces information.
+    A mesh is a representation for 3D data and contains vertices and faces information.
     Vertices are points in a 3D space, represented as a tensor of shape (n_points, 3).
     Faces are triangular surfaces that can be defined by three points in 3D space,
     corresponding to the three vertices of a triangle. Faces can be represented as a

@@ -7,8 +7,14 @@ from docarray.typing import Embedding, PointCloud3DUrl, Tensor
 class PointCloud3D(BaseDocument):
     """
     Document for handling point clouds for 3D data representation.
-    It can contain an PointCloud3DUrl (`PointCloud3D.url`), a Tensor
-    (`PointCloud3D.tensor`), and an Embedding (`PointCloud3D.embedding`).
+
+    Point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly
+    sampling points within the surface of the 3D body. Compared to the mesh
+    representation, the point cloud is a fixed size ndarray (shape=(n_samples, 3)) and
+    hence easier for deep learning algorithms to handle.
+
+    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`), a
+    Tensor (`PointCloud3D.tensor`), and an Embedding (`PointCloud3D.embedding`).
 
     EXAMPLE USAGE:
 
