@@ -10,7 +10,8 @@ def top_k(
     descending: bool = False,
     device: Optional[str] = None,
 ) -> Tuple['np.ndarray', 'np.ndarray']:
-    """Retrieves the top k smallest values in `values`,
+    """
+    Retrieves the top k smallest values in `values`,
     and returns them alongside their indices in the input `values`.
     Can also be used to retrieve the top k largest values,
     by setting the `descending` flag.

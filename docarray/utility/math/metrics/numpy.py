@@ -33,7 +33,7 @@ def cosine_sim(
     eps: float = 1e-7,
     device: Optional[str] = None,
 ) -> 'np.ndarray':
-    """Pairwise cosine distances between all vectors in x_mat and y_mat.
+    """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
     :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is the
         number of vectors and n_dim is the number of dimensions of each example.

@@ -22,27 +22,6 @@ def find(
     device: Optional[str] = None,
     descending: Optional[bool] = None,
 ) -> FindResult:
-    query = _extract_embedding_single(query, embedding_field)
-    return find_batched(
-        index=index,
-        query=query,
-        embedding_field=embedding_field,
-        metric=metric,
-        limit=limit,
-        device=device,
-        descending=descending,
-    )[0]
-
-
-def find_batched(
-    index: DocumentArray,
-    query: Union[Tensor, DocumentArray],
-    embedding_field: Optional[str] = 'embedding',
-    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
-    limit: int = 10,
-    device: Optional[str] = None,
-    descending: Optional[bool] = None,
-) -> List[FindResult]:
     """
     Find the closest Documents in the index to the query.
 
@@ -71,7 +50,62 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: the closest Documents in the index to the query
+    :return: A named tuple of the form (DocumentArray, Tensor),
+        where the first element contains the closes matches for the query,
+        and the second element contains the corresponding scores.
+    """
+    query = _extract_embedding_single(query, embedding_field)
+    return find_batched(
+        index=index,
+        query=query,
+        embedding_field=embedding_field,
+        metric=metric,
+        limit=limit,
+        device=device,
+        descending=descending,
+    )[0]
+
+
+def find_batched(
+    index: DocumentArray,
+    query: Union[Tensor, DocumentArray],
+    embedding_field: Optional[str] = 'embedding',
+    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
+    limit: int = 10,
+    device: Optional[str] = None,
+    descending: Optional[bool] = None,
+) -> List[FindResult]:
+    """
+    Find the closest Documents in the index to the queries.
+
+    .. note::
+        This utility function is likely to be removed once
+        Document Stores are available.
+        At that point, and in-memory Document Store will serve the same purpose
+        by exposing a .find() method.
+
+    .. note::
+        This is a simple implementation that assumes the same embedding field name for
+        both query and index, does not support nested search, and does not support
+        hybrid (multi-vector) search. These shortcoming will be addressed in future
+        versions.
+
+    :param index: the index of Documents to search in
+    :param query: the query to search for
+    :param embedding_field: the tensor-like field in the index to use
+        for the similarity computation
+    :param metric: the distance metric to use for the similarity computation.
+        Can be a string specifying a predefined metric
+        (TODO(johannes) specify) or a callable that takes two tensors and returns
+        a tensor of distances. TODO(johannes) implement passing a callable
+    :param limit: return the top `limit` results
+    :param device: the computational device to use,
+        can be either `cpu` or a `cuda` device.
+    :param descending: sort the results in descending order.
+        Per default, this is chosen based on the `metric` argument.
+    :return: a list of named tuples of the form (DocumentArray, Tensor),
+        where the first element contains the closes matches for each query,
+        and the second element contains the corresponding scores.
     """
     if descending is None:
         descending = metric.endswith('_sim')  # similarity metrics are descending
