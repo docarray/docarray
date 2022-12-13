@@ -2,11 +2,11 @@
 # Construct
 
 ```{tip}
-In DocArray, a Document object can contain sub-Document in `.chunks`. If you are still unaware of this design, make sure to read {ref}`this chapter<recursive-nested-document>` before continuing.
+In DocArray, a Document object can contain sub-Documents in `.chunks`. If you're unaware of this design, read {ref}`this chapter<recursive-nested-document>` before continuing.
 ```
 
 
-Just like the Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations in {mod}`docarray.typing` such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way:
+Just like the Python dataclasses module, DocArray provides a {meth}`~docarray.dataclasses.types.dataclass` decorator and a set of type annotations in {mod}`docarray.typing` like `Image`, `Text`, `Audio`, that let you construct a multimodal Document:
 
 ```python
 from docarray import dataclass
@@ -28,16 +28,16 @@ m = MyMultiModalDoc(avatar='test-1.jpeg', description='hello, world')
 
 Be careful when assigning names to your modalities.
  
-Do not use names that are properties of {class}`~docarray.document.Document`, such as
+Don't use names that are properties of {class}`~docarray.document.Document`, like
 `text`, `tensor`, `embedding`, etc.
-Instead, use more specific names that fit your domain, such as `avatar` and `description` in the example above.
+Instead, use more specific names that fit your domain, like `avatar` and `description` in the example above.
 
-If there is a conflict between the name of a modality and a property of {class}`~docarray.document.Document`,
-no guarantees about the behavior while {ref}`accessing <mm-access-doc>` such a name can be made.
+If there's a conflict between a modality name and a {class}`~docarray.document.Document` property,
+there may be unexpected behavior when {ref}`accessing <mm-access-doc>` such a name.
 
 ```
 
-To convert it into a `Document` object, simply:
+To convert a `MyMultiModalDoc` to a `Document` object, simply:
 
 ```python
 from docarray import Document
@@ -77,7 +77,7 @@ This creates a Document object with two chunks:
 
 ````
 
-To convert a Document object back to a `MyMultiModalDoc` object, do:
+To convert a Document object back to a `MyMultiModalDoc` object:
 
 ```python
 m = MyMultiModalDoc(d)
@@ -87,7 +87,7 @@ m = MyMultiModalDoc(d)
 
 ## Dataclass decorator
 
-First, you need to import `dataclass` decorator from DocArray package:
+First, import `dataclass` decorator from the DocArray package:
 
 ```python
 from docarray import dataclass
@@ -119,9 +119,9 @@ True
 True
 ```
 
-That means, [arguments accepted by standard `dataclass`](https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass) are also accepted here. Methods that can be applied to Python `dataclass` can be also be applied to DocArray `dataclass`.
+That means, [arguments accepted by standard `dataclass`](https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass) are also accepted here. Methods that can be applied to Python's `dataclass` can be also be applied to DocArray's `dataclass`.
 
-To tell if a class or object is DocArray's dataclass, you can use {meth}`~docarray.dataclasses.types.is_multimodal`:
+To tell if a class or object is a DocArray dataclass, you can use {meth}`~docarray.dataclasses.types.is_multimodal`:
 
 ```python
 from docarray.typing import Image
@@ -151,12 +151,16 @@ False
 ```
 
 
-In the sequel, unless otherwise specified `dataclass` always refers to `docarray.dataclass`, not the Python built-in `dataclass`.
+Moving forwards, unless otherwise specified, `dataclass` always refers to `docarray.dataclass`, not Python's built-in `dataclass`.
 
 
 ## Annotate class fields
 
-DocArray provides {mod}`docarray.typing` that allows one to annotate a class field as `Image`, `Text`, `JSON`, `Audio`, `Video`, `Mesh`, `Tabular`, `Blob`; or as primitive Python types; or as other `docarray.dataclass`. 
+DocArray provides {mod}`docarray.typing` that allows you to annotate class fields as 
+
+- `Image`, `Text`, `JSON`, `Audio`, `Video`, `Mesh`, `Tabular`, `Blob`
+- primitive Python types
+- other `docarray.dataclass`
 
 ```python
 from docarray import dataclass
@@ -170,7 +174,7 @@ class MMDoc2:
     soundfx: Audio = 'white-noise.wav'
 ```
 
-Convert `MMDoc2` object into a `Document` object is easy, simply via
+Converting `MMDoc2` object into a `Document` object is easy:
 ```python
 from docarray import Document
 
@@ -178,7 +182,7 @@ m = MMDoc2()
 d = Document(m)
 ```
 
-One can look at the structure of `d` via `d.summary()`:
+You can look at the structure of `d` via `d.summary()`:
 
 ````{dropdown} Nested structure (chunks)
 
@@ -221,7 +225,7 @@ One can look at the structure of `d` via `d.summary()`:
 (mm-annotation)=
 ## Behavior of field annotation
 
-This section explains the behavior of field annotations in details.
+This section explains the behavior of field annotations in detail.
 
 - A `dataclass` corresponds to a `Document` object, let's call it `root`.
 - Unannotated fields are ignored.
@@ -329,14 +333,14 @@ This section explains the behavior of field annotations in details.
 | Type annotation | Accepted value types   | Behavior                                                                                                                                                                                  |
 |-----------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Image`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the image and sets `.modality='image'`                                                                                           |
-| `Text`          | `str`                  | Creates a sub-Document, fills in `doc.text` by the given value and sets `.modality='text'`                                                                                                |
-| `URI`           | `str`                  | Creates a sub-Document, fills in `doc.uri` by the given value                                                                                                        |
+| `Text`          | `str`                  | Creates a sub-Document, fills in `doc.text` from the given value and sets `.modality='text'`                                                                                                |
+| `URI`           | `str`                  | Creates a sub-Document, fills in `doc.uri` from the given value                                                                                                        |
 | `Audio`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the audio and sets `.modality='audio'`                                                                                           |
-| `JSON`          | `Dict`                 | Creates a sub-Document, fills in `doc.tags` by the given value and sets `.modality='json'`                                                                                                |
+| `JSON`          | `Dict`                 | Creates a sub-Document, fills in `doc.tags` from the given value and sets `.modality='json'`                                                                                                |
 | `Video`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the video and sets `.modality='video'`                                                                                           |
 | `Mesh`          | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by sub-sampling the mesh as point-cloud and sets `.modality='mesh'`                                                                         |
-| `Blob`          | `str`, `bytes`         | Creates a sub-Document, fills in `doc.blob` by the given value or reading from the path                                                                                                   |
-| `Tabular`       | `str` (file name)      | Reads a CSV file, creates a sub-Document for each line and fills in `doc.tags` by considering the first row as the column names and mapping the following lines into the corresponding values. |
+| `Blob`          | `str`, `bytes`         | Creates a sub-Document, fills in `doc.blob` from the given value or reading from the path                                                                                                   |
+| `Tabular`       | `str` (file name)      | Reads a CSV file, creates a sub-Document for each line and fills in `doc.tags` by considering the first row as column names and mapping subsequent rows into corresponding values. |
 
 - A class field labeled with `List[Type]` will create sub-Documents under `root.chunks[0].chunks`. For example,
     
@@ -395,7 +399,7 @@ This section explains the behavior of field annotations in details.
                     ╰──────────────┴───────────────────────────────────────────────────────────────╯
     ```
     ````
-- A field annotated with another `dataclass` will create the full nested structure under the corresponding chunk.
+- A field annotated with another `dataclass` will create the full nested structure under the corresponding chunk:
     
     ````{tab} Field in another dataclass
     
@@ -471,11 +475,11 @@ This section explains the behavior of field annotations in details.
     ```
       
     ````
-- A dataclass that has only one field annotated with `docarray.typing` will still create a nested structure under `root.chunks`. In this case, `len(root.chunks)=1` and your multimodal Document has basically a single modality, which may encourage you to think if this is really necessary to use a `dataclass`. After all, each Document represents single modality, and you can just use `Document`.  
+- A dataclass that has only one field annotated with `docarray.typing` will still create a nested structure under `root.chunks`. In this case, `len(root.chunks)=1` and your multimodal Document has basically a single modality, which may encourage you to consider if you really need to use a `dataclass`. After all, each Document represents a single modality, so in this case you could just use `Document`.  
 
 ## Construct from/to Document
 
-It is easy to convert a `dataclass` object from/to a `Document` object:
+It's easy to convert a `dataclass` object from/to a `Document` object:
 
 ```python
 from docarray import dataclass, Document
@@ -496,9 +500,9 @@ assert m == m_r
 
 ## Use `field()` for advanced configs
 
-For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. To satisfy this need for additional information, you can replace the default field value with a call to the provided {meth}`~docarray.dataclasses.types.field` function.
+For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. For this, you can replace the default field value with a call to the provided {meth}`~docarray.dataclasses.types.field` function.
 
-For example, mutable object is not allowed as the default value of any dataclass field. One can solve it via:
+For example, a mutable object is not allowed as the default value of any dataclass field. You can solve it via:
 
 ```python
 from typing import List
@@ -512,13 +516,13 @@ class MMDoc:
     banner: List[Image] = field(default_factory=lambda: ['test-1.jpeg', 'test-2.jpeg'])
 ```
 
-Other parameters from the standard the Python field such as `init`, `compare`, `hash`, `repr` are also supported. More details can be [found here](https://docs.python.org/3/library/dataclasses.html#dataclasses.field).
+Other parameters from the standard the Python field like `init`, `compare`, `hash`, `repr` are also supported. More details can be [found here](https://docs.python.org/3/library/dataclasses.html#dataclasses.field).
 
 
 ## What's next?
 
-In this chapter, we have learned to use `@dataclass` decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python builtin dataclass.   
+In this chapter, we've learned to use the `@dataclass` decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python's builtin dataclass.   
 
-Leveraging {ref}`the nested Document structure<recursive-nested-document>`, DocArray's dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, tabular data in a very intuitive way. Converting a multimodal dataclass object from/to a Document is very straightforward. 
+Leveraging {ref}`the nested Document structure<recursive-nested-document>`, DocArray's dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, and tabular data in an intuitive way. Converting a multimodal dataclass object from/to a Document is straightforward. 
 
-In the next chapter, we shall see how to select modality (aka sub-document) via the selector syntax.
+In the next chapter, we'll see how to select modality (aka sub-Document) via selector syntax.

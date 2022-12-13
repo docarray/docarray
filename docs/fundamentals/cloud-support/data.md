@@ -26,7 +26,7 @@ from docarray import DocumentArray
 da = DocumentArray(...)
 da.push('my_da', show_progress=True)
 ```
-This will create a DocumentArray object in the cloud or update it if it already exists.
+This creates a DocumentArray object in the cloud or update it if it already exists.
 
 ### Pull (Read):
 You can download a DocumentArray stored in the cloud using the {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull` method:

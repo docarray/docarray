@@ -1,19 +1,19 @@
 # Process Modality
 
-So far we have learned how to construct and select multimodal Document, we are now ready to leverage DocArray API/Jina/Hub Executor to process the modalities.
+So far we've learned to construct and select multimodal Documents. Now we're ready to leverage DocArray API/Jina/Hub Executor to process the modalities.
 
-In a nutshell, you need to convert a multimodal dataclass to a Document object (or DocumentArray) before processing it. This is because DocArray API/Jina/Hub Executor always take Document/DocumentArray as the basic IO unit. The following figure illustrates the idea.
+In a nutshell, you need to convert a multimodal dataclass to a Document object (or DocumentArray) before processing it. This is because DocArray API/Jina/Hub Executor always takes Document/DocumentArray as the basic IO unit:
 
 ```{figure} img/process-mmdoc.svg
 
 ```
 
 
-## Embed image and text via CLIP
+## Embed image and text with CLIP
 
 Developed by OpenAI, CLIP (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs. It is also a perfect model to showcase multimodal dataclass processing.
 
-Take the code snippet from [the original CLIP repository](https://github.com/openai/CLIP) as an example,
+Take the code snippet from [the original CLIP repository](https://github.com/openai/CLIP) as an example:
 
 ```python
 import torch
@@ -40,7 +40,7 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
         [ 0.1981, -0.2040, -0.1533,  ..., -0.4514, -0.5664,  0.0596]])
 ```
 
-Let's refactor it via dataclass.
+Let's refactor it with dataclass:
 
 ```{code-block} python
 ---
@@ -85,13 +85,13 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
         [ 0.1981, -0.2040, -0.1533,  ..., -0.4514, -0.5664,  0.0596]])
 ```
 
-## Embed via CLIP-as-service
+## Embed with CLIP-as-service
 
-[CLIP-as-service](https://github.com/jina-ai/clip-as-service) is a low-latency high-scalability service for embedding images and text. It can be easily integrated as a microservice into neural search solutions.
+[CLIP-as-service](https://github.com/jina-ai/clip-as-service) is a low-latency high-scalability service for embedding images and text. You can easily integrate it into neural search solutions as a microservice.
 
-To use CLIP-as-service to process a dataclass object is extremely simple, which should also show you the idea to use existing Executors or services without touching their codebase.
+Using CLIP-as-service to process a dataclass object is simple, which also shows you the idea of using existing Executors or services without touching their codebase.
 
-1. Construct the dataclass.
+1. Construct the dataclass:
     ```python
     from docarray import dataclass, field, Document, DocumentArray
     from docarray.typing import Text, Image
@@ -111,13 +111,13 @@ To use CLIP-as-service to process a dataclass object is extremely simple, which 
     m3 = MMDoc(banner='CLIP.png', title='a cat')
     ```
 
-3. Convert them into a DocumentArray.
+3. Convert them into a DocumentArray:
 
    ```python
    da = DocumentArray([Document(m1), Document(m2), Document(m3)])
    ```
 
-4. Select the modality via the selector syntax and send via client
+4. Select the modality via the selector syntax and send with client:
 
     ```python
     from clip_client import Client
@@ -136,6 +136,3 @@ To use CLIP-as-service to process a dataclass object is extremely simple, which 
  [ 0.1442    0.02275  -0.291    ... -0.4468   -0.3416    0.1798  ]
  [ 0.1985   -0.204    -0.1534   ... -0.4507   -0.5664    0.0598  ]]
 ```
-
-
-

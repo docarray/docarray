@@ -117,6 +117,7 @@ def test_del_da_attribute():
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('opensearch', {'n_dim': 3, 'distance': 'l2'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),

@@ -1,12 +1,12 @@
 # Visualization
 
-If you have an image Document (with possible image data in `.uri`/`.tensor`), you can directly visualize it via {meth}`~docarray.document.mixins.plot.PlotMixin.display`.
+If you have an image Document (with image data in `.uri`/`.tensor`), you can visualize it with {meth}`~docarray.document.mixins.plot.PlotMixin.display`.
 
 ```{figure} images/doc-plot-in-jupyter.jpg
 ```
 
 
-To better see the Document's nested structure, you can use {meth}`~docarray.document.mixins.plot.PlotMixin.summary`.
+To better see a Document's nested structure, you can use {meth}`~docarray.document.mixins.plot.PlotMixin.summary`.
 
 ```{code-block} python
 ---
@@ -37,7 +37,7 @@ d0.summary()
                     └─ <Document ('id', 'parent_id', 'granularity', 'embedding') at 🐢>
 ```
 
-When using Notebook/Colab, this is auto-rendered.
+When using Notebook/Colab, this is auto-rendered:
 
 ```{figure} images/doc-auto-summary.png
 ```
