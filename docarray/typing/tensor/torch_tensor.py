@@ -196,10 +196,9 @@ class TorchTensor(
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
-        from docarray.proto import NdArrayProto, NodeProto
+        from docarray.proto import NodeProto
 
-        nd_proto = NdArrayProto()
-        self._flush_tensor_to_proto(nd_proto, value=self)
+        nd_proto = self.to_protobuf()
         return NodeProto(**{field: nd_proto})
 
     @classmethod
@@ -218,13 +217,21 @@ class TorchTensor(
         else:
             raise ValueError(f'proto message {pb_msg} cannot be cast to a TorchTensor')
 
-    @staticmethod
-    def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'TorchTensor'):
-        value_np = value.detach().cpu().numpy()
-        pb_msg.dense.buffer = value_np.tobytes()
-        pb_msg.dense.ClearField('shape')
-        pb_msg.dense.shape.extend(list(value_np.shape))
-        pb_msg.dense.dtype = value_np.dtype.str
+    def to_protobuf(self) -> 'NdArrayProto':
+        """
+        transform self into a NdArrayProto protobuf message
+        """
+        from docarray.proto import NdArrayProto
+
+        nd_proto = NdArrayProto()
+
+        value_np = self.detach().cpu().numpy()
+        nd_proto.dense.buffer = value_np.tobytes()
+        nd_proto.dense.ClearField('shape')
+        nd_proto.dense.shape.extend(list(value_np.shape))
+        nd_proto.dense.dtype = value_np.dtype.str
+
+        return nd_proto
 
     @classmethod
     def __docarray_stack__(

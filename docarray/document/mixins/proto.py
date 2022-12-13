@@ -77,7 +77,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     f'type {content_type} is not supported for deserialization'
                 )
 
-        return cls(**fields)
+        return cls.construct(**fields)
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.

@@ -165,10 +165,9 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
-        from docarray.proto import NdArrayProto, NodeProto
+        from docarray.proto import NodeProto
 
-        nd_proto = NdArrayProto()
-        self._flush_tensor_to_proto(nd_proto, value=self)
+        nd_proto = self.to_protobuf()
         return NodeProto(**{field: nd_proto})
 
     @classmethod
@@ -187,12 +186,20 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         else:
             raise ValueError(f'proto message {pb_msg} cannot be cast to a NdArray')
 
-    @staticmethod
-    def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'NdArray'):
-        pb_msg.dense.buffer = value.tobytes()
-        pb_msg.dense.ClearField('shape')
-        pb_msg.dense.shape.extend(list(value.shape))
-        pb_msg.dense.dtype = value.dtype.str
+    def to_protobuf(self) -> 'NdArrayProto':
+        """
+        transform self into a NdArrayProto protobuf message
+        """
+        from docarray.proto import NdArrayProto
+
+        nd_proto = NdArrayProto()
+
+        nd_proto.dense.buffer = self.tobytes()
+        nd_proto.dense.ClearField('shape')
+        nd_proto.dense.shape.extend(list(self.shape))
+        nd_proto.dense.dtype = self.dtype.str
+
+        return nd_proto
 
     @classmethod
     def __docarray_stack__(

@@ -1,6 +1,6 @@
 import numpy as np
 
-from docarray.proto import DocumentProto, NdArrayProto, NodeProto
+from docarray.proto import DocumentProto, NodeProto
 from docarray.typing import NdArray
 
 
@@ -14,11 +14,12 @@ def test_nested_optional_item_proto():
 
 
 def test_ndarray():
-    nd_proto = NdArrayProto()
+
     original_ndarray = np.zeros((3, 224, 224))
-    NdArray._flush_tensor_to_proto(nd_proto, value=original_ndarray)
-    nested_item = NodeProto(ndarray=nd_proto)
-    tensor = NdArray.from_protobuf(nested_item.ndarray)
+
+    custom_ndarray = NdArray.from_ndarray(original_ndarray)
+
+    tensor = NdArray.from_protobuf(custom_ndarray.to_protobuf())
 
     assert (tensor == original_ndarray).all()
 
@@ -29,9 +30,8 @@ def test_document_proto_set():
 
     nested_item1 = NodeProto(text='hello')
 
-    nd_proto = NdArrayProto()
-    original_ndarray = np.zeros((3, 224, 224))
-    NdArray._flush_tensor_to_proto(nd_proto, value=original_ndarray)
+    ndarray = NdArray.from_ndarray(np.zeros((3, 224, 224)))
+    nd_proto = ndarray.to_protobuf()
 
     nested_item2 = NodeProto(ndarray=nd_proto)
 
