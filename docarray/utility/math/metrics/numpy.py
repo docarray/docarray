@@ -21,7 +21,13 @@ def _expand_if_single_axis(*matrices: 'np.array') -> List['np.array']:
     return expanded
 
 
-def cosine(
+def _expand_if_scalar(arr: 'np.array') -> 'np.array':
+    if len(arr.shape) == 0:  # avoid scalar output
+        arr = np.expand_dims(arr, axis=0)
+    return arr
+
+
+def cosine_sim(
     x_mat: 'np.ndarray',
     y_mat: 'np.ndarray',
     eps: float = 1e-7,
@@ -45,18 +51,22 @@ def cosine(
 
     x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
 
-    return 1 - np.clip(
+    sims = np.clip(
         (np.dot(x_mat, y_mat.T) + eps)
         / (
             np.outer(np.linalg.norm(x_mat, axis=1), np.linalg.norm(y_mat, axis=1)) + eps
         ),
         -1,
         1,
-    )
+    ).squeeze()
+    return _expand_if_scalar(sims)
 
 
-def sqeuclidean(
-    x_mat: 'np.ndarray', y_mat: 'np.ndarray', device: Optional[str] = None
+def sqeuclidean_dist(
+    x_mat: 'np.ndarray',
+    y_mat: 'np.ndarray',
+    eps: float = 1e-7,
+    device: Optional[str] = None,
 ) -> 'np.ndarray':
     """Pairwise Squared Euclidian distances between all vectors in x_mat and y_mat.
 
@@ -65,6 +75,8 @@ def sqeuclidean(
     :param y_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is the
         number of vectors and n_dim is the number of dimensions of each example.
     :param eps: a small jitter to avoid divde by zero
+    :param eps: Negative results (due to numerical inaccuracies) no smaller than
+        -eps will be returned as 0.
     :param device: Not supported for this backend
     :return: np.ndarray  of shape (n_vectors, n_vectors) containing all pairwise
         Squared Euclidian distances.
@@ -76,14 +88,18 @@ def sqeuclidean(
 
     x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
 
-    return (
+    dists = (
         np.sum(y_mat**2, axis=1)
         + np.sum(x_mat**2, axis=1)[:, np.newaxis]
         - 2 * np.dot(x_mat, y_mat.T)
-    )
+    ).squeeze()
+
+    # remove numerical artifacts
+    dists = np.where(np.logical_and(dists < 0, dists > -eps), 0, dists)
+    return _expand_if_scalar(dists)
 
 
-def euclidean(
+def euclidean_dist(
     x_mat: 'np.ndarray', y_mat: 'np.ndarray', device: Optional[str] = None
 ) -> 'np.ndarray':
     """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
@@ -104,4 +120,4 @@ def euclidean(
 
     x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
 
-    return np.sqrt(sqeuclidean(x_mat, y_mat))
+    return _expand_if_scalar(np.sqrt(sqeuclidean_dist(x_mat, y_mat)).squeeze())

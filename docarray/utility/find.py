@@ -18,9 +18,10 @@ def find(
     index: DocumentArray,
     query: Union[Tensor, Document, DocumentArray],
     embedding_field: Optional[str] = 'embedding',
-    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine',
+    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
+    descending: Optional[bool] = None,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -48,8 +49,13 @@ def find(
     :param limit: return the top `limit` results
     :param device: the computational device to use,
         can be either `cpu` or a `cuda` device.
+    :param descending: sort the results in descending order.
+        Per default, this is chosen based on the `metric` argument.
     :return: the closest Documents in the index to the query
     """
+    if descending is None:
+        descending = metric.endswith('_sim')  # similarity metrics are descending
+
     embedding_type = _da_attr_type(index, embedding_field)
 
     # get framework-specific distance and top_k function
@@ -62,7 +68,9 @@ def find(
 
     # compute distances and return top results
     dists = distance_fn(query_embeddings, index_embeddings, device=device)
-    top_scores, top_indices = top_k_fn(dists, k=limit, device=device)
+    top_scores, top_indices = top_k_fn(
+        dists, k=limit, device=device, descending=descending
+    )
 
     result_docs = []
     to_da = True

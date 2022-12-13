@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, List, Optional
 import torch
 
 if TYPE_CHECKING:  # pragma: no cover
-    import numpy
     from torch import tensor
 
 
@@ -24,10 +23,16 @@ def _unsqueeze_if_single_axis(*matrices: 'tensor') -> List['tensor']:
     return unsqueezed
 
 
-def cosine(
+def _usqueeze_if_scalar(t: 'tensor'):
+    if len(t.shape) == 0:  # avoid scalar output
+        t = t.unsqueeze(0)
+    return t
+
+
+def cosine_sim(
     x_mat: 'tensor', y_mat: 'tensor', eps: float = 1e-7, device: Optional[str] = None
-) -> 'numpy.ndarray':
-    """Pairwise cosine distances between all vectors in x_mat and y_mat.
+) -> 'tensor':
+    """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
     :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
         number of vectors and n_dim is the number of dimensions of each example.
@@ -51,10 +56,11 @@ def cosine(
     a_n, b_n = x_mat.norm(dim=1)[:, None], y_mat.norm(dim=1)[:, None]
     a_norm = x_mat / torch.clamp(a_n, min=eps)
     b_norm = y_mat / torch.clamp(b_n, min=eps)
-    return 1 - torch.mm(a_norm, b_norm.transpose(0, 1))
+    sims = torch.mm(a_norm, b_norm.transpose(0, 1)).squeeze()
+    return _usqueeze_if_scalar(sims)
 
 
-def euclidean(
+def euclidean_dist(
     x_mat: 'tensor', y_mat: 'tensor', device: Optional[str] = None
 ) -> 'tensor':
     """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
@@ -77,10 +83,11 @@ def euclidean(
 
     x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
 
-    return torch.cdist(x_mat, y_mat)
+    dists = torch.cdist(x_mat, y_mat).squeeze()
+    return _usqueeze_if_scalar(dists)
 
 
-def sqeuclidean(
+def sqeuclidean_dist(
     x_mat: 'tensor', y_mat: 'tensor', device: Optional[str] = None
 ) -> 'tensor':
     """Pairwise Squared Euclidian distances between all vectors in x_mat and y_mat.
@@ -104,4 +111,4 @@ def sqeuclidean(
 
     x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
 
-    return torch.cdist(x_mat, y_mat) ** 2
+    return _usqueeze_if_scalar((torch.cdist(x_mat, y_mat) ** 2).squeeze())
