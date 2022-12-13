@@ -1,3 +1,4 @@
-from docarray.array.array import DocumentArray
+from .abstract_array import AbstractDocumentArray
+from .array import DocumentArray
 
-__all__ = ['DocumentArray']
+__all__ = ['AbstractDocumentArray', 'DocumentArray']
