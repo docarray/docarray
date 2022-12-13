@@ -25,4 +25,7 @@ class AbstractDocument(Iterable):
     def construct(
         cls: Type[T], _fields_set: Optional['SetStr'] = None, **values: Any
     ) -> T:
+        """
+        construct document without calling validation
+        """
         ...
