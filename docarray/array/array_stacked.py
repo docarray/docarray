@@ -1,6 +1,16 @@
 from collections import defaultdict
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, DefaultDict, Dict, List, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from docarray.array import AbstractDocumentArray, DocumentArray
 from docarray.document import AnyDocument, BaseDocument
@@ -8,8 +18,12 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
     from docarray.proto import DocumentArrayStackedProto
     from docarray.typing import TorchTensor
+
 
 try:
     import torch
@@ -216,3 +230,17 @@ class DocumentArrayStacked(AbstractDocumentArray):
         finally:
             self._docs = da_unstacked
             self.from_document_array(da_unstacked)
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Any,
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        if isinstance(value, cls):
+            return value
+        elif isinstance(value, Iterable):
+            return cls(value)
+        else:
+            raise TypeError(f'Expecting an Iterable of {cls.document_type}')

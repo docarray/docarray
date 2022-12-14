@@ -1,10 +1,13 @@
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import AnyDocument, BaseDocument
 
 if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
     from docarray.proto import DocumentArrayProto
     from docarray.typing import NdArray, TorchTensor
 
@@ -102,3 +105,17 @@ class DocumentArray(AbstractDocumentArray):
             self = DocumentArrayStacked[self.document_type].to_document_array(
                 da_stacked
             )
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Any,
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        if isinstance(value, cls):
+            return value
+        elif isinstance(value, Iterable):
+            return cls(value)
+        else:
+            raise TypeError(f'Expecting an Iterable of {cls.document_type}')

@@ -1,7 +1,8 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Iterable, List, Sequence, Type, TypeVar, Union
+from typing import TYPE_CHECKING, List, Sequence, Type, TypeVar, Union
 
-from docarray.document import BaseDocument, BaseNode
+from docarray.document import BaseDocument
+from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AbstractDocumentArray')
 
 
-class AbstractDocumentArray(Sequence[BaseDocument], BaseNode):
+class AbstractDocumentArray(Sequence[BaseDocument], AbstractType):
     document_type: Type[BaseDocument]
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
