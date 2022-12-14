@@ -207,7 +207,7 @@ def find_batched(
     index_doc_type = index.document_type
     results = []
     for indices_per_query, scores_per_query in zip(top_indices, top_scores):
-        docs_per_query = DocumentArray[index_doc_type]([])
+        docs_per_query = DocumentArray[index_doc_type]([])  # type: ignore
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
         results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
