@@ -20,14 +20,14 @@ IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
 
 class ImageUrl(AnyUrl):
-    """ "
+    """
     URL to a .png, .jpeg, or .jpg file.
-    Cane be remote (web) URL, or a local file path.
+    Can be remote (web) URL, or a local file path.
     """
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to
+        be called when the Document is nested into another Document that needs to
         be converted into a protobuf
 
         :return: the nested item protobuf message

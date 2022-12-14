@@ -59,6 +59,11 @@ message NodeProto {
 
     NdArrayProto torch_tensor = 11;
 
+    string mesh_url = 12;
+
+    string point_cloud_url = 13;
+
+
   }
 
 }
