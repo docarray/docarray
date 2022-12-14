@@ -164,3 +164,29 @@ class DocumentArrayStacked(AbstractDocumentArray):
                 columns_proto[field] = UnionArrayProto(ndarray=column.to_protobuf())
 
         return DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
+
+    @staticmethod
+    def to_document_array(da_stacked: T) -> DocumentArray:
+        """Convert DocumentArrayStacked into a DocumentArray.
+        :param da_stacked: the DocumentArrayStacked to convert
+
+        Note this destroys the arguments and returns a new DocumentArray
+        """
+        for i, doc in enumerate(da_stacked._docs):
+            for field in da_stacked._columns.keys():
+                val = da_stacked._columns[field]
+                setattr(doc, field, val[i])
+
+                # NOTE: here we might need to copy the tensor
+                # see here
+                # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
+                # -when-the-original-tensor-is-deleted/167294 # noqa: E501
+
+        for field in list(da_stacked._columns.keys()):
+            # list needed here otherwise we are modifying the dict while iterating
+            del da_stacked._columns[field]
+
+        da_list = da_stacked._docs
+
+        del da_stacked
+        return da_list
