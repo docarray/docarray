@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, DefaultDict, Dict, List, Type, TypeVar, Union
 
 from docarray.array import AbstractDocumentArray, DocumentArray
-from docarray.document import BaseDocument
+from docarray.document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -24,6 +24,8 @@ T = TypeVar('T', bound='DocumentArrayStacked')
 
 
 class DocumentArrayStacked(AbstractDocumentArray):
+    document_type: Type[BaseDocument] = AnyDocument
+
     def __init__(self: T, docs: DocumentArray):
         self._docs = docs
 
@@ -110,7 +112,7 @@ class DocumentArrayStacked(AbstractDocumentArray):
             setattr(self._docs, field, values)
 
     def __getitem__(self, item):  # note this should handle slices
-        doc = super().__getitem__(item)
+        doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
@@ -122,7 +124,7 @@ class DocumentArrayStacked(AbstractDocumentArray):
 
     def __getitem_without_columns__(self, item):  # note this should handle slices
         """Return the document at the given index with the columns item put to None"""
-        doc = super().__getitem__(item)
+        doc = self._docs[item]
         for field in self._columns.keys():
             setattr(doc, field, None)
         return doc

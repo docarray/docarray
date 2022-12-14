@@ -2,7 +2,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
-from docarray.document import BaseDocument
+from docarray.document import AnyDocument, BaseDocument
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto
@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='DocumentArray')
 
 
-class DocumentArray(AbstractDocumentArray, list[BaseDocument]):
+class DocumentArray(list[BaseDocument], AbstractDocumentArray):
+    document_type: Type[BaseDocument] = AnyDocument
+
     def __init__(self, docs: Iterable[BaseDocument]):
         super().__init__(doc_ for doc_ in docs)
 
@@ -88,4 +90,6 @@ class DocumentArray(AbstractDocumentArray, list[BaseDocument]):
             da_stacked = DocumentArrayStacked(self)
             yield da_stacked
         finally:
-            self = DocumentArrayStacked.to_document_array(da_stacked)
+            self = DocumentArrayStacked[self.document_type].to_document_array(
+                da_stacked
+            )
