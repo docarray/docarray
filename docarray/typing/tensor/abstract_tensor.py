@@ -98,9 +98,18 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
-    @abc.abstractmethod
     def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
+        comp_backend = cls.get_comp_backend()
+        return cls.__docarray_from_native__(comp_backend.stack(seq))
+
+    @classmethod
+    @abc.abstractmethod
+    def __docarray_from_native__(cls: Type[T], value: Any) -> T:
+        """
+        Create a DocArray tensor from a tensor that is native to the given framework,
+        e.g. from numpy.ndarray or torch.Tensor.
+        """
         ...
 
     def to_protobuf(self) -> 'NdArrayProto':

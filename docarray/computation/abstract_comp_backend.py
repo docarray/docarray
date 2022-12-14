@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
     from docarray.typing.tensor.tensor import Tensor
@@ -12,6 +12,16 @@ class AbstractComputationalBackend(ABC):
     computational backend exposing common functionality expressed in that framework.
     That way, DocArray can leverage native implementations from all frameworks.
     """
+
+    @staticmethod
+    @abstractmethod
+    def stack(
+        tensors: Union[List['Tensor'], Tuple['Tensor']], dim: int = 0
+    ) -> 'Tensor':
+        """
+        Stack a list of tensors along a new axis.
+        """
+        ...
 
     class Retrieval(ABC):
         """

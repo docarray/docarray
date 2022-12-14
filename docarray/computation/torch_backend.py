@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import torch
 
@@ -32,6 +32,12 @@ class TorchCompBackend(AbstractComputationalBackend):
     """
     Computational backend for PyTorch.
     """
+
+    @staticmethod
+    def stack(
+        tensors: Union[List['torch.Tensor'], Tuple['torch.Tensor']], dim: int = 0
+    ) -> 'torch.Tensor':
+        return torch.stack(tensors, dim=dim)
 
     class Retrieval:
         """

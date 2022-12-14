@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -33,6 +33,12 @@ class NumpyCompBackend(AbstractComputationalBackend):
     """
     Computational backend for Numpy.
     """
+
+    @staticmethod
+    def stack(
+        tensors: Union[List['np.ndarray'], Tuple['np.ndarray']], dim: int = 0
+    ) -> 'np.ndarray':
+        return np.stack(tensors, axis=dim)
 
     class Retrieval:
         """
