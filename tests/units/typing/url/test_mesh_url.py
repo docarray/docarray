@@ -3,7 +3,7 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
-from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
+from docarray.typing import Mesh3DUrl
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
