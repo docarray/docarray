@@ -1,4 +1,5 @@
 from collections import defaultdict
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, DefaultDict, Dict, List, Type, TypeVar, Union
 
 from docarray.array import AbstractDocumentArray, DocumentArray
@@ -29,6 +30,10 @@ class DocumentArrayStacked(AbstractDocumentArray):
         self._columns: Dict[
             str, Union['TorchTensor', T, NdArray]
         ] = self._create_columns(docs)
+
+    def from_document_array(self: T, docs: DocumentArray):
+        self._docs = docs
+        self._columns = self._create_columns(docs)
 
     @classmethod
     def _create_columns(
@@ -190,3 +195,20 @@ class DocumentArrayStacked(AbstractDocumentArray):
 
         del da_stacked
         return da_list
+
+    @contextmanager
+    def unstacked_mode(self):
+        """
+        Context manager to put the DocumentArrayStacked in unstacked mode and stack it
+        when exiting the context manager.
+        EXAMPLE USAGE
+        .. code-block:: python
+            with da.unstacked_mode():
+                ...
+        """
+        try:
+            da_unstacked = DocumentArrayStacked.to_document_array(self)
+            yield da_unstacked
+        finally:
+            self._docs = da_unstacked
+            self.from_document_array(da_unstacked)

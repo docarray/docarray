@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
@@ -69,3 +70,22 @@ class DocumentArray(AbstractDocumentArray, list[BaseDocument]):
             da_proto.docs.append(doc.to_protobuf())
 
         return DocumentArrayProto(list_=da_proto)
+
+    @contextmanager
+    def stacked_mode(self):
+        """
+        Context manager to put the DocumentArray in stacked mode and unstack it when
+        exiting the context manager.
+        EXAMPLE USAGE
+        .. code-block:: python
+            with da.stacked_mode():
+                ...
+        """
+
+        from docarray.array.array_stacked import DocumentArrayStacked
+
+        try:
+            da_stacked = DocumentArrayStacked(self)
+            yield da_stacked
+        finally:
+            self = DocumentArrayStacked.to_document_array(da_stacked)
