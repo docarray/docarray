@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
+    from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='NdArray')
@@ -207,3 +208,10 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
     ) -> T:
         """Stack a sequence of ndarrays into a single ndarray."""
         return cls.from_ndarray(np.stack(seq))
+
+    @staticmethod
+    def get_comp_backend() -> Type['NumpyCompBackend']:
+        """Return the computational backend of the tensor"""
+        from docarray.computation.numpy_backend import NumpyCompBackend
+
+        return NumpyCompBackend

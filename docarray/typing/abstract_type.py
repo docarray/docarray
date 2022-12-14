@@ -28,3 +28,5 @@ class AbstractType(BaseNode):
     @abstractmethod
     def from_protobuf(cls: Type[T], pb_msg: T) -> T:
         ...
+
+    is_tensor = False

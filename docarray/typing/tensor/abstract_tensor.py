@@ -2,6 +2,7 @@ import abc
 from abc import ABC
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
 
+from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
@@ -17,6 +18,7 @@ ShapeT = TypeVar('ShapeT')
 class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
     __parametrized_meta__ = type
+    is_tensor = True
 
     @classmethod
     @abc.abstractmethod
@@ -105,3 +107,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         """
         transform self into a NdArrayProto protobuf message
         """
+
+    @staticmethod
+    @abc.abstractmethod
+    def get_comp_backend() -> Type[AbstractComputationalBackend]:
+        """The computational backend compatible with this tensor type."""
+        ...

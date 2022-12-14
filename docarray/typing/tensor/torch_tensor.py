@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     import numpy as np
     from docarray.proto import NdArrayProto, NodeProto
+    from docarray.computation.torch_backend import TorchCompBackend
 
 from docarray.document.base_node import BaseNode
 
@@ -239,3 +240,10 @@ class TorchTensor(
     ) -> T:
         """Stack a sequence of ndarray into a single ndarray."""
         return cls.from_native_torch_tensor(torch.stack(seq))  # type: ignore
+
+    @staticmethod
+    def get_comp_backend() -> Type['TorchCompBackend']:
+        """Return the computational backend of the tensor"""
+        from docarray.computation.torch_backend import TorchCompBackend
+
+        return TorchCompBackend

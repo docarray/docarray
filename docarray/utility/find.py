@@ -1,13 +1,7 @@
-import importlib
-from typing import Callable, List, NamedTuple, Optional, Type, Union
-
-import torch  # TODO(johannes) this breaks the optional import of torch
+from typing import List, NamedTuple, Optional, Type, Union
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
-from docarray.typing.tensor import type_to_framework
-
-# but will be fixed once we have a computational backend
 
 
 class FindResult(NamedTuple):
@@ -189,18 +183,16 @@ def find_batched(
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
     embedding_type = _da_attr_type(index, embedding_field)
-
-    # get framework-specific distance and top_k function
-    metric_fn = _get_metric_fn(embedding_type, metric)
-    top_k_fn = _get_topk_fn(embedding_type)
+    comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
     index_embeddings = _extraxt_embeddings(index, embedding_field, embedding_type)
     query_embeddings = _extraxt_embeddings(query, embedding_field, embedding_type)
 
     # compute distances and return top results
+    metric_fn = getattr(comp_backend.Metrics, metric)
     dists = metric_fn(query_embeddings, index_embeddings, device=device)
-    top_scores, top_indices = top_k_fn(
+    top_scores, top_indices = comp_backend.Retrieval.top_k(
         dists, k=limit, device=device, descending=descending
     )
 
@@ -231,15 +223,9 @@ def _extract_embedding_single(
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
-        # TODO(johannes) solve this with computational backend,
-        #  this is ugly hack for now
-        if isinstance(emb, torch.Tensor):
-            emb = emb.unsqueeze(0)
-        else:
-            import numpy as np
-
-            if isinstance(emb, np.ndarray):
-                emb = np.expand_dims(emb, axis=0)
+        # all currently supported frameworks provide `.reshape()`. Onc this is not true
+        # anymore, we need to add a `.reshape()` method to the computational backend
+        emb = emb.reshape(1, -1)
     return emb
 
 
@@ -266,19 +252,13 @@ def _extraxt_embeddings(
         emb = data
 
     if len(emb.shape) == 1:
-        # TODO(johannes) solve this with computational backend,
-        #  this is ugly hack for now
-        if isinstance(emb, torch.Tensor):
-            emb = emb.unsqueeze(0)
-        else:
-            import numpy as np
-
-            if isinstance(emb, np.ndarray):
-                emb = np.expand_dims(emb, axis=0)
+        # all currently supported frameworks provide `.reshape()`. Onc this is not true
+        # anymore, we need to add a `.reshape()` method to the computational backend
+        emb = emb.reshape(1, -1)
     return emb
 
 
-def _da_attr_type(da: DocumentArray, attr: str) -> Type:
+def _da_attr_type(da: DocumentArray, attr: str) -> Type[Tensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 
@@ -286,36 +266,10 @@ def _da_attr_type(da: DocumentArray, attr: str) -> Type:
     :param attr: the attribute name
     :return: the type of the attribute
     """
-    return da.document_type.__fields__[attr].type_
-
-
-def _get_topk_fn(embedding_type: Type) -> Callable:
-    """Dynamically import the distance function from the framework-specific module.
-    This will go away once we have a computational backend.
-
-    :param embedding_type: the type of the embedding
-    :param distance_name: the name of the distance function
-    :return: the framework-specific distance function
-    """
-    framework = type_to_framework[embedding_type]
-    return getattr(
-        importlib.import_module(f'docarray.utility.helper.{framework}'),
-        'top_k',
-    )
-
-
-def _get_metric_fn(embedding_type: Type, metric: Union[str, Callable]) -> Callable:
-    """Dynamically import the distance function from the framework-specific module.
-    This will go away once we have a proper computational backend.
-
-    :param embedding_type: the type of the embedding
-    :param metric: the name of the metric, or the metric itself
-    :return: the framework-specific metric
-    """
-    if callable(metric):
-        return metric
-    framework = type_to_framework[embedding_type]
-    return getattr(
-        importlib.import_module(f'docarray.utility.math.metrics.{framework}'),
-        f'{metric}',
-    )
+    field_type = da.document_type.__fields__[attr].type_
+    if not getattr(field_type, 'is_tensor', False):
+        raise ValueError(
+            f'attribute {attr} is not a tensor-like type, '
+            f'but {field_type.__class__.__name__}'
+        )
+    return field_type
