@@ -129,7 +129,7 @@ jobs:
         python-env: ['3.8', '3.9', '3.10', '3.11']
     steps:
       - uses: actions/checkout@v2.5.0
-      - name: Set up Python 3.8
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-env }}
