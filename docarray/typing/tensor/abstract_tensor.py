@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
+    from docarray.proto import NdArrayProto
+
 T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
 
@@ -73,8 +75,6 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
             _docarray_target_shape = shape
-            __name__ = f'{cls.__name__}[{shape_str}]'
-            __qualname__ = f'{cls.__qualname__}[{shape_str}]'
 
             @classmethod
             def validate(
@@ -85,6 +85,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
             ):
                 t = super().validate(value, field, config)
                 return _cls.__docarray_validate_shape__(t, _cls._docarray_target_shape)
+
+        _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
+        _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
 
         return _ParametrizedTensor
 
@@ -97,3 +100,8 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         ...
+
+    def to_protobuf(self) -> 'NdArrayProto':
+        """
+        transform self into a NdArrayProto protobuf message
+        """
