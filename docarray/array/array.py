@@ -12,11 +12,20 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='DocumentArray')
 
 
-class DocumentArray(list[BaseDocument], AbstractDocumentArray):
+class DocumentArray(AbstractDocumentArray):
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(self, docs: Iterable[BaseDocument]):
-        super().__init__(doc_ for doc_ in docs)
+        self._data = [doc_ for doc_ in docs]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __getitem__(self, item):
+        return self._data[item]
+
+    def __iter__(self):
+        return iter(self._data)
 
     def _get_array_attribute(
         self: T,
