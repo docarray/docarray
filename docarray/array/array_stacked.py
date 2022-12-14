@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import TYPE_CHECKING, DefaultDict, Dict, List, Type, TypeVar, Union
 
 from docarray.array import AbstractDocumentArray, DocumentArray
@@ -22,19 +23,19 @@ T = TypeVar('T', bound='DocumentArrayStacked')
 
 
 class DocumentArrayStacked(AbstractDocumentArray):
-    def __init__(self, docs: DocumentArray):
+    def __init__(self: T, docs: DocumentArray):
         self._docs = docs
 
         self._columns: Dict[
-            str, Union['TorchTensor', AbstractDocumentArray, NdArray]
-        ] = columns
+            str, Union['TorchTensor', T, NdArray]
+        ] = self._create_columns(docs)
 
     @classmethod
     def _create_columns(
-        cls, docs: DocumentArray
-    ) -> Dict[str, Union['TorchTensor', AbstractDocumentArray, NdArray]]:
-        columns = dict()
+        cls: Type[T], docs: DocumentArray
+    ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
 
+        columns_fields = list()
         for field_name, field in cls.document_type.__fields__.items():
 
             is_torch_subclass = (
@@ -46,7 +47,9 @@ class DocumentArrayStacked(AbstractDocumentArray):
                 or issubclass(field.type_, BaseDocument)
                 or issubclass(field.type_, NdArray)
             ):
-                columns[field_name] = None
+                columns_fields.append(field_name)
+
+        columns: Dict[str, Union['TorchTensor', T, NdArray]] = dict()
 
         columns_to_stack: DefaultDict[
             str, Union[List['TorchTensor'], List[NdArray], List[BaseDocument]]
@@ -55,19 +58,21 @@ class DocumentArrayStacked(AbstractDocumentArray):
         )  # type: ignore
 
         for doc in docs:
-            for field_to_stack in columns.keys():
+            for field_to_stack in columns_fields:
                 columns_to_stack[field_to_stack].append(getattr(doc, field_to_stack))
                 setattr(doc, field_to_stack, None)
 
         for field_to_stack, to_stack in columns_to_stack.items():
 
-            type_ = self.document_type.__fields__[field_to_stack].type_
+            type_ = cls.document_type.__fields__[field_to_stack].type_
             if issubclass(type_, BaseDocument):
                 columns[field_to_stack] = DocumentArrayStacked.__class_getitem__(type_)(
                     to_stack
                 )
             else:
                 columns[field_to_stack] = type_.__docarray_stack__(to_stack)
+
+        return columns
 
     def _get_array_attribute(
         self: T,
@@ -125,8 +130,10 @@ class DocumentArrayStacked(AbstractDocumentArray):
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message"""
         da = cls(
-            cls.document_type.from_protobuf(doc_proto)
-            for doc_proto in pb_msg.stack.list_.docs
+            DocumentArray(
+                cls.document_type.from_protobuf(doc_proto)
+                for doc_proto in pb_msg.stack.list_.docs
+            )
         )
         da._columns = pb_msg.stack.columns
         return da
