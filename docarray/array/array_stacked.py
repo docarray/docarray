@@ -126,6 +126,9 @@ class DocumentArrayStacked(AbstractDocumentArray):
         for i in range(len(self)):
             yield self.__getitem_without_columns__(i)
 
+    def __len__(self):
+        return len(self._docs)
+
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message"""
