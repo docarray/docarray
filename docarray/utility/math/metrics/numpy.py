@@ -4,7 +4,7 @@ from typing import List, Optional
 import numpy as np
 
 
-def _expand_if_single_axis(*matrices: 'np.array') -> List['np.array']:
+def _expand_if_single_axis(*matrices: np.ndarray) -> List[np.ndarray]:
     """Expands arrays that only have one axis, at dim 0.
     This ensures that all outputs can be treated as matrices, not vectors.
 
@@ -21,18 +21,18 @@ def _expand_if_single_axis(*matrices: 'np.array') -> List['np.array']:
     return expanded
 
 
-def _expand_if_scalar(arr: 'np.array') -> 'np.array':
+def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     if len(arr.shape) == 0:  # avoid scalar output
         arr = np.expand_dims(arr, axis=0)
     return arr
 
 
 def cosine_sim(
-    x_mat: 'np.ndarray',
-    y_mat: 'np.ndarray',
+    x_mat: np.ndarray,
+    y_mat: np.ndarray,
     eps: float = 1e-7,
     device: Optional[str] = None,
-) -> 'np.ndarray':
+) -> np.ndarray:
     """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
     :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is the
@@ -63,11 +63,11 @@ def cosine_sim(
 
 
 def sqeuclidean_dist(
-    x_mat: 'np.ndarray',
-    y_mat: 'np.ndarray',
+    x_mat: np.ndarray,
+    y_mat: np.ndarray,
     eps: float = 1e-7,
     device: Optional[str] = None,
-) -> 'np.ndarray':
+) -> np.ndarray:
     """Pairwise Squared Euclidian distances between all vectors in x_mat and y_mat.
 
     :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is the
@@ -100,8 +100,8 @@ def sqeuclidean_dist(
 
 
 def euclidean_dist(
-    x_mat: 'np.ndarray', y_mat: 'np.ndarray', device: Optional[str] = None
-) -> 'np.ndarray':
+    x_mat: np.ndarray, y_mat: np.ndarray, device: Optional[str] = None
+) -> np.ndarray:
     """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
     :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is the

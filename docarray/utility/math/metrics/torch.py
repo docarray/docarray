@@ -1,12 +1,9 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 import torch
 
-if TYPE_CHECKING:  # pragma: no cover
-    from torch import tensor
 
-
-def _unsqueeze_if_single_axis(*matrices: 'tensor') -> List['tensor']:
+def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
     """Unsqueezes tensors that only have one axis, at dim 0.
     This ensures that all outputs can be treated as matrices, not vectors.
 
@@ -23,15 +20,18 @@ def _unsqueeze_if_single_axis(*matrices: 'tensor') -> List['tensor']:
     return unsqueezed
 
 
-def _usqueeze_if_scalar(t: 'tensor'):
+def _usqueeze_if_scalar(t: torch.Tensor):
     if len(t.shape) == 0:  # avoid scalar output
         t = t.unsqueeze(0)
     return t
 
 
 def cosine_sim(
-    x_mat: 'tensor', y_mat: 'tensor', eps: float = 1e-7, device: Optional[str] = None
-) -> 'tensor':
+    x_mat: torch.Tensor,
+    y_mat: torch.Tensor,
+    eps: float = 1e-7,
+    device: Optional[str] = None,
+) -> torch.Tensor:
     """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
     :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -61,8 +61,8 @@ def cosine_sim(
 
 
 def euclidean_dist(
-    x_mat: 'tensor', y_mat: 'tensor', device: Optional[str] = None
-) -> 'tensor':
+    x_mat: torch.Tensor, y_mat: torch.Tensor, device: Optional[str] = None
+) -> torch.Tensor:
     """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
     :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -88,8 +88,8 @@ def euclidean_dist(
 
 
 def sqeuclidean_dist(
-    x_mat: 'tensor', y_mat: 'tensor', device: Optional[str] = None
-) -> 'tensor':
+    x_mat: torch.Tensor, y_mat: torch.Tensor, device: Optional[str] = None
+) -> torch.Tensor:
     """Pairwise Squared Euclidian distances between all vectors in x_mat and y_mat.
 
     :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the

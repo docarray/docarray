@@ -4,11 +4,11 @@ import torch
 
 
 def top_k(
-    values: 'torch.tensor',
+    values: torch.Tensor,
     k: int,
     descending: bool = False,
     device: Optional[str] = None,
-) -> Tuple['torch.tensor', 'torch.tensor']:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Retrieves the top k smallest values in `values`,
     and returns them alongside their indices in the input `values`.

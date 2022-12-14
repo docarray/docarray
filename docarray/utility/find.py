@@ -1,11 +1,13 @@
 import importlib
 from typing import Callable, List, NamedTuple, Optional, Type, Union
 
-import torch
+import torch  # TODO(johannes) this breaks the optional import of torch
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
 from docarray.typing.tensor import type_to_framework
+
+# but will be fixed once we have a computational backend
 
 
 class FindResult(NamedTuple):
@@ -106,7 +108,7 @@ def find_batched(
     index: DocumentArray,
     query: Union[Tensor, DocumentArray],
     embedding_field: str = 'embedding',
-    metric: Union[str, Callable[['Tensor', 'Tensor'], 'Tensor']] = 'cosine_sim',
+    metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
@@ -289,6 +291,7 @@ def _da_attr_type(da: DocumentArray, attr: str) -> Type:
 
 def _get_topk_fn(embedding_type: Type) -> Callable:
     """Dynamically import the distance function from the framework-specific module.
+    This will go away once we have a computational backend.
 
     :param embedding_type: the type of the embedding
     :param distance_name: the name of the distance function
@@ -303,6 +306,7 @@ def _get_topk_fn(embedding_type: Type) -> Callable:
 
 def _get_metric_fn(embedding_type: Type, metric: Union[str, Callable]) -> Callable:
     """Dynamically import the distance function from the framework-specific module.
+    This will go away once we have a proper computational backend.
 
     :param embedding_type: the type of the embedding
     :param metric: the name of the metric, or the metric itself
