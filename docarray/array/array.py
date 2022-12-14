@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Iterable, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import AnyDocument, BaseDocument
@@ -102,14 +102,14 @@ class DocumentArray(AbstractDocumentArray):
             da_stacked = DocumentArrayStacked(self)
             yield da_stacked
         finally:
-            self = DocumentArrayStacked[self.document_type].to_document_array(
-                da_stacked
-            )
+            self = DocumentArrayStacked.__class_getitem__(
+                self.document_type
+            ).to_document_array(da_stacked)
 
     @classmethod
     def validate(
         cls: Type[T],
-        value: Any,
+        value: Union[T, Iterable[BaseDocument]],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:

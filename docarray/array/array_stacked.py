@@ -2,7 +2,6 @@ from collections import defaultdict
 from contextlib import contextmanager
 from typing import (
     TYPE_CHECKING,
-    Any,
     DefaultDict,
     Dict,
     Iterable,
@@ -234,13 +233,13 @@ class DocumentArrayStacked(AbstractDocumentArray):
     @classmethod
     def validate(
         cls: Type[T],
-        value: Any,
+        value: Union[T, Iterable[BaseDocument]],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
         if isinstance(value, cls):
             return value
         elif isinstance(value, Iterable):
-            return cls(value)
+            return cls(DocumentArray(value))
         else:
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')

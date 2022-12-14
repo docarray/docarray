@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, List, Sequence, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Generic, List, Sequence, Type, TypeVar, Union
 
 from docarray.document import BaseDocument
 from docarray.typing.abstract_type import AbstractType
@@ -10,9 +10,10 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound='AbstractDocumentArray')
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class AbstractDocumentArray(Sequence[BaseDocument], AbstractType):
+class AbstractDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
