@@ -8,7 +8,7 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.proto import DocumentArrayProto
+    from docarray.proto import DocumentArrayStackedProto
     from docarray.typing import TorchTensor
 
 try:
@@ -137,18 +137,20 @@ class DocumentArrayStacked(AbstractDocumentArray):
         return len(self._docs)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
         """create a Document from a protobuf message"""
-        da = cls(
-            DocumentArray(
-                cls.document_type.from_protobuf(doc_proto)
-                for doc_proto in pb_msg.stack.list_.docs
-            )
+
+        docs = DocumentArray(
+            cls.document_type.from_protobuf(doc_proto)
+            for doc_proto in pb_msg.list_.docs
         )
-        da._columns = pb_msg.stack.columns
+        da = cls(DocumentArray([]))
+
+        da._docs = docs
+        da._columns = pb_msg.columns
         return da
 
-    def to_protobuf(self) -> 'DocumentArrayProto':
+    def to_protobuf(self) -> 'DocumentArrayStackedProto':
         """Convert DocumentArray into a Protobuf message"""
         from docarray.proto import (
             DocumentArrayListProto,
