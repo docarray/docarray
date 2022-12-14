@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-env: [3.8, 3.9]
+        python-env: [3.8, 3.9, '3.10']
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python 3.8
