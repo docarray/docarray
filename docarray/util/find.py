@@ -40,7 +40,7 @@ def find(
 
         from docarray import DocumentArray, Document
         from docarray.typing import TorchTensor
-        from docarray.utility.find import find
+        from docarray.util.find import find
 
 
         class MyDocument(Document):
@@ -129,7 +129,7 @@ def find_batched(
 
         from docarray import DocumentArray, Document
         from docarray.typing import TorchTensor
-        from docarray.utility.find import find
+        from docarray.util.find import find
 
 
         class MyDocument(Document):
