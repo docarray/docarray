@@ -17,7 +17,7 @@ T = TypeVar('T', bound='Url3D')
 
 class Url3D(AnyUrl, ABC):
     """
-    URL to a .obj, .glb, or .ply file.
+    URL to a .obj, .glb, or .ply file containing 3D mesh or point cloud information.
     Can be remote (web) URL, or a local file path.
     """
 

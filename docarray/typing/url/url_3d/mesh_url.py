@@ -12,7 +12,7 @@ T = TypeVar('T', bound='Mesh3DUrl')
 
 class Mesh3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file.
+    URL to a .obj, .glb, or .ply file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
 

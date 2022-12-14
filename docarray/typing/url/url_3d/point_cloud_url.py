@@ -12,7 +12,7 @@ T = TypeVar('T', bound='PointCloud3DUrl')
 
 class PointCloud3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file.
+    URL to a .obj, .glb, or .ply file containing point cloud information.
     Can be remote (web) URL, or a local file path.
     """
 
