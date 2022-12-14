@@ -3,7 +3,16 @@ import torch
 
 from docarray import Document
 from docarray.document import AnyDocument
-from docarray.typing import AnyUrl, Embedding, ImageUrl, NdArray, TextUrl, TorchTensor
+from docarray.typing import (
+    AnyUrl,
+    Embedding,
+    ImageUrl,
+    Mesh3DUrl,
+    NdArray,
+    PointCloud3DUrl,
+    TextUrl,
+    TorchTensor,
+)
 
 
 def test_proto_all_types():
@@ -14,6 +23,8 @@ def test_proto_all_types():
         any_url: AnyUrl
         image_url: ImageUrl
         text_url: TextUrl
+        mesh_url: Mesh3DUrl
+        point_cloud_url: PointCloud3DUrl
 
     doc = Mymmdoc(
         tensor=np.zeros((3, 224, 224)),
@@ -22,6 +33,8 @@ def test_proto_all_types():
         any_url='http://jina.ai',
         image_url='http://jina.ai/bla.jpg',
         text_url='http://jina.ai',
+        mesh_url='http://jina.ai/mesh.obj',
+        point_cloud_url='http://jina.ai/mesh.obj',
     )
 
     new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
