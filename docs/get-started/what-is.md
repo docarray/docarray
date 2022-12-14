@@ -26,7 +26,7 @@ DocArray is designed to be extremely intuitive for Python users, no new syntax t
 
 DocArray is designed to maximize the local experience, with the requirement of cloud readiness at any time.
 
-DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of [multi/cross-modal applications](https://docs.jina.ai/get-started/what-is-cross-modal-multi-modal/).
+DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of multi-modal applications
 
 ```{figure} dataclass-example.svg
 :width: 80%
