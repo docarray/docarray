@@ -39,7 +39,7 @@ class Mesh3DUrl(Url3D):
             from docarray import Document
             import numpy as np
 
-            from docarray.typing.url.mesh_url import Mesh3DUrl
+            from docarray.typing import Mesh3DUrl
 
 
             class MyDoc(Document):
