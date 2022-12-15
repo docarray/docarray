@@ -6,8 +6,11 @@ from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
+    import numpy as np
+    import torch
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
+TComp = TypeVar('TComp', bound=Union['torch.Tensor', 'np.ndarray'])
 
 T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
@@ -99,7 +102,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         comp_backend = cls.get_comp_backend()
-        return cls.__docarray_from_native__(comp_backend.stack(seq))
+        # at runtime, 'T' is always the correct input type for .stack()
+        # but mypy doesn't know that, so we ignore it here
+        return cls.__docarray_from_native__(comp_backend.stack(seq))  # type: ignore
 
     @classmethod
     @abc.abstractmethod
