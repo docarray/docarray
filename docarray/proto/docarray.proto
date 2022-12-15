@@ -63,6 +63,8 @@ message NodeProto {
 
     string point_cloud_url = 13;
 
+    string audio_url = 14;
+
 
   }
 
