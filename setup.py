@@ -48,6 +48,7 @@ setup(
             'matplotlib',
             'Pillow',
             'fastapi',
+            'pydantic>=1.9.0',
             'uvicorn',
         ],
         'full': [
@@ -63,6 +64,7 @@ setup(
             'scipy',
             'av',
             'fastapi',
+            'pydantic>=1.9.0',
             'uvicorn',
             'strawberry-graphql',
         ],
