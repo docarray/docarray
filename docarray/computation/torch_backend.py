@@ -28,7 +28,7 @@ def _usqueeze_if_scalar(t: torch.Tensor):
     return t
 
 
-class TorchCompBackend(AbstractComputationalBackend):
+class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     """
     Computational backend for PyTorch.
     """
@@ -39,18 +39,18 @@ class TorchCompBackend(AbstractComputationalBackend):
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
-    class Retrieval:
+    class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """
         Abstract class for retrieval and ranking functionalities
         """
 
         @staticmethod
         def top_k(
-            values: torch.Tensor,
+            values: 'torch.Tensor',
             k: int,
             descending: bool = False,
             device: Optional[str] = None,
-        ) -> Tuple[torch.Tensor, torch.Tensor]:
+        ) -> Tuple['torch.Tensor', 'torch.Tensor']:
             """
             Retrieves the top k smallest values in `values`,
             and returns them alongside their indices in the input `values`.
@@ -78,7 +78,7 @@ class TorchCompBackend(AbstractComputationalBackend):
                 input=values, k=k, largest=descending, sorted=True, dim=-1
             )
 
-    class Metrics:
+    class Metrics(AbstractComputationalBackend.Metrics[torch.Tensor]):
         """
         Abstract base class for metrics (distances and similarities).
         """

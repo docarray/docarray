@@ -29,7 +29,7 @@ def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-class NumpyCompBackend(AbstractComputationalBackend):
+class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     """
     Computational backend for Numpy.
     """
@@ -40,7 +40,7 @@ class NumpyCompBackend(AbstractComputationalBackend):
     ) -> 'np.ndarray':
         return np.stack(tensors, axis=dim)
 
-    class Retrieval:
+    class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """
         Abstract class for retrieval and ranking functionalities
         """
@@ -92,7 +92,7 @@ class NumpyCompBackend(AbstractComputationalBackend):
 
             return values, idx
 
-    class Metrics:
+    class Metrics(AbstractComputationalBackend.Metrics[np.ndarray]):
         """
         Abstract base class for metrics (distances and similarities).
         """
@@ -169,7 +169,6 @@ class NumpyCompBackend(AbstractComputationalBackend):
         def sqeuclidean_dist(
             x_mat: np.ndarray,
             y_mat: np.ndarray,
-            eps: float = 1e-7,
             device: Optional[str] = None,
         ) -> np.ndarray:
             """Pairwise Squared Euclidian distances between all vectors in
@@ -181,15 +180,14 @@ class NumpyCompBackend(AbstractComputationalBackend):
             :param y_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
-            :param eps: a small jitter to avoid divde by zero
-            :param eps: Negative results (due to numerical inaccuracies) no smaller
-                than -eps will be returned as 0.
             :param device: Not supported for this backend
             :return: np.ndarray  of shape (n_vectors, n_vectors) containing all
                 pairwise Squared Euclidian distances.
                 The index [i_x, i_y] contains the cosine Squared Euclidian between
                 x_mat[i_x] and y_mat[i_y].
             """
+            eps: float = 1e-7  # avoid problems with numerical inaccuracies
+
             if device is not None:
                 warnings.warn('`device` is not supported for numpy operations')
 

@@ -1,11 +1,14 @@
+import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, TypeVar, Union
 
-if TYPE_CHECKING:
-    from docarray.typing.tensor.tensor import Tensor
+# In practice all of the below will be the same type
+TTensor = TypeVar('TTensor')
+TTensorRetrieval = TypeVar('TTensorRetrieval')
+TTensorMetrics = TypeVar('TTensorMetrics')
 
 
-class AbstractComputationalBackend(ABC):
+class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     """
     Abstract base class for computational backends.
     Every supported tensor/ML framework (numpy, torch etc.) should define its own
@@ -16,14 +19,14 @@ class AbstractComputationalBackend(ABC):
     @staticmethod
     @abstractmethod
     def stack(
-        tensors: Union[List['Tensor'], Tuple['Tensor']], dim: int = 0
-    ) -> 'Tensor':
+        tensors: Union[List['TTensor'], Tuple['TTensor']], dim: int = 0
+    ) -> 'TTensor':
         """
         Stack a list of tensors along a new axis.
         """
         ...
 
-    class Retrieval(ABC):
+    class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
         """
         Abstract class for retrieval and ranking functionalities
         """
@@ -31,11 +34,11 @@ class AbstractComputationalBackend(ABC):
         @staticmethod
         @abstractmethod
         def top_k(
-            values: 'Tensor',
+            values: 'TTensorRetrieval',
             k: int,
             descending: bool = False,
             device: Optional[str] = None,
-        ) -> Tuple['Tensor', 'Tensor']:
+        ) -> Tuple['TTensorRetrieval', 'TTensorRetrieval']:
             """
             Retrieves the top k smallest values in `values`,
             and returns them alongside their indices in the input `values`.
@@ -54,7 +57,7 @@ class AbstractComputationalBackend(ABC):
             """
             ...
 
-    class Metrics(ABC):
+    class Metrics(ABC, typing.Generic[TTensorMetrics]):
         """
         Abstract base class for metrics (distances and similarities).
         """
@@ -62,11 +65,11 @@ class AbstractComputationalBackend(ABC):
         @staticmethod
         @abstractmethod
         def cosine_sim(
-            x_mat: 'Tensor',
-            y_mat: 'Tensor',
+            x_mat: 'TTensorMetrics',
+            y_mat: 'TTensorMetrics',
             eps: float = 1e-7,
             device: Optional[str] = None,
-        ) -> 'Tensor':
+        ) -> 'TTensorMetrics':
             """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
             :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -86,8 +89,10 @@ class AbstractComputationalBackend(ABC):
         @staticmethod
         @abstractmethod
         def euclidean_dist(
-            x_mat: 'Tensor', y_mat: 'Tensor', device: Optional[str] = None
-        ) -> 'Tensor':
+            x_mat: 'TTensorMetrics',
+            y_mat: 'TTensorMetrics',
+            device: Optional[str] = None,
+        ) -> 'TTensorMetrics':
             """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
             :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -106,8 +111,10 @@ class AbstractComputationalBackend(ABC):
         @staticmethod
         @abstractmethod
         def sqeuclidean_dist(
-            x_mat: 'Tensor', y_mat: 'Tensor', device: Optional[str] = None
-        ) -> 'Tensor':
+            x_mat: 'TTensorMetrics',
+            y_mat: 'TTensorMetrics',
+            device: Optional[str] = None,
+        ) -> 'TTensorMetrics':
             """Pairwise Squared Euclidian distances between all vectors
                 in x_mat and y_mat.
 
