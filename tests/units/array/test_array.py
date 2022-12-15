@@ -1,8 +1,47 @@
 import numpy as np
+import pytest
 
 from docarray import Document, DocumentArray
 from docarray.document import BaseDocument
 from docarray.typing import NdArray
+
+
+@pytest.fixture()
+def da():
+    class Text(Document):
+        text: str
+
+    return DocumentArray([Text(text='hello') for _ in range(10)])
+
+
+def test_iterate(da):
+    for doc, doc2 in zip(da, da._data):
+        assert doc.id == doc2.id
+
+
+def test_append():
+    class Text(Document):
+        text: str
+
+    da = DocumentArray[Text]([])
+
+    da.append(Text(text='hello', id='1'))
+
+    assert len(da) == 1
+    assert da[0].id == '1'
+
+
+def test_extend():
+    class Text(Document):
+        text: str
+
+    da = DocumentArray[Text]([Text(text='hello', id=str(i)) for i in range(10)])
+
+    da.extend([Text(text='hello', id=str(10 + i)) for i in range(10)])
+
+    assert len(da) == 20
+    for da, i in zip(da, range(20)):
+        assert da.id == str(i)
 
 
 def test_document_array():

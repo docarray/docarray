@@ -4,6 +4,7 @@ from typing import Callable, List, NamedTuple, Optional, Type, Union
 import torch  # TODO(johannes) this breaks the optional import of torch
 
 from docarray import Document, DocumentArray
+from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import Tensor
 from docarray.typing.tensor import type_to_framework
 
@@ -244,7 +245,7 @@ def _extract_embedding_single(
 
 
 def _extraxt_embeddings(
-    data: Union[DocumentArray, Document, Tensor],
+    data: Union[DocumentArray, DocumentArrayStacked, Document, Tensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> Tensor:
@@ -258,8 +259,9 @@ def _extraxt_embeddings(
     # TODO(johannes) put docarray stack in the computational backend
     if isinstance(data, DocumentArray):
         emb = getattr(data, embedding_field)
-        if not data.is_stacked():
-            emb = embedding_type.__docarray_stack__(emb)
+        emb = embedding_type.__docarray_stack__(emb)
+    elif isinstance(data, DocumentArrayStacked):
+        emb = getattr(data, embedding_field)
     elif isinstance(data, Document):
         emb = getattr(data, embedding_field)
     else:  # treat data as tensor

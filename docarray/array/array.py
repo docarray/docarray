@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from functools import wraps
 from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
@@ -15,6 +16,17 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='DocumentArray')
 
 
+def _delegate_meth_to_data(meth_name: str) -> None:
+
+    func = getattr(list, meth_name)
+
+    @wraps(func)
+    def _delegate_meth(self, *args, **kwargs):
+        return getattr(self._data, meth_name)(*args, **kwargs)
+
+    return _delegate_meth
+
+
 class DocumentArray(AbstractDocumentArray):
     document_type: Type[BaseDocument] = AnyDocument
 
@@ -29,6 +41,14 @@ class DocumentArray(AbstractDocumentArray):
 
     def __iter__(self):
         return iter(self._data)
+
+    append = _delegate_meth_to_data('append')
+    extend = _delegate_meth_to_data('extend')
+    insert = _delegate_meth_to_data('insert')
+    pop = _delegate_meth_to_data('pop')
+    remove = _delegate_meth_to_data('remove')
+    reverse = _delegate_meth_to_data('reverse')
+    sort = _delegate_meth_to_data('sort')
 
     def _get_array_attribute(
         self: T,
