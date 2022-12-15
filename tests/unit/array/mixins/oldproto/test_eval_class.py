@@ -567,6 +567,21 @@ def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage)
     assert all([v == 1.0 for v in res.values()])
 
 
+def test_embed_and_evaluate_two_different_das():
+    queries_da = DocumentArray([Document(text=str(i), label=i % 10) for i in range(10)])
+    index_da = DocumentArray(
+        [Document(text=str(i), label=i % 10) for i in range(10, 110)]
+    )
+    res = queries_da.embed_and_evaluate(
+        index_data=index_da,
+        metrics=['precision_at_k', 'reciprocal_rank', 'recall_at_k', 'f1_score_at_k'],
+        embed_funcs=dummy_embed_function,
+        match_batch_size=1,
+        limit=10,
+    )
+    print(res)
+
+
 @pytest.mark.parametrize(
     'use_index, expected, label_tag',
     [
@@ -639,7 +654,7 @@ def test_embed_and_evaluate_labeled_dataset(
     ],
 )
 def test_embed_and_evaluate_on_real_data(two_embed_funcs, kwargs):
-    metric_names = ['precision_at_k', 'reciprocal_rank']
+    metric_names = ['precision_at_k', 'reciprocal_rank', 'recall_at_k']
 
     labels = ['18828_alt.atheism', '18828_comp.graphics']
     news = [load_dataset('newsgroup', label) for label in labels]
@@ -673,10 +688,16 @@ def test_embed_and_evaluate_on_real_data(two_embed_funcs, kwargs):
     )
 
     # re-calculate manually
+    num_relevant_documents_per_label = dict(
+        Counter([d.tags['label'] for d in index_docs])
+    )
     emb_func(query_docs)
     emb_func(index_docs)
     query_docs.match(index_docs)
-    res2 = query_docs.evaluate(metrics=metric_names)
+    res2 = query_docs.evaluate(
+        metrics=metric_names,
+        num_relevant_documents_per_label=num_relevant_documents_per_label,
+    )
 
     for key in res:
         assert key in res2

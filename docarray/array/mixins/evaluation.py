@@ -458,13 +458,12 @@ class EvaluationMixin:
                     new_matches.append(m)
                 query_data[doc.id, 'matches'] = new_matches
 
-        if ground_truth and label_tag in ground_truth[0].tags:
+        if (
+            not (ground_truth and len(ground_truth) > 0 and ground_truth[0].matches)
+            and label_tag in index_data[0].tags
+        ):
             num_relevant_documents_per_label = dict(
-                Counter([d.tags[label_tag] for d in ground_truth])
-            )
-        elif not ground_truth and label_tag in query_data[0].tags:
-            num_relevant_documents_per_label = dict(
-                Counter([d.tags[label_tag] for d in query_data])
+                Counter([d.tags[label_tag] for d in index_data])
             )
         else:
             num_relevant_documents_per_label = None
