@@ -466,7 +466,7 @@ class EvaluationMixin:
                 Counter([d.tags[label_tag] for d in index_data])
             )
             if only_one_dataset and exclude_self:
-                for k, v in num_relevant_documents_per_label:
+                for k, v in num_relevant_documents_per_label.items():
                     num_relevant_documents_per_label[k] -= 1
         else:
             num_relevant_documents_per_label = None
