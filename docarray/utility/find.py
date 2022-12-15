@@ -106,7 +106,7 @@ def find(
 
 
 def find_batched(
-    index: DocumentArray,
+    index: Union[DocumentArray, DocumentArrayStacked],
     query: Union[Tensor, DocumentArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -280,7 +280,7 @@ def _extraxt_embeddings(
     return emb
 
 
-def _da_attr_type(da: DocumentArray, attr: str) -> Type:
+def _da_attr_type(da: Union[DocumentArray, DocumentArrayStacked], attr: str) -> Type:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 

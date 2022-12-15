@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from functools import wraps
-from typing import TYPE_CHECKING, Iterable, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Callable, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import AnyDocument, BaseDocument
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='DocumentArray')
 
 
-def _delegate_meth_to_data(meth_name: str) -> None:
+def _delegate_meth_to_data(meth_name: str) -> Callable:
 
     func = getattr(list, meth_name)
 
@@ -133,7 +133,7 @@ class DocumentArray(AbstractDocumentArray):
         """
         from docarray.array.array_stacked import DocumentArrayStacked
 
-        return DocumentArrayStacked[self.document_type](self)
+        return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
 
     @classmethod
     def validate(
