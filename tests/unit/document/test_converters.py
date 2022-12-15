@@ -36,16 +36,20 @@ def test_video_convert_pipe_key_frame_indices(pytestconfig, tmpdir):
     assert d.tags['keyframe_indices'] == [0, 95]
 
 
-def test_audio_convert_pipe(pytestconfig, tmpdir):
-    num_d = 0
-    for d in from_files(f'{cur_dir}/toydata/*.wav'):
-        fname = str(tmpdir / f'tmp{num_d}.wav')
-        d.load_uri_to_audio_tensor()
-        d.tensor = d.tensor[::-1]
-        d.save_audio_tensor_to_file(fname)
-        assert os.path.exists(fname)
-        num_d += 1
-    assert num_d
+@pytest.mark.parametrize(
+    'file',
+    [
+        'https://www.kozco.com/tech/piano2.wav',
+        f'{cur_dir}/toydata/hello.wav',
+        f'{cur_dir}/toydata/olleh.wav',
+    ],
+)
+def test_audio_convert_pipe(file, pytestconfig, tmpdir):
+    d = Document(uri=file)
+    d.load_uri_to_audio_tensor()
+    fname = str(tmpdir / f'tmp.wav')
+    d.save_audio_tensor_to_file(fname)
+    assert os.path.exists(fname)
 
 
 def test_image_convert_pipe(pytestconfig):
