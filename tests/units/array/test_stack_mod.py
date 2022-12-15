@@ -152,3 +152,18 @@ def test_proto_stacked_mode_numpy():
     da = DocumentArrayStacked[MyDoc](da)
 
     da.from_protobuf(da.to_protobuf())
+
+
+def test_stack_call():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    da = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    da = da.stack()
+
+    assert len(da) == 10
+
+    assert da.tensor.shape == (10, 3, 224, 224)

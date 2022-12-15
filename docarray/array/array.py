@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
+    from docarray.array.array_stacked import DocumentArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import NdArray, TorchTensor
 
@@ -125,6 +126,14 @@ class DocumentArray(AbstractDocumentArray):
             self = DocumentArrayStacked.__class_getitem__(
                 self.document_type
             ).to_document_array(da_stacked)
+
+    def stack(self) -> 'DocumentArrayStacked':
+        """
+        Stack the DocumentArray into a DocumentArrayStacked
+        """
+        from docarray.array.array_stacked import DocumentArrayStacked
+
+        return DocumentArrayStacked[self.document_type](self)
 
     @classmethod
     def validate(

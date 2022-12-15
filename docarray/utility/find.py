@@ -17,7 +17,7 @@ class FindResult(NamedTuple):
 
 
 def find(
-    index: DocumentArray,
+    index: Union[DocumentArray, DocumentArrayStacked],
     query: Union[Tensor, Document],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
