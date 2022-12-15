@@ -6,11 +6,8 @@ from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
-    import numpy as np
-    import torch
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
-TComp = TypeVar('TComp', bound=Union['torch.Tensor', 'np.ndarray'])
 
 T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
