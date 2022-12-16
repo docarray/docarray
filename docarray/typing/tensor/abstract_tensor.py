@@ -2,6 +2,7 @@ import abc
 from abc import ABC
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
 
+from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
@@ -94,7 +95,24 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
-    @abc.abstractmethod
     def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
+        comp_backend = cls.get_comp_backend()
+        # at runtime, 'T' is always the correct input type for .stack()
+        # but mypy doesn't know that, so we ignore it here
+        return cls.__docarray_from_native__(comp_backend.stack(seq))  # type: ignore
+
+    @classmethod
+    @abc.abstractmethod
+    def __docarray_from_native__(cls: Type[T], value: Any) -> T:
+        """
+        Create a DocArray tensor from a tensor that is native to the given framework,
+        e.g. from numpy.ndarray or torch.Tensor.
+        """
+        ...
+
+    @staticmethod
+    @abc.abstractmethod
+    def get_comp_backend() -> Type[AbstractComputationalBackend]:
+        """The computational backend compatible with this tensor type."""
         ...
