@@ -1,4 +1,6 @@
-from typing import List, NamedTuple, Optional, Type, Union
+from typing import List, NamedTuple, Optional, Type, Union, get_args
+
+from typing_inspect import is_optional_type, is_union_type  # type: ignore
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
@@ -242,7 +244,7 @@ def _extraxt_embeddings(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-    # TODO(johannes) put docarray stack in the computational backend
+
     if isinstance(data, DocumentArray):
         emb = getattr(data, embedding_field)
         if not data.is_stacked():
@@ -259,7 +261,7 @@ def _extraxt_embeddings(
     return emb
 
 
-def _da_attr_type(da: DocumentArray, attr: str) -> Type[Tensor]:
+def _da_attr_type(da: DocumentArray, attr: str) -> Type[AbstractTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 
@@ -268,9 +270,16 @@ def _da_attr_type(da: DocumentArray, attr: str) -> Type[Tensor]:
     :return: the type of the attribute
     """
     field_type = da.document_type.__fields__[attr].type_
+    if is_optional_type(field_type):
+        field_type = get_args(field_type)[0]  # get type inside Optional
+    elif is_union_type(field_type):
+        # determine type based on the fist element
+        field_type = type(getattr(da[0], attr))
+
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(
             f'attribute {attr} is not a tensor-like type, '
             f'but {field_type.__class__.__name__}'
         )
+
     return field_type

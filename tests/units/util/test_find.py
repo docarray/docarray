@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 import numpy as np
 import pytest
 import torch
@@ -252,3 +254,39 @@ def test_find_batched_np_stacked(random_nd_batch_query, random_nd_index, stack_w
         assert len(scores) == 7
     for sc in [scores for _, scores in results]:
         assert (sorted(sc, reverse=True) == sc).all()
+
+
+def test_find_optional():
+    class MyDoc(Document):
+        embedding: Optional[TorchTensor]
+
+    query = MyDoc(embedding=torch.rand(10))
+    index = DocumentArray[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+
+def test_find_union():
+    class MyDoc(Document):
+        embedding: Union[TorchTensor, NdArray]
+
+    query = MyDoc(embedding=torch.rand(10))
+    index = DocumentArray[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()

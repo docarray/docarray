@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import pytest
@@ -176,3 +176,17 @@ def test_stack_numpy():
     assert batch.tensor.ctypes.data == batch._columns['tensor'].ctypes.data
 
     batch.unstack()
+
+
+def test_stack_union():
+    class Image(Document):
+        tensor: Union[TorchTensor[3, 224, 224], NdArray[3, 224, 224]]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    )
+    batch[3].tensor = np.zeros((3, 224, 224))
+
+    # union fields aren't actually stacked
+    # just checking that there is no error
+    batch.stack()

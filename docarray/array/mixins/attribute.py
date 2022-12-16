@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Union, get_args
+
+from typing_inspect import is_optional_type, is_union_type  # type: ignore
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import BaseDocument
@@ -21,6 +23,11 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         in the array like container
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
+        if is_optional_type(field_type):
+            field_type = get_args(field_type)[0]  # get type inside Optional
+        elif is_union_type(field_type):
+            # determine type based on the first element
+            field_type = type(getattr(self[0], field))
 
         if (
             self.is_stacked()
@@ -35,7 +42,6 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
                     f'The DocumentArray is in stacked mode, but no stacked data is '
                     f'present for {field}. This is inconsistent'
                 )
-
         elif issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though

@@ -13,6 +13,8 @@ from typing import (
     Union,
 )
 
+from typing_inspect import is_union_type  # type: ignore
+
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
@@ -264,15 +266,19 @@ class DocumentArray(
             self._columns = dict()
 
             for field_name, field in self.document_type.__fields__.items():
+                field_type = field.type_
+                if is_union_type(field_type):
+                    # cannot stack union fields (might be different types)
+                    continue
 
                 is_torch_subclass = (
-                    issubclass(field.type_, torch.Tensor) if torch_imported else False
+                    issubclass(field_type, torch.Tensor) if torch_imported else False
                 )
 
                 if (
                     is_torch_subclass
-                    or issubclass(field.type_, BaseDocument)
-                    or issubclass(field.type_, NdArray)
+                    or issubclass(field_type, BaseDocument)
+                    or issubclass(field_type, NdArray)
                 ):
                     self._columns[field_name] = None
 
