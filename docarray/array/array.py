@@ -18,7 +18,13 @@ T = TypeVar('T', bound='DocumentArray')
 
 
 def _delegate_meth_to_data(meth_name: str) -> Callable:
+    """
+    create a function that mimic a function call to the data attribute of the
+    DocumentArray
 
+    :param meth_name: name of the method
+    :return: a method that mimic the meth_name
+    """
     func = getattr(list, meth_name)
 
     @wraps(func)
@@ -29,6 +35,39 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocumentArray(AnyDocumentArray):
+    """
+     DocumentArray is a container of Documents.
+
+    :param docs: iterable of Document
+
+    A DocumentArray is a list of Documents of any schema. However, many
+    DocumentArray features are only available if these Documents are
+    homogeneous and follow the same schema. To precise this schema you can use
+    the `DocumentArray[MyDocument]` syntax where MyDocument is a Document class
+    (i.e. schema). This creates a DocumentArray that can only contains Documents of
+    the type 'MyDocument'.
+
+    EXAMPLE USAGE
+    .. code-block:: python
+        from docarray import Document, DocumentArray
+        from docarray.typing import NdArray, ImageUrl
+
+
+        class Image(Document):
+            tensor: Optional[NdArray[100]]
+            url: ImageUrl
+
+
+        da = DocumentArray[Image](
+            Image(url='http://url.com/foo.png') for _ in range(10)
+        )  # noqa: E510
+
+
+    If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
+    fields at the DocumentArray level (for example `da.tensor`). You can also set
+    fields, with `da.tensor = np.random.random([10, 100])`
+    """
+
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(self, docs: Iterable[BaseDocument]):
@@ -108,8 +147,8 @@ class DocumentArray(AnyDocumentArray):
     @contextmanager
     def stacked_mode(self):
         """
-        Context manager to put the DocumentArray in stacked mode and unstack it when
-        exiting the context manager.
+        Context manager to convert DocumentArray to a DocumentArrayStacked and unstack
+        it when exiting the context manager.
         EXAMPLE USAGE
         .. code-block:: python
             with da.stacked_mode():
@@ -128,7 +167,8 @@ class DocumentArray(AnyDocumentArray):
 
     def stack(self) -> 'DocumentArrayStacked':
         """
-        Stack the DocumentArray into a DocumentArrayStacked
+        Convert the DocumentArray into a DocumentArrayStacked. Self cannot be used
+        after
         """
         from docarray.array.array_stacked import DocumentArrayStacked
 
