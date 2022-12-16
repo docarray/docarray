@@ -6,11 +6,11 @@
 <meta property="og:title" content="Query by Conditions" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/find/" />
-<meta property="og:site_name" content="DocArray 0.20.1 Documentation" />
-<meta property="og:description" content="You can use find() to select Documents from a DocumentArray based on conditions specified in a query object. To filter Documents, the query object is a Python dictionary object that defines the filtering conditions using a MongoDB-like query language., To find nearest neighbors, the query object ..." />
+<meta property="og:site_name" content="DocArray 0.20.2 Documentation" />
+<meta property="og:description" content="You can use find() to select Documents from a DocumentArray based the conditions specified in a query object. You can use da.find(query) to filter Documents and get nearest neighbors from da: To filter Documents, the query object is a Python dictionary object that defines the filtering conditions..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.1 Documentation" />
-<meta name="description" content="You can use find() to select Documents from a DocumentArray based on conditions specified in a query object. To filter Documents, the query object is a Python dictionary object that defines the filtering conditions using a MongoDB-like query language., To find nearest neighbors, the query object ..." />
+<meta property="og:image:alt" content="DocArray 0.20.2 Documentation" />
+<meta name="description" content="You can use find() to select Documents from a DocumentArray based the conditions specified in a query object. You can use da.find(query) to filter Documents and get nearest neighbors from da: To filter Documents, the query object is a Python dictionary object that defines the filtering conditions..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/find.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Query by Conditions - DocArray 0.20.1 documentation</title>
+        <title>Query by Conditions - DocArray 0.20.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.1 documentation</div>
+                <div class="brand">DocArray 0.20.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -249,7 +249,7 @@
 <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/install/">Install</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../datatypes/">Multimodal Data</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../datatypes/">Data Types</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
@@ -319,7 +319,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../fastapi-support/">FastAPI/Pydantic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../advanced/graphql-support/">GraphQL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Developer References</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/"><span class="fab fa-python"></span> Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
@@ -401,10 +401,15 @@
                 <article role="main">
                     <section id="query-by-conditions">
 <span id="find-documentarray"></span><h1>Query by Conditions<a class="headerlink" href="#query-by-conditions" title="Permalink to this heading">#</a></h1>
-<p>You can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> to select Documents from a DocumentArray based on conditions specified in a <code class="docutils literal notranslate"><span class="pre">query</span></code> object.</p>
+<p>You can use <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> to select Documents from a DocumentArray based the
+conditions specified in a <code class="docutils literal notranslate"><span class="pre">query</span></code> object. You can use <code class="docutils literal notranslate"><span class="pre">da.find(query)</span></code> to filter Documents and get nearest neighbors
+from <code class="docutils literal notranslate"><span class="pre">da</span></code>:</p>
 <ul class="simple">
-<li><p>To filter Documents, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object is a Python dictionary object that defines the filtering conditions using a <a class="reference external" href="https://docs.mongodb.com/manual/reference/operator/query/">MongoDB</a>-like query language.</p></li>
-<li><p>To find nearest neighbors, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object needs to be an ndarray-like, Document, or DocumentArray that defines embedding(s). You can also use the <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function for this purpose, and there’s a minor interface difference between these two functions which is covered <a class="reference internal" href="../matching/#match-documentarray"><span class="std std-ref">in the next chapter</span></a>.</p></li>
+<li><p>To filter Documents, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object is a Python dictionary object that defines the filtering conditions using
+a <a class="reference external" href="https://docs.mongodb.com/manual/reference/operator/query/">MongoDB</a>-like query language.</p></li>
+<li><p>To find nearest neighbors, the <code class="docutils literal notranslate"><span class="pre">query</span></code> object needs to be a NdArray-like, a Document, or a DocumentArray object that
+defines embedding. You can also use <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function for this purpose, and there is a minor interface difference
+between these two functions, which is described <a class="reference internal" href="../matching/#match-documentarray"><span class="std std-ref">in the next chapter</span></a>.</p></li>
 </ul>
 <div class="note admonition">
 <p class="admonition-title">filter query syntax</p>
@@ -474,7 +479,8 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{ &lt;field1&gt;: { &lt;operator1&gt;: &lt;value1&gt; }, ... }
 </pre></div>
 </div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">field1</span></code> is <a class="reference internal" href="../../document/#doc-fields"><span class="std std-ref">any field name</span></a> of a Document object.  To access nested fields, you can use the dunder expression. For example, <code class="docutils literal notranslate"><span class="pre">tags__timestamp</span></code> accesses the <code class="docutils literal notranslate"><span class="pre">doc.tags['timestamp']</span></code> field.</p>
+<p>Here <code class="docutils literal notranslate"><span class="pre">field1</span></code> is <a class="reference internal" href="../../document/#doc-fields"><span class="std std-ref">any field name</span></a> of a Document object. To access nested fields, you can use the dunder expression.
+For example, <code class="docutils literal notranslate"><span class="pre">tags__timestamp</span></code> accesses the <code class="docutils literal notranslate"><span class="pre">doc.tags['timestamp']</span></code> field.</p>
 <p><code class="docutils literal notranslate"><span class="pre">value1</span></code> can be either a user given Python object, or a substitution field with curly bracket <code class="docutils literal notranslate"><span class="pre">{field}</span></code></p>
 <p>Finally, <code class="docutils literal notranslate"><span class="pre">operator1</span></code> can be one of the following:</p>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -516,7 +522,7 @@
 <td><p>Match array/dict field that have the specified size. <code class="docutils literal notranslate"><span class="pre">$size</span></code> does not accept ranges of values.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">$exists</span></code></p></td>
-<td><p>Matches documents that have the specified field. And empty string content is also considered as not exists.</p></td>
+<td><p>Matches documents that have the specified field; <a class="reference internal" href="../../document/#doc-fields"><span class="std std-ref">predefined fields</span></a> having a default value (for example empty string, or 0) are considered as not existing; if the expression specifies a field <code class="docutils literal notranslate"><span class="pre">x</span></code> in <code class="docutils literal notranslate"><span class="pre">tags</span></code> (<code class="docutils literal notranslate"><span class="pre">tags__x</span></code>), then the operator tests that <code class="docutils literal notranslate"><span class="pre">x</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -527,43 +533,79 @@
 <span class="n">pprint</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># just for pretty print</span>
 </pre></div>
 </div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;92aee5d665d0c4dd34db10d83642aded&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">},</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1a9d2139b02bc1c7842ecda94b347889&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="p">}]</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;92aee5d665d0c4dd34db10d83642aded&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1a9d2139b02bc1c7842ecda94b347889&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </pre></div>
 </div>
 <p>To select all Documents whose <code class="docutils literal notranslate"><span class="pre">.tags['h']&gt;10</span></code>,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;tags__h&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gt&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}})</span>
 </pre></div>
 </div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4045a9659875fd1299e482d710753de3&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">21.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journal&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.0</span><span class="p">},</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cf7691c445220b94b88ff116911bad24&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="p">}]</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4045a9659875fd1299e482d710753de3&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">21.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journal&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cf7691c445220b94b88ff116911bad24&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Beside using a predefined value, you can also use a substitution with <code class="docutils literal notranslate"><span class="pre">{field}</span></code>. Notice those curly braces. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;tags__h&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gt&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{tags__w}</span><span class="s1">&#39;</span><span class="p">}})</span>
 </pre></div>
 </div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;44c6a4b18eaa005c6dbe15a28a32ebce&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journal&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.0</span><span class="p">}]</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;44c6a4b18eaa005c6dbe15a28a32ebce&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journal&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -593,21 +635,41 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;$or&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$eq&#39;</span><span class="p">:</span> <span class="mi">45</span><span class="p">}},</span> <span class="p">{</span><span class="s1">&#39;modality&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$eq&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">}}]})</span>
 </pre></div>
 </div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;22985b71b6d483c31cbe507ed4d02bd1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">},</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a071faf19feac5809642e3afcd3a5878&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="p">},</span><span class="w"></span>
-<span class="w"> </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;411ecc70a71a3f00fc3259bf08c239d1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.25</span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postcard&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">45.0</span><span class="p">}]</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;22985b71b6d483c31cbe507ed4d02bd1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">11.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a071faf19feac5809642e3afcd3a5878&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;planner&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">75.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;411ecc70a71a3f00fc3259bf08c239d1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;h&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;uom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.25</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postcard&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">45.0</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -648,7 +710,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Dec 16, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

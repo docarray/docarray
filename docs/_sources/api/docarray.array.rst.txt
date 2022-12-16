@@ -25,6 +25,7 @@ Submodules
    docarray.array.match
    docarray.array.memory
    docarray.array.milvus
+   docarray.array.opensearch
    docarray.array.qdrant
    docarray.array.redis
    docarray.array.sqlite

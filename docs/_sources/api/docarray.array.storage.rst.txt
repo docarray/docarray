@@ -12,6 +12,7 @@ Subpackages
    docarray.array.storage.elastic
    docarray.array.storage.memory
    docarray.array.storage.milvus
+   docarray.array.storage.opensearch
    docarray.array.storage.qdrant
    docarray.array.storage.redis
    docarray.array.storage.sqlite

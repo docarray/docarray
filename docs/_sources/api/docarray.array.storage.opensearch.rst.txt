@@ -1,0 +1,21 @@
+docarray.array.storage.opensearch package
+=========================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   docarray.array.storage.opensearch.backend
+   docarray.array.storage.opensearch.find
+   docarray.array.storage.opensearch.getsetdel
+   docarray.array.storage.opensearch.seqlike
+
+Module contents
+---------------
+
+.. automodule:: docarray.array.storage.opensearch
+   :members:
+   :undoc-members:
+   :show-inheritance:
