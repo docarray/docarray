@@ -1,17 +1,6 @@
 import warnings
 from copy import copy
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generic,
-    List,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
@@ -23,6 +12,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     import numpy as np
     from docarray.proto import NdArrayProto, NodeProto
+    from docarray.computation.torch_backend import TorchCompBackend
 
 from docarray.document.base_node import BaseNode
 
@@ -103,7 +93,7 @@ class TorchTensor(
                 f'of shape {t.shape} to shape {shape}'
             )
             try:
-                value = cls.from_native_torch_tensor(t.view(shape))
+                value = cls.__docarray_from_native__(t.view(shape))
                 return cast(T, value)
             except RuntimeError:
                 raise ValueError(
@@ -120,12 +110,12 @@ class TorchTensor(
         if isinstance(value, TorchTensor):
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
-            return cls.from_native_torch_tensor(value)
+            return cls.__docarray_from_native__(value)
 
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
-                return cls.from_native_torch_tensor(arr)
+                return cls.__docarray_from_native__(arr)
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
@@ -171,7 +161,7 @@ class TorchTensor(
         return value
 
     @classmethod
-    def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:
+    def __docarray_from_native__(cls: Type[T], value: torch.Tensor) -> T:
         """Create a TorchTensor from a native torch.Tensor
 
         :param value: the native torch.Tensor
@@ -187,7 +177,7 @@ class TorchTensor(
         :param value: the numpy array
         :return: a TorchTensor
         """
-        return cls.from_native_torch_tensor(torch.from_numpy(value))
+        return cls.__docarray_from_native__(torch.from_numpy(value))
 
     def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
@@ -233,9 +223,9 @@ class TorchTensor(
 
         return nd_proto
 
-    @classmethod
-    def __docarray_stack__(
-        cls: Type[T], seq: Union[Tuple['TorchTensor'], List['TorchTensor']]
-    ) -> T:
-        """Stack a sequence of ndarray into a single ndarray."""
-        return cls.from_native_torch_tensor(torch.stack(seq))  # type: ignore
+    @staticmethod
+    def get_comp_backend() -> Type['TorchCompBackend']:
+        """Return the computational backend of the tensor"""
+        from docarray.computation.torch_backend import TorchCompBackend
+
+        return TorchCompBackend

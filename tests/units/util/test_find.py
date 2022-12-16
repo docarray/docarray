@@ -4,7 +4,7 @@ import torch
 
 from docarray import Document, DocumentArray
 from docarray.typing import NdArray, TorchTensor
-from docarray.utility import find, find_batched
+from docarray.util import find, find_batched
 
 
 class TorchDoc(Document):
