@@ -1,8 +1,10 @@
+from typing import Optional, Union
+
 import numpy as np
 
 from docarray.array import DocumentArray
 from docarray.document import BaseDocument
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 def test_get_bulk_attributes_function():
@@ -53,6 +55,54 @@ def test_get_bulk_attributes():
     class Mmdoc(BaseDocument):
         text: str
         tensor: NdArray
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    tensors = da.tensor
+
+    assert len(tensors) == N
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da.text
+
+    assert len(texts) == N
+    for i, text in enumerate(texts):
+        assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_optional_type():
+    class Mmdoc(BaseDocument):
+        text: str
+        tensor: Optional[NdArray]
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    tensors = da.tensor
+
+    assert len(tensors) == N
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da.text
+
+    assert len(texts) == N
+    for i, text in enumerate(texts):
+        assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_union_type():
+    class Mmdoc(BaseDocument):
+        text: str
+        tensor: Union[NdArray, TorchTensor]
 
     N = 10
 
