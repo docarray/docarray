@@ -4,7 +4,7 @@ from typing import Callable, List, NamedTuple, Optional, Type, Union
 import torch  # TODO(johannes) this breaks the optional import of torch
 
 from docarray import Document, DocumentArray
-from docarray.array import AbstractDocumentArray
+from docarray.array import AnyDocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import Tensor
 from docarray.typing.tensor import type_to_framework
@@ -18,7 +18,7 @@ class FindResult(NamedTuple):
 
 
 def find(
-    index: AbstractDocumentArray,
+    index: AnyDocumentArray,
     query: Union[Tensor, Document],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -107,7 +107,7 @@ def find(
 
 
 def find_batched(
-    index: AbstractDocumentArray,
+    index: AnyDocumentArray,
     query: Union[Tensor, DocumentArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -246,7 +246,7 @@ def _extract_embedding_single(
 
 
 def _extraxt_embeddings(
-    data: Union[AbstractDocumentArray, Document, Tensor],
+    data: Union[AnyDocumentArray, Document, Tensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> Tensor:
@@ -281,7 +281,7 @@ def _extraxt_embeddings(
     return emb
 
 
-def _da_attr_type(da: AbstractDocumentArray, attr: str) -> Type:
+def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 

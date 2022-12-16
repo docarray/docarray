@@ -9,11 +9,11 @@ if TYPE_CHECKING:
     from docarray.typing import NdArray, TorchTensor
 
 
-T = TypeVar('T', bound='AbstractDocumentArray')
+T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class AbstractDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
+class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
 
     def __class_getitem__(cls, item: Type[BaseDocument]):

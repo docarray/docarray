@@ -2,7 +2,7 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING, Callable, Iterable, List, Type, TypeVar, Union
 
-from docarray.array.abstract_array import AbstractDocumentArray
+from docarray.array.abstract_array import AnyDocumentArray
 from docarray.document import AnyDocument, BaseDocument
 
 if TYPE_CHECKING:
@@ -28,7 +28,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
-class DocumentArray(AbstractDocumentArray):
+class DocumentArray(AnyDocumentArray):
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(self, docs: Iterable[BaseDocument]):

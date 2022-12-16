@@ -11,7 +11,7 @@ from typing import (
     Union,
 )
 
-from docarray.array import AbstractDocumentArray, DocumentArray
+from docarray.array import AnyDocumentArray, DocumentArray
 from docarray.document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -36,7 +36,7 @@ else:
 T = TypeVar('T', bound='DocumentArrayStacked')
 
 
-class DocumentArrayStacked(AbstractDocumentArray):
+class DocumentArrayStacked(AnyDocumentArray):
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(self: T, docs: DocumentArray):
