@@ -166,13 +166,12 @@ class DocumentArrayStacked(AnyDocumentArray):
     def to_protobuf(self) -> 'DocumentArrayStackedProto':
         """Convert DocumentArray into a Protobuf message"""
         from docarray.proto import (
-            DocumentArrayListProto,
             DocumentArrayProto,
             DocumentArrayStackedProto,
             UnionArrayProto,
         )
 
-        da_proto = DocumentArrayListProto()
+        da_proto = DocumentArrayProto()
         for doc in self.__iter_without_columns__():
             da_proto.docs.append(doc.to_protobuf())
 

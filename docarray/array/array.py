@@ -92,19 +92,18 @@ class DocumentArray(AnyDocumentArray):
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message"""
         return cls(
-            cls.document_type.from_protobuf(doc_proto)
-            for doc_proto in pb_msg.list_.docs
+            cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
         )
 
     def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocumentArray into a Protobuf message"""
-        from docarray.proto import DocumentArrayListProto, DocumentArrayProto
+        from docarray.proto import DocumentArrayProto
 
-        da_proto = DocumentArrayListProto()
+        da_proto = DocumentArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
-        return DocumentArrayProto(list_=da_proto)
+        return da_proto
 
     @contextmanager
     def stacked_mode(self):
