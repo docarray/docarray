@@ -2,6 +2,7 @@ from typing import List, NamedTuple, Optional, Type, Union
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
@@ -267,7 +268,7 @@ def _da_attr_type(da: DocumentArray, attr: str) -> Type[Tensor]:
     :return: the type of the attribute
     """
     field_type = da.document_type.__fields__[attr].type_
-    if not getattr(field_type, 'is_tensor', False):
+    if not issubclass(field_type, AbstractTensor):
         raise ValueError(
             f'attribute {attr} is not a tensor-like type, '
             f'but {field_type.__class__.__name__}'

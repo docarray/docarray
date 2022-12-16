@@ -13,8 +13,6 @@ T = TypeVar('T')
 
 
 class AbstractType(BaseNode):
-    is_tensor = False  # change for tensor-like subclasses
-
     @classmethod
     def __get_validators__(cls):
         yield cls.validate

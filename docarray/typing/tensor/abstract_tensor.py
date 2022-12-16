@@ -16,7 +16,6 @@ ShapeT = TypeVar('ShapeT')
 class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
     __parametrized_meta__ = type
-    is_tensor = True
 
     @classmethod
     @abc.abstractmethod
