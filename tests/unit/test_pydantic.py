@@ -159,6 +159,22 @@ def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
     assert isinstance(dd, tag_type)
 
 
+@pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
+def test_infinity_no_coercion(protocol):
+    # Test for issue #948: https://github.com/docarray/docarray/issues/948
+    d = Document()
+    d.tags['title'] = 'Infinity'
+
+    d_pydantic = d.to_pydantic_model()
+    d_pydantic.tags['title'] = 'Infinity'
+
+    d_json = d.to_json(protocol=protocol)
+    assert '"title": "Infinity"' in d_json
+
+    d_dict = d.to_dict(protocol=protocol)
+    assert d_dict['tags']['title'] == 'Infinity'
+
+
 @pytest.mark.parametrize(
     'blob', [None, b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
 )
