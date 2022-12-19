@@ -50,7 +50,7 @@ class EmbedMixin:
 
         fm = get_framework(embed_model)
         getattr(self, f'_set_embeddings_{fm}')(
-            embed_model, collate_fn, device, batch_size, to_numpy
+            embed_model, collate_fn, device, device_id, batch_size, to_numpy
         )
         return self
 
