@@ -1,7 +1,7 @@
 from typing import List, NamedTuple, Optional, Type, Union
 
 from docarray import Document, DocumentArray
-from docarray.array import AnyDocumentArray
+from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import Tensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

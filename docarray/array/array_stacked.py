@@ -11,7 +11,8 @@ from typing import (
     Union,
 )
 
-from docarray.array import AnyDocumentArray, DocumentArray
+from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
