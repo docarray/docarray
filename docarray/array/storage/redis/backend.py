@@ -27,6 +27,7 @@ class RedisConfig:
     redis_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = field(default=False)
     tag_indices: List[str] = field(default_factory=list)
+    language: Optional[str] = None
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
     ef_construction: Optional[int] = None
@@ -113,7 +114,9 @@ class BackendMixin(BaseBackendMixin):
                 self._client.ft(index_name=self._config.index_name).dropindex()
 
             schema = self._build_schema_from_redis_config()
-            idef = IndexDefinition(prefix=[self._doc_prefix])
+            idef = IndexDefinition(
+                prefix=[self._doc_prefix], language=self._config.language
+            )
             self._client.ft(index_name=self._config.index_name).create_index(
                 schema, definition=idef
             )
