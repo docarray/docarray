@@ -163,9 +163,9 @@ class DocumentArray(AnyDocumentArray):
             )
             yield da_stacked
         finally:
-            self = DocumentArrayStacked.__class_getitem__(
-                self.document_type
-            ).to_document_array(da_stacked)
+            self = DocumentArrayStacked.__class_getitem__(self.document_type).unstack(
+                da_stacked
+            )
 
     def stack(self) -> 'DocumentArrayStacked':
         """

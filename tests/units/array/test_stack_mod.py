@@ -61,7 +61,7 @@ def test_stack_numpy():
     assert (batch.tensor == np.zeros((10, 3, 224, 224))).all()
     assert batch.tensor.ctypes.data == batch._columns['tensor'].ctypes.data
 
-    batch.to_document_array(batch)
+    batch.unstack()
 
 
 def test_stack(batch):
@@ -111,7 +111,7 @@ def test_convert_to_da(batch):
     )
 
     batch = DocumentArrayStacked[Image](batch)
-    da = batch.to_document_array(batch)
+    da = batch.unstack()
 
     for doc in da:
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
@@ -130,7 +130,7 @@ def test_unstack_nested_document():
 
     batch = DocumentArrayStacked[MMdoc](batch)
 
-    da = batch.to_document_array(batch)
+    da = batch.unstack()
 
     for doc in da:
         assert (doc.img.tensor == torch.zeros(3, 224, 224)).all()

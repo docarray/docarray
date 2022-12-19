@@ -204,16 +204,14 @@ class DocumentArrayStacked(AnyDocumentArray):
 
         return DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
 
-    @staticmethod
-    def to_document_array(da_stacked: T) -> DocumentArray:
+    def unstack(self: T) -> DocumentArray:
         """Convert DocumentArrayStacked into a DocumentArray.
-        :param da_stacked: the DocumentArrayStacked to convert
 
         Note this destroys the arguments and returns a new DocumentArray
         """
-        for i, doc in enumerate(da_stacked._docs):
-            for field in da_stacked._columns.keys():
-                val = da_stacked._columns[field]
+        for i, doc in enumerate(self._docs):
+            for field in self._columns.keys():
+                val = self._columns[field]
                 setattr(doc, field, val[i])
 
                 # NOTE: here we might need to copy the tensor
@@ -221,13 +219,11 @@ class DocumentArrayStacked(AnyDocumentArray):
                 # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
                 # -when-the-original-tensor-is-deleted/167294 # noqa: E501
 
-        for field in list(da_stacked._columns.keys()):
+        for field in list(self._columns.keys()):
             # list needed here otherwise we are modifying the dict while iterating
-            del da_stacked._columns[field]
+            del self._columns[field]
 
-        da_list = da_stacked._docs
-
-        del da_stacked
+        da_list = self._docs
         return da_list
 
     @contextmanager
@@ -241,7 +237,7 @@ class DocumentArrayStacked(AnyDocumentArray):
                 ...
         """
         try:
-            da_unstacked = DocumentArrayStacked.to_document_array(self)
+            da_unstacked = DocumentArrayStacked.unstack(self)
             yield da_unstacked
         finally:
             self._docs = da_unstacked
