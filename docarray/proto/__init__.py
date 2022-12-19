@@ -1,5 +1,4 @@
 from docarray.proto.pb2.docarray_pb2 import (
-    DocumentArrayListProto,
     DocumentArrayProto,
     DocumentArrayStackedProto,
     DocumentProto,
@@ -14,6 +13,6 @@ __all__ = [
     'NdArrayProto',
     'NodeProto',
     'DocumentArrayStackedProto',
-    'DocumentArrayListProto',
+    'DocumentArrayProto',
     'UnionArrayProto',
 ]

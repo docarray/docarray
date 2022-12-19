@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from docarray import Document, Image, Text
+from docarray import Document, DocumentArray, Image, Text
 from docarray.typing import (
     AnyUrl,
     Embedding,
@@ -34,6 +34,9 @@ def test_multi_modal_doc_proto():
 
 
 def test_all_types():
+    class NestedDoc(Document):
+        tensor: NdArray
+
     class MyDoc(Document):
         img_url: ImageUrl
         txt_url: TextUrl
@@ -49,6 +52,7 @@ def test_all_types():
         embedding: Embedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
+        nested_docs: DocumentArray[NestedDoc]
 
     doc = MyDoc(
         img_url='test.png',
@@ -65,6 +69,7 @@ def test_all_types():
         embedding=np.zeros((3, 224, 224)),
         torch_embedding=torch.zeros((128,)),
         np_embedding=np.zeros((128,)),
+        nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
     )
     doc = MyDoc.from_protobuf(doc.to_protobuf())
 

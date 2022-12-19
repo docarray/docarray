@@ -79,7 +79,7 @@ message DocumentProto {
 
 }
 
-message DocumentArrayListProto {
+message DocumentArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
 
@@ -91,13 +91,6 @@ message UnionArrayProto { // represent the column of the da stacked
 }
 
 message DocumentArrayStackedProto{
-  DocumentArrayListProto list_ = 1; // a list of Documents
+  DocumentArrayProto list_ = 1; // a list of Documents
   map<string, UnionArrayProto> columns = 2; // a dict of columns
-}
-
-message DocumentArrayProto{
-  oneof content {
-    DocumentArrayListProto list_ = 1;
-    DocumentArrayStackedProto stack = 2;
-  }
 }
