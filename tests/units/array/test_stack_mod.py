@@ -167,3 +167,25 @@ def test_stack_call():
     assert len(da) == 10
 
     assert da.tensor.shape == (10, 3, 224, 224)
+
+
+def test_context_manager():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    da = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    with da.stacked_mode() as da:
+        assert len(da) == 10
+
+        assert da.tensor.shape == (10, 3, 224, 224)
+
+        da.tensor = torch.ones(10, 3, 224, 224)
+
+    tensor = da.tensor
+
+    assert isinstance(tensor, list)
+    for doc in da:
+        assert (doc.tensor == torch.ones(3, 224, 224)).all()

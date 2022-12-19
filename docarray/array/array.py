@@ -158,7 +158,7 @@ class DocumentArray(AnyDocumentArray):
         from docarray.array.array_stacked import DocumentArrayStacked
 
         try:
-            da_stacked = DocumentArrayStacked(self)
+            da_stacked = DocumentArrayStacked[self.document_type](self)
             yield da_stacked
         finally:
             self = DocumentArrayStacked.__class_getitem__(
