@@ -3,7 +3,6 @@ from typing import Optional
 import torch
 
 from docarray import Document, DocumentArray
-from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import TorchTensor
 
 
@@ -17,7 +16,7 @@ def test_torch_train():
     batch = DocumentArray[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
     batch.tensor = torch.zeros(N, 3, 224, 224)
 
-    batch = DocumentArrayStacked[Mmdoc](batch)
+    batch = batch.stack()
 
     class Model(torch.nn.Module):
         def __init__(self):
