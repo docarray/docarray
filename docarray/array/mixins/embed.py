@@ -171,10 +171,18 @@ class EmbedMixin:
         **kwargs,
     ):
         # embed_model is always an onnx.InferenceSession
+        provider_options = None
         if device == 'cpu':
             providers = ['CPUExecutionProvider']
-            provider_options = None
         elif device == 'cuda':
+            import onnxruntime as ort
+
+            if ort.get_device() != 'GPU':
+                raise RuntimeError(
+                    'Device set to `cuda` while onnxruntime can not get cuda devices.'
+                    'Please make sure you have installed onnxruntime-gpu, '
+                    'Or consider switch to `cpu` for inference.'
+                )
             providers = ['CUDAExecutionProvider']
             provider_options = [
                 {
