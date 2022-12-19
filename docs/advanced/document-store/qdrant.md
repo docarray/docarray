@@ -1,18 +1,17 @@
 (qdrant)=
 # Qdrant
 
-One can use [Qdrant](https://qdrant.tech) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Qdrant](https://qdrant.tech) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `qdrant-client`. You can install it via `pip install "docarray[qdrant]".` 
+This feature requires `qdrant-client`. You can install it with `pip install "docarray[qdrant]".` 
 ````
 
 ## Usage
 
 ### Start Qdrant service
 
-To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image to run a 
-server. Create `docker-compose.yml` as follows:
+To use Qdrant as the storage backend, you need a running Qdrant server. You can create `docker-compose.yml` to use the Qdrant Docker image:
 
 ```yaml
 ---
@@ -38,7 +37,7 @@ docker-compose up
 
 ### Create DocumentArray with Qdrant backend
 
-Assuming service is started using the default configuration (i.e. server address is `http://localhost:6333`), one can 
+Assuming you start the service with the default configuration (i.e. server address is `http://localhost:6333`), you can 
 instantiate a DocumentArray with Qdrant storage like so:
 
 ```python
@@ -47,9 +46,9 @@ from docarray import DocumentArray
 da = DocumentArray(storage='qdrant', config={'n_dim': 10})
 ```
 
-The usage would be the same as the ordinary DocumentArray.
+The usage is the same as an ordinary DocumentArray.
 
-To access a DocumentArray formerly persisted, one can specify the `collection_name`, the `host`  and the `port`. 
+To access a formerly-persisted DocumentArray, you can specify the `collection_name`, `host` and `port`:
 
 
 ```python
@@ -68,13 +67,11 @@ da = DocumentArray(
 da.summary()
 ```
 
-Note that specifying the `n_dim` is mandatory before using Qdrant as a backend for DocumentArray.
+Note that you must specify `n_dim` before using Qdrant as a backend for DocumentArray.
 
-Other functions behave the same as in-memory DocumentArray.
+Other functions behave the same as an in-memory DocumentArray.
 
-## Config
-
-The following configs can be set:
+## Configuration
 
 | Name                  | Description                                                                                                                            | Default                                          |
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
@@ -152,11 +149,11 @@ print(da.find(np.random.random(D), limit=10))
 Search with `.find` can be restricted by user-defined filters. The supported tag types for filter are `'int'`, `'float'`, `'bool'`, `'str'`, `'text'` and `'geo'` as in [Qdrant](https://qdrant.tech/documentation/payload/). Such filters can be constructed following the guidelines in [Qdrant's Documentation](https://qdrant.tech/documentation/filtering/)
 
 
-### Example of `.find` with a filter
 
+### Example of `.find` with filter
 
-Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
-has as tag `price` with value `i`. We can create such example with the following code:
+Let's create Documents with embeddings `[0,0,0]` up to `[9,9,9]`, where each Document (which has an embedding `[i,i,i]`)
+has a tag `price` with value `i`:
 
 ```python
 from docarray import Document, DocumentArray
@@ -185,9 +182,9 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that prices must follow a filter. As an example, retrieved Documents must have `price` value lower than or equal to `max_price`. We can encode this information in Qdrant using `filter = {'must': [{'key': 'price', 'range': {'lte': max_price}}]}`. You can also pass additional `search_params` following [Qdrant's Search API](https://qdrant.tech/documentation/search/#search-api).
+We want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that prices must follow a filter. For example, retrieved Documents must have `price` value lower than or equal to `max_price`. You can encode this information in Qdrant using `filter = {'must': [{'key': 'price', 'range': {'lte': max_price}}]}`. You can also pass additional `search_params` following [Qdrant's Search API](https://qdrant.tech/documentation/search/#search-api).
 
-Then you can implement and use the search with the proposed filter:
+You can then implement and search with the proposed filter:
 
 ```python
 max_price = 7
@@ -204,7 +201,7 @@ for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-This would print:
+This prints:
 
 ```
 Query vector: 	[8. 8. 8.]
@@ -223,8 +220,9 @@ For Qdrant, the distance scores can be accessed in the Document's `.scores` dict
 ````
 
 ### Example of `.filter` with a filter
-The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.
-Consider Documents have the tag `price` with a value of `i`. We can create these with the following code:
+
+The following example shows how to use DocArray with Qdrant document store to filter text documents.
+Let's create Documents with the tag `price` with a value of `i`:
 ```python
 from docarray import Document, DocumentArray
 import numpy as np
@@ -248,11 +246,13 @@ print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
-For example, suppose we want to filter results such that
-retrieved documents must have a `price` value less than or equal to `max_price`. We can encode 
-this information in Qdrant using `filter = {'price': {'$lte': max_price}}`.
 
-Then you can implement and use the search with the proposed filter:
+If you want to filter only for results 
+with a `price` less than or equal to `max_price`, you can encode 
+this information using `filter = {'price': {'$lte': max_price}}`.
+
+You can then implement and search with the proposed filter:
+
 ```python
 max_price = 7
 n_limit = 4

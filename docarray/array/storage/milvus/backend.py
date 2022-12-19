@@ -128,7 +128,9 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
         self._config.columns = self._normalize_columns(self._config.columns)
 
-        self._connection_alias = f'docarray_{config.host}_{config.port}'
+        self._connection_alias = (
+            f'docarray_{config.host}_{config.port}_{uuid.uuid4().hex}'
+        )
         connections.connect(
             alias=self._connection_alias, host=config.host, port=config.port
         )

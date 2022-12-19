@@ -11,7 +11,7 @@ Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 pip install docarray
 ```
 
-No extra dependency will be installed.
+No extra dependencies are installed.
 ````
 
 ````{tab} Basic install via Conda
@@ -20,7 +20,7 @@ No extra dependency will be installed.
 conda install -c conda-forge docarray
 ```
 
-No extra dependency will be installed.
+No extra dependencies are installed.
 ````
 
 ````{tab} Common install
@@ -29,12 +29,12 @@ No extra dependency will be installed.
 pip install "docarray[common]"
 ```
 
-The following dependencies will be installed to enable the most common features:
+The following dependencies are installed to enable the most common features:
 
 | Package | Used in |
 |---|---|
 | `protobuf` | advanced serialization |
-| `lz4` | compression in seralization |
+| `lz4` | compression in serialization |
 | `requests` | push/pull to Jina Cloud |
 | `matplotlib` | visualizing image sprites |
 | `Pillow` | image data-related IO |
@@ -49,7 +49,7 @@ The following dependencies will be installed to enable the most common features:
 pip install "docarray[full]"
 ```
 
-In addition to `common`, the following dependencies will be installed to enable full features:
+In addition to `common`, the following dependencies are installed to enable full features:
 
 | Package | Used in |
 |---|---|
@@ -67,7 +67,7 @@ Alternatively, you can first do basic installation and then install missing depe
 pip install "docarray[full,test]"
 ```
 
-This will install all requirements for reproducing tests on your local dev environment.
+This installs all requirements for reproducing tests on your local dev environment.
 ````
 
 
@@ -150,7 +150,7 @@ If not, then you are using Python under Rosetta, and you need to install Python 
 brew install python3
 ```
 
-As of Aug 2022, this will install Python 3.10 natively for Apple Silicon.
+As of Aug 2022, this installs Python 3.10 natively for Apple Silicon.
 
 Make sure to note down where `python` and `pip` are installed to. In this example, they are installed to `/opt/homebrew/bin/python3` and `/opt/homebrew/opt/python@3.10/libexec/bin/pip` respectively.
 
@@ -164,7 +164,7 @@ brew install protobuf numpy
 
 ### Install DocArray
 
-Now we can install Jina via `pip`. Note you need to use the right one:
+Now you can install Jina via `pip`. Note you need to use the right one:
 
 ```bash
 /opt/homebrew/opt/python@3.10/libexec/bin/pip install docarray
