@@ -31,7 +31,7 @@ from docarray import DocumentArray
 from torchvision.models.resnet import resnet18
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+docs.tensors = np.random.rand(10, 3, 224, 224).astype('float32')
 
 embed_model = resnet18()
 docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
@@ -44,7 +44,7 @@ import tensorflow as tf
 from docarray import DocumentArray
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.rand([10, 224, 224, 3]).astype('float32')
+docs.tensors = np.random.rand(10, 224, 224, 3).astype('float32')
 
 embed_model = tf.keras.applications.resnet50.ResNet50()
 docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
@@ -57,9 +57,9 @@ import onnxruntime as ort
 from docarray import DocumentArray
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
-
-ort_session = ort.InferenceSession('~your-path/resnet18-v1-7.onnx')
+docs.tensors = np.random.rand(10, 3, 224, 224).astype('float32')
+# please download model here: https://github.com/onnx/models/blob/main/vision/classification/resnet/model/resnet50-v1-12.onnx
+ort_session = ort.InferenceSession('~your-path/resnet50-v1-12.onnx')
 docs.embed(embed_model=ort_session, device='cuda', device_id=0, batch_size=5)
 ```
 ````
@@ -70,7 +70,7 @@ import paddle
 from docarray import DocumentArray
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+docs.tensors = np.random.rand(10, 3, 224, 224).astype('float32')
 
 embed_model = paddle.vision.models.resnet50()
 docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
@@ -83,12 +83,19 @@ import timm
 from docarray import DocumentArray
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+docs.tensors = np.random.rand(10, 3, 224, 224).astype('float32')
 
 embed_model = timm.create_model('resnet50')
 docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
 ```
 ````
+
+```{important}
+In practice, when using a pre-trained network such as ResNet,
+please remove the last fully-connected layer.
+This is because the last layers are used to optimize objectives such as class scores,
+not suitable for serving as embedding layers.
+```
 
 
 ### Embed with Huggingface Transformers
@@ -132,17 +139,21 @@ docs.embeddings = np.array(
 ````
 ````{tab} OpenAI
 ```python
-import cohere
+import openai
 import numpy as np
 from docarray import DocumentArray
 
-token = ''
-co = cohere.Client(token)
+openai.api_key = ''
 
 docs = DocumentArray.empty(1)
 docs.texts = ['this is some random text to embed']
-docs.embeddings = np.array(
-    co.embed(docs.texts).embeddings
-)
+
+for doc in docs:
+    doc.embedding = np.array(
+        openai.Embedding.create(input=doc.text, engine="text-embedding-ada-002")[
+            "data"
+        ][0]['embedding']
+    )
+
 ```
 ````
