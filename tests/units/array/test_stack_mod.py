@@ -3,7 +3,6 @@ import pytest
 import torch
 
 from docarray import Document, DocumentArray
-from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import NdArray, TorchTensor
 
 
@@ -16,7 +15,7 @@ def batch():
         [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    return DocumentArrayStacked[Image](batch)
+    return batch.stack()
 
 
 def test_len(batch):
@@ -55,7 +54,7 @@ def test_stack_numpy():
         [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    batch = DocumentArrayStacked[Image](batch)
+    batch = batch.stack()
 
     assert (batch._columns['tensor'] == np.zeros((10, 3, 224, 224))).all()
     assert (batch.tensor == np.zeros((10, 3, 224, 224))).all()
@@ -88,7 +87,7 @@ def test_stack_mod_nested_document():
         [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
-    batch = DocumentArrayStacked[MMdoc](batch)
+    batch = batch.stack()
 
     assert (
         batch._columns['img']._columns['tensor'] == torch.zeros(10, 3, 224, 224)
@@ -110,7 +109,7 @@ def test_convert_to_da(batch):
         [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    batch = DocumentArrayStacked[Image](batch)
+    batch = batch.stack()
     da = batch.unstack()
 
     for doc in da:
@@ -128,7 +127,7 @@ def test_unstack_nested_document():
         [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
-    batch = DocumentArrayStacked[MMdoc](batch)
+    batch = batch.stack()
 
     da = batch.unstack()
 
@@ -149,7 +148,7 @@ def test_proto_stacked_mode_numpy():
         [MyDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    da = DocumentArrayStacked[MyDoc](da)
+    da = da.stack()
 
     da.from_protobuf(da.to_protobuf())
 
