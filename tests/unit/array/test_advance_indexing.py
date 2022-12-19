@@ -43,7 +43,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         docs = DocumentArray(docs, storage=storage)
     # getter
     assert docs[99].text == "99"
-    assert docs[np.int(99)].text == "99"
+    assert docs[np.int32(99)].text == "99"
     assert docs[-1].text == "99"
     assert docs[0].text == "0"
     # string index
