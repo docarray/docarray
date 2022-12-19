@@ -234,7 +234,7 @@ def get_framework(dnn_model) -> str:
         if isinstance(dnn_model, keras.layers.Layer):
             return 'keras'
 
-    if importlib.util.find_spec('onnx'):
+    if importlib.util.find_spec('onnx') or importlib.util.find_spec('onnxruntime'):
         from onnxruntime import InferenceSession
 
         if isinstance(dnn_model, InferenceSession):
