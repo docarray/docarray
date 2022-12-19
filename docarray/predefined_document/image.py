@@ -1,7 +1,7 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, ImageUrl, Tensor
+from docarray.typing import AnyTensor, Embedding, ImageUrl
 
 
 class Image(BaseDocument):
@@ -64,5 +64,5 @@ class Image(BaseDocument):
     """
 
     url: Optional[ImageUrl]
-    tensor: Optional[Tensor]
+    tensor: Optional[AnyTensor]
     embedding: Optional[Embedding]
