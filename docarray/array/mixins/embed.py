@@ -18,6 +18,7 @@ class EmbedMixin:
         self: 'T',
         embed_model: 'AnyDNN',
         device: str = 'cpu',
+        device_id: int = 0,
         batch_size: int = 256,
         to_numpy: bool = False,
         collate_fn: Optional['CollateFnType'] = None,
@@ -30,6 +31,7 @@ class EmbedMixin:
         :param embed_model: The embedding model written in Keras/Pytorch/Paddle
         :param device: The computational device for `embed_model`, can be either
             `cpu` or `cuda`.
+        :param device_id: The index of the cuda device, by default use the first GPU.
         :param batch_size: Number of Documents in a batch for embedding
         :param to_numpy: If to store embeddings back to Document in ``numpy.ndarray``
             or original framework format.
@@ -48,7 +50,7 @@ class EmbedMixin:
 
         fm = get_framework(embed_model)
         getattr(self, f'_set_embeddings_{fm}')(
-            embed_model, collate_fn, device, batch_size, to_numpy
+            embed_model, collate_fn, device, device_id, batch_size, to_numpy
         )
         return self
 
@@ -57,12 +59,17 @@ class EmbedMixin:
         embed_model: 'AnyDNN',
         collate_fn: 'CollateFnType',
         device: str = 'cpu',
+        device_id: int = 0,
         batch_size: int = 256,
         to_numpy: bool = False,
     ):
         import tensorflow as tf
 
-        device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
+        device = (
+            tf.device('/GPU:' + str(device_id))
+            if device == 'cuda'
+            else tf.device('/CPU:0')
+        )
         with device:
             for b_ids in self.batch_ids(batch_size):
                 batch_inputs = collate_fn(self[b_ids])
@@ -84,10 +91,14 @@ class EmbedMixin:
         embed_model: 'AnyDNN',
         collate_fn: 'CollateFnType',
         device: str = 'cpu',
+        device_id: int = 0,
         batch_size: int = 256,
         to_numpy: bool = False,
     ):
         import torch
+
+        if device == 'cuda':
+            device = torch.device(device, device_id)
 
         embed_model = embed_model.to(device)
         is_training_before = embed_model.training
@@ -122,10 +133,14 @@ class EmbedMixin:
         embed_model,
         collate_fn: 'CollateFnType',
         device: str = 'cpu',
+        device_id: int = 0,
         batch_size: int = 256,
         to_numpy: bool = False,
     ):
         import paddle
+
+        if device == 'cuda':
+            paddle.device.set_device('gpu:' + str(device_id))
 
         is_training_before = embed_model.training
         embed_model.to(device=device)
@@ -150,12 +165,16 @@ class EmbedMixin:
         embed_model,
         collate_fn: 'CollateFnType',
         device: str = 'cpu',
+        device_id: int = 0,
         batch_size: int = 256,
         *args,
         **kwargs,
     ):
         # embed_model is always an onnx.InferenceSession
-        if device != 'cpu':
+        provider_options = None
+        if device == 'cpu':
+            providers = ['CPUExecutionProvider']
+        elif device == 'cuda':
             import onnxruntime as ort
 
             support_device = ort.get_device()
@@ -163,6 +182,24 @@ class EmbedMixin:
                 warnings.warn(
                     f'Your installed `onnxruntime` supports `{support_device}`, but you give {device}'
                 )
+            providers = ['CUDAExecutionProvider']
+            provider_options = [
+                {
+                    'device_id': device_id,
+                    'arena_extend_strategy': 'kNextPowerOfTwo',
+                    'gpu_mem_limit': 2 * 1024 * 1024 * 1024,
+                    'cudnn_conv_algo_search': 'EXHAUSTIVE',
+                    'do_copy_in_default_stream': True,
+                }
+            ]
+        else:
+            raise ValueError(
+                f'Unsupported device type {device}, please choose between `cpu` and `cuda`.'
+            )
+
+        embed_model.set_providers(
+            providers=providers, provider_options=provider_options
+        )
 
         for b_ids in self.batch_ids(batch_size):
             batch_inputs = collate_fn(self[b_ids])
@@ -204,7 +241,7 @@ def get_framework(dnn_model) -> str:
         if isinstance(dnn_model, keras.layers.Layer):
             return 'keras'
 
-    if importlib.util.find_spec('onnx'):
+    if importlib.util.find_spec('onnx') or importlib.util.find_spec('onnxruntime'):
         from onnxruntime import InferenceSession
 
         if isinstance(dnn_model, InferenceSession):
