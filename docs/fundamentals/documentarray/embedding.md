@@ -1,130 +1,148 @@
 (embed-via-model)=
 # Embed via Neural Network
 
-```{important}
+When DocumentArray `.tensors` being set,
+you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into it's vector representations,
+i.e. filling `.embeddings`.
 
-{meth}`~docarray.array.mixins.embed.EmbedMixin.embed` supports both CPU & GPU.
-```
+Embeddings can be used to measure the relatedness of your data.
+Embeddings are commonly used for *neural search*, *recommendation*, *clustering*, *outlier detection*, *deduplication* etc.
 
-When DocumentArray has `.tensors` set, you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into vector representations, i.e. filling `.embeddings`. For example, let's assume we have the following DocumentArray:
+Docarray provides an easy interface which allows you to encode your data with
+the {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` method.
 
+After calling {meth}`~docarray.array.mixins.embed.EmbedMixin.embed`,
+you should expect vector representation of your data has been stored in `.embeddings` endpoint.
+
+Docarray {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` endpoint support:
+
+1. Mainstream deep learning frameworks, including Pytorch, Tensorflow, ONNX and PaddlePaddle.
+2. Both CPU and CUDA devices.
+3. Embed in batches.
+
+## Embed in action
+
+### Embed for Computer Vision
+
+````{tab} Torchvision ResNet50
 ```python
-from docarray import DocumentArray
 import numpy as np
+from docarray import DocumentArray
+from torchvision.models.resnet import resnet18
 
 docs = DocumentArray.empty(10)
-docs.tensors = np.random.random([10, 128]).astype(np.float32)
+docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+
+embed_model = resnet18()
+docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
 ```
-
-Let's use a simple MLP in PyTorch/Keras/ONNX/Paddle as our embedding model:
-
-````{tab} PyTorch
-
-```python
-import torch
-
-model = torch.nn.Sequential(
-    torch.nn.Linear(
-        in_features=128,
-        out_features=128,
-    ),
-    torch.nn.ReLU(),
-    torch.nn.Linear(in_features=128, out_features=32))
-```
-
 ````
-
-````{tab} Keras
+````{tab} Tensorflow ResNet50
 ```python
+import numpy as np
 import tensorflow as tf
+from docarray import DocumentArray
 
-model = tf.keras.Sequential(
-    [
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(32),
-    ]
-)
+docs = DocumentArray.empty(10)
+docs.tensors = np.random.rand([10, 224, 224, 3]).astype('float32')
+
+embed_model = tf.keras.applications.resnet50.ResNet50()
+docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
 ```
 ````
-
-````{tab} ONNX
-
-Preliminary: you need to first export a DNN model to ONNX via API/CLI. 
-For example let's use the PyTorch one:
-
+````{tab} ONNX ResNet50
 ```python
-data = torch.rand(1, 128)
+import numpy as np
+import onnxruntime as ort
+from docarray import DocumentArray
 
-torch.onnx.export(model, data, 'mlp.onnx', 
-    do_constant_folding=True,  # whether to execute constant folding for optimization
-    input_names=['input'],  # the model's input names
-    output_names=['output'],  # the model's output names
-    dynamic_axes={
-        'input': {0: 'batch_size'},  # variable length axes
-        'output': {0: 'batch_size'},
-    })
-```
+docs = DocumentArray.empty(10)
+docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
 
-Then load it as `InferenceSession`:
- 
-```python
-import onnxruntime
-
-model = onnxruntime.InferenceSession('mlp.onnx')
+ort_session = ort.InferenceSession('~your-path/resnet18-v1-7.onnx')
+docs.embed(embed_model=ort_session, device='cuda', device_id=0, batch_size=5)
 ```
 ````
-
-````{tab} Paddle
-
+````{tab} PaddlePaddle ResNet50
 ```python
+import numpy as np
 import paddle
+from docarray import DocumentArray
 
-model = paddle.nn.Sequential(
-    paddle.nn.Linear(
-        in_features=128,
-        out_features=128,
-    ),
-    paddle.nn.ReLU(),
-    paddle.nn.Linear(in_features=128, out_features=32),
-)
+docs = DocumentArray.empty(10)
+docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+
+embed_model = paddle.vision.models.resnet50()
+docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
+```
+````
+````{tab} Timm ResNet50
+```python
+import numpy as np
+import timm
+from docarray import DocumentArray
+
+docs = DocumentArray.empty(10)
+docs.tensors = np.random.rand([10, 3, 224, 224]).astype('float32')
+
+embed_model = timm.create_model('resnet50')
+docs.embed(embed_model=embed_model, device='cuda', device_id=0, batch_size=5)
 ```
 ````
 
-Now, you can create the embeddings:
 
-```python
-docs.embed(model)
-
-print(docs.embeddings)
-```
-
-```text
-tensor([[-0.1234,  0.0506, -0.0015,  0.1154, -0.1630, -0.2376,  0.0576, -0.4109,
-          0.0052,  0.0027,  0.0800, -0.0928,  0.1326, -0.2256,  0.1649, -0.0435,
-         -0.2312, -0.0068, -0.0991,  0.0767, -0.0501, -0.1393,  0.0965, -0.2062,
-```
-
-By default, the filled `.embeddings` are in the given model framework's format. If you want them to always be `numpy.ndarray`, use `.embed(..., to_numpy=True)`.
-
-You can specify `.embed(..., device='cuda')` when working with a GPU. The device name identifier depends on the model framework that you're using.
-
-On large DocumentArrays that don't fit into GPU memory, you can set `batch_size` with `.embed(..., batch_size=128)`.
-
-You can use a pretrained model from Keras/PyTorch/PaddlePaddle/ONNX for embedding:
-
-```python
-import torchvision
-model = torchvision.models.resnet50(pretrained=True)
-docs.embed(model)
-```
-
-After getting `.embeddings`, you can visualize them using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`, {ref}`find more details here<visualize-embeddings>`.
-
-Note that `.embed()` only works when you have `.tensors` set, if you have `.texts` set and your model function supports strings as input, then you can do the following to generate embeddings:
+### Embed with Huggingface Transformers
 
 ```python
 from docarray import DocumentArray
+from transformers import BertModel, BertTokenizer
 
-da = DocumentArray(...)
-da.embeddings = my_text_model(da.texts)
+model = BertModel.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+def collate_fn(da):
+    """Tokenize `texts` field of the DocumentArray"""
+    return tokenizer(
+        da.texts,
+        return_tensors='pt',
+    )
+
+docs = DocumentArray.empty(1)
+docs.texts = ['this is some random text to embed']
+docs.embed(model, collate_fn=collate_fn)
 ```
+
+### Embed with Cohere & OpenAI API
+
+````{tab} Cohere
+```python
+import cohere
+import numpy as np
+from docarray import DocumentArray
+
+token = ''
+co = cohere.Client(token)
+
+docs = DocumentArray.empty(1)
+docs.texts = ['this is some random text to embed']
+docs.embeddings = np.array(
+    co.embed(docs.texts).embeddings
+)
+```
+````
+````{tab} OpenAI
+```python
+import cohere
+import numpy as np
+from docarray import DocumentArray
+
+token = ''
+co = cohere.Client(token)
+
+docs = DocumentArray.empty(1)
+docs.texts = ['this is some random text to embed']
+docs.embeddings = np.array(
+    co.embed(docs.texts).embeddings
+)
+```
+````
