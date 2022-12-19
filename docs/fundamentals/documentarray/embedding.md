@@ -20,8 +20,6 @@ Docarray {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` endpoint support:
 2. Both CPU and CUDA devices.
 3. Embed in batches.
 
-## Embed in action
-
 ### Embed for Computer Vision
 
 ````{tab} Torchvision ResNet50
@@ -115,7 +113,7 @@ def collate_fn(da):
     )
 
 docs = DocumentArray.empty(1)
-docs.texts = ['this is some random text to embed']
+docs.texts = ['embed me!']
 docs.embed(model, collate_fn=collate_fn)
 ```
 
@@ -131,7 +129,7 @@ token = ''
 co = cohere.Client(token)
 
 docs = DocumentArray.empty(1)
-docs.texts = ['this is some random text to embed']
+docs.texts = ['embed me!']
 docs.embeddings = np.array(
     co.embed(docs.texts).embeddings
 )
@@ -146,7 +144,7 @@ from docarray import DocumentArray
 openai.api_key = ''
 
 docs = DocumentArray.empty(1)
-docs.texts = ['this is some random text to embed']
+docs.texts = ['embed me!']
 
 for doc in docs:
     doc.embedding = np.array(
