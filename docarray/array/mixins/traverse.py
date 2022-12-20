@@ -45,6 +45,7 @@ class TraverseMixin(AbstractDocumentArray):
             )
 
             books = da.traverse_flat(access_path='content')  # list of 10 Text objs
+
             authors = da.traverse_flat(access_path='author.name')  # list of 10 strings
 
         If the resulting list is a nested list, it will be flattened:
@@ -74,8 +75,8 @@ class TraverseMixin(AbstractDocumentArray):
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
         """
-        leaves = list(self._traverse(docs=self, access_path=access_path))
-        return self._flatten(leaves)
+        leaves = list(TraverseMixin._traverse(docs=self, access_path=access_path))
+        return TraverseMixin._flatten(leaves)
 
     @staticmethod
     def _traverse(docs: Union[Document, DocumentArray], access_path: str):
