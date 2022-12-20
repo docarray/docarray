@@ -10,7 +10,7 @@ class TraverseMixin:
     """
 
     def traverse_flat(
-        self: DocumentArray,
+        self: 'DocumentArray',
         access_path: str,
     ) -> List[Any]:
         """
@@ -77,7 +77,7 @@ class TraverseMixin:
         return TraverseMixin._flatten(leaves)
 
     @staticmethod
-    def _traverse(docs: Union[Document, DocumentArray], access_path: str):
+    def _traverse(docs: Union['Document', 'DocumentArray'], access_path: str):
         if access_path:
             path_attrs = access_path.split('.')
             curr_attr = path_attrs[0]
