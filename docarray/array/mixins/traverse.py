@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING, Any, List, Union
 
-from docarray.array.abstract_array import AnyDocumentArray
-
 if TYPE_CHECKING:
     from docarray import Document, DocumentArray
 
 
-class TraverseMixin(AnyDocumentArray):
+class TraverseMixin:
     """
     A mixin used for traversing :class:`DocumentArray`.
     """
