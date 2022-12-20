@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING, Any, List, Union
 
-from docarray.array.abstract_array import AbstractDocumentArray
-
 if TYPE_CHECKING:
     from docarray import Document, DocumentArray
 
 
-class TraverseMixin(AbstractDocumentArray):
+class TraverseMixin:
     """
     A mixin used for traversing :class:`DocumentArray`.
     """
@@ -88,11 +86,12 @@ class TraverseMixin(AbstractDocumentArray):
             from docarray import Document
 
             if isinstance(docs, Document):
-                docs: List[Document] = [docs]
-
-            for d in docs:
-                x = getattr(d, curr_attr)
+                x = getattr(docs, curr_attr)
                 yield from TraverseMixin._traverse(x, '.'.join(path_attrs))
+            else:
+                for d in docs:
+                    x = getattr(d, curr_attr)
+                    yield from TraverseMixin._traverse(x, '.'.join(path_attrs))
         else:
             yield docs
 

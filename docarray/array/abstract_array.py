@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Generic, List, Sequence, Type, TypeVar, Union
 
+from docarray.array.mixins import AllMixins
 from docarray.document import BaseDocument
 from docarray.typing.abstract_type import AbstractType
 
@@ -13,7 +14,7 @@ T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
+class AnyDocumentArray(AllMixins, Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
