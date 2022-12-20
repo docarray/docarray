@@ -88,7 +88,7 @@ class TraverseMixin(AbstractDocumentArray):
             from docarray import Document
 
             if isinstance(docs, Document):
-                docs = [docs]
+                docs: List[Document] = [docs]
 
             for d in docs:
                 x = getattr(d, curr_attr)
