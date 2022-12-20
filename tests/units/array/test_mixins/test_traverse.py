@@ -55,26 +55,25 @@ def multi_model_docs():
 
 @pytest.mark.parametrize(
     'filter_fn',
-    [(lambda d: True), None],
+    [(lambda d: True)],
 )
 @pytest.mark.parametrize(
-    'traversal_path,len_result',
+    'access_path,len_result',
     [
-        ('mm_text', num_docs),  # List of 5 Text
+        ('mm_text', num_docs),  # List of 5 Text objs
         ('mm_text.text', num_docs),  # List of 5 strings
-        ('mm_da', num_docs * num_sub_docs),  # List of 5 * 2 SubDocs
-        ('mm_da.sub_text', num_docs * num_sub_docs),  # List of 5 * 2 Text
+        ('mm_da', num_docs * num_sub_docs),  # List of 5 * 2 SubDoc objs
+        ('mm_da.sub_text', num_docs * num_sub_docs),  # List of 5 * 2 Text objs
         (
             'mm_da.sub_da',
             num_docs * num_sub_docs * num_sub_sub_docs,
-        ),  # List of 5 * 2 * 3 SubSubDoc
+        ),  # List of 5 * 2 * 3 SubSubDoc objs
         (
             'mm_da.sub_da.sub_sub_text',
             num_docs * num_sub_docs * num_sub_sub_docs,
-        ),  # List of 5 * 2 * 3 Text
+        ),  # List of 5 * 2 * 3 Text objs
     ],
 )
-def test_traverse_flat(multi_model_docs, traversal_path, len_result, filter_fn):
-    doc_req = multi_model_docs
-    ds = list(doc_req.traverse_flat(traversal_path))
-    assert len(ds) == len_result
+def test_traverse_flat(multi_model_docs, access_path, len_result, filter_fn):
+    traversed = multi_model_docs.traverse_flat(access_path)
+    assert len(traversed) == len_result
