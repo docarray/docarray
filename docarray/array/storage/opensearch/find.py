@@ -166,7 +166,7 @@ class FindMixin(BaseFindMixin):
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
-        query = np.array(query).astype(np.float)
+        query = np.array(query).astype(np.float32)
         num_rows, n_dim = ndarray.get_array_rows(query)
         if n_dim != 2:
             query = query.reshape((num_rows, -1))
