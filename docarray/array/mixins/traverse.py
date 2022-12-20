@@ -16,7 +16,6 @@ class TraverseMixin(AbstractDocumentArray):
         access_path: str,
     ) -> List[Any]:
         """
-        Return a List of the accessed objects when applying the access_path. If this res
         Return a List of the accessed objects when applying the access_path. If this
         results in a nested list or list of DocumentArrays, the list will be flattened
         on the first level. The access path is a string that consists of attribute
@@ -41,7 +40,8 @@ class TraverseMixin(AbstractDocumentArray):
 
 
             da = DocumentArray[Book](
-                Book(author=Author(name='Ben'), content=Text(text=f'book_{i}')) for i in range(10)
+                Book(author=Author(name='Ben'), content=Text(text=f'book_{i}'))
+                for i in range(10)  # noqa: E501
             )
 
             books = da.traverse_flat(access_path='content')  # list of 10 Text objs
