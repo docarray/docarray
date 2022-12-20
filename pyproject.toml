@@ -61,7 +61,6 @@ skip_glob= ['docarray/proto/pb2/*']
 
 [tool.ruff]
 exclude = ['docarray/proto/pb2/*', 'docs/*']
-line-length = 100
 
 [tool.pytest.ini_options]
 markers = [
