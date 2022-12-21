@@ -6,7 +6,7 @@ you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.e
 i.e. filling `.embeddings`.
 
 Embeddings can be used to measure the relatedness of your data.
-Common cases include neural search, recommendation, clustering, outlier detection, deduplication etc.
+Common use cases include neural search, recommendation, clustering, outlier detection, deduplication, etc.
 
 Docarray provides an easy interface which allows you to encode your data with
 the {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` method.
