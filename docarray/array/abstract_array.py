@@ -5,7 +5,6 @@ from docarray.document import BaseDocument
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
-    from docarray import Document
     from docarray.proto import DocumentArrayProto, NodeProto
     from docarray.typing import NdArray, Tensor, TorchTensor
 
@@ -156,7 +155,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
-        If your DocumentArray is in stacked mode and you want to access a field of
+        If your DocumentArray is in stacked mode, and you want to access a field of
         type Tensor, the stacked tensor will be returned instead of a list:
 
         EXAMPLE USAGE
@@ -183,19 +182,22 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten(nodes)
 
+        from docarray.array import DocumentArrayStacked
         from docarray.typing import Tensor
 
-        if len(flattened) == 1 and isinstance(flattened[0], Tensor):
+        if (
+            len(flattened) == 1
+            and isinstance(flattened[0], Tensor)
+            and isinstance(self, DocumentArrayStacked)
+        ):
             return flattened[0]
         else:
             return flattened
 
     @staticmethod
-    def _traverse(node: Union['Document', 'AnyDocumentArray'], access_path: str):
+    def _traverse(node: Any, access_path: str):
         if access_path:
-            path_attrs = access_path.split('.')
-            curr_attr = path_attrs[0]
-            path_attrs.pop(0)
+            curr_attr, _, path_attrs = access_path.partition('.')
 
             from docarray.array import DocumentArrayStacked
 
@@ -204,22 +206,18 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             ):
                 for n in node:
                     x = getattr(n, curr_attr)
-                    yield from AnyDocumentArray._traverse(x, '.'.join(path_attrs))
+                    yield from AnyDocumentArray._traverse(x, path_attrs)
             else:
                 x = getattr(node, curr_attr)
-                yield from AnyDocumentArray._traverse(x, '.'.join(path_attrs))
+                yield from AnyDocumentArray._traverse(x, path_attrs)
         else:
             yield node
 
     @staticmethod
-    def _flatten(sequence: List[Any]) -> List[Any]:
+    def _flatten(sequence) -> List[Any]:
         from docarray import DocumentArray
 
-        res: List[Any] = []
-        for seq in sequence:
-            if isinstance(seq, (list, DocumentArray)):
-                res += seq
-            else:
-                res.append(seq)
-
-        return res
+        if isinstance(sequence[0], (list, DocumentArray)):
+            return [item for sublist in sequence for item in sublist]
+        else:
+            return sequence
