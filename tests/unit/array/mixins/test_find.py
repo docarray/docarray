@@ -1056,6 +1056,40 @@ def test_elastic_os_id_filter(storage, config, limit):
         assert len(result) == limit
 
 
+def test_elastic_nested_type_search():
+    n_dim = 3
+    da = DocumentArray(
+        storage='elasticsearch',
+        config={
+            'n_dim': n_dim,
+            'columns': {'field_1': 'nested', 'field_2': 'nested'},
+        },
+    )
+
+    da.extend(
+        [
+            Document(
+                id=f'{i}',
+                tags={
+                    'field_1': {'field_1_1': f'hello_{i}'},
+                    'field_2': {'field_2_1': f'world_{i}'},
+                },
+            )
+            for i in range(50)
+        ]
+    )
+
+    filter = {
+        "nested": {
+            "path": "field_1",
+            "query": {"match": {"field_1.field_1_1": "hello_0"}},
+        }
+    }
+
+    result = da.find(filter)
+    assert set(result[:, 'id']) == {'0'}
+
+
 @pytest.mark.parametrize(
     'storage, config',
     [
