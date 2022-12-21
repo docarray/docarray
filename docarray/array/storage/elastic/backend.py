@@ -69,6 +69,7 @@ class BackendMixin(BaseBackendMixin):
         'double': TypeMap(type='double', converter=float),
         'long': TypeMap(type='long', converter=_safe_cast_int),
         'bool': TypeMap(type='boolean', converter=bool),
+        'nested': TypeMap(type='nested', converter=lambda x: x),
     }
 
     def _init_storage(
@@ -155,10 +156,15 @@ class BackendMixin(BaseBackendMixin):
                 }
 
         for col, coltype in self._config.columns.items():
-            da_schema['mappings']['properties'][col] = {
-                'type': self._map_type(coltype),
-                'index': True,
-            }
+            if coltype == 'nested':
+                da_schema['mappings']['properties'][col] = {
+                    'type': self._map_type(coltype),
+                }
+            else:
+                da_schema['mappings']['properties'][col] = {
+                    'type': self._map_type(coltype),
+                    'index': True,
+                }
 
         if self._config.m or self._config.ef_construction:
             index_options = {
@@ -181,6 +187,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _build_index(self):
         schema = self._build_schema_from_elastic_config(self._config)
+        print(schema['mappings']['properties'])
 
         if not self._client.indices.exists(index=self._config.index_name):
             self._client.indices.create(
