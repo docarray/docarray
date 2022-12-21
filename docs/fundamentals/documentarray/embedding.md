@@ -96,8 +96,9 @@ not suitable for serving as embedding layers.
 ```
 
 
-### Embed with Huggingface Transformers
+### Embed with Transformers
 
+````{tab} Huggingface Transformers
 ```python
 from docarray import DocumentArray
 from transformers import BertModel, BertTokenizer
@@ -116,6 +117,19 @@ docs = DocumentArray.empty(1)
 docs.texts = ['embed me!']
 docs.embed(model, collate_fn=collate_fn)
 ```
+````
+````{tab} Sentence Transformers
+```python
+from docarray import DocumentArray
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+docs = DocumentArray.empty(1)
+docs.texts = ['embed me!']
+docs.embeddings = model.encode(docs.texts)
+```
+````
 
 ### Embed with Cohere & OpenAI API
 
