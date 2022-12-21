@@ -92,6 +92,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
         return NodeProto(chunks=self.to_protobuf())
 
+    @abstractmethod
     def traverse_flat(
         self: 'AnyDocumentArray',
         access_path: str,
@@ -179,31 +180,16 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             )  # tensor of shape (2, 3, 224, 224)
 
         """
-        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten(nodes)
-
-        from docarray.array import DocumentArrayStacked
-        from docarray.typing import Tensor
-
-        if (
-            len(flattened) == 1
-            and isinstance(flattened[0], Tensor)
-            and isinstance(self, DocumentArrayStacked)
-        ):
-            return flattened[0]
-        else:
-            return flattened
+        ...
 
     @staticmethod
     def _traverse(node: Any, access_path: str):
         if access_path:
             curr_attr, _, path_attrs = access_path.partition('.')
 
-            from docarray.array import DocumentArrayStacked
+            from docarray.array import DocumentArray
 
-            if isinstance(node, (AnyDocumentArray, list)) and not isinstance(
-                node, DocumentArrayStacked
-            ):
+            if isinstance(node, (DocumentArray, list)):
                 for n in node:
                     x = getattr(n, curr_attr)
                     yield from AnyDocumentArray._traverse(x, path_attrs)

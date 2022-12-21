@@ -2,6 +2,7 @@ from collections import defaultdict
 from contextlib import contextmanager
 from typing import (
     TYPE_CHECKING,
+    Any,
     DefaultDict,
     Dict,
     Iterable,
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentArrayStackedProto
-    from docarray.typing import TorchTensor
+    from docarray.typing import Tensor, TorchTensor
 
 
 try:
@@ -256,3 +257,17 @@ class DocumentArrayStacked(AnyDocumentArray):
             return cls(DocumentArray(value))
         else:
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+
+    def traverse_flat(
+        self: 'AnyDocumentArray',
+        access_path: str,
+    ) -> Union[List[Any], 'Tensor']:
+        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocumentArray._flatten(nodes)
+
+        from docarray.typing import Tensor
+
+        if len(flattened) == 1 and isinstance(flattened[0], Tensor):
+            return flattened[0]
+        else:
+            return flattened
