@@ -54,10 +54,6 @@ def multi_model_docs():
 
 
 @pytest.mark.parametrize(
-    'filter_fn',
-    [(lambda d: True)],
-)
-@pytest.mark.parametrize(
     'access_path,len_result',
     [
         ('mm_text', num_docs),  # List of 5 Text objs
@@ -74,6 +70,26 @@ def multi_model_docs():
         ),  # List of 5 * 2 * 3 Text objs
     ],
 )
-def test_traverse_flat(multi_model_docs, access_path, len_result, filter_fn):
+def test_traverse_flat(multi_model_docs, access_path, len_result):
     traversed = multi_model_docs.traverse_flat(access_path)
     assert len(traversed) == len_result
+
+
+def test_traverse_stacked_da():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [
+            Image(
+                tensor=torch.zeros(3, 224, 224),
+            )
+            for _ in range(2)
+        ]
+    )
+
+    batch_stacked = batch.stack()
+    tensors = batch_stacked.traverse_flat(access_path='tensor')
+
+    assert tensors.shape == (2, 3, 224, 224)
+    assert isinstance(tensors, torch.Tensor)

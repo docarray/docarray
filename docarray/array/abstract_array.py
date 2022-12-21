@@ -7,8 +7,7 @@ from docarray.typing.abstract_type import AbstractType
 if TYPE_CHECKING:
     from docarray import Document
     from docarray.proto import DocumentArrayProto, NodeProto
-    from docarray.typing import NdArray, TorchTensor
-
+    from docarray.typing import NdArray, Tensor, TorchTensor
 
 T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
@@ -97,7 +96,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     def traverse_flat(
         self: 'AnyDocumentArray',
         access_path: str,
-    ) -> List[Any]:
+    ) -> Union[List[Any], 'Tensor']:
         """
         Return a List of the accessed objects when applying the access_path. If this
         results in a nested list or list of DocumentArrays, the list will be flattened
@@ -158,8 +157,15 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
         """
-        leaves = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        return AnyDocumentArray._flatten(leaves)
+        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocumentArray._flatten(nodes)
+
+        from docarray.typing import Tensor
+
+        if len(flattened) == 1 and isinstance(flattened[0], Tensor):
+            return flattened[0]
+        else:
+            return flattened
 
     @staticmethod
     def _traverse(node: Union['Document', 'AnyDocumentArray'], access_path: str):
@@ -168,7 +174,11 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             curr_attr = path_attrs[0]
             path_attrs.pop(0)
 
-            if isinstance(node, (AnyDocumentArray, list)):
+            from docarray.array import DocumentArrayStacked
+
+            if isinstance(node, (AnyDocumentArray, list)) and not isinstance(
+                node, DocumentArrayStacked
+            ):
                 for n in node:
                     x = getattr(n, curr_attr)
                     yield from AnyDocumentArray._traverse(x, '.'.join(path_attrs))
