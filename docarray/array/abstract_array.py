@@ -156,6 +156,29 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
+        If your DocumentArray is in stacked mode and you want to access a field of
+        type Tensor, the stacked tensor will be returned instead of a list:
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            class Image(Document):
+                tensor: TorchTensor[3, 224, 224]
+
+
+            batch = DocumentArray[Image](
+                [
+                    Image(
+                        tensor=torch.zeros(3, 224, 224),
+                    )
+                    for _ in range(2)
+                ]
+            )
+
+            batch_stacked = batch.stack()
+            tensors = batch_stacked.traverse_flat(
+                access_path='tensor'
+            )  # tensor of shape (2, 3, 224, 224)
+
         """
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten(nodes)
