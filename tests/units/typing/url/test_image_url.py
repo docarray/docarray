@@ -122,6 +122,7 @@ def test_load_channel_axis(image_format, path_to_img, axis_layout):
         assert shape[axis] == sizes[axis_name]
 
 
+@pytest.mark.internet
 def test_load_timeout():
     url = parse_obj_as(ImageUrl, REMOTE_JPG)
     with pytest.raises(urllib.error.URLError):
