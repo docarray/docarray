@@ -298,6 +298,43 @@ This would print
   price=3
 ```
 
+We also support `nested query` of [ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html). You can index and filter Documents with `nested` fields as follows:
+
+```python
+from docarray import Document, DocumentArray
+
+da = DocumentArray(
+    storage='elasticsearch',
+    config={
+        'n_dim': 3,
+        'columns': {'field': 'nested'},
+    },
+)
+
+with da:
+    da.extend(
+        [
+            Document(
+                id=f'{i}',
+                tags={
+                    'field': {'field_1': f'hello_{i}', 'field_2': f'world_{i}'},
+                },
+            )
+            for i in range(10)
+        ]
+    )
+
+filter = {
+    'nested': {
+        'path': 'field',
+        'query': {'match': {'field.field_1': 'hello_0'}},
+    }
+}
+
+results = da.find(filter=filter)
+```
+
+
 ### Search by `.text` field
 
 Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`.
