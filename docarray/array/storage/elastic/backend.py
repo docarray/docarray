@@ -187,7 +187,6 @@ class BackendMixin(BaseBackendMixin):
 
     def _build_index(self):
         schema = self._build_schema_from_elastic_config(self._config)
-        print(schema['mappings']['properties'])
 
         if not self._client.indices.exists(index=self._config.index_name):
             self._client.indices.create(
