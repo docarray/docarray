@@ -77,7 +77,7 @@ def test_traverse_flat(multi_model_docs, access_path, len_result):
 
 def test_traverse_stacked_da():
     class Image(Document):
-        tensor: TorchTensor[3, 224, 224]
+        tensor: TorchTensor
 
     batch = DocumentArray[Image](
         [
