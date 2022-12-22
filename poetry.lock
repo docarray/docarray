@@ -1528,6 +1528,25 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-requests"
+version = "2.28.11.6"
+description = "Typing stubs for requests"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+types-urllib3 = "<1.27"
+
+[[package]]
+name = "types-urllib3"
+version = "1.26.25.4"
+description = "Typing stubs for urllib3"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1641,7 +1660,7 @@ torch = ["torch"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1b52fed9287336da07ee1fdb96a0c79a7ade0a9183871300b209094e66f9c8e4"
+content-hash = "d27f14151d8545382fb3690061ec4ef08fcf68eaf235e5de0d80b03b61ba696f"
 
 [metadata.files]
 anyio = [
@@ -2679,6 +2698,14 @@ types-pillow = [
 types-protobuf = [
     {file = "types-protobuf-3.20.4.5.tar.gz", hash = "sha256:e9b45008d106e1d10cc77a29d2d344b85c0f01e2e643aaccf32f69e9e81b0cdd"},
     {file = "types_protobuf-3.20.4.5-py3-none-any.whl", hash = "sha256:97af5ce70d890fdb94cb0c906f5a6624ca2fef58bc04e27990a25509e992a950"},
+]
+types-requests = [
+    {file = "types-requests-2.28.11.6.tar.gz", hash = "sha256:8c1b1e6a0b19522b4738063e772dcee82cee1c3646536ccc4eb96f655af2b6c6"},
+    {file = "types_requests-2.28.11.6-py3-none-any.whl", hash = "sha256:48b7c06e3dffc1b6359e1888084a2b97f41b6b63f208c571ddb02ddbc6a892e4"},
+]
+types-urllib3 = [
+    {file = "types-urllib3-1.26.25.4.tar.gz", hash = "sha256:eec5556428eec862b1ac578fb69aab3877995a99ffec9e5a12cf7fbd0cc9daee"},
+    {file = "types_urllib3-1.26.25.4-py3-none-any.whl", hash = "sha256:ed6b9e8a8be488796f72306889a06a3fc3cb1aa99af02ab8afb50144d7317e49"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
