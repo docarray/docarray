@@ -1,5 +1,5 @@
 import wave
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar, Union
 
 import numpy as np
 
@@ -53,10 +53,11 @@ class AudioUrl(AnyUrl):
 
         :return: np.ndarray representing the audio file content
         """
+        import io
+
+        file: Union[io.BytesIO, T]
 
         if self.startswith('http'):
-            import io
-
             import requests
 
             resp = requests.get(self)
