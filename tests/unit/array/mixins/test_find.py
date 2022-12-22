@@ -1062,7 +1062,7 @@ def test_elastic_nested_type_search():
         storage='elasticsearch',
         config={
             'n_dim': n_dim,
-            'columns': {'field_1': 'nested', 'field_2': 'nested'},
+            'columns': {'field': 'nested'},
         },
     )
 
@@ -1071,8 +1071,7 @@ def test_elastic_nested_type_search():
             Document(
                 id=f'{i}',
                 tags={
-                    'field_1': {'field_1_1': f'hello_{i}'},
-                    'field_2': {'field_2_1': f'world_{i}'},
+                    'field': {'field_1': f'hello_{i}'},
                 },
             )
             for i in range(50)
@@ -1081,8 +1080,8 @@ def test_elastic_nested_type_search():
 
     filter = {
         "nested": {
-            "path": "field_1",
-            "query": {"match": {"field_1.field_1_1": "hello_0"}},
+            "path": "field",
+            "query": {"match": {"field.field_1": "hello_0"}},
         }
     }
 

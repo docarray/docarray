@@ -156,15 +156,11 @@ class BackendMixin(BaseBackendMixin):
                 }
 
         for col, coltype in self._config.columns.items():
-            if coltype == 'nested':
-                da_schema['mappings']['properties'][col] = {
-                    'type': self._map_type(coltype),
-                }
-            else:
-                da_schema['mappings']['properties'][col] = {
-                    'type': self._map_type(coltype),
-                    'index': True,
-                }
+            da_schema['mappings']['properties'][col] = {
+                'type': self._map_type(coltype),
+            }
+            if coltype != 'nested':
+                da_schema['mappings']['properties'][col]['index'] = True
 
         if self._config.m or self._config.ef_construction:
             index_options = {
