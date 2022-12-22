@@ -265,9 +265,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten(nodes)
 
-        from docarray.typing import Tensor
-
-        if len(flattened) == 1 and isinstance(flattened[0], Tensor):
+        if len(flattened) == 1 and isinstance(flattened[0], (NdArray, TorchTensor)):
             return flattened[0]
         else:
             return flattened
