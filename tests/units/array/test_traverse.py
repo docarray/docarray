@@ -4,6 +4,7 @@ import pytest
 import torch
 
 from docarray import Document, DocumentArray, Text
+from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import TorchTensor
 
 num_docs = 5
@@ -93,3 +94,24 @@ def test_traverse_stacked_da():
 
     assert tensors.shape == (2, 3, 224, 224)
     assert isinstance(tensors, torch.Tensor)
+
+
+@pytest.mark.parametrize(
+    'input_list,output_list',
+    [
+        ([1, 2, 3], [1, 2, 3]),
+        ([[1], [2], [3]], [1, 2, 3]),
+        ([[[1]], [[2]], [[3]]], [[1], [2], [3]]),
+    ],
+)
+def test_flatten_one_level(input_list, output_list):
+    flattened = AnyDocumentArray._flatten_one_level(sequence=input_list)
+    assert flattened == output_list
+
+
+def test_flatten_one_level_list_of_da():
+    doc = Document()
+    input_list = [DocumentArray([doc, doc, doc])]
+
+    flattened = AnyDocumentArray._flatten_one_level(sequence=input_list)
+    assert flattened == [doc, doc, doc]
