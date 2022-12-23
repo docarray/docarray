@@ -200,10 +200,10 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             yield node
 
     @staticmethod
-    def _flatten(sequence) -> List[Any]:
+    def _flatten(sequence: List[Any]) -> List[Any]:
         from docarray import DocumentArray
 
-        if isinstance(sequence[0], (list, DocumentArray)):
-            return [item for sublist in sequence for item in sublist]
-        else:
+        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocumentArray)):
             return sequence
+        else:
+            return [item for sublist in sequence for item in sublist]

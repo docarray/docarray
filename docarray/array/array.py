@@ -2,6 +2,8 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
 
+import numpy as np
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.document import AnyDocument, BaseDocument
 
@@ -77,7 +79,10 @@ class DocumentArray(AnyDocumentArray):
         return len(self._data)
 
     def __getitem__(self, item):
-        return self._data[item]
+        if isinstance(item, (int, np.generic)):
+            return self._data[item]
+        elif isinstance(item, str):
+            pass
 
     def __iter__(self):
         return iter(self._data)
