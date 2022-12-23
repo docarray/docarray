@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from functools import wraps
-from typing import TYPE_CHECKING, Callable, Iterable, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.document import AnyDocument, BaseDocument
@@ -189,3 +189,12 @@ class DocumentArray(AnyDocumentArray):
             return cls(value)
         else:
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+
+    def traverse_flat(
+        self: 'DocumentArray',
+        access_path: str,
+    ) -> Union[List[Any]]:
+        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocumentArray._flatten_one_level(nodes)
+
+        return flattened

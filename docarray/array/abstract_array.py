@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Generic, List, Sequence, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
 
 from docarray.document import BaseDocument
 from docarray.typing.abstract_type import AbstractType
@@ -7,7 +7,6 @@ from docarray.typing.abstract_type import AbstractType
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
     from docarray.typing import NdArray, TorchTensor
-
 
 T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
@@ -92,3 +91,119 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(chunks=self.to_protobuf())
+
+    @abstractmethod
+    def traverse_flat(
+        self: 'AnyDocumentArray',
+        access_path: str,
+    ) -> Union[List[Any], 'NdArray', 'TorchTensor']:
+        """
+        Return a List of the accessed objects when applying the access_path. If this
+        results in a nested list or list of DocumentArrays, the list will be flattened
+        on the first level. The access path is a string that consists of attribute
+        names, concatenated and dot-seperated. It describes the path from the first
+        level to an arbitrary one, e.g. 'doc_attr_x.sub_doc_attr_x.sub_sub_doc_attr_z'.
+
+        :param access_path: a string that represents the access path.
+        :return: list of the accessed objects, flattened if nested.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray import Document, DocumentArray, Text
+
+
+            class Author(Document):
+                name: str
+
+
+            class Book(Document):
+                author: Author
+                content: Text
+
+
+            da = DocumentArray[Book](
+                Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
+                for i in range(10)  # noqa: E501
+            )
+
+            books = da.traverse_flat(access_path='content')  # list of 10 Text objs
+
+            authors = da.traverse_flat(access_path='author.name')  # list of 10 strings
+
+        If the resulting list is a nested list, it will be flattened:
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray import Document, DocumentArray
+
+
+            class Chapter(Document):
+                content: str
+
+
+            class Book(Document):
+                chapters: DocumentArray[Chapter]
+
+
+            da = DocumentArray[Book](
+                Book(
+                    chapters=DocumentArray[Chapter](
+                        [Chapter(content='some_content') for _ in range(3)]
+                    )
+                )
+                for _ in range(10)
+            )
+
+            chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
+
+        If your DocumentArray is in stacked mode, and you want to access a field of
+        type Tensor, the stacked tensor will be returned instead of a list:
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            class Image(Document):
+                tensor: TorchTensor[3, 224, 224]
+
+
+            batch = DocumentArray[Image](
+                [
+                    Image(
+                        tensor=torch.zeros(3, 224, 224),
+                    )
+                    for _ in range(2)
+                ]
+            )
+
+            batch_stacked = batch.stack()
+            tensors = batch_stacked.traverse_flat(
+                access_path='tensor'
+            )  # tensor of shape (2, 3, 224, 224)
+
+        """
+        ...
+
+    @staticmethod
+    def _traverse(node: Any, access_path: str):
+        if access_path:
+            curr_attr, _, path_attrs = access_path.partition('.')
+
+            from docarray.array import DocumentArray
+
+            if isinstance(node, (DocumentArray, list)):
+                for n in node:
+                    x = getattr(n, curr_attr)
+                    yield from AnyDocumentArray._traverse(x, path_attrs)
+            else:
+                x = getattr(node, curr_attr)
+                yield from AnyDocumentArray._traverse(x, path_attrs)
+        else:
+            yield node
+
+    @staticmethod
+    def _flatten_one_level(sequence: List[Any]) -> List[Any]:
+        from docarray import DocumentArray
+
+        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocumentArray)):
+            return sequence
+        else:
+            return [item for sublist in sequence for item in sublist]
