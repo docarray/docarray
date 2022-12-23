@@ -11,6 +11,7 @@ elasticsearch
 weaviate
 redis
 milvus
+opensearch
 extend
 benchmark
 ```
