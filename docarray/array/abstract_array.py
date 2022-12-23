@@ -200,7 +200,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             yield node
 
     @staticmethod
-    def _flatten(sequence: List[Any]) -> List[Any]:
+    def _flatten_one_level(sequence: List[Any]) -> List[Any]:
         from docarray import DocumentArray
 
         if len(sequence) == 0 or not isinstance(sequence[0], (list, DocumentArray)):

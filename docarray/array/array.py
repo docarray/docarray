@@ -200,6 +200,6 @@ class DocumentArray(AnyDocumentArray):
         access_path: str,
     ) -> Union[List[Any]]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten(nodes)
+        flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened

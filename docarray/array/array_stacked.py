@@ -263,7 +263,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         access_path: str,
     ) -> Union[List[Any], 'TorchTensor', 'NdArray']:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten(nodes)
+        flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         if len(flattened) == 1 and isinstance(flattened[0], (NdArray, TorchTensor)):
             return flattened[0]
