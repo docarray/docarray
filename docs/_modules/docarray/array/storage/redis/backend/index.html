@@ -275,6 +275,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/redis/">Redis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/milvus/">Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/opensearch/">Opensearch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -402,6 +403,7 @@
     <span class="n">redis_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">index_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">tag_indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
     <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;HNSW&#39;</span><span class="p">)</span>
     <span class="n">ef_construction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -488,7 +490,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">ft</span><span class="p">(</span><span class="n">index_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">index_name</span><span class="p">)</span><span class="o">.</span><span class="n">dropindex</span><span class="p">()</span>
 
             <span class="n">schema</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_schema_from_redis_config</span><span class="p">()</span>
-            <span class="n">idef</span> <span class="o">=</span> <span class="n">IndexDefinition</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_doc_prefix</span><span class="p">])</span>
+            <span class="n">idef</span> <span class="o">=</span> <span class="n">IndexDefinition</span><span class="p">(</span>
+                <span class="n">prefix</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_doc_prefix</span><span class="p">],</span> <span class="n">language</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">language</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">ft</span><span class="p">(</span><span class="n">index_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">index_name</span><span class="p">)</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span>
                 <span class="n">schema</span><span class="p">,</span> <span class="n">definition</span><span class="o">=</span><span class="n">idef</span>
             <span class="p">)</span>
@@ -590,7 +594,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 16, 2022</div>
+                            Last updated on Dec 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

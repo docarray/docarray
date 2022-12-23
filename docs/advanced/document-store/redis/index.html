@@ -302,6 +302,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../weaviate/">Weaviate</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Redis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../milvus/">Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opensearch/">Opensearch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -566,35 +567,39 @@ Output<div class="sd-summary-down docutils">
 <td><p>List of tags to index as text field</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ef_construction</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">language</span></code></p></td>
+<td><p>Optional parameter for Redis text search. Refer to the <a class="reference external" href="https://redis.io/docs/stack/search/reference/stemming/">list of supported languages</a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ef_construction</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">200</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">16</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ef_runtime</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ef_runtime</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">block_size</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">block_size</span></code></p></td>
 <td><p>Optional parameter for Redis FLAT algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">1048576</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">initial_cap</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">initial_cap</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW and FLAT algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Redis</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">columns</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">columns</span></code></p></td>
 <td><p>Other fields to store in Document and build schema</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">list_like</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">list_like</span></code></p></td>
 <td><p>Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance.</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">root_id</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">root_id</span></code></p></td>
 <td><p>Boolean flag indicating whether to store <code class="docutils literal notranslate"><span class="pre">root_id</span></code> in the tags of chunk level Documents</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
 </tr>
@@ -989,7 +994,7 @@ This is mostly useful in applications where text data can be split into groups a
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 16, 2022</div>
+                            Last updated on Dec 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

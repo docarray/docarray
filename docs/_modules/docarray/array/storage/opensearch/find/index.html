@@ -275,6 +275,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/redis/">Redis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/milvus/">Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/opensearch/">Opensearch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -541,7 +542,7 @@
 <span class="sd">        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing</span>
 <span class="sd">           the closest Document objects for each of the queries in `query`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">num_rows</span><span class="p">,</span> <span class="n">n_dim</span> <span class="o">=</span> <span class="n">ndarray</span><span class="o">.</span><span class="n">get_array_rows</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n_dim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">num_rows</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -584,7 +585,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 16, 2022</div>
+                            Last updated on Dec 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

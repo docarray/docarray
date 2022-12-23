@@ -275,6 +275,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/redis/">Redis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/milvus/">Milvus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/opensearch/">Opensearch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -833,14 +834,16 @@
                     <span class="n">new_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="n">query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_matches</span>
 
-        <span class="k">if</span> <span class="n">ground_truth</span> <span class="ow">and</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="p">(</span><span class="n">ground_truth</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ground_truth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="n">index_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span>
+        <span class="p">):</span>
             <span class="n">num_relevant_documents_per_label</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-                <span class="n">Counter</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="p">])</span>
+                <span class="n">Counter</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">index_data</span><span class="p">])</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ground_truth</span> <span class="ow">and</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
-            <span class="n">num_relevant_documents_per_label</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-                <span class="n">Counter</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">])</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">only_one_dataset</span> <span class="ow">and</span> <span class="n">exclude_self</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">num_relevant_documents_per_label</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">num_relevant_documents_per_label</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">num_relevant_documents_per_label</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -869,7 +872,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 16, 2022</div>
+                            Last updated on Dec 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
