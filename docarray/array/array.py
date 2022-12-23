@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     from docarray.array.array_stacked import DocumentArrayStacked
     from docarray.proto import DocumentArrayProto
-    from docarray.typing import NdArray, Tensor, TorchTensor
+    from docarray.typing import NdArray, TorchTensor
 
 
 T = TypeVar('T', bound='DocumentArray')
@@ -193,7 +193,7 @@ class DocumentArray(AnyDocumentArray):
     def traverse_flat(
         self: 'DocumentArray',
         access_path: str,
-    ) -> Union[List[Any], 'Tensor']:
+    ) -> Union[List[Any]]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten(nodes)
 

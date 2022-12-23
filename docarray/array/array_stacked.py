@@ -15,7 +15,7 @@ from typing import (
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
-from docarray.typing import NdArray
+from docarray.typing import NdArray, Tensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -265,7 +265,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten(nodes)
 
-        if len(flattened) == 1 and isinstance(flattened[0], (NdArray, TorchTensor)):
+        if len(flattened) == 1 and isinstance(flattened[0], Tensor):
             return flattened[0]
         else:
             return flattened
