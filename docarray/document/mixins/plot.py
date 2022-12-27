@@ -185,15 +185,24 @@ class PlotMixin:
         from IPython.display import display
         from hubble.utils.notebook import is_notebook
 
+        colors = np.tile(np.array([0, 0, 0]), (len(self.tensor), 1))
+        for chunk in self.chunks:
+            if (
+                'name' in chunk.tags.keys()
+                and chunk.tags['name'] == 'point_colors'
+                and (chunk.tensor.shape[-1] == 3 or chunk.tensor.shape[-1] == 4)
+            ):
+                colors = chunk.tensor
+
+        pc = trimesh.points.PointCloud(
+            vertices=self.tensor,
+            colors=colors,
+        )
+
         if is_notebook():
-            pc = trimesh.points.PointCloud(
-                vertices=self.tensor,
-                colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
-            )
             s = trimesh.Scene(geometry=pc)
             display(s.show())
         else:
-            pc = trimesh.points.PointCloud(vertices=self.tensor)
             display(pc.show())
 
     def display_rgbd_tensor(self) -> None:
