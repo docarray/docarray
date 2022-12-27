@@ -76,7 +76,6 @@ def test_plot_embedding():
 )
 def test_plot_point_cloud(colors):
     point_cloud = np.random.randint(20, size=(100, 3))
-    import pyglet
 
     if colors is not None:
         d = Document(
