@@ -69,3 +69,19 @@ def test_plot_embedding():
     c = Document(embedding=[1, 2, 3], tensor=np.random.random(128))
     d.chunks.append(c)
     d.summary()
+
+
+@pytest.mark.parametrize(
+    'colors', [None, np.random.rand(100, 3), np.random.rand(100, 4)]
+)
+def test_plot_point_cloud(colors):
+    point_cloud = np.random.randint(20, size=(100, 3))
+
+    if colors is not None:
+        d = Document(
+            tensor=point_cloud, chunks=[Document(tensor=colors, name='point_colors')]
+        )
+    else:
+        d = Document(tensor=point_cloud)
+
+    d.display()
