@@ -15,10 +15,10 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         sample_width: int = 2,
     ) -> None:
         """
-        Save :attr:`.tensor` into a .wav file. Mono/stereo is preserved.
+        Save tensor to a .wav file. Mono/stereo is preserved.
 
-        :param file_path: if file is a string, open the file by that name, otherwise
-            treat it as a file-like object.
+        :param file_path: path to a .wav file. If file is a string, open the file by
+            that name, otherwise treat it as a file-like object.
         :param sample_rate: sampling frequency
         :param sample_width: sample width in bytes
         """
