@@ -9,7 +9,6 @@ from docarray import Document
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
-from tests import TOYDATA_DIR
 
 
 @pytest.mark.parametrize(
@@ -47,24 +46,30 @@ def test_set_audio_tensor():
 
 
 @pytest.mark.parametrize(
-    'file_format,cls_tensor,tensor',
+    'cls_tensor,tensor',
     [
-        ('valid', AudioNdArray, np.zeros((1000, 2))),
-        ('valid', AudioTorchTensor, torch.zeros(1000, 2)),
-        ('valid', AudioTorchTensor, np.zeros((1000, 2))),
-        ('illegal', AudioNdArray, torch.zeros(1000, 2)),
-        ('illegal', AudioNdArray, 'hello'),
-        ('illegal', AudioTorchTensor, 'hello'),
+        (AudioNdArray, np.zeros((1000, 2))),
+        (AudioTorchTensor, torch.zeros(1000, 2)),
+        (AudioTorchTensor, np.zeros((1000, 2))),
     ],
 )
-def test_validation(file_format, cls_tensor, tensor):
-    if file_format == 'illegal':
-        match = str(cls_tensor).split('.')[-1][:-2]
-        with pytest.raises(ValueError, match=match):
-            parse_obj_as(cls_tensor, tensor)
-    else:
-        arr = parse_obj_as(cls_tensor, tensor)
-        assert isinstance(arr, cls_tensor)
+def test_validation(cls_tensor, tensor):
+    arr = parse_obj_as(cls_tensor, tensor)
+    assert isinstance(arr, cls_tensor)
+
+
+@pytest.mark.parametrize(
+    'cls_tensor,tensor',
+    [
+        (AudioNdArray, torch.zeros(1000, 2)),
+        (AudioNdArray, 'hello'),
+        (AudioTorchTensor, 'hello'),
+    ],
+)
+def test_illegal_validation(cls_tensor, tensor):
+    match = str(cls_tensor).split('.')[-1][:-2]
+    with pytest.raises(ValueError, match=match):
+        parse_obj_as(cls_tensor, tensor)
 
 
 @pytest.mark.parametrize(
@@ -87,9 +92,8 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
         (AudioNdArray, np.zeros((1000, 2))),
     ],
 )
-def test_save_audio_tensor_to_wav_file(cls_tensor, tensor):
-    tmp_file = str(TOYDATA_DIR / 'tmp.wav')
+def test_save_audio_tensor_to_wav_file(cls_tensor, tensor, tmpdir):
+    tmp_file = str(tmpdir / 'tmp.wav')
     audio_tensor = parse_obj_as(cls_tensor, tensor)
     audio_tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
-    os.remove(tmp_file)

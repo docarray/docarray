@@ -32,8 +32,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Audio
-        from docarray.typing import Embedding
+        from docarray import Audio, Text
         from typing import Optional
 
         # extend it
