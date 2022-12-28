@@ -97,7 +97,7 @@ class TorchTensor(
                 return cast(T, value)
             except RuntimeError:
                 raise ValueError(
-                    f'Cannot reshape tensor of ' f'shape {t.shape} to shape {shape}'
+                    f'Cannot reshape tensor of shape {t.shape} to shape {shape}'
                 )
 
     @classmethod
