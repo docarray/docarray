@@ -17,6 +17,10 @@ class Mesh:
     FACES = 'faces'
 
 
+class PointCloud:
+    COLORS = 'point_cloud_colors'
+
+
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 

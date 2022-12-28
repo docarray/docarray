@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.document.mixins.mesh import Mesh
+from docarray.document.mixins.mesh import Mesh, PointCloud
 
 
 class PlotMixin:
@@ -189,7 +189,7 @@ class PlotMixin:
         for chunk in self.chunks:
             if (
                 'name' in chunk.tags.keys()
-                and chunk.tags['name'] == 'point_colors'
+                and chunk.tags['name'] == PointCloud.COLORS
                 and (chunk.tensor.shape[-1] == 3 or chunk.tensor.shape[-1] == 4)
             ):
                 colors = chunk.tensor
