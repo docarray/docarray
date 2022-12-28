@@ -8,7 +8,7 @@ T = TypeVar('T', bound='AbstractAudioTensor')
 
 class AbstractAudioTensor(AbstractTensor, ABC):
     @abstractmethod
-    def save_audio_tensor_to_file(
+    def save_to_wav_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
         sample_rate: int = 44100,

@@ -39,7 +39,7 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
             audio_tensor=torch.randn(size=(1000, 2)),
         )
 
-        doc_1.audio_tensor.save_audio_tensor_to_file(file_path='path/to/file_1.wav')
+        doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
 
 
         doc_2 = MyAudioDoc(
@@ -48,7 +48,7 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
         )
 
         doc_2.audio_tensor = parse_obj_as(AudioTorchTensor, doc_2.url.load())
-        doc_2.audio_tensor.save_audio_tensor_to_file(file_path='path/to/file_2.wav')
+        doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
 
@@ -64,7 +64,7 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
         nd_proto = self.to_protobuf()
         return NodeProto(**{field: nd_proto})
 
-    def save_audio_tensor_to_file(
+    def save_to_wav_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
         sample_rate: int = 44100,

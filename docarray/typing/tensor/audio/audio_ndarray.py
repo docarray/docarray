@@ -40,7 +40,7 @@ class AudioNdArray(NdArray):
             audio_tensor=np.random.rand(1000, 2),
         )
 
-        doc_1.audio_tensor.save_audio_tensor_to_file(file_path='path/to/file_1.wav')
+        doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
 
         # from url
         doc_2 = MyAudioDoc(
@@ -49,7 +49,7 @@ class AudioNdArray(NdArray):
         )
 
         doc_2.audio_tensor = parse_obj_as(AudioNdArray, doc_2.url.load())
-        doc_2.audio_tensor.save_audio_tensor_to_file(file_path='path/to/file_2.wav')
+        doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
 
@@ -65,7 +65,7 @@ class AudioNdArray(NdArray):
         nd_proto = self.to_protobuf()
         return NodeProto(**{field: nd_proto})
 
-    def save_audio_tensor_to_file(
+    def save_to_wav_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
         sample_rate: int = 44100,

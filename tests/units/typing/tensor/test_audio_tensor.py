@@ -87,9 +87,9 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
         (AudioNdArray, np.zeros((1000, 2))),
     ],
 )
-def test_save_audio_tensor_to_file(cls_tensor, tensor):
+def test_save_audio_tensor_to_wav_file(cls_tensor, tensor):
     tmp_file = str(TOYDATA_DIR / 'tmp.wav')
     audio_tensor = parse_obj_as(cls_tensor, tensor)
-    audio_tensor.save_audio_tensor_to_file(tmp_file)
+    audio_tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
     os.remove(tmp_file)

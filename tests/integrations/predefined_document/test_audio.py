@@ -40,7 +40,7 @@ def test_save_audio_ndarray(file_url):
     audio.tensor = parse_obj_as(AudioNdArray, audio.url.load())
     assert isinstance(audio.tensor, np.ndarray)
 
-    audio.tensor.save_audio_tensor_to_file(tmp_file)
+    audio.tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
 
     audio_from_file = Audio(url=tmp_file)
@@ -61,7 +61,7 @@ def test_save_audio_torch_tensor(file_url):
     assert isinstance(audio.tensor, torch.Tensor)
     assert isinstance(audio.tensor, AudioTorchTensor)
 
-    audio.tensor.save_audio_tensor_to_file(tmp_file)
+    audio.tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
 
     audio_from_tmp = Audio(url=tmp_file)
