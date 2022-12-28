@@ -60,7 +60,7 @@ setup(
             'requests',
             'matplotlib',
             'Pillow',
-            'trimesh[full]',
+            'trimesh[easy]',
             'scipy',
             'av',
             'fastapi',
