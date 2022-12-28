@@ -171,8 +171,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Prepare enviroment
+      - name: Prepare environment
         run: |
+          apt install freeglut-devel  # https://stackoverflow.com/questions/50446867/importerror-library-glu-not-found
           python -m pip install --upgrade pip
           python -m pip install wheel
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
