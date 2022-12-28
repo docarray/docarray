@@ -5,30 +5,86 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
+from docarray import Document
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
+from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
 from tests import TOYDATA_DIR
 
 
 @pytest.mark.parametrize(
-    'cls_tensor,tensor',
+    'tensor,cls_audio_tensor,cls_tensor',
     [
-        (AudioTorchTensor, torch.zeros(3, 224, 224)),
-        (AudioNdArray, np.zeros((3, 224, 224))),
+        (torch.zeros(1000, 2), AudioTorchTensor, torch.Tensor),
+        (np.zeros((1000, 2)), AudioNdArray, np.ndarray),
     ],
 )
-def test_proto_tensor(cls_tensor, tensor):
+def test_set_audio_torch_tensor_audio_ndarray(tensor, cls_audio_tensor, cls_tensor):
+    class MyAudioDoc(Document):
+        tensor: cls_audio_tensor
 
+    doc = MyAudioDoc(tensor=tensor)
+    assert isinstance(doc.tensor, cls_audio_tensor)
+    assert isinstance(doc.tensor, cls_tensor)
+    assert (doc.tensor == tensor).all()
+
+
+def test_set_audio_tensor():
+    class MyAudioDoc(Document):
+        tensor: AudioTensor
+
+    d = MyAudioDoc(tensor=np.zeros((1000, 2)))
+
+    assert isinstance(d.tensor, AudioNdArray)
+    assert isinstance(d.tensor, np.ndarray)
+    assert (d.tensor == np.zeros((1000, 2))).all()
+
+    d = MyAudioDoc(tensor=torch.zeros((1000, 2)))
+
+    assert isinstance(d.tensor, AudioTorchTensor)
+    assert isinstance(d.tensor, torch.Tensor)
+    assert (d.tensor == torch.zeros((1000, 2))).all()
+
+
+@pytest.mark.parametrize(
+    'file_format,cls_tensor,tensor',
+    [
+        ('valid', AudioNdArray, np.zeros((1000, 2))),
+        ('valid', AudioTorchTensor, torch.zeros(1000, 2)),
+        ('valid', AudioTorchTensor, np.zeros((1000, 2))),
+        ('illegal', AudioNdArray, torch.zeros(1000, 2)),
+        ('illegal', AudioNdArray, 'hello'),
+        ('illegal', AudioTorchTensor, 'hello'),
+    ],
+)
+def test_validation(file_format, cls_tensor, tensor):
+    if file_format == 'illegal':
+        match = str(cls_tensor).split('.')[-1][:-2]
+        with pytest.raises(ValueError, match=match):
+            parse_obj_as(cls_tensor, tensor)
+    else:
+        arr = parse_obj_as(cls_tensor, tensor)
+        assert isinstance(arr, cls_tensor)
+
+
+@pytest.mark.parametrize(
+    'cls_tensor,tensor,proto_key',
+    [
+        (AudioTorchTensor, torch.zeros(1000, 2), 'audio_torch_tensor'),
+        (AudioNdArray, np.zeros((1000, 2)), 'audio_ndarray'),
+    ],
+)
+def test_proto_tensor(cls_tensor, tensor, proto_key):
     tensor = parse_obj_as(cls_tensor, tensor)
-
-    tensor._to_node_protobuf()
+    proto = tensor._to_node_protobuf()
+    assert str(proto).startswith(proto_key)
 
 
 @pytest.mark.parametrize(
     'cls_tensor,tensor',
     [
-        (AudioTorchTensor, torch.zeros(3, 224, 224)),
-        (AudioNdArray, np.zeros((3, 224, 224))),
+        (AudioTorchTensor, torch.zeros(1000, 2)),
+        (AudioNdArray, np.zeros((1000, 2))),
     ],
 )
 def test_save_audio_tensor_to_file(cls_tensor, tensor):
