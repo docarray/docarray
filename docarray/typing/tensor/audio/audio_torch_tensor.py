@@ -74,7 +74,7 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
 
         max_int16 = 2**15
         tensor = self * max_int16
-        tensor.to(dtype=torch.int16)
+        tensor = tensor.to(dtype=torch.int16)
         n_channels = 2 if self.ndim > 1 else 1
 
         with wave.open(file_path, 'w') as f:
