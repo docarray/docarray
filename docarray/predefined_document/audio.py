@@ -11,7 +11,7 @@ class Audio(BaseDocument):
     """
     Document for handling audios.
 
-    The Audio Document can contain an AudioUrl (`Audio.url`), a Tensor
+    The Audio Document can contain an AudioUrl (`Audio.url`), an AudioTensor
     (`Audio.tensor`), and an Embedding (`Audio.embedding`).
 
     EXAMPLE USAGE:
