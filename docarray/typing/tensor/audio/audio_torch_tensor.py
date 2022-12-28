@@ -1,9 +1,12 @@
 import wave
-from typing import BinaryIO, TypeVar, Union
+from typing import TYPE_CHECKING, BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 
 T = TypeVar('T', bound='AudioTorchTensor')
+
+if TYPE_CHECKING:
+    from docarray.proto import NodeProto
 
 
 class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
@@ -48,6 +51,18 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
         doc_2.audio_tensor.save_audio_tensor_to_file(file_path='path/to/file_2.wav')
 
     """
+
+    def _to_node_protobuf(self: T, field: str = 'audio_torch_tensor') -> 'NodeProto':
+        """Convert itself into a NodeProto protobuf message. This function should
+        be called when the Document is nested into another Document that need to be
+        converted into a protobuf
+        :param field: field in which to store the content in the node proto
+        :return: the nested item protobuf message
+        """
+        from docarray.proto import NodeProto
+
+        nd_proto = self.to_protobuf()
+        return NodeProto(**{field: nd_proto})
 
     def save_audio_tensor_to_file(
         self: 'T',

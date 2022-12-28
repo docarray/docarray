@@ -53,7 +53,7 @@ class AudioNdArray(NdArray):
 
     """
 
-    def _to_node_protobuf(self: T, field: str = 'ndarray') -> 'NodeProto':
+    def _to_node_protobuf(self: T, field: str = 'audio_ndarray') -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
