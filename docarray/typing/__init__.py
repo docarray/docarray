@@ -1,5 +1,6 @@
 from docarray.typing.id import ID
 from docarray.typing.tensor import NdArray, Tensor
+from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding import Embedding
 from docarray.typing.url import (
     AnyUrl,
@@ -11,6 +12,7 @@ from docarray.typing.url import (
 )
 
 __all__ = [
+    'AudioNdArray',
     'NdArray',
     'Embedding',
     'ImageUrl',
@@ -29,5 +31,6 @@ except ImportError:
     pass
 else:
     from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
+    from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
 
-    __all__.extend(['TorchEmbedding', 'TorchTensor'])
+    __all__.extend(['AudioTorchTensor', 'TorchEmbedding', 'TorchTensor'])

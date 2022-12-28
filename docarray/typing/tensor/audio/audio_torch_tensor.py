@@ -1,10 +1,7 @@
 import wave
 from typing import BinaryIO, TypeVar, Union
 
-import numpy as np
-
-from docarray.typing import TorchTensor
-from docarray.typing.tensor.torch_tensor import metaTorchAndNode
+from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 
 T = TypeVar('T', bound='AudioTorchTensor')
 
@@ -26,12 +23,11 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
         :param sample_rate: sampling frequency
         :param sample_width: sample width in bytes
         """
-        np_self: np.ndarray = self.cpu().detach().numpy()
+        import torch
 
-        # Convert to (little-endian) 16 bit integers.
         max_int16 = 2**15
-        tensor = (np_self * max_int16).astype('<h')
-        n_channels = 2 if np_self.ndim > 1 else 1
+        tensor = torch.tensor(self * max_int16, dtype=torch.int16)
+        n_channels = 2 if self.ndim > 1 else 1
 
         with wave.open(file_path, 'w') as f:
             # 2 Channels.
@@ -39,4 +35,4 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
             # 2 bytes per sample.
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes(tensor.tobytes())
+            f.writeframes(tensor.cpu().detach().numpy().tobytes())

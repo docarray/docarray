@@ -1,14 +1,19 @@
 import wave
-from typing import TYPE_CHECKING, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.typing.url.any_url import AnyUrl
 
 if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
     from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='AudioUrl')
+
+AUDIO_FILE_FORMATS = ['wav']
 
 
 class AudioUrl(AnyUrl):
@@ -28,9 +33,25 @@ class AudioUrl(AnyUrl):
 
         return NodeProto(audio_url=str(self))
 
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        url = super().validate(value, field, config)  # basic url validation
+        has_audio_extension = any(url.endswith(ext) for ext in AUDIO_FILE_FORMATS)
+        if not has_audio_extension:
+            raise ValueError(
+                f'Audio URL must have one of the following extensions:'
+                f'{AUDIO_FILE_FORMATS}'
+            )
+        return cls(str(url), scheme=None)
+
     def load(self: T) -> np.ndarray:
         """
-        Load the data from the url into a numpy.ndarray audio tensor.
+        Load the data from the url into a numpy.ndarray.
 
         EXAMPLE USAGE
 
@@ -46,7 +67,7 @@ class AudioUrl(AnyUrl):
                 audio_url: AudioUrl
 
 
-            doc = MyDoc(mesh_url="toydata/hello.wav")
+            doc = MyDoc(audio_url="toydata/hello.wav")
 
             audio_tensor = doc.audio_url.load()
             assert isinstance(audio_tensor, np.ndarray)
