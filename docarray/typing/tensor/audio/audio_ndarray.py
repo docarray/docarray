@@ -39,21 +39,12 @@ class AudioNdArray(NdArray):
         :param sample_width: sample width in bytes
         """
 
-        # Convert to (little-endian) 16 bit integers.
         max_int16 = 2**15
-        print(f"self = {self}")
-        print(f"self.__class__ = {self.__class__}")
-
         tensor = (self * max_int16).astype('<h')
-        print(f"tensor = {tensor}")
         n_channels = 2 if self.ndim > 1 else 1
 
         with wave.open(file_path, 'w') as f:
-            # 2 Channels.
             f.setnchannels(n_channels)
-            # 2 bytes per sample.
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            print(f"tensor = {tensor}")
-            print(f"tensor.tobytes() = {tensor.tobytes()}")
             f.writeframes(tensor.tobytes())

@@ -30,9 +30,7 @@ class AudioTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
         n_channels = 2 if self.ndim > 1 else 1
 
         with wave.open(file_path, 'w') as f:
-            # 2 Channels.
             f.setnchannels(n_channels)
-            # 2 bytes per sample.
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
             f.writeframes(tensor.cpu().detach().numpy().tobytes())
