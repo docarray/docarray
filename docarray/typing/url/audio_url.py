@@ -100,21 +100,15 @@ class AudioUrl(AnyUrl):
 
             # Normalise float32 array so that values are between -1.0 and +1.0
             max_int16 = 2**15
-            audio_normalised = audio_as_np_float32 / max_int16
+            audio_norm = audio_as_np_float32 / max_int16
 
             channels = ifile.getnchannels()
             if channels == 2:
                 # 1 for mono, 2 for stereo
-                audio_stereo = np.empty(
-                    (int(len(audio_normalised) / channels), channels)
-                )
-                audio_stereo[:, 0] = audio_normalised[
-                    range(0, len(audio_normalised), 2)
-                ]
-                audio_stereo[:, 1] = audio_normalised[
-                    range(1, len(audio_normalised), 2)
-                ]
+                audio_stereo = np.empty((int(len(audio_norm) / channels), channels))
+                audio_stereo[:, 0] = audio_norm[range(0, len(audio_norm), 2)]
+                audio_stereo[:, 1] = audio_norm[range(1, len(audio_norm), 2)]
 
                 return audio_stereo
             else:
-                return audio_normalised
+                return audio_norm
