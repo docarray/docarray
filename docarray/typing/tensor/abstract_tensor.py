@@ -9,8 +9,6 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import NdArrayProto
-
 T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
 
@@ -123,8 +121,4 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     @abc.abstractmethod
     def n_dim(self) -> int:
         """Get number of tensor dimensions."""
-        ...
-
-    @abc.abstractmethod
-    def to_protobuf(self) -> 'NdArrayProto':
         ...
