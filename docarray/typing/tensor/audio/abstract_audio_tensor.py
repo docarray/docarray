@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.url.audio_url import MAX_INT_16
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
@@ -41,7 +42,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setnchannels(n_channels)
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes(self.to_audio_bytes())
+            f.writeframes((self * MAX_INT_16).to_audio_bytes())
 
     def _to_node_protobuf(self: T) -> 'NodeProto':
         """

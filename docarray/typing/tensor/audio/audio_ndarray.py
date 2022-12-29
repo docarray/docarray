@@ -2,7 +2,6 @@ from typing import TypeVar
 
 from docarray.typing import NdArray
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
-from docarray.typing.url.audio_url import MAX_INT_16
 
 T = TypeVar('T', bound='AudioNdArray')
 
@@ -54,6 +53,6 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
     TENSOR_FIELD_NAME = 'audio_ndarray'
 
     def to_audio_bytes(self):
-        tensor = (self * MAX_INT_16).astype('<h')
+        tensor = self.astype('<h')
 
         return tensor.tobytes()
