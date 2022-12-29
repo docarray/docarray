@@ -75,9 +75,6 @@ def test_plot_embedding():
     'colors', [None, np.random.rand(100, 3), np.random.rand(100, 4)]
 )
 def test_plot_point_cloud(colors):
-    import os
-
-    os.environ['DISPLAY'] = ':1'
     point_cloud = np.random.randint(20, size=(100, 3))
 
     if colors is not None:
