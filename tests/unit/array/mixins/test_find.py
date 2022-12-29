@@ -775,26 +775,26 @@ def test_filtering(
         (
             {
                 'must': [
-                    {"key": "category", "match": {"value": "Shoes"}},
-                    {"key": "price", "range": {"gte": 5.0}},
+                    {'key': 'category', 'match': {'value': 'Shoes'}},
+                    {'key': 'price', 'range': {'gte': 5.0}},
                 ]
             },
-            lambda r: r.tags['category'] == "Shoes" and r.tags['price'] >= 5.0,
+            lambda r: r.tags['category'] == 'Shoes' and r.tags['price'] >= 5.0,
         ),
         (
             {
                 'must_not': [
-                    {"key": "info", "match": {"text": "shoes"}},
+                    {'key': 'info', 'match': {'text': 'shoes'}},
                     {
-                        "key": "location",
-                        "geo_radius": {
-                            "center": {"lon": -98.17, "lat": 38.71},
-                            "radius": 500.0 * 1000,
+                        'key': 'location',
+                        'geo_radius': {
+                            'center': {'lon': -98.17, 'lat': 38.71},
+                            'radius': 500.0 * 1000,
                         },
                     },
                 ]
             },
-            lambda r: r.tags['info'].find("shoes") == -1
+            lambda r: r.tags['info'].find('shoes') == -1
             and (
                 haversine_distances(
                     [
@@ -809,11 +809,11 @@ def test_filtering(
         (
             {
                 'should': [
-                    {"key": "info", "match": {"text": "shoes"}},
-                    {"key": "price", "range": {"gte": 5.0}},
+                    {'key': 'info', 'match': {'text': 'shoes'}},
+                    {'key': 'price', 'range': {'gte': 5.0}},
                 ]
             },
-            lambda r: r.tags['info'].find("shoes") != -1 or r.tags['price'] >= 5.0,
+            lambda r: r.tags['info'].find('shoes') != -1 or r.tags['price'] >= 5.0,
         ),
     ],
 )
@@ -830,7 +830,7 @@ def test_qdrant_filter_query(filter, checker, columns, start_storage):
                     'price': i + 0.5,
                     'category': 'Shoes',
                     'info': f'shoes {i}',
-                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                    'location': {'lon': -98.17 + i, 'lat': 38.93 + i},
                 },
             )
             for i in range(10)
@@ -846,7 +846,7 @@ def test_qdrant_filter_query(filter, checker, columns, start_storage):
                     'price': i + 0.5,
                     'category': 'Jeans',
                     'info': 'jeans {i}',
-                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                    'location': {'lon': -98.17 + i, 'lat': 38.93 + i},
                 },
             )
             for i in range(10)
@@ -961,7 +961,7 @@ def test_redis_geo_filter(start_storage):
         [
             Document(
                 embedding=np.random.rand(n_dim),
-                tags={'location': f"{-98.17+i},{38.71+i}"},
+                tags={'location': f'{-98.17+i},{38.71+i}'},
             )
             for i in range(10)
         ]
@@ -1049,7 +1049,7 @@ def test_elastic_os_id_filter(storage, config, limit):
     for id in id_list:
         id = list(map(lambda x: str(x), id))
         query = {
-            "bool": {"filter": {"ids": {"values": id}}},
+            'bool': {'filter': {'ids': {'values': id}}},
         }
         result = da.find(query=query, limit=limit)
         assert all([r.id in id for r in result])
@@ -1079,9 +1079,9 @@ def test_elastic_nested_type_search():
     )
 
     filter = {
-        "nested": {
-            "path": "field",
-            "query": {"match": {"field.field_1": "hello_0"}},
+        'nested': {
+            'path': 'field',
+            'query': {'match': {'field.field_1': 'hello_0'}},
         }
     }
 
