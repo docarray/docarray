@@ -43,7 +43,7 @@ def test_save_audio_ndarray(file_url, tmpdir):
 
     audio_from_file = Audio(url=tmp_file)
     audio_from_file.tensor = audio_from_file.url.load()
-    np.allclose(audio.tensor, audio_from_file.tensor)
+    assert np.allclose(audio.tensor, audio_from_file.tensor)
 
 
 @pytest.mark.slow
@@ -60,11 +60,11 @@ def test_save_audio_torch_tensor(file_url, tmpdir):
     audio.tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
 
-    audio_from_tmp = Audio(url=tmp_file)
-    audio_from_tmp.tensor = parse_obj_as(
-        AudioTorchTensor, torch.from_numpy(audio_from_tmp.url.load())
+    audio_from_file = Audio(url=tmp_file)
+    audio_from_file.tensor = parse_obj_as(
+        AudioTorchTensor, torch.from_numpy(audio_from_file.url.load())
     )
-    torch.allclose(audio.tensor, audio_from_tmp.tensor)
+    assert torch.allclose(audio.tensor, audio_from_file.tensor)
 
 
 @pytest.mark.slow
