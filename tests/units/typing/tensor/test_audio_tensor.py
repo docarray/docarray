@@ -75,8 +75,8 @@ def test_illegal_validation(cls_tensor, tensor):
 @pytest.mark.parametrize(
     'cls_tensor,tensor,proto_key',
     [
-        (AudioTorchTensor, torch.zeros(1000, 2), 'audio_torch_tensor'),
-        (AudioNdArray, np.zeros((1000, 2)), 'audio_ndarray'),
+        (AudioTorchTensor, torch.zeros(1000, 2), AudioTorchTensor.TENSOR_FIELD_NAME),
+        (AudioNdArray, np.zeros((1000, 2)), AudioNdArray.TENSOR_FIELD_NAME),
     ],
 )
 def test_proto_tensor(cls_tensor, tensor, proto_key):

@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AudioUrl')
 
 AUDIO_FILE_FORMATS = ['wav']
+MAX_INT_16 = 2**15
 
 
 class AudioUrl(AnyUrl):
@@ -99,8 +100,7 @@ class AudioUrl(AnyUrl):
             audio_as_np_float32 = audio_as_np_int16.astype(np.float32)
 
             # Normalise float32 array so that values are between -1.0 and +1.0
-            max_int16 = 2**15
-            audio_norm = audio_as_np_float32 / max_int16
+            audio_norm = audio_as_np_float32 / MAX_INT_16
 
             channels = ifile.getnchannels()
             if channels == 2:

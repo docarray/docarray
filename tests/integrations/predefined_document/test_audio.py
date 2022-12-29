@@ -22,11 +22,8 @@ REMOTE_AUDIO_FILE = 'https://www.kozco.com/tech/piano2.wav'
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url', [*LOCAL_AUDIO_FILES, REMOTE_AUDIO_FILE])
 def test_audio(file_url):
-
     audio = Audio(url=file_url)
-
     audio.tensor = audio.url.load()
-
     assert isinstance(audio.tensor, np.ndarray)
 
 
@@ -39,13 +36,14 @@ def test_save_audio_ndarray(file_url, tmpdir):
     audio = Audio(url=file_url)
     audio.tensor = parse_obj_as(AudioNdArray, audio.url.load())
     assert isinstance(audio.tensor, np.ndarray)
+    assert isinstance(audio.tensor, AudioNdArray)
 
     audio.tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
 
     audio_from_file = Audio(url=tmp_file)
     audio_from_file.tensor = audio_from_file.url.load()
-    assert (audio.tensor == audio_from_file.tensor).all()
+    np.allclose(audio.tensor, audio_from_file.tensor)
 
 
 @pytest.mark.slow
@@ -66,7 +64,7 @@ def test_save_audio_torch_tensor(file_url, tmpdir):
     audio_from_tmp.tensor = parse_obj_as(
         AudioTorchTensor, torch.from_numpy(audio_from_tmp.url.load())
     )
-    assert (audio.tensor == audio_from_tmp.tensor).all()
+    torch.allclose(audio.tensor, audio_from_tmp.tensor)
 
 
 @pytest.mark.slow
