@@ -70,6 +70,8 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         )
     """
 
+    TENSOR_FIELD_NAME = 'ndarray'
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
@@ -159,7 +161,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         """
         return self.view(np.ndarray)
 
-    def _to_node_protobuf(self: T, field: str = 'ndarray') -> 'NodeProto':
+    def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
@@ -169,7 +171,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         from docarray.proto import NodeProto
 
         nd_proto = self.to_protobuf()
-        return NodeProto(**{field: nd_proto})
+        return NodeProto(**{self.TENSOR_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
