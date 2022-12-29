@@ -1,14 +1,10 @@
 import wave
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, BinaryIO, TypeVar, Union
+from typing import BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.typing.url.audio_url import MAX_INT_16
 
 T = TypeVar('T', bound='AbstractAudioTensor')
-
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
@@ -18,7 +14,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
     @abstractmethod
     def to_audio_bytes(self):
         """
-        Convert tensor to bytes.
+        Convert audio tensor to bytes.
         """
         raise NotImplementedError
 
@@ -36,23 +32,14 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param sample_rate: sampling frequency
         :param sample_width: sample width in bytes
         """
-        n_channels = 2 if self.ndim() > 1 else 1
+        n_channels = 2 if self.n_dim() > 1 else 1
 
         with wave.open(file_path, 'w') as f:
             f.setnchannels(n_channels)
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes((self * MAX_INT_16).to_audio_bytes())
+            f.writeframes(self.to_audio_bytes())
 
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """
-        Convert itself into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to be
-        converted into a protobuf
-        :param field: field in which to store the content in the node proto
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        nd_proto = self.to_protobuf()
-        return NodeProto(**{self.TENSOR_FIELD_NAME: nd_proto})
+    @abstractmethod
+    def n_dim(self) -> int:
+        ...

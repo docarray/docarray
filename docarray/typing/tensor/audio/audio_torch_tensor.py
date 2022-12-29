@@ -1,9 +1,13 @@
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
+from docarray.typing.url.audio_url import MAX_INT_16
 
 T = TypeVar('T', bound='AudioTorchTensor')
+
+if TYPE_CHECKING:
+    from docarray.proto import NodeProto
 
 
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
@@ -51,8 +55,24 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
     TENSOR_FIELD_NAME = 'audio_torch_tensor'
 
+    def _to_node_protobuf(self: T, field: str = TENSOR_FIELD_NAME) -> 'NodeProto':
+        """
+        Convert itself into a NodeProto protobuf message. This function should
+        be called when the Document is nested into another Document that need to be
+        converted into a protobuf
+        :param field: field in which to store the content in the node proto
+        :return: the nested item protobuf message
+        """
+        from docarray.proto import NodeProto
+
+        nd_proto = self.to_protobuf()
+        return NodeProto(**{field: nd_proto})
+
     def to_audio_bytes(self):
         import torch
 
-        tensor = self.to(dtype=torch.int16)
+        tensor = (self * MAX_INT_16).to(dtype=torch.int16)
         return tensor.cpu().detach().numpy().tobytes()
+
+    def n_dim(self) -> int:
+        return self.ndim
