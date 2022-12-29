@@ -229,3 +229,6 @@ class TorchTensor(
         from docarray.computation.torch_backend import TorchCompBackend
 
         return TorchCompBackend
+
+    def ndim(self) -> int:
+        return self.ndim()

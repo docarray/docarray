@@ -1,5 +1,5 @@
 import abc
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
 
 from docarray.computation import AbstractComputationalBackend
@@ -115,4 +115,8 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     @abc.abstractmethod
     def get_comp_backend() -> Type[AbstractComputationalBackend]:
         """The computational backend compatible with this tensor type."""
+        ...
+
+    @abstractmethod
+    def ndim(self) -> int:
         ...
