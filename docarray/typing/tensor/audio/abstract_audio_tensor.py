@@ -12,11 +12,18 @@ class AbstractAudioTensor(AbstractTensor, ABC):
     TENSOR_FIELD_NAME: str
 
     @abstractmethod
+    def n_dim(self) -> int:
+        """
+        Get number of tensor dimensions.
+        """
+        ...
+
+    @abstractmethod
     def to_audio_bytes(self):
         """
         Convert audio tensor to bytes.
         """
-        raise NotImplementedError
+        ...
 
     def save_to_wav_file(
         self: 'T',
@@ -39,7 +46,3 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
             f.writeframes(self.to_audio_bytes())
-
-    @abstractmethod
-    def n_dim(self) -> int:
-        ...
