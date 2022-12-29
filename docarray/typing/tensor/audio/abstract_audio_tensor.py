@@ -8,16 +8,6 @@ T = TypeVar('T', bound='AbstractAudioTensor')
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-
-    TENSOR_FIELD_NAME: str
-
-    @abstractmethod
-    def n_dim(self) -> int:
-        """
-        Get number of tensor dimensions.
-        """
-        ...
-
     @abstractmethod
     def to_audio_bytes(self):
         """

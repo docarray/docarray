@@ -208,3 +208,6 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         from docarray.computation.numpy_backend import NumpyCompBackend
 
         return NumpyCompBackend
+
+    def n_dim(self) -> int:
+        return self.ndim

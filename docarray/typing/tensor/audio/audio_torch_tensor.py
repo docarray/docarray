@@ -73,6 +73,3 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
         tensor = (self * MAX_INT_16).to(dtype=torch.int16)
         return tensor.cpu().detach().numpy().tobytes()
-
-    def n_dim(self) -> int:
-        return self.ndim
