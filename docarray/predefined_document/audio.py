@@ -23,7 +23,9 @@ class Audio(BaseDocument):
         from docarray import Audio
 
         # use it directly
-        audio = Audio(url='https://www.kozco.com/tech/piano2.wav')
+        audio = Audio(
+            url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav'
+        )
         audio.tensor = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
@@ -40,7 +42,9 @@ class Audio(BaseDocument):
             name: Optional[Text]
 
 
-        audio = MyAudio(url='https://www.kozco.com/tech/piano2.wav')
+        audio = MyAudio(
+            url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav'
+        )
         audio.tensor = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
@@ -60,7 +64,9 @@ class Audio(BaseDocument):
 
 
         mmdoc = MultiModalDoc(
-            audio=Audio(url='https://www.kozco.com/tech/piano2.wav'),
+            audio=Audio(
+                url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav'
+            ),
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.audio.tensor = mmdoc.audio.url.load()
