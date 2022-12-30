@@ -42,7 +42,7 @@ class AudioUrl(AnyUrl):
         config: 'BaseConfig',
     ) -> T:
         url = super().validate(value, field, config)  # basic url validation
-        has_audio_extension = any(url.endswith(ext) for ext in AUDIO_FILE_FORMATS)
+        has_audio_extension = any(ext in url for ext in AUDIO_FILE_FORMATS)
         if not has_audio_extension:
             raise ValueError(
                 f'Audio URL must have one of the following extensions:'
