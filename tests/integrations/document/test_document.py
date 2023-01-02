@@ -1,6 +1,6 @@
 import numpy as np
 
-from docarray import DocumentArray, Document, Image, Text
+from docarray import Document, DocumentArray, Image, Text
 
 
 def test_multi_modal_doc():
@@ -23,7 +23,7 @@ def test_multi_modal_doc():
 def test_nested_chunks_document():
     class ChunksDocument(Document):
         text: str
-        images: DocumentArray  # should find a way to do DocumentArray[Images]
+        images: DocumentArray[Image]
 
     doc = ChunksDocument(
         text='hello',

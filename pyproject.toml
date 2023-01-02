@@ -46,6 +46,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.mypy]
 exclude = ['docarray/proto']
 plugins = "pydantic.mypy"
+check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = "trimesh"

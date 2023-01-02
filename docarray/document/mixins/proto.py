@@ -12,7 +12,7 @@ try:
 except ImportError:
     torch_imported = False
 else:
-    from docarray.typing import TorchTensor
+    from docarray.typing.tensor.torch_tensor import TorchTensor
 
     torch_imported = True
 

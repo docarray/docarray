@@ -42,6 +42,7 @@ def test_proto_text_url():
     uri._to_node_protobuf()
 
 
+@pytest.mark.internet
 def test_load_timeout():
     url = parse_obj_as(TextUrl, REMOTE_TXT)
     with pytest.raises(urllib.error.URLError):

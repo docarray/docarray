@@ -1,74 +1,52 @@
-from collections import defaultdict
 from contextlib import contextmanager
 from functools import wraps
-from typing import (
-    TYPE_CHECKING,
-    DefaultDict,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
 
 from typing_inspect import is_union_type
 
-from docarray.array.abstract_array import AbstractDocumentArray
-from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
-from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.typing import NdArray
+from docarray.array.abstract_array import AnyDocumentArray
+from docarray.document import AnyDocument, BaseDocument
 
 if TYPE_CHECKING:
-    from docarray.typing import TorchTensor
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
 
-try:
-    import torch
-except ImportError:
-    torch_imported = False
-else:
-    from docarray.typing import TorchTensor
-
-    torch_imported = True
-
-
-def _stacked_mode_blocker(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        if self.is_stacked():
-            raise RuntimeError(
-                f'Cannot call {func.__name__} when the document array is in stack mode'
-            )
-        return func(self, *args, **kwargs)
-
-    wrapper.__doc__ = (
-        wrapper.__doc__ + ' \n This method is not available in stacked mode call'
-    )
-
-    return wrapper
+    from docarray.array.array_stacked import DocumentArrayStacked
+    from docarray.proto import DocumentArrayProto
+    from docarray.typing import NdArray, TorchTensor
 
 
 T = TypeVar('T', bound='DocumentArray')
 
 
-class DocumentArray(
-    list,
-    ProtoArrayMixin,
-    GetAttributeArrayMixin,
-    AbstractDocumentArray,
-    BaseNode,
-):
+def _delegate_meth_to_data(meth_name: str) -> Callable:
     """
-    A DocumentArray is a container of Documents.
+    create a function that mimic a function call to the data attribute of the
+    DocumentArray
+
+    :param meth_name: name of the method
+    :return: a method that mimic the meth_name
+    """
+    func = getattr(list, meth_name)
+
+    @wraps(func)
+    def _delegate_meth(self, *args, **kwargs):
+        return getattr(self._data, meth_name)(*args, **kwargs)
+
+    return _delegate_meth
+
+
+class DocumentArray(AnyDocumentArray):
+    """
+     DocumentArray is a container of Documents.
 
     :param docs: iterable of Document
 
     A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
-    homogeneous and follow the same schema. To be precise, in this schema you can use
+    homogeneous and follow the same schema. To precise this schema you can use
     the `DocumentArray[MyDocument]` syntax where MyDocument is a Document class
-    (i.e. schema). This creates a DocumentArray that can only contain Documents of
+    (i.e. schema). This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
     EXAMPLE USAGE
@@ -90,339 +68,135 @@ class DocumentArray(
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
     fields at the DocumentArray level (for example `da.tensor`). You can also set
     fields, with `da.tensor = np.random.random([10, 100])`
-
-
-    A DocumentArray can be in one of two modes: unstacked mode and stacked mode.
-
-
-    **Unstacked mode (default)**:
-    In this case a DocumentArray is a list of Documents and each Document owns its data.
-    The getter and setter shown above return a list of the fields of each Document
-    (or DocumentArray if the field is a nested Document). This list/DocumentArray
-    is created on the fly. The setter sets the field of each Document to the value
-    of the list/DocumentArray/Tensor passed as parameters.
-
-    This list-like behavior is not always optimal, especially when you want
-    to process data in batches or perform operations involving matrix computation.
-    This is where the stack mode of the DocumentArray comes in handy.
-
-    In **stacked mode**, tensor-like fields of every Document are stored on the
-    DocumentArray level as one stacked tensor. This enables operations on the entire
-    batch without iterating over the DocumentArray.
-    In this mode the Documents in the DocumentArray no longer own the data but just
-    reference the data in the DocumentArray's tensor.
-    Operations like `da.append` are not supported because
-    they are too slow. For these operations you should use unstacked
-    mode instead.
-
-    To switch from stacked to unstacked mode (or vice-versa), call `da.unstack()` or
-    `da.stack`. There are also two context managers for these modes:
-    `with da.stack_mode():` and `with da.unstack_mode():`
-
-    see {meth}`.stack` and {meth}`.unstack` for more information.
-
-    You should use unstacked mode if you want to:
-
-    * Insert, append, delete, or shuffle Documents in your DocumentArray.
-    * Separate the DocumentArray into smaller batches later on.
-
-    You should use stacked mode if you want to:
-
-    * Process the entire DocumentArray as one batch.
-    * Use the DocumentArray in an ML model for training or inference.
-
     """
 
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(self, docs: Iterable[BaseDocument]):
-        super().__init__(doc_ for doc_ in docs)
+        self._data = [doc_ for doc_ in docs]
 
-        self._columns: Optional[
-            Dict[str, Union['TorchTensor', AbstractDocumentArray, NdArray, None]]
-        ] = None
+    def __len__(self):
+        return len(self._data)
 
-    def __class_getitem__(cls, item: Type[BaseDocument]):
-        if not issubclass(item, BaseDocument):
-            raise ValueError(
-                f'DocumentArray[item] item should be a Document not a {item} '
-            )
-
-        class _DocumentArrayTyped(cls):  # type: ignore
-            document_type: Type[BaseDocument] = item
-
-        for field in _DocumentArrayTyped.document_type.__fields__.keys():
-
-            def _property_generator(val: str):
-                def _getter(self):
-                    return self._get_array_attribute(val)
-
-                def _setter(self, value):
-                    self._set_array_attribute(val, value)
-
-                # need docstring for the property
-                return property(fget=_getter, fset=_setter)
-
-            setattr(_DocumentArrayTyped, field, _property_generator(field))
-            # this generates property on the fly based on the schema of the item
-
-        _DocumentArrayTyped.__name__ = f'DocumentArray[{item.__name__}]'
-        _DocumentArrayTyped.__qualname__ = f'DocumentArray[{item.__name__}]'
-
-        return _DocumentArrayTyped
-
-    def __list_getitem__(self, item):
-        return super().__getitem__(item)
-
-    def __getitem__(self, item):  # note this should handle slices
-        if self.is_stacked():
-            doc = super().__getitem__(item)
-            # NOTE: this could be speed up by using a cache
-            for field in self._columns.keys():
-                setattr(doc, field, self._columns[field][item])
-            return doc
-        else:
-            return self.__list_getitem__(item)
-
-    def __get_stacked_document__(self, item):
-        """
-        In stacked mode this returns the Document where the stacked fields are put to
-        None In unstacked mode (default) this is the same as __getitem__
-
-        :param item:
-        :return: Document
-        """
-        doc = super().__getitem__(item)
-        if self.is_stacked():
-            for field in self._columns.keys():
-                setattr(doc, field, None)
-        return doc
-
-    def __list_iter__(self):
-        return super().__iter__()
+    def __getitem__(self, item):
+        return self._data[item]
 
     def __iter__(self):
-        for i in range(len(self)):
-            yield self[i]
+        return iter(self._data)
 
-    def __iter_over_stacked_documents__(self):
+    append = _delegate_meth_to_data('append')
+    extend = _delegate_meth_to_data('extend')
+    insert = _delegate_meth_to_data('insert')
+    pop = _delegate_meth_to_data('pop')
+    remove = _delegate_meth_to_data('remove')
+    reverse = _delegate_meth_to_data('reverse')
+    sort = _delegate_meth_to_data('sort')
+
+    def _get_array_attribute(
+        self: T,
+        field: str,
+    ) -> Union[List, T, 'TorchTensor', 'NdArray']:
+        """Return all values of the fields from all docs this array contains
+
+        :param field: name of the fields to extract
+        :return: Returns a list of the field value for each document
+        in the array like container
         """
-        This iterates over the document but with the stacked fields put to None
-        :return:
+        field_type = self.__class__.document_type._get_nested_document_class(field)
+
+        if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
+            # calling __class_getitem__ ourselves is a hack otherwise mypy complain
+            # most likely a bug in mypy though
+            # bug reported here https://github.com/python/mypy/issues/14111
+            return self.__class__.__class_getitem__(field_type)(
+                (getattr(doc, field) for doc in self)
+            )
+        else:
+            return [getattr(doc, field) for doc in self]
+
+    def _set_array_attribute(
+        self: T,
+        field: str,
+        values: Union[List, T, 'TorchTensor', 'NdArray'],
+    ):
+        """Set all Documents in this DocumentArray using the passed values
+
+        :param field: name of the fields to extract
+        :values: the values to set at the DocumentArray level
         """
-        for i in range(len(self)):
-            yield self.__get_stacked_document__(i)
+        ...
 
-    def stack(self: T) -> T:
-        """
-        Puts the DocumentArray into stacked mode.
-        :return: itself
+        for doc, value in zip(self, values):
+            setattr(doc, field, value)
 
-        When entering stacked mode DocumentArray creates a column for:
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+        """create a Document from a protobuf message"""
+        return cls(
+            cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
+        )
 
-         - Each Tensor field of each Document
-         - Nested Documents that contain at least one Tensor field.
+    def to_protobuf(self) -> 'DocumentArrayProto':
+        """Convert DocumentArray into a Protobuf message"""
+        from docarray.proto import DocumentArrayProto
 
-        This is useful to perform operations on the whole
-        array at once. In stacked mode, accessing or setting the DocumentArray's fields
-        accesses or sets the columns of the array.
+        da_proto = DocumentArrayProto()
+        for doc in self:
+            da_proto.docs.append(doc.to_protobuf())
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import Document, DocumentArray
-            from docarray.typing import NdArray
-
-
-            class Image(Document):
-                tensor: NdArray[100]
-
-
-            batch = DocumentArray[Image](
-                [Image(tensor=np.zeros((100))) for _ in range(10)]
-            )  # noqa: E510
-
-            batch.stack()
-
-            print(batch[0].tensor[0])
-            # >>> 0
-
-            print(batch.tensor.shape)
-            # >>> (10, 3, 224, 224)
-
-            batch.tensor = np.ones((10, 100))
-
-            print(batch[0].tensor[0])
-            # >>> 1
-
-            batch.append(Image(tensor=np.zeros((100))))
-            # >>> raise RuntimeError('Cannot call append when the document array is in
-            # >>> stack mode'
-
-        see {meth}`.unstack` for more information on how to switch to unstack mode
-        """
-
-        if not self.is_stacked():
-
-            self._columns = dict()
-
-            for field_name, field in self.document_type.__fields__.items():
-                field_type = field.type_
-                if is_union_type(field_type):
-                    # cannot stack union fields (might be different types)
-                    continue
-
-                is_torch_subclass = (
-                    issubclass(field_type, torch.Tensor) if torch_imported else False
-                )
-
-                if (
-                    is_torch_subclass
-                    or issubclass(field_type, BaseDocument)
-                    or issubclass(field_type, NdArray)
-                ):
-                    self._columns[field_name] = None
-
-            columns_to_stack: DefaultDict[
-                str, Union[List['TorchTensor'], List[NdArray], List[BaseDocument]]
-            ] = defaultdict(  # type: ignore
-                list  # type: ignore
-            )  # type: ignore
-
-            for doc in self.__list_iter__():
-                for field_to_stack in self._column_fields():
-                    columns_to_stack[field_to_stack].append(
-                        getattr(doc, field_to_stack)
-                    )
-                    setattr(doc, field_to_stack, None)
-
-            for field_to_stack, to_stack in columns_to_stack.items():
-
-                type_ = self.document_type.__fields__[field_to_stack].type_
-                if issubclass(type_, BaseDocument):
-                    self._columns[field_to_stack] = DocumentArray[type_](  # type: ignore # noqa: E501
-                        to_stack
-                    ).stack()
-                else:
-                    self._columns[field_to_stack] = type_.__docarray_stack__(to_stack)
-
-        return self
-
-    def unstack(self: T) -> T:
-        """
-        Puts the DocumentArray into unstacked mode.
-        :return: itself
-
-
-        Calling unstack will unstack all columns of the DocumentArray and restore
-        the data of each Document in the DocumentArray.
-
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import Document, DocumentArray, Text
-            from docarray.typing import NdArray
-
-
-            class Image(Document):
-                tensor: NdArray[100]
-
-
-            batch = DocumentArray[Image](
-                [Image(tensor=np.zeros((100))) for _ in range(10)]
-            )  # noqa: E510
-
-            batch.stack()
-            batch.unstack()
-            print(type(batch.tensor))
-            # >>> list
-            print(len(batch.tensor))
-            # >>> 10
-
-            batch.append(Image(tensor=np.zeros((100))))
-            # this work just fine
-
-            batch.tensor = np.ones((10, 100))
-            # this iterates over the ndarray and assigns each row to a Document
-
-            print(batch[0].tensor[0])
-            # >>> 1
-
-        see {meth}`.stack` for more information on switching to stack mode
-        """
-        if self.is_stacked() and self._columns:
-
-            for i, doc in enumerate(self.__list_iter__()):
-                for field in self._column_fields():
-                    val = self._columns[field]
-                    if val is not None:
-                        setattr(doc, field, val[i])
-                    else:
-                        raise RuntimeError('Internal error, one of the column is None')
-                    # NOTE: here we might need to copy the tensor
-                    # see here
-                    # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor-when-the-original-tensor-is-deleted/167294 # noqa: E501
-
-            for field in self._column_fields():
-                # list needed here otherwise we are modifying the dict while iterating
-                del self._columns[field]
-
-            self._columns = None
-
-        return self
+        return da_proto
 
     @contextmanager
     def stacked_mode(self):
         """
-        Context manager to put the DocumentArray in stacked mode and unstack it when
-        exiting the context manager.
-
+        Context manager to convert DocumentArray to a DocumentArrayStacked and unstack
+        it when exiting the context manager.
         EXAMPLE USAGE
         .. code-block:: python
             with da.stacked_mode():
                 ...
         """
+
+        from docarray.array.array_stacked import DocumentArrayStacked
+
         try:
-            yield self.stack()
+            da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(
+                self
+            )
+            yield da_stacked
         finally:
-            self.unstack()
+            self = DocumentArrayStacked.__class_getitem__(self.document_type).unstack(
+                da_stacked
+            )
 
-    @contextmanager
-    def unstacked_mode(self):
+    def stack(self) -> 'DocumentArrayStacked':
         """
-        Context manager to put the DocumentArray in unstacked mode and stack it when
-        exiting the context manager.
+        Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
+        afterwards
+        """
+        from docarray.array.array_stacked import DocumentArrayStacked
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            with da.unstacked_mode():
-                ...
-        """
-        try:
-            yield self.unstack()
-        finally:
-            self.stack()
+        return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
 
-    def is_stacked(self) -> bool:
-        """
-        Return True if the document array is in stack mode
-        """
-        return self._columns is not None
-
-    def _column_fields(self) -> List[str]:
-        """
-        return the list of fields that are columns of the DocumentArray
-        :return: the list of keys of the columns
-        """
-        if self.is_stacked() and self._columns is not None:
-            # need to repeat myself here bc of mypy
-            return list(self._columns.keys())
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, Iterable[BaseDocument]],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        if isinstance(value, cls):
+            return value
+        elif isinstance(value, Iterable):
+            return cls(value)
         else:
-            return []
+            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
-    append = _stacked_mode_blocker(list.append)
-    extend = _stacked_mode_blocker(list.extend)
-    clear = _stacked_mode_blocker(list.clear)
-    insert = _stacked_mode_blocker(list.insert)
-    pop = _stacked_mode_blocker(list.pop)
-    remove = _stacked_mode_blocker(list.remove)
-    reverse = _stacked_mode_blocker(list.reverse)
-    sort = _stacked_mode_blocker(list.sort)
+    def traverse_flat(
+        self: 'DocumentArray',
+        access_path: str,
+    ) -> Union[List[Any]]:
+        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocumentArray._flatten_one_level(nodes)
+
+        return flattened

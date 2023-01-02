@@ -1,6 +1,7 @@
 import numpy as np
 
 from docarray import Document, DocumentArray, Image, Text
+from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import NdArray
 
 
@@ -52,3 +53,16 @@ def test_nested_proto_any_doc():
     )
 
     DocumentArray.from_protobuf(da.to_protobuf())
+
+
+def test_stacked_proto():
+    class CustomDocument(Document):
+        image: NdArray
+
+    da = DocumentArray[CustomDocument](
+        [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
+    ).stack()
+
+    da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())
+
+    assert isinstance(da2, DocumentArrayStacked)

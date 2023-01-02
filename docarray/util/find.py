@@ -3,6 +3,8 @@ from typing import List, NamedTuple, Optional, Type, Union
 from typing_inspect import is_union_type
 
 from docarray import Document, DocumentArray
+from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import Tensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -13,7 +15,7 @@ class FindResult(NamedTuple):
 
 
 def find(
-    index: DocumentArray,
+    index: AnyDocumentArray,
     query: Union[Tensor, Document],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -102,7 +104,7 @@ def find(
 
 
 def find_batched(
-    index: DocumentArray,
+    index: AnyDocumentArray,
     query: Union[Tensor, DocumentArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -201,7 +203,7 @@ def find_batched(
 
     results = []
     for indices_per_query, scores_per_query in zip(top_indices, top_scores):
-        docs_per_query = []
+        docs_per_query = DocumentArray([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
         docs_per_query = DocumentArray(docs_per_query)
@@ -233,7 +235,7 @@ def _extract_embedding_single(
 
 
 def _extraxt_embeddings(
-    data: Union[DocumentArray, Document, Tensor],
+    data: Union[AnyDocumentArray, Document, Tensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> Tensor:
@@ -247,8 +249,9 @@ def _extraxt_embeddings(
 
     if isinstance(data, DocumentArray):
         emb = getattr(data, embedding_field)
-        if not data.is_stacked():
-            emb = embedding_type.__docarray_stack__(emb)
+        emb = embedding_type.__docarray_stack__(emb)
+    elif isinstance(data, DocumentArrayStacked):
+        emb = getattr(data, embedding_field)
     elif isinstance(data, Document):
         emb = getattr(data, embedding_field)
     else:  # treat data as tensor
@@ -261,7 +264,7 @@ def _extraxt_embeddings(
     return emb
 
 
-def _da_attr_type(da: DocumentArray, attr: str) -> Type[AbstractTensor]:
+def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AbstractTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 

@@ -27,7 +27,7 @@ def _get_file_context(file):
     if hasattr(file, 'write'):
         file_ctx = nullcontext(file)
     else:
-        file_ctx = open(file, 'wb')
+        file_ctx = open(file, 'wb')  # type: ignore
 
     return file_ctx
 

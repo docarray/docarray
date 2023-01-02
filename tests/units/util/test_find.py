@@ -79,7 +79,7 @@ def test_find_torch_tensor_query(random_torch_query, random_torch_index):
 
 
 def test_find_torch_stacked(random_torch_query, random_torch_index):
-    random_torch_index.stack()
+    random_torch_index = random_torch_index.stack()
     top_k, scores = find(
         random_torch_index,
         random_torch_query,
@@ -124,7 +124,7 @@ def test_find_np_tensor_query(random_nd_query, random_nd_index):
 
 
 def test_find_np_stacked(random_nd_query, random_nd_index):
-    random_nd_index.stack()
+    random_nd_index = random_nd_index.stack()
     top_k, scores = find(
         random_nd_index,
         random_nd_query,
@@ -179,9 +179,9 @@ def test_find_batched_torch_stacked(
     random_torch_batch_query, random_torch_index, stack_what
 ):
     if stack_what in ('index', 'both'):
-        random_torch_index.stack()
+        random_torch_index = random_torch_index.stack()
     if stack_what in ('query', 'both'):
-        random_torch_batch_query.stack()
+        random_torch_batch_query = random_torch_batch_query.stack()
 
     results = find_batched(
         random_torch_index,
@@ -238,9 +238,9 @@ def test_find_batched_np_tensor_query(random_nd_batch_query, random_nd_index):
 @pytest.mark.parametrize('stack_what', ['index', 'query', 'both'])
 def test_find_batched_np_stacked(random_nd_batch_query, random_nd_index, stack_what):
     if stack_what in ('index', 'both'):
-        random_nd_index.stack()
+        random_nd_index = random_nd_index.stack()
     if stack_what in ('query', 'both'):
-        random_nd_batch_query.stack()
+        random_nd_batch_query = random_nd_batch_query.stack()
     results = find_batched(
         random_nd_index,
         random_nd_batch_query,
