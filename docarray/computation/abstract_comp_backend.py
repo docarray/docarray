@@ -26,6 +26,11 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """
         ...
 
+    @staticmethod
+    @abstractmethod
+    def n_dim(array: 'TTensor') -> int:
+        ...
+
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
         """
         Abstract class for retrieval and ranking functionalities

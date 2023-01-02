@@ -117,8 +117,3 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     def get_comp_backend() -> Type[AbstractComputationalBackend]:
         """The computational backend compatible with this tensor type."""
         ...
-
-    @abc.abstractmethod
-    def n_dim(self) -> int:
-        """Get number of tensor dimensions."""
-        ...

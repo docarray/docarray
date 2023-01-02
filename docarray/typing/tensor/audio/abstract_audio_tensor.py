@@ -29,7 +29,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param sample_rate: sampling frequency
         :param sample_width: sample width in bytes
         """
-        n_channels = 2 if self.n_dim() > 1 else 1
+        n_channels = 2 if self.get_comp_backend().n_dim(array=self) > 1 else 1
 
         with wave.open(file_path, 'w') as f:
             f.setnchannels(n_channels)
