@@ -3,18 +3,18 @@ from typing import List, NamedTuple, Optional, Type, Union
 from docarray import Document, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
-from docarray.typing import Tensor
+from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
     documents: DocumentArray
-    scores: Tensor
+    scores: AnyTensor
 
 
 def find(
     index: AnyDocumentArray,
-    query: Union[Tensor, Document],
+    query: Union[AnyTensor, Document],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -103,7 +103,7 @@ def find(
 
 def find_batched(
     index: AnyDocumentArray,
-    query: Union[Tensor, DocumentArray],
+    query: Union[AnyTensor, DocumentArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -210,9 +210,9 @@ def find_batched(
 
 
 def _extract_embedding_single(
-    data: Union[DocumentArray, Document, Tensor],
+    data: Union[DocumentArray, Document, AnyTensor],
     embedding_field: str,
-) -> Tensor:
+) -> AnyTensor:
     """Extract the embeddings from a single query,
     and return it in a batched representation.
 
@@ -233,10 +233,10 @@ def _extract_embedding_single(
 
 
 def _extraxt_embeddings(
-    data: Union[AnyDocumentArray, Document, Tensor],
+    data: Union[AnyDocumentArray, Document, AnyTensor],
     embedding_field: str,
     embedding_type: Type,
-) -> Tensor:
+) -> AnyTensor:
     """Extract the embeddings from the data.
 
     :param data: the data
@@ -262,7 +262,7 @@ def _extraxt_embeddings(
     return emb
 
 
-def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[Tensor]:
+def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 

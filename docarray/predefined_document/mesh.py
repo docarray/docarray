@@ -1,7 +1,7 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, Mesh3DUrl, Tensor
+from docarray.typing import AnyTensor, Embedding, Mesh3DUrl
 
 
 class Mesh3D(BaseDocument):
@@ -73,6 +73,6 @@ class Mesh3D(BaseDocument):
     """
 
     url: Optional[Mesh3DUrl]
-    vertices: Optional[Tensor]
-    faces: Optional[Tensor]
+    vertices: Optional[AnyTensor]
+    faces: Optional[AnyTensor]
     embedding: Optional[Embedding]

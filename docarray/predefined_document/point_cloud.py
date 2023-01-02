@@ -1,7 +1,7 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, PointCloud3DUrl, Tensor
+from docarray.typing import AnyTensor, Embedding, PointCloud3DUrl
 
 
 class PointCloud3D(BaseDocument):
@@ -72,5 +72,5 @@ class PointCloud3D(BaseDocument):
     """
 
     url: Optional[PointCloud3DUrl]
-    tensor: Optional[Tensor]
+    tensor: Optional[AnyTensor]
     embedding: Optional[Embedding]
