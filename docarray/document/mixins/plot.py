@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.document.mixins.mesh import Mesh, PointCloud
+from docarray.document.mixins.mesh import MeshEnum, PointCloudEnum
 
 
 class PlotMixin:
@@ -133,7 +133,7 @@ class PlotMixin:
         """
         if self.chunks is not None:
             name_tags = [c.tags['name'] for c in self.chunks]
-            if Mesh.VERTICES in name_tags and Mesh.FACES in name_tags:
+            if MeshEnum.VERTICES in name_tags and MeshEnum.FACES in name_tags:
                 return True
         else:
             return False
@@ -173,9 +173,11 @@ class PlotMixin:
             import trimesh
 
             vertices = [
-                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
+                c.tensor for c in self.chunks if c.tags['name'] == MeshEnum.VERTICES
             ][-1]
-            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == MeshEnum.FACES][
+                -1
+            ]
             mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
             display(mesh.show())
 
@@ -189,9 +191,8 @@ class PlotMixin:
         for chunk in self.chunks:
             if (
                 'name' in chunk.tags.keys()
-                and chunk.tags['name'] == PointCloud.COLORS
+                and chunk.tags['name'] == PointCloudEnum.COLORS
                 and chunk.tensor.shape[-1] in [3, 4]
-
             ):
                 colors = chunk.tensor
 
