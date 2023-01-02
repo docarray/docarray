@@ -1,6 +1,7 @@
 from typing import Optional, Union
 
 import numpy as np
+import torch
 
 from docarray.array import DocumentArray
 from docarray.document import BaseDocument
@@ -122,6 +123,33 @@ def test_get_bulk_attributes_union_type():
     assert len(texts) == N
     for i, text in enumerate(texts):
         assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_union_type_nested():
+    class MyDoc(BaseDocument):
+        embedding: Union[Optional[TorchTensor], Optional[NdArray]]
+        embedding2: Optional[Union[TorchTensor, NdArray]]
+        embedding3: Optional[Optional[TorchTensor]]
+        embedding4: Union[Optional[Union[TorchTensor, NdArray]], TorchTensor]
+
+    da = DocumentArray[MyDoc](
+        [
+            MyDoc(
+                embedding=torch.rand(10),
+                embedding2=torch.rand(10),
+                embedding3=torch.rand(10),
+                embedding4=torch.rand(10),
+            )
+            for _ in range(10)
+        ]
+    )
+
+    for attr in ['embedding', 'embedding2', 'embedding3', 'embedding4']:
+        tensors = getattr(da, attr)
+        assert len(tensors) == 10
+        assert isinstance(tensors, list)
+        for tensor in tensors:
+            assert tensor.shape == (10,)
 
 
 def test_get_bulk_attributes_document():
