@@ -59,16 +59,15 @@ class DocumentArrayStacked(AnyDocumentArray):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
+    _docs: DocumentArray
 
     def __init__(
         self: T,
         docs: DocumentArray,
     ):
-        self._docs = docs
-        self.tensor_type = self._docs.tensor_type
-        self._columns: Dict[
-            str, Union['TorchTensor', T, NdArray]
-        ] = self._create_columns(docs, tensor_type=self.tensor_type)
+        self._columns: Dict[str, Union['TorchTensor', T, NdArray]] = {}
+
+        self.from_document_array(docs)
 
     def from_document_array(self: T, docs: DocumentArray):
         self._docs = docs
