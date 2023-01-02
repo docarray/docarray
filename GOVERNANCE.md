@@ -32,6 +32,11 @@ The Techincal Steering Commite (TSC) members are core developers who have additi
 
 Currently TSC menbers of DocArray are: [Han](https://github.com/hanxiao), [samsja](https://github.com/samsja) , [JoanFM](https://github.com/JoanFM), [JohannesMessner](https://github.com/JohannesMessner), [nan](https://github.com/nan-wang), [alaeddine-13](https://github.com/alaeddine-13)
 
+
+One of the TSC menber is the chairperson of the TSC that should ensurethe smooth running of the TSC. It does not have more voting power that other TSC menber.
+
+Currently [JoanFM](https://github.com/JoanFM) is the chairperson of the TSC
+
 ### Process for becoming a TSC member
 
 Core developers can become TSC menbers by beeing nominated by at least one TSC menbers, There will be a vote by the current TSC menbers and the vote need to be unanimous between for the nominated person to be accepted as a TSC menbers. TSC members who do not actively engage with the TC duties are expected to resign.
