@@ -2,7 +2,8 @@ from typing import TypeVar
 
 from docarray.typing import NdArray
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
-from docarray.typing.url.audio_url import MAX_INT_16
+
+MAX_INT_16 = 2**15
 
 T = TypeVar('T', bound='AudioNdArray')
 

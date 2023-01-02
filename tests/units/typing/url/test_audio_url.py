@@ -1,9 +1,12 @@
+from typing import Optional
+
 import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray import Document
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import AudioUrl
+from docarray.typing import AudioNdArray, AudioTorchTensor, AudioUrl
 from tests import TOYDATA_DIR
 
 AUDIO_FILES = [
@@ -23,6 +26,25 @@ def test_audio_url(file_url):
     uri = parse_obj_as(AudioUrl, file_url)
     tensor = uri.load()
     assert isinstance(tensor, np.ndarray)
+    assert isinstance(tensor, AudioNdArray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [*AUDIO_FILES, REMOTE_AUDIO_FILE],
+)
+def test_load_audio_url_to_audio_torch_tensor_field(file_url):
+    class MyAudioDoc(Document):
+        audio_url: AudioUrl
+        tensor: Optional[AudioTorchTensor]
+
+    doc = MyAudioDoc(audio_url=file_url)
+    doc.tensor = doc.audio_url.load()
+
+    assert isinstance(doc.tensor, np.ndarray)
+    assert isinstance(doc.tensor, AudioNdArray)
 
 
 @pytest.mark.slow

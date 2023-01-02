@@ -2,7 +2,9 @@ import wave
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
+from pydantic import parse_obj_as
 
+from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16, AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
 if TYPE_CHECKING:
@@ -14,7 +16,6 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AudioUrl')
 
 AUDIO_FILE_FORMATS = ['wav']
-MAX_INT_16 = 2**15
 
 
 class AudioUrl(AnyUrl):
@@ -50,9 +51,9 @@ class AudioUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load(self: T) -> np.ndarray:
+    def load(self: T) -> AudioNdArray:
         """
-        Load the data from the url into a numpy.ndarray.
+        Load the data from the url into an AudioNdArray.
 
         EXAMPLE USAGE
 
@@ -66,14 +67,14 @@ class AudioUrl(AnyUrl):
 
             class MyDoc(Document):
                 audio_url: AudioUrl
+                audio_tensor: AudioNdArray
 
 
             doc = MyDoc(audio_url="toydata/hello.wav")
+            doc.audio_tensor = doc.audio_url.load()
+            assert isinstance(doc.audio_tensor, np.ndarray)
 
-            audio_tensor = doc.audio_url.load()
-            assert isinstance(audio_tensor, np.ndarray)
-
-        :return: np.ndarray representing the audio file content
+        :return: AudioNdArray representing the audio file content
         """
         import io
 
@@ -109,6 +110,6 @@ class AudioUrl(AnyUrl):
                 audio_stereo[:, 0] = audio_norm[range(0, len(audio_norm), 2)]
                 audio_stereo[:, 1] = audio_norm[range(1, len(audio_norm), 2)]
 
-                return audio_stereo
+                return parse_obj_as(AudioNdArray, audio_stereo)
             else:
-                return audio_norm
+                return parse_obj_as(AudioNdArray, audio_norm)

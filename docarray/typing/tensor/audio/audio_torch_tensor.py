@@ -1,8 +1,8 @@
 from typing import TypeVar
 
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
+from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
-from docarray.typing.url.audio_url import MAX_INT_16
 
 T = TypeVar('T', bound='AudioTorchTensor')
 
