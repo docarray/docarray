@@ -15,8 +15,8 @@ class Mesh3D(BaseDocument):
     tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a
     vertex in the tensor of vertices.
 
-    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), a AnyTensor of vertices
-    (`Mesh3D.vertices`), a AnyTensor of faces (`Mesh3D.faces`) and an Embedding
+    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), an AnyTensor of vertices
+    (`Mesh3D.vertices`), an AnyTensor of faces (`Mesh3D.faces`) and an Embedding
     (`Mesh3D.embedding`).
 
     EXAMPLE USAGE:
