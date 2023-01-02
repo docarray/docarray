@@ -29,18 +29,18 @@ If you want to become a core developers, reach out to docarray@jina.ai.
 
 ## TSC members
 
-The Techincal Steering Commite (TSC) members are core developers who have additional responsibilities to ensure the smooth running of the project. TSC members are expected to participate in strategic planning, and approve changes to the governance model. The purpose of the TC is to ensure a smooth progress from the big-picture perspective.
+The Techincal Steering Commite (TSC) members are core developers who have additional responsibilities to ensure the smooth running of the project. TSC members are expected to participate in strategic planning, and approve changes to the governance model. The purpose of the TSC is to ensure a smooth progress from the big-picture perspective.
 
 Currently TSC menbers of DocArray are (in alphabetic order):  [Alaeddine Abdessalem](https://github.com/alaeddine-13), [Han Xiao](https://github.com/hanxiao), [Joan Fontanals Martínez](https://github.com/JoanFM), [Johannes Messner](https://github.com/JohannesMessner),[Nan wang](https://github.com/nan-wang),[Sami Jaghouar](https://github.com/samsja).
 
 
-One of the TSC menber is the chairperson of the TSC that should ensurethe smooth running of the TSC. It does not have more voting power that other TSC menber.
+One of the TSC members is the chairperson of the TSC and should ensure the smooth running of the TSC. They do not have more voting power that other TSC menber.
 
 Currently [JoanFM](https://github.com/JoanFM) is the chairperson of the TSC
 
 ### Process for becoming a TSC member
 
-Core developers can become TSC menbers by beeing nominated by at least one TSC menbers, There will be a vote by the current TSC menbers and the vote need to be unanimous between for the nominated person to be accepted as a TSC menbers. TSC members who do not actively engage with the TC duties are expected to resign.
+Core developers can become TSC menbers by beeing nominated by at least one TSC member. There will be a vote by the current TSC menbers and the vote need to be unanimous for the nominated person to be accepted as a TSC menber. TSC members who do not actively engage with the TSC duties are expected to resign.
 
 # Release Process
 
