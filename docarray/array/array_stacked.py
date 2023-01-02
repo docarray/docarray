@@ -73,6 +73,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def from_document_array(self: T, docs: DocumentArray):
         self._docs = docs
         self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
+        self.tensor_type = self._docs.tensor_type
 
     @classmethod
     def _create_columns(
