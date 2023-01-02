@@ -86,6 +86,8 @@ class CsvIOMixin:
                 if flatten_tags:
                     t = pd.pop('tags')
                     pd.update({f'tag__{k}': v for k, v in t.items()})
+
+                pd = {k: str(v).replace('\n', ' ') for k, v in pd.items()}
                 writer.writerow(pd)
 
     @classmethod
