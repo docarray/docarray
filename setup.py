@@ -62,7 +62,11 @@ setup(
             'Pillow',
             'trimesh',
             'ipython',
-            'pyglet<=1.5.27',  # requi
+            'pyglet<=1.5.27',  # required by trimesh
+            'scipy',
+            'av',
+            'fastapi',
+            'pydantic>=1.9.0',
             'uvicorn',
             'strawberry-graphql',
         ],
