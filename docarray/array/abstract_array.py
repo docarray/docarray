@@ -157,7 +157,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
         If your DocumentArray is in stacked mode, and you want to access a field of
-        type Tensor, the stacked tensor will be returned instead of a list:
+        type AnyTensor, the stacked tensor will be returned instead of a list:
 
         EXAMPLE USAGE
         .. code-block:: python
