@@ -1,6 +1,7 @@
 from docarray.typing.id import ID
-from docarray.typing.tensor import AnyTensor, NdArray
-from docarray.typing.tensor.embedding import Embedding
+from docarray.typing.tensor.embedding.embedding import Embedding
+from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.url import AnyUrl, ImageUrl, Mesh3DUrl, PointCloud3DUrl, TextUrl
 
 __all__ = [

@@ -1,5 +1,7 @@
 from typing import List, NamedTuple, Optional, Type, Union
 
+from typing_inspect import is_union_type
+
 from docarray import Document, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
@@ -244,7 +246,7 @@ def _extraxt_embeddings(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-    # TODO(johannes) put docarray stack in the computational backend
+
     if isinstance(data, DocumentArray):
         emb = getattr(data, embedding_field)
         emb = embedding_type.__docarray_stack__(emb)
@@ -271,9 +273,14 @@ def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
     :return: the type of the attribute
     """
     field_type = da.document_type.__fields__[attr].type_
+    if is_union_type(field_type):
+        # determine type based on the fist element
+        field_type = type(getattr(da[0], attr))
+
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(
             f'attribute {attr} is not a tensor-like type, '
             f'but {field_type.__class__.__name__}'
         )
+
     return field_type

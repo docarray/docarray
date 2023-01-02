@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 import pytest
 import torch
@@ -188,3 +190,17 @@ def test_context_manager():
     assert isinstance(tensor, list)
     for doc in da:
         assert (doc.tensor == torch.ones(3, 224, 224)).all()
+
+
+def test_stack_union():
+    class Image(Document):
+        tensor: Union[TorchTensor[3, 224, 224], NdArray[3, 224, 224]]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    )
+    batch[3].tensor = np.zeros((3, 224, 224))
+
+    # union fields aren't actually stacked
+    # just checking that there is no error
+    batch.stack()
