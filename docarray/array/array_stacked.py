@@ -120,10 +120,10 @@ class DocumentArrayStacked(AnyDocumentArray):
                     ).stack()
 
                 elif issubclass(type_, (NdArray, TorchTensor)):
-                    columns[field_to_stack] = type_.__docarray_stack__(to_stack)
+                    columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
 
             elif type_ == AnyTensor:  # should be properly handled with union
-                columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)
+                columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
 
         return columns
 
