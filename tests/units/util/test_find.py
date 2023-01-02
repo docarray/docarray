@@ -290,3 +290,69 @@ def test_find_union():
     assert len(top_k) == 7
     assert len(scores) == 7
     assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+
+def test_find_nested_union_optional():
+    class MyDoc(Document):
+        embedding: Union[Optional[TorchTensor], Optional[NdArray]]
+        embedding2: Optional[Union[TorchTensor, NdArray]]
+        embedding3: Optional[Optional[TorchTensor]]
+        embedding4: Union[Optional[Union[TorchTensor, NdArray]], TorchTensor]
+
+    query = MyDoc(
+        embedding=torch.rand(10),
+        embedding2=torch.rand(10),
+        embedding3=torch.rand(10),
+        embedding4=torch.rand(10),
+    )
+    index = DocumentArray[MyDoc](
+        [
+            MyDoc(
+                embedding=torch.rand(10),
+                embedding2=torch.rand(10),
+                embedding3=torch.rand(10),
+                embedding4=torch.rand(10),
+            )
+            for _ in range(10)
+        ]
+    )
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding2',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding3',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='embedding4',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()

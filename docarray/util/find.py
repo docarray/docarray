@@ -1,6 +1,6 @@
-from typing import List, NamedTuple, Optional, Type, Union, get_args
+from typing import List, NamedTuple, Optional, Type, Union
 
-from typing_inspect import is_optional_type, is_union_type  # type: ignore
+from typing_inspect import is_union_type  # type: ignore
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor
@@ -270,9 +270,7 @@ def _da_attr_type(da: DocumentArray, attr: str) -> Type[AbstractTensor]:
     :return: the type of the attribute
     """
     field_type = da.document_type.__fields__[attr].type_
-    if is_optional_type(field_type):
-        field_type = get_args(field_type)[0]  # get type inside Optional
-    elif is_union_type(field_type):
+    if is_union_type(field_type):
         # determine type based on the fist element
         field_type = type(getattr(da[0], attr))
 
