@@ -13,7 +13,7 @@ from typing import (
     Union,
 )
 
-from typing_inspect import is_union_type  # type: ignore
+from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin

@@ -1,6 +1,6 @@
 from typing import List, NamedTuple, Optional, Type, Union
 
-from typing_inspect import is_union_type  # type: ignore
+from typing_inspect import is_union_type
 
 from docarray import Document, DocumentArray
 from docarray.typing import Tensor

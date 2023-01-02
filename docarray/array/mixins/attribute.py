@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List, Union, get_args
 
-from typing_inspect import is_optional_type, is_union_type  # type: ignore
+from typing_inspect import is_optional_type, is_union_type
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import BaseDocument
