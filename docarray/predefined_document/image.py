@@ -7,7 +7,7 @@ from docarray.typing import AnyTensor, Embedding, ImageUrl
 class Image(BaseDocument):
     """
     Document for handling images.
-    It can contain an ImageUrl (`Image.url`), an AnyTensor (`Image.tensor`),
+    It can contain an ImageUrl (`Image.url`), a AnyTensor (`Image.tensor`),
     and an Embedding (`Image.embedding`).
 
     EXAMPLE USAGE:
