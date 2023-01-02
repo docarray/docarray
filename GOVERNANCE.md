@@ -18,7 +18,7 @@ The contributor role is the starting role for anyone participating in the projec
 
 The core developers role enables the contributor to commit code directly to the repository, but also comes with the responsibility of being a responsible leader in the community.
 
-Currently core developers of DocArray are: [Han](https://github.com/hanxiao), [samsja](https://github.com/samsja) , [JoanFM](https://github.com/JoanFM), [JohannesMessner](https://github.com/JohannesMessner), [nan](https://github.com/nan-wang), [alaeddine-13](https://github.com/alaeddine-13), [AnneYang720](https://github.com/AnneYang720), [anna-charlotte](https://github.com/anna-charlotte)
+Currently core developers of DocArray are (in alphabetic order):  [alaeddine-13](https://github.com/alaeddine-13), [anna-charlotte](https://github.com/anna-charlotte),  [AnneYang720](https://github.com/AnneYang720), [Han](https://github.com/hanxiao), [JoanFM](https://github.com/JoanFM), [JohannesMessner](https://github.com/JohannesMessner),[nan](https://github.com/nan-wang),[samsja](https://github.com/samsja).
 
 ### Process for becoming a core developer
 
@@ -30,7 +30,7 @@ If you want to become a core developers, reach out to docarray@jina.ai.
 
 The Techincal Steering Commite (TSC) members are core developers who have additional responsibilities to ensure the smooth running of the project. TSC members are expected to participate in strategic planning, and approve changes to the governance model. The purpose of the TC is to ensure a smooth progress from the big-picture perspective.
 
-Currently TSC menbers of DocArray are: [Han](https://github.com/hanxiao), [samsja](https://github.com/samsja) , [JoanFM](https://github.com/JoanFM), [JohannesMessner](https://github.com/JohannesMessner), [nan](https://github.com/nan-wang), [alaeddine-13](https://github.com/alaeddine-13)
+Currently TSC menbers of DocArray are (in alphabetic order):  [alaeddine-13](https://github.com/alaeddine-13), [Han](https://github.com/hanxiao), [JoanFM](https://github.com/JoanFM), [JohannesMessner](https://github.com/JohannesMessner),[nan](https://github.com/nan-wang),[samsja](https://github.com/samsja).
 
 
 One of the TSC menber is the chairperson of the TSC that should ensurethe smooth running of the TSC. It does not have more voting power that other TSC menber.
