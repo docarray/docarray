@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, List, Union, get_args
+from typing import TYPE_CHECKING, List, Union
 
-from typing_inspect import is_optional_type, is_union_type
+from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import BaseDocument
@@ -23,9 +23,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         in the array like container
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
-        if is_optional_type(field_type):
-            field_type = get_args(field_type)[0]  # get type inside Optional
-        elif is_union_type(field_type):
+        if is_union_type(field_type):
             # determine type based on the first element
             field_type = type(getattr(self[0], field))
 
