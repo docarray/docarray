@@ -45,8 +45,8 @@ class DocumentArrayStacked(AnyDocumentArray):
     calculation, deep learning forward pass)
 
     A DocumentArrayStacked is similar to {class}`~docarray.array.DocumentArray`
-    but the field of the Document that are {class}`~docarray.typing.AnyTensor` are 
-    stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`  
+    but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
+    stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
     you can be precise a Document schema by using the `DocumentArray[MyDocument]`
     syntax where MyDocument is a Document class  (i.e. schema).
     This creates a DocumentArray that can only contains Documents of
