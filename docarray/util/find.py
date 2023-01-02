@@ -85,7 +85,7 @@ def find(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: A named tuple of the form (DocumentArray, Tensor),
+    :return: A named tuple of the form (DocumentArray, AnyTensor),
         where the first element contains the closes matches for the query,
         and the second element contains the corresponding scores.
     """
@@ -178,7 +178,7 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocumentArray, Tensor),
+    :return: a list of named tuples of the form (DocumentArray, AnyTensor),
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """
