@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
-from docarray.typing import NdArray, TorchTensor
+from docarray.typing import AnyTensor, NdArray, TorchTensor
 
 
 @pytest.fixture()
@@ -26,7 +26,6 @@ def test_len(batch):
 
 def test_getitem(batch):
     for i in range(len(batch)):
-        print(i)
         assert (batch[i].tensor == torch.zeros(3, 224, 224)).all()
 
 
@@ -204,3 +203,21 @@ def test_stack_union():
     # union fields aren't actually stacked
     # just checking that there is no error
     batch.stack()
+@pytest.mark.parametrize(
+    'tensor_type,tensor',
+    [(TorchTensor, torch.zeros(3, 224, 224)), (NdArray, np.zeros((3, 224, 224)))],
+)
+def test_any_tensor_with_torch(tensor_type, tensor):
+    class Image(BaseDocument):
+        tensor: AnyTensor
+
+    da = DocumentArray[Image](
+        [Image(tensor=tensor) for _ in range(10)],
+        tensor_type=tensor_type,
+    ).stack()
+
+    for i in range(len(da)):
+        assert (da[i].tensor == tensor).all()
+
+    assert 'tensor' in da._columns.keys()
+    assert isinstance(da._columns['tensor'], tensor_type)

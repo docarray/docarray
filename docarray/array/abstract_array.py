@@ -2,11 +2,13 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
 
 from docarray.document import BaseDocument
+from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
-    from docarray.typing import NdArray, TorchTensor
+    from docarray.typing import TorchTensor
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
@@ -14,6 +16,7 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
+    tensor_type: Type['AbstractTensor'] = NdArray
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
