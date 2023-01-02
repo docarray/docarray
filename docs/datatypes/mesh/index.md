@@ -2581,9 +2581,8 @@ To display a colored point cloud, store the corresponding colors in the `.tensor
 ```python
 n_samples = 1000
 colors = np.random.rand(n_samples, 3)
-doc = Document(
-    uri='mesh_man.glb', chunks=[Document(tensor=colors, name='point_cloud_colors')]
-).load_uri_to_point_cloud_tensor(samples=n_samples)
+doc = Document(uri='mesh_man.glb').load_uri_to_point_cloud_tensor(samples=n_samples)
+doc.chunks = [Document(tensor=colors, name='point_cloud_colors')]
 ```
 
 ## RGB-D image representation
