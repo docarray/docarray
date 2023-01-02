@@ -264,8 +264,7 @@ def _extraxt_embeddings(
     return emb
 
 
-
-def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AbstractTensor]:
+def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 
