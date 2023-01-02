@@ -113,6 +113,7 @@ def test_get_bulk_attributes_union_type():
     tensors = da.tensor
 
     assert len(tensors) == N
+    assert isinstance(tensors, list)
     for tensor in tensors:
         assert tensor.shape == (3, 224, 224)
 
