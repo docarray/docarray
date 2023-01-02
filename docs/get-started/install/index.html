@@ -312,7 +312,7 @@
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/login/">Authentication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/data/">Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/data-management/">Data Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
@@ -407,19 +407,19 @@
 <p>Make sure you have Python 3.7+ and <code class="docutils literal notranslate"><span class="pre">numpy</span></code> installed on Linux/Mac/Windows:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Basic install</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install docarray
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>docarray
 </pre></div>
 </div>
 <p>No extra dependencies are installed.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Basic install via Conda</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge docarray
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>docarray
 </pre></div>
 </div>
 <p>No extra dependencies are installed.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">Common install</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;docarray[common]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;docarray[common]&quot;</span>
 </pre></div>
 </div>
 <p>The following dependencies are installed to enable the most common features:</p>
@@ -457,7 +457,7 @@
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--4" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--4">Full install</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;docarray[full]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;docarray[full]&quot;</span>
 </pre></div>
 </div>
 <p>In addition to <code class="docutils literal notranslate"><span class="pre">common</span></code>, the following dependencies are installed to enable full features:</p>
@@ -487,7 +487,7 @@
 <p>Alternatively, you can first do basic installation and then install missing dependencies on-demand.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--5" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--5">Developement install</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;docarray[full,test]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;docarray[full,test]&quot;</span>
 </pre></div>
 </div>
 <p>This installs all requirements for reproducing tests on your local dev environment.</p>
@@ -506,7 +506,7 @@
 <section id="check-terminal-and-device">
 <h3>Check terminal and device<a class="headerlink" href="#check-terminal-and-device" title="Permalink to this heading">#</a></h3>
 <p>To make sure you are using the right terminal, run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uname -m
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uname<span class="w"> </span>-m
 </pre></div>
 </div>
 <p>and it should return</p>
@@ -517,7 +517,7 @@
 <section id="install-homebrew">
 <h3>Install Homebrew<a class="headerlink" href="#install-homebrew" title="Permalink to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">brew</span></code> is a package manager for macOS. If you already install it you need to confirm it is actually installed for Apple Silicon not for Rosetta. To check that, run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which brew
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>brew
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/opt/homebrew/bin/brew
@@ -529,7 +529,7 @@
 <p>Reinstalling <code class="docutils literal notranslate"><span class="pre">brew</span></code> can be a destructive operation. Please make sure you have backed up your data before proceeding.</p>
 </div>
 <p>To (re)install brew, run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/bash -c <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 <p>You may want to observe the output to check if it contains <code class="docutils literal notranslate"><span class="pre">/opt/homebrew</span></code> to make sure you are installing for Apple Silicon.</p>
@@ -547,7 +547,7 @@
 </pre></div>
 </div>
 <p>If not, then you are using Python under Rosetta, and you need to install Python for Apple Silicon with <code class="docutils literal notranslate"><span class="pre">brew</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install python3
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>python3
 </pre></div>
 </div>
 <p>As of Aug 2022, this installs Python 3.10 natively for Apple Silicon.</p>
@@ -556,21 +556,21 @@
 <section id="install-dependencies-wheels">
 <h3>Install dependencies wheels<a class="headerlink" href="#install-dependencies-wheels" title="Permalink to this heading">#</a></h3>
 <p>There are some core dependencies that DocArray needs to run, whose wheels are not available on PyPI but fortunately are available on wheel. To install them, run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install protobuf numpy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>protobuf<span class="w"> </span>numpy
 </pre></div>
 </div>
 </section>
 <section id="install-docarray">
 <h3>Install DocArray<a class="headerlink" href="#install-docarray" title="Permalink to this heading">#</a></h3>
 <p>Now you can install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code>. Note you need to use the right one:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/homebrew/opt/python@3.10/libexec/bin/pip install docarray
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/homebrew/opt/python@3.10/libexec/bin/pip<span class="w"> </span>install<span class="w"> </span>docarray
 </pre></div>
 </div>
 <p>Congratulations! You have successfully installed Jina on Apple Silicon.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>To install MPS-enabled PyTorch, run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/homebrew/opt/python@3.10/libexec/bin/pip install -U --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/homebrew/opt/python@3.10/libexec/bin/pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>--pre<span class="w"> </span>torch<span class="w"> </span>torchvision<span class="w"> </span>torchaudio<span class="w"> </span>--extra-index-url<span class="w"> </span>https://download.pytorch.org/whl/nightly/cpu
 </pre></div>
 </div>
 </div>
@@ -613,7 +613,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 30, 2022</div>
+                            Last updated on Jan 02, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

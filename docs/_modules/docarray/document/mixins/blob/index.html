@@ -285,7 +285,7 @@
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/login/">Authentication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/data/">Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/data-management/">Data Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
@@ -383,10 +383,10 @@
 
 
 <div class="viewcode-block" id="BlobDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin">[docs]</a><span class="k">class</span> <span class="nc">BlobDataMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to handle binary data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to handle binary data.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BlobDataMixin.load_uri_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.load_uri_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr:`.blob` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr:`.blob` inplace.</span>
 <span class="sd">        Internally it downloads from the URI and set :attr:`blob`.</span>
 
 <span class="sd">        :param kwargs: keyword arguments to pass to `:meth:_uri_to_blob` such as timeout</span>
@@ -398,7 +398,7 @@
 <div class="viewcode-block" id="BlobDataMixin.convert_blob_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_blob_to_datauri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.blob` to data :attr:`.uri` in place.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.blob` to data :attr:`.uri` in place.</span>
 <span class="sd">        Internally it first reads into blob and then converts it to data URI.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
@@ -418,7 +418,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="BlobDataMixin.save_blob_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.save_blob_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_blob_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save :attr:`.blob` into a file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`.blob` into a file</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :return: itself after processed</span>
@@ -441,7 +441,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 30, 2022</div>
+                            Last updated on Jan 02, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

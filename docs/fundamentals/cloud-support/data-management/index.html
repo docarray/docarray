@@ -3,14 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="Access Attributes" />
+<meta property="og:title" content="Data Management" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/access-attributes/" />
+<meta property="og:url" content="https://docarray.jina.ai/fundamentals/cloud-support/data-management/" />
 <meta property="og:site_name" content="DocArray 0.20.2 Documentation" />
-<meta property="og:description" content="A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk. In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector. Attribute se..." />
-<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
+<meta property="og:description" content="Jina AI Cloud offers data management of DocumentArrays, using either the console or the DocArray Python API. Web Console: In order to use the web console to manage your storage, you need to log in at cloud.jina.ai. Then, head to the User Storage page. Your DocumentArrays should appear in the data..." />
+<meta property="og:image" content="https://docarray.jina.ai/_images/user-storage-page.png" />
 <meta property="og:image:alt" content="DocArray 0.20.2 Documentation" />
-<meta name="description" content="A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk. In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector. Attribute se..." />
+<meta name="description" content="Jina AI Cloud offers data management of DocumentArrays, using either the console or the DocArray Python API. Web Console: In order to use the web console to manage your storage, you need to log in at cloud.jina.ai. Then, head to the User Storage page. Your DocumentArrays should appear in the data..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -29,11 +29,11 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Query by Conditions" href="../find/" /><link rel="prev" title="Access Documents" href="../access-elements/" />
-        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-attributes.html" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Jupyter Notebook/Colab" href="../../notebook-support/" /><link rel="prev" title="Authentication" href="../login/" />
+        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/cloud-support/data-management.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Access Attributes - DocArray 0.20.2 documentation</title>
+        <title>Data Management - DocArray 0.20.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -261,7 +261,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../document/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../document/serialization/">Serialization</a></li>
@@ -272,19 +272,19 @@
 <li class="toctree-l2"><a class="reference internal" href="../../document/fluent-interface/">Fluent Interface</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">DocumentArray</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../construct/">Construct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../serialization/">Serialization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../access-elements/">Access Documents</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Access Attributes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../find/">Query by Conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../parallelization/">Parallelization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../matching/">Find Nearest Neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/serialization/">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/access-elements/">Access Documents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/access-attributes/">Access Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/find/">Query by Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/parallelization/">Parallelization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/visualization/">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/post-external/">Process via External Flow or Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/embedding/">Embed via Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/matching/">Find Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/subindex/">Search over Nested Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../dataclass/">Dataclass</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -309,10 +309,10 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
-<ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../cloud-support/login/">Authentication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cloud-support/data-management/">Data Management</a></li>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../login/">Authentication</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Data Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebook-support/">Jupyter Notebook/Colab</a></li>
@@ -400,232 +400,70 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="access-attributes">
-<span id="bulk-access"></span><h1>Access Attributes<a class="headerlink" href="#access-attributes" title="Permalink to this heading">#</a></h1>
-<p>A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk.</p>
-<p>In the last chapter, we got a taste of DocumentArray’s powerful element selector. This chapter continues talking about the attribute selector.</p>
-<section id="attribute-selector">
-<h2>Attribute selector<a class="headerlink" href="#attribute-selector" title="Permalink to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="n">element_selector</span><span class="p">,</span> <span class="n">attribute_selector</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>Here the <code class="docutils literal notranslate"><span class="pre">element_selector</span></code>s can be any element selector introduced <a class="reference internal" href="../access-elements/#access-elements"><span class="std std-ref">in the last chapter</span></a>. The attribute selector can be a string, or a list/tuple of string that represents attribute names.</p>
-<p>As with element selectors, you can use attribute selectors to <strong>get/set/delete</strong> attributes in a DocumentArray.</p>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Example</p></th>
-<th class="head"><p>Return</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'id']</span></code></p></td>
-<td><p>all <code class="docutils literal notranslate"><span class="pre">.id</span></code> from all root Documents in a List</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">da[...,</span> <span class="pre">'id']</span></code></p></td>
-<td><p>all <code class="docutils literal notranslate"><span class="pre">.id</span></code> from all flattened Documents (root, chunks, and matches) in a List</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">da['&#64;m',</span> <span class="pre">'id']</span></code></p></td>
-<td><p>all <code class="docutils literal notranslate"><span class="pre">.id</span></code> from all Documents <code class="docutils literal notranslate"><span class="pre">.matches</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">da[1:3,</span> <span class="pre">('id',</span> <span class="pre">'scores')]</span></code></p></td>
-<td><p>a list of two list, first is all <code class="docutils literal notranslate"><span class="pre">.id</span></code> from the first three Documents, second is all <code class="docutils literal notranslate"><span class="pre">.scores</span></code> from the first three Documents</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">da[1:3,</span> <span class="pre">'scores__cosine__value']</span></code></p></td>
-<td><p>all <code class="docutils literal notranslate"><span class="pre">.scores['cosine'].value</span></code> from the first three Documents</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">da[1:3,</span> <span class="pre">'embedding']</span></code>, <code class="docutils literal notranslate"><span class="pre">da[1:3].embeddings</span></code></p></td>
-<td><p>a NdArray-like object of the first three Documents embeddings</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'tensor']</span></code>, <code class="docutils literal notranslate"><span class="pre">da.tensors</span></code></p></td>
-<td><p>a NdArray-like object of the all top-level Documents tensors</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Let’s see an example:</p>
+                    <section id="data-management">
+<span id="id1"></span><h1>Data Management<a class="headerlink" href="#data-management" title="Permalink to this heading">#</a></h1>
+<p>Jina AI Cloud offers data management of DocumentArrays, using either the console or the DocArray Python API.</p>
+<section id="web-console">
+<h2>Web Console<a class="headerlink" href="#web-console" title="Permalink to this heading">#</a></h2>
+<p>In order to use the web console to manage your storage, you need to log in at <a class="reference external" href="https://cloud.jina.ai">cloud.jina.ai</a>.
+Then, head to the <a class="reference external" href="https://cloud.jina.ai/user/storage">User Storage page</a>.</p>
+<p>Your DocumentArrays should appear in the data section inside the storage page:</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../../_images/user-storage-page.png"><img alt="../../../_images/user-storage-page.png" src="../../../_images/user-storage-page.png" style="width: 90%;" /></a>
+</figure>
+<p>You can delete, download, view, or change the visibility of your DocumentArray objects using the web console.</p>
+</section>
+<section id="python-api">
+<h2>Python API<a class="headerlink" href="#python-api" title="Permalink to this heading">#</a></h2>
+<p>DocArray offers a Python API for data management.
+Once you’ve successfully <a class="reference internal" href="../login/#login"><span class="std std-ref">logged in</span></a>, you can start using <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> methods to manage data.</p>
+<section id="push-create-update">
+<h3>Push (create/update):<a class="headerlink" href="#push-create-update" title="Permalink to this heading">#</a></h3>
+<p>You can push in-memory <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects using the <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
-    <span class="n">d</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">d</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;my_da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;8d41ce5c6f0d11eca2181e008a366d49&#39;, &#39;8d41cfa66f0d11eca2181e008a366d49&#39;, &#39;8d41cff66f0d11eca2181e008a366d49&#39;]
-</pre></div>
-</div>
-<p>Of course you can use it with <a class="reference internal" href="../access-elements/#path-string"><span class="std std-ref">the path-string selector</span></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;db60ab8a6f0d11ec99511e008a366d49&#39;, &#39;db60abda6f0d11ec99511e008a366d49&#39;, &#39;db60c12e6f0d11ec99511e008a366d49&#39;, &#39;db60c1886f0d11ec99511e008a366d49&#39;, &#39;db60c4266f0d11ec99511e008a366d49&#39;, &#39;db60c46c6f0d11ec99511e008a366d49&#39;]
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;285db6586f0e11ec99401e008a366d49&#39;, &#39;285db6b26f0e11ec99401e008a366d49&#39;, &#39;285dbff46f0e11ec99401e008a366d49&#39;, &#39;285dc0586f0e11ec99401e008a366d49&#39;, &#39;285db3606f0e11ec99401e008a366d49&#39;, &#39;285dcc746f0e11ec99401e008a366d49&#39;, &#39;285dccce6f0e11ec99401e008a366d49&#39;, &#39;285dce0e6f0e11ec99401e008a366d49&#39;, &#39;285dce5e6f0e11ec99401e008a366d49&#39;, &#39;285db4fa6f0e11ec99401e008a366d49&#39;, &#39;285dcf946f0e11ec99401e008a366d49&#39;, &#39;285dcfda6f0e11ec99401e008a366d49&#39;, &#39;285dd1066f0e11ec99401e008a366d49&#39;, &#39;285dd16a6f0e11ec99401e008a366d49&#39;, &#39;285db55e6f0e11ec99401e008a366d49&#39;]
-</pre></div>
-</div>
-<p>Let’s set the field <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> for top-level Documents. We have three top-level Documents, so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image/jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span> <span class="s1">&#39;image/jpg&#39;</span><span class="p">]</span>
-
-<span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                          Documents Summary                           
-                                                                      
-  Length                    3                                         
-  Homogenous Documents      True                                      
-  Has nested Documents in   (&#39;chunks&#39;, &#39;matches&#39;)                     
-  Common Attributes         (&#39;id&#39;, &#39;mime_type&#39;, &#39;chunks&#39;, &#39;matches&#39;)  
-                                                                      
-                        Attributes Summary                        
-                                                                  
-  Attribute   Data type         #Unique values   Has empty value  
- ──────────────────────────────────────────────────────────────── 
-  chunks      (&#39;ChunkArray&#39;,)   3                False            
-  id          (&#39;str&#39;,)          3                False            
-  matches     (&#39;MatchArray&#39;,)   3                False            
-  mime_type   (&#39;str&#39;,)          2                False            
-</pre></div>
-</div>
-<p>You can see the <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> is set for each Document.</p>
-<p>If you want to set an attribute of all Documents to the same value without looping:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
-</pre></div>
-</div>
-<p>You can also select multiple attributes in one shot:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;mime_type&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]]</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[&#39;image/jpg&#39;, &#39;image/png&#39;, &#39;image/jpg&#39;], [&#39;095cd76a6f0f11ec82211e008a366d49&#39;, &#39;095cd8d26f0f11ec82211e008a366d49&#39;, &#39;095cd92c6f0f11ec82211e008a366d49&#39;]]
-</pre></div>
-</div>
-<p>Now let’s remove them:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span>
-
-<span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                    Documents Summary                    
-                                                         
-  Length                    3                            
-  Homogenous Documents      True                         
-  Has nested Documents in   (&#39;chunks&#39;, &#39;matches&#39;)        
-  Common Attributes         (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;)  
-                                                         
-                        Attributes Summary                        
-                                                                  
-  Attribute   Data type         #Unique values   Has empty value  
- ──────────────────────────────────────────────────────────────── 
-  chunks      (&#39;ChunkArray&#39;,)   3                False            
-  id          (&#39;str&#39;,)          3                False            
-  matches     (&#39;MatchArray&#39;,)   3                False            
-                                                                  
-</pre></div>
-</div>
+<p>This creates a DocumentArray object in the cloud or update it if it already exists.</p>
 </section>
-<section id="auto-ravel-on-ndarray">
-<h2>Auto-ravel on NdArray<a class="headerlink" href="#auto-ravel-on-ndarray" title="Permalink to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> attribute selectors behave a little differently. Instead of relying on Python List for input and return when get/set, they automatically ravel/unravel the ndarray-like object <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for you.</p>
-<p>Here’s an example, where you may expect that <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'embedding']</span></code> gives you a list of three <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">10)</span></code> COO matrices. But it auto-ravels the results and returns them as a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-<span class="c1"># build sparse matrix</span>
-<span class="n">sp_embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="n">sp_embed</span><span class="p">[</span><span class="n">sp_embed</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">sp_embed</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">(</span><span class="n">sp_embed</span><span class="p">)</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_embed</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]),</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (3, 10)
-&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
-&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
-&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
-</pre></div>
-</div>
-<p>Auto-unravel works in a similar way: We just assign a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix as <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and it auto-breaks into three and assigns them into the three Documents.</p>
-<p>Of course, this isn’t limited to SciPy sparse matrices. Any ndarray-like<a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> object will work. The same logic also applies to the <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> attribute.</p>
-</section>
-<section id="dunder-syntax-for-nested-attributes">
-<h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this heading">#</a></h2>
-<p>Some attributes are nested by nature, like <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">da</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Now to print <code class="docutils literal notranslate"><span class="pre">id</span></code> and match score:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;scores__cosine__value&#39;</span><span class="p">)])</span>
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[&#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;], 
-[0.0, 0.006942970007385196, 0.48303283924326845, 0.0, 0.3859268166910603, 0.48303283924326845, 2.220446049250313e-16, 0.006942970007385196, 0.3859268166910603]]
-</pre></div>
-</div>
-</section>
-<section id="content-and-embedding-sugary-attributes">
-<span id="da-content-embedding"></span><h2>Content and embedding sugary attributes<a class="headerlink" href="#content-and-embedding-sugary-attributes" title="Permalink to this heading">#</a></h2>
-<p>DocumentArray provides <code class="docutils literal notranslate"><span class="pre">.texts</span></code>, <code class="docutils literal notranslate"><span class="pre">.blobs</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensors</span></code>, <code class="docutils literal notranslate"><span class="pre">.contents</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> sugary attributes for quickly accessing the content and embeddings of Documents. You can use them to get/set/delete attributes of all top-level Documents.</p>
+<section id="pull-read">
+<h3>Pull (Read):<a class="headerlink" href="#pull-read" title="Permalink to this heading">#</a></h3>
+<p>You can download a DocumentArray stored in the cloud using the <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull" title="docarray.array.mixins.io.pushpull.PushPullMixin.pull"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pull()</span></code></a> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>
+<span class="n">my_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="s1">&#39;my_da&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;hello&#39;, &#39;world&#39;]
+</section>
+<section id="list">
+<h3>List<a class="headerlink" href="#list" title="Permalink to this heading">#</a></h3>
+<p>You can list all <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects stored in the cloud using the <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_list" title="docarray.array.mixins.io.pushpull.PushPullMixin.cloud_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cloud_list()</span></code></a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DocumentArray</span><span class="o">.</span><span class="n">cloud_list</span><span class="p">(</span><span class="n">show_table</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This is the same as <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'text']</span> <span class="pre">=</span> <span class="pre">['hello',</span> <span class="pre">'world']</span></code> followed by <code class="docutils literal notranslate"><span class="pre">print(da[:,</span> <span class="pre">'text'])</span></code>, but more compact and probably more Pythonic.</p>
-<p>It’s the same for <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> and <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-<span class="c1"># build sparse matrix</span>
-<span class="n">embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">),</span> <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                      You have 1 DocumentArray on the cloud                       
+                                                                                  
+  Name     Length   Access          Created at                 Updated at         
+ ──────────────────────────────────────────────────────────────────────────────── 
+  my_da    10       public   2022-09-15T07:14:54.256Z   2022-09-15T07:14:54.256Z  
+                                                                                  
+[&#39;my_da&#39;]
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;numpy.ndarray&#39;&gt; (3, 10)
-&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
-&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
-&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">show_table</span></code> parameter to show summary information about DocumentArrays in the cloud.</p>
+</div>
+</section>
+<section id="delete">
+<h3>Delete<a class="headerlink" href="#delete" title="Permalink to this heading">#</a></h3>
+<p>You can delete DocumentArray objects in the cloud using the method <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_delete" title="docarray.array.mixins.io.pushpull.PushPullMixin.cloud_delete"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cloud_delete()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DocumentArray</span><span class="o">.</span><span class="n">cloud_delete</span><span class="p">(</span><span class="s1">&#39;my_da&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<hr class="footnotes docutils" />
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id3" role="note">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
-<p>ndarray-like can be NumPy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse and dense array.</p>
-</aside>
-</aside>
+</section>
 </section>
 </section>
 
@@ -634,18 +472,18 @@
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../find/">
+                    <a class="next-page" href="../../notebook-support/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Query by Conditions</div>
+                            <div class="title">Jupyter Notebook/Colab</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../access-elements/">
+                    <a class="prev-page" href="../login/">
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -654,7 +492,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Access Documents</div>
+                            <div class="title">Authentication</div>
                             
                         </div>
                     </a>
@@ -696,11 +534,15 @@
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Access Attributes</a><ul>
-<li><a class="reference internal" href="#attribute-selector">Attribute selector</a></li>
-<li><a class="reference internal" href="#auto-ravel-on-ndarray">Auto-ravel on NdArray</a></li>
-<li><a class="reference internal" href="#dunder-syntax-for-nested-attributes">Dunder syntax for nested attributes</a></li>
-<li><a class="reference internal" href="#content-and-embedding-sugary-attributes">Content and embedding sugary attributes</a></li>
+<li><a class="reference internal" href="#">Data Management</a><ul>
+<li><a class="reference internal" href="#web-console">Web Console</a></li>
+<li><a class="reference internal" href="#python-api">Python API</a><ul>
+<li><a class="reference internal" href="#push-create-update">Push (create/update):</a></li>
+<li><a class="reference internal" href="#pull-read">Pull (Read):</a></li>
+<li><a class="reference internal" href="#list">List</a></li>
+<li><a class="reference internal" href="#delete">Delete</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

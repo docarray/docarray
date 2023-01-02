@@ -285,7 +285,7 @@
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/login/">Authentication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/data/">Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/data-management/">Data Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
@@ -401,7 +401,7 @@
 
 
 <div class="viewcode-block" id="BaseGetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">BaseGetSetDelMixin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        The following methods must be implemented:</span>
@@ -446,7 +446,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param _slice: the slice used for indexing</span>
@@ -455,7 +455,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">_slice</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param offsets: the offsets used for indexing</span>
@@ -464,7 +464,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_doc_by_offset</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -487,7 +487,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _slice: the slice used for indexing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -495,7 +495,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_del_docs</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param mask: the boolean mask used for indexing</span>
@@ -509,7 +509,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span> <span class="o">=</span> <span class="n">Offset2ID</span><span class="p">(</span><span class="n">list_like</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_list_like&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_del_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_del_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -530,7 +530,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">delete_by_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic.</span>
 <span class="sd">        If you override this method, you should only take care of clearing the storage backend.&quot;&quot;&quot;</span>
@@ -557,7 +557,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_set_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">mismatch_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_set_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_set_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -603,7 +603,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">update_ids</span><span class="p">(</span><span class="n">mismatch_ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _slice: the slice used for indexing</span>
@@ -634,7 +634,7 @@
     <span class="k">def</span> <span class="nf">_set_doc_value_pairs_nested</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param docs: the docs to update</span>
@@ -655,7 +655,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">root_d</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">root_d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_doc_attr_by_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param offset: the offset used for indexing</span>
@@ -673,7 +673,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_doc_attr_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _id: the id used for indexing</span>
@@ -691,7 +691,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_find_root_doc_and_modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find `d`&#39;s root Document in an exhaustive manner</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find `d`&#39;s root Document in an exhaustive manner</span>
 <span class="sd">        :param: d: the input document</span>
 <span class="sd">        :return: the root of the input document</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -729,7 +729,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 30, 2022</div>
+                            Last updated on Jan 02, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
