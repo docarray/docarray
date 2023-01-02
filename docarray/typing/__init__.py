@@ -13,7 +13,7 @@ __all__ = [
     'PointCloud3DUrl',
     'AnyUrl',
     'ID',
-    'Tensor',
+    'AnyTensor',
 ]
 
 try:

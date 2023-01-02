@@ -3,13 +3,13 @@ import torch
 
 from docarray import Document, DocumentArray, Image, Text
 from docarray.typing import (
+    AnyTensor,
     AnyUrl,
     Embedding,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
     PointCloud3DUrl,
-    Tensor,
     TextUrl,
     TorchEmbedding,
     TorchTensor,
@@ -47,8 +47,8 @@ def test_all_types():
         torch_tensor_param: TorchTensor[224, 224, 3]
         np_array: NdArray
         np_array_param: NdArray[224, 224, 3]
-        generic_nd_array: Tensor
-        generic_torch_tensor: Tensor
+        generic_nd_array: AnyTensor
+        generic_torch_tensor: AnyTensor
         embedding: Embedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]

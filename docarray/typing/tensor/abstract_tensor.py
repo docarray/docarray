@@ -21,10 +21,10 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     @abc.abstractmethod
     def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
         """Every tensor has to implement this method in order to
-        enable syntax of the form Tensor[shape].
+        enable syntax of the form AnyTensor[shape].
 
         It is called when a tensor is assigned to a field of this type.
-        i.e. when a tensor is passed to a Document field of type Tensor[shape].
+        i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
 
         The intended behaviour is as follows:
         - If the shape of `t` is equal to `shape`, return `t`.
@@ -44,7 +44,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         """This method validates the input to __class_getitem__.
 
         It is called at "class creation time",
-        i.e. when a class is created with syntax of the form Tensor[shape].
+        i.e. when a class is created with syntax of the form AnyTensor[shape].
 
         The default implementation tries to cast any `item` to a tuple of ints.
         A subclass can override this method to implement custom validation logic.
