@@ -75,7 +75,7 @@ class TorchTensor(
     """
 
     __parametrized_meta__ = metaTorchAndNode
-    TENSOR_FIELD_NAME = 'torch_tensor'
+    _PROTO_FIELD_NAME = 'torch_tensor'
 
     @classmethod
     def __get_validators__(cls):
@@ -190,7 +190,7 @@ class TorchTensor(
         from docarray.proto import NodeProto
 
         nd_proto = self.to_protobuf()
-        return NodeProto(**{self.TENSOR_FIELD_NAME: nd_proto})
+        return NodeProto(**{self._PROTO_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':

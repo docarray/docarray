@@ -70,7 +70,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         )
     """
 
-    TENSOR_FIELD_NAME = 'ndarray'
+    _PROTO_FIELD_NAME = 'ndarray'
 
     @classmethod
     def __get_validators__(cls):
@@ -171,7 +171,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         from docarray.proto import NodeProto
 
         nd_proto = self.to_protobuf()
-        return NodeProto(**{self.TENSOR_FIELD_NAME: nd_proto})
+        return NodeProto(**{self._PROTO_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
