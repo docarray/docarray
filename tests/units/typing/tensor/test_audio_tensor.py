@@ -7,7 +7,6 @@ from pydantic import parse_obj_as
 
 from docarray import Document
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
-from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
 
 
@@ -18,7 +17,7 @@ from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
         (np.zeros((1000, 2)), AudioNdArray, np.ndarray),
     ],
 )
-def test_set_audio_torch_tensor_audio_ndarray(tensor, cls_audio_tensor, cls_tensor):
+def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
     class MyAudioDoc(Document):
         tensor: cls_audio_tensor
 
@@ -26,23 +25,6 @@ def test_set_audio_torch_tensor_audio_ndarray(tensor, cls_audio_tensor, cls_tens
     assert isinstance(doc.tensor, cls_audio_tensor)
     assert isinstance(doc.tensor, cls_tensor)
     assert (doc.tensor == tensor).all()
-
-
-def test_set_audio_tensor():
-    class MyAudioDoc(Document):
-        tensor: AudioTensor
-
-    d = MyAudioDoc(tensor=np.zeros((1000, 2)))
-
-    assert isinstance(d.tensor, AudioNdArray)
-    assert isinstance(d.tensor, np.ndarray)
-    assert (d.tensor == np.zeros((1000, 2))).all()
-
-    d = MyAudioDoc(tensor=torch.zeros((1000, 2)))
-
-    assert isinstance(d.tensor, AudioTorchTensor)
-    assert isinstance(d.tensor, torch.Tensor)
-    assert (d.tensor == torch.zeros((1000, 2))).all()
 
 
 @pytest.mark.parametrize(
