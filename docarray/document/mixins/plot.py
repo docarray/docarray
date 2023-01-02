@@ -190,7 +190,8 @@ class PlotMixin:
             if (
                 'name' in chunk.tags.keys()
                 and chunk.tags['name'] == PointCloud.COLORS
-                and (chunk.tensor.shape[-1] == 3 or chunk.tensor.shape[-1] == 4)
+                and chunk.tensor.shape[-1] in [3, 4]
+
             ):
                 colors = chunk.tensor
 
