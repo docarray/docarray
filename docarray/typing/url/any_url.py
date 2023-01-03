@@ -34,11 +34,15 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         """
         A method used to validate parts of a URL.
         Our URLs should be able to function both in local and remote settings.
-        Therefore, we allow missing `scheme`, making it possible to pass a file path.
+        Therefore, we allow missing `scheme`, making it possible to pass a file
+        path without prefix.
+        If `scheme` is missing, we assume it is a local file path.
         """
         scheme = parts['scheme']
         if scheme is None:
-            pass  # allow missing scheme, unlike pydantic
+            # assume local file if not otherwise stated, unlike pydantic
+            scheme = 'file'
+            parts['scheme'] = scheme
 
         elif cls.allowed_schemes and scheme.lower() not in cls.allowed_schemes:
             raise errors.UrlSchemePermittedError(set(cls.allowed_schemes))
