@@ -86,7 +86,10 @@ class DocumentArray(AnyDocumentArray):
         return len(self._data)
 
     def __getitem__(self, item):
-        return self._data[item]
+        if type(item) == slice:
+            return self.__class__(self._data[item])
+        else:
+            return self._data[item]
 
     def __iter__(self):
         return iter(self._data)
