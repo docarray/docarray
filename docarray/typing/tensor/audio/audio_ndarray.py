@@ -11,7 +11,7 @@ T = TypeVar('T', bound='AudioNdArray')
 class AudioNdArray(AbstractAudioTensor, NdArray):
     """
     Subclass of NdArray, to represent an audio tensor.
-    Additionally, this allows storing such a tensor as a .wav audio file.
+    Adds audio-specific features to the tensor.
 
 
     EXAMPLE USAGE

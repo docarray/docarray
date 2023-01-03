@@ -10,7 +10,7 @@ T = TypeVar('T', bound='AudioTorchTensor')
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
     Subclass of TorchTensor, to represent an audio tensor.
-    Additionally, this allows storing such a tensor as a .wav audio file.
+    Adds audio-specific features to the tensor.
 
 
     EXAMPLE USAGE
