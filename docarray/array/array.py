@@ -6,6 +6,7 @@ from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.document import AnyDocument, BaseDocument
+from docarray.typing import NdArray
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -13,7 +14,8 @@ if TYPE_CHECKING:
 
     from docarray.array.array_stacked import DocumentArrayStacked
     from docarray.proto import DocumentArrayProto
-    from docarray.typing import NdArray, TorchTensor
+    from docarray.typing import TorchTensor
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 T = TypeVar('T', bound='DocumentArray')
@@ -72,8 +74,13 @@ class DocumentArray(AnyDocumentArray):
 
     document_type: Type[BaseDocument] = AnyDocument
 
-    def __init__(self, docs: Iterable[BaseDocument]):
+    def __init__(
+        self,
+        docs: Iterable[BaseDocument],
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ):
         self._data = [doc_ for doc_ in docs]
+        self.tensor_type = tensor_type
 
     def __len__(self):
         return len(self._data)
@@ -161,7 +168,7 @@ class DocumentArray(AnyDocumentArray):
 
         try:
             da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(
-                self
+                self,
             )
             yield da_stacked
         finally:

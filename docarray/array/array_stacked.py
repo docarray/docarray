@@ -17,7 +17,7 @@ from typing_inspect import is_union_type
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
-from docarray.typing import NdArray
+from docarray.typing import AnyTensor, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
     from docarray.proto import DocumentArrayStackedProto
     from docarray.typing import TorchTensor
-
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 try:
     import torch
@@ -59,40 +59,43 @@ class DocumentArrayStacked(AnyDocumentArray):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
+    _docs: DocumentArray
 
-    def __init__(self: T, docs: DocumentArray):
-        self._docs = docs
+    def __init__(
+        self: T,
+        docs: DocumentArray,
+    ):
+        self._columns: Dict[str, Union['TorchTensor', T, NdArray]] = {}
 
-        self._columns: Dict[
-            str, Union['TorchTensor', T, NdArray]
-        ] = self._create_columns(docs)
+        self.from_document_array(docs)
 
     def from_document_array(self: T, docs: DocumentArray):
         self._docs = docs
-        self._columns = self._create_columns(docs)
+        self.tensor_type = self._docs.tensor_type
+        self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
 
     @classmethod
     def _create_columns(
-        cls: Type[T], docs: DocumentArray
+        cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
     ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
 
         columns_fields = list()
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.type_
             if is_union_type(field_type):
-                # cannot stack union fields (might be different types)
-                continue
+                if field.type_ == AnyTensor:
+                    columns_fields.append(field_name)
+            else:
+                is_torch_subclass = (
+                    issubclass(field_type, torch.Tensor) if torch_imported else False
+                )
 
-            is_torch_subclass = (
-                issubclass(field_type, torch.Tensor) if torch_imported else False
-            )
-
-            if (
-                is_torch_subclass
-                or issubclass(field_type, BaseDocument)
-                or issubclass(field_type, NdArray)
-            ):
-                columns_fields.append(field_name)
+                if (
+                    is_torch_subclass
+                    or issubclass(field_type, BaseDocument)
+                    or issubclass(field_type, NdArray)
+                ):
+                    columns_fields.append(field_name)
 
         columns: Dict[str, Union['TorchTensor', T, NdArray]] = dict()
 
@@ -110,12 +113,17 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field_to_stack, to_stack in columns_to_stack.items():
 
             type_ = cls.document_type.__fields__[field_to_stack].type_
-            if issubclass(type_, BaseDocument):
-                columns[field_to_stack] = DocumentArrayStacked.__class_getitem__(type_)(
-                    to_stack
-                )
+            if is_union_type(type_):
+                if type_ == AnyTensor:
+                    columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
             else:
-                columns[field_to_stack] = type_.__docarray_stack__(to_stack)
+                if issubclass(type_, BaseDocument):
+                    columns[field_to_stack] = DocumentArray.__class_getitem__(type_)(
+                        to_stack
+                    ).stack()
+
+                elif issubclass(type_, (NdArray, TorchTensor)):
+                    columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
 
         return columns
 
