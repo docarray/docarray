@@ -60,9 +60,8 @@ setup(
             'requests',
             'matplotlib',
             'Pillow',
-            'trimesh',
+            'trimesh[easy]',
             'ipython',
-            'pyglet<=1.5.27',  # required by trimesh
             'scipy',
             'av',
             'fastapi',
