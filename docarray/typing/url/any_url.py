@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Optional, Type, TypeVar
 
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
@@ -34,11 +34,14 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         """
         A method used to validate parts of a URL.
         Our URLs should be able to function both in local and remote settings.
-        Therefore, we allow missing `scheme`, making it possible to pass a file path.
+        Therefore, we allow missing `scheme`, making it possible to pass a file
+        path without prefix.
+        If `scheme` is missing, we assume it is a local file path.
         """
         scheme = parts['scheme']
         if scheme is None:
-            pass  # allow missing scheme, unlike pydantic
+            # allow missing scheme, unlike pydantic
+            pass
 
         elif cls.allowed_schemes and scheme.lower() not in cls.allowed_schemes:
             raise errors.UrlSchemePermittedError(set(cls.allowed_schemes))
@@ -51,6 +54,44 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             raise errors.UrlUserInfoError()
 
         return parts
+
+    @classmethod
+    def build(
+        cls,
+        *,
+        scheme: str,
+        user: Optional[str] = None,
+        password: Optional[str] = None,
+        host: str,
+        port: Optional[str] = None,
+        path: Optional[str] = None,
+        query: Optional[str] = None,
+        fragment: Optional[str] = None,
+        **_kwargs: str,
+    ) -> str:
+        """
+        Build a URL from its parts.
+        The only difference from the pydantic implementation is that we allow
+        missing `scheme`, making it possible to pass a file path without prefix.
+        """
+
+        # allow missing scheme, unlike pydantic
+        scheme_ = scheme if scheme is not None else ''
+        url = super().build(
+            scheme=scheme_,
+            user=user,
+            password=password,
+            host=host,
+            port=port,
+            path=path,
+            query=query,
+            fragment=fragment,
+            **_kwargs,
+        )
+        if scheme is None and url.startswith('://'):
+            # remove the `://` prefix, since scheme is missing
+            url = url[3:]
+        return url
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:

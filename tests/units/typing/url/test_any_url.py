@@ -18,3 +18,9 @@ def test_json_schema():
 def test_dump_json():
     url = parse_obj_as(AnyUrl, 'http://jina.ai/img.png')
     orjson_dumps(url)
+
+
+def test_relative_path():
+    # see issue: https://github.com/docarray/docarray/issues/978
+    url = parse_obj_as(AnyUrl, 'data/05978.jpg')
+    assert url == 'data/05978.jpg'
