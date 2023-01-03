@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from docarray import Document
+from docarray import BaseDocument
 from docarray.document import AnyDocument
 from docarray.typing import (
     AnyUrl,
@@ -16,7 +16,7 @@ from docarray.typing import (
 
 
 def test_proto_all_types():
-    class Mymmdoc(Document):
+    class Mymmdoc(BaseDocument):
         tensor: NdArray
         torch_tensor: TorchTensor
         embedding: Embedding

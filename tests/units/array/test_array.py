@@ -4,14 +4,13 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import Document, DocumentArray
-from docarray.document import BaseDocument
+from docarray import BaseDocument, DocumentArray
 from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.fixture()
 def da():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     return DocumentArray([Text(text='hello') for _ in range(10)])
@@ -23,7 +22,7 @@ def test_iterate(da):
 
 
 def test_append():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([])
@@ -35,7 +34,7 @@ def test_append():
 
 
 def test_extend():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello', id=str(i)) for i in range(10)])
@@ -48,7 +47,7 @@ def test_extend():
 
 
 def test_document_array():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray([Text(text='hello') for _ in range(10)])
@@ -57,7 +56,7 @@ def test_document_array():
 
 
 def test_document_array_fixed_type():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello') for _ in range(10)])

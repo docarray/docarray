@@ -44,12 +44,12 @@ class TorchTensor(
 
     .. code-block:: python
 
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import TorchTensor
         import torch
 
 
-        class MyDoc(Document):
+        class MyDoc(BaseDocument):
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
 

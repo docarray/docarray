@@ -3,7 +3,7 @@ from typing import Optional
 import pytest
 import torch
 
-from docarray import Document, DocumentArray, Text
+from docarray import BaseDocument, DocumentArray, Text
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import TorchTensor
 
@@ -14,15 +14,15 @@ num_sub_sub_docs = 3
 
 @pytest.fixture
 def multi_model_docs():
-    class SubSubDoc(Document):
+    class SubSubDoc(BaseDocument):
         sub_sub_text: Text
         sub_sub_tensor: TorchTensor[2]
 
-    class SubDoc(Document):
+    class SubDoc(BaseDocument):
         sub_text: Text
         sub_da: DocumentArray[SubSubDoc]
 
-    class MultiModalDoc(Document):
+    class MultiModalDoc(BaseDocument):
         mm_text: Text
         mm_tensor: Optional[TorchTensor[3, 2, 2]]
         mm_da: DocumentArray[SubDoc]
@@ -77,7 +77,7 @@ def test_traverse_flat(multi_model_docs, access_path, len_result):
 
 
 def test_traverse_stacked_da():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     batch = DocumentArray[Image](
@@ -110,7 +110,7 @@ def test_flatten_one_level(input_list, output_list):
 
 
 def test_flatten_one_level_list_of_da():
-    doc = Document()
+    doc = BaseDocument()
     input_list = [DocumentArray([doc, doc, doc])]
 
     flattened = AnyDocumentArray._flatten_one_level(sequence=input_list)

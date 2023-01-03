@@ -32,11 +32,11 @@ class TextUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import Document
+            from docarray import BaseDocument
             from docarray.typing import TextUrl
 
 
-            class MyDoc(Document):
+            class MyDoc(BaseDocument):
                 remote_url: TextUrl
                 local_url: TextUrl
 
@@ -63,11 +63,11 @@ class TextUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import Document
+            from docarray import BaseDocument
             from docarray.typing import TextUrl
 
 
-            class MyDoc(Document):
+            class MyDoc(BaseDocument):
                 remote_url: TextUrl
                 local_url: TextUrl
 

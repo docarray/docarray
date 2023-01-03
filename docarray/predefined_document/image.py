@@ -48,10 +48,10 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, Image, Text
+        from docarray import BaseDocument, Image, Text
 
         # compose it
-        class MultiModalDoc(Document):
+        class MultiModalDoc(BaseDocument):
             image: Image
             text: Text
 

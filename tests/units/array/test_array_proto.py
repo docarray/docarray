@@ -1,12 +1,12 @@
 import numpy as np
 
-from docarray import Document, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray, Image, Text
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import NdArray
 
 
 def test_simple_proto():
-    class CustomDoc(Document):
+    class CustomDoc(BaseDocument):
         text: str
         tensor: NdArray
 
@@ -22,7 +22,7 @@ def test_simple_proto():
 
 
 def test_nested_proto():
-    class CustomDocument(Document):
+    class CustomDocument(BaseDocument):
         text: Text
         image: Image
 
@@ -39,7 +39,7 @@ def test_nested_proto():
 
 
 def test_nested_proto_any_doc():
-    class CustomDocument(Document):
+    class CustomDocument(BaseDocument):
         text: Text
         image: Image
 
@@ -56,7 +56,7 @@ def test_nested_proto_any_doc():
 
 
 def test_stacked_proto():
-    class CustomDocument(Document):
+    class CustomDocument(BaseDocument):
         image: NdArray
 
     da = DocumentArray[CustomDocument](

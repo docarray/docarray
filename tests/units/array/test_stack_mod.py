@@ -4,13 +4,13 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import Document, DocumentArray
+from docarray import BaseDocument, DocumentArray
 from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.fixture()
 def batch():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     batch = DocumentArray[Image](
@@ -49,7 +49,7 @@ def test_stack_optional(batch):
 
 
 def test_stack_numpy():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: NdArray[3, 224, 224]
 
     batch = DocumentArray[Image](
@@ -79,10 +79,10 @@ def test_stack(batch):
 
 
 def test_stack_mod_nested_document():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    class MMdoc(Document):
+    class MMdoc(BaseDocument):
         img: Image
 
     batch = DocumentArray[MMdoc](
@@ -104,7 +104,7 @@ def test_stack_mod_nested_document():
 
 
 def test_convert_to_da(batch):
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     batch = DocumentArray[Image](
@@ -119,10 +119,10 @@ def test_convert_to_da(batch):
 
 
 def test_unstack_nested_document():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    class MMdoc(Document):
+    class MMdoc(BaseDocument):
         img: Image
 
     batch = DocumentArray[MMdoc](
@@ -143,7 +143,7 @@ def test_proto_stacked_mode_torch(batch):
 
 
 def test_proto_stacked_mode_numpy():
-    class MyDoc(Document):
+    class MyDoc(BaseDocument):
         tensor: NdArray[3, 224, 224]
 
     da = DocumentArray[MyDoc](
@@ -156,7 +156,7 @@ def test_proto_stacked_mode_numpy():
 
 
 def test_stack_call():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     da = DocumentArray[Image](
@@ -171,7 +171,7 @@ def test_stack_call():
 
 
 def test_context_manager():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     da = DocumentArray[Image](
@@ -193,7 +193,7 @@ def test_context_manager():
 
 
 def test_stack_union():
-    class Image(Document):
+    class Image(BaseDocument):
         tensor: Union[TorchTensor[3, 224, 224], NdArray[3, 224, 224]]
 
     batch = DocumentArray[Image](

@@ -51,11 +51,11 @@ class DocumentArray(AnyDocumentArray):
 
     EXAMPLE USAGE
     .. code-block:: python
-        from docarray import Document, DocumentArray
+        from docarray import BaseDocument, DocumentArray
         from docarray.typing import NdArray, ImageUrl
 
 
-        class Image(Document):
+        class Image(BaseDocument):
             tensor: Optional[NdArray[100]]
             url: ImageUrl
 

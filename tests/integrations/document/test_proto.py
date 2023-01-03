@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from docarray import Document, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray, Image, Text
 from docarray.typing import (
     AnyTensor,
     AnyUrl,
@@ -18,11 +18,11 @@ from docarray.typing.tensor import NdArrayEmbedding
 
 
 def test_multi_modal_doc_proto():
-    class MyMultiModalDoc(Document):
+    class MyMultiModalDoc(BaseDocument):
         image: Image
         text: Text
 
-    class MySUperDoc(Document):
+    class MySUperDoc(BaseDocument):
         doc: MyMultiModalDoc
         description: str
 
@@ -34,10 +34,10 @@ def test_multi_modal_doc_proto():
 
 
 def test_all_types():
-    class NestedDoc(Document):
+    class NestedDoc(BaseDocument):
         tensor: NdArray
 
-    class MyDoc(Document):
+    class MyDoc(BaseDocument):
         img_url: ImageUrl
         txt_url: TextUrl
         mesh_url: Mesh3DUrl

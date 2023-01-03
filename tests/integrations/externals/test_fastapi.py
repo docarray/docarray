@@ -3,13 +3,13 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import Document, Image, Text
+from docarray import BaseDocument, Image, Text
 from docarray.typing import NdArray
 
 
 @pytest.mark.asyncio
 async def test_fast_api():
-    class Mmdoc(Document):
+    class Mmdoc(BaseDocument):
         img: Image
         text: Text
         title: str
@@ -36,10 +36,10 @@ async def test_fast_api():
 
 @pytest.mark.asyncio
 async def test_image():
-    class InputDoc(Document):
+    class InputDoc(BaseDocument):
         img: Image
 
-    class OutputDoc(Document):
+    class OutputDoc(BaseDocument):
         embedding_clip: NdArray
         embedding_bert: NdArray
 
@@ -66,10 +66,10 @@ async def test_image():
 
 @pytest.mark.asyncio
 async def test_sentence_to_embeddings():
-    class InputDoc(Document):
+    class InputDoc(BaseDocument):
         text: str
 
-    class OutputDoc(Document):
+    class OutputDoc(BaseDocument):
         embedding_clip: NdArray
         embedding_bert: NdArray
 

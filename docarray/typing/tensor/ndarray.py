@@ -39,12 +39,12 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
 
     .. code-block:: python
 
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import NdArray
         import numpy as np
 
 
-        class MyDoc(Document):
+        class MyDoc(BaseDocument):
             arr: NdArray
             image_arr: NdArray[3, 224, 224]
 
