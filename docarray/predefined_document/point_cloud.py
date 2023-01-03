@@ -1,7 +1,7 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, PointCloud3DUrl, Tensor
+from docarray.typing import AnyTensor, Embedding, PointCloud3DUrl
 
 
 class PointCloud3D(BaseDocument):
@@ -13,8 +13,8 @@ class PointCloud3D(BaseDocument):
     representation, the point cloud is a fixed size ndarray (shape=(n_samples, 3)) and
     hence easier for deep learning algorithms to handle.
 
-    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`), a
-    Tensor (`PointCloud3D.tensor`), and an Embedding (`PointCloud3D.embedding`).
+    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`), an
+    AnyTensor (`PointCloud3D.tensor`), and an Embedding (`PointCloud3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -54,10 +54,10 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, PointCloud3D, Text
+        from docarray import BaseDocument, PointCloud3D, Text
 
         # compose it
-        class MultiModalDoc(Document):
+        class MultiModalDoc(BaseDocument):
             point_cloud: PointCloud3D
             text: Text
 
@@ -72,5 +72,5 @@ class PointCloud3D(BaseDocument):
     """
 
     url: Optional[PointCloud3DUrl]
-    tensor: Optional[Tensor]
+    tensor: Optional[AnyTensor]
     embedding: Optional[Embedding]

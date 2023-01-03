@@ -1,15 +1,15 @@
 import numpy as np
 import torch
 
-from docarray import Document, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray, Image, Text
 from docarray.typing import (
+    AnyTensor,
     AnyUrl,
     Embedding,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
     PointCloud3DUrl,
-    Tensor,
     TextUrl,
     TorchEmbedding,
     TorchTensor,
@@ -18,11 +18,11 @@ from docarray.typing.tensor import NdArrayEmbedding
 
 
 def test_multi_modal_doc_proto():
-    class MyMultiModalDoc(Document):
+    class MyMultiModalDoc(BaseDocument):
         image: Image
         text: Text
 
-    class MySUperDoc(Document):
+    class MySUperDoc(BaseDocument):
         doc: MyMultiModalDoc
         description: str
 
@@ -34,10 +34,10 @@ def test_multi_modal_doc_proto():
 
 
 def test_all_types():
-    class NestedDoc(Document):
+    class NestedDoc(BaseDocument):
         tensor: NdArray
 
-    class MyDoc(Document):
+    class MyDoc(BaseDocument):
         img_url: ImageUrl
         txt_url: TextUrl
         mesh_url: Mesh3DUrl
@@ -47,8 +47,8 @@ def test_all_types():
         torch_tensor_param: TorchTensor[224, 224, 3]
         np_array: NdArray
         np_array_param: NdArray[224, 224, 3]
-        generic_nd_array: Tensor
-        generic_torch_tensor: Tensor
+        generic_nd_array: AnyTensor
+        generic_torch_tensor: AnyTensor
         embedding: Embedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]

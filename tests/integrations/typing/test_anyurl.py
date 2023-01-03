@@ -1,9 +1,9 @@
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing import AnyUrl
 
 
 def test_set_any_url():
-    class MyDocument(Document):
+    class MyDocument(BaseDocument):
         any_url: AnyUrl
 
     d = MyDocument(any_url="https://jina.ai")

@@ -1,11 +1,11 @@
 import torch
 
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing import TorchEmbedding, TorchTensor
 
 
 def test_set_torch_tensor():
-    class MyDocument(Document):
+    class MyDocument(BaseDocument):
         tensor: TorchTensor
 
     d = MyDocument(tensor=torch.zeros((3, 224, 224)))
@@ -16,7 +16,7 @@ def test_set_torch_tensor():
 
 
 def test_set_torch_embedding():
-    class MyDocument(Document):
+    class MyDocument(BaseDocument):
         embedding: TorchEmbedding
 
     d = MyDocument(embedding=torch.zeros((128,)))

@@ -1,10 +1,10 @@
 import numpy as np
 
-from docarray import Document, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray, Image, Text
 
 
 def test_multi_modal_doc():
-    class MyMultiModalDoc(Document):
+    class MyMultiModalDoc(BaseDocument):
         image: Image
         text: Text
 
@@ -12,7 +12,7 @@ def test_multi_modal_doc():
         image=Image(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
     )
 
-    assert isinstance(doc.image, Document)
+    assert isinstance(doc.image, BaseDocument)
     assert isinstance(doc.image, Image)
     assert isinstance(doc.text, Text)
 
@@ -21,7 +21,7 @@ def test_multi_modal_doc():
 
 
 def test_nested_chunks_document():
-    class ChunksDocument(Document):
+    class ChunksDocument(BaseDocument):
         text: str
         images: DocumentArray[Image]
 

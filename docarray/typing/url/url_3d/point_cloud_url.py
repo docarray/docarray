@@ -37,12 +37,12 @@ class PointCloud3DUrl(Url3D):
         .. code-block:: python
 
             import numpy as np
-            from docarray import Document
+            from docarray import BaseDocument
 
             from docarray.typing import PointCloud3DUrl
 
 
-            class MyDoc(Document):
+            class MyDoc(BaseDocument):
                 point_cloud_url: PointCloud3DvUrl
 
 

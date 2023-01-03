@@ -1,7 +1,8 @@
 from docarray.typing.id import ID
-from docarray.typing.tensor import NdArray, Tensor
 from docarray.typing.tensor.audio import AudioNdArray
-from docarray.typing.tensor.embedding import Embedding
+from docarray.typing.tensor.embedding.embedding import Embedding
+from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.url import (
     AnyUrl,
     AudioUrl,
@@ -22,7 +23,7 @@ __all__ = [
     'PointCloud3DUrl',
     'AnyUrl',
     'ID',
-    'Tensor',
+    'AnyTensor',
 ]
 
 try:

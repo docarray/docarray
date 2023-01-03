@@ -109,14 +109,14 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import Document, DocumentArray, Text
+            from docarray import BaseDocument, DocumentArray, Text
 
 
-            class Author(Document):
+            class Author(BaseDocument):
                 name: str
 
 
-            class Book(Document):
+            class Book(BaseDocument):
                 author: Author
                 content: Text
 
@@ -134,14 +134,14 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import Document, DocumentArray
+            from docarray import BaseDocument, DocumentArray
 
 
-            class Chapter(Document):
+            class Chapter(BaseDocument):
                 content: str
 
 
-            class Book(Document):
+            class Book(BaseDocument):
                 chapters: DocumentArray[Chapter]
 
 
@@ -157,11 +157,11 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
         If your DocumentArray is in stacked mode, and you want to access a field of
-        type Tensor, the stacked tensor will be returned instead of a list:
+        type AnyTensor, the stacked tensor will be returned instead of a list:
 
         EXAMPLE USAGE
         .. code-block:: python
-            class Image(Document):
+            class Image(BaseDocument):
                 tensor: TorchTensor[3, 224, 224]
 
 

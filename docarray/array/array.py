@@ -2,6 +2,8 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
 
+from typing_inspect import is_union_type
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.document import AnyDocument, BaseDocument
 
@@ -49,11 +51,11 @@ class DocumentArray(AnyDocumentArray):
 
     EXAMPLE USAGE
     .. code-block:: python
-        from docarray import Document, DocumentArray
+        from docarray import BaseDocument, DocumentArray
         from docarray.typing import NdArray, ImageUrl
 
 
-        class Image(Document):
+        class Image(BaseDocument):
             tensor: Optional[NdArray[100]]
             url: ImageUrl
 
@@ -102,7 +104,7 @@ class DocumentArray(AnyDocumentArray):
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
 
-        if issubclass(field_type, BaseDocument):
+        if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
@@ -169,8 +171,8 @@ class DocumentArray(AnyDocumentArray):
 
     def stack(self) -> 'DocumentArrayStacked':
         """
-        Convert the DocumentArray into a DocumentArrayStacked. Self cannot be used
-        after
+        Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
+        afterwards
         """
         from docarray.array.array_stacked import DocumentArrayStacked
 

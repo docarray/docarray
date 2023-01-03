@@ -44,12 +44,12 @@ class TorchTensor(
 
     .. code-block:: python
 
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import TorchTensor
         import torch
 
 
-        class MyDoc(Document):
+        class MyDoc(BaseDocument):
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
 
@@ -128,7 +128,7 @@ class TorchTensor(
 
     def _to_json_compatible(self) -> np.ndarray:
         """
-        Convert torch Tensor into a json compatible object
+        Convert torchTensor into a json compatible object
         :return: a list representation of the torch tensor
         """
         return self.numpy()  ## might need to  check device later
@@ -137,7 +137,7 @@ class TorchTensor(
         """
         Return the original torch.Tensor without any memory copy.
 
-        The original view rest intact and is still a Document Tensor
+        The original view rest intact and is still a Document TorchTensor
         but the return object is a pure torch Tensor but both object share
         the same memory layout.
 
@@ -146,10 +146,10 @@ class TorchTensor(
             from docarray.typing import TorchTensor
             import torch
 
-            t = Tensor.validate(torch.zeros(3, 224, 224), None, None)
-            # here t is a docarray Tensor
+            t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+            # here t is a docarray TorchTensor
             t2 = t.unwrap()
-            # here t2 is a pure torch.Tensor but t1 is still a Docarray Tensor
+            # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
             # But both share the same underlying memory
 
 

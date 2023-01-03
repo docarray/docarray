@@ -1,7 +1,7 @@
 from typing import Optional
 
 from docarray.document import BaseDocument
-from docarray.typing import Embedding, Mesh3DUrl, Tensor
+from docarray.typing import AnyTensor, Embedding, Mesh3DUrl
 
 
 class Mesh3D(BaseDocument):
@@ -15,9 +15,9 @@ class Mesh3D(BaseDocument):
     tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a
     vertex in the tensor of vertices.
 
-    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), a Tensor of vertices
-    (`Mesh3D.vertices`), a Tensor of faces (`Mesh3D.faces`) and an Embedding
-    (`Mesh3D.embedding`).
+    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), an AnyTensor of
+    vertices (`Mesh3D.vertices`), an AnyTensor of faces (`Mesh3D.faces`) and an
+    Embedding (`Mesh3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -57,10 +57,10 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, Mesh3D, Text
+        from docarray import BaseDocument, Mesh3D, Text
 
         # compose it
-        class MultiModalDoc(Document):
+        class MultiModalDoc(BaseDocument):
             mesh: Mesh3D
             text: Text
 
@@ -73,6 +73,6 @@ class Mesh3D(BaseDocument):
     """
 
     url: Optional[Mesh3DUrl]
-    vertices: Optional[Tensor]
-    faces: Optional[Tensor]
+    vertices: Optional[AnyTensor]
+    faces: Optional[AnyTensor]
     embedding: Optional[Embedding]

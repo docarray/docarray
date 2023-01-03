@@ -12,6 +12,8 @@ from typing import (
     Union,
 )
 
+from typing_inspect import is_union_type
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
@@ -45,9 +47,9 @@ class DocumentArrayStacked(AnyDocumentArray):
     calculation, deep learning forward pass)
 
     A DocumentArrayStacked is similar to {class}`~docarray.array.DocumentArray`
-    but the field of the Document that are {class}`~docarray.typing.Tensor` are stacked
-    into a batches of Tensor. Like {class}`~docarray.array.DocumentArray`  you
-    can be precise a Document schema by using the `DocumentArray[MyDocument]`
+    but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
+    stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
+    you can be precise a Document schema by using the `DocumentArray[MyDocument]`
     syntax where MyDocument is a Document class  (i.e. schema).
     This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
@@ -76,15 +78,19 @@ class DocumentArrayStacked(AnyDocumentArray):
 
         columns_fields = list()
         for field_name, field in cls.document_type.__fields__.items():
+            field_type = field.type_
+            if is_union_type(field_type):
+                # cannot stack union fields (might be different types)
+                continue
 
             is_torch_subclass = (
-                issubclass(field.type_, torch.Tensor) if torch_imported else False
+                issubclass(field_type, torch.Tensor) if torch_imported else False
             )
 
             if (
                 is_torch_subclass
-                or issubclass(field.type_, BaseDocument)
-                or issubclass(field.type_, NdArray)
+                or issubclass(field_type, BaseDocument)
+                or issubclass(field_type, NdArray)
             ):
                 columns_fields.append(field_name)
 

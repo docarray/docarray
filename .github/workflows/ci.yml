@@ -60,7 +60,7 @@ jobs:
           python -m pip install poetry
           poetry install --without dev
       - name: Test basic import
-        run: poetry run python -c 'from docarray import DocumentArray, Document'
+        run: poetry run python -c 'from docarray import DocumentArray, BaseDocument'
 
 
   check-mypy:

@@ -55,11 +55,11 @@ doc.embedding = CLIPImageEncoder()(
 ### Compose nested Documents:
 
 ```python
-from docarray import Image, Text, Document
+from docarray import Image, Text, BaseDocument
 import numpy as np
 
 
-class MultiModalDocument(Document):
+class MultiModalDocument(BaseDocument):
     image_doc: Image
     text_doc: Text
 

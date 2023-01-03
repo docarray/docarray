@@ -1,14 +1,16 @@
+from typing import Optional, Union
+
 import numpy as np
 import pytest
+import torch
 
-from docarray import Document, DocumentArray
-from docarray.document import BaseDocument
-from docarray.typing import NdArray
+from docarray import BaseDocument, DocumentArray
+from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.fixture()
 def da():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     return DocumentArray([Text(text='hello') for _ in range(10)])
@@ -20,7 +22,7 @@ def test_iterate(da):
 
 
 def test_append():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([])
@@ -32,7 +34,7 @@ def test_append():
 
 
 def test_extend():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello', id=str(i)) for i in range(10)])
@@ -45,7 +47,7 @@ def test_extend():
 
 
 def test_document_array():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray([Text(text='hello') for _ in range(10)])
@@ -54,7 +56,7 @@ def test_document_array():
 
 
 def test_document_array_fixed_type():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello') for _ in range(10)])
@@ -144,3 +146,79 @@ def test_get_bulk_attributes_document():
     )
 
     assert isinstance(da.inner, DocumentArray)
+
+
+def test_get_bulk_attributes_optional_type():
+    class Mmdoc(BaseDocument):
+        text: str
+        tensor: Optional[NdArray]
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    tensors = da.tensor
+
+    assert len(tensors) == N
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da.text
+
+    assert len(texts) == N
+    for i, text in enumerate(texts):
+        assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_union_type():
+    class Mmdoc(BaseDocument):
+        text: str
+        tensor: Union[NdArray, TorchTensor]
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    tensors = da.tensor
+
+    assert len(tensors) == N
+    assert isinstance(tensors, list)
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da.text
+
+    assert len(texts) == N
+    for i, text in enumerate(texts):
+        assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_union_type_nested():
+    class MyDoc(BaseDocument):
+        embedding: Union[Optional[TorchTensor], Optional[NdArray]]
+        embedding2: Optional[Union[TorchTensor, NdArray]]
+        embedding3: Optional[Optional[TorchTensor]]
+        embedding4: Union[Optional[Union[TorchTensor, NdArray]], TorchTensor]
+
+    da = DocumentArray[MyDoc](
+        [
+            MyDoc(
+                embedding=torch.rand(10),
+                embedding2=torch.rand(10),
+                embedding3=torch.rand(10),
+                embedding4=torch.rand(10),
+            )
+            for _ in range(10)
+        ]
+    )
+
+    for attr in ['embedding', 'embedding2', 'embedding3', 'embedding4']:
+        tensors = getattr(da, attr)
+        assert len(tensors) == 10
+        assert isinstance(tensors, list)
+        for tensor in tensors:
+            assert tensor.shape == (10,)
