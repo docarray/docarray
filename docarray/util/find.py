@@ -2,7 +2,7 @@ from typing import List, NamedTuple, Optional, Type, Union
 
 from typing_inspect import is_union_type
 
-from docarray import Document, DocumentArray
+from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.typing import AnyTensor
@@ -16,7 +16,7 @@ class FindResult(NamedTuple):
 
 def find(
     index: AnyDocumentArray,
-    query: Union[AnyTensor, Document],
+    query: Union[AnyTensor, BaseDocument],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -43,12 +43,12 @@ def find(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, Document
+        from docarray import DocumentArray, BaseDocument
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(Document):
+        class MyDocument(BaseDocument):
             embedding: TorchTensor
 
 
@@ -132,12 +132,12 @@ def find_batched(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, Document
+        from docarray import DocumentArray, BaseDocument
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(Document):
+        class MyDocument(BaseDocument):
             embedding: TorchTensor
 
 
@@ -212,7 +212,7 @@ def find_batched(
 
 
 def _extract_embedding_single(
-    data: Union[DocumentArray, Document, AnyTensor],
+    data: Union[DocumentArray, BaseDocument, AnyTensor],
     embedding_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
@@ -223,7 +223,7 @@ def _extract_embedding_single(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-    if isinstance(data, Document):
+    if isinstance(data, BaseDocument):
         emb = getattr(data, embedding_field)
     else:  # treat data as tensor
         emb = data
@@ -235,7 +235,7 @@ def _extract_embedding_single(
 
 
 def _extraxt_embeddings(
-    data: Union[AnyDocumentArray, Document, AnyTensor],
+    data: Union[AnyDocumentArray, BaseDocument, AnyTensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> AnyTensor:
@@ -252,7 +252,7 @@ def _extraxt_embeddings(
         emb = embedding_type.__docarray_stack__(emb)
     elif isinstance(data, DocumentArrayStacked):
         emb = getattr(data, embedding_field)
-    elif isinstance(data, Document):
+    elif isinstance(data, BaseDocument):
         emb = getattr(data, embedding_field)
     else:  # treat data as tensor
         emb = data

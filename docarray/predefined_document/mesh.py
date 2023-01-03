@@ -57,10 +57,10 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, Mesh3D, Text
+        from docarray import BaseDocument, Mesh3D, Text
 
         # compose it
-        class MultiModalDoc(Document):
+        class MultiModalDoc(BaseDocument):
             mesh: Mesh3D
             text: Text
 

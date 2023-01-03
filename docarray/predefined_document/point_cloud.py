@@ -54,10 +54,10 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, PointCloud3D, Text
+        from docarray import BaseDocument, PointCloud3D, Text
 
         # compose it
-        class MultiModalDoc(Document):
+        class MultiModalDoc(BaseDocument):
             point_cloud: PointCloud3D
             text: Text
 

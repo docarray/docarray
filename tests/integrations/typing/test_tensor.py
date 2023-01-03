@@ -1,12 +1,12 @@
 import numpy as np
 import torch
 
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing import AnyTensor, NdArray, TorchTensor
 
 
 def test_set_tensor():
-    class MyDocument(Document):
+    class MyDocument(BaseDocument):
         tensor: AnyTensor
 
     d = MyDocument(tensor=np.zeros((3, 224, 224)))

@@ -1,9 +1,9 @@
-from docarray import DocumentArray, Document
+from docarray import BaseDocument, DocumentArray
 from docarray.document import AnyDocument
 
 
 def test_generic_init():
-    class Text(Document):
+    class Text(BaseDocument):
         text: str
 
     da = DocumentArray[Text]([])

@@ -2,12 +2,12 @@ from typing import Optional
 
 import torch
 
-from docarray import Document, DocumentArray
+from docarray import BaseDocument, DocumentArray
 from docarray.typing import TorchTensor
 
 
 def test_torch_train():
-    class Mmdoc(Document):
+    class Mmdoc(BaseDocument):
         text: str
         tensor: Optional[TorchTensor[3, 224, 224]]
 

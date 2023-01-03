@@ -36,13 +36,13 @@ class Mesh3DUrl(Url3D):
 
         .. code-block:: python
 
-            from docarray import Document
+            from docarray import BaseDocument
             import numpy as np
 
             from docarray.typing import Mesh3DUrl
 
 
-            class MyDoc(Document):
+            class MyDoc(BaseDocument):
                 mesh_url: Mesh3DUrl
 
 
