@@ -42,8 +42,8 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             setattr(_DocumentArrayTyped, field, _property_generator(field))
             # this generates property on the fly based on the schema of the item
 
-        _DocumentArrayTyped.__name__ = f'DocumentArray[{item.__name__}]'
-        _DocumentArrayTyped.__qualname__ = f'DocumentArray[{item.__name__}]'
+        _DocumentArrayTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
+        _DocumentArrayTyped.__qualname__ = f'{cls.__name__}[{item.__name__}]'
 
         return _DocumentArrayTyped
 
