@@ -78,15 +78,17 @@ class CsvIOMixin:
                 writer.writeheader()
 
             for d in self:
-                pd = d.to_dict(
+                doc_dict = d.to_dict(
                     protocol='jsonschema',
                     exclude=set(exclude_fields) if exclude_fields else None,
                     exclude_none=True,
                 )
                 if flatten_tags:
-                    t = pd.pop('tags')
-                    pd.update({f'tag__{k}': v for k, v in t.items()})
-                writer.writerow(pd)
+                    t = doc_dict.pop('tags')
+                    doc_dict.update({f'tag__{k}': v for k, v in t.items()})
+
+                doc_dict = {k: str(v).replace('\n', ' ') for k, v in doc_dict.items()}
+                writer.writerow(doc_dict)
 
     @classmethod
     def load_csv(
