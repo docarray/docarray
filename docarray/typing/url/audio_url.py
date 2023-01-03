@@ -51,9 +51,12 @@ class AudioUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load(self: T) -> AudioNdArray:
+    def load(self: T, dtype: str = 'float32') -> AudioNdArray:
         """
         Load the data from the url into an AudioNdArray.
+
+        :param dtype: Data-type of the returned array; default: float32.
+        :return: AudioNdArray representing the audio file content.
 
         EXAMPLE USAGE
 
@@ -74,7 +77,6 @@ class AudioUrl(AnyUrl):
             doc.audio_tensor = doc.audio_url.load()
             assert isinstance(doc.audio_tensor, np.ndarray)
 
-        :return: AudioNdArray representing the audio file content
         """
         import io
 
@@ -98,7 +100,7 @@ class AudioUrl(AnyUrl):
 
             # Convert buffer to float32 using NumPy
             audio_as_np_int16 = np.frombuffer(audio, dtype=np.int16)
-            audio_as_np_float32 = audio_as_np_int16.astype(np.float32)
+            audio_as_np_float32 = audio_as_np_int16.astype(dtype=dtype)
 
             # Normalise float32 array so that values are between -1.0 and +1.0
             audio_norm = audio_as_np_float32 / MAX_INT_16
