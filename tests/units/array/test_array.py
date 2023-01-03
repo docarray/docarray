@@ -46,6 +46,12 @@ def test_extend():
         assert da.id == str(i)
 
 
+def test_slice(da):
+    da2 = da[0:5]
+    assert type(da2) == da.__class__
+    assert len(da2) == 5
+
+
 def test_document_array():
     class Text(BaseDocument):
         text: str
