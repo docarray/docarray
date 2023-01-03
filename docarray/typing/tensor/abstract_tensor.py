@@ -16,6 +16,7 @@ ShapeT = TypeVar('ShapeT')
 class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
     __parametrized_meta__ = type
+    _PROTO_FIELD_NAME: str
 
     @classmethod
     @abc.abstractmethod

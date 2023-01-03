@@ -10,7 +10,7 @@ from docarray.typing.url.helper import _uri_to_blob
 class TextUrl(AnyUrl):
     """
     URL to a text file.
-    Cane be remote (web) URL, or a local file path.
+    Can be remote (web) URL, or a local file path.
     """
 
     def _to_node_protobuf(self) -> 'NodeProto':

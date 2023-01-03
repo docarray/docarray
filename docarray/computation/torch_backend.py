@@ -39,6 +39,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
+    @staticmethod
+    def n_dim(array: 'torch.Tensor') -> int:
+        return array.ndim
+
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """
         Abstract class for retrieval and ranking functionalities

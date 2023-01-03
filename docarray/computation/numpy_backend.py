@@ -40,6 +40,10 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     ) -> 'np.ndarray':
         return np.stack(tensors, axis=dim)
 
+    @staticmethod
+    def n_dim(array: 'np.ndarray') -> int:
+        return array.ndim
+
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """
         Abstract class for retrieval and ranking functionalities

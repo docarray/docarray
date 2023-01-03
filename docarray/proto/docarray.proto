@@ -63,6 +63,11 @@ message NodeProto {
 
     string point_cloud_url = 13;
 
+    string audio_url = 14;
+
+    NdArrayProto audio_ndarray = 15;
+
+    NdArrayProto audio_torch_tensor = 16;
 
   }
 
