@@ -113,7 +113,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field_to_stack, to_stack in columns_to_stack.items():
 
             type_ = cls.document_type.__fields__[field_to_stack].type_
-            if isinstance(type_, type):
+            if is_union_type(type_):
+                if type_ == AnyTensor:
+                    columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
+            else:
                 if issubclass(type_, BaseDocument):
                     columns[field_to_stack] = DocumentArray.__class_getitem__(type_)(
                         to_stack
@@ -121,9 +124,6 @@ class DocumentArrayStacked(AnyDocumentArray):
 
                 elif issubclass(type_, (NdArray, TorchTensor)):
                     columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
-
-            elif type_ == AnyTensor:  # should be properly handled with union
-                columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
 
         return columns
 
