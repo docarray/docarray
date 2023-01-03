@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
 
@@ -18,7 +18,7 @@ from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
     ],
 )
 def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
-    class MyAudioDoc(Document):
+    class MyAudioDoc(BaseDocument):
         tensor: cls_audio_tensor
 
     doc = MyAudioDoc(tensor=tensor)

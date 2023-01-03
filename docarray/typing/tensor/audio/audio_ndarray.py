@@ -1,7 +1,7 @@
 from typing import TypeVar
 
-from docarray.typing import NdArray
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
+from docarray.typing.tensor.ndarray import NdArray
 
 MAX_INT_16 = 2**15
 

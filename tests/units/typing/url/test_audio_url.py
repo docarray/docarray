@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray import Document
+from docarray import BaseDocument
 from docarray.document.io.json import orjson_dumps
 from docarray.typing import AudioNdArray, AudioTorchTensor, AudioUrl
 from tests import TOYDATA_DIR
@@ -36,7 +36,7 @@ def test_audio_url(file_url):
     [*AUDIO_FILES, REMOTE_AUDIO_FILE],
 )
 def test_load_audio_url_to_audio_torch_tensor_field(file_url):
-    class MyAudioDoc(Document):
+    class MyAudioDoc(BaseDocument):
         audio_url: AudioUrl
         tensor: Optional[AudioTorchTensor]
 
