@@ -75,22 +75,22 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         missing `scheme`, making it possible to pass a file path without prefix.
         """
 
-        url = scheme + '://' if scheme else ''  # this is the only "special" line
-        if user:
-            url += user
-        if password:
-            url += ':' + password
-        if user or password:
-            url += '@'
-        url += host
-        if port:
-            url += ':' + port
-        if path:
-            url += path
-        if query:
-            url += '?' + query
-        if fragment:
-            url += '#' + fragment
+        # allow missing scheme, unlike pydantic
+        scheme_ = scheme if scheme is not None else ''
+        url = super().build(
+            scheme=scheme_,
+            user=user,
+            password=password,
+            host=host,
+            port=port,
+            path=path,
+            query=query,
+            fragment=fragment,
+            **_kwargs,
+        )
+        if scheme is None and url.startswith('://'):
+            # remove the `://` prefix, since scheme is missing
+            url = url[3:]
         return url
 
     @classmethod
