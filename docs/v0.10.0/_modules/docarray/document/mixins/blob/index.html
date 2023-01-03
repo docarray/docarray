@@ -518,10 +518,10 @@
 
 
 <div class="viewcode-block" id="BlobDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin">[docs]</a><span class="k">class</span> <span class="nc">BlobDataMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to handle binary data. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to handle binary data. &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BlobDataMixin.load_uri_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.load_uri_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr:`.blob` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr:`.blob` inplace.</span>
 <span class="sd">        Internally it downloads from the URI and set :attr:`blob`.</span>
 
 <span class="sd">        :return: itself after processed</span>
@@ -532,7 +532,7 @@
 <div class="viewcode-block" id="BlobDataMixin.convert_blob_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_blob_to_datauri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.blob` to data :attr:`.uri` in place.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.blob` to data :attr:`.uri` in place.</span>
 <span class="sd">        Internally it first reads into blob and then converts it to data URI.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
@@ -552,7 +552,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="BlobDataMixin.save_blob_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.save_blob_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_blob_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save :attr:`.blob` into a file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`.blob` into a file</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :return: itself after processed</span>
@@ -577,7 +577,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

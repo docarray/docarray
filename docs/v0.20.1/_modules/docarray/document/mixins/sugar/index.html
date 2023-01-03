@@ -383,7 +383,7 @@
 
 
 <div class="viewcode-block" id="SingletonSugarMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin">[docs]</a><span class="k">class</span> <span class="nc">SingletonSugarMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide sugary syntax for :class:`Document` by inheriting methods from :class:`DocumentArray`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide sugary syntax for :class:`Document` by inheriting methods from :class:`DocumentArray`&quot;&quot;&quot;</span>
 
     <span class="c1"># overload_inject_start_match</span>
     <span class="nd">@overload</span>
@@ -402,7 +402,7 @@
         <span class="n">use_scipy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Matching the current Document against a set of Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Matching the current Document against a set of Documents.</span>
 
 <span class="sd">        The result will be stored in :attr:`.matches`.</span>
 
@@ -435,7 +435,7 @@
 <div class="viewcode-block" id="SingletonSugarMixin.match"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.match">[docs]</a>    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="c1"># implementation_stub_inject_start_match</span>
 
-        <span class="sd">&quot;&quot;&quot;Matching the current Document against a set of Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Matching the current Document against a set of Documents.</span>
 
 <span class="sd">        :param darray: the other DocumentArray to match against</span>
 <span class="sd">        :param metric: the distance metric</span>
@@ -476,7 +476,7 @@
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Fill the embedding of Documents inplace by using `embed_model`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill the embedding of Documents inplace by using `embed_model`</span>
 
 <span class="sd">        :param embed_model: the embedding model written in Keras/Pytorch/Paddle</span>
 <span class="sd">        :param device: the computational device for `embed_model`, can be either</span>
@@ -485,7 +485,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SingletonSugarMixin.embed"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Fill the embedding of Documents inplace by using `embed_model`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill the embedding of Documents inplace by using `embed_model`</span>
 
 <span class="sd">        :param embed_model: the embedding model written in Keras/Pytorch/Paddle</span>
 <span class="sd">        :param device: the computational device for `embed_model`, can be either</span>
@@ -499,7 +499,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SingletonSugarMixin.post"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back</span>
 
 <span class="sd">        :param host: a host string. Can be one of the following:</span>
 <span class="sd">            - `grpc://192.168.0.123:8080/endpoint`</span>
@@ -534,7 +534,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -420,7 +420,7 @@
 
 
 <div class="viewcode-block" id="ravel"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.ravel">[docs]</a><span class="k">def</span> <span class="nf">ravel</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Ravel :attr:`value` into ``doc.field`` of each documents</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ravel :attr:`value` into ``doc.field`` of each documents</span>
 
 <span class="sd">    :param docs: the docs to set</span>
 <span class="sd">    :param field: the field of the doc to set</span>
@@ -455,7 +455,7 @@
 <div class="viewcode-block" id="get_array_type"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.get_array_type">[docs]</a><span class="k">def</span> <span class="nf">get_array_type</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">raise_error_if_not_array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get the type of ndarray without importing the framework</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the type of ndarray without importing the framework</span>
 
 <span class="sd">    :param array: any array, scipy, numpy, tf, torch, etc.</span>
 <span class="sd">    :return: a tuple where the first element represents the framework, the second represents if it is sparse array</span>
@@ -508,7 +508,7 @@
 
 
 <div class="viewcode-block" id="to_numpy_array"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.to_numpy_array">[docs]</a><span class="k">def</span> <span class="nf">to_numpy_array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return the value always in :class:`numpy.ndarray` regardless the framework type.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the value always in :class:`numpy.ndarray` regardless the framework type.</span>
 
 <span class="sd">    :return: the value in :class:`numpy.ndarray`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -543,7 +543,7 @@
 
 
 <div class="viewcode-block" id="get_array_rows"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.get_array_rows">[docs]</a><span class="k">def</span> <span class="nf">get_array_rows</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get the number of rows of the ndarray without importing all frameworks</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the number of rows of the ndarray without importing all frameworks</span>
 
 <span class="sd">    :param array: input array</span>
 <span class="sd">    :return: (num_rows, ndim)</span>
@@ -578,7 +578,7 @@
 
 
 <div class="viewcode-block" id="check_arraylike_equality"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.check_arraylike_equality">[docs]</a><span class="k">def</span> <span class="nf">check_arraylike_equality</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if two array type objects are the same with the supported frameworks.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if two array type objects are the same with the supported frameworks.</span>
 
 <span class="sd">    Examples</span>
 
@@ -644,7 +644,7 @@
 
 
 <div class="viewcode-block" id="detach_tensor_if_present"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.detach_tensor_if_present">[docs]</a><span class="k">def</span> <span class="nf">detach_tensor_if_present</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if input is a dense torch array and detaches the tensor from the current graph.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if input is a dense torch array and detaches the tensor from the current graph.</span>
 <span class="sd">    :param array: input array</span>
 <span class="sd">    :return: (num_rows, ndim)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -668,7 +668,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

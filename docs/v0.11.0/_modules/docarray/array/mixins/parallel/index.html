@@ -535,7 +535,7 @@
 
 
 <div class="viewcode-block" id="ParallelMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin">[docs]</a><span class="k">class</span> <span class="nc">ParallelMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Helper functions that provide parallel map to :class:`DocumentArray`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper functions that provide parallel map to :class:`DocumentArray`&quot;&quot;&quot;</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
@@ -546,7 +546,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
 <span class="sd">        :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your</span>
@@ -567,7 +567,7 @@
         <span class="o">...</span>
 
 <div class="viewcode-block" id="ParallelMixin.apply"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        # noqa: DAR102</span>
 <span class="sd">        # noqa: DAR101</span>
 <span class="sd">        # noqa: DAR201</span>
@@ -588,7 +588,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
 
 <span class="sd">        .. seealso::</span>
 <span class="sd">            - To process on a batch of elements, please use :meth:`.map_batch`;</span>
@@ -641,7 +641,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
 <span class="sd">        :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your</span>
@@ -664,7 +664,7 @@
         <span class="o">...</span>
 
 <div class="viewcode-block" id="ParallelMixin.apply_batch"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch">[docs]</a>    <span class="k">def</span> <span class="nf">apply_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        # noqa: DAR102</span>
 <span class="sd">        # noqa: DAR101</span>
 <span class="sd">        # noqa: DAR201</span>
@@ -689,7 +689,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
 <span class="sd">        Each element in the returned iterator is :class:`DocumentArray`.</span>
 
 <span class="sd">        .. seealso::</span>
@@ -784,7 +784,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

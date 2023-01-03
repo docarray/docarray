@@ -522,13 +522,13 @@
 
 
 <div class="viewcode-block" id="ConvertMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin">[docs]</a><span class="k">class</span> <span class="nc">ConvertMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support conversion between :attr:`.tensor`, :attr:`.text`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support conversion between :attr:`.tensor`, :attr:`.text`</span>
 <span class="sd">    and :attr:`.blob`.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ConvertMixin.convert_blob_to_tensor"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_blob_to_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">convert_blob_to_tensor</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Assuming the :attr:`blob` is a _valid_ buffer of Numpy ndarray,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assuming the :attr:`blob` is a _valid_ buffer of Numpy ndarray,</span>
 <span class="sd">        set :attr:`tensor` accordingly.</span>
 
 <span class="sd">        :param dtype: Data-type of the returned array; default: float.</span>
@@ -541,7 +541,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ConvertMixin.convert_tensor_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_tensor_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_tensor_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` to :attr:`.blob` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` to :attr:`.blob` inplace.</span>
 
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -551,7 +551,7 @@
 <div class="viewcode-block" id="ConvertMixin.convert_uri_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.convert/#docarray.document.mixins.convert.ConvertMixin.convert_uri_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_uri_to_datauri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to dataURI and store it in :attr:`.uri` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to dataURI and store it in :attr:`.uri` inplace.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
 <span class="sd">        :param base64: used to encode arbitrary octet sequences into a form that satisfies the rules of 7bit. Designed to be efficient for non-text 8 bit and binary data. Sometimes used for text data that frequently uses non-US-ASCII characters.</span>
@@ -578,7 +578,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

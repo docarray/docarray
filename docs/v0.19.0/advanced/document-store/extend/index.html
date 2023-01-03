@@ -645,14 +645,14 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
     <span class="k">def</span> <span class="nf">_find_similar_vectors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;MyDocumentStoreArrayType&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Expects a MyDocumentStoreArrayType vector query and should return a DocumentArray of results retrieved from</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Expects a MyDocumentStoreArrayType vector query and should return a DocumentArray of results retrieved from</span>
 <span class="sd">        the storage backend&quot;&quot;&quot;</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_find</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;ElasticArrayType&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns `limit` approximate nearest neighbors given a batch of input queries.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `limit` approximate nearest neighbors given a batch of input queries.</span>
 <span class="sd">        If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing</span>
 <span class="sd">        the closest Documents for each query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -761,7 +761,7 @@ tests/unit/array/test_construct.py
         <span class="n">storage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mydocstore&#39;</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MyDocStoreConfig&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArrayMyDocStore&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a MyDocStore-powered DocumentArray object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a MyDocStore-powered DocumentArray object.&quot;&quot;&quot;</span>
         <span class="o">...</span>
 </pre></div>
 </div>
@@ -804,7 +804,7 @@ tests/unit/array/test_construct.py
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

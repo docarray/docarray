@@ -381,10 +381,10 @@
 
 
 <div class="viewcode-block" id="SequenceLikeMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.weaviate.seqlike/#docarray.array.storage.weaviate.seqlike.SequenceLikeMixin">[docs]</a><span class="k">class</span> <span class="nc">SequenceLikeMixin</span><span class="p">(</span><span class="n">BaseSequenceLikeMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement sequence-like methods for DocumentArray with weaviate as storage&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement sequence-like methods for DocumentArray with weaviate as storage&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compare this object to the other, returns True if and only if other</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare this object to the other, returns True if and only if other</span>
 <span class="sd">        as the same type as self and other has the same meta information</span>
 
 <span class="sd">        :param other: the other object to check for equality</span>
@@ -398,7 +398,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the length of :class:`DocumentArray` that uses weaviate as storage</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the length of :class:`DocumentArray` that uses weaviate as storage</span>
 
 <span class="sd">        :return: the length of this :class:`DocumentArrayWeaviate` object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -417,7 +417,7 @@
         <span class="k">return</span> <span class="n">cls_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Check if ``x`` is contained in this :class:`DocumentArray` with weaviate storage</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if ``x`` is contained in this :class:`DocumentArray` with weaviate storage</span>
 
 <span class="sd">        :param x: the id of the document to check or the document object itself</span>
 <span class="sd">        :return: True if ``x`` is contained in self</span>
@@ -434,13 +434,13 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the string representation of :class:`DocumentArrayWeaviate` object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the string representation of :class:`DocumentArrayWeaviate` object</span>
 <span class="sd">        :return: string representation of this object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">) at </span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;&#39;</span>
 
     <span class="k">def</span> <span class="nf">_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extends the array with the given values</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extends the array with the given values</span>
 
 <span class="sd">        :param values: Documents to be added</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -464,7 +464,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

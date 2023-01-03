@@ -552,7 +552,7 @@
 <div class="viewcode-block" id="PydanticMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin">[docs]</a><span class="k">class</span> <span class="nc">PydanticMixin</span><span class="p">:</span>
 <div class="viewcode-block" id="PydanticMixin.get_json_schema"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_json_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return a JSON Schema of DocumentArray class.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a JSON Schema of DocumentArray class.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">schema_json_of</span>
         <span class="kn">from</span> <span class="nn">...document.pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocumentArray</span>
 
@@ -561,12 +561,12 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="PydanticMixin.to_pydantic_model"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_pydantic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PydanticDocumentArray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a DocumentArray object into a Pydantic model.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a DocumentArray object into a Pydantic model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="PydanticMixin.from_pydantic_model"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_pydantic_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;BaseModel&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a list of PydanticDocument into DocumentArray</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a list of PydanticDocument into DocumentArray</span>
 
 <span class="sd">        :param model: the list of pydantic data model objects that represents a DocumentArray</span>
 <span class="sd">        :return: a DocumentArray</span>
@@ -588,7 +588,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -538,7 +538,7 @@
 
 
 <div class="viewcode-block" id="BaseGetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">BaseGetSetDelMixin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        The following methods must be implemented:</span>
@@ -583,7 +583,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param _slice: the slice used for indexing</span>
@@ -592,7 +592,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">_slice</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_offset`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param offsets: the offsets used for indexing</span>
@@ -601,7 +601,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_doc_by_offset</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_get_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -624,7 +624,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _slice: the slice used for indexing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -632,7 +632,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_del_docs</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param mask: the boolean mask used for indexing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,7 +644,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span> <span class="o">=</span> <span class="n">Offset2ID</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_del_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_del_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_del_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -657,7 +657,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">delete_by_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic.</span>
 <span class="sd">        If you override this method, you should only take care of clearing the storage backend.&quot;&quot;&quot;</span>
@@ -679,7 +679,7 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_set_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">mismatch_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_set_doc_by_id`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived from :meth:`_set_doc_by_id`</span>
 <span class="sd">        Override this function if there is a more efficient logic</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
@@ -694,7 +694,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">update_ids</span><span class="p">(</span><span class="n">mismatch_ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_docs_by_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_slice</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _slice: the slice used for indexing</span>
@@ -725,7 +725,7 @@
     <span class="k">def</span> <span class="nf">_set_doc_value_pairs_nested</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param docs: the docs to update</span>
@@ -754,7 +754,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">root_d</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">root_d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_doc_attr_by_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param offset: the offset used for indexing</span>
@@ -772,7 +772,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_doc_attr_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is derived and may not have the most efficient implementation.</span>
 
 <span class="sd">        Override this function if there is a more efficient logic</span>
 <span class="sd">        :param _id: the id used for indexing</span>
@@ -790,7 +790,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_find_root_doc_and_modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find `d`&#39;s root Document in an exhaustive manner</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find `d`&#39;s root Document in an exhaustive manner</span>
 <span class="sd">        :param: d: the input document</span>
 <span class="sd">        :return: the root of the input document</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -830,7 +830,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

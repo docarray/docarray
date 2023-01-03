@@ -395,21 +395,21 @@
 
 
 <span class="k">def</span> <span class="nf">_get_length_from_summary</span><span class="p">(</span><span class="n">summary</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get the length from summary.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the length from summary.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">:</span>
         <span class="k">if</span> <span class="s1">&#39;Length&#39;</span> <span class="o">==</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="PushPullMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin">[docs]</a><span class="k">class</span> <span class="nc">PushPullMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Transmitting :class:`DocumentArray` via Jina Cloud Service&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transmitting :class:`DocumentArray` via Jina Cloud Service&quot;&quot;&quot;</span>
 
     <span class="n">_max_bytes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
 <div class="viewcode-block" id="PushPullMixin.cloud_list"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_list">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
     <span class="k">def</span> <span class="nf">cloud_list</span><span class="p">(</span><span class="n">show_table</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;List all available arrays in the cloud.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all available arrays in the cloud.</span>
 
 <span class="sd">        :param show_table: if true, show the table of the arrays.</span>
 <span class="sd">        :returns: List of available DocumentArray&#39;s names.</span>
@@ -453,7 +453,7 @@
 <div class="viewcode-block" id="PushPullMixin.cloud_delete"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_delete">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
     <span class="k">def</span> <span class="nf">cloud_delete</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete a DocumentArray from the cloud.</span>
 <span class="sd">        :param name: the name of the DocumentArray to delete.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -535,7 +535,7 @@
         <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">branding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            - Push with the same ``name`` will override the existing content.</span>
@@ -642,7 +642,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Pulling a :class:`DocumentArray` from Jina Cloud Service to local.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pulling a :class:`DocumentArray` from Jina Cloud Service to local.</span>
 
 <span class="sd">        :param name: the upload name set during :meth:`.push`</span>
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
@@ -679,7 +679,7 @@
 
             <span class="n">_source</span> <span class="o">=</span> <span class="n">LazyRequestReader</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-            <span class="n">cache_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">__cache_path__</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">.da&#39;</span>
+            <span class="n">cache_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">__cache_path__</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">.da&#39;</span>
             <span class="k">if</span> <span class="n">local_cache</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_file</span><span class="p">):</span>
                 <span class="n">_cache_len</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">_cache_len</span> <span class="o">==</span> <span class="n">_da_len</span><span class="p">:</span>
@@ -717,7 +717,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

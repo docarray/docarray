@@ -525,10 +525,10 @@
 
 
 <div class="viewcode-block" id="VideoDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin">[docs]</a><span class="k">class</span> <span class="nc">VideoDataMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support video data. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support video data. &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="VideoDataMixin.load_uri_to_video_tensor"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_video_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">only_keyframes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.</span>
 
 <span class="sd">        :param only_keyframes: only keep the keyframes in the video</span>
 <span class="sd">        :return: Document itself after processed</span>
@@ -551,7 +551,7 @@
 <div class="viewcode-block" id="VideoDataMixin.save_video_tensor_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_video_tensor_to_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">],</span> <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">codec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;h264&#39;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save :attr:`.tensor` as a video mp4/h264 file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`.tensor` as a video mp4/h264 file.</span>
 
 <span class="sd">        :param file: The file to open, which can be either a string or a file-like object.</span>
 <span class="sd">        :param frame_rate: frames per second</span>
@@ -602,7 +602,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

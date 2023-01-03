@@ -542,7 +542,7 @@
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Create a generator for a given dimension of a numpy array.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a generator for a given dimension of a numpy array.</span>
 
 <span class="sd">    :param array: the numpy ndarray data source</span>
 <span class="sd">    :param axis: iterate over that axis</span>
@@ -575,7 +575,7 @@
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Creates an iterator over a list of file path or the content of the files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an iterator over a list of file path or the content of the files.</span>
 
 <span class="sd">    :param patterns: The pattern may contain simple shell-style wildcards, e.g. &#39;\*.py&#39;, &#39;[\*.zip, \*.gz]&#39;</span>
 <span class="sd">    :param recursive: If recursive is true, the pattern &#39;**&#39; will match any files</span>
@@ -645,7 +645,7 @@
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generator function for CSV. Yields documents.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generator function for CSV. Yields documents.</span>
 
 <span class="sd">    :param file: file paths or file handler</span>
 <span class="sd">    :param field_resolver: a map from field names defined in JSON, dict to the field</span>
@@ -695,7 +695,7 @@
     <span class="n">filter_fields</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">datasets_kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generator function for Hugging Face Datasets. Yields documents.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generator function for Hugging Face Datasets. Yields documents.</span>
 
 <span class="sd">    This function helps to load datasets from Hugging Face Datasets Hub</span>
 <span class="sd">    (https://huggingface.co/datasets) in Jina. Additional parameters can be</span>
@@ -753,7 +753,7 @@
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generator function for line separated JSON. Yields documents.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generator function for line separated JSON. Yields documents.</span>
 
 <span class="sd">    :param fp: file paths</span>
 <span class="sd">    :param field_resolver: a map from field names defined in ``document`` (JSON, dict) to the field</span>
@@ -785,7 +785,7 @@
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generator function for lines, json and csv. Yields documents or strings.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generator function for lines, json and csv. Yields documents or strings.</span>
 
 <span class="sd">    :param lines: a list of strings, each is considered as a document</span>
 <span class="sd">    :param filepath: a text file that each line contains a document</span>
@@ -851,7 +851,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

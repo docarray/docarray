@@ -376,7 +376,7 @@
 
 
 <div class="viewcode-block" id="r_precision"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.r_precision">[docs]</a><span class="k">def</span> <span class="nf">r_precision</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;R Precision after all relevant documents have been retrieved</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;R Precision after all relevant documents have been retrieved</span>
 <span class="sd">    Relevance is binary (nonzero is relevant).</span>
 
 <span class="sd">    .. seealso::</span>
@@ -395,7 +395,7 @@
 <div class="viewcode-block" id="precision_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.precision_at_k">[docs]</a><span class="k">def</span> <span class="nf">precision_at_k</span><span class="p">(</span>
     <span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Precision @K.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Precision @K.</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
 <span class="sd">    :param k: measured on top-k</span>
@@ -407,7 +407,7 @@
 
 
 <div class="viewcode-block" id="hit_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.hit_at_k">[docs]</a><span class="k">def</span> <span class="nf">hit_at_k</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Score is percentage of first relevant item in list that occur</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is percentage of first relevant item in list that occur</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
 <span class="sd">    :param k: measured on top-k</span>
@@ -418,7 +418,7 @@
 
 
 <div class="viewcode-block" id="average_precision"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.average_precision">[docs]</a><span class="k">def</span> <span class="nf">average_precision</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Score is average precision (area under PR curve)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is average precision (area under PR curve)</span>
 <span class="sd">    Relevance is binary (nonzero is relevant).</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
@@ -432,7 +432,7 @@
 
 
 <div class="viewcode-block" id="reciprocal_rank"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.reciprocal_rank">[docs]</a><span class="k">def</span> <span class="nf">reciprocal_rank</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Score is reciprocal of the rank of the first relevant item</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is reciprocal of the rank of the first relevant item</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
 <span class="sd">    :return: Average precision</span>
@@ -444,7 +444,7 @@
 <div class="viewcode-block" id="recall_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.recall_at_k">[docs]</a><span class="k">def</span> <span class="nf">recall_at_k</span><span class="p">(</span>
     <span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">max_rel</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Score is recall after all relevant documents have been retrieved</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is recall after all relevant documents have been retrieved</span>
 <span class="sd">    Relevance is binary (nonzero is relevant).</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
@@ -462,7 +462,7 @@
 <div class="viewcode-block" id="f1_score_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.f1_score_at_k">[docs]</a><span class="k">def</span> <span class="nf">f1_score_at_k</span><span class="p">(</span>
     <span class="n">binary_relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">max_rel</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Score is harmonic mean of precision and recall</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is harmonic mean of precision and recall</span>
 <span class="sd">    Relevance is binary (nonzero is relevant).</span>
 
 <span class="sd">    :param binary_relevance: binary relevancy in rank order</span>
@@ -482,7 +482,7 @@
 <div class="viewcode-block" id="dcg_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.dcg_at_k">[docs]</a><span class="k">def</span> <span class="nf">dcg_at_k</span><span class="p">(</span>
     <span class="n">relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">method</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Score is discounted cumulative gain (dcg)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is discounted cumulative gain (dcg)</span>
 <span class="sd">    Relevance is positive real values. Can use binary</span>
 <span class="sd">    as the previous methods.</span>
 
@@ -511,7 +511,7 @@
 <div class="viewcode-block" id="ndcg_at_k"><a class="viewcode-back" href="../../../../api/docarray.math.evaluation/#docarray.math.evaluation.ndcg_at_k">[docs]</a><span class="k">def</span> <span class="nf">ndcg_at_k</span><span class="p">(</span>
     <span class="n">relevance</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">method</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Score is normalized discounted cumulative gain (ndcg)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score is normalized discounted cumulative gain (ndcg)</span>
 <span class="sd">    Relevance is positive real values.  Can use binary</span>
 <span class="sd">    as the previous methods.</span>
 
@@ -544,7 +544,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

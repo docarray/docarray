@@ -547,11 +547,11 @@
 
 
 <div class="viewcode-block" id="BackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_id2offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the `_id_to_index` map</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the `_id_to_index` map</span>
 
 <span class="sd">        :return: a Python dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -561,7 +561,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_index</span>
 
     <span class="k">def</span> <span class="nf">_rebuild_id2offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Update the id_to_index map by enumerating all Documents in self._data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the id_to_index map by enumerating all Documents in self._data.</span>
 
 <span class="sd">        Very costy! Only use this function when self._data is dramtically changed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -622,7 +622,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

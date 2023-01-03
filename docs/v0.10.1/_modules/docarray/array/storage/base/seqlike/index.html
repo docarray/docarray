@@ -518,10 +518,10 @@
 
 
 <div class="viewcode-block" id="BaseSequenceLikeMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin">[docs]</a><span class="k">class</span> <span class="nc">BaseSequenceLikeMixin</span><span class="p">(</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">Document</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;Implement sequence-like methods&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement sequence-like methods&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseSequenceLikeMixin.insert"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Insert `doc` at `index`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert `doc` at `index`.</span>
 
 <span class="sd">        :param index: Position of the insertion.</span>
 <span class="sd">        :param value: The doc needs to be inserted.</span>
@@ -530,7 +530,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BaseSequenceLikeMixin.append"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Append `doc` to the end of the array.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append `doc` to the end of the array.</span>
 
 <span class="sd">        :param value: The doc needs to be appended.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -553,11 +553,11 @@
         <span class="o">...</span>
 
 <div class="viewcode-block" id="BaseSequenceLikeMixin.clear"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear the data of :class:`DocumentArray`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the data of :class:`DocumentArray`&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_del_all_docs</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;To simulate ```l = []; if l: ...```</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;To simulate ```l = []; if l: ...```</span>
 
 <span class="sd">        :return: returns true if the length of the array is larger than 0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -582,7 +582,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

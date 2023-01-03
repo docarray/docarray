@@ -378,12 +378,12 @@
 
 
 <div class="viewcode-block" id="ImageDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin">[docs]</a><span class="k">class</span> <span class="nc">ImageDataMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support image data.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support image data.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ImageDataMixin.set_image_tensor_channel_axis"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_channel_axis">[docs]</a>    <span class="k">def</span> <span class="nf">set_image_tensor_channel_axis</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">original_channel_axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">new_channel_axis</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Move the channel axis of the image :attr:`.tensor` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move the channel axis of the image :attr:`.tensor` inplace.</span>
 
 <span class="sd">        :param original_channel_axis: the original axis of the channel</span>
 <span class="sd">        :param new_channel_axis: the new axis of the channel</span>
@@ -396,7 +396,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ImageDataMixin.load_pil_image_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.load_pil_image_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">load_pil_image_to_datauri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="s1">&#39;PILImage&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert a pillow image into a datauri with header `data:image/png`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a pillow image into a datauri with header `data:image/png`.</span>
 
 <span class="sd">        :param image: a pillow image</span>
 <span class="sd">        :return: itself after processed</span>
@@ -414,7 +414,7 @@
         <span class="n">height</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert an image :attr:`.blob` to a ndarray :attr:`.tensor`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert an image :attr:`.blob` to a ndarray :attr:`.tensor`.</span>
 
 <span class="sd">        :param width: the width of the image tensor.</span>
 <span class="sd">        :param height: the height of the tensor.</span>
@@ -430,7 +430,7 @@
 <div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_uri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_uri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;png&#39;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly</span>
 
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
 <span class="sd">        :param image_format: either `png` or `jpeg`</span>
@@ -447,7 +447,7 @@
 <div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_blob</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;png&#39;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly</span>
 
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
 <span class="sd">        :param image_format: either `png` or `jpeg`</span>
@@ -462,7 +462,7 @@
         <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Resample the image :attr:`.tensor` into different size inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resample the image :attr:`.tensor` into different size inplace.</span>
 
 <span class="sd">        If your current image tensor has shape ``[H,W,C]``, then the new tensor will be ``[*shape, C]``</span>
 
@@ -492,7 +492,7 @@
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;png&#39;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save :attr:`.tensor` into a file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`.tensor` into a file</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
@@ -520,7 +520,7 @@
         <span class="n">height</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert the image-like :attr:`.uri` into :attr:`.tensor`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the image-like :attr:`.uri` into :attr:`.tensor`</span>
 
 <span class="sd">        :param width: the width of the image tensor.</span>
 <span class="sd">        :param height: the height of the tensor.</span>
@@ -540,7 +540,7 @@
         <span class="n">img_mean</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span>
         <span class="n">img_std</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Inverse the normalization of a float32 image :attr:`.tensor` into a uint8 image :attr:`.tensor` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inverse the normalization of a float32 image :attr:`.tensor` into a uint8 image :attr:`.tensor` inplace.</span>
 
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
 <span class="sd">        :param img_mean: the mean of all images</span>
@@ -569,7 +569,7 @@
         <span class="n">img_mean</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span>
         <span class="n">img_std</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.</span>
 
 <span class="sd">        Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and</span>
 <span class="sd">        will be normalized in to a range of [0, 1] and then</span>
@@ -612,7 +612,7 @@
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">as_chunks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` into a sliding window view with the given window shape :attr:`.tensor` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` into a sliding window view with the given window shape :attr:`.tensor` inplace.</span>
 
 <span class="sd">        :param window_shape: desired output size. If size is a sequence like (h, w), the output size will be matched to</span>
 <span class="sd">            this. If size is an int, the output will have the same height and width as the `target_size`.</span>
@@ -683,7 +683,7 @@
 <span class="k">def</span> <span class="nf">_move_channel_axis</span><span class="p">(</span>
     <span class="n">tensor</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">original_channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">target_channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This will always make the channel axis to the last of the :attr:`.tensor`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This will always make the channel axis to the last of the :attr:`.tensor`</span>
 
 <span class="sd">    #noqa: DAR101</span>
 <span class="sd">    #noqa: DAR201</span>
@@ -698,7 +698,7 @@
     <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">height</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an image blob to tensor</span>
 
 <span class="sd">    :param source: binary blob or file path</span>
@@ -720,7 +720,7 @@
 
 
 <span class="k">def</span> <span class="nf">_to_image_buffer</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert image-ndarray to buffer bytes.</span>
 
 <span class="sd">    :param arr: Data representations of the png.</span>
@@ -824,7 +824,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -396,7 +396,7 @@
 
 
 <div class="viewcode-block" id="ParallelMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin">[docs]</a><span class="k">class</span> <span class="nc">ParallelMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Helper functions that provide parallel map to :class:`DocumentArray`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper functions that provide parallel map to :class:`DocumentArray`&quot;&quot;&quot;</span>
 
     <span class="c1"># overload_inject_start_apply</span>
     <span class="nd">@overload</span>
@@ -408,7 +408,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
 <span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
@@ -433,7 +433,7 @@
 <div class="viewcode-block" id="ParallelMixin.apply"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="c1"># implementation_stub_inject_start_apply</span>
 
-        <span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
 <span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
@@ -470,7 +470,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
 
 <span class="sd">        .. seealso::</span>
 <span class="sd">            - To process on a batch of elements, please use :meth:`.map_batch`;</span>
@@ -525,7 +525,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
 
 <span class="sd">        EXAMPLE USAGE</span>
 
@@ -573,7 +573,7 @@
 <div class="viewcode-block" id="ParallelMixin.apply_batch"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch">[docs]</a>    <span class="k">def</span> <span class="nf">apply_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="c1"># implementation_stub_inject_start_apply_batch</span>
 
-        <span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
 
 <span class="sd">        EXAMPLE USAGE</span>
 
@@ -635,7 +635,7 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
 <span class="sd">        Each element in the returned iterator is :class:`DocumentArray`.</span>
 
 <span class="sd">        .. seealso::</span>
@@ -730,7 +730,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -528,10 +528,10 @@
 
 
 <div class="viewcode-block" id="TextDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin">[docs]</a><span class="k">class</span> <span class="nc">TextDataMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support text data. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support text data. &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="TextDataMixin.load_uri_to_text"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.load_uri_to_text">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr`.text` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.uri` to :attr`.text` inplace.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
 <span class="sd">        :return: itself after processed</span>
@@ -541,7 +541,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="TextDataMixin.get_vocabulary"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.get_vocabulary">[docs]</a>    <span class="k">def</span> <span class="nf">get_vocabulary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_attrs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,))</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the text vocabulary in a counter dict that maps from the word to its frequency from all :attr:`text_fields`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the text vocabulary in a counter dict that maps from the word to its frequency from all :attr:`text_fields`.</span>
 
 <span class="sd">        :param text_attrs: the textual attributes where vocabulary will be derived from</span>
 <span class="sd">        :return: a vocabulary in dictionary where key is the word, value is the frequency of that word in all text fields.</span>
@@ -559,7 +559,7 @@
         <span class="n">max_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.text` to :attr:`.tensor` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.text` to :attr:`.tensor` inplace.</span>
 
 <span class="sd">        In the end :attr:`.tensor` will be a 1D array where `D` is `max_length`.</span>
 
@@ -580,7 +580,7 @@
 <div class="viewcode-block" id="TextDataMixin.convert_tensor_to_text"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text">[docs]</a>    <span class="k">def</span> <span class="nf">convert_tensor_to_text</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">vocab</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` to :attr:`.text` inplace.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.tensor` to :attr:`.text` inplace.</span>
 
 <span class="sd">        :param vocab: a dictionary that maps a word to an integer index, `0` is reserved for padding, `1` is reserved</span>
 <span class="sd">            for unknown words in :attr:`.text`</span>
@@ -605,7 +605,7 @@
 <div class="viewcode-block" id="TextDataMixin.convert_text_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.text/#docarray.document.mixins.text.TextDataMixin.convert_text_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_text_to_datauri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert :attr:`.text` to data :attr:`.uri`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert :attr:`.text` to data :attr:`.uri`.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
 <span class="sd">        :param base64: used to encode arbitrary octet sequences into a form that satisfies the rules of 7bit.</span>
@@ -657,7 +657,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

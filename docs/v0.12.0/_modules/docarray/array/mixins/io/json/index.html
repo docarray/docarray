@@ -533,7 +533,7 @@
 
 
 <div class="viewcode-block" id="JsonIOMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin">[docs]</a><span class="k">class</span> <span class="nc">JsonIOMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save/load a array into a JSON file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save/load a array into a JSON file.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="JsonIOMixin.save_json"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.save_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -542,7 +542,7 @@
         <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save array elements into a JSON file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save array elements into a JSON file.</span>
 
 <span class="sd">        Comparing to :meth:`save_binary`, it is human-readable but slower to save/load and the file size larger.</span>
 
@@ -566,7 +566,7 @@
         <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Load array elements from a JSON file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load array elements from a JSON file.</span>
 
 <span class="sd">        :param file: File or filename or a JSON string to which the data is saved.</span>
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
@@ -605,7 +605,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JsonIOMixin.to_list"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert the object into a Python list.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the object into a Python list.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :return: a Python list</span>
@@ -613,7 +613,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="JsonIOMixin.to_json"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert the object into a JSON string. Can be loaded via :meth:`.load_json`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the object into a JSON string. Can be loaded via :meth:`.load_json`.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :return: a Python list</span>
@@ -639,7 +639,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

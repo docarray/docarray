@@ -377,10 +377,10 @@
 
 
 <div class="viewcode-block" id="PlotMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin">[docs]</a><span class="k">class</span> <span class="nc">PlotMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to plot and visualize itself.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to plot and visualize itself.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_ipython_display_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Displays the object in IPython as a side effect&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Displays the object in IPython as a side effect&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
@@ -409,7 +409,7 @@
 
                     <span class="n">v</span> <span class="o">=</span> <span class="n">ColorBoxEmbedding</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span><span class="si">}</span><span class="s1"> in shape </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">, dtype: </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">))</span><span class="si">}</span><span class="s1"> in shape </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">, dtype: </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">my_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">):</span>
                 <span class="n">my_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)))</span>
@@ -417,7 +417,7 @@
             <span class="k">yield</span> <span class="n">my_table</span>
 
 <div class="viewcode-block" id="PlotMixin.summary"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Print non-empty fields and nested structure of this Document object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print non-empty fields and nested structure of this Document object.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">())</span></div>
@@ -441,7 +441,7 @@
         <span class="k">return</span> <span class="n">tree</span>
 
 <div class="viewcode-block" id="PlotMixin.display"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot image data from :attr:`.tensor` or :attr:`.uri`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot image data from :attr:`.tensor` or :attr:`.uri`.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
@@ -482,7 +482,7 @@
         <span class="n">min_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a sprite image for the query and its matching images in this Document object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a sprite image for the query and its matching images in this Document object.</span>
 
 <span class="sd">        An image sprite is a collection of images put into a single image. Query image is on the left</span>
 <span class="sd">        followed by matching images. The Document object should contain matches.</span>
@@ -655,7 +655,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

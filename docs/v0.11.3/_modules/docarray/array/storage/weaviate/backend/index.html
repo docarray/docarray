@@ -543,7 +543,7 @@
 
 <div class="viewcode-block" id="WeaviateConfig"><a class="viewcode-back" href="../../../../../../api/docarray.array.weaviate/#docarray.array.storage.weaviate.WeaviateConfig">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">WeaviateConfig</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class stores the config variables to initialize</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class stores the config variables to initialize</span>
 <span class="sd">    connection to the Weaviate server&quot;&quot;&quot;</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
@@ -555,7 +555,7 @@
 
 
 <div class="viewcode-block" id="BackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.weaviate.backend/#docarray.array.storage.weaviate.BackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -563,7 +563,7 @@
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">WeaviateConfig</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize weaviate storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize weaviate storage.</span>
 
 <span class="sd">        :param docs: the list of documents to initialize to</span>
 <span class="sd">        :param config: the config object used to ininitialize connection to weaviate server</span>
@@ -612,7 +612,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_docs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_weaviate_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Generate the class/schema name using the ``uuid1`` module with some</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the class/schema name using the ``uuid1`` module with some</span>
 <span class="sd">        formatting to tailor to weaviate class name convention</span>
 
 <span class="sd">        :return: string representing the name of  weaviate class/schema name of</span>
@@ -621,7 +621,7 @@
         <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()])</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_schema_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the schema dictionary object with the class name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the schema dictionary object with the class name</span>
 <span class="sd">        Content of the all dictionaries by this method are the same except the name</span>
 <span class="sd">        of the weaviate&#39;s ``class``</span>
 
@@ -660,7 +660,7 @@
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_load_or_create_weaviate_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object</span>
 <span class="sd">        if not present in weaviate or if ``self._config.name`` is None. If ``self._config.name``</span>
 <span class="sd">        is provided and not None and schema with the specified name exists in weaviate,</span>
 <span class="sd">        then load the object with the given ``self._config.name``</span>
@@ -685,7 +685,7 @@
         <span class="k">return</span> <span class="n">doc_schemas</span>
 
     <span class="k">def</span> <span class="nf">_update_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the offset2ids in weaviate the the current local version&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the offset2ids in weaviate the the current local version&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids_wid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">data_object</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids_wid</span>
         <span class="p">):</span>
@@ -703,7 +703,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the offset2ids stored in weaviate along with the name of the schema/class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the offset2ids stored in weaviate along with the name of the schema/class</span>
 <span class="sd">        in weaviate that stores meta information of this object</span>
 
 <span class="sd">        :return: a tuple with first element as a list of offset2ids and second element</span>
@@ -731,7 +731,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;An alias to _class_name that returns the id/name of the class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An alias to _class_name that returns the id/name of the class</span>
 <span class="sd">        in the weaviate of this :class:`DocumentArrayWeaviate`</span>
 
 <span class="sd">        :return: name of weaviate class/schema of this :class:`DocumentArrayWeaviate`</span>
@@ -740,7 +740,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the name of the class in weaviate of this :class:`DocumentArrayWeaviate</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the class in weaviate of this :class:`DocumentArrayWeaviate</span>
 
 <span class="sd">        :return: name of weaviate class/schema of this :class:`DocumentArrayWeaviate`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -750,7 +750,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_meta_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the name of the class in weaviate that stores the meta information of</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the class in weaviate that stores the meta information of</span>
 <span class="sd">        this :class:`DocumentArrayWeaviate`</span>
 
 <span class="sd">        :return: name of weaviate class/schema of class that stores the meta information</span>
@@ -762,7 +762,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_class_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the schema dictionary of this :class:`DocumentArrayWeaviate`&#39;s weaviate schema</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the schema dictionary of this :class:`DocumentArrayWeaviate`&#39;s weaviate schema</span>
 
 <span class="sd">        :return: the dictionary representing this weaviate schema</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -772,7 +772,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_meta_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the schema dictionary of this weaviate schema that stores this object&#39;s meta</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the schema dictionary of this weaviate schema that stores this object&#39;s meta</span>
 
 <span class="sd">        :return: the dictionary representing a meta object&#39;s weaviate schema</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -781,7 +781,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schemas</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_doc2weaviate_create_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the payload to store :class:`Document` into weaviate</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the payload to store :class:`Document` into weaviate</span>
 
 <span class="sd">        :param value: document to create a payload for</span>
 <span class="sd">        :return: the payload dictionary</span>
@@ -794,7 +794,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_map_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;the function maps doc id to weaviate id</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;the function maps doc id to weaviate id</span>
 
 <span class="sd">        :param doc_id: id of the document</span>
 <span class="sd">        :return: weaviate object id</span>
@@ -849,7 +849,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

@@ -548,22 +548,22 @@
 <h3>Start Qdrant service<a class="headerlink" href="#start-qdrant-service" title="Permalink to this heading">#</a></h3>
 <p>To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image to run a
 server. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
-<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
-<span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6333:6333&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nofile</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">soft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6333:6333&quot;</span>
+<span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span>
+<span class="w">      </span><span class="nt">nofile</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">soft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span>
+<span class="w">        </span><span class="nt">hard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span>
+<span class="nn">...</span>
 </pre></div>
 </div>
 <p>Then</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose up
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up
 </pre></div>
 </div>
 </section>
@@ -637,22 +637,22 @@ instantiate a DocumentArray with Qdrant storage like so:</p>
 <section id="minimum-example">
 <h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this heading">#</a></h2>
 <p>Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
-<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
-<span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6333:6333&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nofile</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">soft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6333:6333&quot;</span>
+<span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span>
+<span class="w">      </span><span class="nt">nofile</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">soft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span>
+<span class="w">        </span><span class="nt">hard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span>
+<span class="nn">...</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U docarray<span class="o">[</span>qdrant<span class="o">]</span>
-docker compose up
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>docarray<span class="o">[</span>qdrant<span class="o">]</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -668,7 +668,7 @@ docker compose up
 <span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">D</span><span class="p">),</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray <span class="o">(</span><span class="nv">length</span><span class="o">=</span><span class="m">10</span><span class="o">)</span> at <span class="m">4917906896</span>&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray<span class="w"> </span><span class="o">(</span><span class="nv">length</span><span class="o">=</span><span class="m">10</span><span class="o">)</span><span class="w"> </span>at<span class="w"> </span><span class="m">4917906896</span>&gt;
 </pre></div>
 </div>
 </section>
@@ -711,7 +711,7 @@ docker compose up
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

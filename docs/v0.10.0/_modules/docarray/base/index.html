@@ -586,19 +586,19 @@
             <span class="p">)</span>
 
 <div class="viewcode-block" id="BaseDCType.copy_from"><a class="viewcode-back" href="../../../api/docarray.base/#docarray.base.BaseDCType.copy_from">[docs]</a>    <span class="k">def</span> <span class="nf">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Overwrite self by copying from another :class:`Document`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrite self by copying from another :class:`Document`.</span>
 
 <span class="sd">        :param other: the other Document to copy from</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BaseDCType.clear"><a class="viewcode-back" href="../../../api/docarray.base/#docarray.base.BaseDCType.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Clear all fields from this :class:`Document` to their default values.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all fields from this :class:`Document` to their default values.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BaseDCType.pop"><a class="viewcode-back" href="../../../api/docarray.base/#docarray.base.BaseDCType.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Clear some fields from this :class:`Document` to their default values.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear some fields from this :class:`Document` to their default values.</span>
 
 <span class="sd">        :param fields: field names to clear.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -608,7 +608,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">non_empty_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get all non-emtpy fields of this :class:`Document`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all non-emtpy fields of this :class:`Document`.</span>
 
 <span class="sd">        Non-empty fields are the fields with not-`None` and not-default values.</span>
 
@@ -618,7 +618,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nbytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return total bytes consumed by protobuf.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total bytes consumed by protobuf.</span>
 
 <span class="sd">        :return: number of bytes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -629,7 +629,7 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">)</span>
-        <span class="n">content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; at </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; at </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s1">&gt;&#39;</span>
 
     <span class="k">def</span> <span class="fm">__bytes__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -655,7 +655,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

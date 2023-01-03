@@ -379,7 +379,7 @@
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a dict object into a Document.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a dict object into a Document.</span>
 
 <span class="sd">        :param obj: a Python dict object</span>
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
@@ -407,7 +407,7 @@
         <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a JSON string into a Document.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a JSON string into a Document.</span>
 
 <span class="sd">        :param obj: a valid JSON string</span>
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
@@ -429,7 +429,7 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Convert itself into a Python dict object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert itself into a Python dict object.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
@@ -467,7 +467,7 @@
         <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
 
 <span class="sd">        :param data: binary bytes</span>
 <span class="sd">        :param protocol: protocol to use</span>
@@ -489,7 +489,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert itself into a JSON string.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert itself into a JSON string.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
@@ -507,7 +507,7 @@
 <div class="viewcode-block" id="PortingMixin.to_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64">[docs]</a>    <span class="k">def</span> <span class="nf">to_base64</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Serialize a Document object into as base64 string</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize a Document object into as base64 string</span>
 
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress method to use</span>
@@ -522,7 +522,7 @@
         <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
 
 <span class="sd">        :param data: a base64 encoded string</span>
 <span class="sd">        :param protocol: protocol to use</span>
@@ -553,7 +553,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

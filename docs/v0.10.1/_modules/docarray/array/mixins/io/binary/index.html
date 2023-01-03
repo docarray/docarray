@@ -547,7 +547,7 @@
 
 
 <div class="viewcode-block" id="BinaryIOMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin">[docs]</a><span class="k">class</span> <span class="nc">BinaryIOMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Save/load an array to a binary file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save/load an array to a binary file.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BinaryIOMixin.load_binary"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.load_binary">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_binary</span><span class="p">(</span>
@@ -560,7 +560,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Load array elements from a compressed binary file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load array elements from a compressed binary file.</span>
 
 <span class="sd">        :param file: File or filename or serialized bytes where the data is stored.</span>
 <span class="sd">        :param protocol: protocol to use</span>
@@ -610,7 +610,7 @@
         <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">_show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Yield `Document` objects from a binary file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield `Document` objects from a binary file</span>
 
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress algorithm to use</span>
@@ -656,7 +656,7 @@
     <span class="k">def</span> <span class="nf">_load_binary_all</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">file_ctx</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read a `DocumentArray` object from a binary file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a `DocumentArray` object from a binary file</span>
 
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress algorithm to use</span>
@@ -751,7 +751,7 @@
         <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle-array&#39;</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save array elements into a binary file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save array elements into a binary file.</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :param protocol: protocol to use</span>
@@ -791,7 +791,7 @@
         <span class="n">_file_ctx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Serialize itself into bytes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize itself into bytes.</span>
 
 <span class="sd">        For more Pythonic code, please use ``bytes(...)``.</span>
 
@@ -854,7 +854,7 @@
                 <span class="k">return</span> <span class="n">bf</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="BinaryIOMixin.to_protobuf"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf">[docs]</a>    <span class="k">def</span> <span class="nf">to_protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndarray_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArrayProto&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert DocumentArray into a Protobuf message.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert DocumentArray into a Protobuf message.</span>
 
 <span class="sd">        :param ndarray_type: can be ``list`` or ``numpy``, if set it will force all ndarray-like object from all</span>
 <span class="sd">            Documents to ``List`` or ``numpy.ndarray``.</span>
@@ -931,7 +931,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

@@ -370,12 +370,12 @@
 
 <div class="viewcode-block" id="StrawberryMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin">[docs]</a><span class="k">class</span> <span class="nc">StrawberryMixin</span><span class="p">:</span>
 <div class="viewcode-block" id="StrawberryMixin.to_strawberry_type"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin.to_strawberry_type">[docs]</a>    <span class="k">def</span> <span class="nf">to_strawberry_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;StrawberryDocument&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a DocumentArray object into a Pydantic model.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a DocumentArray object into a Pydantic model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">to_strawberry_type</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="StrawberryMixin.from_strawberry_type"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin.from_strawberry_type">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_strawberry_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;StrawberryDocument&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a list of Strawberry into DocumentArray</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a list of Strawberry into DocumentArray</span>
 
 <span class="sd">        :param model: the list of strawberry type objects that represents a DocumentArray</span>
 <span class="sd">        :return: a DocumentArray</span>
@@ -397,7 +397,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

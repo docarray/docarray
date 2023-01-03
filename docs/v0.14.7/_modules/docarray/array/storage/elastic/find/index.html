@@ -400,7 +400,7 @@
     <span class="k">def</span> <span class="nf">_find_similar_vectors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;ElasticArrayType&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return vector search results for the input query. `script_score` will be used in filter_field is set.</span>
 <span class="sd">        :param query: query vector used for vector search</span>
 <span class="sd">        :param filter: filter query used for pre-filtering</span>
@@ -438,7 +438,7 @@
     <span class="k">def</span> <span class="nf">_find_similar_documents_from_text</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return keyword matches for the input query</span>
 <span class="sd">        :param query: text used for keyword search</span>
 <span class="sd">        :param limit: number of items to be retrieved</span>
@@ -484,7 +484,7 @@
         <span class="nb">filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns approximate nearest neighbors given a batch of input queries.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns approximate nearest neighbors given a batch of input queries.</span>
 <span class="sd">        :param query: input supported to be stored in Elastic. This includes any from the list &#39;[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]&#39;</span>
 <span class="sd">        :param limit: number of retrieved items</span>
 <span class="sd">        :param filter: filter query used for pre-filtering</span>
@@ -536,7 +536,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -382,7 +382,7 @@
 
 
 <div class="viewcode-block" id="GetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.sqlite.getsetdel/#docarray.array.storage.sqlite.getsetdel.GetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">GetSetDelMixin</span><span class="p">(</span><span class="n">BaseGetSetDelMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement required and derived functions that power `getitem`, `setitem`, `delitem`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement required and derived functions that power `getitem`, `setitem`, `delitem`&quot;&quot;&quot;</span>
 
     <span class="c1"># essential methods start</span>
 
@@ -420,7 +420,7 @@
 
     <span class="k">def</span> <span class="nf">_del_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> WHERE doc_id in (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> WHERE doc_id in (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
             <span class="n">ids</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_offset2ids</span><span class="p">()</span>
@@ -469,7 +469,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

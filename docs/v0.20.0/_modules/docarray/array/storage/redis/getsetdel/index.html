@@ -381,11 +381,11 @@
 
 
 <div class="viewcode-block" id="GetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.redis.getsetdel/#docarray.array.storage.redis.getsetdel.GetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">GetSetDelMixin</span><span class="p">(</span><span class="n">BaseGetSetDelMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide concrete implementation for ``__getitem__``, ``__setitem__``,</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide concrete implementation for ``__getitem__``, ``__setitem__``,</span>
 <span class="sd">    and ``__delitem__`` for ``DocumentArrayRedis``&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_get_doc_by_id``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_get_doc_by_id``</span>
 
 <span class="sd">        :param _id: the id of the document</span>
 <span class="sd">        :return: the retrieved document from redis</span>
@@ -398,7 +398,7 @@
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
     <span class="k">def</span> <span class="nf">_get_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_get_docs_by_ids``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_get_docs_by_ids``</span>
 
 <span class="sd">        :param ids:  ids of the document</span>
 <span class="sd">        :return: Iterable[Document]</span>
@@ -428,7 +428,7 @@
         <span class="k">return</span> <span class="n">accumulated_docs</span>
 
     <span class="k">def</span> <span class="nf">_set_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_set_doc_by_id``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_set_doc_by_id``</span>
 
 <span class="sd">        :param _id: the id of doc to update</span>
 <span class="sd">        :param value: the document to update to</span>
@@ -441,7 +441,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_doc_prefix</span> <span class="o">+</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">mismatch_ids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end</span>
 
 <span class="sd">        :param ids: the ids used for indexing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -453,7 +453,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_upload_batch</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_del_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_del_doc_by_id``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concrete implementation of base class&#39; ``_del_doc_by_id``</span>
 
 <span class="sd">        :param _id: the id of the document to delete</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -516,7 +516,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

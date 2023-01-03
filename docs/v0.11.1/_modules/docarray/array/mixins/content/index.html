@@ -520,7 +520,7 @@
 
 
 <div class="viewcode-block" id="ContentPropertyMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin">[docs]</a><span class="k">class</span> <span class="nc">ContentPropertyMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Helpers that provide faster getter &amp; setter for :attr:`.content` by using protobuf directly. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helpers that provide faster getter &amp; setter for :attr:`.content` by using protobuf directly. &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_check_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">target_len</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -530,7 +530,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ArrayType&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a :class:`ArrayType` stacking all the `embedding` attributes as rows.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`ArrayType` stacking all the `embedding` attributes as rows.</span>
 
 <span class="sd">        :return: a :class:`ArrayType` of embedding</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -539,7 +539,7 @@
 
     <span class="nd">@embeddings</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the :attr:`.embedding` of the Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the :attr:`.embedding` of the Documents.</span>
 
 <span class="sd">        To remove all embeddings of all Documents:</span>
 <span class="sd">        .. highlight:: python</span>
@@ -559,7 +559,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tensors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ArrayType&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a :class:`ArrayType` stacking all :attr:`.tensor`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`ArrayType` stacking all :attr:`.tensor`.</span>
 
 <span class="sd">        The `tensor` attributes are stacked together along a newly created first</span>
 <span class="sd">        dimension (as if you would stack using ``np.stack(X, axis=0)``).</span>
@@ -575,7 +575,7 @@
 
     <span class="nd">@tensors</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">tensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set :attr:`.tensor` of the Documents. To clear all :attr:`tensor`, set it to ``None``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set :attr:`.tensor` of the Documents. To clear all :attr:`tensor`, set it to ``None``.</span>
 
 <span class="sd">        :param value: The tensor array to set. The first axis is the &quot;row&quot; axis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -590,7 +590,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">texts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get :attr:`.text` of all Documents</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get :attr:`.text` of all Documents</span>
 
 <span class="sd">        :return: a list of texts</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -599,7 +599,7 @@
 
     <span class="nd">@texts</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">texts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Set :attr:`.text` for all Documents. To clear all :attr:`text`, set it to ``None``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set :attr:`.text` for all Documents. To clear all :attr:`text`, set it to ``None``.</span>
 
 <span class="sd">        :param value: A sequence of texts to set, should be the same length as the</span>
 <span class="sd">            number of Documents</span>
@@ -613,7 +613,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">blobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the blob attribute of all Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the blob attribute of all Documents.</span>
 
 <span class="sd">        :return: a list of blobs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -622,7 +622,7 @@
 
     <span class="nd">@blobs</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">blobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Set the blob attribute for all Documents. To clear all :attr:`blob`, set it to ``None``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the blob attribute for all Documents. To clear all :attr:`blob`, set it to ``None``.</span>
 
 <span class="sd">        :param value: A sequence of blob to set, should be the same length as the</span>
 <span class="sd">            number of Documents</span>
@@ -638,7 +638,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;DocumentContentType&#39;</span><span class="p">],</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the :attr:`.content` of all Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the :attr:`.content` of all Documents.</span>
 
 <span class="sd">        :return: a list of texts, blobs or :class:`ArrayType`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -651,7 +651,7 @@
     <span class="k">def</span> <span class="nf">contents</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;DocumentContentType&#39;</span><span class="p">],</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">]]</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the :attr:`.content` of all Documents.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the :attr:`.content` of all Documents.</span>
 
 <span class="sd">        :param value: a list of texts, blobs or :class:`ArrayType`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -679,7 +679,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

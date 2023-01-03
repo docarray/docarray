@@ -392,7 +392,7 @@
 
 
 <div class="viewcode-block" id="ReduceMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin">[docs]</a><span class="k">class</span> <span class="nc">ReduceMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A mixin that provides reducing logic for :class:`DocumentArray`</span>
 <span class="sd">    Reducing 2 or more DocumentArrays consists in merging all Documents into the same DocumentArray.</span>
 <span class="sd">    If a Document belongs to 2 or more DocumentArrays, it is added once and data attributes are merged with priority to</span>
@@ -402,7 +402,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ReduceMixin.reduce"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces other and the current DocumentArray into one DocumentArray in-place. Changes are applied to the current</span>
 <span class="sd">        DocumentArray.</span>
 <span class="sd">        Reducing 2 DocumentArrays consists in adding Documents in the second DocumentArray to the first DocumentArray</span>
@@ -422,7 +422,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_reduce_doc</span><span class="p">(</span><span class="n">doc1</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">doc2</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces doc1 and doc2 into one Document in-place. Changes are applied to doc1.</span>
 <span class="sd">        Reducing 2 Documents consists in setting data properties of the second Document to the first Document if they</span>
 <span class="sd">        are empty (that is, priority to the left-most Document) and reducing the matches and the chunks of both</span>
@@ -440,7 +440,7 @@
             <span class="n">doc1</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">chunks</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ReduceMixin.reduce_all"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce_all">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_all</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">others</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces a list of DocumentArrays and this DocumentArray into one DocumentArray. Changes are applied to this</span>
 <span class="sd">        DocumentArray in-place.</span>
 
@@ -478,7 +478,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

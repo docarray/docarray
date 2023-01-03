@@ -521,10 +521,10 @@
 
 
 <div class="viewcode-block" id="PlotMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin">[docs]</a><span class="k">class</span> <span class="nc">PlotMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to plot and visualize itself.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to plot and visualize itself.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_ipython_display_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Displays the object in IPython as a side effect&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Displays the object in IPython as a side effect&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
@@ -554,7 +554,7 @@
             <span class="k">yield</span> <span class="n">my_table</span>
 
 <div class="viewcode-block" id="PlotMixin.summary"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Print non-empty fields and nested structure of this Document object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print non-empty fields and nested structure of this Document object.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">())</span></div>
@@ -578,7 +578,7 @@
         <span class="k">return</span> <span class="n">tree</span>
 
 <div class="viewcode-block" id="PlotMixin.display"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot image data from :attr:`.tensor` or :attr:`.uri`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot image data from :attr:`.tensor` or :attr:`.uri`.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
@@ -680,7 +680,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

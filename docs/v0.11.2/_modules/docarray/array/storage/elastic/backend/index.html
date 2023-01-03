@@ -554,7 +554,7 @@
 
 
 <div class="viewcode-block" id="BackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.elastic.backend/#docarray.array.elastic.BackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide necessary functions to enable this storage backend.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -641,7 +641,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">index_name</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">doc_id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the offset2ids in elastic&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the offset2ids in elastic&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_name_offset2id</span><span class="p">):</span>
             <span class="n">requests</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="p">{</span>
@@ -656,7 +656,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_name_offset2id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the offset2ids stored in elastic</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the offset2ids stored in elastic</span>
 
 <span class="sd">        :return: a list containing ids</span>
 
@@ -720,7 +720,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Dec 12, 2022.
+                            Last updated on Jan 03, 2023.
                         </div>
                     </div>
                     <div class="right-details">

@@ -407,7 +407,7 @@
 
 
 <div class="viewcode-block" id="lookup"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.lookup">[docs]</a><span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Checks if key-val pair exists in doc using various lookup types</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if key-val pair exists in doc using various lookup types</span>
 
 <span class="sd">    The lookup types are derived from the `key` and then used to check</span>
 <span class="sd">    if the lookup holds true for the document::</span>
@@ -503,7 +503,7 @@
 
 
 <div class="viewcode-block" id="LookupTreeElem"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupTreeElem">[docs]</a><span class="k">class</span> <span class="nc">LookupTreeElem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for a child in the lookup expression tree&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for a child in the lookup expression tree&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="o">=</span> <span class="kc">False</span>
@@ -526,7 +526,7 @@
 
 
 <div class="viewcode-block" id="LookupNode"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode">[docs]</a><span class="k">class</span> <span class="nc">LookupNode</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A node (element having children) in the lookup expression tree</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A node (element having children) in the lookup expression tree</span>
 
 <span class="sd">    Typically it&#39;s any object composed of two ``Q`` objects eg::</span>
 
@@ -545,7 +545,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LookupNode.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
 
 <span class="sd">        :param doc : the document to match</span>
 <span class="sd">        :return: returns true if lookup passed</span>
@@ -566,14 +566,14 @@
 
 
 <div class="viewcode-block" id="LookupLeaf"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupLeaf">[docs]</a><span class="k">class</span> <span class="nc">LookupLeaf</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class for a leaf in the lookup expression tree&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for a leaf in the lookup expression tree&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LookupLeaf</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lookups</span> <span class="o">=</span> <span class="n">kwargs</span>
 
 <div class="viewcode-block" id="LookupLeaf.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupLeaf.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
 
 <span class="sd">        :param doc : the document to match</span>
 <span class="sd">        :return: returns true if lookup passed</span>
@@ -598,7 +598,7 @@
 
 
 <div class="viewcode-block" id="LookupyError"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupyError">[docs]</a><span class="k">class</span> <span class="nc">LookupyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base exception class for all exceptions raised by lookupy&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception class for all exceptions raised by lookupy&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
@@ -607,7 +607,7 @@
 
 
 <div class="viewcode-block" id="dunder_partition"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.dunder_partition">[docs]</a><span class="k">def</span> <span class="nf">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Splits a dunderkey into 2 parts</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Splits a dunderkey into 2 parts</span>
 <span class="sd">    The first part is everything before the final double underscore</span>
 <span class="sd">    The second part is after the final double underscore</span>
 <span class="sd">        &gt;&gt;&gt; dunder_partition(&#39;a__b__c&#39;)</span>
@@ -618,7 +618,7 @@
 
 
 <div class="viewcode-block" id="iff"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.iff">[docs]</a><span class="k">def</span> <span class="nf">iff</span><span class="p">(</span><span class="n">precond</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;If and only if the precond is True</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;If and only if the precond is True</span>
 
 <span class="sd">    Shortcut function for precond(val) and f(val). It is mainly used</span>
 <span class="sd">    to create partial functions for commonly required preconditions</span>
@@ -666,7 +666,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

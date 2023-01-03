@@ -403,33 +403,33 @@
 <section id="start-weaviate-service">
 <h3>Start Weaviate service<a class="headerlink" href="#start-weaviate-service" title="Permalink to this heading">#</a></h3>
 <p>To use Weaviate as the storage backend, it is required to have the Weaviate service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
-<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
-<span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">weaviate</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--host</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--port</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;8080&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--scheme</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">semitechnologies/weaviate:1.13.2</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8080:8080&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">on-failure:0</span><span class="w"></span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">QUERY_DEFAULTS_LIMIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25</span><span class="w"></span>
-<span class="w">      </span><span class="nt">AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">PERSISTENCE_DATA_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/var/lib/weaviate&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">DEFAULT_VECTORIZER_MODULE</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;none&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">ENABLE_MODULES</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">CLUSTER_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;node1&#39;</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weaviate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--host</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--port</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;8080&#39;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--scheme</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">semitechnologies/weaviate:1.13.2</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8080:8080&quot;</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">on-failure:0</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">QUERY_DEFAULTS_LIMIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25</span>
+<span class="w">      </span><span class="nt">AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<span class="w">      </span><span class="nt">PERSISTENCE_DATA_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/var/lib/weaviate&#39;</span>
+<span class="w">      </span><span class="nt">DEFAULT_VECTORIZER_MODULE</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;none&#39;</span>
+<span class="w">      </span><span class="nt">ENABLE_MODULES</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<span class="w">      </span><span class="nt">CLUSTER_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;node1&#39;</span>
+<span class="nn">...</span>
 </pre></div>
 </div>
 <p>Then</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker compose up
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up
 </pre></div>
 </div>
 </section>
@@ -708,12 +708,12 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 </pre></div>
 </div>
 <p>This would print:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Embeddings Nearest Neighbours with <span class="s2">&quot;price&quot;</span> at most <span class="m">7</span>:
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Embeddings<span class="w"> </span>Nearest<span class="w"> </span>Neighbours<span class="w"> </span>with<span class="w"> </span><span class="s2">&quot;price&quot;</span><span class="w"> </span>at<span class="w"> </span>most<span class="w"> </span><span class="m">7</span>:
 
-	<span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
-	<span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
-	<span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
-	<span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+<span class="w">	</span><span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+<span class="w">	</span><span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+<span class="w">	</span><span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+<span class="w">	</span><span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">4</span>
 </pre></div>
 </div>
 </section>
@@ -762,31 +762,31 @@ price. You can create an example with the following code:</p>
 </pre></div>
 </div>
 <p>This would print:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Returned examples that verify results are <span class="k">in</span> order from highest price to lowest:
-    
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Returned<span class="w"> </span>examples<span class="w"> </span>that<span class="w"> </span>verify<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>order<span class="w"> </span>from<span class="w"> </span>highest<span class="w"> </span>price<span class="w"> </span>to<span class="w"> </span>lowest:
+<span class="w">    </span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>.<span class="w"> </span><span class="m">9</span>.<span class="w"> </span><span class="m">9</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>.<span class="w"> </span><span class="m">8</span>.<span class="w"> </span><span class="m">8</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>.<span class="w"> </span><span class="m">3</span>.<span class="w"> </span><span class="m">3</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>.<span class="w"> </span><span class="m">2</span>.<span class="w"> </span><span class="m">2</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>.<span class="w"> </span><span class="m">1</span>.<span class="w"> </span><span class="m">1</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>.<span class="w"> </span><span class="m">0</span>.<span class="w"> </span><span class="m">0</span>.<span class="o">]</span>,<span class="w">	 </span><span class="nv">price</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
 <p>For ascending the results would be as expected:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
-    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>.<span class="w"> </span><span class="m">0</span>.<span class="w"> </span><span class="m">0</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>.<span class="w"> </span><span class="m">1</span>.<span class="w"> </span><span class="m">1</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>.<span class="w"> </span><span class="m">2</span>.<span class="w"> </span><span class="m">2</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>.<span class="w"> </span><span class="m">3</span>.<span class="w"> </span><span class="m">3</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="w"> </span><span class="m">4</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="w"> </span><span class="m">5</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="w"> </span><span class="m">6</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="w"> </span><span class="m">7</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>.<span class="w"> </span><span class="m">8</span>.<span class="w"> </span><span class="m">8</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+<span class="w">    </span><span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>.<span class="w"> </span><span class="m">9</span>.<span class="w"> </span><span class="m">9</span>.<span class="o">]</span>,<span class="w">    </span><span class="nv">price</span><span class="o">=</span><span class="m">9</span>
 </pre></div>
 </div>
 </section>
@@ -855,14 +855,14 @@ Dict (<code class="docutils literal notranslate"><span class="pre">query_params=
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only results that have a &#39;weaviate_certainty&#39; of higher than 0.9 should show:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> text=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> text=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span><span class="w"> </span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span><span class="w"> </span><span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This should return something similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only results that have a <span class="s1">&#39;weaviate_certainty&#39;</span> of higher than <span class="m">0</span>.9 should show:
-         <span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
-         <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;weaviate_certainty&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000001<span class="o">}</span>, <span class="s1">&#39;cosine_similarity&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000002000000001<span class="o">}}]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only<span class="w"> </span>results<span class="w"> </span>that<span class="w"> </span>have<span class="w"> </span>a<span class="w"> </span><span class="s1">&#39;weaviate_certainty&#39;</span><span class="w"> </span>of<span class="w"> </span>higher<span class="w"> </span>than<span class="w"> </span><span class="m">0</span>.9<span class="w"> </span>should<span class="w"> </span>show:
+<span class="w">         </span><span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
+<span class="w">         </span><span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;weaviate_certainty&#39;</span>:<span class="w"> </span><span class="o">{</span><span class="s1">&#39;value&#39;</span>:<span class="w"> </span><span class="m">1</span>.0000001<span class="o">}</span>,<span class="w"> </span><span class="s1">&#39;cosine_similarity&#39;</span>:<span class="w"> </span><span class="o">{</span><span class="s1">&#39;value&#39;</span>:<span class="w"> </span><span class="m">1</span>.0000002000000001<span class="o">}}]</span>
 </pre></div>
 </div>
 </section>
@@ -919,16 +919,16 @@ You can run the following:</p>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> See when the Document was created and updated:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> creationTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__creationTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> lastUpdateTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__lastUpdateTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> creationTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span><span class="w"> </span><span class="s1">&#39;tags__creationTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> lastUpdateTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span><span class="w"> </span><span class="s1">&#39;tags__lastUpdateTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 </pre></div>
 </div>
 <p>This should return:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> See when the Document was created and updated:
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>See<span class="w"> </span>when<span class="w"> </span>the<span class="w"> </span>Document<span class="w"> </span>was<span class="w"> </span>created<span class="w"> </span>and<span class="w"> </span>updated:
 
-         <span class="nv">creationTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
-         <span class="nv">lastUpdateTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+<span class="w">         </span><span class="nv">creationTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+<span class="w">         </span><span class="nv">lastUpdateTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -969,7 +969,7 @@ You can run the following:</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

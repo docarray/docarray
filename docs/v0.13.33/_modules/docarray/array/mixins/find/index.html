@@ -376,7 +376,7 @@
 
 
 <div class="viewcode-block" id="FindMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin">[docs]</a><span class="k">class</span> <span class="nc">FindMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A mixin that provides find functionality to DocumentArrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mixin that provides find functionality to DocumentArrays</span>
 
 <span class="sd">    Subclass should override :meth:`._find` not :meth:`.find`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -394,7 +394,7 @@
         <span class="n">only_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns approximate nearest neighbors given an input query.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns approximate nearest neighbors given an input query.</span>
 
 <span class="sd">        :param query: the input query to search by</span>
 <span class="sd">        :param limit: the maximum number of matches, when not given defaults to 20.</span>
@@ -411,7 +411,7 @@
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find Documents that meet certain query language and return the result as a DocumentArray.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find Documents that meet certain query language and return the result as a DocumentArray.</span>
 
 <span class="sd">        The query language we provide now is following the</span>
 <span class="sd">        [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/) query language. For example::</span>
@@ -464,7 +464,7 @@
         <span class="n">index</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns matching Documents given an input query.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns matching Documents given an input query.</span>
 <span class="sd">        If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search</span>
 <span class="sd">        will be performed depending on whether the storage backend supports ANN. Furthermore, if filter is not None,</span>
 <span class="sd">        pre-filtering will be applied along with vector search.</span>
@@ -622,7 +622,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]],</span>
         <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a subset of documents by filtering by the given query.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a subset of documents by filtering by the given query.</span>
 
 <span class="sd">        :return: a `DocumentArray` containing the `Document` objects for matching with the query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -651,7 +651,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

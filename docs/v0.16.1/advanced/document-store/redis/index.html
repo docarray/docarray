@@ -406,17 +406,17 @@
 <section id="start-redis-service">
 <h3>Start Redis service<a class="headerlink" href="#start-redis-service" title="Permalink to this heading">#</a></h3>
 <p>To use Redis as the storage backend, it is required to have the Redis service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.3&quot;</span><span class="w"></span>
-<span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">redis</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redislabs/redisearch:2.6.0</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6379:6379&quot;</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.3&quot;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">redis</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redislabs/redisearch:2.6.0</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6379:6379&quot;</span>
 </pre></div>
 </div>
 <p>Then</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U docarray<span class="o">[</span>redis<span class="o">]</span>
-docker-compose up
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>docarray<span class="o">[</span>redis<span class="o">]</span>
+docker-compose<span class="w"> </span>up
 </pre></div>
 </div>
 </section>
@@ -807,7 +807,7 @@ The benchmark test is on the way.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Dec 12, 2022</div>
+                            Last updated on Jan 03, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
