@@ -1,0 +1,108 @@
+from typing import Optional
+
+import numpy as np
+import pytest
+from pydantic.tools import parse_obj_as, schema_json_of
+
+from docarray import BaseDocument
+from docarray.document.io.json import orjson_dumps
+from docarray.typing import VideoNdArray, VideoTorchTensor, VideoUrl
+from tests import TOYDATA_DIR
+
+LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
+REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_load_with_only_keyframes_false(file_url):
+    url = parse_obj_as(VideoUrl, file_url)
+    tensor, indices = url.load(only_keyframes=False)
+
+    assert isinstance(tensor, np.ndarray)
+    assert isinstance(tensor, VideoNdArray)
+
+    assert isinstance(indices, np.ndarray)
+    assert isinstance(indices, VideoNdArray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_load_with_only_keyframes_true(file_url):
+    url = parse_obj_as(VideoUrl, file_url)
+    tensor = url.load(only_keyframes=True)
+
+    assert isinstance(tensor, np.ndarray)
+    assert isinstance(tensor, VideoNdArray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_load_video_url_to_video_torch_tensor_field(file_url):
+    class MyVideoDoc(BaseDocument):
+        video_url: VideoUrl
+        tensor: Optional[VideoTorchTensor]
+
+    doc = MyVideoDoc(video_url=file_url)
+    doc.tensor = doc.video_url.load(only_keyframes=True)
+
+    assert isinstance(doc.tensor, np.ndarray)
+    assert isinstance(doc.tensor, VideoNdArray)
+
+
+def test_json_schema():
+    schema_json_of(VideoUrl)
+
+
+def test_dump_json():
+    url = parse_obj_as(VideoUrl, REMOTE_VIDEO_FILE)
+    orjson_dumps(url)
+
+
+@pytest.mark.parametrize(
+    'path_to_file',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_validation(path_to_file):
+    url = parse_obj_as(VideoUrl, path_to_file)
+    assert isinstance(url, VideoUrl)
+    assert isinstance(url, str)
+
+
+@pytest.mark.parametrize(
+    'path_to_file',
+    [
+        'illegal',
+        'https://www.google.com',
+        'my/local/text/file.txt',
+        'my/local/text/file.png',
+        'my/local/file.mp3',
+    ],
+)
+def test_illegal_validation(path_to_file):
+    with pytest.raises(ValueError, match='VideoUrl'):
+        parse_obj_as(VideoUrl, path_to_file)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_proto_video_url(file_url):
+    uri = parse_obj_as(VideoUrl, file_url)
+    proto = uri._to_node_protobuf()
+    assert str(proto).startswith('video_url')
