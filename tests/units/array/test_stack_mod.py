@@ -203,6 +203,8 @@ def test_stack_union():
     # union fields aren't actually stacked
     # just checking that there is no error
     batch.stack()
+
+
 @pytest.mark.parametrize(
     'tensor_type,tensor',
     [(TorchTensor, torch.zeros(3, 224, 224)), (NdArray, np.zeros((3, 224, 224)))],
