@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Optional, Type, TypeVar
 
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
@@ -40,9 +40,8 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         """
         scheme = parts['scheme']
         if scheme is None:
-            # assume local file if not otherwise stated, unlike pydantic
-            scheme = 'file'
-            parts['scheme'] = scheme
+            # allow missing scheme, unlike pydantic
+            pass
 
         elif cls.allowed_schemes and scheme.lower() not in cls.allowed_schemes:
             raise errors.UrlSchemePermittedError(set(cls.allowed_schemes))
@@ -55,6 +54,44 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             raise errors.UrlUserInfoError()
 
         return parts
+
+    @classmethod
+    def build(
+        cls,
+        *,
+        scheme: str,
+        user: Optional[str] = None,
+        password: Optional[str] = None,
+        host: str,
+        port: Optional[str] = None,
+        path: Optional[str] = None,
+        query: Optional[str] = None,
+        fragment: Optional[str] = None,
+        **_kwargs: str,
+    ) -> str:
+        """
+        Build a URL from its parts.
+        The only difference from the pydantic implementation is that we allow
+        missing `scheme`, making it possible to pass a file path without prefix.
+        """
+
+        url = scheme + '://' if scheme else ''  # this is the only "special" line
+        if user:
+            url += user
+        if password:
+            url += ':' + password
+        if user or password:
+            url += '@'
+        url += host
+        if port:
+            url += ':' + port
+        if path:
+            url += path
+        if query:
+            url += '?' + query
+        if fragment:
+            url += '#' + fragment
+        return url
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
