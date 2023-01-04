@@ -112,9 +112,13 @@ class DocumentArray(AnyDocumentArray):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        field_type = self.__class__.document_type._get_nested_document_class(field)
+        field_type = self.__class__.document_type.__fields__[field].type_
 
-        if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
+        if (
+            not is_union_type(field_type)
+            and isinstance(field_type, type)
+            and issubclass(field_type, BaseDocument)
+        ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111

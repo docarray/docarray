@@ -250,4 +250,8 @@ def test_dict_stack():
     class MyDoc(BaseDocument):
         my_dict: Dict[str, int]
 
-    DocumentArray[MyDoc]([MyDoc(my_dict={'a': 1, 'b': 2}) for _ in range(10)]).stack()
+    da = DocumentArray[MyDoc](
+        [MyDoc(my_dict={'a': 1, 'b': 2}) for _ in range(10)]
+    ).stack()
+
+    da.my_dict
