@@ -33,7 +33,7 @@ class AbstractVideoTensor(AbstractTensor, ABC):
         """
         np_tensor = self.to_numpy()
 
-        video_tensor = np.moveaxis(np.clip(np_tensor, 0, 255), 1, 2).astype('uint8')
+        video_tensor = np.moveaxis(np.clip(np_tensor, 0, 255), -3, -2).astype('uint8')
 
         import av
 
@@ -43,8 +43,11 @@ class AbstractVideoTensor(AbstractTensor, ABC):
             stream.height = np_tensor.shape[2]
             stream.pix_fmt = 'yuv420p'
 
-            for b in video_tensor:
-                frame = av.VideoFrame.from_ndarray(b, format='rgb24')
+            if video_tensor.ndim == 3:
+                video_tensor = np.expand_dims(video_tensor, axis=0)
+
+            for vid in video_tensor:
+                frame = av.VideoFrame.from_ndarray(vid)
                 for packet in stream.encode(frame):
                     container.mux(packet)
 

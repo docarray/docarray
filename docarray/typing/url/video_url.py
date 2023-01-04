@@ -50,7 +50,7 @@ class VideoUrl(AnyUrl):
         return cls(str(url), scheme=None)
 
     def load(
-        self: T, only_keyframes: bool = False, dtype: str = 'int32', **kwargs
+        self: T, only_keyframes: bool = False, **kwargs
     ) -> Union[VideoNdArray, Tuple[VideoNdArray, np.ndarray]]:
         """
         Load the data from the url into a VideoNdArray or Tuple of VideoNdArray and
@@ -60,7 +60,6 @@ class VideoUrl(AnyUrl):
 
         :param only_keyframes: if True keep only the keyframes, if False keep all frames
             and store the indices of the keyframes in :attr:`.tags`
-        :param dtype: Data-type of the returned array; default: int32.
         :param kwargs: supports all keyword arguments that are being supported by
             av.open() as described in:
             https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
@@ -83,11 +82,9 @@ class VideoUrl(AnyUrl):
                 if not only_keyframes and frame.key_frame == 1:
                     keyframe_indices.append(i)
 
-        frames_vid: VideoNdArray = parse_obj_as(
-            VideoNdArray, np.moveaxis(np.stack(frames), 1, 2)
-        )
+        frames_vid = parse_obj_as(VideoNdArray, np.moveaxis(np.stack(frames), -3, -2))
 
         if only_keyframes:
             return frames_vid
         else:
-            return frames_vid, np.ndarray(keyframe_indices, dtype=dtype)
+            return frames_vid, np.ndarray(keyframe_indices)
