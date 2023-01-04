@@ -66,7 +66,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union[T, AnyTensor]] = {}
+        self._columns: Dict[str, Union['TorchTensor', T, NdArray]] = {}
 
         self.from_document_array(docs)
 
