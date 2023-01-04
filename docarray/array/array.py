@@ -112,7 +112,7 @@ class DocumentArray(AnyDocumentArray):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        field_type = self.__class__.document_type.__fields__[field].type_
+        field_type = self.__class__.document_type._get_field_type(field)
 
         if (
             not is_union_type(field_type)

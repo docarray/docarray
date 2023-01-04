@@ -30,4 +30,4 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         :param field: name of the field
         :return:
         """
-        return cls.__fields__[field].type_
+        return cls.__fields__[field].outer_type_
