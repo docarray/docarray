@@ -101,6 +101,10 @@ class DocumentArrayStacked(AnyDocumentArray):
                 ):
                     columns_fields.append(field_name)
 
+        if not columns_fields:
+            # nothing to stack
+            return {}
+
         columns: Dict[str, Union['TorchTensor', T, NdArray]] = dict()
 
         columns_to_stack: DefaultDict[
