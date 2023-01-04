@@ -66,7 +66,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union['TorchTensor', T, NdArray]] = {}
+        self._columns: Dict[str, Union[T, AnyTensor]] = {}
 
         self.from_document_array(docs)
 
@@ -162,11 +162,23 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(self._docs, field, values)
 
     def __getitem__(self, item):  # note this should handle slices
+        if isinstance(item, slice):
+            return self._get_slice(item)
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
         return doc
+
+    def _get_slice(self: T, item: slice) -> T:
+        """Return a slice of the DocumentArrayStacked
+
+        :param item: the slice to apply
+        :return: a DocumentArrayStacked
+        """
+        docs = self._docs[item].stack()
+        docs._columns = {k: col[item] for k, col in self._columns.items()}
+        return docs
 
     def __iter__(self):
         for i in range(len(self)):

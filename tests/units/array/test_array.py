@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
+from docarray.array import DocumentArrayStacked
 from docarray.typing import NdArray, TorchTensor
 
 
@@ -228,3 +229,51 @@ def test_get_bulk_attributes_union_type_nested():
         assert isinstance(tensors, list)
         for tensor in tensors:
             assert tensor.shape == (10,)
+
+
+def test_get_from_slice():
+    class Doc(BaseDocument):
+        text: str
+        tensor: NdArray
+
+    N = 10
+
+    da = DocumentArray[Doc](
+        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    da_sliced = da[0:10:2]
+    assert isinstance(da_sliced, DocumentArray)
+
+    tensors = da_sliced.tensor
+    assert len(tensors) == 5
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da_sliced.text
+    assert len(texts) == 5
+    for i, text in enumerate(texts):
+        assert text == f'hello{i*2}'
+
+
+def test_get_from_slice_stacked():
+    class Doc(BaseDocument):
+        text: str
+        tensor: NdArray
+
+    N = 10
+
+    da = DocumentArray[Doc](
+        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    ).stack()
+
+    da_sliced = da[0:10:2]
+    assert isinstance(da_sliced, DocumentArrayStacked)
+
+    tensors = da_sliced.tensor
+    assert tensors.shape == (5, 3, 224, 224)
+
+    texts = da_sliced.text
+    assert len(texts) == 5
+    for i, text in enumerate(texts):
+        assert text == f'hello{i * 2}'
