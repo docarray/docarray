@@ -272,7 +272,7 @@ def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
     :param attr: the attribute name
     :return: the type of the attribute
     """
-    field_type = da.document_type.__fields__[attr].type_
+    field_type = da.document_type._get_field_type(attr)
     if is_union_type(field_type):
         # determine type based on the fist element
         field_type = type(getattr(da[0], attr))

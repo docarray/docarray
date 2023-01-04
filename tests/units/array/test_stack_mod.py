@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 import numpy as np
 import pytest
@@ -244,3 +244,14 @@ def test_any_tensor_with_optional():
 
     assert 'tensor' in da.img._columns.keys()
     assert isinstance(da.img._columns['tensor'], TorchTensor)
+
+
+def test_dict_stack():
+    class MyDoc(BaseDocument):
+        my_dict: Dict[str, int]
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(my_dict={'a': 1, 'b': 2}) for _ in range(10)]
+    ).stack()
+
+    da.my_dict

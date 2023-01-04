@@ -44,4 +44,4 @@ def test_proto_all_types():
             # embedding is a Union type, not supported by isinstance
             assert isinstance(value, np.ndarray) or isinstance(value, torch.Tensor)
         else:
-            assert isinstance(value, doc._get_nested_document_class(field))
+            assert isinstance(value, doc._get_field_type(field))
