@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -83,7 +84,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.type_
             if is_union_type(field_type):
-                if field.type_ == AnyTensor:
+                if field.type_ == AnyTensor or field.type_ == Optional[AnyTensor]:
                     columns_fields.append(field_name)
             else:
                 is_torch_subclass = (
@@ -114,12 +115,12 @@ class DocumentArrayStacked(AnyDocumentArray):
 
             type_ = cls.document_type.__fields__[field_to_stack].type_
             if is_union_type(type_):
-                if type_ == AnyTensor:
+                if type_ == AnyTensor or type_ == Optional[AnyTensor]:
                     columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
             else:
                 if issubclass(type_, BaseDocument):
                     columns[field_to_stack] = DocumentArray.__class_getitem__(type_)(
-                        to_stack
+                        to_stack, tensor_type=tensor_type
                     ).stack()
 
                 elif issubclass(type_, (NdArray, TorchTensor)):

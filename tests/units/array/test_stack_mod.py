@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import pytest
@@ -223,3 +223,24 @@ def test_any_tensor_with_torch(tensor_type, tensor):
 
     assert 'tensor' in da._columns.keys()
     assert isinstance(da._columns['tensor'], tensor_type)
+
+
+def test_any_tensor_with_optional():
+    tensor = torch.zeros(3, 224, 224)
+
+    class Image(BaseDocument):
+        tensor: Optional[AnyTensor]
+
+    class TopDoc(BaseDocument):
+        img: Image
+
+    da = DocumentArray[TopDoc](
+        [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
+        tensor_type=TorchTensor,
+    ).stack()
+
+    for i in range(len(da)):
+        assert (da.img[i].tensor == tensor).all()
+
+    assert 'tensor' in da.img._columns.keys()
+    assert isinstance(da.img._columns['tensor'], TorchTensor)
