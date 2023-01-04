@@ -17,7 +17,7 @@ class AbstractDocument(Iterable):
 
     @classmethod
     @abstractmethod
-    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
+    def _get_field_type(cls, field: str) -> Type['ProtoMixin']:
         ...
 
     @classmethod

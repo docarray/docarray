@@ -2,8 +2,7 @@ import os
 from typing import Type
 
 import orjson
-from pydantic import BaseModel, Field
-from pydantic import parse_obj_as
+from pydantic import BaseModel, Field, parse_obj_as
 
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
@@ -24,7 +23,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         json_dumps = orjson_dumps
 
     @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:
+    def _get_field_type(cls, field: str) -> Type['BaseDocument']:
         """
         Accessing the nested python Class define in the schema. Could be useful for
         reconstruction of Document in serialization/deserilization

@@ -65,7 +65,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
-                fields[field] = cls._get_nested_document_class(field).from_protobuf(
+                fields[field] = cls._get_field_type(field).from_protobuf(
                     value.nested
                 )  # we get to the parent class
             elif content_type == 'chunks':
