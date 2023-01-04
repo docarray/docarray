@@ -50,6 +50,10 @@ plugins = "pydantic.mypy"
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
+module = "av"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = "trimesh"
 ignore_missing_imports = true
 

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import BinaryIO, Dict, Generator, Optional, Tuple, Type, TypeVar, Union
+from typing import BinaryIO, TypeVar, Union
 
 import numpy as np
 
@@ -50,16 +50,3 @@ class AbstractVideoTensor(AbstractTensor, ABC):
 
             for packet in stream.encode():
                 container.mux(packet)
-
-    @classmethod
-    def generator_from_webcam(
-        cls: Type['T'],
-        height_width: Optional[Tuple[int, int]] = None,
-        show_window: bool = True,
-        window_title: str = 'webcam',
-        fps: int = 30,
-        exit_key: int = 27,
-        exit_event=None,
-        tags: Optional[Dict] = None,
-    ) -> Generator['T', None, None]:
-        ...

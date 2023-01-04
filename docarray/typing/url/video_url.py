@@ -83,9 +83,11 @@ class VideoUrl(AnyUrl):
                 if not only_keyframes and frame.key_frame == 1:
                     keyframe_indices.append(i)
 
-        frames = parse_obj_as(VideoNdArray, np.moveaxis(np.stack(frames), 1, 2))
+        frames_vid: VideoNdArray = parse_obj_as(
+            VideoNdArray, np.moveaxis(np.stack(frames), 1, 2)
+        )
 
         if only_keyframes:
-            return frames
+            return frames_vid
         else:
-            return frames, np.ndarray(keyframe_indices, dtype=dtype)
+            return frames_vid, np.ndarray(keyframe_indices, dtype=dtype)
