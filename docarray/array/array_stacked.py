@@ -86,7 +86,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             if is_union_type(field_type):
                 if field.type_ == AnyTensor or field.type_ == Optional[AnyTensor]:
                     columns_fields.append(field_name)
-            else:
+            elif isinstance(field_type, type):
                 is_torch_subclass = (
                     issubclass(field_type, torch.Tensor) if torch_imported else False
                 )
@@ -117,7 +117,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             if is_union_type(type_):
                 if type_ == AnyTensor or type_ == Optional[AnyTensor]:
                     columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
-            else:
+            elif isinstance(type_, type):
                 if issubclass(type_, BaseDocument):
                     columns[field_to_stack] = DocumentArray.__class_getitem__(type_)(
                         to_stack, tensor_type=tensor_type
