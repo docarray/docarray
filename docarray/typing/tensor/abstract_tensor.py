@@ -117,3 +117,8 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     def get_comp_backend() -> Type[AbstractComputationalBackend]:
         """The computational backend compatible with this tensor type."""
         ...
+
+    @staticmethod
+    def __docarray_normalize_value__(val: Any) -> Any:
+        """Normalize a value to be compatible with this tensor type."""
+        return val
