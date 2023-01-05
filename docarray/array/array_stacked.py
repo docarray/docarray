@@ -86,7 +86,8 @@ class DocumentArrayStacked(AnyDocumentArray):
         # of doing DocumentArrayStacked[docs.document_type]
         # because mypy has issues with class[...] notation at runtime.
         # see bug here: https://github.com/python/mypy/issues/13026
-        # as of 2023-01-05 it should be fixed on mypy master, though
+        # as of 2023-01-05 it should be fixed on mypy master, though, see
+        # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
         da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
         da_stacked._columns = columns
         da_stacked._docs = docs
