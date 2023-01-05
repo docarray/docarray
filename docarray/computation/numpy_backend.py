@@ -46,7 +46,7 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
 
     @staticmethod
     def none_value() -> Any:
-        """Provide a compatible value that represents None in torch."""
+        """Provide a compatible value that represents None in numpy."""
         return None
 
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
