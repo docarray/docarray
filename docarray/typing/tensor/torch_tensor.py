@@ -230,11 +230,3 @@ class TorchTensor(
         from docarray.computation.torch_backend import TorchCompBackend
 
         return TorchCompBackend
-
-    @staticmethod
-    def __docarray_normalize_value__(val: Any) -> Any:
-        """Normalize a value to be compatible with this tensor type."""
-        if val is None:
-            return torch.tensor(float('nan'))
-        else:
-            return val
