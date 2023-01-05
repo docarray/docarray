@@ -19,7 +19,7 @@ from typing_inspect import is_union_type
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
-from docarray.typing import AnyTensor, NdArray
+from docarray.typing import AnyTensor, Embedding, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -102,10 +102,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.outer_type_
             if is_union_type(field_type):
-                if (
-                    field.outer_type_ == AnyTensor
-                    or field.outer_type_ == Optional[AnyTensor]
-                ):
+                if field.outer_type_ in [AnyTensor, Embedding] or field.outer_type_ in [
+                    Optional[AnyTensor],
+                    Optional[Embedding],
+                ]:
                     columns_fields.append(field_name)
             elif isinstance(field_type, type):
                 is_torch_subclass = (
@@ -140,7 +140,12 @@ class DocumentArrayStacked(AnyDocumentArray):
 
             type_ = cls.document_type._get_field_type(field_to_stack)
             if is_union_type(type_):
-                if type_ == AnyTensor or type_ == Optional[AnyTensor]:
+                if type_ in [
+                    AnyTensor,
+                    Embedding,
+                    Optional[AnyTensor],
+                    Optional[Embedding],
+                ]:
                     columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
             elif isinstance(type_, type):
                 if issubclass(type_, BaseDocument):
