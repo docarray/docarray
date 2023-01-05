@@ -4,8 +4,8 @@ import torch
 from docarray import BaseDocument
 from docarray.document import AnyDocument
 from docarray.typing import (
+    AnyEmbedding,
     AnyUrl,
-    Embedding,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
@@ -19,7 +19,7 @@ def test_proto_all_types():
     class Mymmdoc(BaseDocument):
         tensor: NdArray
         torch_tensor: TorchTensor
-        embedding: Embedding
+        embedding: AnyEmbedding
         any_url: AnyUrl
         image_url: ImageUrl
         text_url: TextUrl

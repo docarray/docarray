@@ -6,7 +6,7 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.typing import AnyTensor, Embedding, NdArray, TorchTensor
+from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
 @pytest.fixture()
@@ -283,7 +283,7 @@ def test_get_from_slice_stacked():
 
 def test_stack_embedding():
     class MyDoc(BaseDocument):
-        embedding: Embedding
+        embedding: AnyEmbedding
 
     da = DocumentArray[MyDoc](
         [MyDoc(embedding=np.zeros(10)) for _ in range(10)]
