@@ -76,6 +76,17 @@ class DocumentArrayStacked(AnyDocumentArray):
         self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
 
     @classmethod
+    def _from_columns(
+        cls: Type[T],
+        docs: DocumentArray,
+        columns: Dict[str, Union['TorchTensor', T, NdArray]],
+    ) -> T:
+        da_stacked = DocumentArray[cls.document_type]([]).stack()
+        da_stacked._columns = columns
+        da_stacked._docs = docs
+        return da_stacked
+
+    @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
     ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
@@ -180,9 +191,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         :param item: the slice to apply
         :return: a DocumentArrayStacked
         """
-        docs = self._docs[item].stack()
-        docs._columns = {k: col[item] for k, col in self._columns.items()}
-        return docs
+
+        columns_sliced = {k: col[item] for k, col in self._columns.items()}
+        return self._from_columns(self._docs[item], columns_sliced)
 
     def __iter__(self):
         for i in range(len(self)):
