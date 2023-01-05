@@ -7,10 +7,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 def is_type_tensor(type_: Any) -> bool:
     """Return True if type is a type Tensor or an Optional Tensor type."""
-    if isinstance(type_, type):
-        return issubclass(type_, AbstractTensor)
-    else:
-        return False
+    return isinstance(type_, type) and issubclass(type_, AbstractTensor)
 
 
 def is_tensor_union(type_: Any) -> bool:
