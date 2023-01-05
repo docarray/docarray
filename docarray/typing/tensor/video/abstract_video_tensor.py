@@ -19,37 +19,34 @@ class AbstractVideoTensor(AbstractTensor, ABC):
     def save_to_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
-        frame_rate: int = 30,
+        frame_rate: int = 24,
         codec: str = 'h264',
     ) -> None:
         """
-        Save video tensor to a .wav file. Mono/stereo is preserved.
+        Save video tensor to a .mp4 file.
 
-
-        :param file_path: path to a .wav file. If file is a string, open the file by
+        :param file_path: path to a .mp4 file. If file is a string, open the file by
             that name, otherwise treat it as a file-like object.
         :param frame_rate: frames per second.
         :param codec: the name of a decoder/encoder.
         """
         np_tensor = self.to_numpy()
-
-        video_tensor = np.moveaxis(np.clip(np_tensor, 0, 255), -3, -2).astype('uint8')
-
+        print(f"np_tensor[0][:2] = {np_tensor[0][:2]}")
+        video_tensor = np_tensor.astype('uint8')
         import av
 
         with av.open(file_path, mode='w') as container:
-            stream = container.add_stream(codec, rate=frame_rate)
-            stream.width = np_tensor.shape[1]
-            stream.height = np_tensor.shape[2]
-            stream.pix_fmt = 'yuv420p'
-
             if video_tensor.ndim == 3:
                 video_tensor = np.expand_dims(video_tensor, axis=0)
 
+            stream = container.add_stream(codec, rate=frame_rate)
+            stream.height = video_tensor.shape[-3]
+            stream.width = video_tensor.shape[-2]
+
             for vid in video_tensor:
-                frame = av.VideoFrame.from_ndarray(vid)
+                frame = av.VideoFrame.from_ndarray(vid, format='rgb24')
                 for packet in stream.encode(frame):
                     container.mux(packet)
 
-            for packet in stream.encode():
+            for packet in stream.encode(None):
                 container.mux(packet)

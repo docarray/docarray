@@ -56,8 +56,6 @@ class VideoUrl(AnyUrl):
         Load the data from the url into a VideoNdArray or Tuple of VideoNdArray and
         np.ndarray.
 
-
-
         :param only_keyframes: if True keep only the keyframes, if False keep all frames
             and store the indices of the keyframes in :attr:`.tags`
         :param kwargs: supports all keyword arguments that are being supported by
@@ -75,16 +73,17 @@ class VideoUrl(AnyUrl):
 
             frames = []
             keyframe_indices = []
+
             for i, frame in enumerate(container.decode(video=0)):
 
-                img = frame.to_image()
-                frames.append(img)
+                frame_np = frame.to_ndarray(format='rgb24')
+                frames.append(frame_np)
                 if not only_keyframes and frame.key_frame == 1:
                     keyframe_indices.append(i)
 
-        frames_vid = parse_obj_as(VideoNdArray, np.moveaxis(np.stack(frames), -3, -2))
+        frames_vid = parse_obj_as(VideoNdArray, np.stack(frames))
 
         if only_keyframes:
             return frames_vid
         else:
-            return frames_vid, np.ndarray(keyframe_indices)
+            return frames_vid, np.array(keyframe_indices)
