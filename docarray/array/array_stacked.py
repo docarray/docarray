@@ -11,6 +11,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 from typing_inspect import is_union_type
@@ -81,7 +82,12 @@ class DocumentArrayStacked(AnyDocumentArray):
         docs: DocumentArray,
         columns: Dict[str, Union['TorchTensor', T, NdArray]],
     ) -> T:
-        da_stacked = DocumentArray[cls.document_type]([]).stack()
+        # below __class_getitem__ is called explicitly instead
+        # of doing DocumentArrayStacked[docs.document_type]
+        # because mypy has issues with class[...] notation at runtime.
+        # see bug here: https://github.com/python/mypy/issues/13026
+        # as of 2023-01-05 it should be fixed on mypy master, though
+        da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
         da_stacked._columns = columns
         da_stacked._docs = docs
         return da_stacked
@@ -193,7 +199,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
 
         columns_sliced = {k: col[item] for k, col in self._columns.items()}
-        return self._from_columns(self._docs[item], columns_sliced)
+        columns_sliced_ = cast(
+            Dict[str, Union['TorchTensor', T, NdArray]], columns_sliced
+        )
+        return self._from_columns(self._docs[item], columns_sliced_)
 
     def __iter__(self):
         for i in range(len(self)):
