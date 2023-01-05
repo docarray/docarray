@@ -36,7 +36,6 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     def none_value() -> typing.Any:
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...
-        # return torch.tensor(float('nan'))
 
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
         """
