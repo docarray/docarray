@@ -136,7 +136,16 @@ class DocumentArrayStacked(AnyDocumentArray):
 
         for doc in docs:
             for field_to_stack in columns_fields:
-                columns_to_stack[field_to_stack].append(getattr(doc, field_to_stack))
+                val = getattr(doc, field_to_stack)
+
+                if val is None and torch_imported:
+                    if (
+                        cls.document_type._get_field_type(field_to_stack) == TorchTensor
+                        or tensor_type == TorchTensor
+                    ):
+                        val = torch.tensor(float('nan'))  # Torch does not handle None
+
+                columns_to_stack[field_to_stack].append(val)
                 setattr(doc, field_to_stack, None)
 
         for field_to_stack, to_stack in columns_to_stack.items():

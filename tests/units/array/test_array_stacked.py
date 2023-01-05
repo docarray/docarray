@@ -291,3 +291,15 @@ def test_stack_embedding():
 
     assert 'embedding' in da._columns.keys()
     assert (da.embedding == np.zeros((10, 10))).all()
+
+
+@pytest.mark.parametrize('tensor_backend', [TorchTensor, NdArray])
+def test_stack_none(tensor_backend):
+    class MyDoc(BaseDocument):
+        tensor: Optional[AnyTensor]
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=None) for _ in range(10)], tensor_type=tensor_backend
+    ).stack()
+
+    assert 'tensor' in da._columns.keys()
