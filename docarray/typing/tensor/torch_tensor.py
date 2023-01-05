@@ -230,3 +230,7 @@ class TorchTensor(
         from docarray.computation.torch_backend import TorchCompBackend
 
         return TorchCompBackend
+
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs=None):
+        return super().__torch_function__(func, (torch.Tensor,), args, kwargs)
