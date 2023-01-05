@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
+from docarray.array import DocumentArrayStacked
 from docarray.typing import AnyTensor, NdArray, TorchTensor
 
 
@@ -255,3 +256,26 @@ def test_dict_stack():
     ).stack()
 
     da.my_dict
+
+
+def test_get_from_slice_stacked():
+    class Doc(BaseDocument):
+        text: str
+        tensor: NdArray
+
+    N = 10
+
+    da = DocumentArray[Doc](
+        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    ).stack()
+
+    da_sliced = da[0:10:2]
+    assert isinstance(da_sliced, DocumentArrayStacked)
+
+    tensors = da_sliced.tensor
+    assert tensors.shape == (5, 3, 224, 224)
+
+    texts = da_sliced.text
+    assert len(texts) == 5
+    for i, text in enumerate(texts):
+        assert text == f'hello{i * 2}'

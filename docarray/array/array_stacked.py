@@ -11,6 +11,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 from typing_inspect import is_union_type
@@ -76,6 +77,23 @@ class DocumentArrayStacked(AnyDocumentArray):
         self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
 
     @classmethod
+    def _from_columns(
+        cls: Type[T],
+        docs: DocumentArray,
+        columns: Dict[str, Union['TorchTensor', T, NdArray]],
+    ) -> T:
+        # below __class_getitem__ is called explicitly instead
+        # of doing DocumentArrayStacked[docs.document_type]
+        # because mypy has issues with class[...] notation at runtime.
+        # see bug here: https://github.com/python/mypy/issues/13026
+        # as of 2023-01-05 it should be fixed on mypy master, though, see
+        # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
+        da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
+        da_stacked._columns = columns
+        da_stacked._docs = docs
+        return da_stacked
+
+    @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
     ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
@@ -100,6 +118,10 @@ class DocumentArrayStacked(AnyDocumentArray):
                     or issubclass(field_type, NdArray)
                 ):
                     columns_fields.append(field_name)
+
+        if not columns_fields:
+            # nothing to stack
+            return {}
 
         columns: Dict[str, Union['TorchTensor', T, NdArray]] = dict()
 
@@ -162,11 +184,26 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(self._docs, field, values)
 
     def __getitem__(self, item):  # note this should handle slices
+        if isinstance(item, slice):
+            return self._get_slice(item)
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
         return doc
+
+    def _get_slice(self: T, item: slice) -> T:
+        """Return a slice of the DocumentArrayStacked
+
+        :param item: the slice to apply
+        :return: a DocumentArrayStacked
+        """
+
+        columns_sliced = {k: col[item] for k, col in self._columns.items()}
+        columns_sliced_ = cast(
+            Dict[str, Union['TorchTensor', T, NdArray]], columns_sliced
+        )
+        return self._from_columns(self._docs[item], columns_sliced_)
 
     def __iter__(self):
         for i in range(len(self)):
