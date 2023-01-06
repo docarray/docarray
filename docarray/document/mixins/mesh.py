@@ -85,8 +85,8 @@ class MeshDataMixin:
         faces = mesh.faces.view(np.ndarray)
 
         self.chunks = [
-            Document(name=MeshEnum.VERTICES, tensor=vertices),
-            Document(name=MeshEnum.FACES, tensor=faces),
+            Document(name=MeshEnum.VERTICES.value, tensor=vertices),
+            Document(name=MeshEnum.FACES.value, tensor=faces),
         ]
 
         return self
@@ -101,9 +101,9 @@ class MeshDataMixin:
         faces = None
 
         for chunk in self.chunks:
-            if chunk.tags['name'] == MeshEnum.VERTICES:
+            if chunk.tags['name'] == MeshEnum.VERTICES.value:
                 vertices = chunk.tensor
-            if chunk.tags['name'] == MeshEnum.FACES:
+            if chunk.tags['name'] == MeshEnum.FACES.value:
                 faces = chunk.tensor
 
         if vertices is not None and faces is not None:

@@ -321,9 +321,9 @@ def test_load_uri_to_vertices_and_faces(uri):
     doc.load_uri_to_vertices_and_faces()
 
     assert len(doc.chunks) == 2
-    assert doc.chunks[0].tags['name'] == MeshEnum.VERTICES
+    assert doc.chunks[0].tags['name'] == MeshEnum.VERTICES.value
     assert doc.chunks[0].tensor.shape[1] == 3
-    assert doc.chunks[1].tags['name'] == MeshEnum.FACES
+    assert doc.chunks[1].tags['name'] == MeshEnum.FACES.value
     assert doc.chunks[1].tensor.shape[1] == 3
 
 
