@@ -18,6 +18,7 @@ from docarray.array.array import DocumentArray
 from docarray.document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._typing import is_tensor_union
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -94,8 +95,6 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
     ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
-        from docarray.util._typing import is_tensor_union
-
         columns_fields = list()
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.outer_type_

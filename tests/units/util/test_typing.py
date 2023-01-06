@@ -4,7 +4,7 @@ import pytest
 
 from docarray.typing import NdArray, TorchTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.util._typing import is_tensor_union, is_type_tensor
+from docarray.utils._typing import is_tensor_union, is_type_tensor
 
 
 @pytest.mark.parametrize(
