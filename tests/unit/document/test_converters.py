@@ -419,14 +419,12 @@ def test_load_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
         doc.load_uris_to_rgbd_tensor()
 
 
-@pytest.mark.parametrize(
-    'enum_value,expected_value',
-    [
-        (PointCloudEnum.COLORS.value, 'point_cloud_colors'),
-        (MeshEnum.VERTICES.value, 'vertices'),
-        (MeshEnum.FACES.value, 'faces'),
-        (MeshEnum.FILE_EXTENSIONS.value, ['glb', 'obj', 'ply']),
-    ],
-)
-def test_enum_value_extraction(enum_value, expected_value):
-    assert enum_value == expected_value
+def test_load_colors_to_point_cloud_doc():
+    n_samples = 1000
+    colors = np.random.rand(n_samples, 3)
+    coords = np.random.rand(n_samples, 3)
+    doc = Document(uri='mesh_man.glb', tensor=coords)
+    doc.chunks = [Document(tensor=colors, name='point_cloud_colors')]
+
+    assert np.allclose(doc.tensor, coords)
+    assert np.allclose(doc.chunks[0].tensor, colors)
