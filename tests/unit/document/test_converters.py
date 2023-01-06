@@ -6,7 +6,7 @@ import pytest
 
 from docarray import Document
 from docarray.document.generators import from_files
-from docarray.document.mixins.mesh import MeshEnum
+from docarray.document.mixins.mesh import MeshEnum, PointCloudEnum
 
 __windows__ = sys.platform == 'win32'
 
@@ -417,3 +417,16 @@ def test_load_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
         match='A chunk of the given Document does not provide a uri.',
     ):
         doc.load_uris_to_rgbd_tensor()
+
+
+@pytest.mark.parametrize(
+    'enum_value,expected_value',
+    [
+        (PointCloudEnum.COLORS.value, 'point_cloud_colors'),
+        (MeshEnum.VERTICES.value, 'vertices'),
+        (MeshEnum.FACES.value, 'faces'),
+        (MeshEnum.FILE_EXTENSIONS.value, ['glb', 'obj', 'ply']),
+    ],
+)
+def test_enum_value_extraction(enum_value, expected_value):
+    assert enum_value == expected_value
