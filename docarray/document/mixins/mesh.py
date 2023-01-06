@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TYPE_CHECKING, Union
 
 import numpy as np
@@ -7,7 +8,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import trimesh
 
 
-class Mesh:
+class MeshEnum(Enum):
     FILE_EXTENSIONS = [
         'glb',
         'obj',
@@ -15,6 +16,10 @@ class Mesh:
     ]
     VERTICES = 'vertices'
     FACES = 'faces'
+
+
+class PointCloudEnum(Enum):
+    COLORS = 'point_cloud_colors'
 
 
 class MeshDataMixin:
@@ -80,8 +85,8 @@ class MeshDataMixin:
         faces = mesh.faces.view(np.ndarray)
 
         self.chunks = [
-            Document(name=Mesh.VERTICES, tensor=vertices),
-            Document(name=Mesh.FACES, tensor=faces),
+            Document(name=MeshEnum.VERTICES, tensor=vertices),
+            Document(name=MeshEnum.FACES, tensor=faces),
         ]
 
         return self
@@ -96,9 +101,9 @@ class MeshDataMixin:
         faces = None
 
         for chunk in self.chunks:
-            if chunk.tags['name'] == Mesh.VERTICES:
+            if chunk.tags['name'] == MeshEnum.VERTICES:
                 vertices = chunk.tensor
-            if chunk.tags['name'] == Mesh.FACES:
+            if chunk.tags['name'] == MeshEnum.FACES:
                 faces = chunk.tensor
 
         if vertices is not None and faces is not None:
