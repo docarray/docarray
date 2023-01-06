@@ -2576,16 +2576,13 @@ init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
 
 
-To display a colored point cloud, store the corresponding colors in the `.tensor` of a chunk `Document` with the name tag `PointCloudEnum.COLORS`. The colors have to be of shape (n_samples, 3) or (n_samples, 4).
+To display a colored point cloud, store the corresponding colors in the `.tensor` of a chunk `Document` with the name tag `'point_cloud_colors'`. The colors have to be of shape (n_samples, 3) or (n_samples, 4).
 
 ```python
-from docarray.document.mixins.mesh import PointCloudEnum
-
-
 n_samples = 1000
 colors = np.random.rand(n_samples, 3)
 doc = Document(uri='mesh_man.glb').load_uri_to_point_cloud_tensor(samples=n_samples)
-doc.chunks = [Document(tensor=colors, name=PointCloudEnum.COLORS)]
+doc.chunks = [Document(tensor=colors, name='point_cloud_colors')]
 ```
 
 ## RGB-D image representation
