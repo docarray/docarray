@@ -1,5 +1,6 @@
 from typing import List, Optional, Tuple, Union
 
+import numpy as np
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
@@ -42,6 +43,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
+
+    @staticmethod
+    def to_numpy(array: 'torch.Tensor') -> np.ndarray:
+        return array.cpu().detach().numpy()
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """

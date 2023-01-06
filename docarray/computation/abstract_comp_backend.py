@@ -2,6 +2,8 @@ import typing
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple, TypeVar, Union
 
+import numpy as np
+
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
 TTensorRetrieval = TypeVar('TTensorRetrieval')
@@ -29,6 +31,17 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     @staticmethod
     @abstractmethod
     def n_dim(array: 'TTensor') -> int:
+        """
+        Get the number of the array dimensions.
+        """
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def to_numpy(array: 'TTensor') -> np.ndarray:
+        """
+        Convert array to np.ndarray.
+        """
         ...
 
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):

@@ -38,6 +38,3 @@ class VideoNdArray(AbstractVideoTensor, NdArray):
             )
         else:
             return array
-
-    def to_numpy(self) -> np.ndarray:
-        return self

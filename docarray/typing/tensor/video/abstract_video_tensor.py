@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import BinaryIO, TypeVar, Union
 
 import numpy as np
@@ -9,13 +9,6 @@ T = TypeVar('T', bound='AbstractVideoTensor')
 
 
 class AbstractVideoTensor(AbstractTensor, ABC):
-    @abstractmethod
-    def to_numpy(self) -> np.ndarray:
-        """
-        Convert video tensor to numpy.ndarray.
-        """
-        ...
-
     def save_to_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
@@ -30,8 +23,7 @@ class AbstractVideoTensor(AbstractTensor, ABC):
         :param frame_rate: frames per second.
         :param codec: the name of a decoder/encoder.
         """
-        np_tensor = self.to_numpy()
-        print(f"np_tensor[0][:2] = {np_tensor[0][:2]}")
+        np_tensor = self.get_comp_backend().to_numpy(array=self)  # type: ignore
         video_tensor = np_tensor.astype('uint8')
         import av
 

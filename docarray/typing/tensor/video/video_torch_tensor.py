@@ -38,6 +38,3 @@ class VideoTorchTensor(AbstractVideoTensor, TorchTensor, metaclass=metaTorchAndN
             )
         else:
             return tensor
-
-    def to_numpy(self) -> np.ndarray:
-        return self.cpu().detach().numpy()
