@@ -40,6 +40,11 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return torch.stack(tensors, dim=dim)
 
     @staticmethod
+    def to_device(tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
+        """Move the tensor to the specified device."""
+        return tensor.to(device)
+
+    @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
 

@@ -41,6 +41,11 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return np.stack(tensors, axis=dim)
 
     @staticmethod
+    def to_device(tensor: 'np.ndarray', device: str) -> 'np.ndarray':
+        """Move the tensor to the specified device."""
+        raise NotImplementedError('Numpy does not support devices (GPU).')
+
+    @staticmethod
     def n_dim(array: 'np.ndarray') -> int:
         return array.ndim
 

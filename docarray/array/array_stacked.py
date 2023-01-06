@@ -91,6 +91,18 @@ class DocumentArrayStacked(AnyDocumentArray):
         da_stacked._docs = docs
         return da_stacked
 
+    def to(self, device: str):
+        """Move the data to the given device
+
+        :param device: the device to move the data to
+        """
+        for field in self._columns.keys():
+            col = self._columns[field]
+            if isinstance(col, AbstractTensor):
+                self._columns[field] = col.get_comp_backend().to_device(col, device)
+            else:  # recursive call
+                self._columns[field].to(device)
+
     @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
