@@ -2,6 +2,7 @@ from typing import Optional
 
 import numpy as np
 import pytest
+import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDocument
@@ -43,8 +44,8 @@ def test_load_audio_url_to_audio_torch_tensor_field(file_url):
     doc = MyAudioDoc(audio_url=file_url)
     doc.tensor = doc.audio_url.load()
 
-    assert isinstance(doc.tensor, np.ndarray)
-    assert isinstance(doc.tensor, AudioNdArray)
+    assert isinstance(doc.tensor, torch.Tensor)
+    assert isinstance(doc.tensor, AudioTorchTensor)
 
 
 @pytest.mark.slow
