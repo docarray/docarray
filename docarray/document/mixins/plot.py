@@ -191,7 +191,7 @@ class PlotMixin:
         for chunk in self.chunks:
             if (
                 'name' in chunk.tags.keys()
-                and chunk.tags['name'] == PointCloudEnum.COLORS
+                and chunk.tags['name'] == PointCloudEnum.COLORS.value
                 and chunk.tensor.shape[-1] in [3, 4]
             ):
                 colors = chunk.tensor
