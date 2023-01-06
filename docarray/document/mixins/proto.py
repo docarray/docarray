@@ -26,8 +26,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
         """create a Document from a protobuf message"""
         from docarray.typing import (  # TorchTensor,
             ID,
+            AnyEmbedding,
             AnyUrl,
-            Embedding,
             ImageUrl,
             Mesh3DUrl,
             NdArray,
@@ -46,7 +46,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # the check should be delegated to the type level
             content_type_dict = dict(
                 ndarray=NdArray,
-                embedding=Embedding,
+                embedding=AnyEmbedding,
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,

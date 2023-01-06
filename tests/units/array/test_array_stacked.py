@@ -6,7 +6,7 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.typing import AnyTensor, NdArray, TorchTensor
+from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
 @pytest.fixture()
@@ -279,3 +279,27 @@ def test_get_from_slice_stacked():
     assert len(texts) == 5
     for i, text in enumerate(texts):
         assert text == f'hello{i * 2}'
+
+
+def test_stack_embedding():
+    class MyDoc(BaseDocument):
+        embedding: AnyEmbedding
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(embedding=np.zeros(10)) for _ in range(10)]
+    ).stack()
+
+    assert 'embedding' in da._columns.keys()
+    assert (da.embedding == np.zeros((10, 10))).all()
+
+
+@pytest.mark.parametrize('tensor_backend', [TorchTensor, NdArray])
+def test_stack_none(tensor_backend):
+    class MyDoc(BaseDocument):
+        tensor: Optional[AnyTensor]
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=None) for _ in range(10)], tensor_type=tensor_backend
+    ).stack()
+
+    assert 'tensor' in da._columns.keys()

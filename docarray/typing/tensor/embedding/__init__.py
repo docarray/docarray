@@ -1,7 +1,7 @@
-from docarray.typing.tensor.embedding.embedding import Embedding
+from docarray.typing.tensor.embedding.embedding import AnyEmbedding
 from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
 
-__all__ = ['NdArrayEmbedding', 'Embedding']
+__all__ = ['NdArrayEmbedding', 'AnyEmbedding']
 
 try:
     import torch  # noqa: F401

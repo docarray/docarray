@@ -6,7 +6,7 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import NdArray, TorchTensor
-from docarray.util import find, find_batched
+from docarray.utils.find import find, find_batched
 
 
 class TorchDoc(BaseDocument):

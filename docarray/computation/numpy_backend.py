@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -43,6 +43,11 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     @staticmethod
     def n_dim(array: 'np.ndarray') -> int:
         return array.ndim
+
+    @staticmethod
+    def none_value() -> Any:
+        """Provide a compatible value that represents None in numpy."""
+        return None
 
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """
