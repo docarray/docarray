@@ -353,6 +353,9 @@ Using DocumentArrays backed by a document store introduces an extra consideratio
 The DocumentArray object created in your Python program is now a view of the underlying implementation in the document store.
 This means that your DocumentArray object in Python can be out of sync with what is persisted to the document store.
 
+In the meantime, it also means when doing operations with DocArray, all the data are **NOT** stored in the memory as an intermediate 
+storage. 
+
 **For example**
 ```python
 from docarray import DocumentArray, Document

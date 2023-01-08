@@ -51,6 +51,7 @@ da = DocumentArray(storage='elasticsearch', config={'n_dim': 128})
 
 The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
 
+Note for the documents stored in the DocumentArray, they should have the same dimension, otherwise for ElasticSearch.
 ### Secure connection
 
 By default, Elasticsearch server runs with security layer that disables the plain HTTP connection. You can pass the `host` with `api_id` or `ca_certs` inside `es_config` to the constructor. For example,
