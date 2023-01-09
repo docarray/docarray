@@ -132,7 +132,7 @@ class DocumentArrayStacked(AnyDocumentArray):
                     if is_tensor_union(type_):
                         val = tensor_type.get_comp_backend().none_value()
                 columns_to_stack[field_to_stack].append(val)
-                setattr(doc, field_to_stack, None)
+                delattr(doc, field_to_stack)
 
         for field_to_stack, to_stack in columns_to_stack.items():
 
@@ -210,7 +210,8 @@ class DocumentArrayStacked(AnyDocumentArray):
         """Return the document at the given index with the columns item put to None"""
         doc = self._docs[item]
         for field in self._columns.keys():
-            setattr(doc, field, None)
+            if hasattr(doc, field):
+                delattr(doc, field)
         return doc
 
     def __iter_without_columns__(self):
