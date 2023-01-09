@@ -63,6 +63,12 @@ async def test_image():
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
 
+    doc = OutputDoc.parse_raw(response.content.decode())
+
+    assert isinstance(doc, OutputDoc)
+    assert doc.embedding_clip.shape == (100, 1)
+    assert doc.embedding_bert.shape == (100, 1)
+
 
 @pytest.mark.asyncio
 async def test_sentence_to_embeddings():
