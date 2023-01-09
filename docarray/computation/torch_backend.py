@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import torch
 
@@ -42,6 +42,11 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
+
+    @staticmethod
+    def none_value() -> Any:
+        """Provide a compatible value that represents None in torch."""
+        return torch.tensor(float('nan'))
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """
