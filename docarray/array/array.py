@@ -131,7 +131,7 @@ class DocumentArray(AnyDocumentArray):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, 'TorchTensor', 'NdArray'],
+        values: Union[List, T, 'AbstractTensor'],
     ):
         """Set all Documents in this DocumentArray using the passed values
 

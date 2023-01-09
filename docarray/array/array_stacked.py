@@ -65,7 +65,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union['TorchTensor', T, NdArray]] = {}
+        self._columns: Dict[str, Union[T, AbstractTensor]] = {}
 
         self.from_document_array(docs)
 
@@ -78,7 +78,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _from_columns(
         cls: Type[T],
         docs: DocumentArray,
-        columns: Dict[str, Union['TorchTensor', T, NdArray]],
+        columns: Dict[str, Union[T, AbstractTensor]],
     ) -> T:
         # below __class_getitem__ is called explicitly instead
         # of doing DocumentArrayStacked[docs.document_type]
@@ -91,7 +91,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         da_stacked._docs = docs
         return da_stacked
 
-    def to(self, device: str):
+    def to(self: T, device: str):
         """Move the data to the given device
 
         :param device: the device to move the data to
@@ -99,14 +99,23 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field in self._columns.keys():
             col = self._columns[field]
             if isinstance(col, AbstractTensor):
-                self._columns[field] = col.get_comp_backend().to_device(col, device)
+                col_ = cast(AbstractTensor, col)
+                # torch_be = TorchCompBackend()
+                # np_be = NumpyCompBackend()
+                # abs_be = AbstracttensorCompBackend()
+                col__ = col.get_comp_backend().to_device(col_, device)
+                col_ = cast(AbstractTensor, col__)
+                # cast(AbstractTensor, col)
+                self._columns[field] = col_
+                # self._columns[field] = col.get_comp_backend().to_device(col, device)
             else:  # recursive call
-                self._columns[field].to(device)
+                cast(T, col)
+                col.to(device)
 
     @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
-    ) -> Dict[str, Union['TorchTensor', T, NdArray]]:
+    ) -> Dict[str, Union[T, AbstractTensor]]:
         columns_fields = list()
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.outer_type_
@@ -128,10 +137,10 @@ class DocumentArrayStacked(AnyDocumentArray):
             # nothing to stack
             return {}
 
-        columns: Dict[str, Union['TorchTensor', T, NdArray]] = dict()
+        columns: Dict[str, Union[T, AbstractTensor]] = dict()
 
         columns_to_stack: DefaultDict[
-            str, Union[List['TorchTensor'], List[NdArray], List[BaseDocument]]
+            str, Union[List[AbstractTensor], List[BaseDocument]]
         ] = defaultdict(  # type: ignore
             list  # type: ignore
         )  # type: ignore
@@ -165,7 +174,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[List, T, 'TorchTensor', 'NdArray']:
+    ) -> Union[List, T, AbstractTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -180,7 +189,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, 'TorchTensor', 'NdArray'],
+        values: Union[List, T, AbstractTensor],
     ):
         """Set all Documents in this DocumentArray using the passed values
 
@@ -209,9 +218,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
 
         columns_sliced = {k: col[item] for k, col in self._columns.items()}
-        columns_sliced_ = cast(
-            Dict[str, Union['TorchTensor', T, NdArray]], columns_sliced
-        )
+        columns_sliced_ = cast(Dict[str, Union[AbstractTensor, T]], columns_sliced)
         return self._from_columns(self._docs[item], columns_sliced_)
 
     def __iter__(self):

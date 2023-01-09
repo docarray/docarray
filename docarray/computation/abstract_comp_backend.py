@@ -1,9 +1,16 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar, Union
+
+import numpy as np
+import torch
+
+if TYPE_CHECKING:
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 # In practice all of the below will be the same type
-TTensor = TypeVar('TTensor')
+TTensor = TypeVar('TTensor', bound=Union[torch.Tensor, np.ndarray, AbstractTensor])
+# TAbstractTensor = TypeVar('TAbstractTensor', bound=AbstractTensor)
 TTensorRetrieval = TypeVar('TTensorRetrieval')
 TTensorMetrics = TypeVar('TTensorMetrics')
 
@@ -36,6 +43,26 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     def none_value() -> typing.Any:
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...
+
+    # @staticmethod
+    # @abstractmethod
+    # @typing.overload
+    # def to_device(tensor: 'AbstractTensor', device: str) -> 'AbstractTensor':
+    #     """Move the tensor to the specified device."""
+    #     ...
+    #
+    # @staticmethod
+    # @abstractmethod
+    # @typing.overload
+    # def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
+    #     """Move the tensor to the specified device."""
+    #     ...
+    #
+    # @staticmethod
+    # @abstractmethod
+    # def to_device(tensor: typing.Any, device: str) -> typing.Any:
+    #     """Move the tensor to the specified device."""
+    #     ...
 
     @staticmethod
     @abstractmethod
