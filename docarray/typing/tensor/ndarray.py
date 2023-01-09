@@ -130,10 +130,10 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         # this is needed to dump to json
         field_schema.update(type='string', format='tensor')
 
-    def _to_json_compatible(self) -> np.ndarray:
+    def __docarray_to_json_compatible__(self) -> np.ndarray:
         """
         Convert tensor into a json compatible object
-        :return: a list representation of the tensor
+        :return: a representation of the tensor compatible with orjson
         """
         return self.unwrap()
 

@@ -1,16 +1,17 @@
 import orjson
 
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+
 
 def _default_orjson(obj):
     """
-    default option for orjson dumps. It will call _to_json_compatible
-    from docarray typing object that expose such method.
+    default option for orjson dumps.
     :param obj:
     :return: return a json compatible object
     """
 
-    if getattr(obj, '_to_json_compatible'):
-        return obj._to_json_compatible()
+    if isinstance(obj, AbstractTensor):
+        return obj.__docarray_to_json_compatible__()
     else:
         return obj
 
