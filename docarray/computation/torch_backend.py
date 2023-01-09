@@ -1,8 +1,9 @@
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union, overload
 
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
+from docarray.typing import TorchTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
@@ -39,9 +40,22 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
+    @overload
+    @staticmethod
+    def to_device(tensor: 'TorchTensor', device: str) -> 'TorchTensor':
+        """Move the tensor to the specified device."""
+        ...
+
+    @overload
     @staticmethod
     def to_device(tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
         """Move the tensor to the specified device."""
+        ...
+
+    @staticmethod
+    def to_device(
+        tensor: Union['torch.Tensor', TorchTensor], device: str
+    ) -> Union['torch.Tensor', TorchTensor]:
         return tensor.to(device)
 
     @staticmethod

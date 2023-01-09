@@ -98,10 +98,12 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         for field in self._columns.keys():
             col = self._columns[field]
-            if isinstance(col, AbstractTensor):
+            if isinstance(col, TorchTensor):
+                self._columns[field] = col.get_comp_backend().to_device(col, device)
+            elif isinstance(col, NdArray):
                 self._columns[field] = col.get_comp_backend().to_device(col, device)
             else:  # recursive call
-                self._columns[field].to(device)
+                col.to(device)
 
     @classmethod
     def _create_columns(
