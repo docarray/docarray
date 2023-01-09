@@ -31,7 +31,19 @@ services:
     image: redislabs/redisearch:2.6.0
     ports:
       - "6379:6379"
+  opensearch:
+    image: opensearchproject/opensearch:2.4.0
+    environment:
+      - plugins.security.disabled=true
+      - discovery.type=single-node
+    ports:
+      - "9900:9200"
+    networks:
+      - os
+
       
 networks:
   elastic:
     name: elastic
+  os:
+    name: os

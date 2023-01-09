@@ -27,6 +27,7 @@ class RedisConfig:
     redis_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = field(default=False)
     tag_indices: List[str] = field(default_factory=list)
+    language: Optional[str] = None
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
     ef_construction: Optional[int] = None
@@ -35,6 +36,7 @@ class RedisConfig:
     block_size: Optional[int] = None
     initial_cap: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -85,7 +87,9 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._client = self._build_client()
-        super()._init_storage()
+        self._build_index()
+
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return
@@ -100,18 +104,22 @@ class BackendMixin(BaseBackendMixin):
             port=self._config.port,
             **self._config.redis_config,
         )
+        return client
 
-        if self._config.update_schema:
-            if self._config.index_name.encode() in client.execute_command('FT._LIST'):
-                client.ft(index_name=self._config.index_name).dropindex()
+    def _build_index(self, rebuild: bool = False):
+        if self._config.update_schema or rebuild:
+            if self._config.index_name.encode() in self._client.execute_command(
+                'FT._LIST'
+            ):
+                self._client.ft(index_name=self._config.index_name).dropindex()
 
             schema = self._build_schema_from_redis_config()
-            idef = IndexDefinition(prefix=[self._doc_prefix])
-            client.ft(index_name=self._config.index_name).create_index(
+            idef = IndexDefinition(
+                prefix=[self._doc_prefix], language=self._config.language
+            )
+            self._client.ft(index_name=self._config.index_name).create_index(
                 schema, definition=idef
             )
-
-        return client
 
     def _ensure_unique_config(
         self,
@@ -195,8 +203,4 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = Redis(
-            host=self._config.host,
-            port=self._config.port,
-            **self._config.redis_config,
-        )
+        self._client = self._build_client()

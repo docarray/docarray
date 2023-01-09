@@ -46,6 +46,7 @@ class ElasticConfig:
     ef_construction: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 _banned_indexname_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
@@ -93,12 +94,14 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self.n_dim = self._config.n_dim
-        self._client = self._build_client()
         self._list_like = self._config.list_like
+
+        self._client = self._build_client()
+        self._build_index()
         self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return
@@ -123,7 +126,9 @@ class BackendMixin(BaseBackendMixin):
         return config_joined
 
     def _build_offset2id_index(self):
-        if not self._client.indices.exists(index=self._index_name_offset2id):
+        if self._list_like and not self._client.indices.exists(
+            index=self._index_name_offset2id
+        ):
             self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
 
     def _build_schema_from_elastic_config(self, elastic_config):
@@ -167,21 +172,22 @@ class BackendMixin(BaseBackendMixin):
         return da_schema
 
     def _build_client(self):
-
         client = Elasticsearch(
             hosts=self._config.hosts,
             **self._config.es_config,
         )
 
+        return client
+
+    def _build_index(self):
         schema = self._build_schema_from_elastic_config(self._config)
 
-        if not client.indices.exists(index=self._config.index_name):
-            client.indices.create(
+        if not self._client.indices.exists(index=self._config.index_name):
+            self._client.indices.create(
                 index=self._config.index_name, mappings=schema['mappings']
             )
 
-        client.indices.refresh(index=self._config.index_name)
-        return client
+        self._client.indices.refresh(index=self._config.index_name)
 
     def _send_requests(self, request, **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""

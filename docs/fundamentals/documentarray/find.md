@@ -1,19 +1,25 @@
 (find-documentarray)=
+
 # Query by Conditions
 
-We can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the conditions specified in a `query` object. One can use `da.find(query)` to filter Documents and get nearest neighbours from `da`:
+You can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the
+conditions specified in a `query` object. You can use `da.find(query)` to filter Documents and get nearest neighbors
+from `da`:
 
-- To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
-- To find nearest neighbours, the `query` object needs to be a NdArray-like, a Document, or a DocumentArray object that defines embedding. One can also use `.match()` function for this purpose, and there is a minor interface difference between these two functions, which will be described {ref}`in the next chapter<match-documentarray>`.
+- To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using
+  a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
+- To find nearest neighbors, the `query` object needs to be a NdArray-like, a Document, or a DocumentArray object that
+  defines embedding. You can also use `.match()` function for this purpose, and there is a minor interface difference
+  between these two functions, which is described {ref}`in the next chapter<match-documentarray>`.
+
 
 ```{admonition} filter query syntax
 :class: note
 
-The syntax to define filter queries is dependant of the {ref}`Document store <doc-store>` used. Some will have their own query language 
-depending on the supporting backend.
+The filter query syntax depends on which {ref}`document store <doc-store>` you use. Some may have their own query language.
 ```
 
-Let's see some examples in action. First, let's prepare a DocumentArray we will use.
+Let's see some examples in action. First, let's prepare a DocumentArray:
 
 ```python
 from jina import Document, DocumentArray
@@ -76,15 +82,17 @@ da.summary()
 
 ## Filter with query operators
 
-A query filter document can use the query operators to specify conditions in the following form:
+A query filter document uses query operators to specify conditions:
 
 ```text
 { <field1>: { <operator1>: <value1> }, ... }
 ```
 
-Here `field1` is {ref}`any field name<doc-fields>` of a Document object.  To access nested fields, one can use the dunder expression. For example, `tags__timestamp` is to access `doc.tags['timestamp']` field.
 
-`value1` can be either a user given Python object, or a substitution field with curly bracket `{field}`   
+Here `field1` is {ref}`any field name<doc-fields>` of a Document object. To access nested fields, you can use the dunder expression.
+For example, `tags__timestamp` accesses the `doc.tags['timestamp']` field.
+
+`value1` can be either a user given Python object, or a substitution field with curly bracket `{field}`
 
 Finally, `operator1` can be one of the following:
 
@@ -100,10 +108,9 @@ Finally, `operator1` can be one of the following:
 | `$nin`         | Not in an array                                                                                            |
 | `$regex`       | Match the specified regular expression                                                                     |
 | `$size`        | Match array/dict field that have the specified size. `$size` does not accept ranges of values.             |
-| `$exists`      | Matches documents that have the specified field. And empty string content is also considered as not exists. |
+| `$exists`      | Matches documents that have the specified field; {ref}`predefined fields<doc-fields>` having a default value (for example empty string, or 0) are considered as not existing; if the expression specifies a field `x` in `tags` (`tags__x`), then the operator tests that `x` is not `None`. |
 
-
-For example, to select all `modality='D'` Documents,
+To select all `modality='D'` Documents:
 
 ```python
 r = da.find({'modality': {'$eq': 'D'}})
@@ -112,16 +119,30 @@ pprint(r.to_dict(exclude_none=True))  # just for pretty print
 ```
 
 ```json
-[{"id": "92aee5d665d0c4dd34db10d83642aded",
-  "modality": "D",
-  "tags": {"h": 8.5, "uom": "in", "w": 11.0},
-  "text": "paper",
-  "weight": 100.0},
- {"id": "1a9d2139b02bc1c7842ecda94b347889",
-  "modality": "D",
-  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
-  "text": "planner",
-  "weight": 75.0}]
+[
+  {
+    "id": "92aee5d665d0c4dd34db10d83642aded",
+    "modality": "D",
+    "tags": {
+      "h": 8.5,
+      "uom": "in",
+      "w": 11.0
+    },
+    "text": "paper",
+    "weight": 100.0
+  },
+  {
+    "id": "1a9d2139b02bc1c7842ecda94b347889",
+    "modality": "D",
+    "tags": {
+      "h": 22.85,
+      "uom": "cm",
+      "w": 30.0
+    },
+    "text": "planner",
+    "weight": 75.0
+  }
+]
 ```
 
 To select all Documents whose `.tags['h']>10`,
@@ -131,38 +152,61 @@ r = da.find({'tags__h': {'$gt': 10}})
 ```
 
 ```json
-[{"id": "4045a9659875fd1299e482d710753de3",
-  "modality": "A",
-  "tags": {"h": 14.0, "uom": "cm", "w": 21.0},
-  "text": "journal",
-  "weight": 25.0},
- {"id": "cf7691c445220b94b88ff116911bad24",
-  "modality": "D",
-  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
-  "text": "planner",
-  "weight": 75.0}]
+[
+  {
+    "id": "4045a9659875fd1299e482d710753de3",
+    "modality": "A",
+    "tags": {
+      "h": 14.0,
+      "uom": "cm",
+      "w": 21.0
+    },
+    "text": "journal",
+    "weight": 25.0
+  },
+  {
+    "id": "cf7691c445220b94b88ff116911bad24",
+    "modality": "D",
+    "tags": {
+      "h": 22.85,
+      "uom": "cm",
+      "w": 30.0
+    },
+    "text": "planner",
+    "weight": 75.0
+  }
+]
 ```
 
-Beside using a predefined value, one can also use a substitution with `{field}`, notice the curly brackets there. For example,
+
+Beside using a predefined value, you can also use a substitution with `{field}`. Notice those curly braces. For example:
+
 
 ```python
 r = da.find({'tags__h': {'$gt': '{tags__w}'}})
 ```
 
 ```json
-[{"id": "44c6a4b18eaa005c6dbe15a28a32ebce",
-  "modality": "A",
-  "tags": {"h": 14.0, "uom": "cm", "w": 10.0},
-  "text": "journal",
-  "weight": 25.0}]
+[
+  {
+    "id": "44c6a4b18eaa005c6dbe15a28a32ebce",
+    "modality": "A",
+    "tags": {
+      "h": 14.0,
+      "uom": "cm",
+      "w": 10.0
+    },
+    "text": "journal",
+    "weight": 25.0
+  }
+]
 ```
-
-
 
 ## Combine multiple conditions
 
 
-You can combine multiple conditions using the following operators
+You can combine multiple conditions using the following operators:
+
 
 | Boolean Operator | Description                                        |
 |------------------|----------------------------------------------------|
@@ -170,26 +214,44 @@ You can combine multiple conditions using the following operators
 | `$or`            | Join query clauses with a logical OR               |
 | `$not`           | Inverts the effect of a query expression           |
 
-
-
 ```python
 r = da.find({'$or': [{'weight': {'$eq': 45}}, {'modality': {'$eq': 'D'}}]})
 ```
 
 ```json
-[{"id": "22985b71b6d483c31cbe507ed4d02bd1",
-  "modality": "D",
-  "tags": {"h": 8.5, "uom": "in", "w": 11.0},
-  "text": "paper",
-  "weight": 100.0},
- {"id": "a071faf19feac5809642e3afcd3a5878",
-  "modality": "D",
-  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
-  "text": "planner",
-  "weight": 75.0},
- {"id": "411ecc70a71a3f00fc3259bf08c239d1",
-  "modality": "A",
-  "tags": {"h": 10.0, "uom": "cm", "w": 15.25},
-  "text": "postcard",
-  "weight": 45.0}]
+[
+  {
+    "id": "22985b71b6d483c31cbe507ed4d02bd1",
+    "modality": "D",
+    "tags": {
+      "h": 8.5,
+      "uom": "in",
+      "w": 11.0
+    },
+    "text": "paper",
+    "weight": 100.0
+  },
+  {
+    "id": "a071faf19feac5809642e3afcd3a5878",
+    "modality": "D",
+    "tags": {
+      "h": 22.85,
+      "uom": "cm",
+      "w": 30.0
+    },
+    "text": "planner",
+    "weight": 75.0
+  },
+  {
+    "id": "411ecc70a71a3f00fc3259bf08c239d1",
+    "modality": "A",
+    "tags": {
+      "h": 10.0,
+      "uom": "cm",
+      "w": 15.25
+    },
+    "text": "postcard",
+    "weight": 45.0
+  }
+]
 ```

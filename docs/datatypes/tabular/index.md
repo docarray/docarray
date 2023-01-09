@@ -1,11 +1,11 @@
 (table-type)=
 # {octicon}`table` Table
 
-One can freely convert between DocumentArray and `pandas.Dataframe`, read more details in {ref}`docarray-serialization`. Besides, one can load and write CSV file with DocumentArray. 
+You can freely convert between DocumentArray and `pandas.Dataframe`, read more details in {ref}`docarray-serialization`. Besides, you can load and write CSV file with DocumentArray. 
 
 ## Load CSV table
 
-One can easily load tabular data from `csv` file into a DocumentArray. For example, 
+You can easily load tabular data from `csv` file into a DocumentArray. For example, 
 
 ```text
 Username;Identifier;First name;Last name
@@ -37,10 +37,10 @@ da = DocumentArray.from_csv('toy.csv')
   tags        ('dict',)   5                False            
 ```
 
-One can observe that each row is loaded as a Document and the columns are loaded into `Document.tags`.
+You can observe that each row is loaded as a Document and the columns are loaded into `Document.tags`.
 
 
-In general, `from_csv` will try its best to resolve the column names of the table and map them into the corresponding Document attributes. If such attempt fails, one can always resolve the field manually via:
+In general, `from_csv` will try its best to resolve the column names of the table and map them into the corresponding Document attributes. If such attempt fails, you can always resolve the field manually via:
 
 ```python
 from docarray import DocumentArray

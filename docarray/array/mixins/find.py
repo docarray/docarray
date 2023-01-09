@@ -1,15 +1,13 @@
 import abc
-from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple, Union, overload
 
 import numpy as np
-
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray.typing import T, ArrayType
-
     from docarray import Document, DocumentArray
+    from docarray.typing import ArrayType, T
 
 
 class FindMixin:
@@ -96,9 +94,10 @@ class FindMixin:
         limit: Optional[Union[int, float]] = 20,
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
-        filter: Optional[Dict] = None,
+        filter: Union[Dict, str, None] = None,
         only_id: bool = False,
         index: str = 'text',
+        return_root: Optional[bool] = False,
         on: Optional[str] = None,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
@@ -126,14 +125,17 @@ class FindMixin:
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
                       otherwise the tag field specified by `index` will be used. You can only use this parameter if the
                       storage backend supports searching by text.
+        :param return_root: if set, then the root-level DocumentArray will be returned
         :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+        from docarray import Document, DocumentArray
+
         index_da = self._get_index(subindex_name=on)
         if index_da is not self:
-            return index_da.find(
+            results = index_da.find(
                 query,
                 metric,
                 limit,
@@ -144,7 +146,15 @@ class FindMixin:
                 index,
                 on=None,
             )
-        from docarray import Document, DocumentArray
+
+            if return_root:
+                da = self._get_root_docs(results)
+                for d, s in zip(da, results[:, 'scores']):
+                    d.scores = s
+
+                return da
+
+            return results
 
         if isinstance(query, dict):
             if filter is None:
@@ -301,3 +311,15 @@ class FindMixin:
         raise NotImplementedError(
             f'Search by text is not supported with this backend {self.__class__.__name__}'
         )
+
+    def _get_root_docs(self, docs: 'DocumentArray') -> 'DocumentArray':
+        """Get the root documents of the current DocumentArray.
+
+        :return: a `DocumentArray` containing the root documents.
+        """
+
+        if not all(docs[:, 'tags___root_id_']):
+            raise ValueError(
+                f'Not all Documents in this subindex have the "_root_id_" attribute set in all `tags`.'
+            )
+        return self[docs[:, 'tags___root_id_']]

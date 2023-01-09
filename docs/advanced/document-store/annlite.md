@@ -1,7 +1,7 @@
 (annlite)=
 # Annlite
 
-One can use [Annlite](https://github.com/jina-ai/annlite) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Annlite](https://github.com/jina-ai/annlite) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `annlite`. You can install it via `pip install "docarray[annlite]".` 
@@ -10,7 +10,7 @@ This feature requires `annlite`. You can install it via `pip install "docarray[a
 
 ## Usage
 
-One can instantiate a DocumentArray with Annlite storage like so:
+You can instantiate a DocumentArray with Annlite storage like so:
 
 ```python
 from docarray import DocumentArray
@@ -20,7 +20,7 @@ da = DocumentArray(storage='annlite', config={'n_dim': 10})
 
 The usage would be the same as the ordinary DocumentArray.
 
-To access a DocumentArray formerly persisted, one can specify the `data_path` in `config`. 
+To access a DocumentArray formerly persisted, you can specify the `data_path` in `config`. 
 
 ```python
 from docarray import DocumentArray
@@ -48,6 +48,7 @@ The following configs can be set:
 | `max_connection`  | The number of bi-directional links created for every new element during construction.                                                  | `None`, defaults to the default value in the AnnLite package* |
 | `n_components`    | The output dimension of PCA model. Should be a positive number and less than `n_dim` if it's not `None`                                | `None`, defaults to the default value in the AnnLite package* |
 | `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                          |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                                          |
 
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 

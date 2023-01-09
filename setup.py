@@ -48,6 +48,7 @@ setup(
             'matplotlib',
             'Pillow',
             'fastapi',
+            'pydantic>=1.9.0',
             'uvicorn',
         ],
         'full': [
@@ -59,10 +60,12 @@ setup(
             'requests',
             'matplotlib',
             'Pillow',
-            'trimesh',
+            'trimesh[easy]',
+            'ipython',
             'scipy',
             'av',
             'fastapi',
+            'pydantic>=1.9.0',
             'uvicorn',
             'strawberry-graphql',
         ],
@@ -81,6 +84,10 @@ setup(
         'redis': [
             'redis>=4.3.0',
         ],
+        'milvus': [
+            'pymilvus~=2.1.0',
+        ],
+        'opensearch': ['opensearch-py==2.0.1'],
         'benchmark': [
             'pandas',
             'matplotlib',
@@ -111,7 +118,10 @@ setup(
             'annlite',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
+            'pymilvus==2.1.3',
+            'opensearch-py==2.0.1',
             'jina',
+            'pytest-mock',
         ],
     },
     classifiers=[

@@ -2,11 +2,13 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.annlite import AnnliteConfig, DocumentArrayAnnlite
 from docarray.array.qdrant import QdrantConfig
 from docarray.array.elastic import ElasticConfig
 from docarray.array.redis import RedisConfig
+from docarray.array.milvus import MilvusConfig
 
 
 @pytest.fixture
@@ -20,16 +22,18 @@ def indices():
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_storage):
@@ -38,32 +42,34 @@ def test_getter_int_str(docs, storage, config, start_storage):
     else:
         docs = DocumentArray(docs, storage=storage)
     # getter
-    assert docs[99].text == '99'
-    assert docs[np.int(99)].text == '99'
-    assert docs[-1].text == '99'
-    assert docs[0].text == '0'
+    assert docs[99].text == "99"
+    assert docs[np.int32(99)].text == "99"
+    assert docs[-1].text == "99"
+    assert docs[0].text == "0"
     # string index
-    assert docs[docs[0].id].text == '0'
-    assert docs[docs[99].id].text == '99'
-    assert docs[docs[-1].id].text == '99'
+    assert docs[docs[0].id].text == "0"
+    assert docs[docs[99].id].text == "99"
+    assert docs[docs[-1].id].text == "99"
 
     with pytest.raises(IndexError):
         docs[100]
 
     with pytest.raises(KeyError):
-        docs['adsad']
+        docs["adsad"]
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_storage):
@@ -72,29 +78,31 @@ def test_setter_int_str(docs, storage, config, start_storage):
     else:
         docs = DocumentArray(docs, storage=storage)
     # setter
-    docs[99] = Document(text='hello')
-    docs[0] = Document(text='world')
+    docs[99] = Document(text="hello")
+    docs[0] = Document(text="world")
 
-    assert docs[99].text == 'hello'
-    assert docs[-1].text == 'hello'
-    assert docs[0].text == 'world'
+    assert docs[99].text == "hello"
+    assert docs[-1].text == "hello"
+    assert docs[0].text == "world"
 
-    docs[docs[2].id] = Document(text='doc2')
+    docs[docs[2].id] = Document(text="doc2")
     # string index
-    assert docs[docs[2].id].text == 'doc2'
+    assert docs[docs[2].id].text == "doc2"
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_del_int_str(docs, storage, config, start_storage, indices):
@@ -121,16 +129,18 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_slice(docs, storage, config, start_storage):
@@ -143,12 +153,12 @@ def test_slice(docs, storage, config, start_storage):
     assert len(docs[1:100:5]) == 20  # 1 to 100, sep with 5
 
     # setter
-    with pytest.raises(TypeError, match='an iterable'):
-        docs[1:5] = Document(text='repl')
+    with pytest.raises(TypeError, match="an iterable"):
+        docs[1:5] = Document(text="repl")
 
-    docs[1:5] = [Document(text=f'repl{j}') for j in range(4)]
+    docs[1:5] = [Document(text=f"repl{j}") for j in range(4)]
     for d in docs[1:5]:
-        assert d.text.startswith('repl')
+        assert d.text.startswith("repl")
     assert len(docs) == 100
 
     # del
@@ -161,16 +171,18 @@ def test_slice(docs, storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_storage):
@@ -184,21 +196,21 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
 
     # setter
     mask = [True, False] * 50
-    docs[mask, 'text'] = [f'repl{j}' for j in range(50)]
+    docs[mask, "text"] = [f"repl{j}" for j in range(50)]
 
     for idx, d in enumerate(docs):
         if idx % 2 == 0:
             # got replaced
-            assert d.text.startswith('repl')
+            assert d.text.startswith("repl")
         else:
             assert d.text == str(idx)
 
-    docs[mask] = [Document(text='test') for _ in range(50)]
+    docs[mask] = [Document(text="test") for _ in range(50)]
 
     for idx, d in enumerate(docs):
         if idx % 2 == 0:
             # got replaced
-            assert d.text == 'test'
+            assert d.text == "test"
         else:
             assert d.text == str(idx)
 
@@ -207,18 +219,20 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
     assert len(docs) == 50
 
 
-@pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
+@pytest.mark.parametrize("nparray", [lambda x: x, np.array, tuple])
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_storage):
@@ -231,32 +245,34 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
     assert len(docs[idx]) == len(idx)
 
     # setter
-    docs[idx] = [Document(text='repl') for _ in range(len(idx))]
+    docs[idx] = [Document(text="repl") for _ in range(len(idx))]
     for _id in idx:
-        assert docs[_id].text == 'repl'
+        assert docs[_id].text == "repl"
 
     # del
     idx = [-3, -4, -5, 9, 10, 11]
     del docs[idx]
     assert len(docs) == 100 - len(idx)
 
-    docs[1, 5, 9] = [Document(text='new') for _ in range(3)]
-    assert docs[1].text == 'new'
-    assert docs[5].text == 'new'
-    assert docs[9].text == 'new'
+    docs[1, 5, 9] = [Document(text="new") for _ in range(3)]
+    assert docs[1].text == "new"
+    assert docs[5].text == "new"
+    assert docs[9].text == "new"
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_storage):
@@ -265,16 +281,17 @@ def test_sequence_str(docs, storage, config, start_storage):
     else:
         docs = DocumentArray(docs, storage=storage)
     # getter
-    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2, 1]]
 
     assert len(docs[idx]) == len(idx)
     assert len(docs[tuple(idx)]) == len(idx)
 
     # setter
-    docs[idx] = [Document(text='repl') for _ in range(len(idx))]
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
+    docs[idx] = [Document(text="repl") for _ in range(len(idx))]
     idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
     for _id in idx:
-        assert docs[_id].text == 'repl'
+        assert docs[_id].text == "repl"
 
     # del
     idx = [d.id for d in docs[-3, -4, -5, 9, 10, 11]]
@@ -283,16 +300,18 @@ def test_sequence_str(docs, storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_storage):
@@ -305,16 +324,18 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_storage):
@@ -325,182 +346,231 @@ def test_path_syntax_indexing(storage, config, start_storage):
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
-    if not storage == 'memory':
+    if not storage == "memory":
         if config:
             da = DocumentArray(da, storage=storage, config=config)
         else:
             da = DocumentArray(da, storage=storage)
-
-    assert len(da['@c']) == 3 * 5
-    assert len(da['@c:1']) == 3
-    assert len(da['@c-1:']) == 3
-    assert len(da['@c1']) == 3
-    assert len(da['@c-2:']) == 3 * 2
-    assert len(da['@c1:3']) == 3 * 2
-    assert len(da['@c1:3c']) == (3 * 2) * 3
-    assert len(da['@c1:3,c1:3c']) == (3 * 2) + (3 * 2) * 3
-    assert len(da['@c 1:3 , c 1:3 c']) == (3 * 2) + (3 * 2) * 3
-    assert len(da['@cc']) == 3 * 5 * 3
-    assert len(da['@cc,m']) == 3 * 5 * 3 + 3 * 7
-    assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
+    with da:
+        assert len(da["@c"]) == 3 * 5
+        assert len(da["@c:1"]) == 3
+        assert len(da["@c-1:"]) == 3
+        assert len(da["@c1"]) == 3
+        assert len(da["@c-2:"]) == 3 * 2
+        assert len(da["@c1:3"]) == 3 * 2
+        assert len(da["@c1:3c"]) == (3 * 2) * 3
+        assert len(da["@c1:3,c1:3c"]) == (3 * 2) + (3 * 2) * 3
+        assert len(da["@c 1:3 , c 1:3 c"]) == (3 * 2) + (3 * 2) * 3
+        assert len(da["@cc"]) == 3 * 5 * 3
+        assert len(da["@cc,m"]) == 3 * 5 * 3 + 3 * 7
+        assert len(da["@r:1cc,m"]) == 1 * 5 * 3 + 3 * 7
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
-@pytest.mark.parametrize('use_subindex', [False, True])
+@pytest.mark.parametrize("use_subindex", [False, True])
 def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
-        d.matches = DocumentArray([Document(id=f'm{j + (i * 7)}') for j in range(7)])
+        d.matches = DocumentArray([Document(id=f"m{j + (i * 7)}") for j in range(7)])
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
     repeat = lambda s, l: [s] * l
-    da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
+    da["@r,c,m,cc", "text"] = repeat("a", 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
     if config:
         da = DocumentArray(
             da,
             storage=storage,
             config=config,
-            subindex_configs={'@c': {'n_dim': 123}} if use_subindex else None,
+            subindex_configs={"@c": {"n_dim": 123}} if use_subindex else None,
         )
     else:
         da = DocumentArray(
-            da, storage=storage, subindex_configs={'@c': None} if use_subindex else None
+            da, storage=storage, subindex_configs={"@c": None} if use_subindex else None
         )
 
-    assert da['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c', 'text'] == repeat('a', 3 * 5)
-    if use_subindex:
-        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c:1', 'text'] == repeat('a', 3)
-    assert da['@c-1:', 'text'] == repeat('a', 3)
-    assert da['@c1', 'text'] == repeat('a', 3)
-    assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3c', 'text'] == repeat('a', (3 * 2) * 3)
-    assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
-    assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
-    assert da['@cc', 'text'] == repeat('a', 3 * 5 * 3)
-    assert da['@cc,m', 'text'] == repeat('a', 3 * 5 * 3 + 3 * 7)
-    assert da['@r:1cc,m', 'text'] == repeat('a', 1 * 5 * 3 + 3 * 7)
-    assert da[0, 'text'] == 'a'
-    assert da[[True for _ in da], 'text'] == repeat('a', 3)
+    with da:
+        assert da["@c"].texts == repeat("a", 3 * 5)
+        assert da["@c", "text"] == repeat("a", 3 * 5)
+        if use_subindex:
+            assert da._subindices["@c"].texts == repeat("a", 3 * 5)
+        assert da["@c:1", "text"] == repeat("a", 3)
+        assert da["@c-1:", "text"] == repeat("a", 3)
+        assert da["@c1", "text"] == repeat("a", 3)
+        assert da["@c-2:", "text"] == repeat("a", 3 * 2)
+        assert da["@c1:3", "text"] == repeat("a", 3 * 2)
+        assert da["@c1:3c", "text"] == repeat("a", (3 * 2) * 3)
+        assert da["@c1:3,c1:3c", "text"] == repeat("a", (3 * 2) + (3 * 2) * 3)
+        assert da["@c 1:3 , c 1:3 c", "text"] == repeat("a", (3 * 2) + (3 * 2) * 3)
+        assert da["@cc", "text"] == repeat("a", 3 * 5 * 3)
+        assert da["@cc,m", "text"] == repeat("a", 3 * 5 * 3 + 3 * 7)
+        assert da["@r:1cc,m", "text"] == repeat("a", 1 * 5 * 3 + 3 * 7)
+        assert da[0, "text"] == "a"
+        assert da[[True for _ in da], "text"] == repeat("a", 3)
 
-    da['@m,cc', 'text'] = repeat('b', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
+    da["@m,cc", "text"] = repeat("b", 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    assert da['@c', 'text'] == repeat('a', 3 * 5)
-    if use_subindex:
-        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c:1', 'text'] == repeat('a', 3)
-    assert da['@c-1:', 'text'] == repeat('a', 3)
-    assert da['@c1', 'text'] == repeat('a', 3)
-    assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3c', 'text'] == repeat('b', (3 * 2) * 3)
-    assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2)) + repeat('b', (3 * 2) * 3)
-    assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2)) + repeat(
-        'b', (3 * 2) * 3
-    )
-    assert da['@cc', 'text'] == repeat('b', 3 * 5 * 3)
-    assert da['@cc,m', 'text'] == repeat('b', 3 * 5 * 3 + 3 * 7)
-    assert da['@r:1cc,m', 'text'] == repeat('b', 1 * 5 * 3 + 3 * 7)
-    assert da[0, 'text'] == 'a'
-    assert da[[True for _ in da], 'text'] == repeat('a', 3)
+    with da:
+        assert da["@c", "text"] == repeat("a", 3 * 5)
+        if use_subindex:
+            assert da._subindices["@c"].texts == repeat("a", 3 * 5)
+        assert da["@c:1", "text"] == repeat("a", 3)
+        assert da["@c-1:", "text"] == repeat("a", 3)
+        assert da["@c1", "text"] == repeat("a", 3)
+        assert da["@c-2:", "text"] == repeat("a", 3 * 2)
+        assert da["@c1:3", "text"] == repeat("a", 3 * 2)
+        assert da["@c1:3c", "text"] == repeat("b", (3 * 2) * 3)
+        assert da["@c1:3,c1:3c", "text"] == repeat("a", (3 * 2)) + repeat(
+            "b", (3 * 2) * 3
+        )
+        assert da["@c 1:3 , c 1:3 c", "text"] == repeat("a", (3 * 2)) + repeat(
+            "b", (3 * 2) * 3
+        )
+        assert da["@cc", "text"] == repeat("b", 3 * 5 * 3)
+        assert da["@cc,m", "text"] == repeat("b", 3 * 5 * 3 + 3 * 7)
+        assert da["@r:1cc,m", "text"] == repeat("b", 1 * 5 * 3 + 3 * 7)
+        assert da[0, "text"] == "a"
+        assert da[[True for _ in da], "text"] == repeat("a", 3)
 
-    da[1, 'text'] = 'd'
-    assert da[1, 'text'] == 'd'
-    assert da[1].text == 'd'
+    da[1, "text"] = "d"
+    assert da[1, "text"] == "d"
+    assert da[1].text == "d"
 
     doc_id = da[0].id
-    da[doc_id, 'text'] = 'e'
-    assert da[doc_id, 'text'] == 'e'
-    assert da[doc_id].text == 'e'
+    da[doc_id, "text"] = "e"
+    assert da[doc_id, "text"] == "e"
+    assert da[doc_id].text == "e"
 
     # setting matches is only possible if the IDs are the same
-    da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
-    assert da['@m', 'text'] == repeat('c', 3 * 7)
+    with da:
+        da["@m"] = [Document(id=f"m{i}", text="c") for i in range(3 * 7)]
+        assert da["@m", "text"] == repeat("c", 3 * 7)
 
-    # setting by traversal paths with different IDs is not supported
-    with pytest.raises(ValueError):
-        da['@m'] = [Document() for _ in range(3 * 7)]
+        # setting by traversal paths with different IDs is not supported
+        with pytest.raises(ValueError):
+            da["@m"] = [Document() for _ in range(3 * 7)]
 
-    da[2, ['text', 'id']] = ['new_text', 'new_id']
-    assert da[2].text == 'new_text'
-    assert da[2].id == 'new_id'
+    da[2, ["text", "id"]] = ["new_text", "new_id"]
+    assert da[2].text == "new_text"
+    assert da[2].id == "new_id"
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", WeaviateConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_getset_subindex(storage, config, start_storage):
     da = DocumentArray(
         [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
-        config=config,
-        subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
+        subindex_configs={"@c": None},
     )
-    assert len(da['@c']) == 15
-    assert len(da._subindices['@c']) == 15
-    # set entire subindex
-    chunks_ids = [c.id for c in da['@c']]
-    new_chunks = [Document(id=cid, text=f'{i}') for i, cid in enumerate(chunks_ids)]
-    da['@c'] = new_chunks
-    new_chunks = DocumentArray(new_chunks)
-    assert da['@c'] == new_chunks
-    assert da._subindices['@c'] == new_chunks
-    collected_chunks = DocumentArray.empty(0)
-    for d in da:
-        collected_chunks.extend(d.chunks)
-    assert collected_chunks == new_chunks
-    # set part of a subindex
-    chunks_ids = [c.id for c in da['@c:3']]
-    new_chunks = [Document(id=cid, text=f'{2*i}') for i, cid in enumerate(chunks_ids)]
-    da['@c:3'] = new_chunks
-    new_chunks = DocumentArray(new_chunks)
-    assert da['@c:3'] == new_chunks
-    for d in new_chunks:
-        assert d in da._subindices['@c']
-    collected_chunks = DocumentArray.empty(0)
-    for d in da:
-        collected_chunks.extend(d.chunks[:3])
-    assert collected_chunks == new_chunks
+    with da:
+        assert len(da["@c"]) == 15
+        assert len(da._subindices["@c"]) == 15
+        # set entire subindex
+        chunks_ids = [c.id for c in da["@c"]]
+        new_chunks = [Document(id=cid, text=f"{i}") for i, cid in enumerate(chunks_ids)]
+        da["@c"] = new_chunks
+        new_chunks = DocumentArray(new_chunks)
+        assert da["@c"] == new_chunks
+        assert da._subindices["@c"] == new_chunks
+        collected_chunks = DocumentArray.empty(0)
+        for d in da:
+            collected_chunks.extend(d.chunks)
+        assert collected_chunks == new_chunks
+        # set part of a subindex
+        chunks_ids = [c.id for c in da["@c:3"]]
+        new_chunks = [
+            Document(id=cid, text=f"{2*i}") for i, cid in enumerate(chunks_ids)
+        ]
+        da["@c:3"] = new_chunks
+        new_chunks = DocumentArray(new_chunks)
+        assert da["@c:3"] == new_chunks
+        for d in new_chunks:
+            assert d in da._subindices["@c"]
+        collected_chunks = DocumentArray.empty(0)
+        for d in da:
+            collected_chunks.extend(d.chunks[:3])
+        assert collected_chunks == new_chunks
 
 
-@pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize(
-    'storage,config_gen',
+    "storage,config,subindex_config",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('annlite', lambda: AnnliteConfig(n_dim=123)),
-        ('qdrant', lambda: QdrantConfig(n_dim=123)),
-        ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
-        ('redis', lambda: RedisConfig(n_dim=123)),
+        ("memory", None, None),
+        ("sqlite", None, None),
+        ("weaviate", WeaviateConfig(n_dim=123), None),
+        ("annlite", AnnliteConfig(n_dim=123), None),
+        ("qdrant", QdrantConfig(n_dim=123), None),
+        ("qdrant", QdrantConfig(n_dim=123, prefer_grpc=True), None),
+        ("elasticsearch", ElasticConfig(n_dim=123), None),
+        ("redis", RedisConfig(n_dim=123), None),
+        ("opensearch", OpenSearchConfig(n_dim=123), None),
+        ("milvus", MilvusConfig(n_dim=123), {"n_dim": 123}),
+    ],
+)
+def test_getset_subindex_in_store(storage, config, subindex_config, start_storage):
+    da = DocumentArray(
+        [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
+        storage=storage,
+        config=config,
+        subindex_configs={"@c": subindex_config},
+    )
+    with da:
+        assert len(da["@c"]) == 15
+        assert len(da._subindices["@c"]) == 15
+
+        chunks_ids = [c.id for c in da["@c"]]
+        new_chunks = [
+            Document(id=cid, embedding=np.ones(123) * i)
+            for i, cid in enumerate(chunks_ids)
+        ]
+        da["@c"] = new_chunks
+
+        res = da.find(np.random.random(123), on="@c")
+        assert len(res) > 0
+
+
+@pytest.mark.parametrize("size", [1, 5])
+@pytest.mark.parametrize(
+    "storage,config_gen",
+    [
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", lambda: WeaviateConfig(n_dim=123)),
+        ("annlite", lambda: AnnliteConfig(n_dim=123)),
+        ("qdrant", lambda: QdrantConfig(n_dim=123)),
+        ("qdrant", lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", lambda: ElasticConfig(n_dim=123)),
+        ("redis", lambda: RedisConfig(n_dim=123)),
+        ("milvus", lambda: MilvusConfig(n_dim=123)),
+        ("opensearch", lambda: OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -510,37 +580,39 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
         da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(size))
 
-    for v in da[:, 'id']:
+    for v in da[:, "id"]:
         assert v
-    da[:, 'mime_type'] = [f'type {j}' for j in range(size)]
-    for v in da[:, 'mime_type']:
+    da[:, "mime_type"] = [f"type {j}" for j in range(size)]
+    for v in da[:, "mime_type"]:
         assert v
-    del da[:, 'mime_type']
-    for v in da[:, 'mime_type']:
+    del da[:, "mime_type"]
+    for v in da[:, "mime_type"]:
         assert not v
 
-    da[:, ['text', 'mime_type']] = [
-        [f'hello {j}' for j in range(size)],
-        [f'type {j}' for j in range(size)],
+    da[:, ["text", "mime_type"]] = [
+        [f"hello {j}" for j in range(size)],
+        [f"type {j}" for j in range(size)],
     ]
     da.summary()
 
-    for v in da[:, ['mime_type', 'text']]:
+    for v in da[:, ["mime_type", "text"]]:
         for vv in v:
             assert vv
 
 
 @pytest.mark.parametrize(
-    'storage,config_gen',
+    "storage,config_gen",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', lambda: WeaviateConfig(n_dim=10)),
-        ('annlite', lambda: AnnliteConfig(n_dim=10)),
-        ('qdrant', lambda: QdrantConfig(n_dim=10)),
-        ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
-        ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
-        ('redis', lambda: RedisConfig(n_dim=10)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", lambda: WeaviateConfig(n_dim=10)),
+        ("annlite", lambda: AnnliteConfig(n_dim=10)),
+        ("qdrant", lambda: QdrantConfig(n_dim=10)),
+        ("qdrant", lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
+        ("elasticsearch", lambda: ElasticConfig(n_dim=10)),
+        ("redis", lambda: RedisConfig(n_dim=10)),
+        ("milvus", lambda: MilvusConfig(n_dim=10)),
+        ("opensearch", lambda: OpenSearchConfig(n_dim=10)),
     ],
 )
 def test_tensor_attribute_selector(storage, config_gen, start_storage):
@@ -557,18 +629,18 @@ def test_tensor_attribute_selector(storage, config_gen, start_storage):
 
     da.extend(DocumentArray.empty(3))
 
-    da[:, 'embedding'] = sp_embed
+    da[:, "embedding"] = sp_embed
 
-    assert da[:, 'embedding'].shape == (3, 10)
+    assert da[:, "embedding"].shape == (3, 10)
 
     for d in da:
         assert d.embedding.shape == (1, 10)
 
-    v1, v2 = da[:, ['embedding', 'id']]
+    v1, v2 = da[:, ["embedding", "id"]]
     assert isinstance(v1, scipy.sparse.coo_matrix)
     assert isinstance(v2, list)
 
-    v1, v2 = da[:, ['id', 'embedding']]
+    v1, v2 = da[:, ["id", "embedding"]]
     assert isinstance(v2, scipy.sparse.coo_matrix)
     assert isinstance(v1, list)
 
@@ -576,10 +648,10 @@ def test_tensor_attribute_selector(storage, config_gen, start_storage):
 # TODO: since match function is not implemented, this test will
 # not work with weaviate storage atm, will be addressed in
 # next version
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'annlite'])
+@pytest.mark.parametrize("storage", ["memory", "sqlite", "annlite"])
 def test_advance_selector_mixed(storage):
-    if storage == 'annlite':
-        da = DocumentArray(storage=storage, config={'n_dim': 3})
+    if storage == "annlite":
+        da = DocumentArray(storage=storage, config={"n_dim": 3})
     else:
         da = DocumentArray(storage=storage)
 
@@ -588,21 +660,23 @@ def test_advance_selector_mixed(storage):
 
     da.match(da, exclude_self=True)
 
-    assert len(da[:, ('id', 'embedding', 'matches')]) == 3
-    assert len(da[:, ('id', 'embedding', 'matches')][0]) == 10
+    assert len(da[:, ("id", "embedding", "matches")]) == 3
+    assert len(da[:, ("id", "embedding", "matches")][0]) == 10
 
 
 @pytest.mark.parametrize(
-    'storage,config_gen',
+    "storage,config_gen",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', lambda: WeaviateConfig(n_dim=10)),
-        ('annlite', lambda: AnnliteConfig(n_dim=10)),
-        ('qdrant', lambda: QdrantConfig(n_dim=10)),
-        ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
-        ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
-        ('redis', lambda: RedisConfig(n_dim=10)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", lambda: WeaviateConfig(n_dim=10)),
+        ("annlite", lambda: AnnliteConfig(n_dim=10)),
+        ("qdrant", lambda: QdrantConfig(n_dim=10)),
+        ("qdrant", lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
+        ("elasticsearch", lambda: ElasticConfig(n_dim=10)),
+        ("redis", lambda: RedisConfig(n_dim=10)),
+        ("milvus", lambda: MilvusConfig(n_dim=10)),
+        ("opensearch", lambda: OpenSearchConfig(n_dim=10)),
     ],
 )
 def test_single_boolean_and_padding(storage, config_gen, start_storage):
@@ -627,16 +701,18 @@ def test_single_boolean_and_padding(storage, config_gen, start_storage):
 
 
 @pytest.mark.parametrize(
-    'storage,config_gen',
+    "storage,config_gen",
     [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('annlite', lambda: AnnliteConfig(n_dim=123)),
-        ('qdrant', lambda: QdrantConfig(n_dim=123)),
-        ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
-        ('redis', lambda: RedisConfig(n_dim=123)),
+        ("memory", None),
+        ("sqlite", None),
+        ("weaviate", lambda: WeaviateConfig(n_dim=123)),
+        ("annlite", lambda: AnnliteConfig(n_dim=123)),
+        ("qdrant", lambda: QdrantConfig(n_dim=123)),
+        ("qdrant", lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
+        ("elasticsearch", lambda: ElasticConfig(n_dim=123)),
+        ("redis", lambda: RedisConfig(n_dim=123)),
+        ("milvus", lambda: MilvusConfig(n_dim=123)),
+        ("opensearch", lambda: OpenSearchConfig(n_dim=123)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_storage):
@@ -645,71 +721,76 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
         da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
-    da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
-    assert da['1', 'id'] == '1'
-    assert len(da['1', '2']) == 2
-    assert isinstance(da['1', '2'], DocumentArray)
+    da.extend([Document(id="1"), Document(id="2"), Document(id="3")])
+    assert da["1", "id"] == "1"
+    assert len(da["1", "2"]) == 2
+    assert isinstance(da["1", "2"], DocumentArray)
     with pytest.raises(KeyError):
-        da['hello', '2']
+        da["hello", "2"]
     with pytest.raises(AttributeError):
-        da['1', 'hello']
-    assert len(da['1', '2', '3']) == 3
-    assert isinstance(da['1', '2', '3'], DocumentArray)
+        da["1", "hello"]
+    assert len(da["1", "2", "3"]) == 3
+    assert isinstance(da["1", "2", "3"], DocumentArray)
 
     # delitem
-    del da['1', '2']
+    del da["1", "2"]
     assert len(da) == 1
 
     if config_gen:
         da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
-    da.extend([Document(id=str(i), text='hey') for i in range(3)])
-    del da['1', 'text']
+    da.extend([Document(id=str(i), text="hey") for i in range(3)])
+    del da["1", "text"]
     assert len(da) == 3
     assert not da[1].text
 
     with pytest.raises(
         ValueError,
-        match='setting the ID of a Document stored in a DocumentArray to None is not allowed',
+        match="setting the ID of a Document stored in a DocumentArray to None is not allowed",
     ):
-        del da['1', 'id']
+        del da["1", "id"]
 
-    del da['2', 'hello']
+    del da["2", "hello"]
 
     # setitem
     if config_gen:
         da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
-    da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
-    da['1', '2'] = DocumentArray.empty(2)
-    assert da[0].id != '1'
-    assert da[1].id != '2'
+    da.extend([Document(id="1"), Document(id="2"), Document(id="3")])
+    da["1", "2"] = DocumentArray.empty(2)
+    assert da[0].id != "1"
+    assert da[1].id != "2"
 
     if config_gen:
         da = DocumentArray(
-            [Document(id='1'), Document(id='2'), Document(id='3')],
+            [Document(id="1"), Document(id="2"), Document(id="3")],
             storage=storage,
             config=config_gen(),
         )
     else:
         da = DocumentArray(
-            [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+            [Document(id="1"), Document(id="2"), Document(id="3")], storage=storage
         )
 
-    da['1', 'text'] = 'hello'
-    assert da['1', 'text'] == 'hello'
-    assert da['1'].text == 'hello'
+    da["1", "text"] = "hello"
+    assert da["1", "text"] == "hello"
+    assert da["1"].text == "hello"
 
     with pytest.raises(IndexError):
-        da['1', 'hellohello'] = 'hello'
+        da["1", "hellohello"] = "hello"
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    "storage,config",
     [
-        ('annlite', AnnliteConfig(n_dim=123)),
+        ("annlite", AnnliteConfig(n_dim=123)),
+        ("qdrant", QdrantConfig(n_dim=123)),
+        ("elasticsearch", ElasticConfig(n_dim=123)),
+        ("opensearch", OpenSearchConfig(n_dim=123)),
+        ("redis", RedisConfig(n_dim=123)),
+        ("milvus", MilvusConfig(n_dim=123)),
     ],
 )
 def test_offset2ids_persistence(storage, config):
@@ -718,16 +799,16 @@ def test_offset2ids_persistence(storage, config):
     with da:
         da.extend(
             [
-                Document(id='0'),
-                Document(id='2'),
-                Document(id='4'),
+                Document(id="0"),
+                Document(id="2"),
+                Document(id="4"),
             ]
         )
-        da.insert(1, Document(id='1'))
-        da.insert(3, Document(id='3'))
+        da.insert(1, Document(id="1"))
+        da.insert(3, Document(id="3"))
 
         config = da._config
-        da_ids = da[:, 'id']
+        da_ids = da[:, "id"]
 
     if isinstance(da, DocumentArrayAnnlite):
         da._annlite.close()
@@ -736,28 +817,28 @@ def test_offset2ids_persistence(storage, config):
 
     da1 = DocumentArray(storage=storage, config=config)
 
-    assert da1[:, 'id'] == da_ids
+    assert da1[:, "id"] == da_ids
 
     with da1:
-        da1.extend([Document(id=i) for i in 'abc'])
-        da1_ids = da1[:, 'id']
+        da1.extend([Document(id=i) for i in "abc"])
+        da1_ids = da1[:, "id"]
         assert len(da1) == 8
 
     if isinstance(da, DocumentArrayAnnlite):
         da1._annlite.close()
 
     da2 = DocumentArray(storage=storage, config=config)
-    assert da2[:, 'id'] == da1_ids
+    assert da2[:, "id"] == da1_ids
 
 
 def test_dam_conflicting_ids():
     docs = [
-        Document(id='1'),
-        Document(id='2'),
-        Document(id='3'),
+        Document(id="1"),
+        Document(id="2"),
+        Document(id="3"),
     ]
 
-    d = Document(id='1')
+    d = Document(id="1")
     da = DocumentArray()
     da.extend(docs)
     da.append(d)
@@ -766,8 +847,8 @@ def test_dam_conflicting_ids():
     assert id(da[0]) == id(docs[0])
     assert id(da[3]) == id(d)
 
-    da[0].text = 'd1'
-    da[3].text = 'd2'
+    da[0].text = "d1"
+    da[3].text = "d2"
 
-    assert docs[0].text == 'd1'
-    assert d.text == 'd2'
+    assert docs[0].text == "d1"
+    assert d.text == "d2"

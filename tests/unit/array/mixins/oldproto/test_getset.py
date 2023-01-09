@@ -14,6 +14,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 from tests import random_docs
 
 rand_array = np.random.random([10, 3])
@@ -44,6 +45,7 @@ def nested_docs():
         ('qdrant', {'n_dim': 3}),
         ('elasticsearch', {'n_dim': 3}),
         ('redis', {'n_dim': 3}),
+        ('milvus', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize(
@@ -70,6 +72,7 @@ def test_set_embeddings_multi_kind(array, storage, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_da_get_embeddings(docs, config, da_cls, start_storage):
@@ -78,8 +81,9 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
-    np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
+    with da:
+        np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
+        np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
 
 
 @pytest.mark.parametrize(
@@ -92,6 +96,7 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_embeddings_setter_da(docs, config, da_cls, start_storage):
@@ -102,7 +107,8 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
     da.extend(docs)
     emb = np.random.random((100, 10))
     da[:, 'embedding'] = emb
-    np.testing.assert_almost_equal(da.embeddings, emb)
+    with da:
+        np.testing.assert_almost_equal(da.embeddings, emb)
 
     for x, doc in zip(emb, da):
         np.testing.assert_almost_equal(x, doc.embedding)
@@ -110,7 +116,8 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
     da[:, 'embedding'] = None
     if hasattr(da, 'flush'):
         da.flush()
-    assert da.embeddings is None or not np.any(da.embeddings)
+    with da:
+        assert da.embeddings is None or not np.any(da.embeddings)
 
 
 @pytest.mark.parametrize(
@@ -123,6 +130,7 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
@@ -134,7 +142,8 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
     embeddings = np.ones((2, 10))
 
     with pytest.raises(ValueError):
-        da.embeddings = embeddings
+        with da:
+            da.embeddings = embeddings
 
 
 @pytest.mark.parametrize(
@@ -147,6 +156,7 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_tensors_getter_da(docs, config, da_cls, start_storage):
@@ -156,12 +166,13 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         da = da_cls()
     da.extend(docs)
     tensors = np.random.random((100, 10, 10))
-    da.tensors = tensors
-    assert len(da) == 100
-    np.testing.assert_almost_equal(da.tensors, tensors)
+    with da:  # speed up milvus by loading collection
+        da.tensors = tensors
+        assert len(da) == 100
+        np.testing.assert_almost_equal(da.tensors, tensors)
 
-    da.tensors = None
-    assert da.tensors is None
+        da.tensors = None
+        assert da.tensors is None
 
 
 @pytest.mark.parametrize(
@@ -174,6 +185,7 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_texts_getter_da(docs, config, da_cls, start_storage):
@@ -182,22 +194,23 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    assert len(da.texts) == 100
-    assert da.texts == da[:, 'text']
-    texts = ['text' for _ in range(100)]
-    da.texts = texts
-    assert da.texts == texts
+    with da:  # speed up milvus by loading collection
+        assert len(da.texts) == 100
+        assert da.texts == da[:, 'text']
+        texts = ['text' for _ in range(100)]
+        da.texts = texts
+        assert da.texts == texts
 
-    for x, doc in zip(texts, da):
-        assert x == doc.text
+        for x, doc in zip(texts, da):
+            assert x == doc.text
 
-    da.texts = None
-    if hasattr(da, 'flush'):
-        da.flush()
+        da.texts = None
+        if hasattr(da, 'flush'):
+            da.flush()
 
-    # unfortunately protobuf does not distinguish None and '' on string
-    # so non-set str field in Pb is ''
-    assert set(da.texts) == set([''])
+        # unfortunately protobuf does not distinguish None and '' on string
+        # so non-set str field in Pb is ''
+        assert set(da.texts) == set([''])
 
 
 @pytest.mark.parametrize(
@@ -210,6 +223,7 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_storage):
@@ -248,6 +262,7 @@ def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_sto
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_texts_wrong_len(docs, config, da_cls, start_storage):
@@ -259,7 +274,8 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
     texts = ['hello']
 
     with pytest.raises(ValueError):
-        da.texts = texts
+        with da:
+            da.texts = texts
 
 
 @pytest.mark.parametrize(
@@ -272,6 +288,7 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_tensors_wrong_len(docs, config, da_cls, start_storage):
@@ -283,7 +300,8 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
     tensors = np.ones((2, 10, 10))
 
     with pytest.raises(ValueError):
-        da.tensors = tensors
+        with da:  # speed up milvus by loading collection
+            da.tensors = tensors
 
 
 @pytest.mark.parametrize(
@@ -296,6 +314,7 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_blobs_getter_setter(docs, da_cls, config, start_storage):
@@ -304,15 +323,16 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    with pytest.raises(ValueError):
-        da.blobs = [b'cc', b'bb', b'aa', b'dd']
+    with da:  # speed up milvus by loading collection
+        with pytest.raises(ValueError):
+            da.blobs = [b'cc', b'bb', b'aa', b'dd']
 
-    da.blobs = [b'aa'] * len(da)
-    assert da.blobs == [b'aa'] * len(da)
+        da.blobs = [b'aa'] * len(da)
+        assert da.blobs == [b'aa'] * len(da)
 
-    da.blobs = None
-    if hasattr(da, 'flush'):
-        da.flush()
+        da.blobs = None
+        if hasattr(da, 'flush'):
+            da.flush()
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
@@ -329,6 +349,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
@@ -353,6 +374,7 @@ def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
@@ -374,6 +396,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
         (DocumentArrayElastic, ElasticConfig(n_dim=6)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=6)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):
@@ -383,29 +406,30 @@ def test_zero_embeddings(da_cls, config, start_storage):
     else:
         da = da_cls.empty(10)
 
-    # all zero, dense
-    da[:, 'embedding'] = a
-    np.testing.assert_almost_equal(da.embeddings, a)
-    for d in da:
-        assert d.embedding.shape == (6,)
+    with da:  # speed up milvus by loading collection
+        # all zero, dense
+        da[:, 'embedding'] = a
+        np.testing.assert_almost_equal(da.embeddings, a)
+        for d in da:
+            assert d.embedding.shape == (6,)
 
-    # all zero, sparse
-    sp_a = scipy.sparse.coo_matrix(a)
-    da[:, 'embedding'] = sp_a
-    np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
-    for d in da:
-        # scipy sparse row-vector can only be a (1, m) not squeezible
-        assert d.embedding.shape == (1, 6)
+        # all zero, sparse
+        sp_a = scipy.sparse.coo_matrix(a)
+        da[:, 'embedding'] = sp_a
+        np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
+        for d in da:
+            # scipy sparse row-vector can only be a (1, m) not squeezible
+            assert d.embedding.shape == (1, 6)
 
-    # near zero, sparse
-    a = np.random.random([10, 6])
-    a[a > 0.1] = 0
-    sp_a = scipy.sparse.coo_matrix(a)
-    da[:, 'embedding'] = sp_a
-    np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
-    for d in da:
-        # scipy sparse row-vector can only be a (1, m) not squeezible
-        assert d.embedding.shape == (1, 6)
+        # near zero, sparse
+        a = np.random.random([10, 6])
+        a[a > 0.1] = 0
+        sp_a = scipy.sparse.coo_matrix(a)
+        da[:, 'embedding'] = sp_a
+        np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
+        for d in da:
+            # scipy sparse row-vector can only be a (1, m) not squeezible
+            assert d.embedding.shape == (1, 6)
 
 
 def embeddings_eq(emb1, emb2):
@@ -426,6 +450,7 @@ def embeddings_eq(emb1, emb2):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_getset_subindex(storage, config):
@@ -509,6 +534,7 @@ def test_getset_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_init_subindex(storage, config):
@@ -549,6 +575,7 @@ def test_init_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_set_on_subindex(storage, config):
@@ -566,13 +593,15 @@ def test_set_on_subindex(storage, config):
     embeddings_to_assign = np.random.random((5 * 3, 2))
     with da:
         da['@c'].embeddings = embeddings_to_assign
-    assert (da['@c'].embeddings == embeddings_to_assign).all()
-    assert (da._subindices['@c'].embeddings == embeddings_to_assign).all()
+    with da:
+        assert (da['@c'].embeddings == embeddings_to_assign).all()
+        assert (da._subindices['@c'].embeddings == embeddings_to_assign).all()
 
     with da:
         da['@c'].texts = ['hello' for _ in range(5 * 3)]
-    assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
-    assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
+    with da:
+        assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
+        assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
 
     matches = da.find(query=np.random.random(2), on='@c')
     assert matches

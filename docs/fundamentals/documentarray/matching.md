@@ -1,35 +1,37 @@
 (match-documentarray)=
-# Find Nearest Neighbours
+# Find Nearest Neighbors
 
 ```{important}
 
 {meth}`~docarray.array.mixins.match.MatchMixin.match` and {meth}`~docarray.array.mixins.find.FindMixin.find` support both CPU & GPU.
 ```
 
-Once `.embeddings` is set, one can use {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their `.embeddings` and distance metrics.  
-
+Once `.embeddings` is set, you can use the {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` method to find the nearest-neighbor Documents from another DocumentArray (or the current DocumentArray itself) based on their `.embeddings` and distance metrics.  
 
 ## Difference between find and match
 
-Though both `.find()` and `.match()` is about finding nearest neighbours of a given "query" and both accpet similar arguments, there are some differences between them:
+Though both `.find()` and `.match()` are about finding nearest neighbors of a given "query" and both accept similar arguments, there are some differences:
 
-##### Which side is the query at?
-- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neighbours you should write `one_million_docs.find(query)`;  
-- `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and save the results to A". So with `.match()` you should write `query.match(one_million_docs)`.
+##### Which side is the query on?
 
-##### What is the type of the query?
-  - query (RHS) in `.find()` can be plain NdArray-like object or a single Document or a DocumentArray.
-  - query (LHS) in `.match()` can be either a Document or a DocumentArray. 
+- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find a query's nearest neighbors you should use `one_million_docs.find(query)`;  
+- `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and saves the results to A". So with `.match()` you should use `query.match(one_million_docs)`.
+
+##### What's the query type?
+
+- The query (on the right) in `.find()` can be a plain ndarray-like object, single Document, or DocumentArray.
+- The query (on the left) in `.match()` can be either a Document or DocumentArray. 
 
 ##### What is the return?
-  - `.find()` returns a List of DocumentArray, each of which corresponds to one element/row in the query.
-  - `.match()` do not return anything. Match results are stored inside left-hand side's `.matches`.
 
-In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
+- `.find()` returns a List of DocumentArrays, each of which corresponds to one element/row in the query.
+- `.match()` doesn't return anything. Matched results are stored inside the left-hand side's `.matches`.
+
+Moving forwards, we'll use `.match()`. But bear in mind you could also use `.find()` by switching the right and left-hand sides.
 
 ### Example
 
-The following example finds for each element in `da1` the three closest Documents from the elements in `da2` according to Euclidean distance.
+In the following example, for each element in `da1`, we'll find the three closest Documents from the elements in `da2` based on Euclidean distance.
 
 ````{tab} Dense embedding 
 ```{code-block} python
@@ -125,13 +127,13 @@ match emb =   (0, 0)	1.0
 
 ````
 
-The above example when writing with `.find()`:
+The above example when using `.find()`:
 
 ```python
 da2.find(da1, metric='euclidean', limit=3)
 ```
 
-or simply:
+Or simply:
 
 ```python
 da2.find(
@@ -145,21 +147,19 @@ The following metrics are supported:
 
 | Metric                                                                                                               | Frameworks                                |
 |----------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
-| `cosine`                                                                                                             | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
-| `sqeuclidean`                                                                                                        | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
-| `euclidean`                                                                                                          | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
-| [Metrics supported by Scipy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html) | Scipy                                     |
+| `cosine`                                                                                                             | SciPy, NumPy, TensorFlow, PyTorch, Paddle |
+| `sqeuclidean`                                                                                                        | SciPy, NumPy, TensorFlow, PyTorch, Paddle |
+| `euclidean`                                                                                                          | SciPy, NumPy, TensorFlow, PyTorch, Paddle |
+| [Metrics supported by SciPy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html) | SciPy                                     |
 | User defined callable                                                                                                | Depending on the callable                 |
 
-Note that framework is auto-chosen based on the type of `.embeddings`. For example, if `.embeddings` is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when `.embeddings` is a Numpy `ndarray`, you can choose to use Numpy or Scipy (by specify `.match(..., use_scipy=True)`) for computing. 
+Note that the framework is chosen automatically based on the type of `.embeddings`. For example, if `.embeddings` is a TensorFlow Tensor, then TensorFlow is used for computing. One exception is when `.embeddings` is a NumPy `ndarray`, you can choose to compute with either NumPy or SciPy (by specifying `.match(..., use_scipy=True)`). 
 
-By default `A.match(B)` will copy the top-K matched Documents from B to `A.matches`. When these matches are big, copying them can be time-consuming. In this case, one can leverage `.match(..., only_id=True)` to keep only {attr}`~docarray.Document.id`.
-
-
+By default `A.match(B)` copies the top-K matched Documents from B to `A.matches`. When these matches are big, copying can be time-consuming. In this case, you can leverage `.match(..., only_id=True)` to keep only {attr}`~docarray.Document.id`.
 
 ### GPU support
 
-If `.embeddings` is a Tensorflow tensor, PyTorch tensor or Paddle tensor, `.match()` function can work directly on GPU. To do that, simply set `device=cuda`. For example,
+If `.embeddings` is a TensorFlow, PyTorch, or Paddle tensor, `.match()` can work directly on the GPU. To do this, set `device=cuda`:
 
 ```python
 from docarray import DocumentArray
@@ -174,7 +174,7 @@ da2.embeddings = torch.tensor(np.random.random([10, 256]))
 da1.match(da2, device='cuda')
 ```
 
-Similar as in {meth}`~docarray.array.mixins.embed.EmbedMixin.embed`, if a DocumentArray is too large to fit into GPU memory, one can set `batch_size` to alleviate the problem of OOM on GPU.
+Like {meth}`~docarray.array.mixins.embed.EmbedMixin.embed`, if a DocumentArray is too large to fit into GPU memory, you can set `batch_size` to alleviate the problem of OOM on GPU:
 
 ```python
 da1.match(da2, device='cuda', batch_size=256)
@@ -193,7 +193,7 @@ da1 = DocumentArray.empty(Q)
 da2 = DocumentArray.empty(M)
 ```
 
-````{tab} on CPU via Numpy
+````{tab} on CPU via NumPy
 
 ```python
 import numpy as np
@@ -230,5 +230,3 @@ da1.match(da2, device='cuda', batch_size=1_000, only_id=True)
 ```
 
 ````
-
-

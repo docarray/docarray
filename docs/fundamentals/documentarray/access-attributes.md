@@ -1,9 +1,9 @@
 (bulk-access)=
 # Access Attributes
 
-DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk.
+A DocumentArray itself has no attributes. Accessing attributes in this context means accessing attributes of the contained Documents in bulk.
 
-In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector.
+In the last chapter, we got a taste of DocumentArray's powerful element selector. This chapter continues talking about the attribute selector.
 
 
 ## Attribute selector
@@ -12,9 +12,9 @@ In the last chapter, we get a taste of the powerful element selector of the Docu
 da[element_selector, attribute_selector]
 ```
 
-Here `element_selector` are the ones introduced {ref}`in the last chapter<access-elements>`. The attribute selector can be a string, or a list/tuple of string that represents the names of the attributes.
+Here the `element_selector`s can be any element selector introduced {ref}`in the last chapter<access-elements>`. The attribute selector can be a string, or a list/tuple of string that represents attribute names.
 
-As in element selector, one can use attribute selector to **get/set/delete** attributes in a DocumentArray.
+As with element selectors, you can use attribute selectors to **get/set/delete** attributes in a DocumentArray.
 
 | Example                                      | Return                                                                                                                        |
 |----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
@@ -22,12 +22,12 @@ As in element selector, one can use attribute selector to **get/set/delete** att
 | `da[..., 'id']`                              | all `.id` from all flattened Documents (root, chunks, and matches) in a List                                                                                |
 | `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                       |
 | `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
-| `da[:, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
+| `da[1:3, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
 | `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                 |
 | `da[:, 'tensor']`, `da.tensors`              | a NdArray-like object of the all top-level Documents tensors                                                                  |
 
 
-Let's see an example.
+Let's see an example:
 
 ```python
 from docarray import DocumentArray
@@ -44,7 +44,7 @@ print(da[:, 'id'])
 ['8d41ce5c6f0d11eca2181e008a366d49', '8d41cfa66f0d11eca2181e008a366d49', '8d41cff66f0d11eca2181e008a366d49']
 ```
 
-Of course you can use it with {ref}`the path-string selector<path-string>`.
+Of course you can use it with {ref}`the path-string selector<path-string>`:
 
 ```python
 print(da['@c', 'id'])
@@ -88,7 +88,7 @@ da.summary()
   mime_type   ('str',)          2                False            
 ```
 
-We can see `mime_type` are set.
+You can see the `mime_type` is set for each Document.
 
 If you want to set an attribute of all Documents to the same value without looping:
 
@@ -96,7 +96,7 @@ If you want to set an attribute of all Documents to the same value without loopi
 da[:, 'mime_type'] = 'hello'
 ```
 
-One can also select multiple attributes in one-shot:
+You can also select multiple attributes in one shot:
 
 ```python
 da[:, ['mime_type', 'id']]
@@ -106,7 +106,7 @@ da[:, ['mime_type', 'id']]
 [['image/jpg', 'image/png', 'image/jpg'], ['095cd76a6f0f11ec82211e008a366d49', '095cd8d26f0f11ec82211e008a366d49', '095cd92c6f0f11ec82211e008a366d49']]
 ```
 
-Now let's remove them.
+Now let's remove them:
 
 ```python
 del da[:, 'mime_type']
@@ -134,11 +134,11 @@ da.summary()
 
 ## Auto-ravel on NdArray
 
-Attribute selectors `tensor` and `embedding` behave a bit differently. Instead of relying on Python List for input & return when get/set, they automatically ravel/unravel the NdArray-like object [^1] for you.
+The `tensor` and `embedding` attribute selectors behave a little differently. Instead of relying on Python List for input and return when get/set, they automatically ravel/unravel the ndarray-like object [^1] for you.
 
-[^1]: NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse & dense array.
+[^1]: ndarray-like can be NumPy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse and dense array.
 
-Here is an example, where one may expect that `da[:, 'embedding']` gives you a list of three `(1, 10)` COO matrices. But it auto ravels the results and returns as a `(3, 10)` COO matrix:
+Here's an example, where you may expect that `da[:, 'embedding']` gives you a list of three `(1, 10)` COO matrices. But it auto-ravels the results and returns them as a `(3, 10)` COO matrix:
 
 ```python
 import numpy as np
@@ -166,15 +166,13 @@ for d in da:
 <class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
-Auto unravel works in a similar way, we just assign a `(3, 10)` COO matrix as `.embeddings` and it auto breaks into three and assign them into the three Documents. 
+Auto-unravel works in a similar way: We just assign a `(3, 10)` COO matrix as `.embeddings` and it auto-breaks into three and assigns them into the three Documents. 
 
-Of course, this is not limited to scipy sparse matrix. Any NdArray-like[^1] object would work. The same logic applies also to `.tensors` attribute.
+Of course, this isn't limited to SciPy sparse matrices. Any ndarray-like[^1] object will work. The same logic also applies to the `.tensors` attribute.
 
 ## Dunder syntax for nested attributes
 
-Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
-
-Let's see an example,
+Some attributes are nested by nature, like `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access `.tags['key1']` via `d[:, 'tags__key1']`:
 
 ```python
 import numpy as np
@@ -186,7 +184,7 @@ da.embeddings = np.random.random([3, 2])
 da.match(da)
 ```
 
-Now to print `id` and matched score, one can simply do:
+Now to print `id` and match score:
 
 ```python
 print(da['@m', ('id', 'scores__cosine__value')])
@@ -201,7 +199,7 @@ print(da['@m', ('id', 'scores__cosine__value')])
 (da-content-embedding)=
 ## Content and embedding sugary attributes
 
-DocumentArray provides `.texts`, `.blobs`, `.tensors`, `.contents` and `.embeddings` sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
+DocumentArray provides `.texts`, `.blobs`, `.tensors`, `.contents` and `.embeddings` sugary attributes for quickly accessing the content and embeddings of Documents. You can use them to get/set/delete attributes of all top-level Documents.
 
 ```python
 from docarray import DocumentArray
@@ -216,9 +214,9 @@ print(da.texts)
 ['hello', 'world']
 ```
 
-This is same as `da[:, 'text'] = ['hello', 'world']` and then `print(da[:, 'text'])` but more compact and probably more Pythonic.
+This is the same as `da[:, 'text'] = ['hello', 'world']` followed by `print(da[:, 'text'])`, but more compact and probably more Pythonic.
 
-Same for `.tensors` and `.embeddings`:
+It's the same for `.tensors` and `.embeddings`:
 
 ```python
 import numpy as np

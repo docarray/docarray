@@ -14,6 +14,7 @@ from typing import (
 
 import numpy as np
 from qdrant_client import QdrantClient
+from qdrant_client.http import models
 from qdrant_client.http.models.models import (
     Distance,
     CreateCollection,
@@ -24,7 +25,7 @@ from qdrant_client.http.models.models import (
 )
 
 from docarray import Document
-from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
@@ -51,6 +52,7 @@ class QdrantConfig:
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -72,6 +74,15 @@ class BackendMixin(BaseBackendMixin):
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex
+
+    TYPE_MAP = {
+        'int': TypeMap(type='integer', converter=int),
+        'float': TypeMap(type='float', converter=float),
+        'bool': TypeMap(type='int', converter=bool),
+        'str': TypeMap(type='keyword', converter=str),
+        'text': TypeMap(type='text', converter=str),
+        'geo': TypeMap(type='geo', converter=dict),
+    }
 
     def _init_storage(
         self,
@@ -128,7 +139,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._initialize_qdrant_schema()
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if docs is None and config.collection_name:
             return
@@ -170,6 +181,23 @@ class BackendMixin(BaseBackendMixin):
                 ),
                 hnsw_config=hnsw_config,
             )
+
+            for col, coltype in self._config.columns.items():
+                if coltype == 'text':
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name=col,
+                        field_schema=models.TextIndexParams(
+                            type="text",
+                            tokenizer=models.TokenizerType.WORD,
+                        ),
+                    )
+                else:
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name=col,
+                        field_schema=self._map_type(coltype),
+                    )
 
     def _collection_exists(self, collection_name):
         resp = self.client.get_collections()

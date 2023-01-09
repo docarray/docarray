@@ -1,8 +1,8 @@
 (multimodal-example)=
 # {octicon}`stack` Multi-modal
 
-This example will walk you through how to use DocArray to process multiple data modalities, jointly.
-To do this comfortably and cleanly, you will use DocArray's {ref}`dataclass <dataclass>` feature.
+This example walks you through how to use DocArray to process multiple data modalities in tandem.
+To do this comfortably and cleanly, you can use DocArray's {ref}`dataclass <dataclass>` feature.
 
 ```{seealso}
 This example works with image and text data.

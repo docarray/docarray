@@ -29,6 +29,7 @@ class SqliteConfig:
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'WAL'
     synchronous: str = 'OFF'
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -101,7 +102,7 @@ class BackendMixin(BaseBackendMixin):
         self._connection.commit()
         self._config = config
         self._list_like = config.list_like
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

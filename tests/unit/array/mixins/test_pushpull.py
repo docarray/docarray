@@ -115,11 +115,12 @@ def test_push_with_public(mocker, monkeypatch, public):
     assert form_data['public'] == [str(public)]
 
 
-def test_pull(mocker, monkeypatch):
+@pytest.mark.parametrize('da_name', ['test_name', 'username/test_name'])
+def test_pull(mocker, monkeypatch, da_name):
     mock = mocker.Mock()
     _mock_get(mock, monkeypatch)
 
-    DocumentArray.pull(name='test_name')
+    DocumentArray.pull(name=da_name)
 
     assert mock.call_count == 2  # 1 for pull, 1 for download
 

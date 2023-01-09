@@ -23,6 +23,7 @@ from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.redis import DocumentArrayRedis
+from docarray.array.milvus import DocumentArrayMilvus
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -76,6 +77,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
         # DocumentArrayWeaviate, TODO: enable this
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ],
 )
 @pytest.mark.parametrize('N', [2, 10])
@@ -97,36 +99,50 @@ def test_embedding_on_random_network(
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ]:
         da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)
-    da.tensors = np.random.random([N, *input_shape]).astype(np.float32)
+
     embed_model = random_embed_models[framework]()
-    da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+    if da_cls == DocumentArrayMilvus and len(input_shape) == 3:
+        input_shape = (3, 12, 12)  # Milvus can't handle large tensors
+        if framework.startswith(
+            'transformers'
+        ):  # transformer model expects input shape (3, 224, 224), can't test with Milvus
+            return
 
-    r = da.embeddings
-    if hasattr(r, 'numpy'):
-        r = r.numpy()
-
-    embed1 = r.copy()
-
-    # reset
-    da.embeddings = np.random.random([N, embedding_shape]).astype(np.float32)
-
-    # docs[a: b].embed is only supported for DocumentArrayInMemory
-    if isinstance(da, DocumentArrayInMemory):
-        # try it again, it should yield the same result
+    with da:  # to speed up milvus by loading the collection
+        da.tensors = np.random.random([N, *input_shape]).astype(np.float32)
         da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(da.embeddings, embed1)
+
+        r = da.embeddings
+        if hasattr(r, 'numpy'):
+            r = r.numpy()
+
+        embed1 = r.copy()
 
         # reset
         da.embeddings = np.random.random([N, embedding_shape]).astype(np.float32)
 
-        # now do this one by one
-        da[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        da[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(da.embeddings, embed1)
+        # docs[a: b].embed is only supported for DocumentArrayInMemory
+        if isinstance(da, DocumentArrayInMemory):
+            # try it again, it should yield the same result
+            da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+            np.testing.assert_array_almost_equal(da.embeddings, embed1)
+
+            # reset
+            da.embeddings = np.random.random([N, embedding_shape]).astype(np.float32)
+
+            # now do this one by one
+            da[: int(N / 2)].embed(
+                embed_model, batch_size=batch_size, to_numpy=to_numpy
+            )
+            da[-int(N / 2) :].embed(
+                embed_model, batch_size=batch_size, to_numpy=to_numpy
+            )
+            np.testing.assert_array_almost_equal(da.embeddings, embed1)
 
 
 @pytest.fixture

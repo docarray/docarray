@@ -5,14 +5,17 @@ from multiprocessing.pool import ThreadPool
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.opensearch import DocumentArrayOpenSearch
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 def foo(d: Document):
@@ -53,7 +56,9 @@ def test_parallel_map_apply_external_pool(pytestconfig, pool):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
@@ -110,7 +115,9 @@ def test_parallel_map(
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
@@ -182,7 +189,9 @@ def test_parallel_map_batch(
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_storage):
@@ -211,7 +220,9 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_apply_partial(pytestconfig, da_cls, config, start_storage):
@@ -241,7 +252,9 @@ def test_apply_partial(pytestconfig, da_cls, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=256)),
         ('qdrant', QdrantConfig(n_dim=256)),
         ('elasticsearch', ElasticConfig(n_dim=256)),
+        ('opensearch', OpenSearchConfig(n_dim=256)),
         ('redis', RedisConfig(n_dim=256)),
+        ('milvus', MilvusConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])

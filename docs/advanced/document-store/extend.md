@@ -25,7 +25,7 @@ Let's get started!
 
 ## Step 1: create the folder
 
-Go to `docarray/array/storage` folder, create a sub-folder for your document store. Let's call it `mydocstore`. You will need to create four empty files in that folder:
+Go to `docarray/array/storage` folder, create a sub-folder for your document store. Let's call it `mydocstore`. You need to create four empty files in that folder:
 
 ```{code-block} 
 ---
@@ -80,7 +80,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         ...
 ```
 
-You will need to implement the above five functions, which correspond to the logics of get/set/delete items via a string `.id`. They are essential to ensure DocumentArray works.
+You need to implement the above five functions, which correspond to the logics of get/set/delete items via a string `.id`. They are essential to ensure DocumentArray works.
 
 Note that DocumentArray maintains an `offset2ids` mapping to allow a list-like behaviour. This mapping is 
 inherited from the `BaseGetSetDelMixin`. Therefore, you need to implement methods to persist this mapping, in case you 
@@ -111,9 +111,9 @@ upper level. Also, make sure that `_set_doc_by_id` performs an **upsert operatio
 ```{tip}
 Let's call the above five functions as **the essentials**.
 
-If you aim for high performance, it is recommeneded to implement other methods *without* leveraging your essentials. They are: `_get_docs_by_ids`, `_del_docs_by_ids`, `_clear_storage`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_docs_by_ids`. One can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
+If you aim for high performance, it is recommeneded to implement other methods *without* leveraging your essentials. They are: `_get_docs_by_ids`, `_del_docs_by_ids`, `_clear_storage`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_docs_by_ids`. You can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
 
-Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that is based on your five essentials.
+Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods use a generic-but-slow version based on your five essentials.
 ```
 
 ```{seealso}
@@ -145,8 +145,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __add__(self, other: Union['Document', Iterable['Document']]):
         ...
 
+    def __len__(self):
+        ...
+
     def insert(self, index: int, value: 'Document'):
-        # Optional. By default, this will add a new item and update offset2id
+        # Optional. By default, this adds a new item and update offset2id
         # if you want to customize this, make sure to handle offset2id
         ...
 
@@ -158,12 +161,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         # Optional. Override this if you have better implementation than appending one by one
         ...
 
-    def __len__(self):
-        # Optional. By default, this will rely on offset2id to get the length
-        ...
-
     def __iter__(self) -> Iterator['Document']:
-        # Optional. By default, this will rely on offset2id to iterate
+        # Optional. By default, this relies on offset2id to iterate
         ...
 ```
 
@@ -245,7 +244,7 @@ By default, this should be set to `True`.
 Further, you have to store the value of this flag in `self._list_like`. Some methods that are handled outside of your control will take the value form there and use it appropriately.
 
 `_init_storage` is a very important function to be called during the DocumentArray construction.
-You will need to handle different construction & copy behaviors in this function.
+You need to handle different construction and copy behaviors in this function.
 
 `_ensure_unique_config` is needed to support DocArray's subindex feature.
 A subindex inherits its configuration from the root index, unless a field of the configuration is explicitly provided to the subindex.
@@ -280,7 +279,7 @@ class FindMixin:
         ...
 
     def _find(
-        self, query: 'ElasticArrayType', limit: int = 10, **kwargs
+        self, query: 'OpenSearchArrayType', limit: int = 10, **kwargs
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns `limit` approximate nearest neighbors given a batch of input queries.
         If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing
@@ -289,6 +288,7 @@ class FindMixin:
         ...
 ```
 
+Make sure to store the distance scores in the `.scores` dictionary of the Documents that are being returned with the `distance` value as key.
 
 ## Step 6: summarize everything in `__init__.py`.
 
@@ -308,7 +308,7 @@ class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...
 ```
 
-Just copy-paste it will do the work.
+Just copying and pasting it should work.
 
 If you have implemented a `find.py` module, make sure to also inherit the `FindMixin`:
 ```python
@@ -391,7 +391,7 @@ Done! Now you should be able to use it like `DocumentArrayMyDocStore`!
 
 ## On pull request: add tests and type-hint
 
-Welcome to contribute your extension back to DocArray. You will need to include `DocumentArrayMyDocStore` in at least the following tests:
+You are welcome to contribute your extension back to DocArray. You need to include `DocumentArrayMyDocStore` in at least the following tests:
 
 ```text
 tests/unit/array/test_advance_indexing.py

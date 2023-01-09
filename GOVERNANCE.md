@@ -8,23 +8,43 @@ This project aims to be governed in a transparent, accessible way for the benefi
 
 The contributor role is the starting role for anyone participating in the project and wishing to contribute code.
 
-# Process for becoming a contributor
+### Process for becoming a contributor
 
 * Review the [Contribution Guidelines](./CONTRIBUTING.md) to ensure your contribution is inline with the project's coding and styling guidelines.
 * Submit your code as a PR with the appropriate DCO signoff
 * Have your submission approved by the committer(s) and merged into the codebase.
 
-## Committer
+## Core developers
 
-The committer role enables the contributor to commit code directly to the repository, but also comes with the responsibility of being a responsible leader in the community.
+The core developers role enables the contributor to commit code directly to the repository, but also comes with the responsibility of being a responsible leader in the community.
 
-### Process for becoming a committer
+Currently core developers of DocArray are (in alphabetic order):  [Alaeddine Abdessalem](https://github.com/alaeddine-13), [Charlotte Gerhaher](https://github.com/anna-charlotte),  [Anne Yang](https://github.com/AnneYang720), [Han Xiao](https://github.com/hanxiao), [Joan Fontanals Martínez](https://github.com/JoanFM), [Johannes Messner](https://github.com/JohannesMessner),[Nan wang](https://github.com/nan-wang),[Sami Jaghouar](https://github.com/samsja).
 
-* At the moment (2022 Sept), only Jina AI employees are committers. This can be changed in the future.
+
+### Process for becoming a core developer
+
+Contributors can become core developers by beeing nominated by at least one other core developers of DocArray. There will be a vote by the current core developers. While it is expected that most votes will be unanimous, a two-thirds majority of the cast votes is enough.
+
+If you want to become a core developers, reach out to docarray@jina.ai. 
+
+## TSC members
+
+The Techincal Steering Commite (TSC) members are core developers who have additional responsibilities to ensure the smooth running of the project. TSC members are expected to participate in strategic planning, and approve changes to the governance model. The purpose of the TSC is to ensure a smooth progress from the big-picture perspective.
+
+Currently TSC menbers of DocArray are (in alphabetic order):  [Alaeddine Abdessalem](https://github.com/alaeddine-13), [Han Xiao](https://github.com/hanxiao), [Joan Fontanals Martínez](https://github.com/JoanFM), [Johannes Messner](https://github.com/JohannesMessner),[Nan wang](https://github.com/nan-wang),[Sami Jaghouar](https://github.com/samsja).
+
+
+One of the TSC members is the chairperson of the TSC and should ensure the smooth running of the TSC. They do not have more voting power that other TSC menber.
+
+Currently [JoanFM](https://github.com/JoanFM) is the chairperson of the TSC
+
+### Process for becoming a TSC member
+
+Core developers can become TSC menbers by beeing nominated by at least one TSC member. There will be a vote by the current TSC menbers and the vote need to be unanimous for the nominated person to be accepted as a TSC menber. TSC members who do not actively engage with the TSC duties are expected to resign.
 
 # Release Process
 
-Project releases will occur on a scheduled basis as agreed to by the committers.
+Project releases will occur on a scheduled basis as agreed by the committers.
 
 # Communication
 

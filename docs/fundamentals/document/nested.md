@@ -1,7 +1,7 @@
 (recursive-nested-document)=
 # Nested Structure
 
-Document can be nested both horizontally and vertically via `.matches` and `.chunks`. The picture below illustrates the recursive Document structure. 
+Documents can be nested both horizontally and vertically via `.matches` and `.chunks`. The picture below illustrates the recursive Document structure. 
 
 ```{figure} images/nested-structure.svg
 ```
@@ -13,7 +13,7 @@ Document can be nested both horizontally and vertically via `.matches` and `.chu
 | `doc.granularity` | The "depth" of the nested chunks structure                                                       |
 | `doc.adjacency`   | The "width" of the nested match structure                                                        |
 
-You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a Document:
+You can add **chunks** (sub-Document) and **matches** (neighbor-Document) to a Document:
 
 - Add in constructor:
 
@@ -57,8 +57,6 @@ d.summary()
 
 ## What's next?
 
-When you have multiple Documents with nested structures, traversing over certain chunks and matches can be crucial. Fortunately, this is extremely simple thanks to DocumentArray as shown in {ref}`access-elements`.
+When you have multiple Documents with nested structures, traversing over certain chunks and matches can be crucial. This is simple thanks to DocumentArray as shown in {ref}`access-elements`.
 
-Note that some methods rely on these two attributes, some methods require these two attributes to be filled in advance. For example, {meth}`~docarray.array.mixins.match.MatchMixin.match` will fill `.matches`, whereas {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate` requires `.matches` to be filled.
-
-
+Note that some methods rely on these two attributes, while other methods require these two attributes to be filled in advance. For example, {meth}`~docarray.array.mixins.match.MatchMixin.match` will fill `.matches`, whereas {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate` requires `.matches` to be filled.

@@ -32,7 +32,7 @@ A Document object has a predefined data schema as below, each of the attributes 
 An `ndarray`-like object can be a Python (nested) List/Tuple, Numpy ndarray, SciPy sparse matrix (spmatrix), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
 ```
 
-The data schema of the Document is comprehensive and well-organized. One can categorize those attributes into the following groups:
+The Document's data schema is comprehensive and well-organized. You can categorize its attributes into several groups:
 
 - Content related: `uri`, `text`, `tensor`, `blob`;
 - Nest structure related: `chunks`, `matches`, `granularity`, `adjacency`, `parent_id`;
@@ -45,8 +45,7 @@ This picture depicts how you may want to construct or comprehend a Document obje
 ```{figure} images/document-attributes.svg
 ```
 
-
-Document also provides a set of functions frequently used in data science and machine learning community.
+Documents also provide a set of functions frequently used in the data science and machine learning community.
 
 
 ## What's next?

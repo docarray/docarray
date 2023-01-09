@@ -1,19 +1,18 @@
 (subindex)=
 # Search over Nested Structure
 
-To use {meth}`~docarray.array.mixins.find.FindMixin.find` on multimodal or nested Documents (a multimodal Document is intrinsic nested Documents), you will need "subindices". The word "subindcies" represents that you are adding a new sublevel of indexing to the DocumentArray and make it searchable.
+To use {meth}`~docarray.array.mixins.find.FindMixin.find` on multimodal or nested Documents (a multimodal Document is intrinsically a nested Document), you need "subindices". The word "subindices" represents that you are adding a new sub-level of indexing to the DocumentArray and making it searchable.
 
-
-Each subindex indexes and stores one nesting level, such as `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`, and makes it directly searchable. Under the hood, subindices are fully fledged DocumentArrays with their own {ref}`Document Store<doc-store>`.
+Each subindex indexes and stores one nesting level (like `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`) and makes it directly searchable. Under the hood, subindices are fully fledged DocumentArrays with their own {ref}`document store<doc-store>`.
 
 ```{seealso}
-To see an example of subindices in action, see {ref}`here <multimodal-search-example>`.
+To see subindices in action, check {ref}`here <multimodal-search-example>`.
 ```
 
 ## Construct subindices
 
-Subindices are specified when creating a DocumentArray,
-by passing a configuration for each desired subindex to the `subindex_configs` parameter:
+You can specify subindices when you create a DocumentArray
+by passing configuration for each desired subindex to the `subindex_configs` parameter:
 
 ````{tab} Subindex with dataclass modalities
 ```python
@@ -135,19 +134,18 @@ da = DocumentArray(
 ```
 ````
 
-The `subindex_configs` dictionary is structured in the following way:
+The `subindex_configs` dictionary is structured as follows:
 
-- **Keys:** Each key in `subindex_configs` is the *name* of a subindex. It has to be a valid DocumentArray access path (such as `'@.[image]'`, `'@.[image, paragraph]'`, `'@c'`, or `'@cc'`).
+- **Keys:** Each key in `subindex_configs` is the *name* of a subindex. It must be a valid DocumentArray access path (like `'@.[image]'`, `'@.[image, paragraph]'`, `'@c'`, or `'@cc'`).
 
-- **Values:** Each value in `subindex_configs` is the *configuration* of a subindex. It can be any configuration that is valid for the given DocumentArray type.
-Fields that are not given in the subindex configuration will be inherited from the parent configuration.
-
+- **Values:** Each value in `subindex_configs` is the *configuration* of a subindex. It can be any valid configuration for the given DocumentArray type.
+Fields that are not given in the subindex configuration are inherited from the parent configuration.
 
 ## Modify subindices
 
-Once a DocumentArray with subindices has been constructed, any modifications to the parent DocumentArray will automatically update the subindices.
+Once you've constructed a DocumentArray with subindices, modifying the parent DocumentArray automatically updates the subindices.
 
-This means that you can insert, extend, delete etc. it like any other DocumentArray. For example:
+This means you can insert, extend, delete (etc.) it like any other DocumentArray:
 
 ````{tab} Subindex with dataclass modalities
 ```python
@@ -217,18 +215,26 @@ Document(embedding=np.random.rand(512)).match(da, on='@c')
 ```
 ````
 
-Such a search will return Documents from the subindex. If you are interested in the top-level Documents associated with
-a match, you can retrieve them using `parent_id`:
+Such a search will return Documents from the subindex. If you are interested in the top-level Documents associated with a match, you can retrieve them by setting `return_root=True` in `find`:
 
 ````{tab} Subindex with dataclass modalities
 ```python
-top_image_matches = da.find(query=np.random.rand(512), on='@.[image]')
-top_level_matches = da[top_image_matches[:, 'parent_id']]
+top_level_matches = da.find(query=np.random.rand(512), on='@.[image]', return_root=True)
 ```
 ````
 ````{tab} Subindex with chunks
 ```python
-top_image_matches = da.find(query=np.random.rand(512), on='@c')
-top_level_matches = da[top_image_matches[:, 'parent_id']]
+top_level_matches = da.find(query=np.random.rand(512), on='@c', return_root=True)
+```
+````
+
+````{admonition} Note
+:class: note
+When you add or change Documents directly on a subindex, the `_root_id_` (or `parent_id` for DocumentArrayInMemory) of new Documents should be set manually for `return_root=True` to work:
+
+```python
+da['@c'].extend(
+    Document(embedding=np.random.random(512), tags={'_root_id_': 'your_root_id'})
+)
 ```
 ````

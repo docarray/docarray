@@ -1,7 +1,7 @@
 (construct-array)=
 # Construct
 
-## Construct an empty array
+## Construct an empty DocumentArray
 
 ```python
 from docarray import DocumentArray
@@ -13,7 +13,7 @@ da = DocumentArray()
 <DocumentArray (length=0) at 4453362704>
 ```
 
-Now you can use list-like interfaces such as `.append()` and `.extend()` as you would add elements to a Python List.
+Now you can use methods like `.append()` and `.extend()` just like you would in a Python List.
 
 ```python
 da.append(Document(text='hello world!'))
@@ -24,7 +24,7 @@ da.extend([Document(text='hello'), Document(text='world!')])
 <DocumentArray (length=3) at 4446140816>
 ```
 
-Directly printing a DocumentArray does not show you too much useful information, you can use {meth}`~docarray.array.mixins.plot.PlotMixin.summary`.
+Directly printing a DocumentArray doesn't show much useful information. For that you can use {meth}`~docarray.array.mixins.plot.PlotMixin.summary`.
 
 
 ```python
@@ -63,7 +63,7 @@ da = DocumentArray.empty(10)
 
 ## Construct from list-like objects
 
-You can construct DocumentArray from a `Sequence`, `List`, `Tuple` or `Iterator` that yields `Document` object.
+You can construct DocumentArray from a `Sequence`, `List`, `Tuple` or `Iterator` that yields `Document` objects.
 
 ````{tab} From list of Documents
 ```python
@@ -89,8 +89,7 @@ da = DocumentArray((Document() for _ in range(10)))
 ```
 ````
 
-
-As DocumentArray itself is also a "list-like object that yields `Document`", you can also construct DocumentArray from another DocumentArray:
+As DocumentArray itself is also a "list-like object that yields `Document`s", you can also construct a DocumentArray from another DocumentArray:
 
 ```python
 da = DocumentArray(...)
@@ -135,7 +134,7 @@ da = DocumentArray(d1)
 
 ## Deep copy on elements
 
-Note that, as in Python list, adding Document object into DocumentArray only adds its memory reference. The original Document is *not* copied. If you change the original Document afterwards, then the one inside DocumentArray will also change. Here is an example,
+Note that, as in Python lists, adding a Document object into a DocumentArray only adds its memory reference. The original Document is *not* copied. If you change the original Document later, then the Document inside the DocumentArray will also change:
 
 ```python
 from docarray import DocumentArray, Document
@@ -153,7 +152,7 @@ hello
 world
 ```
 
-This may surprise some users, but considering the following Python code, you will find this behavior is very natural and authentic.
+This may be surprising, but considering the following Python code, you'll see this behavior is very natural and authentic:
 
 ```python
 d = {'hello': None}
@@ -169,7 +168,7 @@ None
 world
 ```
 
-To make a deep copy, set `DocumentArray(..., copy=True)`. Now all Documents in this DocumentArray are completely new objects with identical contents as the original ones.
+To make a deep copy, set `DocumentArray(..., copy=True)`. Now all Documents in this DocumentArray are completely new objects with contents identical to the original Documents.
 
 ```python
 from docarray import DocumentArray, Document
@@ -189,7 +188,7 @@ hello
 
 ## Construct from local files
 
-You may recall the common pattern that {ref}`I mentioned here<content-uri>`. With {meth}`~docarray.document.generators.from_files` One can easily construct a DocumentArray object with all file paths defined by a glob expression. 
+You may recall the common pattern that {ref}`we mentioned here<content-uri>`. With {meth}`~docarray.document.generators.from_files` You can easily construct a DocumentArray object with all file paths defined by a glob expression. 
 
 ```python
 from docarray import DocumentArray
@@ -199,11 +198,8 @@ da_png = DocumentArray.from_files('images/*.png')
 da_all = DocumentArray.from_files(['images/**/*.png', 'images/**/*.jpg', 'images/**/*.jpeg'])
 ```
 
-This will scan all filenames that match the expression and construct Documents with filled `.uri` attribute. You can control if to read each as text or binary with `read_mode` argument.
-
-
-
+This scans all filenames that match the expression and constructs Documents with filled `.uri` attributes. You can control whether to read file as text or binary using the `read_mode` argument.
 
 ## What's next?
 
-In the next chapter, we will see how to construct DocumentArray from binary bytes, JSON, CSV, dataframe, Protobuf message.
+In the next chapter, we'll see how to construct a DocumentArray from binary bytes, JSON, CSV, DataFrame, or Protobuf message.

@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.document.mixins.mesh import Mesh
+from docarray.document.mixins.mesh import MeshEnum, PointCloudEnum
 
 
 class PlotMixin:
@@ -76,8 +76,12 @@ class PlotMixin:
         Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
-        if self._is_3d():
-            self.display_3d()
+        if self._is_3d_point_cloud():
+            self.display_point_cloud_tensor()
+        elif self._is_3d_rgbd():
+            self.display_rgbd_tensor()
+        elif self._is_3d_vertices_and_faces():
+            self.display_vertices_and_faces()
         else:
             if not from_:
                 if self.uri:
@@ -94,59 +98,45 @@ class PlotMixin:
             else:
                 self.summary()
 
-    def _is_3d(self) -> bool:
+    def _is_3d_point_cloud(self):
         """
-        Tells if Document stores a 3D object saved as point cloud or vertices and face.
+        Tells if Document stores a 3D object saved as point cloud tensor.
         :return: bool.
         """
-        if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
-            return True
-        elif (
+        if (
             self.tensor is not None
-            and self.tensor.shape[1] == 3
             and self.tensor.ndim == 2
+            and self.tensor.shape[-1] == 3
         ):
             return True
-        elif self.chunks is not None:
-            name_tags = [c.tags['name'] for c in self.chunks]
-            if Mesh.VERTICES in name_tags and Mesh.FACES in name_tags:
-                return True
         else:
             return False
 
-    def display_3d(self) -> None:
-        """Plot 3d data."""
-        from IPython.display import display
-        import trimesh
+    def _is_3d_rgbd(self):
+        """
+        Tells if Document stores a 3D object saved as RGB-D image tensor.
+        :return: bool.
+        """
+        if (
+            self.tensor is not None
+            and self.tensor.ndim == 3
+            and self.tensor.shape[-1] == 4
+        ):
+            return True
+        else:
+            return False
 
-        if self.tensor is not None:
-            # point cloud from tensor
-            from hubble.utils.notebook import is_notebook
-
-            if is_notebook():
-                pc = trimesh.points.PointCloud(
-                    vertices=self.tensor,
-                    colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
-                )
-                s = trimesh.Scene(geometry=pc)
-                display(s.show())
-            else:
-                pc = trimesh.points.PointCloud(vertices=self.tensor)
-                display(pc.show())
-
-        elif self.uri:
-            # mesh from uri
-            mesh = self._load_mesh()
-            display(mesh.show())
-
-        elif self.chunks is not None:
-            # mesh from chunks
-            vertices = [
-                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
-            ][-1]
-            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
-            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-            display(mesh.show())
+    def _is_3d_vertices_and_faces(self):
+        """
+        Tells if Document stores a 3D object saved as vertices and faces.
+        :return: bool.
+        """
+        if self.chunks is not None:
+            name_tags = [c.tags['name'] for c in self.chunks]
+            if MeshEnum.VERTICES in name_tags and MeshEnum.FACES in name_tags:
+                return True
+        else:
+            return False
 
     def display_tensor(self) -> None:
         """Plot image data from :attr:`.tensor`"""
@@ -168,6 +158,79 @@ class PlotMixin:
             import matplotlib.pyplot as plt
 
             plt.matshow(self.tensor)
+
+    def display_vertices_and_faces(self):
+        """Plot mesh consisting of vertices and faces."""
+        from IPython.display import display
+
+        if self.uri:
+            # mesh from uri
+            mesh = self._load_mesh()
+            display(mesh.show())
+
+        else:
+            # mesh from chunks
+            import trimesh
+
+            vertices = [
+                c.tensor for c in self.chunks if c.tags['name'] == MeshEnum.VERTICES
+            ][-1]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == MeshEnum.FACES][
+                -1
+            ]
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+            display(mesh.show())
+
+    def display_point_cloud_tensor(self) -> None:
+        """Plot interactive point cloud from :attr:`.tensor`"""
+        import trimesh
+        from IPython.display import display
+        from hubble.utils.notebook import is_notebook
+
+        colors = np.tile(np.array([0, 0, 0]), (len(self.tensor), 1))
+        for chunk in self.chunks:
+            if (
+                'name' in chunk.tags.keys()
+                and chunk.tags['name'] == PointCloudEnum.COLORS
+                and chunk.tensor.shape[-1] in [3, 4]
+            ):
+                colors = chunk.tensor
+
+        pc = trimesh.points.PointCloud(
+            vertices=self.tensor,
+            colors=colors,
+        )
+
+        if is_notebook():
+            s = trimesh.Scene(geometry=pc)
+            display(s.show())
+        else:
+            display(pc.show())
+
+    def display_rgbd_tensor(self) -> None:
+        """Plot an RGB-D image and a corresponding depth image from :attr:`.tensor`"""
+        import matplotlib.pyplot as plt
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+        rgb_img = self.tensor[:, :, :3]
+
+        depth_img = self.tensor[:, :, -1]
+        depth_img = depth_img / (np.max(depth_img) + 1e-08) * 255
+        depth_img = depth_img.astype(np.uint8)
+
+        f, ax = plt.subplots(1, 2, figsize=(16, 6))
+
+        ax[0].imshow(rgb_img, interpolation='None')
+        ax[0].set_title('RGB image\n', fontsize=16)
+
+        im2 = ax[1].imshow(self.tensor[:, :, -1], cmap='gray')
+        cax = make_axes_locatable(ax[1]).append_axes('right', size='5%', pad=0.05)
+        f.colorbar(im2, cax=cax, orientation='vertical', label='Depth')
+
+        ax[1].imshow(depth_img, cmap='gray')
+        ax[1].set_title('Depth image\n', fontsize=16)
+
+        plt.show()
 
     def display_uri(self):
         """Plot image data from :attr:`.uri`"""

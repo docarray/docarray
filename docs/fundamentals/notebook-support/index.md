@@ -41,9 +41,14 @@ Video and audio Document can be displayed as well, you can play them in the cell
 ```{figure} audio-video.png
 ```
 
-You can also display your 3d object and interact with it in the cell, whether you stored it as a point cloud or vertices and faces.
+You can also display your 3D object and interact with it in the cell, whether you stored it as a point cloud or vertices and faces.
 
 ```{figure} mesh-point-cloud.png
+```
+
+Additionally, you can also display an RGB image and its corresponding depth image:
+
+```{figure} image-rgbd.png
 ```
 
 ## Display DocumentArray

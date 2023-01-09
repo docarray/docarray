@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from collections import Counter
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import DocumentArray
+    from docarray import Document, DocumentArray
 
 __resources_path__ = os.path.join(
     os.path.dirname(
@@ -487,6 +487,35 @@ def _get_array_info(da: 'DocumentArray'):
             )
 
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
+
+
+def check_root_id(da: 'DocumentArray', value: Union['Document', Sequence['Document']]):
+
+    from docarray import Document
+    from docarray.array.memory import DocumentArrayInMemory
+
+    if not (
+        isinstance(value, Document)
+        or (isinstance(value, Sequence) and isinstance(value[0], Document))
+    ):
+        return
+
+    if isinstance(value, Document):
+        value = [value]
+
+    if isinstance(da, DocumentArrayInMemory):
+        if not all([getattr(doc, 'parent_id', None) for doc in value]):
+            warnings.warn(
+                "Not all documents have parent_id set. This may cause unexpected behavior.",
+                UserWarning,
+            )
+    elif da._config.root_id and not all(
+        [doc.tags.get('_root_id_', None) for doc in value]
+    ):
+        warnings.warn(
+            "root_id is enabled but not all documents have _root_id_ set. This may cause unexpected behavior.",
+            UserWarning,
+        )
 
 
 def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):

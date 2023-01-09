@@ -43,8 +43,20 @@ class AudioDataMixin:
 
         :return: Document itself after processed
         """
+        if self.uri.startswith('http'):
+            import io
+            import requests
+
+            resp = requests.get(self.uri)
+            resp.raise_for_status()
+            file = io.BytesIO()
+            file.write(resp.content)
+            file.seek(0)
+        else:
+            file = self.uri
+
         with wave.open(
-            self.uri
+            file
         ) as ifile:  #: note wave is Python built-in module https://docs.python.org/3/library/wave.html
             samples = ifile.getnframes()
             audio = ifile.readframes(samples)

@@ -114,14 +114,14 @@ def lookup(key, val, doc: 'Document') -> bool:
             )
 
         if '__' in get_key:
-            is_empty = False
-            try:
-                is_empty = not value
-            except:
-                # ndarray-like will end up here
-                pass
-
-            return is_empty != val
+            if value is None and val is True:
+                return False
+            elif value is None and val is False:
+                return True
+            elif value is not None and val is True:
+                return True
+            else:  # value is not None and val is False:
+                return False
         else:
             return (_is_not_empty(get_key, value)) == val
     else:

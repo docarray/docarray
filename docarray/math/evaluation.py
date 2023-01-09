@@ -98,6 +98,8 @@ def recall_at_k(
     """
     _check_k(k)
     binary_relevance = np.array(binary_relevance[:k]) != 0
+    if max_rel is None:
+        raise ValueError('The metric recall_at_k requires a max_rel parameter')
     if np.sum(binary_relevance) > max_rel:
         raise ValueError(f'Number of relevant Documents retrieved > {max_rel}')
     return np.sum(binary_relevance) / max_rel

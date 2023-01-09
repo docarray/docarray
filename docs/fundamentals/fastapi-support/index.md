@@ -8,11 +8,11 @@ When you want to send or receive Document or DocumentArray objects via the REST 
 
 This method, although quite intuitive to many data scientists, is *not* the modern way of building API services. Your engineer friends won't be happy if you give them a service like this. The main problem is **data validation**.
 
-Of course, you can include data validation in your service logic, but this can be difficult as you will need to check field by field and repeat things like `isinstance(field, int)`, not to mention handling nested JSON.
+Of course, you can include data validation in your service logic, but this can be difficult as you need to check field by field and repeat things like `isinstance(field, int)`, not to mention handling nested JSON.
 
 Modern web frameworks validate the data _before_ it enters the core logic. For example, [FastAPI](https://fastapi.tiangolo.com/) leverages [pydantic](https://pydantic-docs.helpmanual.io/) to validate input and output data.
 
-This chapter will introduce how to use DocArray's pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won't repeat them here again.
+This chapter introduces how to use DocArray's pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won't repeat them here again.
 
 ```{tip}
 Features introduced in this chapter require `fastapi` and `pydantic` as dependencies. Please run `pip install "docarray[full]"` to enable it.
@@ -71,7 +71,7 @@ When you give this schema to your engineer friends, they'll be able to understan
 
 ## Validate incoming Document and DocumentArray objects
 
-You can import {class}`~docarray.document.pydantic_model.PydanticDocument` and {class}`~docarray.document.pydantic_model.PydanticDocumentArray` pydantic data models, and use them to type hint your endpoint. This will enable the data validation.
+You can import {class}`~docarray.document.pydantic_model.PydanticDocument` and {class}`~docarray.document.pydantic_model.PydanticDocumentArray` pydantic data models, and use them to type hint your endpoint. This enables data validation.
 
 ```python
 from docarray.document.pydantic_model import PydanticDocument, PydanticDocumentArray
@@ -144,7 +144,7 @@ async def create_array(items: PydanticDocumentArray):
 
 Supporting the pydantic data model means much more than data validation. One useful pattern is to define a smaller data model and restrict the response to certain fields of the Document.
 
-Imagine we have a DocumentArray with `.embeddings` on the server side, but we do not want to return them to the client for various reasons (for example, they may be meaningless to users, or too big to transfer). One can simply define the fields of interest via 
+Imagine we have a DocumentArray with `.embeddings` on the server side, but we do not want to return them to the client for various reasons (for example, they may be meaningless to users, or too big to transfer). You can simply define the fields of interest via 
  `pydantic.BaseModel` and then use it in `response_model=`.
 
 ```python

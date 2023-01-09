@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
         test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2.5.0
@@ -59,7 +59,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
-        timeout-minutes: 45
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
@@ -69,7 +69,7 @@ jobs:
           files: "coverage.xml"
       - name: Upload coverage from test to Codecov
         uses: codecov/codecov-action@v3.1.1
-        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
         with:
           file: coverage.xml
           flags: ${{ steps.test.outputs.codecov_flag }}
@@ -82,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
         test-path: ${{fromJson(needs.prep-testbed.outputs.matrix-oldproto)}}
     steps:
       - uses: actions/checkout@v2
@@ -110,7 +110,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "::set-output name=codecov_flag::docarray"
-        timeout-minutes: 30
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
@@ -120,7 +120,7 @@ jobs:
           files: "coverage.xml"
       - name: Upload coverage from test to Codecov
         uses: codecov/codecov-action@v2
-        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
         with:
           file: coverage.xml
           flags: ${{ steps.test.outputs.codecov_flag }}
@@ -143,3 +143,31 @@ jobs:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
           JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
+
+  check-readme-modification:
+    runs-on: ubuntu-latest
+    outputs:
+      readme_changed: ${{ steps.step_output.outputs.readme_changed }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            README.md
+
+      - name: Check if README is modified
+        id: step_output
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          echo "readme_changed=true" >> $GITHUB_OUTPUT
+
+  publish-docarray-org:
+    needs: check-readme-modification
+    if: needs.check-readme-modification.outputs.readme_changed == 'true'
+    uses: ./.github/workflows/publish-docarray-org.yml
+    secrets: inherit

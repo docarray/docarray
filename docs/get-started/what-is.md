@@ -26,7 +26,7 @@ DocArray is designed to be extremely intuitive for Python users, no new syntax t
 
 DocArray is designed to maximize the local experience, with the requirement of cloud readiness at any time.
 
-DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of [multi/cross-modal applications](https://docs.jina.ai/get-started/what-is-cross-modal-multi-modal/).
+DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of multi-modal applications
 
 ```{figure} dataclass-example.svg
 :width: 80%
@@ -119,11 +119,7 @@ In DocArray, the basic element you work with is a Document, not `ndarray`. The s
 
 ## To Jina Users
 
-<<<<<<< Updated upstream
 DocArray focuses on local and monolith developer experience. Jina scales DocArray to the Cloud. More details on their relations can be {ref}`found here<jina-support>`.
-
-=======
->>>>>>> Stashed changes
 Jina 2.0-2.6 *kind of* had its own "DocArray", with very a similar `Document` and `DocumentArray` interface. However, it was an old design and codebase. Since then, many redesigns and improvements have been made to boost its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as Jina 3.x and Finetuner rely on.
 
 The first good reason to use DocArray is its efficiency. Here is a side-by-side speed comparison of Jina 2.6 vs. DocArray on some common tasks:

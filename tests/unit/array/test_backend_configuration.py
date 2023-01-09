@@ -155,6 +155,30 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, prefer_grpc, r
     assert len(index) == N
 
 
+@pytest.mark.parametrize('type_da', [int, float, str, bool])
+@pytest.mark.parametrize('type_column', ['int', 'str', 'float', 'double', 'bool'])
+def test_cast_columns_milvus(start_storage, type_da, type_column, request):
+    test_id = request.node.callspec.id.replace(
+        '-', ''
+    )  # remove '-' from the test id for the milvus name
+    N = 10
+
+    index = DocumentArray(
+        storage='milvus',
+        config={
+            'collection_name': f'test{test_id}',
+            'n_dim': 3,
+            'columns': {'price': type_column},
+        },
+    )
+
+    docs = DocumentArray([Document(tags={'price': type_da(i)}) for i in range(N)])
+
+    index.extend(docs)
+
+    assert len(index) == N
+
+
 def test_random_subindices_config():
     database_index = random.randint(0, 100)
     database_name = "jina" + str(database_index) + ".db"

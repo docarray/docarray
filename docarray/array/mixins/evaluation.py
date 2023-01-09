@@ -1,10 +1,10 @@
 import warnings
-from typing import Optional, Union, TYPE_CHECKING, Callable, List, Dict, Tuple
+from typing import Optional, Union, TYPE_CHECKING, Callable, List, Dict, Tuple, Any
 
 from functools import wraps
 
 import numpy as np
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from docarray.score import NamedScore
 
@@ -79,6 +79,7 @@ class EvaluationMixin:
         metric_names: Optional[List[str]] = None,
         strict: bool = True,
         label_tag: str = 'label',
+        num_relevant_documents_per_label: Optional[Dict[Any, int]] = None,
         **kwargs,
     ) -> Dict[str, float]:
         """
@@ -109,6 +110,10 @@ class EvaluationMixin:
             aligned: on the length, and on the semantic of length. These are preventing
             you to evaluate on irrelevant matches accidentally.
         :param label_tag: Specifies the tag which contains the labels.
+        :param num_relevant_documents_per_label: Some metrics, e.g., recall@k, require
+            the number of relevant documents. To apply those to a labeled dataset, one
+            can provide a dictionary which maps labels to the total number of documents
+            with this label.
         :param kwargs: Additional keyword arguments to be passed to the metric
             functions.
         :return: A dictionary which stores for each metric name the average evaluation
@@ -161,7 +166,22 @@ class EvaluationMixin:
         results = defaultdict(list)
         caller_max_rel = kwargs.pop('max_rel', None)
         for d, gd in zip(self, ground_truth):
-            max_rel = caller_max_rel or len(gd.matches)
+            if caller_max_rel:
+                max_rel = caller_max_rel
+            elif ground_truth_type == 'labels':
+                if num_relevant_documents_per_label:
+                    max_rel = num_relevant_documents_per_label.get(
+                        d.tags[label_tag], None
+                    )
+                    if max_rel is None:
+                        raise ValueError(
+                            '`num_relevant_documents_per_label` misses the label '
+                            + str(d.tags[label_tag])
+                        )
+                else:
+                    max_rel = None
+            else:
+                max_rel = len(gd.matches)
             if strict and hash_fn(d) != hash_fn(gd):
                 raise ValueError(
                     f'Document {d} from the left-hand side and '
@@ -174,7 +194,7 @@ class EvaluationMixin:
                     f'Document {d!r} or {gd!r} has no matches, please check your Document'
                 )
 
-            targets = gd.matches[:max_rel]
+            targets = gd.matches
 
             if ground_truth_type == 'matches':
                 desired = {hash_fn(m) for m in targets}
@@ -438,12 +458,26 @@ class EvaluationMixin:
                     new_matches.append(m)
                 query_data[doc.id, 'matches'] = new_matches
 
+        if (
+            not (ground_truth and len(ground_truth) > 0 and ground_truth[0].matches)
+            and label_tag in index_data[0].tags
+        ):
+            num_relevant_documents_per_label = dict(
+                Counter([d.tags[label_tag] for d in index_data])
+            )
+            if only_one_dataset and exclude_self:
+                for k, v in num_relevant_documents_per_label.items():
+                    num_relevant_documents_per_label[k] -= 1
+        else:
+            num_relevant_documents_per_label = None
+
         metrics_resp = query_data.evaluate(
             ground_truth=ground_truth,
             metrics=metrics,
             metric_names=metric_names,
             strict=strict,
             label_tag=label_tag,
+            num_relevant_documents_per_label=num_relevant_documents_per_label,
             **kwargs,
         )
 

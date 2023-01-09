@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TYPE_CHECKING, Union
 
 import numpy as np
@@ -7,7 +8,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import trimesh
 
 
-class Mesh:
+class MeshEnum(Enum):
     FILE_EXTENSIONS = [
         'glb',
         'obj',
@@ -15,6 +16,10 @@ class Mesh:
     ]
     VERTICES = 'vertices'
     FACES = 'faces'
+
+
+class PointCloudEnum(Enum):
+    COLORS = 'point_cloud_colors'
 
 
 class MeshDataMixin:
@@ -80,8 +85,8 @@ class MeshDataMixin:
         faces = mesh.faces.view(np.ndarray)
 
         self.chunks = [
-            Document(name=Mesh.VERTICES, tensor=vertices),
-            Document(name=Mesh.FACES, tensor=faces),
+            Document(name=MeshEnum.VERTICES, tensor=vertices),
+            Document(name=MeshEnum.FACES, tensor=faces),
         ]
 
         return self
@@ -96,9 +101,9 @@ class MeshDataMixin:
         faces = None
 
         for chunk in self.chunks:
-            if chunk.tags['name'] == Mesh.VERTICES:
+            if chunk.tags['name'] == MeshEnum.VERTICES:
                 vertices = chunk.tensor
-            if chunk.tags['name'] == Mesh.FACES:
+            if chunk.tags['name'] == MeshEnum.FACES:
                 faces = chunk.tensor
 
         if vertices is not None and faces is not None:
@@ -110,5 +115,36 @@ class MeshDataMixin:
             raise AttributeError(
                 'Point cloud tensor can not be set, since vertices and faces chunk tensor have not been set.'
             )
+
+        return self
+
+    def load_uris_to_rgbd_tensor(self: 'T') -> 'T':
+        """Load RGB image from :attr:`.uri` of :attr:`.chunks[0]` and depth image from :attr:`.uri` of :attr:`.chunks[1]` and merge them into :attr:`.tensor`.
+
+        :return: itself after processed
+        """
+        from PIL import Image
+
+        if len(self.chunks) != 2:
+            raise ValueError(
+                f'The provided Document does not have two chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.'
+            )
+        for chunk in self.chunks:
+            if chunk.uri == '':
+                raise ValueError(
+                    'A chunk of the given Document does not provide a uri.'
+                )
+
+        rgb_img = np.array(Image.open(self.chunks[0].uri).convert('RGB'))
+        depth_img = np.array(Image.open(self.chunks[1].uri))
+
+        if rgb_img.shape[0:2] != depth_img.shape:
+            raise ValueError(
+                f'The provided RGB image and depth image are not of the same shapes: {rgb_img.shape[0:2]} != {depth_img.shape}'
+            )
+
+        self.tensor = np.concatenate(
+            (rgb_img, np.expand_dims(depth_img, axis=2)), axis=-1
+        )
 
         return self

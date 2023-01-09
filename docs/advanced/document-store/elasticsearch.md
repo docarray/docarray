@@ -2,7 +2,7 @@
 
 # Elasticsearch
 
-One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+You can use [Elasticsearch](https://www.elastic.co) as a document store for DocumentArray. It's suitable for faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
 This feature requires `elasticsearch`. You can install it via `pip install "docarray[elasticsearch]".`
@@ -41,7 +41,7 @@ docker-compose up
 
 ### Create DocumentArray with Elasticsearch backend
 
-Assuming service is started using the default configuration (i.e. server address is `http://localhost:9200`), one can instantiate a DocumentArray with Elasticsearch storage as such:
+Assuming service is started using the default configuration (i.e. server address is `http://localhost:9200`), you can instantiate a DocumentArray with Elasticsearch storage as such:
 
 ```python
 from docarray import DocumentArray
@@ -70,7 +70,7 @@ da = DocumentArray(
 
 Here is [the official Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#elasticsearch-security-certificates) for you to get certificate, password etc.
 
-To access a DocumentArray formerly persisted, one can specify `index_name` and the hosts.
+To access a DocumentArray formerly persisted, you can specify `index_name` and the hosts.
 
 The following example will build a DocumentArray with previously stored data from `old_stuff` on `http://localhost:9200`:
 
@@ -160,7 +160,7 @@ You can read more about parallel bulk config and their default values [here](htt
 
 ### Vector search with filter query
 
-One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
+You can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
 
 Consider Documents with embeddings `[0,0,0]` up to `[9,9,9]` where the document with embedding `[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
@@ -193,7 +193,12 @@ Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the res
 prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in ElasticSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
 
-Then the search with the proposed filter can be implemented and used with the following code:
+Then the search with the proposed filter can be implemented and used with the following code. 
+
+````{admonition} Note
+:class: note
+For Elasticsearch, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
 
 ```python
 max_price = 7
@@ -233,7 +238,7 @@ You can read more about approximate kNN tuning [here](https://www.elastic.co/gui
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
+You can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
 guidelines in [ElasticSearch's Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
 
 Consider you store Documents with a certain tag `price` into ElasticSearch and you want to retrieve all Documents
@@ -404,6 +409,7 @@ The following configs can be set:
 | `tag_indices`     | List of tags to index                                                                                                                  | False                                                  |
 | `batch_size`      | Batch size used to handle storage refreshes/updates                                                                                    | 64                                                     |
 | `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                   |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                                   |
 
 ```{tip}
 You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)

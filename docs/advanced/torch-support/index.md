@@ -44,7 +44,7 @@ for d in DocumentArray.load_binary('test.protobuf.gz'):
 
 ## Load, map, batch in one-shot
 
-There is a very common pattern in the deep learning engineering: loading big data, mapping it via some function for preprocessing on GPU, and batching it to GPU for intensive deep learning stuff.
+There is a very common pattern in the deep learning engineering: loading big data, mapping it via some function for preprocessing on CPU, and batching it to GPU for intensive deep learning stuff.
 
 There are many pitfalls in this pattern when not implemented correctly, to name a few:
 - data may not fit into memory;
