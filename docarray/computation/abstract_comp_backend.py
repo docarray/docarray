@@ -37,26 +37,6 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...
 
-    # @staticmethod
-    # @abstractmethod
-    # @typing.overload
-    # def to_device(tensor: 'AbstractTensor', device: str) -> 'AbstractTensor':
-    #     """Move the tensor to the specified device."""
-    #     ...
-    #
-    # @staticmethod
-    # @abstractmethod
-    # @typing.overload
-    # def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
-    #     """Move the tensor to the specified device."""
-    #     ...
-    #
-    # @staticmethod
-    # @abstractmethod
-    # def to_device(tensor: typing.Any, device: str) -> typing.Any:
-    #     """Move the tensor to the specified device."""
-    #     ...
-
     @staticmethod
     @abstractmethod
     def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
