@@ -137,7 +137,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         """Return the native tensor object that this DocArray tensor wraps."""
 
     @abc.abstractmethod
-    def __docarray_to_json_compatible__(self):
+    def _docarray_to_json_compatible(self):
         """
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson

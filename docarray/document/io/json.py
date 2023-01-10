@@ -11,7 +11,7 @@ def _default_orjson(obj):
     """
 
     if isinstance(obj, AbstractTensor):
-        return obj.__docarray_to_json_compatible__()
+        return obj._docarray_to_json_compatible()
     else:
         return obj
 
