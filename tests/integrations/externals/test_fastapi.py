@@ -87,10 +87,12 @@ async def test_sentence_to_embeddings():
     app = FastAPI()
 
     @app.post("/doc/", response_model=OutputDoc)
-    async def create_item(doc: InputDoc) -> OutputDoc:
+    async def create_item(doc: InputDoc) -> DocumentResponse:
         ## call my fancy model to generate the embeddings
-        return OutputDoc(
-            embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+        return DocumentResponse(
+            content=OutputDoc(
+                embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+            )
         )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -101,3 +103,9 @@ async def test_sentence_to_embeddings():
     assert response.status_code == 200
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
+
+    doc = OutputDoc.parse_raw(response.content.decode())
+
+    assert isinstance(doc, OutputDoc)
+    assert doc.embedding_clip.shape == (100, 1)
+    assert doc.embedding_bert.shape == (100, 1)
