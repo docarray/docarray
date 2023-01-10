@@ -130,6 +130,7 @@ The following configs can be set:
 | `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                                                                    | `'HNSW'`                                          |
 | `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`                                       | `None`                                            |
 | `tag_indices`     | List of tags to index as text field                                                                                                    | `[]`                                              |
+| `language`        | Optional parameter for Redis text search. Refer to the [list of supported languages](https://redis.io/docs/stack/search/reference/stemming/) | `None`                                      |
 | `ef_construction` | Optional parameter for Redis HNSW algorithm                                                                                            | `200`                                             |
 | `m`               | Optional parameter for Redis HNSW algorithm                                                                                            | `16`                                              |
 | `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                                                            | `10`                                              |

@@ -35,5 +35,5 @@ Read more about [Jina AI Cloud](https://docs.jina.ai/jina-ai-cloud/).
 :hidden:
 
 login
-data
+data-management
 ```

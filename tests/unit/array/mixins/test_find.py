@@ -986,6 +986,35 @@ def test_redis_geo_filter(start_storage):
         assert distance[0][1] < 800
 
 
+def test_redis_language(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='redis',
+        config={
+            'n_dim': n_dim,
+            'index_text': True,
+            'language': 'chinese',
+        },
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(id='1', text='意大利和西班牙 token1 token2 token3'),
+                Document(id='2', text='法国和中国 token1 token2'),
+                Document(id='3', text='意大利和法国 token2 token3 token4'),
+            ]
+        )
+
+    results = da.find('token1')
+    assert len(results) == 2
+    assert set(results[:, 'id']) == {'1', '2'}
+
+    results = da.find('意大利')
+    assert len(results) == 2
+    assert set(results[:, 'id']) == {'1', '3'}
+
+
 @pytest.mark.parametrize('storage', ['memory'])
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_unsupported_pre_filtering(storage, start_storage, columns):

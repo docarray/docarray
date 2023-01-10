@@ -57,7 +57,7 @@ advanced/graphql-support/index
 
 
 ```{toctree}
-:caption: Developer References
+:caption: Developer Reference
 :hidden:
 :maxdepth: 1
 

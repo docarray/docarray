@@ -2576,6 +2576,15 @@ init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
 
 
+To display a colored point cloud, store the corresponding colors in the `.tensor` of a chunk `Document` with the name tag `'point_cloud_colors'`. The colors have to be of shape (n_samples, 3) or (n_samples, 4).
+
+```python
+n_samples = 1000
+colors = np.random.rand(n_samples, 3)
+doc = Document(uri='mesh_man.glb').load_uri_to_point_cloud_tensor(samples=n_samples)
+doc.chunks = [Document(tensor=colors, name='point_cloud_colors')]
+```
+
 ## RGB-D image representation
 
 The RGB-D image representation includes an RGB image of shape (w, h, 3) and a corresponding depth image (w, h). The depth image describes the distance between the image plane and the corresponding object for each pixel in the RGB image. Since the RGB and depth image are of identical width and height, they can be easily concatenated and stored in a tensor of shape (w, h, 4). Due to their fixed size, RGB-D images are suitable for 3D data representations for input to machine learning models.

@@ -9,8 +9,6 @@ from os.path import expanduser
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from collections import Counter
 
-import hubble
-
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document, DocumentArray
 
@@ -525,9 +523,13 @@ def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
     :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.
     :param force: If set to true, overwrite token and re-login.
     """
+    import hubble
+
     hubble.login(interactive=interactive, force=force)
 
 
 def logout():
     """Log out of Hubble account."""
+    import hubble
+
     hubble.logout()

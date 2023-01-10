@@ -6,7 +6,7 @@ import pytest
 
 from docarray import Document
 from docarray.document.generators import from_files
-from docarray.document.mixins.mesh import Mesh
+from docarray.document.mixins.mesh import MeshEnum, PointCloudEnum
 
 __windows__ = sys.platform == 'win32'
 
@@ -321,9 +321,9 @@ def test_load_uri_to_vertices_and_faces(uri):
     doc.load_uri_to_vertices_and_faces()
 
     assert len(doc.chunks) == 2
-    assert doc.chunks[0].tags['name'] == Mesh.VERTICES
+    assert doc.chunks[0].tags['name'] == MeshEnum.VERTICES.value
     assert doc.chunks[0].tensor.shape[1] == 3
-    assert doc.chunks[1].tags['name'] == Mesh.FACES
+    assert doc.chunks[1].tags['name'] == MeshEnum.FACES.value
     assert doc.chunks[1].tensor.shape[1] == 3
 
 
