@@ -92,7 +92,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         return da_stacked
 
     def to(self: T, device: str):
-        """Move the data to the given device
+        """Move all tensors of this DocumentArrayStacked to the given device
 
         :param device: the device to move the data to
         """
