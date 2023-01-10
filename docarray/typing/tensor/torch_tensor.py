@@ -126,10 +126,10 @@ class TorchTensor(
         # this is needed to dump to json
         field_schema.update(type='string', format='tensor')
 
-    def _to_json_compatible(self) -> np.ndarray:
+    def _docarray_to_json_compatible(self) -> np.ndarray:
         """
         Convert torchTensor into a json compatible object
-        :return: a list representation of the torch tensor
+        :return: a representation of the tensor compatible with orjson
         """
         return self.numpy()  ## might need to  check device later
 

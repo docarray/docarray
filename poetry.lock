@@ -2,7 +2,7 @@
 name = "anyio"
 version = "3.6.2"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.2"
 
@@ -274,8 +274,8 @@ tests = ["asttokens", "littleutils", "pytest", "rich"]
 name = "fastapi"
 version = "0.87.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -372,7 +372,7 @@ license = ["ukkonen"]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -1366,7 +1366,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1398,8 +1398,8 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 name = "starlette"
 version = "0.21.0"
 description = "The little ASGI library that shines."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -1668,11 +1668,12 @@ common = ["protobuf"]
 image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
 torch = ["torch"]
+web = ["fastapi"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b1aa40aea6ec7f56a8c3b511fd2ce96ed217c6fc81d6f8dd931e519cc0774154"
+content-hash = "e9505149fb25b56e7cbccfa923e71070f783ec35fc6b43f00564c6974eab3eae"
 
 [metadata.files]
 anyio = [

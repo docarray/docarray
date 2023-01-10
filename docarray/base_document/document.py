@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, parse_obj_as
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import ProtoMixin
 from docarray.typing import ID
 
@@ -20,7 +20,9 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
 
     class Config:
         json_loads = orjson.loads
-        json_dumps = orjson_dumps
+        json_dumps = orjson_dumps_and_decode
+        json_encoders = {dict: orjson_dumps}
+
         validate_assignment = True
 
     @classmethod
