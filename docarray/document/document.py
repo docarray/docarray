@@ -25,7 +25,6 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
 
         validate_assignment = True
 
-
     @classmethod
     def _get_field_type(cls, field: str) -> Type['BaseDocument']:
         """

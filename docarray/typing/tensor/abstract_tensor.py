@@ -120,7 +120,6 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         """The computational backend compatible with this tensor type."""
         ...
 
-
     def __getitem__(self, item):
         """Get a slice of this tensor."""
         ...
@@ -136,7 +135,6 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     def unwrap(self):
         """Return the native tensor object that this DocArray tensor wraps."""
-
 
     @abc.abstractmethod
     def __docarray_to_json_compatible__(self):
