@@ -56,8 +56,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
 
     @staticmethod
     def to_device(
-        tensor: Union['torch.Tensor', TorchTensor], device: str
-    ) -> Union['torch.Tensor', TorchTensor]:
+        tensor: Union['torch.Tensor', 'TorchTensor'], device: str
+    ) -> Union['torch.Tensor', 'TorchTensor']:
         return tensor.to(device)
 
     @staticmethod

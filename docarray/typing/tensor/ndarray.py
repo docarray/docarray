@@ -212,4 +212,5 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         return NumpyCompBackend
 
     def __class_getitem__(cls, item: Any, *args, **kwargs):
-        return AbstractTensor.__class_getitem__(item)
+        # see here for mypy bug: https://github.com/python/mypy/issues/14123
+        return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
