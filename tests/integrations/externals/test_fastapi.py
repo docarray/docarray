@@ -1,11 +1,10 @@
 import numpy as np
 import pytest
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 from httpx import AsyncClient
 
 from docarray import BaseDocument, Image, Text
-from docarray.document.io.json import orjson_dumps
+from docarray.document.document_response import DocumentResponse
 from docarray.typing import NdArray
 
 
@@ -49,17 +48,13 @@ async def test_image():
 
     app = FastAPI()
 
-    class OrjsonResponse(JSONResponse):
-        def render(self, content: BaseDocument) -> bytes:
-            return orjson_dumps(content.dict())
-
     @app.post("/doc/", response_model=OutputDoc)
-    async def create_item(doc: InputDoc) -> OrjsonResponse:
+    async def create_item(doc: InputDoc) -> DocumentResponse:
         ## call my fancy model to generate the embeddings
         doc = OutputDoc(
             embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
         )
-        resp = OrjsonResponse(content=doc)
+        resp = DocumentResponse(content=doc)
         return resp
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
