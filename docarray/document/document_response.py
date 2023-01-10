@@ -5,7 +5,8 @@ try:
 except ImportError:
 
     class NoImportResponse:
-        raise ImportError('fastapi is not installed')
+        def __init__(self, *args, **kwargs):
+            ImportError('fastapi is not installed')
 
     Response = JSONResponse = NoImportResponse  # type: ignore
 
