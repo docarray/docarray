@@ -18,8 +18,8 @@ class DocumentResponse(JSONResponse):
 
       EXAMPLE USAGE
         .. code-block:: python
-            from docarray import Text
-            from docarray.document import DocumentResponse
+            from docarray.documets import Text
+            from docarray.base_document import DocumentResponse
 
 
             @app.post("/doc/", response_model=Text, response_class=DocumentResponse)
