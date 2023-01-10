@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, 
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.document_base import AnyDocument, BaseDocument
+from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:

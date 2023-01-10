@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
 
-from docarray.document_base import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
 

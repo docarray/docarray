@@ -1,7 +1,7 @@
 import numpy as np
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.document_base.io.json import orjson_dumps
+from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import AnyEmbedding
 
 

@@ -1,4 +1,4 @@
-from docarray.document_base.document import BaseDocument
+from docarray.base_document.document import BaseDocument
 
 
 def test_base_document_init():

@@ -1,5 +1,5 @@
 from docarray import BaseDocument, DocumentArray
-from docarray.document_base import AnyDocument
+from docarray.base_document import AnyDocument
 
 
 def test_generic_init():

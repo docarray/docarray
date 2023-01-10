@@ -1,6 +1,6 @@
 from typing import Optional
 
-from docarray.document_base import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
