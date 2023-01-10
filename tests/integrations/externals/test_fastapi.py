@@ -3,7 +3,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument, Image, Text
+from docarray import BaseDocument
+from docarray.documents import Image, Text
 from docarray.typing import NdArray
 
 

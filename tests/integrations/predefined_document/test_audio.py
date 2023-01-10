@@ -6,7 +6,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import Audio
+from docarray.documents import Audio
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
 from tests import TOYDATA_DIR

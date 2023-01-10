@@ -1,6 +1,6 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
@@ -17,7 +17,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Text
+        from docarray.documents import Text
 
         # use it directly
         txt_doc = Text(url='http://www.jina.ai/')
@@ -29,7 +29,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Text
+        from docarray.documents import Text
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
@@ -49,7 +49,8 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Image, Text
+        from docarray import BaseDocument
+        from docarray.documents import Image, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):

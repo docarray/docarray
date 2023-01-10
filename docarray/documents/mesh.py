@@ -1,6 +1,6 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, Mesh3DUrl
 
 
@@ -25,7 +25,7 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Mesh3D
+        from docarray.documents import Mesh3D
 
         # use it directly
         mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
@@ -37,7 +37,7 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Mesh3D
+        from docarray.documents import Mesh3D
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
@@ -57,7 +57,8 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Mesh3D, Text
+        from docarray import BaseDocument
+        from docarray.documents import Mesh3D, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):

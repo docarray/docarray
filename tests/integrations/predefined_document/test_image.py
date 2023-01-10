@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray import Image
+from docarray.documents import Image
 
 REMOTE_JPG = (
     'https://upload.wikimedia.org/wikipedia/commons/8/80/'

@@ -1,6 +1,7 @@
 import numpy as np
 
-from docarray import BaseDocument, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray
+from docarray.documents import Image, Text
 
 
 def test_multi_modal_doc():
