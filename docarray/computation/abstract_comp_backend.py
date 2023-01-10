@@ -1,16 +1,9 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar, Union
-
-import numpy as np
-import torch
-
-if TYPE_CHECKING:
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from typing import List, Optional, Tuple, TypeVar, Union
 
 # In practice all of the below will be the same type
-TTensor = TypeVar('TTensor', bound=Union[torch.Tensor, np.ndarray, AbstractTensor])
-# TAbstractTensor = TypeVar('TAbstractTensor', bound=AbstractTensor)
+TTensor = TypeVar('TTensor')
 TTensorRetrieval = TypeVar('TTensorRetrieval')
 TTensorMetrics = TypeVar('TTensorMetrics')
 

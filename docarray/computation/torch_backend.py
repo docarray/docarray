@@ -1,9 +1,11 @@
-from typing import Any, List, Optional, Tuple, Union, overload
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union, overload
 
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
-from docarray.typing import TorchTensor
+
+if TYPE_CHECKING:
+    from docarray.typing import TorchTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
