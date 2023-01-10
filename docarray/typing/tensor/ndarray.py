@@ -27,7 +27,7 @@ T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
 
 
-class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
+class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of np.ndarray, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
@@ -210,3 +210,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         from docarray.computation.numpy_backend import NumpyCompBackend
 
         return NumpyCompBackend
+
+    def __class_getitem__(cls, item: Any, *args, **kwargs):
+        # see here for mypy bug: https://github.com/python/mypy/issues/14123
+        return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore

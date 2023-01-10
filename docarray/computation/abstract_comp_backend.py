@@ -37,6 +37,12 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...
 
+    @staticmethod
+    @abstractmethod
+    def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
+        """Move the tensor to the specified device."""
+        ...
+
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
         """
         Abstract class for retrieval and ranking functionalities

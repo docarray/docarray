@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDocument, DocumentArray, Image
 from docarray.array import DocumentArrayStacked
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
@@ -303,3 +303,37 @@ def test_stack_none(tensor_backend):
     ).stack()
 
     assert 'tensor' in da._columns.keys()
+
+
+def test_to_device():
+    da = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
+    )
+    da = da.stack()
+    assert da.tensor.device == torch.device('cpu')
+    da.to('meta')
+    assert da.tensor.device == torch.device('meta')
+
+
+def test_to_device_nested():
+    class MyDoc(BaseDocument):
+        tensor: TorchTensor
+        docs: Image
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=torch.zeros(3, 5), docs=Image(tensor=torch.zeros(3, 5)))],
+        tensor_type=TorchTensor,
+    )
+    da = da.stack()
+    assert da.tensor.device == torch.device('cpu')
+    assert da.docs.tensor.device == torch.device('cpu')
+    da.to('meta')
+    assert da.tensor.device == torch.device('meta')
+    assert da.docs.tensor.device == torch.device('meta')
+
+
+def test_to_device_numpy():
+    da = DocumentArray[Image]([Image(tensor=torch.zeros(3, 5))], tensor_type=NdArray)
+    da = da.stack()
+    with pytest.raises(NotImplementedError):
+        da.to('meta')

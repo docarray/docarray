@@ -28,7 +28,7 @@ class metaTorchAndNode(torch_base, node_base):
 
 
 class TorchTensor(
-    AbstractTensor, torch.Tensor, Generic[ShapeT], metaclass=metaTorchAndNode
+    torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
 ):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor

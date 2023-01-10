@@ -7,7 +7,6 @@ from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
-    from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocumentArray')
@@ -51,7 +50,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[List, T, 'TorchTensor', 'NdArray']:
+    ) -> Union[List, T, 'AbstractTensor']:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -64,7 +63,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, 'TorchTensor', 'NdArray'],
+        values: Union[List, T, 'AbstractTensor'],
     ):
         """Set all Documents in this DocumentArray using the passed values
 
@@ -99,7 +98,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     def traverse_flat(
         self: 'AnyDocumentArray',
         access_path: str,
-    ) -> Union[List[Any], 'NdArray', 'TorchTensor']:
+    ) -> Union[List[Any], 'AbstractTensor']:
         """
         Return a List of the accessed objects when applying the access_path. If this
         results in a nested list or list of DocumentArrays, the list will be flattened
