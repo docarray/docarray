@@ -20,7 +20,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Audio
+        from docarray.documents import Audio
 
         # use it directly
         audio = Audio(
@@ -34,7 +34,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Audio, Text
+        from docarray.documents import Audio, Text
         from typing import Optional
 
         # extend it
@@ -55,7 +55,8 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, Audio, Text
+        from docarray import BaseDocument
+        from docarray.documents import Audio, Text
 
         # compose it
         class MultiModalDoc(Document):

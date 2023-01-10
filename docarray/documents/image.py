@@ -16,7 +16,7 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Image
+        from docarray.documents import Image
 
         # use it directly
         image = Image(url='http://www.jina.ai/image.jpg')
@@ -28,7 +28,7 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Image
+        from docarray.documents import Image
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
@@ -48,7 +48,8 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Image, Text
+        from docarray import BaseDocument
+        from docarray.documents import Image, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):
