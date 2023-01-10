@@ -11,8 +11,9 @@ class GetAttributeMixin:
         :return: Returns a list of the values for these fields.
             When `fields` has multiple values, then it returns a list of list.
         """
-        e_index, b_index = None, None
+        # small change just to trigger CI tests
         fields = list(fields)
+        e_index, b_index = None, None
         if 'embedding' in fields:
             e_index = fields.index('embedding')
         if 'tensor' in fields:
