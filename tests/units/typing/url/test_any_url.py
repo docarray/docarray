@@ -1,6 +1,6 @@
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.document.io.json import orjson_dumps_and_decode
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import AnyUrl
 
 
@@ -17,7 +17,7 @@ def test_json_schema():
 
 def test_dump_json():
     url = parse_obj_as(AnyUrl, 'http://jina.ai/img.png')
-    orjson_dumps_and_decode(url)
+    orjson_dumps(url)
 
 
 def test_relative_path():

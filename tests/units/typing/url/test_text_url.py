@@ -4,7 +4,7 @@ import urllib
 import pytest
 from pydantic import parse_obj_as, schema_json_of
 
-from docarray.document.io.json import orjson_dumps_and_decode
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import TextUrl
 
 REMOTE_TXT = 'https://de.wikipedia.org/wiki/Brixen'
@@ -57,4 +57,4 @@ def test_json_schema():
 
 def test_dump_json():
     url = parse_obj_as(TextUrl, REMOTE_TXT)
-    orjson_dumps_and_decode(url)
+    orjson_dumps(url)
