@@ -98,18 +98,11 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         for field in self._columns.keys():
             col = self._columns[field]
-            if isinstance(col, AbstractTensor):
-                col_ = cast(AbstractTensor, col)
-                # torch_be = TorchCompBackend()
-                # np_be = NumpyCompBackend()
-                # abs_be = AbstracttensorCompBackend()
-                col__ = col.get_comp_backend().to_device(col_, device)
-                col_ = cast(AbstractTensor, col__)
-                # cast(AbstractTensor, col)
-                self._columns[field] = col_
-                # self._columns[field] = col.get_comp_backend().to_device(col, device)
+            if isinstance(col, TorchTensor):
+                self._columns[field] = col.get_comp_backend().to_device(col, device)
+            elif isinstance(col, NdArray):
+                self._columns[field] = col.get_comp_backend().to_device(col, device)
             else:  # recursive call
-                cast(T, col)
                 col.to(device)
 
     @classmethod
