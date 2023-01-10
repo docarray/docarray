@@ -21,6 +21,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps
+        validate_assignment = True
 
     @classmethod
     def _get_field_type(cls, field: str) -> Type['BaseDocument']:

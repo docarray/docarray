@@ -111,7 +111,7 @@ def test_set_attributes():
     da._set_array_attribute('inner', list_docs)
 
     for doc, list_doc in zip(da, list_docs):
-        assert doc.inner is list_doc
+        assert doc.inner == list_doc
 
 
 def test_get_bulk_attributes():
