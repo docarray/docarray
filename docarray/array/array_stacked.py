@@ -103,7 +103,8 @@ class DocumentArrayStacked(AnyDocumentArray):
             elif isinstance(col, NdArray):
                 self._columns[field] = col.get_comp_backend().to_device(col, device)
             else:  # recursive call
-                col.to(device)
+                col_ = cast(T, col)
+                col_.to(device)
 
     @classmethod
     def _create_columns(
