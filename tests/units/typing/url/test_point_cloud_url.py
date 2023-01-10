@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.document.io.json import orjson_dumps
+from docarray.document.io.json import orjson_dumps_and_decode
 from docarray.typing import PointCloud3DUrl
 from tests import TOYDATA_DIR
 
@@ -61,7 +61,7 @@ def test_json_schema():
 
 def test_dump_json():
     url = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
-    orjson_dumps(url)
+    orjson_dumps_and_decode(url)
 
 
 @pytest.mark.parametrize(

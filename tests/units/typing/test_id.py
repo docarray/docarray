@@ -4,7 +4,7 @@ import pytest
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
-from docarray.document.io.json import orjson_dumps
+from docarray.document.io.json import orjson_dumps_and_decode
 from docarray.typing import ID
 
 
@@ -24,4 +24,4 @@ def test_json_schema():
 
 def test_dump_json():
     id = parse_obj_as(ID, 1234)
-    orjson_dumps(id)
+    orjson_dumps_and_decode(id)

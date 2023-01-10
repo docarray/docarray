@@ -6,7 +6,7 @@ import PIL
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.document.io.json import orjson_dumps
+from docarray.document.io.json import orjson_dumps_and_decode
 from docarray.typing import ImageUrl
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -45,7 +45,7 @@ def test_json_schema():
 
 def test_dump_json():
     url = parse_obj_as(ImageUrl, 'http://jina.ai/img.png')
-    orjson_dumps(url)
+    orjson_dumps_and_decode(url)
 
 
 @pytest.mark.slow

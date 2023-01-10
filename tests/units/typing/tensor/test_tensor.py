@@ -3,7 +3,7 @@ import orjson
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.document.io.json import orjson_dumps
+from docarray.document.io.json import orjson_dumps_and_decode
 from docarray.typing import NdArray
 from docarray.typing.tensor import NdArrayEmbedding
 
@@ -27,13 +27,13 @@ def test_json_schema():
 
 def test_dump_json():
     tensor = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
-    orjson_dumps(tensor)
+    orjson_dumps_and_decode(tensor)
 
 
 def test_load_json():
     tensor = parse_obj_as(NdArray, np.zeros((2, 2)))
 
-    json = orjson_dumps(tensor)
+    json = orjson_dumps_and_decode(tensor)
     print(json)
     print(type(json))
     new_tensor = orjson.loads(json)

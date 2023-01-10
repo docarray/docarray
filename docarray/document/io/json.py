@@ -16,8 +16,11 @@ def _default_orjson(obj):
         return obj
 
 
-def orjson_dumps(v, *, default=None):
+def orjson_dumps(v, *, default=None) -> bytes:
+    # dumps to bytes using orjson
+    return orjson.dumps(v, default=_default_orjson, option=orjson.OPT_SERIALIZE_NUMPY)
+
+
+def orjson_dumps_and_decode(v, *, default=None) -> str:
     # orjson.dumps returns bytes, to match standard json.dumps we need to decode
-    return orjson.dumps(
-        v, default=_default_orjson, option=orjson.OPT_SERIALIZE_NUMPY
-    ).decode()
+    return orjson_dumps(v).decode()
