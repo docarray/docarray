@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 from fastapi import FastAPI
-from fastapi.responses import Response
 from httpx import AsyncClient
 
 from docarray import BaseDocument, Image, Text
+from docarray.document import DocumentResponse
 from docarray.typing import NdArray
 
 
@@ -21,7 +21,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=Mmdoc, response_class=Response)
+    @app.post("/doc/", response_model=Mmdoc, response_class=DocumentResponse)
     async def create_item(doc: Mmdoc):
         return doc
 
@@ -48,7 +48,7 @@ async def test_image():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=Response)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         doc = OutputDoc(
@@ -85,7 +85,7 @@ async def test_sentence_to_embeddings():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=Response)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         return OutputDoc(
