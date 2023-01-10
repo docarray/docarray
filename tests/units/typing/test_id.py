@@ -4,7 +4,7 @@ import pytest
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
-from docarray.document.io.json import orjson_dumps
+from docarray.document_base.io.json import orjson_dumps
 from docarray.typing import ID
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from docarray.document import BaseDocument
+from docarray.document_base import BaseDocument
 from docarray.typing import AnyUrl, NdArray, TorchTensor
 
 

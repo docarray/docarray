@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 from docarray import BaseDocument
-from docarray.document import AnyDocument
+from docarray.document_base import AnyDocument
 from docarray.typing import (
     AnyEmbedding,
     AnyUrl,

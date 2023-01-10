@@ -1,6 +1,6 @@
 from typing import Optional, TypeVar
 
-from docarray.document import BaseDocument
+from docarray.document_base import BaseDocument
 from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 

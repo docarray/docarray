@@ -5,7 +5,7 @@ from typing_inspect import is_union_type
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
-from docarray.document import BaseDocument
+from docarray.document_base import BaseDocument
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 

@@ -6,7 +6,7 @@ from pydantic.fields import ModelField
 if TYPE_CHECKING:
     from pydantic.typing import SetStr
 
-    from docarray.document.mixins.proto import ProtoMixin
+    from docarray.document_base.mixins.proto import ProtoMixin
 
 
 T = TypeVar('T', bound='AbstractDocument')

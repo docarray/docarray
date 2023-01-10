@@ -1,6 +1,6 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
+from docarray.document_base import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
 
 
