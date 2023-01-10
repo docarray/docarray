@@ -21,7 +21,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/")
+    @app.post("/doc/", response_model=Mmdoc, response_class=Response)
     async def create_item(doc: Mmdoc):
         return doc
 
