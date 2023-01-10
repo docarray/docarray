@@ -1,7 +1,8 @@
 import numpy as np
 
-from docarray import BaseDocument, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
+from docarray.documents import Image, Text
 from docarray.typing import NdArray
 
 

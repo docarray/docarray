@@ -1,7 +1,8 @@
 import numpy as np
 import torch
 
-from docarray import BaseDocument, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray
+from docarray.documents import Image, Text
 from docarray.typing import (
     AnyEmbedding,
     AnyTensor,

@@ -4,10 +4,10 @@ from typing import Type
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
 
-from docarray.document.abstract_document import AbstractDocument
-from docarray.document.base_node import BaseNode
-from docarray.document.io.json import orjson_dumps, orjson_dumps_and_decode
-from docarray.document.mixins import ProtoMixin
+from docarray.base_document.abstract_document import AbstractDocument
+from docarray.base_document.base_node import BaseNode
+from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
+from docarray.base_document.mixins import ProtoMixin
 from docarray.typing import ID
 
 

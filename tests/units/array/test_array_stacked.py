@@ -4,8 +4,9 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray, Image
+from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
+from docarray.documents import Image
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 

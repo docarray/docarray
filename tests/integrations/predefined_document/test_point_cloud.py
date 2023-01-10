@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray import PointCloud3D
+from docarray.documents import PointCloud3D
 from tests import TOYDATA_DIR
 
 LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')

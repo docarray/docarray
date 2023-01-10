@@ -1,6 +1,6 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
 
 
@@ -22,7 +22,7 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import PointCloud3D
+        from docarray.documents import PointCloud3D
 
         # use it directly
         pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
@@ -34,7 +34,7 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import PointCloud3D
+        from docarray.documents import PointCloud3D
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
@@ -54,7 +54,8 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, PointCloud3D, Text
+        from docarray import BaseDocument
+        from docarray.documents import PointCloud3D, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):
