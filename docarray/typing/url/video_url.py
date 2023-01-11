@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Tuple, Type, TypeVar, Union
 import numpy as np
 from pydantic.tools import parse_obj_as
 
+from docarray.typing import AudioNdArray, NdArray
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
 
@@ -50,19 +51,20 @@ class VideoUrl(AnyUrl):
         return cls(str(url), scheme=None)
 
     def load(
-        self: T, only_keyframes: bool = False, **kwargs
-    ) -> Union[VideoNdArray, Tuple[VideoNdArray, np.ndarray]]:
+        self: T, only_keyframes: bool = False, audio_format: str = 'fltp', **kwargs
+    ) -> Union[VideoNdArray, Tuple[AudioNdArray, VideoNdArray, NdArray]]:
         """
-        Load the data from the url into a VideoNdArray or Tuple of VideoNdArray and
-        np.ndarray.
+        Load the data from the url into a VideoNdArray or Tuple of AudioNdArray,
+        VideoNdArray and NdArray.
 
         :param only_keyframes: if True keep only the keyframes, if False keep all frames
             and store the indices of the keyframes in :attr:`.tags`
         :param kwargs: supports all keyword arguments that are being supported by
             av.open() as described in:
             https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
-        :return: np.ndarray representing the audio file content, list of key frame
-            indices if only_keyframe False.
+        :return: AudioNdArray representing the audio content, VideoNdArray representing
+            the images of the video, NdArray of key frame indices if only_keyframe
+            False, else only VideoNdArray representing the keyframes.
         """
         import av
 
@@ -71,19 +73,25 @@ class VideoUrl(AnyUrl):
                 stream = container.streams.video[0]
                 stream.codec_context.skip_frame = 'NONKEY'
 
-            frames = []
+            audio_frames = []
+            video_frames = []
             keyframe_indices = []
 
-            for i, frame in enumerate(container.decode(video=0)):
+            for frame in container.decode():
+                if type(frame) == av.audio.frame.AudioFrame:
+                    audio_frames.append(frame.to_ndarray(format=audio_format))
+                elif type(frame) == av.video.frame.VideoFrame:
+                    video_frames.append(frame.to_ndarray(format='rgb24'))
 
-                frame_np = frame.to_ndarray(format='rgb24')
-                frames.append(frame_np)
-                if not only_keyframes and frame.key_frame == 1:
-                    keyframe_indices.append(i)
+                    if not only_keyframes and frame.key_frame == 1:
+                        curr_index = len(video_frames)
+                        keyframe_indices.append(curr_index)
 
-        frames_vid = parse_obj_as(VideoNdArray, np.stack(frames))
+        video = parse_obj_as(VideoNdArray, np.stack(video_frames))
 
         if only_keyframes:
-            return frames_vid
+            return video
         else:
-            return frames_vid, np.array(keyframe_indices)
+            audio = parse_obj_as(AudioNdArray, np.stack(audio_frames))
+            indices = parse_obj_as(NdArray, keyframe_indices)
+            return audio, video, indices
