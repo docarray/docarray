@@ -260,7 +260,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [commit-lint, docarray-oldproto-test]
+    needs: [commit-lint, docarray-test, docarray-oldproto-test]
     if: always()
     runs-on: ubuntu-latest
     steps:
