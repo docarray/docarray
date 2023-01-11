@@ -20,10 +20,61 @@ class Video(BaseDocument):
 
     You can use this Document directly:
 
+    .. code-block:: python
+
+        from docarray.documents import Video
+
+        # use it directly
+        vid = Video(
+            url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
+        )
+        vid.audio_tensor, vid.video_tensor, vid.key_frame_indices = vid.url.load()
+        model = MyEmbeddingModel()
+        vid.embedding = model(vid.video_tensor)
+
     You can extend this Document:
+
+    .. code-block:: python
+
+        from typing import Optional
+
+        from docarray.documents import Text, Video
+
+
+        # extend it
+        class MyVideo(Video):
+            name: Optional[Text]
+
+
+        video = MyVideo(
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+        )
+        video.video_tensor = video.url.load(only_keyframes=True)
+        model = MyEmbeddingModel()
+        video.embedding = model(video.video_tensor)
+        video.name = Text(text='my first video')
 
     You can use this Document for composition:
 
+    .. code-block:: python
+
+        from docarray import BaseDocument
+        from docarray.documents import Text, Video
+
+
+        # compose it
+        class MultiModalDoc(BaseDocument):
+            video: Video
+            text: Text
+
+
+        mmdoc = MultiModalDoc(
+            video=Video(
+                url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+            ),
+            text=Text(text='hello world, how are you doing?'),
+        )
+        mmdoc.video.video_tensor = mmdoc.video.url.load(only_keyframes=True)
     """
 
     url: Optional[VideoUrl]
