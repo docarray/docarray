@@ -152,7 +152,6 @@ class DocumentArrayStacked(AnyDocumentArray):
                     if is_tensor_union(type_):
                         val = tensor_type.get_comp_backend().none_value()
                 columns_to_stack[field_to_stack].append(val)
-                delattr(doc, field_to_stack)
 
         for field_to_stack, to_stack in columns_to_stack.items():
 
@@ -167,6 +166,10 @@ class DocumentArrayStacked(AnyDocumentArray):
 
                 elif issubclass(type_, AbstractTensor):
                     columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
+
+        for field, column in columns.items():
+            for doc, val in zip(docs, column):
+                setattr(doc, field, val)
 
         return columns
 
@@ -224,18 +227,6 @@ class DocumentArrayStacked(AnyDocumentArray):
         for i in range(len(self)):
             yield self[i]
 
-    def __getitem_without_columns__(self, item):  # note this should handle slices
-        """Return the document at the given index with the columns item put to None"""
-        doc = self._docs[item]
-        for field in self._columns.keys():
-            if hasattr(doc, field):
-                delattr(doc, field)
-        return doc
-
-    def __iter_without_columns__(self):
-        for i in range(len(self)):
-            yield self.__getitem_without_columns__(i)
-
     def __len__(self):
         return len(self._docs)
 
@@ -262,7 +253,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         )
 
         da_proto = DocumentArrayProto()
-        for doc in self.__iter_without_columns__():
+        for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
         columns_proto: Dict[str, UnionArrayProto] = dict()
