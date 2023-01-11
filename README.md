@@ -9,7 +9,7 @@
 <a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
 <a href="https://bestpractices.coreinfrastructure.org/projects/6554"><img src="https://bestpractices.coreinfrastructure.org/projects/6554/badge"></a>
 <a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
-<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.6k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
+<a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
@@ -401,7 +401,7 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 
 <!-- start support-pitch -->
 ## Support
-- Join our [Slack community](https://jina.ai/slack) and chat with other community members about ideas.
+- Join our [Discord server](https://discord.gg/WaMp6PVPgR) and chat with other community members about ideas.
 
 
 > DocArray is a trademark of LF AI Projects, LLC
