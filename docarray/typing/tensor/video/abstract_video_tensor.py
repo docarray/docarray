@@ -10,7 +10,7 @@ T = TypeVar('T', bound='AbstractVideoTensor')
 
 
 class AbstractVideoTensor(AbstractTensor, ABC):
-    def save_to_mp4_file(
+    def save(
         self: 'T',
         file_path: Union[str, BinaryIO],
         audio_tensor: Optional[AudioTensor] = None,
@@ -53,7 +53,7 @@ class AbstractVideoTensor(AbstractTensor, ABC):
                 audio_tensor=np.random.randn(100, 1, 1024).astype("float32"),
             )
 
-            doc.video_tensor.save_to_mp4_file(
+            doc.video_tensor.save(
                 file_path="toydata/mp_.mp4",
                 audio_tensor=doc.audio_tensor,
                 audio_format="flt",

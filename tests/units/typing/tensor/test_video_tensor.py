@@ -87,7 +87,7 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
 )
 def test_save_video_tensor_to_file(video_tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
-    video_tensor.save_to_mp4_file(tmp_file)
+    video_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
 
 
@@ -107,5 +107,5 @@ def test_save_video_tensor_to_file(video_tensor, tmpdir):
 )
 def test_save_video_tensor_to_file_including_audio(video_tensor, audio_tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
-    video_tensor.save_to_mp4_file(tmp_file, audio_tensor=audio_tensor)
+    video_tensor.save(tmp_file, audio_tensor=audio_tensor)
     assert os.path.isfile(tmp_file)
