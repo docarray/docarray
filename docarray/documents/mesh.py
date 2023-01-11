@@ -1,7 +1,7 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
-from docarray.typing import AnyTensor, Embedding, Mesh3DUrl
+from docarray.base_document import BaseDocument
+from docarray.typing import AnyEmbedding, AnyTensor, Mesh3DUrl
 
 
 class Mesh3D(BaseDocument):
@@ -17,7 +17,7 @@ class Mesh3D(BaseDocument):
 
     The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), an AnyTensor of
     vertices (`Mesh3D.vertices`), an AnyTensor of faces (`Mesh3D.faces`) and an
-    Embedding (`Mesh3D.embedding`).
+    AnyEmbedding (`Mesh3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -25,7 +25,7 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Mesh3D
+        from docarray.documents import Mesh3D
 
         # use it directly
         mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
@@ -37,8 +37,8 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Mesh3D
-        from docarray.typing import Embedding
+        from docarray.documents import Mesh3D
+        from docarray.typing import AnyEmbedding
         from typing import Optional
 
         # extend it
@@ -57,7 +57,8 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Mesh3D, Text
+        from docarray import BaseDocument
+        from docarray.documents import Mesh3D, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -75,4 +76,4 @@ class Mesh3D(BaseDocument):
     url: Optional[Mesh3DUrl]
     vertices: Optional[AnyTensor]
     faces: Optional[AnyTensor]
-    embedding: Optional[Embedding]
+    embedding: Optional[AnyEmbedding]

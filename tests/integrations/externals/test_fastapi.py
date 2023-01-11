@@ -3,7 +3,9 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument, Image, Text
+from docarray import BaseDocument
+from docarray.base_document import DocumentResponse
+from docarray.documents import Image, Text
 from docarray.typing import NdArray
 
 
@@ -20,7 +22,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/")
+    @app.post("/doc/", response_model=Mmdoc, response_class=DocumentResponse)
     async def create_item(doc: Mmdoc):
         return doc
 
@@ -47,12 +49,13 @@ async def test_image():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
-        return OutputDoc(
+        doc = OutputDoc(
             embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
         )
+        return doc
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/doc/", data=input_doc.json())
@@ -62,6 +65,12 @@ async def test_image():
     assert response.status_code == 200
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
+
+    doc = OutputDoc.parse_raw(response.content.decode())
+
+    assert isinstance(doc, OutputDoc)
+    assert doc.embedding_clip.shape == (100, 1)
+    assert doc.embedding_bert.shape == (100, 1)
 
 
 @pytest.mark.asyncio
@@ -77,7 +86,7 @@ async def test_sentence_to_embeddings():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         return OutputDoc(
@@ -92,3 +101,9 @@ async def test_sentence_to_embeddings():
     assert response.status_code == 200
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
+
+    doc = OutputDoc.parse_raw(response.content.decode())
+
+    assert isinstance(doc, OutputDoc)
+    assert doc.embedding_clip.shape == (100, 1)
+    assert doc.embedding_bert.shape == (100, 1)

@@ -6,7 +6,7 @@ from pydantic.fields import ModelField
 if TYPE_CHECKING:
     from pydantic.typing import SetStr
 
-    from docarray.document.mixins.proto import ProtoMixin
+    from docarray.base_document.mixins.proto import ProtoMixin
 
 
 T = TypeVar('T', bound='AbstractDocument')
@@ -17,7 +17,7 @@ class AbstractDocument(Iterable):
 
     @classmethod
     @abstractmethod
-    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
+    def _get_field_type(cls, field: str) -> Type['ProtoMixin']:
         ...
 
     @classmethod

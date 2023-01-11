@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
-from docarray.document.abstract_document import AbstractDocument
-from docarray.document.base_node import BaseNode
+from docarray.base_document.abstract_document import AbstractDocument
+from docarray.base_document.base_node import BaseNode
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
@@ -26,8 +26,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
         """create a Document from a protobuf message"""
         from docarray.typing import (  # TorchTensor,
             ID,
+            AnyEmbedding,
             AnyUrl,
-            Embedding,
             ImageUrl,
             Mesh3DUrl,
             NdArray,
@@ -46,7 +46,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # the check should be delegated to the type level
             content_type_dict = dict(
                 ndarray=NdArray,
-                embedding=Embedding,
+                embedding=AnyEmbedding,
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,
@@ -65,7 +65,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
-                fields[field] = cls._get_nested_document_class(field).from_protobuf(
+                fields[field] = cls._get_field_type(field).from_protobuf(
                     value.nested
                 )  # we get to the parent class
             elif content_type == 'chunks':

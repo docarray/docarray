@@ -17,7 +17,8 @@ types-pillow = {version = "^9.3.0.1", optional = true }
 trimesh = {version = "^3.17.1", optional = true}
 typing-inspect = "^0.8.0"
 types-requests = "^2.28.11.6"
-av = "^10.0.0"
+av = {version = "^10.0.0", optional = true}
+fastapi = {version = "^0.87.0", optional = true }
 
 [tool.poetry.extras]
 common = ["protobuf"]
@@ -25,6 +26,7 @@ torch = ["torch"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
 mesh = ["trimesh"]
+web = ["fastapi"]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"
@@ -37,7 +39,6 @@ isort = "^5.10.1"
 ruff = "^0.0.165"
 
 [tool.poetry.group.dev.dependencies]
-fastapi = "^0.87.0"
 uvicorn = "^0.19.0"
 httpx = "^0.23.0"
 pytest-asyncio = "^0.20.2"

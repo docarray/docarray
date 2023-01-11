@@ -3,8 +3,9 @@ from typing import Optional
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray, Text
+from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
+from docarray.documents import Text
 from docarray.typing import TorchTensor
 
 num_docs = 5

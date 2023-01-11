@@ -1,7 +1,7 @@
 from typing import Optional, TypeVar
 
-from docarray.document import BaseDocument
-from docarray.typing import AnyTensor, Embedding
+from docarray.base_document import BaseDocument
+from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
@@ -14,7 +14,7 @@ class Video(BaseDocument):
     Document for handling video.
     The Video Document can contain a VideoUrl (`Video.url`), an AudioTensor
     (`Video.audio_tensor`), a VideoTensor (`Video.video_tensor`), an AnyTensor
-    ('Video.key_frame_indices), and an Embedding (`Video.embedding`).
+    ('Video.key_frame_indices), and an AnyEmbedding (`Video.embedding`).
 
     EXAMPLE USAGE:
 
@@ -30,4 +30,4 @@ class Video(BaseDocument):
     audio_tensor: Optional[AudioTensor]
     video_tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
-    embedding: Optional[Embedding]
+    embedding: Optional[AnyEmbedding]

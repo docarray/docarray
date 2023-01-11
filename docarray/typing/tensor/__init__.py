@@ -1,11 +1,11 @@
-from docarray.typing.tensor.embedding import Embedding, NdArrayEmbedding
+from docarray.typing.tensor.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 
 __all__ = [
     'NdArray',
     'AnyTensor',
-    'Embedding',
+    'AnyEmbedding',
     'NdArrayEmbedding',
 ]
 

@@ -1,15 +1,15 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
-from docarray.typing.tensor.embedding import Embedding
+from docarray.typing.tensor.embedding import AnyEmbedding
 
 
 class Text(BaseDocument):
     """
     Document for handling text.
     It can contain a TextUrl (`Text.url`), a str (`Text.text`),
-    and an Embedding (`Text.embedding`).
+    and an AnyEmbedding (`Text.embedding`).
 
     EXAMPLE USAGE:
 
@@ -17,7 +17,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Text
+        from docarray.documents import Text
 
         # use it directly
         txt_doc = Text(url='http://www.jina.ai/')
@@ -29,13 +29,13 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Text
-        from docarray.typing import Embedding
+        from docarray.documents import Text
+        from docarray.typing import AnyEmbedding
         from typing import Optional
 
         # extend it
         class MyText(Text):
-            second_embedding: Optional[Embedding]
+            second_embedding: Optional[AnyEmbedding]
 
 
         txt_doc = MyText(url='http://www.jina.ai/')
@@ -49,7 +49,8 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Image, Text
+        from docarray import BaseDocument
+        from docarray.documents import Image, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -66,4 +67,4 @@ class Text(BaseDocument):
 
     text: Optional[str] = None
     url: Optional[TextUrl] = None
-    embedding: Optional[Embedding] = None
+    embedding: Optional[AnyEmbedding] = None

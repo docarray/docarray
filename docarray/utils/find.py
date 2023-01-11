@@ -2,9 +2,10 @@ from typing import List, NamedTuple, Optional, Type, Union
 
 from typing_inspect import is_union_type
 
-from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.array import DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
+from docarray.base_document import BaseDocument
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -272,7 +273,7 @@ def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
     :param attr: the attribute name
     :return: the type of the attribute
     """
-    field_type = da.document_type.__fields__[attr].type_
+    field_type = da.document_type._get_field_type(attr)
     if is_union_type(field_type):
         # determine type based on the fist element
         field_type = type(getattr(da[0], attr))

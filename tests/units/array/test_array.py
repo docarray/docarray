@@ -111,7 +111,7 @@ def test_set_attributes():
     da._set_array_attribute('inner', list_docs)
 
     for doc, list_doc in zip(da, list_docs):
-        assert doc.inner is list_doc
+        assert doc.inner == list_doc
 
 
 def test_get_bulk_attributes():
@@ -228,3 +228,28 @@ def test_get_bulk_attributes_union_type_nested():
         assert isinstance(tensors, list)
         for tensor in tensors:
             assert tensor.shape == (10,)
+
+
+def test_get_from_slice():
+    class Doc(BaseDocument):
+        text: str
+        tensor: NdArray
+
+    N = 10
+
+    da = DocumentArray[Doc](
+        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+    )
+
+    da_sliced = da[0:10:2]
+    assert isinstance(da_sliced, DocumentArray)
+
+    tensors = da_sliced.tensor
+    assert len(tensors) == 5
+    for tensor in tensors:
+        assert tensor.shape == (3, 224, 224)
+
+    texts = da_sliced.text
+    assert len(texts) == 5
+    for i, text in enumerate(texts):
+        assert text == f'hello{i*2}'

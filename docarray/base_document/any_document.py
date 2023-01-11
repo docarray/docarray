@@ -13,7 +13,7 @@ class AnyDocument(BaseDocument):
         self.__dict__.update(kwargs)
 
     @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:
+    def _get_field_type(cls, field: str) -> Type['BaseDocument']:
         """
         Accessing the nested python Class define in the schema.
         Could be useful for reconstruction of Document in
