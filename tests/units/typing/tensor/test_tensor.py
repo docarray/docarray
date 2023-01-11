@@ -100,6 +100,9 @@ def test_parametrized():
     with pytest.raises(ValueError):
         tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60, 128)))
 
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60)))
+
 
 def test_np_embedding():
     # correct shape
