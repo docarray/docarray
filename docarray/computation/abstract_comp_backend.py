@@ -1,8 +1,9 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar, Union
 
-import numpy as np
+if TYPE_CHECKING:
+    import numpy as np
 
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
@@ -38,7 +39,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
-    def to_numpy(array: 'TTensor') -> np.ndarray:
+    def to_numpy(array: 'TTensor') -> 'np.ndarray':
         """
         Convert array to np.ndarray.
         """

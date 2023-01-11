@@ -14,7 +14,8 @@ class Video(BaseDocument):
     Document for handling video.
     The Video Document can contain a VideoUrl (`Video.url`), an AudioTensor
     (`Video.audio_tensor`), a VideoTensor (`Video.video_tensor`), an AnyTensor
-    ('Video.key_frame_indices), and an AnyEmbedding (`Video.embedding`).
+    representing the indices of the video's key frames (`Video.key_frame_indices`),
+    and an AnyEmbedding (`Video.embedding`).
 
     EXAMPLE USAGE:
 

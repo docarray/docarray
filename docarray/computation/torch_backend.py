@@ -66,7 +66,7 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return array.ndim
 
     @staticmethod
-    def to_numpy(array: 'torch.Tensor') -> np.ndarray:
+    def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
         return array.cpu().detach().numpy()
 
     @staticmethod

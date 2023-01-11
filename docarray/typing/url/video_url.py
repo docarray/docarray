@@ -86,7 +86,9 @@ class VideoUrl(AnyUrl):
                 key_frame_indices: Optional[NdArray]
 
 
-            doc = MyDoc(video_url='toydata/mov_bbb.mp4')
+            doc = MyDoc(
+                video_url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
+            )
             doc.audio, doc.video, doc.key_frame_indices = doc.video_url.load()
 
             assert isinstance(doc.video, VideoNdArray)
@@ -109,7 +111,9 @@ class VideoUrl(AnyUrl):
                 video_key_frames: Optional[VideoNdArray]
 
 
-            doc = MyDoc(video_url='toydata/mov_bbb.mp4')
+            doc = MyDoc(
+                video_url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
+            )
             doc.video_key_frames = doc.video_url.load(only_keyframes=True)
 
             assert isinstance(doc.video_key_frames, VideoNdArray)

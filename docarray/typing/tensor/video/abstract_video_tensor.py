@@ -13,9 +13,9 @@ class AbstractVideoTensor(AbstractTensor, ABC):
     def save_to_mp4_file(
         self: 'T',
         file_path: Union[str, BinaryIO],
+        audio_tensor: Optional[AudioTensor] = None,
         video_frame_rate: int = 24,
         video_codec: str = 'h264',
-        audio_tensor: Optional[AudioTensor] = None,
         audio_frame_rate: int = 48000,
         audio_codec: str = 'aac',
         audio_format: str = 'fltp',
@@ -25,9 +25,9 @@ class AbstractVideoTensor(AbstractTensor, ABC):
 
         :param file_path: path to a .mp4 file. If file is a string, open the file by
             that name, otherwise treat it as a file-like object.
+        :param audio_tensor: AudioTensor containing the video's soundtrack.
         :param video_frame_rate: video frames per second.
         :param video_codec: the name of a video decoder/encoder.
-        :param audio_tensor: AudioTensor that should be added as soundtrack.
         :param audio_frame_rate: audio frames per second.
         :param audio_codec: the name of an audio decoder/encoder.
         :param audio_format: the name of one of the audio formats supported by PyAV,

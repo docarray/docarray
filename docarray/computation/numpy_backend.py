@@ -65,7 +65,7 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array.ndim
 
     @staticmethod
-    def to_numpy(array: 'np.ndarray') -> np.ndarray:
+    def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
         return array
 
     @staticmethod
