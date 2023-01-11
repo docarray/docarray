@@ -58,6 +58,32 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
+    # test independent variable dimensions
+    tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 224, 224))
+    assert isinstance(tensor, TorchTensor)
+    assert isinstance(tensor, torch.Tensor)
+    assert tensor.shape == (3, 224, 224)
+
+    tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 60, 128))
+    assert isinstance(tensor, TorchTensor)
+    assert isinstance(tensor, torch.Tensor)
+    assert tensor.shape == (3, 60, 128)
+
+    with pytest.raises(ValueError):
+        parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(4, 224, 224))
+
+    with pytest.raises(ValueError):
+        parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(100, 1))
+
+    # test dependent variable dimensions
+    tensor = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 224, 224))
+    assert isinstance(tensor, TorchTensor)
+    assert isinstance(tensor, torch.Tensor)
+    assert tensor.shape == (3, 224, 224)
+
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 60, 128))
+
 
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
