@@ -94,9 +94,25 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
         if t.shape == shape:
             return t
+        elif any(isinstance(dim, str) for dim in shape):
+            known_dims: Dict[str, int] = {}
+            for tdim, dim in zip(t.shape, shape):
+                if isinstance(dim, int) and tdim != dim:
+                    raise ValueError(
+                        f"Array shape mismatch. Expected {shape}, got {t.shape}"
+                    )
+                elif isinstance(dim, str):
+                    if dim in known_dims and known_dims[dim] != tdim:
+                        raise ValueError(
+                            f"Array shape mismatch. Expected {shape}, got {t.shape}"
+                        )
+                    else:
+                        known_dims[dim] = tdim
+            else:
+                return t
         else:
             warnings.warn(
-                f'Tensor shape mismatch. Reshaping array '
+                f'Array shape mismatch. Reshaping array '
                 f'of shape {t.shape} to shape {shape}'
             )
             try:
