@@ -167,9 +167,9 @@ class DocumentArrayStacked(AnyDocumentArray):
                 elif issubclass(type_, AbstractTensor):
                     columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
 
-        for field, column in columns.items():
+        for field_name, column in columns.items():
             for doc, val in zip(docs, column):
-                setattr(doc, field, val)
+                setattr(doc, field_name, val)
 
         return columns
 
