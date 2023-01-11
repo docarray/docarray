@@ -211,6 +211,14 @@ class MyDoc(BaseDocument):
 doc = MyDoc(tensor=torch.zeros(3, 224, 224))  # works
 doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
 doc = MyDoc(tensor=torch.zeros(224))  # fails validation
+
+class Image(BaseDocument):
+    tensor: TorchTensor[3, 'x', 'x']
+    
+Image(tensor = torch.zeros(3, 224, 224)) # works
+Image(tensor = torch.zeros(3, 64, 128)) # fails validation because second dimension does not match third
+Image(tensor = torch.zeros(4, 224 ,224 )) # fails validation because of the first dimension
+Image(tensor = torch.zeros(3 ,64)) # fails validation because it does not have enough dimensions
 ```
 
 ## Coming from a vector database
