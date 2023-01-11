@@ -97,7 +97,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         elif any(isinstance(dim, str) for dim in shape):
             if len(t.shape) != len(shape):
                 raise ValueError(
-                    f"Tensor shape mismatch. Expected {shape}, got {t.shape}"
+                    f"Array shape mismatch. Expected {shape}, got {t.shape}"
                 )
             known_dims: Dict[str, int] = {}
             for tdim, dim in zip(t.shape, shape):
