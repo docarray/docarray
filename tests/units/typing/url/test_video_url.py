@@ -2,10 +2,11 @@ from typing import Optional
 
 import numpy as np
 import pytest
+import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDocument
-from docarray.document.io.json import orjson_dumps
+from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import (
     AudioNdArray,
     NdArray,
@@ -67,8 +68,8 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
     doc = MyVideoDoc(video_url=file_url)
     doc.tensor = doc.video_url.load(only_keyframes=True)
 
-    assert isinstance(doc.tensor, np.ndarray)
-    assert isinstance(doc.tensor, VideoNdArray)
+    assert isinstance(doc.tensor, torch.Tensor)
+    assert isinstance(doc.tensor, VideoTorchTensor)
 
 
 def test_json_schema():

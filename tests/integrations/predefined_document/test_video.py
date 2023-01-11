@@ -1,6 +1,6 @@
 import pytest
 
-from docarray import Video
+from docarray.documents import Video
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from tests import TOYDATA_DIR
 
