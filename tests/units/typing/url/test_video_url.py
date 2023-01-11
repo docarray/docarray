@@ -6,7 +6,13 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDocument
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import NdArray, VideoNdArray, VideoTorchTensor, VideoUrl
+from docarray.typing import (
+    AudioNdArray,
+    NdArray,
+    VideoNdArray,
+    VideoTorchTensor,
+    VideoUrl,
+)
 from tests import TOYDATA_DIR
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
@@ -21,10 +27,13 @@ REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
 )
 def test_load_with_only_keyframes_false(file_url):
     url = parse_obj_as(VideoUrl, file_url)
-    tensor, indices = url.load(only_keyframes=False)
+    audio, video, indices = url.load(only_keyframes=False)
 
-    assert isinstance(tensor, np.ndarray)
-    assert isinstance(tensor, VideoNdArray)
+    assert isinstance(audio, np.ndarray)
+    assert isinstance(audio, AudioNdArray)
+
+    assert isinstance(video, np.ndarray)
+    assert isinstance(video, VideoNdArray)
 
     assert isinstance(indices, np.ndarray)
     assert isinstance(indices, NdArray)
@@ -38,10 +47,10 @@ def test_load_with_only_keyframes_false(file_url):
 )
 def test_load_with_only_keyframes_true(file_url):
     url = parse_obj_as(VideoUrl, file_url)
-    tensor = url.load(only_keyframes=True)
+    key_frames = url.load(only_keyframes=True)
 
-    assert isinstance(tensor, np.ndarray)
-    assert isinstance(tensor, VideoNdArray)
+    assert isinstance(key_frames, np.ndarray)
+    assert isinstance(key_frames, VideoNdArray)
 
 
 @pytest.mark.slow

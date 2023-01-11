@@ -6,7 +6,12 @@ import torch
 from pydantic.tools import parse_obj_as
 
 from docarray import BaseDocument
-from docarray.typing import VideoNdArray, VideoTorchTensor
+from docarray.typing import (
+    AudioNdArray,
+    AudioTorchTensor,
+    VideoNdArray,
+    VideoTorchTensor,
+)
 
 
 @pytest.mark.parametrize(
@@ -74,14 +79,33 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
 
 
 @pytest.mark.parametrize(
-    'cls_tensor,tensor',
+    'video_tensor',
     [
-        (VideoTorchTensor, torch.zeros(1, 224, 224, 3)),
-        (VideoNdArray, np.zeros((1, 224, 224, 3))),
+        parse_obj_as(VideoTorchTensor, torch.zeros(1, 224, 224, 3)),
+        parse_obj_as(VideoNdArray, np.zeros((1, 224, 224, 3))),
     ],
 )
-def test_save_video_tensor_to_file(cls_tensor, tensor, tmpdir):
+def test_save_video_tensor_to_file(video_tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
-    video_tensor = parse_obj_as(cls_tensor, tensor)
     video_tensor.save_to_mp4_file(tmp_file)
+    assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.parametrize(
+    'video_tensor',
+    [
+        parse_obj_as(VideoTorchTensor, torch.zeros(1, 224, 224, 3)),
+        parse_obj_as(VideoNdArray, np.zeros((1, 224, 224, 3))),
+    ],
+)
+@pytest.mark.parametrize(
+    'audio_tensor',
+    [
+        parse_obj_as(AudioTorchTensor, torch.randn(100, 1, 1024).to(torch.float32)),
+        parse_obj_as(AudioNdArray, np.random.randn(100, 1, 1024).astype('float32')),
+    ],
+)
+def test_save_video_tensor_to_file_including_audio(video_tensor, audio_tensor, tmpdir):
+    tmp_file = str(tmpdir / 'tmp.mp4')
+    video_tensor.save_to_mp4_file(tmp_file, audio_tensor=audio_tensor)
     assert os.path.isfile(tmp_file)

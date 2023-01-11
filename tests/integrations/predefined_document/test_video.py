@@ -1,6 +1,3 @@
-import os
-
-import numpy as np
 import pytest
 
 from docarray import Video
@@ -21,56 +18,3 @@ def test_video(file_url):
     assert isinstance(vid.audio_tensor, AudioNdArray)
     assert isinstance(vid.video_tensor, VideoNdArray)
     assert isinstance(vid.key_frame_indices, NdArray)
-
-
-@pytest.mark.slow
-@pytest.mark.internet
-@pytest.mark.parametrize('file_url', [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE])
-def test_save_video_ndarray(file_url, tmpdir):
-    tmp_file = str(TOYDATA_DIR / 'tmp.mp4')
-
-    video_1 = Video(url=file_url)
-    assert video_1.url == file_url
-
-    audio_tensor, video_1.video_tensor, _ = video_1.url.load()
-    assert isinstance(video_1.video_tensor, np.ndarray)
-    assert isinstance(video_1.video_tensor, VideoNdArray)
-
-    # from PIL import Image
-    # Image.fromarray(video_1.tensor[0]).show()
-
-    video_1.video_tensor.save_to_mp4_file(file_path=tmp_file, audio_tensor=audio_tensor)
-    assert os.path.isfile(tmp_file)
-    print(f"\nvideo_1.tensor[0][:2] = {video_1.video_tensor[0][:2]}")
-    #
-    # video_2 = Video(url=tmp_file)
-    # video_2.tensor, _ = video_2.url.load()
-    # video_2.tensor.save_to_file(str(tmpdir / 'tmp_2.mp4'))
-    #
-    # video_3 = Video(url=str(tmpdir / f'tmp.mp4'))
-    # video_3.tensor, _ = video_3.url.load()
-    # video_3.tensor.save_to_file(str(tmpdir / f'tmp_3.mp4'))
-    #
-    # video_4 = Video(url=str(tmpdir / f'tmp.mp4'))
-    # video_4.tensor, _ = video_4.url.load()
-    # video_4.tensor.save_to_file(str(tmpdir / f'tmp_4.mp4'))
-    #
-    # video_5 = Video(url=str(tmpdir / f'tmp.mp4'))
-    # video_5.tensor, _ = video_5.url.load()
-    # video_5.tensor.save_to_file(str(tmpdir / f'tmp_5.mp4'))
-    #
-    # video_6 = Video(url=str(tmpdir / f'tmp.mp4'))
-    # video_6.tensor, _ = video_6.url.load()
-    # video_6.tensor.save_to_file(str(tmpdir / f'tmp_6.mp4'))
-    #
-    # print(f"video_2.tensor[0][:2] = {video_2.tensor[0][:2]}")
-    # print(f"video_3.tensor[0][:2] = {video_3.tensor[0][:2]}")
-    # print(f"video_4.tensor[0][:2] = {video_3.tensor[0][:2]}")
-    # print(f"video_5.tensor[0][:2] = {video_3.tensor[0][:2]}")
-    # print(f"video_6.tensor[0][:2] = {video_3.tensor[0][:2]}")
-    #
-    # # Image.fromarray(video_1.tensor[0]).show()
-    # assert isinstance(video_1.tensor, np.ndarray)
-    # assert isinstance(video_1.tensor, VideoNdArray)
-    # # assert video_1.tensor.shape == video_2.tensor.shape
-    # # assert np.allclose(video_1.tensor, video_2.tensor)

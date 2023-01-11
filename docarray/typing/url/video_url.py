@@ -51,20 +51,69 @@ class VideoUrl(AnyUrl):
         return cls(str(url), scheme=None)
 
     def load(
-        self: T, only_keyframes: bool = False, audio_format: str = 'fltp', **kwargs
+        self: T, only_keyframes: bool = False, **kwargs
     ) -> Union[VideoNdArray, Tuple[AudioNdArray, VideoNdArray, NdArray]]:
         """
         Load the data from the url into a VideoNdArray or Tuple of AudioNdArray,
         VideoNdArray and NdArray.
 
-        :param only_keyframes: if True keep only the keyframes, if False keep all frames
-            and store the indices of the keyframes in :attr:`.tags`
+        :param only_keyframes: if True keep only the keyframes, if False return all
+            frames, key frame indices and audio.
         :param kwargs: supports all keyword arguments that are being supported by
             av.open() as described in:
             https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
+
         :return: AudioNdArray representing the audio content, VideoNdArray representing
             the images of the video, NdArray of key frame indices if only_keyframe
             False, else only VideoNdArray representing the keyframes.
+
+
+        EXAMPLE USAGE
+
+        .. code-block:: python
+
+            from typing import Optional
+
+            from docarray import BaseDocument
+
+            from docarray.typing import VideoUrl, VideoNdArray, AudioNdArray, NdArray
+
+
+            class MyDoc(BaseDocument):
+                video_url: VideoUrl
+                video: Optional[VideoNdArray]
+                audio: Optional[AudioNdArray]
+                key_frame_indices: Optional[NdArray]
+
+
+            doc = MyDoc(video_url='toydata/mov_bbb.mp4')
+            doc.audio, doc.video, doc.key_frame_indices = doc.video_url.load()
+
+            assert isinstance(doc.video, VideoNdArray)
+            assert isinstance(doc.audio, AudioNdArray)
+            assert isinstance(doc.key_frame_indices, NdArray)
+
+        You can load only the key frames:
+
+        .. code-block:: python
+
+            from typing import Optional
+
+            from docarray import BaseDocument
+
+            from docarray.typing import VideoUrl, VideoNdArray
+
+
+            class MyDoc(BaseDocument):
+                video_url: VideoUrl
+                video_key_frames: Optional[VideoNdArray]
+
+
+            doc = MyDoc(video_url='toydata/mov_bbb.mp4')
+            doc.video_key_frames = doc.video_url.load(only_keyframes=True)
+
+            assert isinstance(doc.video_key_frames, VideoNdArray)
+
         """
         import av
 
@@ -79,7 +128,7 @@ class VideoUrl(AnyUrl):
 
             for frame in container.decode():
                 if type(frame) == av.audio.frame.AudioFrame:
-                    audio_frames.append(frame.to_ndarray(format=audio_format))
+                    audio_frames.append(frame.to_ndarray())
                 elif type(frame) == av.video.frame.VideoFrame:
                     video_frames.append(frame.to_ndarray(format='rgb24'))
 
@@ -92,6 +141,9 @@ class VideoUrl(AnyUrl):
         if only_keyframes:
             return video
         else:
-            audio = parse_obj_as(AudioNdArray, np.stack(audio_frames))
+            if len(audio_frames) == 0:
+                audio = parse_obj_as(AudioNdArray, np.array(audio_frames))
+            else:
+                audio = parse_obj_as(AudioNdArray, np.stack(audio_frames))
             indices = parse_obj_as(NdArray, keyframe_indices)
             return audio, video, indices

@@ -62,7 +62,7 @@ class AudioUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import Document
+            from docarray import BaseDocument
             import numpy as np
 
             from docarray.typing import AudioUrl
