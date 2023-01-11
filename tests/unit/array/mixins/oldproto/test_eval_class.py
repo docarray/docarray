@@ -12,45 +12,45 @@ from transformers import BertModel, BertConfig, BertTokenizer
 from docarray import DocumentArray, Document
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# @pytest.mark.parametrize(
-#     'metric_fn, kwargs',
-#     [
-#         ('r_precision', {}),
-#         ('precision_at_k', {}),
-#         ('hit_at_k', {}),
-#         ('average_precision', {}),
-#         ('reciprocal_rank', {}),
-#         ('recall_at_k', {'max_rel': 9}),
-#         ('f1_score_at_k', {'max_rel': 9}),
-#         ('ndcg_at_k', {}),
-#     ],
-# )
-# def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_storage):
-#     da1 = DocumentArray.empty(10)
-#     da1.embeddings = np.random.random([10, 256])
-#     da1_index = DocumentArray(da1, storage=storage, config=config)
-#     with da1_index:
-#         da1.match(da1_index, exclude_self=True)
-#     r = da1.evaluate(ground_truth=da1, metrics=[metric_fn], strict=False, **kwargs)[
-#         metric_fn
-#     ]
-#     assert isinstance(r, float)
-#     assert r == 1.0
-#     for d in da1:
-#         assert d.evaluations[metric_fn].value == 1.0
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+@pytest.mark.parametrize(
+    'metric_fn, kwargs',
+    [
+        ('r_precision', {}),
+        ('precision_at_k', {}),
+        ('hit_at_k', {}),
+        ('average_precision', {}),
+        ('reciprocal_rank', {}),
+        ('recall_at_k', {'max_rel': 9}),
+        ('f1_score_at_k', {'max_rel': 9}),
+        ('ndcg_at_k', {}),
+    ],
+)
+def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_storage):
+    da1 = DocumentArray.empty(10)
+    da1.embeddings = np.random.random([10, 256])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    with da1_index:
+        da1.match(da1_index, exclude_self=True)
+    r = da1.evaluate(ground_truth=da1, metrics=[metric_fn], strict=False, **kwargs)[
+        metric_fn
+    ]
+    assert isinstance(r, float)
+    assert r == 1.0
+    for d in da1:
+        assert d.evaluations[metric_fn].value == 1.0
 
 
 @pytest.mark.parametrize(
@@ -134,70 +134,70 @@ def test_eval_mixin_perfect_match_labeled(
         assert d.evaluations[metric_fn].value == 1.0
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# @pytest.mark.parametrize(
-#     'metric_fn, kwargs',
-#     [
-#         ('r_precision', {}),
-#         ('precision_at_k', {}),
-#         ('hit_at_k', {}),
-#         ('average_precision', {}),
-#         ('reciprocal_rank', {}),
-#         ('recall_at_k', {'max_rel': 9}),
-#         ('f1_score_at_k', {'max_rel': 9}),
-#         ('ndcg_at_k', {}),
-#     ],
-# )
-# def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwargs):
-#     da1 = DocumentArray.empty(10)
-#     for d in da1:
-#         d.tags = {'label': 'A'}
-#     da1.embeddings = np.random.random([10, 256])
-#     da2 = copy.deepcopy(da1)
-#     for d in da2:
-#         d.tags = {'label': 'B'}
-#     da1_index = DocumentArray(da2, storage=storage, config=config)
-#     with da1_index:
-#         da1.match(da1_index, exclude_self=True)
-#     r = da1.evaluate([metric_fn], **kwargs)[metric_fn]
-#     assert isinstance(r, float)
-#     assert r == 0.0
-#     for d in da1:
-#         assert d.evaluations[metric_fn].value == 0.0
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+@pytest.mark.parametrize(
+    'metric_fn, kwargs',
+    [
+        ('r_precision', {}),
+        ('precision_at_k', {}),
+        ('hit_at_k', {}),
+        ('average_precision', {}),
+        ('reciprocal_rank', {}),
+        ('recall_at_k', {'max_rel': 9}),
+        ('f1_score_at_k', {'max_rel': 9}),
+        ('ndcg_at_k', {}),
+    ],
+)
+def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwargs):
+    da1 = DocumentArray.empty(10)
+    for d in da1:
+        d.tags = {'label': 'A'}
+    da1.embeddings = np.random.random([10, 256])
+    da2 = copy.deepcopy(da1)
+    for d in da2:
+        d.tags = {'label': 'B'}
+    da1_index = DocumentArray(da2, storage=storage, config=config)
+    with da1_index:
+        da1.match(da1_index, exclude_self=True)
+    r = da1.evaluate([metric_fn], **kwargs)[metric_fn]
+    assert isinstance(r, float)
+    assert r == 0.0
+    for d in da1:
+        assert d.evaluations[metric_fn].value == 0.0
 
 
-# @pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
-# @pytest.mark.parametrize(
-#     'metric_fn, metric_score',
-#     [
-#         ('r_precision', 1.0 / 3),
-#         ('precision_at_k', 1.0 / 3),
-#         ('hit_at_k', 1.0),
-#         ('average_precision', (1.0 + 0.5 + (1.0 / 3)) / 3),
-#         ('reciprocal_rank', (1.0 + 0.5 + (1.0 / 3)) / 3),
-#         ('recall_at_k', 1.0 / 3),
-#         ('f1_score_at_k', 1.0 / 3),
-#         ('dcg_at_k', (1.0 + 1.0 + 0.6309) / 3),
-#     ],
-# )
-# def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
-#     da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
-#     for d in da:
-#         d.matches = da
-#     r = da.evaluate([metric_fn], label_tag=label_tag, max_rel=3)[metric_fn]
-#     assert abs(r - metric_score) < 0.001
+@pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
+@pytest.mark.parametrize(
+    'metric_fn, metric_score',
+    [
+        ('r_precision', 1.0 / 3),
+        ('precision_at_k', 1.0 / 3),
+        ('hit_at_k', 1.0),
+        ('average_precision', (1.0 + 0.5 + (1.0 / 3)) / 3),
+        ('reciprocal_rank', (1.0 + 0.5 + (1.0 / 3)) / 3),
+        ('recall_at_k', 1.0 / 3),
+        ('f1_score_at_k', 1.0 / 3),
+        ('dcg_at_k', (1.0 + 1.0 + 0.6309) / 3),
+    ],
+)
+def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
+    da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
+    for d in da:
+        d.matches = da
+    r = da.evaluate([metric_fn], label_tag=label_tag, max_rel=3)[metric_fn]
+    assert abs(r - metric_score) < 0.001
 
 
 @pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
@@ -221,16 +221,16 @@ def test_num_relevant_documents_per_label(metric_fn, metric_score, label_tag):
     assert abs(r - metric_score) < 0.001
 
 
-# def test_missing_max_rel_should_raise():
-#     da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
-#     num_relevant_documents_per_label = {i: 1 for i in range(2)}
-#     for d in da:
-#         d.matches = da
-#     with pytest.raises(ValueError):
-#         da.evaluate(
-#             ['recall_at_k'],
-#             num_relevant_documents_per_label=num_relevant_documents_per_label,
-#         )
+def test_missing_max_rel_should_raise():
+    da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    num_relevant_documents_per_label = {i: 1 for i in range(2)}
+    for d in da:
+        d.matches = da
+    with pytest.raises(ValueError):
+        da.evaluate(
+            ['recall_at_k'],
+            num_relevant_documents_per_label=num_relevant_documents_per_label,
+        )
 
 
 @pytest.mark.parametrize(
@@ -279,50 +279,50 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
         assert d.evaluations[metric_fn].value == 1.0
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# def test_diff_len_should_raise(storage, config, start_storage):
-#     da1 = DocumentArray.empty(10)
-#     da2 = DocumentArray.empty(5)
-#     for d in da2:
-#         d.matches.append(da2[0])
-#     da2 = DocumentArray(da2, storage=storage, config=config)
-#     with pytest.raises(ValueError):
-#         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+def test_diff_len_should_raise(storage, config, start_storage):
+    da1 = DocumentArray.empty(10)
+    da2 = DocumentArray.empty(5)
+    for d in da2:
+        d.matches.append(da2[0])
+    da2 = DocumentArray(da2, storage=storage, config=config)
+    with pytest.raises(ValueError):
+        da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# def test_diff_hash_fun_should_raise(storage, config, start_storage):
-#     da1 = DocumentArray.empty(10)
-#     da2 = DocumentArray.empty(5)
-#     for d in da2:
-#         d.matches.append(da2[0])
-#     da2 = DocumentArray(da2, storage=storage, config=config)
-#     with pytest.raises(ValueError):
-#         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+def test_diff_hash_fun_should_raise(storage, config, start_storage):
+    da1 = DocumentArray.empty(10)
+    da2 = DocumentArray.empty(5)
+    for d in da2:
+        d.matches.append(da2[0])
+    da2 = DocumentArray(da2, storage=storage, config=config)
+    with pytest.raises(ValueError):
+        da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
 @pytest.mark.parametrize(
@@ -439,68 +439,68 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
         assert d.evaluations[metric_fn].value > 0.9
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# def test_empty_da_should_raise(storage, config, start_storage):
-#     da = DocumentArray([], storage=storage, config=config)
-#     with pytest.raises(ValueError):
-#         da.evaluate(metrics=['precision_at_k'])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+def test_empty_da_should_raise(storage, config, start_storage):
+    da = DocumentArray([], storage=storage, config=config)
+    with pytest.raises(ValueError):
+        da.evaluate(metrics=['precision_at_k'])
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# def test_missing_groundtruth_should_raise(storage, config, start_storage):
-#     da = DocumentArray(DocumentArray.empty(10), storage=storage, config=config)
-#     with pytest.raises(RuntimeError):
-#         da.evaluate(metrics=['precision_at_k'])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+def test_missing_groundtruth_should_raise(storage, config, start_storage):
+    da = DocumentArray(DocumentArray.empty(10), storage=storage, config=config)
+    with pytest.raises(RuntimeError):
+        da.evaluate(metrics=['precision_at_k'])
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 256}),
-#         ('qdrant', {'n_dim': 256}),
-#         ('elasticsearch', {'n_dim': 256}),
-#         ('redis', {'n_dim': 256}),
-#         ('milvus', {'n_dim': 256}),
-#     ],
-# )
-# def test_useless_groundtruth_warning_should_raise(storage, config, start_storage):
-#     da1 = DocumentArray.empty(10)
-#     for d in da1:
-#         d.tags = {'label': 'A'}
-#     da1.embeddings = np.random.random([10, 256])
-#     da1_index = DocumentArray(da1, storage=storage, config=config)
-#     with da1_index:
-#         da1.match(da1_index, exclude_self=True)
-#     da2 = DocumentArray.empty(10)
-#     with pytest.warns(UserWarning):
-#         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+        ('milvus', {'n_dim': 256}),
+    ],
+)
+def test_useless_groundtruth_warning_should_raise(storage, config, start_storage):
+    da1 = DocumentArray.empty(10)
+    for d in da1:
+        d.tags = {'label': 'A'}
+    da1.embeddings = np.random.random([10, 256])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    with da1_index:
+        da1.match(da1_index, exclude_self=True)
+    da2 = DocumentArray.empty(10)
+    with pytest.warns(UserWarning):
+        da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
 def dummy_embed_function(da):
@@ -509,35 +509,35 @@ def dummy_embed_function(da):
         da[i, 'embedding'] = np.random.random(5)
 
 
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 5}),
-#         ('qdrant', {'n_dim': 5}),
-#         ('elasticsearch', {'n_dim': 5}),
-#         ('redis', {'n_dim': 5}),
-#     ],
-# )
-# def test_embed_and_evaluate_single_da(storage, config, start_storage):
-#
-#     gt = DocumentArray([Document(text=str(i)) for i in range(10)])
-#     queries_da = DocumentArray(gt, copy=True)
-#     queries_da = DocumentArray(queries_da, storage=storage, config=config)
-#     dummy_embed_function(gt)
-#     gt.match(gt, limit=3)
-#
-#     with queries_da:
-#         res = queries_da.embed_and_evaluate(
-#             ground_truth=gt,
-#             metrics=['precision_at_k', 'reciprocal_rank'],
-#             embed_funcs=dummy_embed_function,
-#             match_batch_size=1,
-#             limit=3,
-#         )
-#     assert all([v == 1.0 for v in res.values()])
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_single_da(storage, config, start_storage):
+
+    gt = DocumentArray([Document(text=str(i)) for i in range(10)])
+    queries_da = DocumentArray(gt, copy=True)
+    queries_da = DocumentArray(queries_da, storage=storage, config=config)
+    dummy_embed_function(gt)
+    gt.match(gt, limit=3)
+
+    with queries_da:
+        res = queries_da.embed_and_evaluate(
+            ground_truth=gt,
+            metrics=['precision_at_k', 'reciprocal_rank'],
+            embed_funcs=dummy_embed_function,
+            match_batch_size=1,
+            limit=3,
+        )
+    assert all([v == 1.0 for v in res.values()])
 
 
 @pytest.mark.parametrize(
@@ -586,44 +586,44 @@ def test_embed_and_evaluate_with_and_without_exclude_self(
         assert abs(res[key] - expected_results[key]) < 1e-5
 
 
-# @pytest.mark.parametrize(
-#     'sample_size',
-#     [None, 10],
-# )
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 5}),
-#         ('qdrant', {'n_dim': 5}),
-#         ('elasticsearch', {'n_dim': 5}),
-#         ('redis', {'n_dim': 5}),
-#     ],
-# )
-# def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage):
-#
-#     gt_queries = DocumentArray([Document(text=str(i)) for i in range(100)])
-#     gt_index = DocumentArray([Document(text=str(i)) for i in range(100, 200)])
-#     queries_da = DocumentArray(gt_queries, copy=True)
-#     index_da = DocumentArray(gt_index, copy=True)
-#     index_da = DocumentArray(index_da, storage=storage, config=config)
-#     dummy_embed_function(gt_queries)
-#     dummy_embed_function(gt_index)
-#     gt_queries.match(gt_index, limit=3)
-#
-#     with index_da:
-#         res = queries_da.embed_and_evaluate(
-#             ground_truth=gt_queries,
-#             index_data=index_da,
-#             metrics=['precision_at_k', 'reciprocal_rank'],
-#             embed_funcs=dummy_embed_function,
-#             match_batch_size=1,
-#             limit=3,
-#             query_sample_size=sample_size,
-#         )
-#     assert all([v == 1.0 for v in res.values()])
+@pytest.mark.parametrize(
+    'sample_size',
+    [None, 10],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage):
+
+    gt_queries = DocumentArray([Document(text=str(i)) for i in range(100)])
+    gt_index = DocumentArray([Document(text=str(i)) for i in range(100, 200)])
+    queries_da = DocumentArray(gt_queries, copy=True)
+    index_da = DocumentArray(gt_index, copy=True)
+    index_da = DocumentArray(index_da, storage=storage, config=config)
+    dummy_embed_function(gt_queries)
+    dummy_embed_function(gt_index)
+    gt_queries.match(gt_index, limit=3)
+
+    with index_da:
+        res = queries_da.embed_and_evaluate(
+            ground_truth=gt_queries,
+            index_data=index_da,
+            metrics=['precision_at_k', 'reciprocal_rank'],
+            embed_funcs=dummy_embed_function,
+            match_batch_size=1,
+            limit=3,
+            query_sample_size=sample_size,
+        )
+    assert all([v == 1.0 for v in res.values()])
 
 
 def test_embed_and_evaluate_two_different_das():
@@ -655,68 +655,68 @@ def test_embed_and_evaluate_two_different_das():
     assert abs(res['f1_score_at_k'] - 1.0 / 1.5) < 1e-5
 
 
-# @pytest.mark.parametrize(
-#     'use_index, expected, label_tag',
-#     [
-#         (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}, 'label'),
-#         (
-#             True,
-#             {
-#                 'precision_at_k': 1.0 / 3,
-#                 'reciprocal_rank': 11.0 / 18.0,
-#                 'recall_at_k': 1.0,
-#             },
-#             'custom_tag',
-#         ),
-#     ],
-# )
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 5}),
-#         ('qdrant', {'n_dim': 5}),
-#         ('elasticsearch', {'n_dim': 5}),
-#         ('redis', {'n_dim': 5}),
-#     ],
-# )
-# def test_embed_and_evaluate_labeled_dataset(
-#     storage, config, start_storage, use_index, expected, label_tag
-# ):
-#     metric_fns = list(expected.keys())
-#
-#     def emb_func(da):
-#         np.random.seed(0)  # makes sure that embeddings are always equal
-#         da[:, 'embedding'] = np.random.random((len(da), 5))
-#
-#     da1 = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
-#     da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
-#
-#     with da2:
-#         if (
-#             use_index
-#         ):  # query and index da are distinct # (different embeddings are generated)
-#             res = da1.embed_and_evaluate(
-#                 index_data=da2,
-#                 metrics=metric_fns,
-#                 embed_funcs=emb_func,
-#                 match_batch_size=1,
-#                 limit=3,
-#                 label_tag=label_tag,
-#             )
-#         else:  # query and index are the same (embeddings of both das are equal)
-#             res = da2.embed_and_evaluate(
-#                 metrics=metric_fns,
-#                 embed_funcs=emb_func,
-#                 match_batch_size=1,
-#                 limit=3,
-#                 label_tag=label_tag,
-#             )
-#     for key in metric_fns:
-#         assert key in res
-#         assert abs(res[key] - expected[key]) < 1e-4
+@pytest.mark.parametrize(
+    'use_index, expected, label_tag',
+    [
+        (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}, 'label'),
+        (
+            True,
+            {
+                'precision_at_k': 1.0 / 3,
+                'reciprocal_rank': 11.0 / 18.0,
+                'recall_at_k': 1.0,
+            },
+            'custom_tag',
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_labeled_dataset(
+    storage, config, start_storage, use_index, expected, label_tag
+):
+    metric_fns = list(expected.keys())
+
+    def emb_func(da):
+        np.random.seed(0)  # makes sure that embeddings are always equal
+        da[:, 'embedding'] = np.random.random((len(da), 5))
+
+    da1 = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
+    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+
+    with da2:
+        if (
+            use_index
+        ):  # query and index da are distinct # (different embeddings are generated)
+            res = da1.embed_and_evaluate(
+                index_data=da2,
+                metrics=metric_fns,
+                embed_funcs=emb_func,
+                match_batch_size=1,
+                limit=3,
+                label_tag=label_tag,
+            )
+        else:  # query and index are the same (embeddings of both das are equal)
+            res = da2.embed_and_evaluate(
+                metrics=metric_fns,
+                embed_funcs=emb_func,
+                match_batch_size=1,
+                limit=3,
+                label_tag=label_tag,
+            )
+    for key in metric_fns:
+        assert key in res
+        assert abs(res[key] - expected[key]) < 1e-4
 
 
 @pytest.mark.parametrize(
@@ -821,46 +821,46 @@ def test_embed_and_evaluate_with_embed_model(
     assert res['precision_at_k'] == 0.2
 
 
-# @pytest.mark.parametrize(
-#     'queries, kwargs, exception',
-#     [
-#         (DocumentArray.empty(4), {}, ValueError),
-#         (
-#             DocumentArray([Document(tags={'label': 0})]),
-#             {'index_data': DocumentArray.empty(4)},
-#             ValueError,
-#         ),
-#         (DocumentArray([Document(tags={'label': 0})]), {}, RuntimeError),
-#         (
-#             DocumentArray([Document(tags={'label': 0})]),
-#             {'index_data': DocumentArray([Document(tags={'label': 0})])},
-#             RuntimeError,
-#         ),
-#     ],
-# )
-# @pytest.mark.parametrize(
-#     'storage, config',
-#     [
-#         ('memory', {}),
-#         ('weaviate', {}),
-#         ('sqlite', {}),
-#         ('annlite', {'n_dim': 5}),
-#         ('qdrant', {'n_dim': 5}),
-#         ('elasticsearch', {'n_dim': 5}),
-#         ('redis', {'n_dim': 5}),
-#     ],
-# )
-# def test_embed_and_evaluate_invalid_input_should_raise(
-#     storage, config, queries, kwargs, exception, start_storage
-# ):
-#     kwargs.update({'metrics': ['precision_at_k']})
-#     if 'index_data' in kwargs:
-#         kwargs['index_data'] = DocumentArray(
-#             kwargs['index_data'], storage=storage, config=config
-#         )
-#
-#     with pytest.raises(exception):
-#         queries.embed_and_evaluate(**kwargs)
+@pytest.mark.parametrize(
+    'queries, kwargs, exception',
+    [
+        (DocumentArray.empty(4), {}, ValueError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray.empty(4)},
+            ValueError,
+        ),
+        (DocumentArray([Document(tags={'label': 0})]), {}, RuntimeError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray([Document(tags={'label': 0})])},
+            RuntimeError,
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_invalid_input_should_raise(
+    storage, config, queries, kwargs, exception, start_storage
+):
+    kwargs.update({'metrics': ['precision_at_k']})
+    if 'index_data' in kwargs:
+        kwargs['index_data'] = DocumentArray(
+            kwargs['index_data'], storage=storage, config=config
+        )
+
+    with pytest.raises(exception):
+        queries.embed_and_evaluate(**kwargs)
 
 
 @pytest.mark.parametrize(
