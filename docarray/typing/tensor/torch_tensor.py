@@ -58,26 +58,29 @@ class TorchTensor(
         class MyDoc(BaseDocument):
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
+            square_crop: TorchTensor[3, 'x', 'x']
 
 
         # create a document with tensors
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(3, 224, 224),
+            square_crop=torch.zeros(3, 64, 64),
         )
 
         # automatic shape conversion
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
+            square_crop=torch.zeros(3, 128, 128),
         )
 
         # !! The following will raise an error due to shape mismatch !!
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224),  # this will fail validation
+            square_crop=torch.zeros(3, 128, 64),  # this will also fail validation
         )
-
     """
 
     __parametrized_meta__ = metaTorchAndNode
