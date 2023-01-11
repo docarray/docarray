@@ -95,6 +95,10 @@ class TorchTensor(
         if t.shape == shape:
             return t
         elif any(isinstance(dim, str) for dim in shape):
+            if len(t.shape) != len(shape):
+                raise ValueError(
+                    f"Tensor shape mismatch. Expected {shape}, got {t.shape}"
+                )
             known_dims: Dict[str, int] = {}
             for tdim, dim in zip(t.shape, shape):
                 if isinstance(dim, int) and tdim != dim:
