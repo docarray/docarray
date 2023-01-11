@@ -6,7 +6,7 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDocument
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import VideoNdArray, VideoTorchTensor, VideoUrl
+from docarray.typing import NdArray, VideoNdArray, VideoTorchTensor, VideoUrl
 from tests import TOYDATA_DIR
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
@@ -27,7 +27,7 @@ def test_load_with_only_keyframes_false(file_url):
     assert isinstance(tensor, VideoNdArray)
 
     assert isinstance(indices, np.ndarray)
-    assert isinstance(indices, VideoNdArray)
+    assert isinstance(indices, NdArray)
 
 
 @pytest.mark.slow

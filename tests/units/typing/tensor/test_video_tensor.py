@@ -83,5 +83,5 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
 def test_save_video_tensor_to_file(cls_tensor, tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
     video_tensor = parse_obj_as(cls_tensor, tensor)
-    video_tensor.save_to_file(tmp_file)
+    video_tensor.save_to_mp4_file(tmp_file)
     assert os.path.isfile(tmp_file)
