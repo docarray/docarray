@@ -19,11 +19,17 @@ from docarray.base_document.base_node import BaseNode
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
 
-torch_base = type(torch.Tensor)  # type: Any
-node_base = type(BaseNode)  # type: Any
+torch_base: type = type(torch.Tensor)
+node_base: type = type(BaseNode)
 
 
-class metaTorchAndNode(AbstractTensor.__parametrized_meta__, torch_base, node_base):
+# the mypy error suppression below should not be necessary anymore once the following
+# is released in mypy: https://github.com/python/mypy/pull/14135
+class metaTorchAndNode(
+    AbstractTensor.__parametrized_meta__,  # type: ignore
+    torch_base,  # type: ignore
+    node_base,  # type: ignore
+):  # type: ignore
     pass
 
 

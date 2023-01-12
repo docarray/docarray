@@ -53,9 +53,10 @@ class _ParametrizedMeta(type):
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
 
+
 class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
-    __parametrized_meta__ = _ParametrizedMeta
+    __parametrized_meta__: type = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
 
     @classmethod
