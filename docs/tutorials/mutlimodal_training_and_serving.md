@@ -89,7 +89,7 @@ class PairTextImage(BaseDocument):
 ## Create the Dataset 
 
 
-In this section we will create a multi modal pytorch dataset around the Flick8k dataset using docarray.
+In this section we will create a multi modal pytorch dataset around the Flick8k dataset using DocArray.
 
 We will use DocArray data loading functionality to load the data and use torchvision and transformers to preprocess the data before fedding it to our deepl learning model
 
