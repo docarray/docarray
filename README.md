@@ -22,7 +22,7 @@ from typing import Optional
 class MyDocument(BaseDocument):
     description: str
     image_url: ImageUrl
-    image_tensor: Optional[TorchTensor[3, 224, 224]]
+    image_tensor: Optional[TorchTensor]
     embedding: Optional[TorchTensor[768]]
 
 
@@ -31,9 +31,11 @@ doc = MyDocument(
     image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
 )
 doc.image_tensor = doc.image_url.load()  # load image tensor from URL
-doc.embedding = CLIPImageEncoder()(
+doc.embedding = clip_image_encoder(
     doc.image_tensor
 )  # create and store embedding using model of your choice
+
+print(doc.embedding.shape)
 ```
 
 - **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a single, unified data structure, the `Document`
@@ -47,14 +49,14 @@ from docarray.documents import Image
 doc = Image(
     url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
 )
-doc.image_tensor = doc.url.load()  # load image tensor from URL
-doc.embedding = CLIPImageEncoder()(
-    doc.image_tensor
+doc.tensor = doc.url.load()  # load image tensor from URL
+doc.embedding = clip_image_encoder(
+    doc.tensor
 )  # create and store embedding using model of your choice
 ```
 ### Compose nested Documents:
 
-```python
+<!-- #region -->
 from docarray import BaseDocument
 from docarray.documents import Image, Text
 import numpy as np
@@ -68,23 +70,52 @@ class MultiModalDocument(BaseDocument):
 doc = MultiModalDocument(
     image_doc=Image(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
 )
-```
+<!-- #endregion -->
 
 ### Collect multiple `Documents` into a `DocumentArray`:
 ```python
-from docarray import DocumentArray
-from docarray.documents import Image
+from docarray import DocumentArray, BaseDocument
+from docarray.typing import AnyTensor, ImageUrl
+import numpy as np
 
-da = DocumentArray(
+
+class Image(BaseDocument):
+    url: ImageUrl
+    tensor: AnyTensor
+```
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray[Image](
     [
         Image(
             url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
         )
         for _ in range(100)
     ]
 )
 ```
 
+
+access field at the DocumentArray level 
+
+```python
+print(len(da.tensor))
+print(da.tensor[0].shape)
+```
+
+You can stack tensor if you want to perform in batch processing 
+
+```python
+da = da.stack()
+```
+
+```python
+print(type(da.tensor))
+print(da.tensor.shape)
+```
 
 ## Send
 - **Serialize** any `Document` or `DocumentArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
@@ -101,7 +132,9 @@ doc = Image(tensor=np.zeros((3, 224, 224)))
 # JSON over HTTP
 async with AsyncClient(app=app, base_url="http://test") as ac:
     response = await ac.post("/doc/", data=input_doc.json())
+```
 
+```python
 # (de)serialize from/to protobuf
 Image.from_protobuf(doc.to_protobuf())
 ```
@@ -165,6 +198,7 @@ from httpx import AsyncClient
 from docarray import BaseDocument
 from docarray.documents import Image
 from docarray.typing import NdArray
+from docarray.base_document import DocumentResponse
 
 
 class InputDoc(BaseDocument):
@@ -181,12 +215,13 @@ input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
 app = FastAPI()
 
 
-@app.post("/doc/", response_model=OutputDoc)
+@app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
     ## call my fancy model to generate the embeddings
-    return OutputDoc(
+    doc = OutputDoc(
         embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
     )
+    return doc
 
 
 async with AsyncClient(app=app, base_url="http://test") as ac:
