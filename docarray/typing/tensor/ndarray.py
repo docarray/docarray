@@ -23,8 +23,16 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto, NodeProto
 
+from docarray.document.base_node import BaseNode
+
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
+
+tensor_base = type(BaseNode)  # type: Any
+
+
+class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):
+    pass
 
 
 class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
@@ -71,6 +79,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
     """
 
     _PROTO_FIELD_NAME = 'ndarray'
+    __parametrized_meta__ = metaNumpy
 
     @classmethod
     def __get_validators__(cls):

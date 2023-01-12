@@ -48,7 +48,7 @@ class _ParametrizedMeta(type):
     def __instancecheck__(cls, instance):
         is_tensor = isinstance(instance, AbstractTensor)
         if is_tensor:  # custom handling
-            return any(issubclass(type(instance), subclass) for subclass in cls.mro())
+            return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
 
 
