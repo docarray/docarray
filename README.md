@@ -186,6 +186,94 @@ If you come from Pydantic, you can see Documents as juiced up models, and DocArr
 - Cloud ready: Serialization to **Protobuf** for use with microservices and **gRPC**
 - Support for **vector search functionalities**, such as `find()` and `embed()`
 
+## Coming from Pytorch
+
+DocArray is meant to be used directly inside machine learning model to handle an represent multi modal nested data. Not only It promises to reduce the friction between ML model training and ML model serving, using DocArray with pytorch allow to reason with the nested and multi modal abstraction deep inside the nn.Module part of pytorch.
+
+
+
+```python
+import torch
+from torch import nn
+
+
+class MyMultiModalModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = AudioEncoder()
+        self.image_encoder = ImageEncoder()
+        self.text_encoder = TextEncoder()
+
+    def forward(self, text_1, text_2, image_1, image_2, audio_1, audio_2):
+        emnedding_text_1 = self.text_encoder(text_1)
+        emnedding_text_2 = self.text_encoder(text_2)
+
+        emnedding_image_1 = self.image_encoder(image_1)
+        emnedding_image_2 = self.image_encoder(image_2)
+
+        emnedding_audio_1 = self.image_encoder(audio_1)
+        emnedding_audio_2 = self.image_encoder(audio_2)
+
+        return (
+            emnedding_text_1,
+            emnedding_text_2,
+            emnedding_image_1,
+            emnedding_image_2,
+            emnedding_audio_1,
+            emnedding_audio_2,
+        )
+```
+
+It is not easy on the eye ..., even worse if you need to add one more modality you have to handle all of these tuples etcc
+
+Let see how it will loooks with DocArray
+
+```python
+from docarray import DocumentArray, BaseDocument
+from docarray.documents import Image, Text, Audio
+from docarray.typing import TorchTensor
+
+import torch
+
+
+class Podcast(BaseDocument):
+    text: Text
+    image: Image
+    audio: Audio
+
+
+class PairPodcast(BaseDocument):
+    left: Podcast
+    right: Podcast
+
+
+class MyPodcastModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = AudioEncoder()
+        self.image_encoder = ImageEncoder()
+        self.text_encoder = TextEncoder()
+
+    def forward_podcast(da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+        da.audio.embedding = self.audio_encoder(da.audio.tensor)
+        da.text.embedding = self.text_encoder(da.text.tensor)
+        da.image.embedding = self.image_encoder(da.image.tensor)
+
+        return da
+
+    def forward(da: DocumentArray[PairPodcast]) -> TorchTensor:
+        da.left = self.forward_podcast(da.left)
+        da.right = self.forward_podcast(da.right)
+
+        return da
+```
+
+You win in code readibility and maintainability. And for the same price you can turn your pytorch model into a FastAPI app and reuse the same
+schema definition that you used during training as schema for your RestAPI. Everything handle in pythonic manner relying the the type hint for your
+function
+
+
+
 ## Coming from FastAPI
 
 Documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI:
