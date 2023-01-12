@@ -1,14 +1,14 @@
 from typing import Optional
 
-from docarray.document import BaseDocument
-from docarray.typing import AnyTensor, Embedding, ImageUrl
+from docarray.base_document import BaseDocument
+from docarray.typing import AnyEmbedding, AnyTensor, ImageUrl
 
 
 class Image(BaseDocument):
     """
     Document for handling images.
     It can contain an ImageUrl (`Image.url`), an AnyTensor (`Image.tensor`),
-    and an Embedding (`Image.embedding`).
+    and an AnyEmbedding (`Image.embedding`).
 
     EXAMPLE USAGE:
 
@@ -16,7 +16,7 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Image
+        from docarray.documents import Image
 
         # use it directly
         image = Image(url='http://www.jina.ai/image.jpg')
@@ -28,13 +28,13 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Image
-        from docarray.typing import Embedding
+        from docarray.documents import Image
+        from docarray.typing import AnyEmbedding
         from typing import Optional
 
         # extend it
         class MyImage(Image):
-            second_embedding: Optional[Embedding]
+            second_embedding: Optional[AnyEmbedding]
 
 
         image = MyImage(url='http://www.jina.ai/image.jpg')
@@ -48,7 +48,8 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument, Image, Text
+        from docarray import BaseDocument
+        from docarray.documents import Image, Text
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -65,4 +66,4 @@ class Image(BaseDocument):
 
     url: Optional[ImageUrl]
     tensor: Optional[AnyTensor]
-    embedding: Optional[Embedding]
+    embedding: Optional[AnyEmbedding]

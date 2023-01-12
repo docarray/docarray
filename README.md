@@ -14,12 +14,12 @@ This means that DocArray lets you do the following things:
 ## Represent
 
 ```python
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 
 
-class MyDocument(Document):
+class MyDocument(BaseDocument):
     description: str
     image_url: ImageUrl
     image_tensor: Optional[TorchTensor[3, 224, 224]]
@@ -42,7 +42,7 @@ doc.embedding = CLIPImageEncoder()(
 ### Use pre-defined `Document`s for common use cases:
 
 ```python
-from docarray import Image
+from docarray.documents import Image
 
 doc = Image(
     url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
@@ -55,7 +55,8 @@ doc.embedding = CLIPImageEncoder()(
 ### Compose nested Documents:
 
 ```python
-from docarray import Image, Text, BaseDocument
+from docarray import BaseDocument
+from docarray.documents import Image, Text
 import numpy as np
 
 
@@ -71,7 +72,8 @@ doc = MultiModalDocument(
 
 ### Collect multiple `Documents` into a `DocumentArray`:
 ```python
-from docarray import Image, DocumentArray
+from docarray import DocumentArray
+from docarray.documents import Image
 
 da = DocumentArray(
     [
@@ -90,7 +92,7 @@ da = DocumentArray(
 - Integrate seamlessly with **FastAPI** and **Jina**
 
 ```python
-from docarray import Image
+from docarray.documents import Image
 from httpx import AsyncClient
 import numpy as np
 
@@ -111,7 +113,9 @@ Image.from_protobuf(doc.to_protobuf())
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray, Image, DocumentStore
+from docarray import DocumentArray
+from docarray.documents import Image
+from docarray.stores import DocumentStore
 import numpy as np
 
 da = DocumentArray([Image(embedding=np.zeros((128,))) for _ in range(1000)])
@@ -158,15 +162,16 @@ import numpy as np
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import Document, Image
+from docarray import BaseDocument
+from docarray.documents import Image
 from docarray.typing import NdArray
 
 
-class InputDoc(Document):
+class InputDoc(BaseDocument):
     img: Image
 
 
-class OutputDoc(Document):
+class OutputDoc(BaseDocument):
     embedding_clip: NdArray
     embedding_bert: NdArray
 
@@ -194,12 +199,12 @@ The big advantage here is **first-class support for ML centric data**, such as {
 
 This includes handy features such as validating the shape of a tensor:
 ```python
-from docarray import Document
+from docarray import BaseDocument
 from docarray.typing import TorchTensor
 import torch
 
 
-class MyDoc(Document):
+class MyDoc(BaseDocument):
     tensor: TorchTensor[3, 224, 224]
 
 
@@ -217,11 +222,13 @@ store it there, and thus make it searchable:
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray, Image, Text, DocumentStore, Document
+from docarray import DocumentArray, BaseDocument
+from docarray.stores import DocumentStore
+from docarray.documents import Image, Text
 import numpy as np
 
 
-class MyDoc(Document):
+class MyDoc(BaseDocument):
     image: Image
     text: Text
     description: str
@@ -262,6 +269,7 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 
 ## Further reading
 
+- [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
 - [Submit ideas, feature requests, and discussions](https://github.com/docarray/docarray/discussions)

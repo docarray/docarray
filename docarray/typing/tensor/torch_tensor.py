@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto, NodeProto
     from docarray.computation.torch_backend import TorchCompBackend
 
-from docarray.document.base_node import BaseNode
+from docarray.base_document.base_node import BaseNode
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -28,7 +28,7 @@ class metaTorchAndNode(AbstractTensor.__parametrized_meta__, torch_base, node_ba
 
 
 class TorchTensor(
-    AbstractTensor, torch.Tensor, Generic[ShapeT], metaclass=metaTorchAndNode
+    torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
 ):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
@@ -126,10 +126,10 @@ class TorchTensor(
         # this is needed to dump to json
         field_schema.update(type='string', format='tensor')
 
-    def _to_json_compatible(self) -> np.ndarray:
+    def _docarray_to_json_compatible(self) -> np.ndarray:
         """
         Convert torchTensor into a json compatible object
-        :return: a list representation of the torch tensor
+        :return: a representation of the tensor compatible with orjson
         """
         return self.numpy()  ## might need to  check device later
 

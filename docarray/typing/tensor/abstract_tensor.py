@@ -9,6 +9,8 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
+    from docarray.proto import NdArrayProto
+
 T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
 
@@ -51,8 +53,7 @@ class _ParametrizedMeta(type):
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
 
-
-class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
+class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     __parametrized_meta__ = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
@@ -157,4 +158,28 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     @abc.abstractmethod
     def get_comp_backend() -> Type[AbstractComputationalBackend]:
         """The computational backend compatible with this tensor type."""
+        ...
+
+    def __getitem__(self, item):
+        """Get a slice of this tensor."""
+        ...
+
+    def __iter__(self):
+        """Iterate over the elements of this tensor."""
+        ...
+
+    @abc.abstractmethod
+    def to_protobuf(self) -> 'NdArrayProto':
+        """Convert DocumentArray into a Protobuf message"""
+        ...
+
+    def unwrap(self):
+        """Return the native tensor object that this DocArray tensor wraps."""
+
+    @abc.abstractmethod
+    def _docarray_to_json_compatible(self):
+        """
+        Convert tensor into a json compatible object
+        :return: a representation of the tensor compatible with orjson
+        """
         ...

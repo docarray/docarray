@@ -1,9 +1,10 @@
 import warnings
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union, overload
 
 import numpy as np
 
 from docarray.computation import AbstractComputationalBackend
+from docarray.typing import NdArray
 
 
 def _expand_if_single_axis(*matrices: np.ndarray) -> List[np.ndarray]:
@@ -40,9 +41,33 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     ) -> 'np.ndarray':
         return np.stack(tensors, axis=dim)
 
+    @overload
+    @staticmethod
+    def to_device(tensor: 'NdArray', device: str) -> 'NdArray':
+        """Move the tensor to the specified device."""
+        ...
+
+    @overload
+    @staticmethod
+    def to_device(tensor: 'np.ndarray', device: str) -> 'np.ndarray':
+        """Move the tensor to the specified device."""
+        ...
+
+    @staticmethod
+    def to_device(
+        tensor: Union['np.ndarray', 'NdArray'], device: str
+    ) -> Union['np.ndarray', 'NdArray']:
+        """Move the tensor to the specified device."""
+        raise NotImplementedError('Numpy does not support devices (GPU).')
+
     @staticmethod
     def n_dim(array: 'np.ndarray') -> int:
         return array.ndim
+
+    @staticmethod
+    def none_value() -> Any:
+        """Provide a compatible value that represents None in numpy."""
+        return None
 
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """

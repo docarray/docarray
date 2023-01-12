@@ -1,7 +1,7 @@
 from typing import Optional, TypeVar
 
-from docarray.document import BaseDocument
-from docarray.typing import AudioUrl, Embedding
+from docarray.base_document import BaseDocument
+from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 
 T = TypeVar('T', bound='Audio')
@@ -12,7 +12,7 @@ class Audio(BaseDocument):
     Document for handling audios.
 
     The Audio Document can contain an AudioUrl (`Audio.url`), an AudioTensor
-    (`Audio.tensor`), and an Embedding (`Audio.embedding`).
+    (`Audio.tensor`), and an AnyEmbedding (`Audio.embedding`).
 
     EXAMPLE USAGE:
 
@@ -20,7 +20,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Audio
+        from docarray.documents import Audio
 
         # use it directly
         audio = Audio(
@@ -34,7 +34,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Audio, Text
+        from docarray.documents import Audio, Text
         from typing import Optional
 
         # extend it
@@ -55,7 +55,8 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import Document, Audio, Text
+        from docarray import BaseDocument
+        from docarray.documents import Audio, Text
 
         # compose it
         class MultiModalDoc(Document):
@@ -74,4 +75,4 @@ class Audio(BaseDocument):
 
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
-    embedding: Optional[Embedding]
+    embedding: Optional[AnyEmbedding]

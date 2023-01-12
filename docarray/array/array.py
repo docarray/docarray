@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, 
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.document import AnyDocument, BaseDocument
+from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:
@@ -131,7 +131,7 @@ class DocumentArray(AnyDocumentArray):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, 'TorchTensor', 'NdArray'],
+        values: Union[List, T, 'AbstractTensor'],
     ):
         """Set all Documents in this DocumentArray using the passed values
 

@@ -35,7 +35,7 @@ class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):
     pass
 
 
-class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
+class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of np.ndarray, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
@@ -139,10 +139,10 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         # this is needed to dump to json
         field_schema.update(type='string', format='tensor')
 
-    def _to_json_compatible(self) -> np.ndarray:
+    def _docarray_to_json_compatible(self) -> np.ndarray:
         """
         Convert tensor into a json compatible object
-        :return: a list representation of the tensor
+        :return: a representation of the tensor compatible with orjson
         """
         return self.unwrap()
 
@@ -219,3 +219,7 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         from docarray.computation.numpy_backend import NumpyCompBackend
 
         return NumpyCompBackend
+
+    def __class_getitem__(cls, item: Any, *args, **kwargs):
+        # see here for mypy bug: https://github.com/python/mypy/issues/14123
+        return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore

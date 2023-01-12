@@ -1,11 +1,12 @@
 import numpy as np
 import torch
 
-from docarray import BaseDocument, DocumentArray, Image, Text
+from docarray import BaseDocument, DocumentArray
+from docarray.documents import Image, Text
 from docarray.typing import (
+    AnyEmbedding,
     AnyTensor,
     AnyUrl,
-    Embedding,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
@@ -49,7 +50,7 @@ def test_all_types():
         np_array_param: NdArray[224, 224, 3]
         generic_nd_array: AnyTensor
         generic_torch_tensor: AnyTensor
-        embedding: Embedding
+        embedding: AnyEmbedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
         nested_docs: DocumentArray[NestedDoc]
