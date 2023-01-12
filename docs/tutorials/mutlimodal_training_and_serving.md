@@ -325,3 +325,5 @@ doc_resp = Text.parse_raw(response.content.decode())
 ```python
 doc_resp.embedding.shape
 ```
+
+And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocArray!
