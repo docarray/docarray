@@ -14,6 +14,20 @@ ShapeT = TypeVar('ShapeT')
 
 
 class _ParametrizedMeta(type):
+    """
+    This metaclass ensures that instance and subclass checks on parametrized Tensors
+    are handled as expected:
+
+    assert issubclass(TorchTensor[128], TorchTensor[128])
+    t = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    assert isinstance(t, TorchTensor[128])
+    etc.
+
+    This special handling is needed because every call to `AbstractTensor.__getitem__`
+    creates a new class on the fly.
+    We want technically distinct but identical classes to be considered equal.
+    """
+
     def __subclasscheck__(cls, subclass):
         is_tensor = AbstractTensor in subclass.mro()
         same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
@@ -30,6 +44,12 @@ class _ParametrizedMeta(type):
         if same_shape:
             return True
         return super().__subclasscheck__(subclass)
+
+    def __instancecheck__(cls, instance):
+        is_tensor = isinstance(instance, AbstractTensor)
+        if is_tensor:  # custom handling
+            return any(issubclass(type(instance), subclass) for subclass in cls.mro())
+        return super().__instancecheck__(instance)
 
 
 class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
