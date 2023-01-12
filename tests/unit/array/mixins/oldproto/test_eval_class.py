@@ -25,6 +25,7 @@ from docarray import DocumentArray, Document
         ('ndcg_at_k', {}),
     ],
 )
+
 def test_eval_mixin_perfect_match(metric_fn, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
@@ -40,6 +41,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs):
         assert d.evaluations[metric_fn].value == 1.0
 
 
+
 def test_eval_mixin_perfect_match_multiple_metrics():
     metric_fns = [
         'r_precision',
@@ -53,7 +55,6 @@ def test_eval_mixin_perfect_match_multiple_metrics():
     ]
     kwargs = {'max_rel': 9}
     da1 = DocumentArray.empty(10)
-    da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
@@ -108,6 +109,7 @@ def test_eval_mixin_perfect_match_labeled(metric_fn, kwargs):
     ],
 )
 def test_eval_mixin_zero_labeled(metric_fn, kwargs):
+
     da1 = DocumentArray.empty(10)
     for d in da1:
         d.tags = {'label': 'A'}
@@ -252,7 +254,6 @@ def test_same_hash_same_len_fun_should_work():
 
         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
-
 def test_adding_noise():
     da = DocumentArray.empty(10)
 
@@ -320,7 +321,6 @@ def test_missing_groundtruth_should_raise():
     da = DocumentArray(DocumentArray.empty(10))
     with pytest.raises(RuntimeError):
         da.evaluate(metrics=['precision_at_k'])
-
 
 def test_useless_groundtruth_warning_should_raise():
     da1 = DocumentArray.empty(10)
