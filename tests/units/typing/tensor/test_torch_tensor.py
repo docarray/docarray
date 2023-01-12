@@ -82,3 +82,39 @@ def test_torch_embedding():
     # illegal shape at class creation time
     with pytest.raises(ValueError):
         parse_obj_as(TorchEmbedding[128, 128], torch.zeros(128, 128))
+
+
+def test_parametrized_subclass():
+    c1 = TorchTensor[128]
+    c2 = TorchTensor[128]
+    assert issubclass(c1, c2)
+    assert issubclass(c1, TorchTensor)
+    assert issubclass(c1, torch.Tensor)
+
+    assert not issubclass(c1, TorchTensor[256])
+
+
+def test_parametrized_instance():
+    t = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    assert isinstance(t, TorchTensor[128])
+    assert isinstance(t, TorchTensor)
+    assert isinstance(t, torch.Tensor)
+
+    assert not isinstance(t, TorchTensor[256])
+
+
+def test_parametrized_equality():
+    t1 = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    t2 = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    t3 = parse_obj_as(TorchTensor[256], torch.zeros(256))
+    assert (t1 == t2).all()
+    assert not t1 == t3
+
+
+def test_parametrized_operations():
+    t1 = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    t2 = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    t_result = t1 + t2
+    assert isinstance(t_result, torch.Tensor)
+    assert isinstance(t_result, TorchTensor)
+    assert isinstance(t_result, TorchTensor[128])

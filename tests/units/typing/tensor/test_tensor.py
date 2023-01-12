@@ -90,3 +90,39 @@ def test_np_embedding():
     # illegal shape at class creation time
     with pytest.raises(ValueError):
         parse_obj_as(NdArrayEmbedding[128, 128], np.zeros((128, 128)))
+
+
+def test_parametrized_subclass():
+    c1 = NdArray[128]
+    c2 = NdArray[128]
+    assert issubclass(c1, c2)
+    assert issubclass(c1, NdArray)
+    assert issubclass(c1, np.ndarray)
+
+    assert not issubclass(c1, NdArray[256])
+
+
+def test_parametrized_instance():
+    t = parse_obj_as(NdArray[128], np.zeros(128))
+    assert isinstance(t, NdArray[128])
+    assert isinstance(t, NdArray)
+    assert isinstance(t, np.ndarray)
+
+    assert not isinstance(t, NdArray[256])
+
+
+def test_parametrized_equality():
+    t1 = parse_obj_as(NdArray[128], np.zeros(128))
+    t2 = parse_obj_as(NdArray[128], np.zeros(128))
+    t3 = parse_obj_as(NdArray[256], np.zeros(256))
+    assert (t1 == t2).all()
+    assert not t1 == t3
+
+
+def test_parametrized_operations():
+    t1 = parse_obj_as(NdArray[128], np.zeros(128))
+    t2 = parse_obj_as(NdArray[128], np.zeros(128))
+    t_result = t1 + t2
+    assert isinstance(t_result, np.ndarray)
+    assert isinstance(t_result, NdArray)
+    assert isinstance(t_result, NdArray[128])
