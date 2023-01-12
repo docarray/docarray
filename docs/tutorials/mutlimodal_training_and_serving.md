@@ -287,7 +287,7 @@ vision_encoder = vision_encoder.eval()
 text_encoder = text_encoder.eval()
 ```
 
-now we can test the API
+Now all we need to do is to tell FastAPI what methods it should use to serve the model:
 
 ```python
 @app.post("/embed_text/", response_model=Text, response_class=DocumentResponse)
@@ -323,6 +323,5 @@ doc_resp = Text.parse_raw(response.content.decode())
 
 ```python
 doc_resp.embedding.shape
-```
 
 And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocArray!
