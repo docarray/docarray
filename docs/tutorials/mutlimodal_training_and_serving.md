@@ -15,9 +15,9 @@ jupyter:
 # MultiModal Deep learning with DocArray
 
 
- The goal of this notebook is to showcase the usage of `docarray` with 'pytorch' to do multi-modal machine learning.
+ The goal of this notebook is to showcase the usage of **DocArray** with **PyTorch** to do multi-modal machine learning.
 
-We will train a [CLIP(https://arxiv.org/abs/2103.00020)-like model on a dataset compose of text and image. The goal is to train the model
+We will train a [CLIP](https://arxiv.org/abs/2103.00020)-like model on a dataset compose of text and image. The goal is to train the model
 that is able to understand both text and image and project them into a common embedding space.
 
 We train the CLIP-like model on the [flick8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset. To run this notebook you need to download and unzip the data into the same folder as the notebook.
