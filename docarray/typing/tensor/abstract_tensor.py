@@ -13,9 +13,28 @@ T = TypeVar('T', bound='AbstractTensor')
 ShapeT = TypeVar('ShapeT')
 
 
+class _ParametrizedMeta(type):
+    def __subclasscheck__(cls, subclass):
+        is_tensor = AbstractTensor in subclass.mro()
+        same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
+
+        subclass_target_shape = getattr(subclass, '__docarray_target_shape__', False)
+        self_target_shape = getattr(cls, '__docarray_target_shape__', False)
+        same_shape = (
+            same_parents
+            and subclass_target_shape
+            and self_target_shape
+            and subclass_target_shape == self_target_shape
+        )
+
+        if same_shape:
+            return True
+        return super().__subclasscheck__(subclass)
+
+
 class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
-    __parametrized_meta__ = type
+    __parametrized_meta__ = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
 
     @classmethod
@@ -74,7 +93,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
             cls,  # type: ignore
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
-            _docarray_target_shape = shape
+            __docarray_target_shape__ = shape
 
             @classmethod
             def validate(
@@ -84,7 +103,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls.__docarray_validate_shape__(t, _cls._docarray_target_shape)
+                return _cls.__docarray_validate_shape__(
+                    t, _cls.__docarray_target_shape__
+                )
 
         _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
         _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'

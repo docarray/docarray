@@ -23,7 +23,7 @@ torch_base = type(torch.Tensor)  # type: Any
 node_base = type(BaseNode)  # type: Any
 
 
-class metaTorchAndNode(torch_base, node_base):
+class metaTorchAndNode(AbstractTensor.__parametrized_meta__, torch_base, node_base):
     pass
 
 
@@ -231,6 +231,6 @@ class TorchTensor(
 
         return TorchCompBackend
 
-    @classmethod
-    def __torch_function__(cls, func, types, args=(), kwargs=None):
-        return super().__torch_function__(func, (torch.Tensor,), args, kwargs)
+    # @classmethod
+    # def __torch_function__(cls, func, types, args=(), kwargs=None):
+    #     return super().__torch_function__(func, (torch.Tensor,), args, kwargs)
