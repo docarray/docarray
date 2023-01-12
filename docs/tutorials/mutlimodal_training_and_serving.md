@@ -218,7 +218,7 @@ class VisionEncoder(nn.Module):
 vision_encoder = VisionEncoder().to(DEVICE)
 text_encoder = TextEncoder().to(DEVICE)
 ```
-
+As you can see, DocArray helps us to clearly convey what data is expected as input and output for each method, all through Python type hints.
 ## Train the model in a constrative way between Text and Image (CLIP)
 
 
