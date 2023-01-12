@@ -22,7 +22,7 @@ that is able to understand both text and image and project them into a common em
 
 We train the CLIP-like model on the [flick8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset. To run this notebook you need to download and unzip the data into the same folder as the notebook.
 
-In this notebook we don't aim at reproduce any CLIP results (our dataset is way to small anyway) but rather to show how DocArray datastructures help researcher to write  beautiful and pythonic multi-modal pytorch code
+In this notebook we don't aim at reproduce any CLIP results (our dataset is way to small anyway) but rather to show how DocArray datastructures help researchers and practitioners to write  beautiful and pythonic multi-modal PyTorch code.
 
 ```python tags=[]
 #!pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[torch,image]"
@@ -55,9 +55,11 @@ DEVICE = "cuda:2"
 ## Create the Documents for handling the MutiModal data
 <!-- #endregion -->
 
-At the heart of DocArray live the concept of `BaseDocument` that allow user to define a nested data schema to represent any kind of complex multi modal data. `BaseDocument` is a pythonic way to define a data schema, it is inspired by [Pydantic BaseModel](https://docs.pydantic.dev/usage/models/) (it is actually built on top of it)
+At the heart of DocArray live the concept of a `Document`, a collection of mulit-modal data. The `BaseDocument` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
 
-Lets start to define Document to handle the different modalities that we will use during our training
+`BaseDocument` is a pythonic way to define a data schema, and is inspired by and built on top of [Pydantic BaseModel](https://docs.pydantic.dev/usage/models/).
+
+Let's start by defining a few Documents to handle the different modalities that we will use during our training:
 
 ```python
 from docarray import BaseDocument, DocumentArray
