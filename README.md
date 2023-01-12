@@ -261,7 +261,7 @@ class MyPodcastModel(nn.Module):
 
         return da
 
-    def forward(da: DocumentArray[PairPodcast]) -> TorchTensor:
+    def forward(da: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
         da.left = self.forward_podcast(da.left)
         da.right = self.forward_podcast(da.right)
 
