@@ -222,7 +222,7 @@ As you can see, DocArray helps us to clearly convey what data is expected as inp
 ## Train the model in a constrative way between Text and Image (CLIP)
 
 
-Now that we have defined our dataloader and our models we can train the two encoder is a contrastive way. The goal is to match the representation of the text and the image for each pair in the dataset.
+Now that we have defined our dataloader and our models we can train the two encoders is a contrastive way. The goal is to match the representation of the text and the image for each pair in the dataset.
 
 ```python
 optim = torch.optim.Adam(
