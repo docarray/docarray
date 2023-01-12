@@ -180,7 +180,7 @@ loader = DataLoader(
 ## Create the Pytorch model that work on DocumentArray
 
 
-In this section we create two encoders one for each modalities (Text and Image). These encoders are nornal pytorch nn.Module. the Only difference is that they operate on DocumentArray directly rather that on tensor
+In this section we create two encoders one for each modalities (Text and Image). These encoders are normal PyTorch `nn.Module`s. The only difference is that they operate on DocumentArray rather that on torch.Tensor:
 
 ```python
 class TextEncoder(nn.Module):
