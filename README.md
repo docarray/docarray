@@ -218,7 +218,7 @@ doc = MyDoc(tensor=torch.zeros(224))  # fails validation
 If you came across docarray as a universal vector DB client, you can best think of it as **a new kind of ORM for vector databases**.
 
 DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
-store it there, and thus make it searchable:
+store it there, and thus make it searchable::
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
