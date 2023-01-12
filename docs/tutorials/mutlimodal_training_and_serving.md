@@ -63,12 +63,11 @@ Let's start by defining a few Documents to handle the different modalities that 
 
 ```python
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
-from docarray.documents import Text as BaseText
 from docarray.typing import TorchTensor, ImageUrl
-```
-
+Let's first create a Document for our Text modality. It will contain a number of `Tokens`, which we also define:
 ```python tags=[]
+from docarray.documents import Text as BaseText
+
 class Tokens(BaseDocument):
     input_ids: TorchTensor[512]
     attention_mask: TorchTensor
@@ -78,7 +77,7 @@ class Tokens(BaseDocument):
 class Text(BaseText):
     tokens: Optional[Tokens]
 ```
-
+Notice the `TorchTensor` type. It is a thin wrapper around `torch.Tensor` that enables additional features like shape parametrization (`TorchTensor[512]`), but can be use like any other torch tensor. If you want, you can always get a raw `torch.Tensor` from a `TorchTensor`.
 the final document use for training here is the PairTextImage which combine the Text and Image modalities
 
 ```python
