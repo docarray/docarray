@@ -248,7 +248,7 @@ def clip_loss(image: DocumentArray[Image], text: DocumentArray[Text]) -> TorchTe
 num_epoch = 1  # here you should do more epochs to really learn something
 ```
 
-One things to notice here is that our dataloader does not return a torch.Tensor but a DocumentArray[PairTextImage] ! 
+One things to notice here is that our dataloader does not return a `torch.Tensor` but a `DocumentArray[PairTextImage]` ! 
 
 ```python tags=[]
 with torch.autocast(device_type="cuda", dtype=torch.float16):
