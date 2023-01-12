@@ -264,8 +264,6 @@ with torch.autocast(device_type="cuda", dtype=torch.float16):
                 print(f"{i+epoch} steps , loss : {loss}")
             loss.backward()
             optim.step()
-```
-## From prototype to production in, well, almost no line of code
 
 
 Now we have a ML clip model trained ! Let's see how we can serve this model with a RestAPI by reusing most of the code above.
