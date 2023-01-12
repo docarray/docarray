@@ -78,7 +78,7 @@ class Text(BaseText):
     tokens: Optional[Tokens]
 ```
 Notice the `TorchTensor` type. It is a thin wrapper around `torch.Tensor` that enables additional features like shape parametrization (`TorchTensor[512]`), but can be use like any other torch tensor. If you want, you can always get a raw `torch.Tensor` from a `TorchTensor`.
-the final document use for training here is the PairTextImage which combine the Text and Image modalities
+The final Document used for training here is the `PairTextImage`, which combines the Text and Image modalities:
 
 ```python
 class PairTextImage(BaseDocument):
