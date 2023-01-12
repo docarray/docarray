@@ -266,12 +266,13 @@ with torch.autocast(device_type="cuda", dtype=torch.float16):
             optim.step()
 
 
-Now we have a ML clip model trained ! Let's see how we can serve this model with a RestAPI by reusing most of the code above.
+Now we have a trained CLIP mode, let's see how we can serve this model with a Rest API by reusing most of the code above.
 
 Let's use our beloved [FastAPI](https://fastapi.tiangolo.com/) for that!
 
 
-FastAPI is powerfull because it allows you to define your RestAPI data schema only with python ! And DocArray is fully compatible with FastAPI that means that as long as you have a function that takes as input a Document FastAPI will be able to translate it into a fully fledge RestAPI with documentation, openAPI specification and more !
+FastAPI is powerful because it allows you to define your Rest API data schema in pure Python.
+And DocArray is fully compatible with FastAPI, which means that as long as you have a function that takes a Document as input, FastAPI will be able to automatically translate it into a fully fledged Rest API with documentation, openAPI specification and more:
 
 ```python
 from fastapi import FastAPI
