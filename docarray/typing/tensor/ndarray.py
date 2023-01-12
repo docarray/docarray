@@ -23,8 +23,18 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto, NodeProto
 
+from docarray.base_document.base_node import BaseNode
+
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
+
+tensor_base: type = type(BaseNode)
+
+
+# the mypy error suppression below should not be necessary anymore once the following
+# is released in mypy: https://github.com/python/mypy/pull/14135
+class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ignore
+    pass
 
 
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
@@ -71,6 +81,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
 
     _PROTO_FIELD_NAME = 'ndarray'
+    __parametrized_meta__ = metaNumpy
 
     @classmethod
     def __get_validators__(cls):
