@@ -13,20 +13,6 @@ from docarray import DocumentArray, Document
 
 
 @pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('r_precision', {}),
@@ -39,10 +25,10 @@ from docarray import DocumentArray, Document
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_storage):
+def test_eval_mixin_perfect_match(metric_fn, kwargs, config):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
     r = da1.evaluate(ground_truth=da1, metrics=[metric_fn], strict=False, **kwargs)[
@@ -54,21 +40,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         assert d.evaluations[metric_fn].value == 1.0
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storage):
+def test_eval_mixin_perfect_match_multiple_metrics(config):
     metric_fns = [
         'r_precision',
         'precision_at_k',
@@ -82,7 +54,7 @@ def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storag
     kwargs = {'max_rel': 9}
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
     r = da1.evaluate(ground_truth=da1, metrics=metric_fns, strict=False, **kwargs)
@@ -95,18 +67,6 @@ def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storag
 
 
 @pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-    ],
-)
-@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('r_precision', {}),
@@ -119,14 +79,12 @@ def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storag
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_perfect_match_labeled(
-    metric_fn, kwargs, storage, config, start_storage
-):
+def test_eval_mixin_perfect_match_labeled(metric_fn, kwargs, config):
     da1 = DocumentArray.empty(10)
     for d in da1:
         d.tags = {'label': 'A'}
     da1.embeddings = np.random.random([10, 256])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
     r = da1.evaluate(metrics=[metric_fn], **kwargs)[metric_fn]
@@ -137,20 +95,6 @@ def test_eval_mixin_perfect_match_labeled(
 
 
 @pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('r_precision', {}),
@@ -163,7 +107,7 @@ def test_eval_mixin_perfect_match_labeled(
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwargs):
+def test_eval_mixin_zero_labeled(config, metric_fn, kwargs):
     da1 = DocumentArray.empty(10)
     for d in da1:
         d.tags = {'label': 'A'}
@@ -171,7 +115,7 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
     da2 = copy.deepcopy(da1)
     for d in da2:
         d.tags = {'label': 'B'}
-    da1_index = DocumentArray(da2, storage=storage, config=config)
+    da1_index = DocumentArray(da2, config=config)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
     r = da1.evaluate([metric_fn], **kwargs)[metric_fn]
@@ -237,20 +181,6 @@ def test_missing_max_rel_should_raise():
 
 
 @pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('r_precision', {}),
@@ -263,15 +193,15 @@ def test_missing_max_rel_should_raise():
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs):
+def test_eval_mixin_zero_match(config, metric_fn, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     da1.match(da1_index, exclude_self=True)
 
     da2 = copy.deepcopy(da1)
     da2.embeddings = np.random.random([10, 256])
-    da2_index = DocumentArray(da2, storage=storage, config=config)
+    da2_index = DocumentArray(da2, config=config)
     with da2_index:
         da2.match(da2_index, exclude_self=True)
 
@@ -283,77 +213,35 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
         assert d.evaluations[metric_fn].value == 1.0
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_diff_len_should_raise(storage, config, start_storage):
+def test_diff_len_should_raise(config):
     da1 = DocumentArray.empty(10)
     da2 = DocumentArray.empty(5)
     for d in da2:
         d.matches.append(da2[0])
-    da2 = DocumentArray(da2, storage=storage, config=config)
+    da2 = DocumentArray(da2, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_diff_hash_fun_should_raise(storage, config, start_storage):
+def test_diff_hash_fun_should_raise(config):
     da1 = DocumentArray.empty(10)
     da2 = DocumentArray.empty(5)
     for d in da2:
         d.matches.append(da2[0])
-    da2 = DocumentArray(da2, storage=storage, config=config)
+    da2 = DocumentArray(da2, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 3}),
-        ('qdrant', {'n_dim': 3}),
-        ('elasticsearch', {'n_dim': 3}),
-        ('redis', {'n_dim': 3}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 3}),
-    ],
-)
-def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
+def test_same_hash_same_len_fun_should_work(config):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 3])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     with da1_index:
         da1.match(da1_index)
     da2 = DocumentArray.empty(10)
     da2.embeddings = np.random.random([10, 3])
-    da2_index = DocumentArray(da1, storage=storage, config=config)
+    da2_index = DocumentArray(da1, config=config)
     with da2_index:
         da2.match(da2_index)
     with da1_index, da2_index:
@@ -365,25 +253,11 @@ def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 3}),
-        ('qdrant', {'n_dim': 3}),
-        ('elasticsearch', {'n_dim': 3}),
-        ('redis', {'n_dim': 3}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 3}),
-    ],
-)
-def test_adding_noise(storage, config, start_storage):
+def test_adding_noise(config):
     da = DocumentArray.empty(10)
 
     da.embeddings = np.random.random([10, 3])
-    da_index = DocumentArray(da, storage=storage, config=config)
+    da_index = DocumentArray(da, config=config)
     with da_index:
         da.match(da_index, exclude_self=True)
 
@@ -405,27 +279,13 @@ def test_adding_noise(storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 128}),
-        ('qdrant', {'n_dim': 128}),
-        ('elasticsearch', {'n_dim': 128}),
-        ('redis', {'n_dim': 128}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 128}),
-    ],
-)
-@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('recall_at_k', {}),
         ('f1_score_at_k', {}),
     ],
 )
-def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs):
+def test_diff_match_len_in_gd(config, metric_fn, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 128])
     # da1_index = DocumentArray(da1, storage=storage, config=config)
@@ -433,7 +293,7 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
 
     da2 = copy.deepcopy(da1)
     da2.embeddings = np.random.random([10, 128])
-    da2_index = DocumentArray(da2, storage=storage, config=config)
+    da2_index = DocumentArray(da2, config=config)
     with da2_index:
         da2.match(da2_index, exclude_self=True)
         # pop some matches from first document
@@ -448,66 +308,24 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
         assert d.evaluations[metric_fn].value > 0.9
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_empty_da_should_raise(storage, config, start_storage):
-    da = DocumentArray([], storage=storage, config=config)
+def test_empty_da_should_raise(config):
+    da = DocumentArray([], config=config)
     with pytest.raises(ValueError):
         da.evaluate(metrics=['precision_at_k'])
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_missing_groundtruth_should_raise(storage, config, start_storage):
-    da = DocumentArray(DocumentArray.empty(10), storage=storage, config=config)
+def test_missing_groundtruth_should_raise(config):
+    da = DocumentArray(DocumentArray.empty(10), config=config)
     with pytest.raises(RuntimeError):
         da.evaluate(metrics=['precision_at_k'])
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 256}),
-        ('qdrant', {'n_dim': 256}),
-        ('elasticsearch', {'n_dim': 256}),
-        ('redis', {'n_dim': 256}),
-        # milvus should pass individually, but on the CI it fails
-        # ('milvus', {'n_dim': 256}),
-    ],
-)
-def test_useless_groundtruth_warning_should_raise(storage, config, start_storage):
+def test_useless_groundtruth_warning_should_raise(config):
     da1 = DocumentArray.empty(10)
     for d in da1:
         d.tags = {'label': 'A'}
     da1.embeddings = np.random.random([10, 256])
-    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1_index = DocumentArray(da1, config=config)
     with da1_index:
         da1.match(da1_index, exclude_self=True)
     da2 = DocumentArray.empty(10)
@@ -521,23 +339,11 @@ def dummy_embed_function(da):
         da[i, 'embedding'] = np.random.random(5)
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 5}),
-        ('qdrant', {'n_dim': 5}),
-        ('elasticsearch', {'n_dim': 5}),
-        ('redis', {'n_dim': 5}),
-    ],
-)
-def test_embed_and_evaluate_single_da(storage, config, start_storage):
+def test_embed_and_evaluate_single_da(config):
 
     gt = DocumentArray([Document(text=str(i)) for i in range(10)])
     queries_da = DocumentArray(gt, copy=True)
-    queries_da = DocumentArray(queries_da, storage=storage, config=config)
+    queries_da = DocumentArray(queries_da, config=config)
     dummy_embed_function(gt)
     gt.match(gt, limit=3)
 
@@ -602,25 +408,13 @@ def test_embed_and_evaluate_with_and_without_exclude_self(
     'sample_size',
     [None, 10],
 )
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 5}),
-        ('qdrant', {'n_dim': 5}),
-        ('elasticsearch', {'n_dim': 5}),
-        ('redis', {'n_dim': 5}),
-    ],
-)
-def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage):
+def test_embed_and_evaluate_two_das(config, sample_size):
 
     gt_queries = DocumentArray([Document(text=str(i)) for i in range(100)])
     gt_index = DocumentArray([Document(text=str(i)) for i in range(100, 200)])
     queries_da = DocumentArray(gt_queries, copy=True)
     index_da = DocumentArray(gt_index, copy=True)
-    index_da = DocumentArray(index_da, storage=storage, config=config)
+    index_da = DocumentArray(index_da, config=config)
     dummy_embed_function(gt_queries)
     dummy_embed_function(gt_index)
     gt_queries.match(gt_index, limit=3)
@@ -682,21 +476,7 @@ def test_embed_and_evaluate_two_different_das():
         ),
     ],
 )
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 5}),
-        ('qdrant', {'n_dim': 5}),
-        ('elasticsearch', {'n_dim': 5}),
-        ('redis', {'n_dim': 5}),
-    ],
-)
-def test_embed_and_evaluate_labeled_dataset(
-    storage, config, start_storage, use_index, expected, label_tag
-):
+def test_embed_and_evaluate_labeled_dataset(config, use_index, expected, label_tag):
     metric_fns = list(expected.keys())
 
     def emb_func(da):
@@ -704,7 +484,7 @@ def test_embed_and_evaluate_labeled_dataset(
         da[:, 'embedding'] = np.random.random((len(da), 5))
 
     da1 = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
-    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+    da2 = DocumentArray(da1, config=config, copy=True)
 
     with da2:
         if (
@@ -804,27 +584,13 @@ def bert_tokenizer():
     return BertTokenizer.from_pretrained('bert-base-uncased')
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 768}),
-        ('qdrant', {'n_dim': 768}),
-        ('elasticsearch', {'n_dim': 768}),
-        ('redis', {'n_dim': 768}),
-    ],
-)
-def test_embed_and_evaluate_with_embed_model(
-    storage, config, bert_tokenizer, start_storage
-):
+def test_embed_and_evaluate_with_embed_model(config, bert_tokenizer):
     model = BertModel(BertConfig())
     collate_fn = lambda da: bert_tokenizer(da.texts, return_tensors='pt')
     da = DocumentArray(
         [Document(text=f'some text {i}', tags={'label': str(i)}) for i in range(5)]
     )
-    da = DocumentArray(da, storage=storage, config=config)
+    da = DocumentArray(da, config=config)
     with da:
         res = da.embed_and_evaluate(
             metrics=['precision_at_k'], embed_models=model, collate_fns=collate_fn
@@ -850,45 +616,19 @@ def test_embed_and_evaluate_with_embed_model(
         ),
     ],
 )
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 5}),
-        ('qdrant', {'n_dim': 5}),
-        ('elasticsearch', {'n_dim': 5}),
-        ('redis', {'n_dim': 5}),
-    ],
-)
 def test_embed_and_evaluate_invalid_input_should_raise(
-    storage, config, queries, kwargs, exception, start_storage
+    config, queries, kwargs, exception
 ):
     kwargs.update({'metrics': ['precision_at_k']})
     if 'index_data' in kwargs:
-        kwargs['index_data'] = DocumentArray(
-            kwargs['index_data'], storage=storage, config=config
-        )
+        kwargs['index_data'] = DocumentArray(kwargs['index_data'], config=config)
 
     with pytest.raises(exception):
         queries.embed_and_evaluate(**kwargs)
 
 
-@pytest.mark.parametrize(
-    'storage, config',
-    [
-        ('memory', {}),
-        ('weaviate', {}),
-        ('sqlite', {}),
-        ('annlite', {'n_dim': 5}),
-        ('qdrant', {'n_dim': 5}),
-        ('elasticsearch', {'n_dim': 5}),
-        ('redis', {'n_dim': 5}),
-    ],
-)
 @pytest.mark.parametrize('sample_size', [100, 1_000, 10_000])
-def test_embed_and_evaluate_sampling(storage, config, sample_size, start_storage):
+def test_embed_and_evaluate_sampling(config, sample_size):
     metric_fns = ['precision_at_k', 'reciprocal_rank']
 
     def emb_func(da):
@@ -898,7 +638,7 @@ def test_embed_and_evaluate_sampling(storage, config, sample_size, start_storage
     da1 = DocumentArray(
         [Document(text=str(i), tags={'label': i % 20}) for i in range(2_000)]
     )
-    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+    da2 = DocumentArray(da1, config=config, copy=True)
 
     with da2:
         res = da1.embed_and_evaluate(
