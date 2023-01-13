@@ -29,6 +29,7 @@ def test_is_type_tensor(type_, is_tensor):
     [
         (int, False),
         (TorchTensor, False),
+        (NdArray, False),
         (Optional[TorchTensor], True),
         (Optional[NdArray], True),
         (Union[NdArray, TorchTensor], True),

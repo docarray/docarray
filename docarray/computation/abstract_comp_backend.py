@@ -33,6 +33,11 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def empty(shape: Tuple[int, ...]) -> 'TTensor':
+        ...
+
+    @staticmethod
+    @abstractmethod
     def none_value() -> typing.Any:
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...

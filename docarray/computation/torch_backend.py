@@ -61,6 +61,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.to(device)
 
     @staticmethod
+    def empty(shape: Tuple[int, ...]) -> torch.Tensor:
+        return torch.empty(shape)
+
+    @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
 
