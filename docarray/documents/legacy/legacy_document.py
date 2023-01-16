@@ -15,5 +15,5 @@ class Document(BaseDocument):
     text: Optional[str]
     url: Optional[str]
     embedding: Optional[AnyEmbedding]
-    tags: Dict[str, Any] = dict()
+    # tags: Dict[str, Any] = dict()
     scores: Optional[Dict[str, Any]]
