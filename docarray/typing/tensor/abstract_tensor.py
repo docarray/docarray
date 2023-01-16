@@ -124,6 +124,10 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         """Get a slice of this tensor."""
         ...
 
+    def __setitem__(self, index, value):
+        """Set a slice of this tensor."""
+        ...
+
     def __iter__(self):
         """Iterate over the elements of this tensor."""
         ...

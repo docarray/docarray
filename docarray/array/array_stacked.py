@@ -158,7 +158,7 @@ class DocumentArrayStacked(AnyDocumentArray):
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
 
-                    columns[field][i] = val
+                    cast(AbstractTensor, columns[field])[i] = val
                     setattr(doc, field, columns[field][i])
                     del val
 
