@@ -1,15 +1,34 @@
-from abc import ABC
-from typing import BinaryIO, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, BinaryIO, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 
-T = TypeVar('T', bound='AbstractVideoTensor')
+if TYPE_CHECKING:
+    from docarray.typing import VideoNdArray, VideoTorchTensor
 
 
-class AbstractVideoTensor(AbstractTensor, ABC):
+T = TypeVar('T', bound='VideoTensorMixin')
+
+
+class VideoTensorMixin:
+    @staticmethod
+    def validate_shape(
+        cls: Union[Type['VideoTorchTensor'], Type['VideoNdArray']], value: 'T'
+    ) -> 'T':
+        comp_backend = cls.get_comp_backend()
+
+        if (
+            comp_backend.n_dim(value) not in [3, 4]  # type: ignore
+            or comp_backend.shape(value)[-1] != 3  # type: ignore
+        ):
+            raise ValueError(
+                f'Expects tensor with 3 or 4 dimensions and the last dimension equal '
+                f'to 3, but received {comp_backend.shape(value)}.'  # type: ignore
+            )
+        else:
+            return value
+
     def save(
         self: 'T',
         file_path: Union[str, BinaryIO],

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple, Type, TypeVar, Union
 import numpy as np
 
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
-from docarray.typing.tensor.video.abstract_video_tensor import AbstractVideoTensor
+from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
 
 T = TypeVar('T', bound='VideoTorchTensor')
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 
-class VideoTorchTensor(AbstractVideoTensor, TorchTensor, metaclass=metaTorchAndNode):
+class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode):
     """
     Subclass of TorchTensor, to represent a video tensor.
     Adds video-specific features to the tensor.
@@ -31,10 +31,4 @@ class VideoTorchTensor(AbstractVideoTensor, TorchTensor, metaclass=metaTorchAndN
         config: 'BaseConfig',
     ) -> T:
         tensor = super().validate(value=value, field=field, config=config)
-        if tensor.ndim not in [3, 4] or tensor.shape[-1] != 3:
-            raise ValueError(
-                f'Expects tensor with 3 or 4 dimensions and the last dimension equal '
-                f'to 3, but received {tensor.shape} in {tensor.dtype}'
-            )
-        else:
-            return tensor
+        return VideoTensorMixin.validate_shape(cls, value=tensor)

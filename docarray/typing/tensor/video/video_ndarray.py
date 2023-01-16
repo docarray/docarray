@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple, Type, TypeVar, Union
 import numpy as np
 
 from docarray.typing.tensor.ndarray import NdArray
-from docarray.typing.tensor.video.abstract_video_tensor import AbstractVideoTensor
+from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
 
 T = TypeVar('T', bound='VideoNdArray')
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 
-class VideoNdArray(AbstractVideoTensor, NdArray):
+class VideoNdArray(NdArray, VideoTensorMixin):
     """
     Subclass of NdArray, to represent a video tensor.
     Adds video-specific features to the tensor.
@@ -30,11 +30,5 @@ class VideoNdArray(AbstractVideoTensor, NdArray):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        array = super().validate(value=value, field=field, config=config)
-        if array.ndim not in [3, 4] or array.shape[-1] != 3:
-            raise ValueError(
-                f'Expects tensor with 3 or 4 dimensions and the last dimension equal'
-                f' to 3, but received {array.shape} in {array.dtype}'
-            )
-        else:
-            return array
+        tensor = super().validate(value=value, field=field, config=config)
+        return VideoTensorMixin.validate_shape(cls, value=tensor)
