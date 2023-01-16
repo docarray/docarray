@@ -31,7 +31,7 @@ def _usqueeze_if_scalar(t: torch.Tensor):
     return t
 
 
-class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
+class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']):
     """
     Computational backend for PyTorch.
     """
@@ -72,6 +72,50 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     def none_value() -> Any:
         """Provide a compatible value that represents None in torch."""
         return torch.tensor(float('nan'))
+
+    @staticmethod
+    def shape(tensor: 'torch.Tensor') -> Tuple[int, ...]:
+        return tuple(tensor.shape)
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'TorchTensor', shape: Tuple[int, ...]) -> 'TorchTensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @staticmethod
+    def reshape(
+        tensor: Union['torch.Tensor', 'TorchTensor'], shape: Tuple[int, ...]
+    ) -> Union['torch.Tensor', 'TorchTensor']:
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        return tensor.reshape(shape)
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """

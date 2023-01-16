@@ -74,6 +74,35 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(NdArray[3, 224, 224], np.zeros((224, 224)))
 
+    # test independent variable dimensions
+    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 60, 128)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 60, 128)
+
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((4, 224, 224)))
+
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((100, 1)))
+
+    # test dependent variable dimensions
+    tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60, 128)))
+
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60)))
+
 
 def test_np_embedding():
     # correct shape

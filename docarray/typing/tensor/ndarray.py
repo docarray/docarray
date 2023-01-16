@@ -1,4 +1,3 @@
-import warnings
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -57,12 +56,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         class MyDoc(BaseDocument):
             arr: NdArray
             image_arr: NdArray[3, 224, 224]
+            square_crop: NdArray[3, 'x', 'x']
 
 
         # create a document with tensors
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((3, 224, 224)),
+            square_crop=np.zeros((3, 64, 64)),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -70,6 +71,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+            square_crop=np.zeros((3, 128, 128)),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -77,6 +79,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224)),  # this will fail validation
+            square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
         )
     """
 
@@ -89,23 +92,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
-
-    @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
-        if t.shape == shape:
-            return t
-        else:
-            warnings.warn(
-                f'Tensor shape mismatch. Reshaping array '
-                f'of shape {t.shape} to shape {shape}'
-            )
-            try:
-                value = cls._docarray_from_native(np.reshape(t, shape))
-                return cast(T, value)
-            except RuntimeError:
-                raise ValueError(
-                    f'Cannot reshape array of shape {t.shape} to shape {shape}'
-                )
 
     @classmethod
     def validate(
