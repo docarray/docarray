@@ -53,7 +53,7 @@ def test_all_types():
         embedding: AnyEmbedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
-        # nested_docs: DocumentArray[NestedDoc]
+        nested_docs: DocumentArray[NestedDoc]
 
     doc = MyDoc(
         img_url='test.png',
@@ -70,9 +70,10 @@ def test_all_types():
         embedding=np.zeros((3, 224, 224)),
         torch_embedding=torch.zeros((128,)),
         np_embedding=np.zeros((128,)),
-        # nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
+        nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
     )
-    doc = MyDoc.from_protobuf(doc.to_protobuf())
+    doc = doc.to_protobuf()
+    doc = MyDoc.from_protobuf(doc)
 
     assert doc.img_url == 'test.png'
     assert doc.txt_url == 'test.txt'
