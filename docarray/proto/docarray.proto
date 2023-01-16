@@ -42,7 +42,9 @@ message NodeProto {
     DocumentArrayProto document_array = 5;
   }
 
-  string docarray_type = 6;
+  oneof docarray_type {
+    string type = 6;
+  }
 
 }
 
