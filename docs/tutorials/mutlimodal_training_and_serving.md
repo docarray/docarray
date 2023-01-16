@@ -65,7 +65,7 @@ Let's start by defining a few Documents to handle the different modalities that 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import TorchTensor, ImageUrl
 Let's first create a Document for our Text modality. It will contain a number of `Tokens`, which we also define:
-```python tags=[]
+```
 from docarray.documents import Text as BaseText
 
 class Tokens(BaseDocument):
@@ -274,7 +274,7 @@ Let's use our beloved [FastAPI](https://fastapi.tiangolo.com/) for that!
 FastAPI is powerful because it allows you to define your Rest API data schema in pure Python.
 And DocArray is fully compatible with FastAPI, which means that as long as you have a function that takes a Document as input, FastAPI will be able to automatically translate it into a fully fledged Rest API with documentation, openAPI specification and more:
 
-```python
+```
 from fastapi import FastAPI
 from docarray.base_document import DocumentResponse
 ```
@@ -326,3 +326,4 @@ doc_resp = Text.parse_raw(response.content.decode())
 doc_resp.embedding.shape
 
 And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocArray!
+```
