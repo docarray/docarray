@@ -1,14 +1,15 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import List, Optional, Tuple, TypeVar, Union, overload
 
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
+TAbstractTensor = TypeVar('TAbstractTensor')
 TTensorRetrieval = TypeVar('TTensorRetrieval')
 TTensorMetrics = TypeVar('TTensorMetrics')
 
 
-class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
+class AbstractComputationalBackend(ABC, typing.Generic[TTensor, TAbstractTensor]):
     """
     Abstract base class for computational backends.
     Every supported tensor/ML framework (numpy, torch etc.) should define its own
@@ -41,6 +42,65 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     @abstractmethod
     def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
         """Move the tensor to the specified device."""
+        ...
+
+    @overload
+    @staticmethod
+    def shape(tensor: 'TAbstractTensor') -> Tuple[int, ...]:
+        """Get shape of tensor"""
+        ...
+
+    @overload
+    @staticmethod
+    def shape(tensor: 'TTensor') -> Tuple[int, ...]:
+        """Get shape of tensor"""
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def shape(tensor: Union['TTensor', 'TAbstractTensor']) -> Tuple[int, ...]:
+        """Get shape of tensor"""
+        ...
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'TAbstractTensor', shape: Tuple[int, ...]) -> 'TAbstractTensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def reshape(
+        tensor: Union['TTensor', 'TAbstractTensor'], shape: Tuple[int, ...]
+    ) -> Union['TTensor', 'TAbstractTensor']:
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
         ...
 
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
