@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
+from docarray.array.chunk import ChunkArray
 from docarray.dataclasses import dataclass, field
 from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
@@ -911,3 +912,24 @@ def test_empty_list_dataclass():
         text: List[Text]
 
     doc = Document(A(text=[]))
+
+
+def test_doc_with_dataclass_with_list_of_length_one():
+    @dataclass
+    class MyDoc:
+        title: Text
+        images: List[Image]
+
+    doc = Document(MyDoc(title='doc 1', images=[IMAGE_URI]))
+    assert type(doc.images) == ChunkArray
+    assert len(doc.images) == 1
+
+
+def test_doc_with_dataclass_without_list():
+    @dataclass
+    class MyDoc:
+        title: Text
+        image: Image
+
+    doc = Document(MyDoc(title='doc 1', image=IMAGE_URI))
+    assert type(doc.image) == Document
