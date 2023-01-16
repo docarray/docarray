@@ -57,7 +57,8 @@ class VideoUrl(AnyUrl):
         Load the data from the url into a Tuple of AudioNdArray, VideoNdArray and
         NdArray.
 
-        :param skip_type: determines what video frames to discard.
+        :param skip_type: determines what video frames to discard. Supported strings
+            are: 'NONE', 'DEFAULT', 'NONREF', 'BIDIR', 'NONINTRA', 'NONKEY', 'ALL'.
         :param kwargs: supports all keyword arguments that are being supported by
             av.open() as described in:
             https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
