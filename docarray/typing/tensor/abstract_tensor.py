@@ -119,7 +119,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
                 f'of shape {tshape} to shape {shape}'
             )
             try:
-                value = cls.__docarray_from_native__(comp_be.reshape(t, shape))
+                value = cls._docarray_from_native(comp_be.reshape(t, shape))
                 return cast(T, value)
             except RuntimeError:
                 raise ValueError(
