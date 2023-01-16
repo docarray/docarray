@@ -65,6 +65,10 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array.ndim
 
     @staticmethod
+    def shape(array: 'np.ndarray') -> Tuple:
+        return array.shape
+
+    @staticmethod
     def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
         return array
 

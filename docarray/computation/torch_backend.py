@@ -66,6 +66,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return array.ndim
 
     @staticmethod
+    def shape(array: 'torch.Tensor') -> Tuple:
+        return array.size()
+
+    @staticmethod
     def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
         return array.cpu().detach().numpy()
 

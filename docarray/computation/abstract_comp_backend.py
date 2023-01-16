@@ -39,6 +39,14 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def shape(array: 'TTensor') -> Tuple:
+        """
+        Get the shape of the array.
+        """
+        ...
+
+    @staticmethod
+    @abstractmethod
     def to_numpy(array: 'TTensor') -> 'np.ndarray':
         """
         Convert array to np.ndarray.
