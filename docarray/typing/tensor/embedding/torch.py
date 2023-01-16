@@ -13,3 +13,5 @@ class metaTorchAndEmbedding(torch_base, embedding_base):
 
 class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
     alternative_type = TorchTensor
+    _proto_type_name = 'torch_embedding'
+

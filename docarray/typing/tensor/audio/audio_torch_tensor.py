@@ -50,7 +50,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
     """
 
-    _PROTO_FIELD_NAME = 'audio_torch_tensor'
+    _proto_type_name = 'audio_torch_tensor'
 
     def to_audio_bytes(self):
         import torch

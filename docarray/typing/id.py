@@ -16,6 +16,7 @@ class ID(str, AbstractType):
     """
     Represent an unique ID
     """
+
     _proto_type_name = 'id'
 
     @classmethod
@@ -45,7 +46,7 @@ class ID(str, AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(text=self, type = self._proto_type_name)
+        return NodeProto(text=self, type=self._proto_type_name)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:

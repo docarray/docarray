@@ -80,7 +80,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         )
     """
 
-    _PROTO_FIELD_NAME = 'ndarray'
+    _proto_type_name = 'ndarray'
     __parametrized_meta__ = metaNumpy
 
     @classmethod
@@ -171,18 +171,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         :return: a numpy ndarray
         """
         return self.view(np.ndarray)
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """Convert itself into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to be
-        converted into a protobuf
-        :param field: field in which to store the content in the node proto
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        nd_proto = self.to_protobuf()
-        return NodeProto(**{self._PROTO_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':

@@ -81,7 +81,7 @@ class TorchTensor(
     """
 
     __parametrized_meta__ = metaTorchAndNode
-    _PROTO_FIELD_NAME = 'torch_tensor'
+    _proto_type_name = 'torch'
 
     @classmethod
     def __get_validators__(cls):
@@ -185,18 +185,6 @@ class TorchTensor(
         :return: a TorchTensor
         """
         return cls._docarray_from_native(torch.from_numpy(value))
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to be
-        converted into a protobuf
-        :param field: field in which to store the content in the node proto
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        nd_proto = self.to_protobuf()
-        return NodeProto(**{self._PROTO_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':

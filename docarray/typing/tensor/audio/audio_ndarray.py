@@ -51,8 +51,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
-
-    _PROTO_FIELD_NAME = 'audio_ndarray'
+    _proto_type_name = 'audio_ndarray'
 
     def to_audio_bytes(self):
         tensor = (self * MAX_INT_16).astype('<h')

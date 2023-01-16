@@ -20,6 +20,7 @@ class Url3D(AnyUrl, ABC):
     URL to a .obj, .glb, or .ply file containing 3D mesh or point cloud information.
     Can be remote (web) URL, or a local file path.
     """
+    _proto_type_name = 'url3d'
 
     @classmethod
     def validate(

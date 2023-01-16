@@ -13,16 +13,7 @@ class TextUrl(AnyUrl):
     Can be remote (web) URL, or a local file path.
     """
 
-    def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to
-        be converted into a protobuf
-
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        return NodeProto(text_url=str(self))
+    _proto_type_name = 'texturl'
 
     def load_to_bytes(self, timeout: Optional[float] = None) -> bytes:
         """
