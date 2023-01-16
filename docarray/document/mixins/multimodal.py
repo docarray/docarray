@@ -212,7 +212,7 @@ class MultiModalMixin:
             if attr_type == AttributeType.ITERABLE_DOCUMENT:
                 return mm_attr_da
             else:
-                return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
+                return mm_attr_da[0]
         else:
             raise AttributeError(f'{self.__class__.__name__} has no attribute `{attr}`')
 
