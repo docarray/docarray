@@ -1,6 +1,18 @@
 import abc
+import warnings
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
@@ -60,26 +72,43 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
     _PROTO_FIELD_NAME: str
 
     @classmethod
-    @abc.abstractmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
-        """Every tensor has to implement this method in order to
-        enable syntax of the form AnyTensor[shape].
-
-        It is called when a tensor is assigned to a field of this type.
-        i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
-
-        The intended behaviour is as follows:
-        - If the shape of `t` is equal to `shape`, return `t`.
-        - If the shape of `t` is not equal to `shape`,
-            but can be reshaped to `shape`, return `t` reshaped to `shape`.
-        - If the shape of `t` is not equal to `shape`
-            and cannot be reshaped to `shape`, raise a ValueError.
-
-        :param t: The tensor to validate.
-        :param shape: The shape to validate against.
-        :return: The validated tensor.
-        """
-        ...
+    def __docarray_validate_shape__(
+        cls, t: T, shape: Tuple[Union[int, str]]
+    ) -> T:  # type: ignore
+        if t.shape == shape:
+            return t
+        elif any(isinstance(dim, str) for dim in shape):
+            if len(t.shape) != len(shape):
+                raise ValueError(
+                    f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                )
+            known_dims: Dict[str, int] = {}
+            for tdim, dim in zip(t.shape, shape):
+                if isinstance(dim, int) and tdim != dim:
+                    raise ValueError(
+                        f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                    )
+                elif isinstance(dim, str):
+                    if dim in known_dims and known_dims[dim] != tdim:
+                        raise ValueError(
+                            f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                        )
+                    else:
+                        known_dims[dim] = tdim
+            else:
+                return t
+        else:
+            warnings.warn(
+                f'Tensor shape mismatch. Reshaping tensor '
+                f'of shape {t.shape} to shape {shape}'
+            )
+            try:
+                value = cls.__docarray_from_native__(t.reshape(shape))
+                return cast(T, value)
+            except RuntimeError:
+                raise ValueError(
+                    f'Cannot reshape tensor of shape {t.shape} to shape {shape}'
+                )
 
     @classmethod
     def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:

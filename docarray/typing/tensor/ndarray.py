@@ -1,4 +1,3 @@
-import warnings
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -93,43 +92,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
-
-    @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
-        if t.shape == shape:
-            return t
-        elif any(isinstance(dim, str) for dim in shape):
-            if len(t.shape) != len(shape):
-                raise ValueError(
-                    f'Array shape mismatch. Expected {shape}, got {t.shape}'
-                )
-            known_dims: Dict[str, int] = {}
-            for tdim, dim in zip(t.shape, shape):
-                if isinstance(dim, int) and tdim != dim:
-                    raise ValueError(
-                        f'Array shape mismatch. Expected {shape}, got {t.shape}'
-                    )
-                elif isinstance(dim, str):
-                    if dim in known_dims and known_dims[dim] != tdim:
-                        raise ValueError(
-                            f'Array shape mismatch. Expected {shape}, got {t.shape}'
-                        )
-                    else:
-                        known_dims[dim] = tdim
-            else:
-                return t
-        else:
-            warnings.warn(
-                f'Array shape mismatch. Reshaping array '
-                f'of shape {t.shape} to shape {shape}'
-            )
-            try:
-                value = cls.__docarray_from_native__(np.reshape(t, shape))
-                return cast(T, value)
-            except RuntimeError:
-                raise ValueError(
-                    f'Cannot reshape array of shape {t.shape} to shape {shape}'
-                )
 
     @classmethod
     def validate(
