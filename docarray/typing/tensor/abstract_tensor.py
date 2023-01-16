@@ -34,8 +34,8 @@ class _ParametrizedMeta(type):
         is_tensor = AbstractTensor in subclass.mro()
         same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
 
-        subclass_target_shape = getattr(subclass, '_docarray_target_shape', False)
-        self_target_shape = getattr(cls, '_docarray_target_shape', False)
+        subclass_target_shape = getattr(subclass, '__docarray_target_shape__', False)
+        self_target_shape = getattr(cls, '__docarray_target_shape__', False)
         same_shape = (
             same_parents
             and subclass_target_shape
@@ -61,7 +61,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _docarray_validate_shape(cls, t: T, shape: Tuple[int]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
 
@@ -82,7 +82,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         ...
 
     @classmethod
-    def _docarray_validate_getitem(cls, item: Any) -> Tuple[int]:
+    def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
         """This method validates the input to __class_getitem__.
 
         It is called at "class creation time",
@@ -115,7 +115,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
             cls,  # type: ignore
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
-            _docarray_target_shape = shape
+            __docarray_target_shape__ = shape
 
             @classmethod
             def validate(
@@ -125,7 +125,9 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls._docarray_validate_shape(t, _cls._docarray_target_shape)
+                return _cls.__docarray_validate_shape__(
+                    t, _cls.__docarray_target_shape__
+                )
 
         _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
         _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
@@ -133,7 +135,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         return _ParametrizedTensor
 
     def __class_getitem__(cls, item: Any):
-        target_shape = cls._docarray_validate_getitem(item)
+        target_shape = cls.__docarray_validate_getitem__(item)
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod

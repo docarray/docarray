@@ -91,7 +91,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         yield cls.validate
 
     @classmethod
-    def _docarray_validate_shape(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
         if t.shape == shape:
             return t
         else:

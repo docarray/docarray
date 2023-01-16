@@ -8,8 +8,8 @@ class EmbeddingMixin(AbstractTensor, ABC):
     alternative_type: Optional[Type] = None
 
     @classmethod
-    def _docarray_validate_getitem(cls, item: Any) -> Tuple[int]:
-        shape = super()._docarray_validate_getitem(item)
+    def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
+        shape = super().__docarray_validate_getitem__(item)
         if len(shape) > 1:
             error_msg = f'`{cls}` can only have a single dimension/axis.'
             if cls.alternative_type:
