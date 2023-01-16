@@ -250,7 +250,7 @@ def _extraxt_embeddings(
 
     if isinstance(data, DocumentArray):
         emb = getattr(data, embedding_field)
-        emb = embedding_type.__docarray_stack__(emb)
+        emb = embedding_type._docarray_stack(emb)
     elif isinstance(data, DocumentArrayStacked):
         emb = getattr(data, embedding_field)
     elif isinstance(data, BaseDocument):

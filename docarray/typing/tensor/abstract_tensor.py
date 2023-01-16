@@ -61,7 +61,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     @classmethod
     @abc.abstractmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
+    def _docarray_validate_shape(cls, t: T, shape: Tuple[int]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
 
@@ -82,7 +82,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         ...
 
     @classmethod
-    def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
+    def _docarray_validate_getitem(cls, item: Any) -> Tuple[int]:
         """This method validates the input to __class_getitem__.
 
         It is called at "class creation time",
@@ -125,9 +125,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls.__docarray_validate_shape__(
-                    t, _cls.__docarray_target_shape__
-                )
+                return _cls._docarray_validate_shape(t, _cls.__docarray_target_shape__)
 
         _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
         _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
@@ -135,20 +133,20 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         return _ParametrizedTensor
 
     def __class_getitem__(cls, item: Any):
-        target_shape = cls.__docarray_validate_getitem__(item)
+        target_shape = cls._docarray_validate_getitem(item)
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
-    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+    def _docarray_stack(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         comp_backend = cls.get_comp_backend()
         # at runtime, 'T' is always the correct input type for .stack()
         # but mypy doesn't know that, so we ignore it here
-        return cls.__docarray_from_native__(comp_backend.stack(seq))  # type: ignore
+        return cls._docarray_from_native(comp_backend.stack(seq))  # type: ignore
 
     @classmethod
     @abc.abstractmethod
-    def __docarray_from_native__(cls: Type[T], value: Any) -> T:
+    def _docarray_from_native(cls: Type[T], value: Any) -> T:
         """
         Create a DocArray tensor from a tensor that is native to the given framework,
         e.g. from numpy.ndarray or torch.Tensor.
