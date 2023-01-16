@@ -65,6 +65,10 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array.ndim
 
     @staticmethod
+    def empty(shape: Tuple[int, ...]) -> 'np.ndarray':
+        return np.empty(shape)
+
+    @staticmethod
     def none_value() -> Any:
         """Provide a compatible value that represents None in numpy."""
         return None
