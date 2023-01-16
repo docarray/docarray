@@ -34,8 +34,8 @@ class _ParametrizedMeta(type):
         is_tensor = AbstractTensor in subclass.mro()
         same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
 
-        subclass_target_shape = getattr(subclass, '__docarray_target_shape__', False)
-        self_target_shape = getattr(cls, '__docarray_target_shape__', False)
+        subclass_target_shape = getattr(subclass, '_docarray_target_shape', False)
+        self_target_shape = getattr(cls, '_docarray_target_shape', False)
         same_shape = (
             same_parents
             and subclass_target_shape
@@ -115,7 +115,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
             cls,  # type: ignore
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
-            __docarray_target_shape__ = shape
+            _docarray_target_shape = shape
 
             @classmethod
             def validate(
@@ -125,7 +125,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls._docarray_validate_shape(t, _cls.__docarray_target_shape__)
+                return _cls._docarray_validate_shape(t, _cls._docarray_target_shape)
 
         _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
         _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
