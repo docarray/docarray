@@ -209,7 +209,11 @@ class MultiModalMixin:
             attr_type = self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][attr][
                 'attribute_type'
             ]
-            if attr_type == AttributeType.ITERABLE_DOCUMENT:
+            if attr_type in [
+                AttributeType.ITERABLE_DOCUMENT,
+                AttributeType.ITERABLE_NESTED,
+                AttributeType.ITERABLE_PRIMITIVE,
+            ]:
                 return mm_attr_da
             else:
                 return mm_attr_da[0]
