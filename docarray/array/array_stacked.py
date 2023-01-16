@@ -87,7 +87,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         da_stacked._docs = docs
         return da_stacked
 
-    def to(self: T, device: str):
+    def to(self: T, device: str) -> T:
         """Move all tensors of this DocumentArrayStacked to the given device
 
         :param device: the device to move the data to
@@ -106,6 +106,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             else:  # recursive call
                 col_docarray = cast(T, col)
                 col_docarray.to(device)
+        return self
 
     @classmethod
     def _get_columns_schema(
