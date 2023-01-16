@@ -16,6 +16,7 @@ class ID(str, AbstractType):
     """
     Represent an unique ID
     """
+    _proto_type_name = 'id'
 
     @classmethod
     def __get_validators__(cls):
@@ -44,7 +45,7 @@ class ID(str, AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(id=self)
+        return NodeProto(text=self, type = self._proto_type_name)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
