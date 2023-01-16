@@ -38,8 +38,8 @@ The goal is to obtain a model that is able to understand both text and images an
 We train the CLIP-like model on the [flickr8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset.
 To run this notebook you need to download and unzip the data into the same folder as the notebook.
 
-Not that in this notebook by no means we aim at reproduce any CLIP results (our dataset is way too small anyways),
-but rather we want to show how DocArray datastructures help researchers and practitioners to write beautiful and 
+Note that in this notebook by no means we aim at reproduce any CLIP results (our dataset is way too small anyways),
+but we rather want to show how DocArray datastructures help researchers and practitioners to write beautiful and 
 pythonic multi-modal PyTorch code.
 
 ```python tags=[]
@@ -343,7 +343,7 @@ Here we can see how we can immediately group the output of each encoder with the
 
 And with all that, we've successfully trained a CLIP-like model without ever being confused the meaning of any tensors!
 
-# 1. Sending: Serve the model using FastAPI
+# 2. Sending: Serve the model using FastAPI
 
 Now that we have a trained CLIP model, let's see how we can serve this model with a REST API by reusing most of the code above.
 
