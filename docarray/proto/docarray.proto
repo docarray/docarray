@@ -30,50 +30,21 @@ message NdArrayProto {
 //
 message NodeProto {
 
-
-
   oneof content {
     bytes blob = 1;
-
     // the ndarray of the image/audio/video document
     NdArrayProto ndarray = 2;
-
     // a text
     string text = 3;
-
     // a sub Document
-    DocumentProto nested = 4;
-
+    DocumentProto document = 4;
     // a sub DocumentArray
-    DocumentArrayProto chunks = 5;
-
-    NdArrayProto embedding = 6;
-
-    string any_url = 7;
-
-    string image_url = 8;
-
-    string text_url = 9;
-
-    string id = 10;
-
-    NdArrayProto torch_tensor = 11;
-
-    string mesh_url = 12;
-
-    string point_cloud_url = 13;
-
-    string audio_url = 14;
-
-    NdArrayProto audio_ndarray = 15;
-
-    NdArrayProto audio_torch_tensor = 16;
-
+    DocumentArrayProto document_array = 5;
   }
 
+  string docarray_type = 6;
+
 }
-
-
 
 /**
  * Represents a Document

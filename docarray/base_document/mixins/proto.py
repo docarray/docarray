@@ -133,4 +133,4 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(nested=self.to_protobuf())
+        return NodeProto(document=self.to_protobuf())

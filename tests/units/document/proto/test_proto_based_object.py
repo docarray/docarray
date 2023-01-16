@@ -6,7 +6,7 @@ from docarray.typing import NdArray
 
 def test_nested_item_proto():
     NodeProto(text='hello')
-    NodeProto(nested=DocumentProto())
+    NodeProto(document=DocumentProto())
 
 
 def test_nested_optional_item_proto():
