@@ -17,7 +17,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )
-    _proto_type_name = 'url'
+    _proto_type_name = 'any_url'
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should

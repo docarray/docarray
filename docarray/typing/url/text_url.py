@@ -13,7 +13,7 @@ class TextUrl(AnyUrl):
     Can be remote (web) URL, or a local file path.
     """
 
-    _proto_type_name = 'texturl'
+    _proto_type_name = 'text_url'
 
     def load_to_bytes(self, timeout: Optional[float] = None) -> bytes:
         """

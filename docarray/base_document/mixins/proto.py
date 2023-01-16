@@ -24,7 +24,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-        from docarray.typing import (  # TorchTensor,
+        from docarray.typing import (
             ID,
             AnyEmbedding,
             AnyUrl,
@@ -35,15 +35,12 @@ class ProtoMixin(AbstractDocument, BaseNode):
             TextUrl,
         )
 
+
         fields: Dict[str, Any] = {}
 
         for field in pb_msg.data:
             value = pb_msg.data[field]
 
-            content_type = value.WhichOneof('content')
-
-            # this if else statement need to be refactored it is too long
-            # the check should be delegated to the type level
             content_type_dict = dict(
                 ndarray=NdArray,
                 embedding=AnyEmbedding,
@@ -55,27 +52,35 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 id=ID,
             )
 
+            content_key = value.WhichOneof('content')
+            content_type = (
+                value.type if value.WhichOneof('docarray_type') is not None else None
+            )
+
             if torch_imported:
-                content_type_dict['torch_tensor'] = TorchTensor
+                content_type_dict['torch'] = TorchTensor
 
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
-                    getattr(value, content_type)
+                    getattr(value, content_key)
                 )
-            elif content_type == 'text':
-                fields[field] = value.text
-            elif content_type == 'nested':
+            elif content_key == 'document':
                 fields[field] = cls._get_field_type(field).from_protobuf(
-                    value.nested
+                    value.document
                 )  # we get to the parent class
-            elif content_type == 'chunks':
+            elif content_key == 'document_array':
                 from docarray import DocumentArray
 
                 fields[field] = DocumentArray.from_protobuf(
-                    value.chunks
+                    value.document_array
                 )  # we get to the parent class
-            elif content_type is None:
+            elif content_key is None:
                 fields[field] = None
+            elif content_type is None:
+                if content_key == 'text':
+                    fields[field] = value.text
+                elif content_key == 'blob':
+                    fields[field] = value.blob
             else:
                 raise ValueError(
                     f'type {content_type} is not supported for deserialization'

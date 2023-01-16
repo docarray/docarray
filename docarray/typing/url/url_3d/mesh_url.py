@@ -15,7 +15,7 @@ class Mesh3DUrl(Url3D):
     URL to a .obj, .glb, or .ply file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
-    _proto_type_name = 'mesh3durl'
+    _proto_type_name = 'mesh_url'
 
     def load(self: T) -> Tuple[np.ndarray, np.ndarray]:
         """
