@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 try:
     from docarray.typing import TorchTensor
 except ImportError:
-    TorchTensor = None
+    TorchTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 
@@ -322,7 +322,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
-        cls_to_check = (NdArray, TorchTensor) if TorchTensor else (NdArray,)
+        cls_to_check = (NdArray, TorchTensor) if TorchTensor is not None else (NdArray,)
 
         if len(flattened) == 1 and isinstance(flattened[0], cls_to_check):
             return flattened[0]
