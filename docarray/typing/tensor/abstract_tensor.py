@@ -98,6 +98,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
             else:
                 return t
         else:
+            shape = cast(Tuple[int], shape)
             warnings.warn(
                 f'Tensor shape mismatch. Reshaping tensor '
                 f'of shape {t.shape} to shape {shape}'
@@ -212,4 +213,19 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
+        ...
+
+    @abc.abstractmethod
+    def reshape(self, shape: Tuple[int, ...]):
+        """
+        Gives a new shape to tensor without changing its data.
+        :return: a tensor with the same data and number of elements as self
+            but with the specified shape.
+        """
+        ...
+
+    @property
+    @abc.abstractmethod
+    def shape(self) -> Tuple[int, ...]:
+        """The shape of this tensor."""
         ...
