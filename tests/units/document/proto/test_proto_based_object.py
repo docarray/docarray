@@ -17,7 +17,7 @@ def test_ndarray():
 
     original_ndarray = np.zeros((3, 224, 224))
 
-    custom_ndarray = NdArray.__docarray_from_native__(original_ndarray)
+    custom_ndarray = NdArray._docarray_from_native(original_ndarray)
 
     tensor = NdArray.from_protobuf(custom_ndarray.to_protobuf())
 
@@ -30,7 +30,7 @@ def test_document_proto_set():
 
     nested_item1 = NodeProto(text='hello')
 
-    ndarray = NdArray.__docarray_from_native__(np.zeros((3, 224, 224)))
+    ndarray = NdArray._docarray_from_native(np.zeros((3, 224, 224)))
     nd_proto = ndarray.to_protobuf()
 
     nested_item2 = NodeProto(ndarray=nd_proto)
