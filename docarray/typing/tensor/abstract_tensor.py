@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
 
 T = TypeVar('T', bound='AbstractTensor')
+TTensor = TypeVar('TTensor')
 ShapeT = TypeVar('ShapeT')
 
 
@@ -66,32 +67,46 @@ class _ParametrizedMeta(type):
         return super().__instancecheck__(instance)
 
 
-class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
+class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
 
     @classmethod
-    def __docarray_validate_shape__(
-        cls, t: T, shape: Tuple[Union[int, str]]
-    ) -> T:  # type: ignore
-        if t.shape == shape:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
+        """Every tensor has to implement this method in order to
+        enable syntax of the form AnyTensor[shape].
+        It is called when a tensor is assigned to a field of this type.
+        i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
+        The intended behaviour is as follows:
+        - If the shape of `t` is equal to `shape`, return `t`.
+        - If the shape of `t` is not equal to `shape`,
+            but can be reshaped to `shape`, return `t` reshaped to `shape`.
+        - If the shape of `t` is not equal to `shape`
+            and cannot be reshaped to `shape`, raise a ValueError.
+        :param t: The tensor to validate.
+        :param shape: The shape to validate against.
+        :return: The validated tensor.
+        """
+        comp_be = t.get_comp_backend()()  # mypy Generics require instantiation
+        tshape = comp_be.shape(t)
+        if tshape == shape:
             return t
         elif any(isinstance(dim, str) for dim in shape):
-            if len(t.shape) != len(shape):
+            if len(tshape) != len(shape):
                 raise ValueError(
-                    f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                    f'Tensor shape mismatch. Expected {shape}, got {tshape}'
                 )
             known_dims: Dict[str, int] = {}
-            for tdim, dim in zip(t.shape, shape):
+            for tdim, dim in zip(tshape, shape):
                 if isinstance(dim, int) and tdim != dim:
                     raise ValueError(
-                        f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                        f'Tensor shape mismatch. Expected {shape}, got {tshape}'
                     )
                 elif isinstance(dim, str):
                     if dim in known_dims and known_dims[dim] != tdim:
                         raise ValueError(
-                            f'Tensor shape mismatch. Expected {shape}, got {t.shape}'
+                            f'Tensor shape mismatch. Expected {shape}, got {tshape}'
                         )
                     else:
                         known_dims[dim] = tdim
@@ -101,14 +116,14 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
             shape = cast(Tuple[int], shape)
             warnings.warn(
                 f'Tensor shape mismatch. Reshaping tensor '
-                f'of shape {t.shape} to shape {shape}'
+                f'of shape {tshape} to shape {shape}'
             )
             try:
-                value = cls.__docarray_from_native__(t.reshape(shape))
+                value = cls.__docarray_from_native__(comp_be.reshape(t, shape))
                 return cast(T, value)
             except RuntimeError:
                 raise ValueError(
-                    f'Cannot reshape tensor of shape {t.shape} to shape {shape}'
+                    f'Cannot reshape tensor of shape {tshape} to shape {shape}'
                 )
 
     @classmethod
@@ -187,7 +202,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_comp_backend() -> Type[AbstractComputationalBackend]:
+    def get_comp_backend() -> Type[AbstractComputationalBackend[TTensor, T]]:
         """The computational backend compatible with this tensor type."""
         ...
 
@@ -213,19 +228,4 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        ...
-
-    @abc.abstractmethod
-    def reshape(self, shape: Tuple[int, ...]):
-        """
-        Gives a new shape to tensor without changing its data.
-        :return: a tensor with the same data and number of elements as self
-            but with the specified shape.
-        """
-        ...
-
-    @property
-    @abc.abstractmethod
-    def shape(self) -> Tuple[int, ...]:
-        """The shape of this tensor."""
         ...
