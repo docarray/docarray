@@ -190,7 +190,7 @@ If you come from Pydantic, you can see Documents as juiced up models, and DocArr
 
 DocArray can be used directly inside ML models to handle and represent multi-modal data. This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`, and provides a (FastAPI compatible) schema that eases the transition between model training and model serving.
 
-
+To see the effect of this, let's first observe a vanilla PyTorch implementation of a tri-modal ML model:
 
 ```python
 import torch
