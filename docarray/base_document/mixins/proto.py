@@ -12,8 +12,6 @@ try:
 except ImportError:
     torch_imported = False
 else:
-    from docarray.typing.tensor.torch_tensor import TorchTensor
-
     torch_imported = True
 
 
@@ -33,8 +31,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
             NdArray,
             PointCloud3DUrl,
             TextUrl,
+            NdArrayEmbedding,
         )
-
 
         fields: Dict[str, Any] = {}
 
@@ -44,6 +42,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             content_type_dict = dict(
                 ndarray=NdArray,
                 embedding=AnyEmbedding,
+                ndarray_embedding=NdArrayEmbedding,
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,
@@ -58,7 +57,11 @@ class ProtoMixin(AbstractDocument, BaseNode):
             )
 
             if torch_imported:
+                from docarray.typing.tensor.torch_tensor import TorchTensor
+                from docarray.typing import TorchEmbedding
+
                 content_type_dict['torch'] = TorchTensor
+                content_type_dict['torch_embedding'] = TorchEmbedding
 
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(

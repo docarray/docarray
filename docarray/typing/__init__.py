@@ -1,6 +1,6 @@
 from docarray.typing.id import ID
 from docarray.typing.tensor.audio import AudioNdArray
-from docarray.typing.tensor.embedding.embedding import AnyEmbedding
+from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.url import (
@@ -15,6 +15,7 @@ from docarray.typing.url import (
 __all__ = [
     'AudioNdArray',
     'NdArray',
+    'NdArrayEmbedding',
     'AnyEmbedding',
     'ImageUrl',
     'AudioUrl',
