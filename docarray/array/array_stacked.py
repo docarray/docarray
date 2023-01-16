@@ -1,5 +1,16 @@
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Type, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
@@ -49,7 +60,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union[T, AbstractTensor]] = {}
+        self._columns: Dict[str, Union['DocumentArrayStacked', AbstractTensor]] = {}
 
         self.from_document_array(docs)
 
@@ -62,7 +73,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _from_columns(
         cls: Type[T],
         docs: DocumentArray,
-        columns: Dict[str, Union[T, AbstractTensor]],
+        columns: Mapping[str, Union['DocumentArrayStacked', AbstractTensor]],
     ) -> T:
         # below __class_getitem__ is called explicitly instead
         # of doing DocumentArrayStacked[docs.document_type]
@@ -99,7 +110,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _get_columns_schema(
         cls: Type[T],
         tensor_type: Type[AbstractTensor],
-    ) -> Dict[str, Union[Type[AbstractTensor], Type[BaseDocument]]]:
+    ) -> Mapping[str, Union[Type[AbstractTensor], Type[BaseDocument]]]:
         """
         Return the list of fields that are tensors and the list of fields that are
         documents
@@ -123,7 +134,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type[AbstractTensor]
-    ) -> Dict[str, Union[T, AbstractTensor]]:
+    ) -> Dict[str, Union['DocumentArrayStacked', AbstractTensor]]:
 
         if len(docs) == 0:
             return {}
@@ -159,7 +170,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[List, T, AbstractTensor]:
+    ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
