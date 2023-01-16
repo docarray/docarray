@@ -184,16 +184,16 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
-    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+    def _docarray_stack(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         comp_backend = cls.get_comp_backend()
         # at runtime, 'T' is always the correct input type for .stack()
         # but mypy doesn't know that, so we ignore it here
-        return cls.__docarray_from_native__(comp_backend.stack(seq))  # type: ignore
+        return cls._docarray_from_native(comp_backend.stack(seq))  # type: ignore
 
     @classmethod
     @abc.abstractmethod
-    def __docarray_from_native__(cls: Type[T], value: Any) -> T:
+    def _docarray_from_native(cls: Type[T], value: Any) -> T:
         """
         Create a DocArray tensor from a tensor that is native to the given framework,
         e.g. from numpy.ndarray or torch.Tensor.
@@ -208,6 +208,10 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     def __getitem__(self, item):
         """Get a slice of this tensor."""
+        ...
+
+    def __setitem__(self, index, value):
+        """Set a slice of this tensor."""
         ...
 
     def __iter__(self):

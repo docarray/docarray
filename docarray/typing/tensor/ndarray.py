@@ -101,25 +101,25 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         config: 'BaseConfig',
     ) -> T:
         if isinstance(value, np.ndarray):
-            return cls.__docarray_from_native__(value)
+            return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
-                return cls.__docarray_from_native__(arr_from_list)
+                return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
         else:
             try:
                 arr: np.ndarray = np.ndarray(value)
-                return cls.__docarray_from_native__(arr)
+                return cls._docarray_from_native(arr)
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
-    def __docarray_from_native__(cls: Type[T], value: np.ndarray) -> T:
+    def _docarray_from_native(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
 
     @classmethod
@@ -180,9 +180,9 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         source = pb_msg.dense
         if source.buffer:
             x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
-            return cls.__docarray_from_native__(x.reshape(source.shape))
+            return cls._docarray_from_native(x.reshape(source.shape))
         elif len(source.shape) > 0:
-            return cls.__docarray_from_native__(np.zeros(source.shape))
+            return cls._docarray_from_native(np.zeros(source.shape))
         else:
             raise ValueError(f'proto message {pb_msg} cannot be cast to a NdArray')
 

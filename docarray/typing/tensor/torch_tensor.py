@@ -102,12 +102,12 @@ class TorchTensor(
         if isinstance(value, TorchTensor):
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
-            return cls.__docarray_from_native__(value)
+            return cls._docarray_from_native(value)
 
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
-                return cls.__docarray_from_native__(arr)
+                return cls._docarray_from_native(arr)
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
@@ -153,7 +153,7 @@ class TorchTensor(
         return value
 
     @classmethod
-    def __docarray_from_native__(cls: Type[T], value: torch.Tensor) -> T:
+    def _docarray_from_native(cls: Type[T], value: torch.Tensor) -> T:
         """Create a TorchTensor from a native torch.Tensor
 
         :param value: the native torch.Tensor
@@ -169,7 +169,7 @@ class TorchTensor(
         :param value: the numpy array
         :return: a TorchTensor
         """
-        return cls.__docarray_from_native__(torch.from_numpy(value))
+        return cls._docarray_from_native(torch.from_numpy(value))
 
     def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should

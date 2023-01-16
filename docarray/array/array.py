@@ -123,7 +123,7 @@ class DocumentArray(AnyDocumentArray):
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
             return self.__class__.__class_getitem__(field_type)(
-                (getattr(doc, field) for doc in self)
+                (getattr(doc, field) for doc in self), tensor_type=self.tensor_type
             )
         else:
             return [getattr(doc, field) for doc in self]

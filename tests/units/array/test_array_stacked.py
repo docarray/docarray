@@ -267,7 +267,7 @@ def test_get_from_slice_stacked():
     N = 10
 
     da = DocumentArray[Doc](
-        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+        [Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N)]
     ).stack()
 
     da_sliced = da[0:10:2]
