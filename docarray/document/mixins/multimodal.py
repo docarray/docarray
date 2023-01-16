@@ -2,7 +2,6 @@ import base64
 import typing
 
 from docarray.dataclasses.types import (
-    Field,
     is_multimodal,
     _is_field,
     AttributeTypeError,
@@ -104,7 +103,6 @@ class MultiModalMixin:
         # TODO: may have to modify this?
         root.tags = tags
         root._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA] = multi_modal_schema
-
         return root
 
     def _get_mm_attr_postion(self, attr):
@@ -208,7 +206,13 @@ class MultiModalMixin:
     def __getattr__(self, attr):
         if self._has_multimodal_attr(attr):
             mm_attr_da = self.get_multi_modal_attribute(attr)
-            return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
+            attr_type = self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][attr][
+                'attribute_type'
+            ]
+            if attr_type == AttributeType.ITERABLE_DOCUMENT:
+                return mm_attr_da
+            else:
+                return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
         else:
             raise AttributeError(f'{self.__class__.__name__} has no attribute `{attr}`')
 
