@@ -99,14 +99,14 @@ da = DocumentArray[Image](
 ```
 
 
-access field at the DocumentArray level 
+Access fields at the DocumentArray level:
 
 ```python
 print(len(da.tensor))
 print(da.tensor[0].shape)
 ```
 
-You can stack tensor if you want to perform in batch processing 
+You can stack tensors if you want to perform in batch processing:
 
 ```python
 da = da.stack()
@@ -186,9 +186,9 @@ If you come from Pydantic, you can see Documents as juiced up models, and DocArr
 - Cloud ready: Serialization to **Protobuf** for use with microservices and **gRPC**
 - Support for **vector search functionalities**, such as `find()` and `embed()`
 
-## Coming from Pytorch
+## Coming from PyTorch
 
-DocArray is meant to be used directly inside machine learning model to handle an represent multi modal nested data. Not only It promises to reduce the friction between ML model training and ML model serving, using DocArray with pytorch allow to reason with the nested and multi modal abstraction deep inside the nn.Module part of pytorch.
+DocArray can be used directly inside ML models to handle and represent multi-modal data. This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`, and provides a (FastAPI compatible) schema that eases the transition between model training and model serving.
 
 
 
@@ -224,9 +224,9 @@ class MyMultiModalModel(nn.Module):
         )
 ```
 
-It is not easy on the eye ..., even worse if you need to add one more modality you have to handle all of these tuples etcc
+Not very easy on the eyes if you ask us. And even worse, if you need to add one more modality you have to touch every part of your code base, changing the `forward()` return type and make a whole lot of changes downstream from that.
 
-Let see how it will loooks with DocArray
+So now let's see what the same code looks like with DocArray:
 
 ```python
 from docarray import DocumentArray, BaseDocument
@@ -268,9 +268,9 @@ class MyPodcastModel(nn.Module):
         return da
 ```
 
-You win in code readibility and maintainability. And for the same price you can turn your pytorch model into a FastAPI app and reuse the same
-schema definition that you used during training as schema for your RestAPI. Everything handle in pythonic manner relying the the type hint for your
-function
+Looks much better, doesn't it?
+You instantly win in code readability and maintainability. And for the same price you can turn your PyTorch model into a FastAPI app and reuse your Document
+schema definition (see below). Everything handles in a pythonic manner by relying on type hints.
 
 
 
