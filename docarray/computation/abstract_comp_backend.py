@@ -44,21 +44,9 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor, TAbstractTensor]
         """Move the tensor to the specified device."""
         ...
 
-    @overload
-    @staticmethod
-    def shape(tensor: 'TAbstractTensor') -> Tuple[int, ...]:
-        """Get shape of tensor"""
-        ...
-
-    @overload
-    @staticmethod
-    def shape(tensor: 'TTensor') -> Tuple[int, ...]:
-        """Get shape of tensor"""
-        ...
-
     @staticmethod
     @abstractmethod
-    def shape(tensor: Union['TTensor', 'TAbstractTensor']) -> Tuple[int, ...]:
+    def shape(tensor: 'TTensor') -> Tuple[int, ...]:
         """Get shape of tensor"""
         ...
 

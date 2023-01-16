@@ -70,7 +70,7 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']
         return torch.tensor(float('nan'))
 
     @staticmethod
-    def shape(tensor: Union['torch.Tensor', 'TorchTensor']) -> Tuple[int, ...]:
+    def shape(tensor: 'torch.Tensor') -> Tuple[int, ...]:
         return tuple(tensor.shape)
 
     @overload
