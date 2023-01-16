@@ -39,7 +39,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
-    def shape(array: 'TTensor') -> Tuple:
+    def shape(array: 'TTensor') -> Tuple[int, ...]:
         """
         Get the shape of the array.
         """

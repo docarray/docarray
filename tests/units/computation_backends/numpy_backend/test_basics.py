@@ -31,4 +31,6 @@ def test_n_dim(array, result):
     ],
 )
 def test_shape(array, result):
-    assert NumpyCompBackend.shape(array) == result
+    shape = NumpyCompBackend.shape(array)
+    assert shape == result
+    assert type(shape) == tuple
