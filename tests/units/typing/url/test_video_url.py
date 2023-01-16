@@ -26,9 +26,9 @@ REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
     'file_url',
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
-def test_load_with_only_keyframes_false(file_url):
+def test_load(file_url):
     url = parse_obj_as(VideoUrl, file_url)
-    audio, video, indices = url.load(only_keyframes=False)
+    audio, video, indices = url.load()
 
     assert isinstance(audio, np.ndarray)
     assert isinstance(audio, AudioNdArray)
@@ -46,9 +46,9 @@ def test_load_with_only_keyframes_false(file_url):
     'file_url',
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
-def test_load_with_only_keyframes_true(file_url):
+def test_load_key_frames(file_url):
     url = parse_obj_as(VideoUrl, file_url)
-    key_frames = url.load(only_keyframes=True)
+    key_frames = url.load_key_frames()
 
     assert isinstance(key_frames, np.ndarray)
     assert isinstance(key_frames, VideoNdArray)
@@ -66,7 +66,7 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
         tensor: Optional[VideoTorchTensor]
 
     doc = MyVideoDoc(video_url=file_url)
-    doc.tensor = doc.video_url.load(only_keyframes=True)
+    doc.tensor = doc.video_url.load_key_frames()
 
     assert isinstance(doc.tensor, torch.Tensor)
     assert isinstance(doc.tensor, VideoTorchTensor)
