@@ -31,4 +31,4 @@ class VideoNdArray(NdArray, VideoTensorMixin):
         config: 'BaseConfig',
     ) -> T:
         tensor = super().validate(value=value, field=field, config=config)
-        return VideoTensorMixin.validate_shape(cls, value=tensor)
+        return cls.validate_shape(value=tensor)
