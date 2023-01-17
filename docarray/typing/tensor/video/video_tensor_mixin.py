@@ -17,13 +17,11 @@ class VideoTensorMixin:
         cls: Union[Type['VideoTorchTensor'], Type['VideoNdArray']], value: 'T'
     ) -> 'T':
         comp_backend = cls.get_comp_backend()
-        if (
-            comp_backend.n_dim(value) not in [3, 4]  # type: ignore
-            or comp_backend.shape(value)[-1] != 3  # type: ignore
-        ):
+        shape = comp_backend.shape(value)  # type: ignore
+        if comp_backend.n_dim(value) not in [3, 4] or shape[-1] != 3:  # type: ignore
             raise ValueError(
                 f'Expects tensor with 3 or 4 dimensions and the last dimension equal '
-                f'to 3, but received {comp_backend.shape(value)}.'  # type: ignore
+                f'to 3, but received {shape}.'
             )
         else:
             return value
