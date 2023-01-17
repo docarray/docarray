@@ -202,7 +202,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_comp_backend() -> AbstractComputationalBackend[TTensor, T]:
+    def get_comp_backend() -> AbstractComputationalBackend:
         """The computational backend compatible with this tensor type."""
         ...
 

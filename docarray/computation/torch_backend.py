@@ -1,12 +1,9 @@
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union, overload
+from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
-
-if TYPE_CHECKING:
-    from docarray.typing import TorchTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
@@ -32,7 +29,7 @@ def _usqueeze_if_scalar(t: torch.Tensor):
     return t
 
 
-class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']):
+class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     """
     Computational backend for PyTorch.
     """
@@ -43,22 +40,9 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
-    @overload
-    @staticmethod
-    def to_device(tensor: 'TorchTensor', device: str) -> 'TorchTensor':
-        """Move the tensor to the specified device."""
-        ...
-
-    @overload
     @staticmethod
     def to_device(tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
         """Move the tensor to the specified device."""
-        ...
-
-    @staticmethod
-    def to_device(
-        tensor: Union['torch.Tensor', 'TorchTensor'], device: str
-    ) -> Union['torch.Tensor', 'TorchTensor']:
         return tensor.to(device)
 
     @staticmethod
@@ -82,36 +66,9 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']
     def shape(tensor: 'torch.Tensor') -> Tuple[int, ...]:
         return tuple(tensor.shape)
 
-    @overload
-    @staticmethod
-    def reshape(tensor: 'TorchTensor', shape: Tuple[int, ...]) -> 'TorchTensor':
-        """
-        Gives a new shape to tensor without changing its data.
-
-        :param tensor: tensor to be reshaped
-        :param shape: the new shape
-        :return: a tensor with the same data and number of elements as tensor
-            but with the specified shape.
-        """
-        ...
-
-    @overload
     @staticmethod
     def reshape(tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
-        """
-        Gives a new shape to tensor without changing its data.
 
-        :param tensor: tensor to be reshaped
-        :param shape: the new shape
-        :return: a tensor with the same data and number of elements as tensor
-            but with the specified shape.
-        """
-        ...
-
-    @staticmethod
-    def reshape(
-        tensor: Union['torch.Tensor', 'TorchTensor'], shape: Tuple[int, ...]
-    ) -> Union['torch.Tensor', 'TorchTensor']:
         """
         Gives a new shape to tensor without changing its data.
 
