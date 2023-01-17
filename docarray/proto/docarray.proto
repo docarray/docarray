@@ -69,6 +69,12 @@ message NodeProto {
 
     NdArrayProto audio_torch_tensor = 16;
 
+    string video_url = 17;
+
+    NdArrayProto video_ndarray = 18;
+
+    NdArrayProto video_torch_tensor = 19;
+
   }
 
 }

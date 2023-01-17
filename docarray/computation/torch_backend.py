@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union, overload
 
+import numpy as np
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
@@ -67,6 +68,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']
     @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
+
+    @staticmethod
+    def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
+        return array.cpu().detach().numpy()
 
     @staticmethod
     def none_value() -> Any:

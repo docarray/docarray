@@ -24,7 +24,7 @@ class Audio(BaseDocument):
 
         # use it directly
         audio = Audio(
-            url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav?raw=true'
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
         )
         audio.tensor = audio.url.load()
         model = MyEmbeddingModel()
@@ -43,12 +43,12 @@ class Audio(BaseDocument):
 
 
         audio = MyAudio(
-            url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav?raw=true'
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
         )
         audio.tensor = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
-        audio.name = 'my first audio'
+        audio.name = Text(text='my first audio')
 
 
     You can use this Document for composition:
@@ -66,7 +66,7 @@ class Audio(BaseDocument):
 
         mmdoc = MultiModalDoc(
             audio=Audio(
-                url='https://github.com/docarray/docarray/tree/feat-add-audio-v2/tests/toydata/hello.wav?raw=true'
+                url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
             ),
             text=Text(text='hello world, how are you doing?'),
         )
