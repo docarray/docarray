@@ -22,10 +22,9 @@ from typing import Optional
 class MyDocument(BaseDocument):
     description: str
     image_url: ImageUrl
-    image_tensor: Optional[TorchTensor]
-    embedding: Optional[
-        TorchTensor[1704, 2272, 3]
-    ]  # This field only work with tensor of shape (1704, 2272, 3)
+    image_tensor: Optional[TorchTensor[1704, 2272, 3]]
+    # The field above only work with tensor of shape (1704, 2272, 3)
+    embedding: Optional[TorchTensor]
 
 
 doc = MyDocument(
@@ -33,6 +32,9 @@ doc = MyDocument(
     image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
 )
 doc.image_tensor = doc.image_url.load()  # load image tensor from URL
+```
+
+```python
 doc.embedding = clip_image_encoder(
     doc.image_tensor
 )  # create and store embedding using model of your choice
