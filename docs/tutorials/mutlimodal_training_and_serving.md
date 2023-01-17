@@ -30,7 +30,7 @@ reused in both contexts. That part will be very short, but that's the point!
 
 So without further ado, let's dive into it!
 
-# 1. Representing: Build and train a PyTorch model
+## 1. Representing: Build and train a PyTorch model
 
 We will train a [CLIP](https://arxiv.org/abs/2103.00020)-like model on a dataset composes of text-image-pairs.
 The goal is to obtain a model that is able to understand both text and images and project them into a common embedding space.
@@ -343,7 +343,7 @@ Here we can see how we can immediately group the output of each encoder with the
 
 And with all that, we've successfully trained a CLIP-like model without ever being confused the meaning of any tensors!
 
-# 2. Sending: Serve the model using FastAPI
+## 2. Sending: Serve the model using FastAPI
 
 Now that we have a trained CLIP model, let's see how we can serve this model with a REST API by reusing most of the code above.
 
