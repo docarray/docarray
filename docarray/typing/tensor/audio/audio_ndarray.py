@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.ndarray import NdArray
 
@@ -7,7 +8,7 @@ MAX_INT_16 = 2**15
 
 T = TypeVar('T', bound='AudioNdArray')
 
-
+@register_proto(proto_type_name='audio_ndarray')
 class AudioNdArray(AbstractAudioTensor, NdArray):
     """
     Subclass of NdArray, to represent an audio tensor.
@@ -51,7 +52,6 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
-    _proto_type_name = 'audio_ndarray'
 
     def to_audio_bytes(self):
         tensor = (self * MAX_INT_16).astype('<h')

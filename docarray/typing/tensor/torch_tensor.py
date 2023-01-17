@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Unio
 import numpy as np
 import torch  # type: ignore
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -32,7 +33,7 @@ class metaTorchAndNode(
 ):  # type: ignore
     pass
 
-
+@register_proto(proto_type_name='torch')
 class TorchTensor(
     torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
 ):
@@ -81,7 +82,6 @@ class TorchTensor(
     """
 
     __parametrized_meta__ = metaTorchAndNode
-    _proto_type_name = 'torch'
 
     @classmethod
     def __get_validators__(cls):

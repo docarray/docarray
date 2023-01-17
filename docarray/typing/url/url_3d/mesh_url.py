@@ -1,22 +1,18 @@
-from typing import TYPE_CHECKING, Tuple, TypeVar
+from typing import Tuple, TypeVar
 
 import numpy as np
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.url.url_3d.url_3d import Url3D
-
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='Mesh3DUrl')
 
-
+@register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
-    _proto_type_name = 'mesh_url'
-
     def load(self: T) -> Tuple[np.ndarray, np.ndarray]:
         """
         Load the data from the url into a tuple of two numpy.ndarrays containing

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
+from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
@@ -22,34 +23,13 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-        from docarray.typing import (
-            ID,
-            AnyEmbedding,
-            AnyUrl,
-            ImageUrl,
-            Mesh3DUrl,
-            NdArray,
-            PointCloud3DUrl,
-            TextUrl,
-            NdArrayEmbedding,
-        )
 
         fields: Dict[str, Any] = {}
 
         for field in pb_msg.data:
             value = pb_msg.data[field]
 
-            content_type_dict = dict(
-                ndarray=NdArray,
-                embedding=AnyEmbedding,
-                ndarray_embedding=NdArrayEmbedding,
-                any_url=AnyUrl,
-                text_url=TextUrl,
-                image_url=ImageUrl,
-                mesh_url=Mesh3DUrl,
-                point_cloud_url=PointCloud3DUrl,
-                id=ID,
-            )
+            content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
 
             content_key = value.WhichOneof('content')
             content_type = (
@@ -57,8 +37,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
             )
 
             if torch_imported:
-                from docarray.typing.tensor.torch_tensor import TorchTensor
                 from docarray.typing import TorchEmbedding
+                from docarray.typing.tensor.torch_tensor import TorchTensor
 
                 content_type_dict['torch'] = TorchTensor
                 content_type_dict['torch_embedding'] = TorchEmbedding
@@ -86,7 +66,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     fields[field] = value.blob
             else:
                 raise ValueError(
-                    f'type {content_type} is not supported for deserialization'
+                    f'type {content_type}, with key {content_key}  is not supported for'
+                    f' deserialization'
                 )
 
         return cls.construct(**fields)

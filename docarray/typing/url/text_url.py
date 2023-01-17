@@ -1,19 +1,19 @@
 from typing import TYPE_CHECKING, Optional
 
+from docarray.typing.proto_register import register_proto
+
 if TYPE_CHECKING:
     from docarray.proto import NodeProto
 
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
 
-
+@register_proto(proto_type_name='text_url')
 class TextUrl(AnyUrl):
     """
     URL to a text file.
     Can be remote (web) URL, or a local file path.
     """
-
-    _proto_type_name = 'text_url'
 
     def load_to_bytes(self, timeout: Optional[float] = None) -> bytes:
         """

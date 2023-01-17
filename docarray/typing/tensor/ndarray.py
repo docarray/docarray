@@ -14,6 +14,7 @@ from typing import (
 
 import numpy as np
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ tensor_base: type = type(BaseNode)
 class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ignore
     pass
 
-
+@register_proto(proto_type_name='ndarray')
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of np.ndarray, intended for use in a Document.
@@ -80,7 +81,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         )
     """
 
-    _proto_type_name = 'ndarray'
     __parametrized_meta__ = metaNumpy
 
     @classmethod

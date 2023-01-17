@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 import numpy as np
 from pydantic import parse_obj_as
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16, AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
@@ -17,14 +18,12 @@ T = TypeVar('T', bound='AudioUrl')
 
 AUDIO_FILE_FORMATS = ['wav']
 
-
+@register_proto(proto_type_name='audio_url')
 class AudioUrl(AnyUrl):
     """
     URL to a .wav file.
     Can be remote (web) URL, or a local file path.
     """
-
-    _proto_type_name = 'audio_url'
 
     @classmethod
     def validate(

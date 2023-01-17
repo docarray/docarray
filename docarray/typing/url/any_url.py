@@ -4,6 +4,7 @@ from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
 from docarray.typing.abstract_type import AbstractType
+from docarray.typing.proto_register import register_proto
 
 if TYPE_CHECKING:
     from pydantic.networks import Parts
@@ -12,12 +13,11 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyUrl')
 
-
+@register_proto(proto_type_name='any_url')
 class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )
-    _proto_type_name = 'any_url'
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from docarray.typing.proto_register import register_proto
 from docarray.typing.url.any_url import AnyUrl
 
 if TYPE_CHECKING:
@@ -14,14 +15,12 @@ MESH_FILE_FORMATS = ('obj', 'glb', 'ply')
 
 T = TypeVar('T', bound='Url3D')
 
-
+@register_proto(proto_type_name='url3d')
 class Url3D(AnyUrl, ABC):
     """
     URL to a .obj, .glb, or .ply file containing 3D mesh or point cloud information.
     Can be remote (web) URL, or a local file path.
     """
-    _proto_type_name = 'url3d'
-
     @classmethod
     def validate(
         cls: Type[T],
