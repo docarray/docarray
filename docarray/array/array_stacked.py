@@ -95,14 +95,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field in self._columns.keys():
             col = self._columns[field]
             if isinstance(col, AbstractTensor):
-                # the casting below is arbitrary, in reality `col` could be of any
-                # subclass of AbstractTensor. But to make mypy happy we have to cast
-                # it to a concrete subclass thereof
-                # see mypy issue: https://github.com/python/mypy/issues/14421
-                col_ = cast('TorchTensor', col)
-                self._columns[field] = col_.get_comp_backend().to_device(col_, device)
-            elif isinstance(col, NdArray):
-                self._columns[field] = col.get_comp_backend().to_device(col, device)
+                self._columns[field] = col.__class__._docarray_from_native(
+                    col.get_comp_backend().to_device(col, device)
+                )
             else:  # recursive call
                 col_docarray = cast(T, col)
                 col_docarray.to(device)
