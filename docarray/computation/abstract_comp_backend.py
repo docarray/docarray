@@ -69,6 +69,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         ...
 
     @staticmethod
+    @abstractmethod
     def reshape(tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
         """
         Gives a new shape to tensor without changing its data.
