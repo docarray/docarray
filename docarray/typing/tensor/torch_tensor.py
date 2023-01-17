@@ -159,8 +159,8 @@ class TorchTensor(
         :param value: the native torch.Tensor
         :return: a TorchTensor
         """
-        if cls.__parentcls__:
-            value.__class__ = cls.__parentcls__
+        if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
+            value.__class__ = cls.__unparametrizedcls__
         else:
             value.__class__ = cls
         return cast(T, value)
