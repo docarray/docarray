@@ -23,7 +23,9 @@ class MyDocument(BaseDocument):
     description: str
     image_url: ImageUrl
     image_tensor: Optional[TorchTensor]
-    embedding: Optional[TorchTensor[768]]
+    embedding: Optional[
+        TorchTensor[1704, 2272, 3]
+    ]  # This field only work with tensor of shape (1704, 2272, 3)
 
 
 doc = MyDocument(
