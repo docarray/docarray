@@ -60,7 +60,7 @@ doc.embedding = clip_image_encoder(
 ```
 ### Compose nested Documents:
 
-<!-- #region -->
+```python
 from docarray import BaseDocument
 from docarray.documents import Image, Text
 import numpy as np
@@ -74,7 +74,7 @@ class MultiModalDocument(BaseDocument):
 doc = MultiModalDocument(
     image_doc=Image(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
 )
-<!-- #endregion -->
+```
 
 ### Collect multiple `Documents` into a `DocumentArray`:
 ```python
