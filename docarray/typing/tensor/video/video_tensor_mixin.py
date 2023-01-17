@@ -1,33 +1,23 @@
 import abc
-from typing import TYPE_CHECKING, BinaryIO, Optional, Type, TypeVar, Union
+from typing import BinaryIO, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 
-if TYPE_CHECKING:
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
-
-T = TypeVar('T', bound='VideoTensorMixin')
-TT = TypeVar('TT', bound='AbstractTensor')
+T = TypeVar('T', bound='AbstractTensor')
 
 
-class CompBackendInterface(abc.ABC):
-    @staticmethod
-    @abc.abstractmethod
-    def get_comp_backend():
-        """The computational backend compatible with this tensor type."""
-        ...
-
-
-class VideoTensorMixin(CompBackendInterface, abc.ABC):
+class VideoTensorMixin(AbstractTensor, abc.ABC):
     @classmethod
     def validate_shape(cls: Type['T'], value: 'T') -> 'T':
         comp_be = cls.get_comp_backend()
-        if comp_be.n_dim(value) not in [3, 4] or comp_be.shape(value)[-1] != 3:
+        shape = comp_be.shape(value)  # type: ignore
+        if comp_be.n_dim(value) not in [3, 4] or shape[-1] != 3:  # type: ignore
             raise ValueError(
                 f'Expects tensor with 3 or 4 dimensions and the last dimension equal '
-                f'to 3, but received {comp_be.shape(value)}.'
+                f'to 3, but received {shape}.'
             )
         else:
             return value
