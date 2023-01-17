@@ -88,7 +88,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         :param shape: The shape to validate against.
         :return: The validated tensor.
         """
-        comp_be = t.get_comp_backend()()  # mypy Generics require instantiation
+        comp_be = t.get_comp_backend()  # mypy Generics require instantiation
         tshape = comp_be.shape(t)
         if tshape == shape:
             return t
@@ -202,7 +202,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_comp_backend() -> Type[AbstractComputationalBackend[TTensor, T]]:
+    def get_comp_backend() -> AbstractComputationalBackend[TTensor, T]:
         """The computational backend compatible with this tensor type."""
         ...
 

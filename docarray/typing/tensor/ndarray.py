@@ -202,11 +202,11 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         return nd_proto
 
     @staticmethod
-    def get_comp_backend() -> Type['NumpyCompBackend']:
+    def get_comp_backend() -> 'NumpyCompBackend':
         """Return the computational backend of the tensor"""
         from docarray.computation.numpy_backend import NumpyCompBackend
 
-        return NumpyCompBackend
+        return NumpyCompBackend()
 
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
