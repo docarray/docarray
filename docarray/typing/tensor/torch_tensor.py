@@ -159,7 +159,10 @@ class TorchTensor(
         :param value: the native torch.Tensor
         :return: a TorchTensor
         """
-        value.__class__ = cls
+        if cls.__parentcls__:
+            value.__class__ = cls.__parentcls__
+        else:
+            value.__class__ = cls
         return cast(T, value)
 
     @classmethod

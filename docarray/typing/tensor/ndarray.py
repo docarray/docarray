@@ -120,6 +120,8 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
     @classmethod
     def _docarray_from_native(cls: Type[T], value: np.ndarray) -> T:
+        if cls.__parentcls__:
+            return value.view(cls.__parentcls__)
         return value.view(cls)
 
     @classmethod

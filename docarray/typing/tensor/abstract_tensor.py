@@ -7,12 +7,15 @@ from typing import (
     Dict,
     Generic,
     List,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
 )
+
+from pydantic import parse_obj_as
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
@@ -63,6 +66,13 @@ class _ParametrizedMeta(type):
     def __instancecheck__(cls, instance):
         is_tensor = isinstance(instance, AbstractTensor)
         if is_tensor:  # custom handling
+            _cls = cast(Type[AbstractTensor], cls)
+            if _cls.__parentcls__:
+                try:
+                    parse_obj_as(_cls, instance)
+                    return True
+                except ValueError:
+                    return False
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
 
@@ -71,6 +81,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
+    __parentcls__: Optional[type] = None
 
     @classmethod
     def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
@@ -161,6 +172,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
             __docarray_target_shape__ = shape
+            __parentcls__ = cls
 
             @classmethod
             def validate(
