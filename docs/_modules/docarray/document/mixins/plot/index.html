@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/plot.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>docarray.document.mixins.plot - DocArray 0.20.2 documentation</title>
+        <title>docarray.document.mixins.plot - DocArray 0.21.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.20.2 documentation</div>
+                <div class="brand">DocArray 0.21.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -379,7 +379,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">docarray.document.mixins.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">docarray.document.mixins.mesh</span> <span class="kn">import</span> <span class="n">MeshEnum</span><span class="p">,</span> <span class="n">PointCloudEnum</span>
 
 
 <div class="viewcode-block" id="PlotMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin">[docs]</a><span class="k">class</span> <span class="nc">PlotMixin</span><span class="p">:</span>
@@ -509,7 +509,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">name_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">VERTICES</span> <span class="ow">in</span> <span class="n">name_tags</span> <span class="ow">and</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">FACES</span> <span class="ow">in</span> <span class="n">name_tags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">MeshEnum</span><span class="o">.</span><span class="n">VERTICES</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">name_tags</span>
+                <span class="ow">and</span> <span class="n">MeshEnum</span><span class="o">.</span><span class="n">FACES</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">name_tags</span>
+            <span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -549,9 +552,13 @@
             <span class="kn">import</span> <span class="nn">trimesh</span>
 
             <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">c</span><span class="o">.</span><span class="n">tensor</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">VERTICES</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">tensor</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MeshEnum</span><span class="o">.</span><span class="n">VERTICES</span><span class="o">.</span><span class="n">value</span>
             <span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">tensor</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">FACES</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">tensor</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MeshEnum</span><span class="o">.</span><span class="n">FACES</span><span class="o">.</span><span class="n">value</span>
+            <span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="n">faces</span><span class="p">)</span>
             <span class="n">display</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">show</span><span class="p">())</span></div>
 
@@ -561,15 +568,24 @@
         <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
         <span class="kn">from</span> <span class="nn">hubble.utils.notebook</span> <span class="kn">import</span> <span class="n">is_notebook</span>
 
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="n">chunk</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">PointCloudEnum</span><span class="o">.</span><span class="n">COLORS</span><span class="o">.</span><span class="n">value</span>
+                <span class="ow">and</span> <span class="n">chunk</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">tensor</span>
+
+        <span class="n">pc</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">PointCloud</span><span class="p">(</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span>
+            <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">is_notebook</span><span class="p">():</span>
-            <span class="n">pc</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">PointCloud</span><span class="p">(</span>
-                <span class="n">vertices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span>
-                <span class="n">colors</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">),</span> <span class="mi">1</span><span class="p">)),</span>
-            <span class="p">)</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">pc</span><span class="p">)</span>
             <span class="n">display</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">show</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pc</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">PointCloud</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
             <span class="n">display</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">show</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="PlotMixin.display_rgbd_tensor"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display_rgbd_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">display_rgbd_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -799,7 +815,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Jan 03, 2023</div>
+                            Last updated on Jan 17, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

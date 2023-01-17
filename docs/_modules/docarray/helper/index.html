@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/helper.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>docarray.helper - DocArray 0.20.2 documentation</title>
+        <title>docarray.helper - DocArray 0.21.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.20.2 documentation</div>
+                <div class="brand">DocArray 0.21.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -384,8 +384,6 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-
-<span class="kn">import</span> <span class="nn">hubble</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -901,11 +899,15 @@
 <span class="sd">    :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.</span>
 <span class="sd">    :param force: If set to true, overwrite token and re-login.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">hubble</span>
+
     <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">interactive</span><span class="o">=</span><span class="n">interactive</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="logout"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.logout">[docs]</a><span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Log out of Hubble account.&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">hubble</span>
+
     <span class="n">hubble</span><span class="o">.</span><span class="n">logout</span><span class="p">()</span></div>
 </pre></div>
                 </article>
@@ -921,7 +923,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Jan 03, 2023</div>
+                            Last updated on Jan 17, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -6,10 +6,10 @@
 <meta property="og:title" content=" 3D Mesh" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/mesh/" />
-<meta property="og:site_name" content="DocArray 0.20.2 Documentation" />
+<meta property="og:site_name" content="DocArray 0.21.0 Documentation" />
 <meta property="og:description" content="3D Mesh: A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D. DocArray supports the following file formats for 3D data handling: .obj, .glb a..." />
 <meta property="og:image" content="https://docarray.jina.ai/_images/rgbd_chair.png" />
-<meta property="og:image:alt" content="DocArray 0.20.2 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.21.0 Documentation" />
 <meta name="description" content="3D Mesh: A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D. DocArray supports the following file formats for 3D data handling: .obj, .glb a..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -33,7 +33,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/mesh/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>3D Mesh - DocArray 0.20.2 documentation</title>
+        <title>3D Mesh - DocArray 0.21.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.20.2 documentation</div>
+                <div class="brand">DocArray 0.21.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -2956,6 +2956,13 @@ function animate(){requestAnimationFrame(animate);controls.update();}
 function render(){tracklight.position.copy(camera.position);renderer.render(scene,camera);}
 init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
+<p>To display a colored point cloud, store the corresponding colors in the <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> of a chunk <code class="docutils literal notranslate"><span class="pre">Document</span></code> with the name tag <code class="docutils literal notranslate"><span class="pre">'point_cloud_colors'</span></code>. The colors have to be of shape (n_samples, 3) or (n_samples, 4).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;mesh_man.glb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_point_cloud_tensor</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;point_cloud_colors&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
 </section>
 <section id="rgb-d-image-representation">
 <h2>RGB-D image representation<a class="headerlink" href="#rgb-d-image-representation" title="Permalink to this heading">#</a></h2>
@@ -3020,7 +3027,7 @@ init();</script></body>
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Jan 03, 2023</div>
+                            Last updated on Jan 17, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

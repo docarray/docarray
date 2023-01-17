@@ -6,9 +6,9 @@
 <meta property="og:title" content="docarray.document.mixins.mesh module" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.mesh/" />
-<meta property="og:site_name" content="DocArray 0.20.2 Documentation" />
+<meta property="og:site_name" content="DocArray 0.21.0 Documentation" />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.20.2 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.21.0 Documentation" />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.mixins.mesh.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>docarray.document.mixins.mesh module - DocArray 0.20.2 documentation</title>
+        <title>docarray.document.mixins.mesh module - DocArray 0.21.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.20.2 documentation</div>
+                <div class="brand">DocArray 0.21.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -401,22 +401,35 @@
                     <section id="module-docarray.document.mixins.mesh">
 <span id="docarray-document-mixins-mesh-module"></span><h1>docarray.document.mixins.mesh module<a class="headerlink" href="#module-docarray.document.mixins.mesh" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="docarray.document.mixins.mesh.Mesh">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.mesh.</span></span><span class="sig-name descname"><span class="pre">Mesh</span></span><a class="reference internal" href="../../_modules/docarray/document/mixins/mesh/#Mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.mesh.Mesh" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.MeshEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.mesh.</span></span><span class="sig-name descname"><span class="pre">MeshEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/mesh/#MeshEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.mesh.MeshEnum" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.mixins.mesh.Mesh.FILE_EXTENSIONS">
-<span class="sig-name descname"><span class="pre">FILE_EXTENSIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['glb',</span> <span class="pre">'obj',</span> <span class="pre">'ply']</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.Mesh.FILE_EXTENSIONS" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.MeshEnum.FILE_EXTENSIONS">
+<span class="sig-name descname"><span class="pre">FILE_EXTENSIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['glb',</span> <span class="pre">'obj',</span> <span class="pre">'ply']</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.MeshEnum.FILE_EXTENSIONS" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.mixins.mesh.Mesh.VERTICES">
-<span class="sig-name descname"><span class="pre">VERTICES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vertices'</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.Mesh.VERTICES" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.MeshEnum.VERTICES">
+<span class="sig-name descname"><span class="pre">VERTICES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'vertices'</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.MeshEnum.VERTICES" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.mixins.mesh.Mesh.FACES">
-<span class="sig-name descname"><span class="pre">FACES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'faces'</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.Mesh.FACES" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.MeshEnum.FACES">
+<span class="sig-name descname"><span class="pre">FACES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'faces'</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.MeshEnum.FACES" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.PointCloudEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.mesh.</span></span><span class="sig-name descname"><span class="pre">PointCloudEnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/mesh/#PointCloudEnum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.mesh.PointCloudEnum" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.document.mixins.mesh.PointCloudEnum.COLORS">
+<span class="sig-name descname"><span class="pre">COLORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'point_cloud_colors'</span></em><a class="headerlink" href="#docarray.document.mixins.mesh.PointCloudEnum.COLORS" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -509,7 +522,7 @@ then store each geometry into different <a class="reference internal" href="../d
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Jan 03, 2023</div>
+                            Last updated on Jan 17, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -542,10 +555,14 @@ then store each geometry into different <a class="reference internal" href="../d
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">docarray.document.mixins.mesh module</a><ul>
-<li><a class="reference internal" href="#docarray.document.mixins.mesh.Mesh"><code class="docutils literal notranslate"><span class="pre">Mesh</span></code></a><ul>
-<li><a class="reference internal" href="#docarray.document.mixins.mesh.Mesh.FILE_EXTENSIONS"><code class="docutils literal notranslate"><span class="pre">Mesh.FILE_EXTENSIONS</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.mixins.mesh.Mesh.VERTICES"><code class="docutils literal notranslate"><span class="pre">Mesh.VERTICES</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.mixins.mesh.Mesh.FACES"><code class="docutils literal notranslate"><span class="pre">Mesh.FACES</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.MeshEnum"><code class="docutils literal notranslate"><span class="pre">MeshEnum</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.MeshEnum.FILE_EXTENSIONS"><code class="docutils literal notranslate"><span class="pre">MeshEnum.FILE_EXTENSIONS</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.MeshEnum.VERTICES"><code class="docutils literal notranslate"><span class="pre">MeshEnum.VERTICES</span></code></a></li>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.MeshEnum.FACES"><code class="docutils literal notranslate"><span class="pre">MeshEnum.FACES</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.PointCloudEnum"><code class="docutils literal notranslate"><span class="pre">PointCloudEnum</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.document.mixins.mesh.PointCloudEnum.COLORS"><code class="docutils literal notranslate"><span class="pre">PointCloudEnum.COLORS</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#docarray.document.mixins.mesh.MeshDataMixin"><code class="docutils literal notranslate"><span class="pre">MeshDataMixin</span></code></a><ul>
