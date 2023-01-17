@@ -34,3 +34,8 @@ def test_shape(array, result):
     shape = NumpyCompBackend.shape(array)
     assert shape == result
     assert type(shape) == tuple
+
+
+def test_empty():
+    array = NumpyCompBackend.empty((10, 3))
+    assert array.shape == (10, 3)

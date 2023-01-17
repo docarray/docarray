@@ -1,4 +1,3 @@
-import warnings
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -23,8 +22,18 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto, NodeProto
 
+from docarray.base_document.base_node import BaseNode
+
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
+
+tensor_base: type = type(BaseNode)
+
+
+# the mypy error suppression below should not be necessary anymore once the following
+# is released in mypy: https://github.com/python/mypy/pull/14135
+class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ignore
+    pass
 
 
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
@@ -47,12 +56,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         class MyDoc(BaseDocument):
             arr: NdArray
             image_arr: NdArray[3, 224, 224]
+            square_crop: NdArray[3, 'x', 'x']
 
 
         # create a document with tensors
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((3, 224, 224)),
+            square_crop=np.zeros((3, 64, 64)),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -60,6 +71,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+            square_crop=np.zeros((3, 128, 128)),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -67,10 +79,12 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224)),  # this will fail validation
+            square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
         )
     """
 
     _PROTO_FIELD_NAME = 'ndarray'
+    __parametrized_meta__ = metaNumpy
 
     @classmethod
     def __get_validators__(cls):
@@ -80,23 +94,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         yield cls.validate
 
     @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
-        if t.shape == shape:
-            return t
-        else:
-            warnings.warn(
-                f'Tensor shape mismatch. Reshaping array '
-                f'of shape {t.shape} to shape {shape}'
-            )
-            try:
-                value = cls.__docarray_from_native__(np.reshape(t, shape))
-                return cast(T, value)
-            except RuntimeError:
-                raise ValueError(
-                    f'Cannot reshape array of shape {t.shape} to shape {shape}'
-                )
-
-    @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
@@ -104,25 +101,25 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         config: 'BaseConfig',
     ) -> T:
         if isinstance(value, np.ndarray):
-            return cls.__docarray_from_native__(value)
+            return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
-                return cls.__docarray_from_native__(arr_from_list)
+                return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
         else:
             try:
                 arr: np.ndarray = np.ndarray(value)
-                return cls.__docarray_from_native__(arr)
+                return cls._docarray_from_native(arr)
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
-    def __docarray_from_native__(cls: Type[T], value: np.ndarray) -> T:
+    def _docarray_from_native(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
 
     @classmethod
@@ -183,9 +180,9 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         source = pb_msg.dense
         if source.buffer:
             x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
-            return cls.__docarray_from_native__(x.reshape(source.shape))
+            return cls._docarray_from_native(x.reshape(source.shape))
         elif len(source.shape) > 0:
-            return cls.__docarray_from_native__(np.zeros(source.shape))
+            return cls._docarray_from_native(np.zeros(source.shape))
         else:
             raise ValueError(f'proto message {pb_msg} cannot be cast to a NdArray')
 

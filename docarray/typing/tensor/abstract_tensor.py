@@ -1,6 +1,18 @@
 import abc
+import warnings
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
@@ -12,35 +24,107 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
 
 T = TypeVar('T', bound='AbstractTensor')
+TTensor = TypeVar('TTensor')
 ShapeT = TypeVar('ShapeT')
 
 
-class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
+class _ParametrizedMeta(type):
+    """
+    This metaclass ensures that instance and subclass checks on parametrized Tensors
+    are handled as expected:
 
-    __parametrized_meta__ = type
+    assert issubclass(TorchTensor[128], TorchTensor[128])
+    t = parse_obj_as(TorchTensor[128], torch.zeros(128))
+    assert isinstance(t, TorchTensor[128])
+    etc.
+
+    This special handling is needed because every call to `AbstractTensor.__getitem__`
+    creates a new class on the fly.
+    We want technically distinct but identical classes to be considered equal.
+    """
+
+    def __subclasscheck__(cls, subclass):
+        is_tensor = AbstractTensor in subclass.mro()
+        same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
+
+        subclass_target_shape = getattr(subclass, '__docarray_target_shape__', False)
+        self_target_shape = getattr(cls, '__docarray_target_shape__', False)
+        same_shape = (
+            same_parents
+            and subclass_target_shape
+            and self_target_shape
+            and subclass_target_shape == self_target_shape
+        )
+
+        if same_shape:
+            return True
+        return super().__subclasscheck__(subclass)
+
+    def __instancecheck__(cls, instance):
+        is_tensor = isinstance(instance, AbstractTensor)
+        if is_tensor:  # custom handling
+            return any(issubclass(candidate, cls) for candidate in type(instance).mro())
+        return super().__instancecheck__(instance)
+
+
+class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
+
+    __parametrized_meta__: type = _ParametrizedMeta
     _PROTO_FIELD_NAME: str
 
     @classmethod
-    @abc.abstractmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
-
         It is called when a tensor is assigned to a field of this type.
         i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
-
         The intended behaviour is as follows:
         - If the shape of `t` is equal to `shape`, return `t`.
         - If the shape of `t` is not equal to `shape`,
             but can be reshaped to `shape`, return `t` reshaped to `shape`.
         - If the shape of `t` is not equal to `shape`
             and cannot be reshaped to `shape`, raise a ValueError.
-
         :param t: The tensor to validate.
         :param shape: The shape to validate against.
         :return: The validated tensor.
         """
-        ...
+        comp_be = t.get_comp_backend()()  # mypy Generics require instantiation
+        tshape = comp_be.shape(t)
+        if tshape == shape:
+            return t
+        elif any(isinstance(dim, str) for dim in shape):
+            if len(tshape) != len(shape):
+                raise ValueError(
+                    f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                )
+            known_dims: Dict[str, int] = {}
+            for tdim, dim in zip(tshape, shape):
+                if isinstance(dim, int) and tdim != dim:
+                    raise ValueError(
+                        f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                    )
+                elif isinstance(dim, str):
+                    if dim in known_dims and known_dims[dim] != tdim:
+                        raise ValueError(
+                            f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                        )
+                    else:
+                        known_dims[dim] = tdim
+            else:
+                return t
+        else:
+            shape = cast(Tuple[int], shape)
+            warnings.warn(
+                f'Tensor shape mismatch. Reshaping tensor '
+                f'of shape {tshape} to shape {shape}'
+            )
+            try:
+                value = cls._docarray_from_native(comp_be.reshape(t, shape))
+                return cast(T, value)
+            except RuntimeError:
+                raise ValueError(
+                    f'Cannot reshape tensor of shape {tshape} to shape {shape}'
+                )
 
     @classmethod
     def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
@@ -76,7 +160,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
             cls,  # type: ignore
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
-            _docarray_target_shape = shape
+            __docarray_target_shape__ = shape
 
             @classmethod
             def validate(
@@ -86,7 +170,9 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls.__docarray_validate_shape__(t, _cls._docarray_target_shape)
+                return _cls.__docarray_validate_shape__(
+                    t, _cls.__docarray_target_shape__
+                )
 
         _ParametrizedTensor.__name__ = f'{cls.__name__}[{shape_str}]'
         _ParametrizedTensor.__qualname__ = f'{cls.__qualname__}[{shape_str}]'
@@ -98,16 +184,16 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
-    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+    def _docarray_stack(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         comp_backend = cls.get_comp_backend()
         # at runtime, 'T' is always the correct input type for .stack()
         # but mypy doesn't know that, so we ignore it here
-        return cls.__docarray_from_native__(comp_backend.stack(seq))  # type: ignore
+        return cls._docarray_from_native(comp_backend.stack(seq))  # type: ignore
 
     @classmethod
     @abc.abstractmethod
-    def __docarray_from_native__(cls: Type[T], value: Any) -> T:
+    def _docarray_from_native(cls: Type[T], value: Any) -> T:
         """
         Create a DocArray tensor from a tensor that is native to the given framework,
         e.g. from numpy.ndarray or torch.Tensor.
@@ -116,12 +202,16 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_comp_backend() -> Type[AbstractComputationalBackend]:
+    def get_comp_backend() -> Type[AbstractComputationalBackend[TTensor, T]]:
         """The computational backend compatible with this tensor type."""
         ...
 
     def __getitem__(self, item):
         """Get a slice of this tensor."""
+        ...
+
+    def __setitem__(self, index, value):
+        """Set a slice of this tensor."""
         ...
 
     def __iter__(self):

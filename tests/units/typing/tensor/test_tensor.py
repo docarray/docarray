@@ -74,6 +74,35 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(NdArray[3, 224, 224], np.zeros((224, 224)))
 
+    # test independent variable dimensions
+    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 60, 128)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 60, 128)
+
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((4, 224, 224)))
+
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((100, 1)))
+
+    # test dependent variable dimensions
+    tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60, 128)))
+
+    with pytest.raises(ValueError):
+        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60)))
+
 
 def test_np_embedding():
     # correct shape
@@ -90,3 +119,39 @@ def test_np_embedding():
     # illegal shape at class creation time
     with pytest.raises(ValueError):
         parse_obj_as(NdArrayEmbedding[128, 128], np.zeros((128, 128)))
+
+
+def test_parametrized_subclass():
+    c1 = NdArray[128]
+    c2 = NdArray[128]
+    assert issubclass(c1, c2)
+    assert issubclass(c1, NdArray)
+    assert issubclass(c1, np.ndarray)
+
+    assert not issubclass(c1, NdArray[256])
+
+
+def test_parametrized_instance():
+    t = parse_obj_as(NdArray[128], np.zeros(128))
+    assert isinstance(t, NdArray[128])
+    assert isinstance(t, NdArray)
+    assert isinstance(t, np.ndarray)
+
+    assert not isinstance(t, NdArray[256])
+
+
+def test_parametrized_equality():
+    t1 = parse_obj_as(NdArray[128], np.zeros(128))
+    t2 = parse_obj_as(NdArray[128], np.zeros(128))
+    t3 = parse_obj_as(NdArray[256], np.zeros(256))
+    assert (t1 == t2).all()
+    assert not t1 == t3
+
+
+def test_parametrized_operations():
+    t1 = parse_obj_as(NdArray[128], np.zeros(128))
+    t2 = parse_obj_as(NdArray[128], np.zeros(128))
+    t_result = t1 + t2
+    assert isinstance(t_result, np.ndarray)
+    assert isinstance(t_result, NdArray)
+    assert isinstance(t_result, NdArray[128])

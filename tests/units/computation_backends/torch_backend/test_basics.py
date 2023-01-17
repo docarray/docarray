@@ -36,3 +36,8 @@ def test_shape(array, result):
     shape = TorchCompBackend.shape(array)
     assert shape == result
     assert type(shape) == tuple
+
+
+def test_empty():
+    tensor = TorchCompBackend.empty((10, 3))
+    assert tensor.shape == (10, 3)
