@@ -1,8 +1,8 @@
 from typing import Optional, TypeVar
 
 from docarray.base_document import BaseDocument
+from docarray.documents import Audio
 from docarray.typing import AnyEmbedding, AnyTensor
-from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
 
@@ -12,10 +12,10 @@ T = TypeVar('T', bound='Video')
 class Video(BaseDocument):
     """
     Document for handling video.
-    The Video Document can contain a VideoUrl (`Video.url`), an AudioTensor
-    (`Video.audio_tensor`), a VideoTensor (`Video.video_tensor`), an AnyTensor
-    representing the indices of the video's key frames (`Video.key_frame_indices`),
-    and an AnyEmbedding (`Video.embedding`).
+    The Video Document can contain a VideoUrl (`Video.url`), an Audio Document
+    (`Video.audio`), a VideoTensor (`Video.video_tensor`), an AnyTensor representing
+    the indices of the video's key frames (`Video.key_frame_indices`) and an
+    AnyEmbedding (`Video.embedding`).
 
     EXAMPLE USAGE:
 
@@ -29,7 +29,7 @@ class Video(BaseDocument):
         vid = Video(
             url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
         )
-        vid.audio_tensor, vid.video_tensor, vid.key_frame_indices = vid.url.load()
+        vid.audio.tensor, vid.video_tensor, vid.key_frame_indices = vid.url.load()
         model = MyEmbeddingModel()
         vid.embedding = model(vid.video_tensor)
 
@@ -50,7 +50,7 @@ class Video(BaseDocument):
         video = MyVideo(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
         )
-        video.video_tensor = video.url.load(only_keyframes=True)
+        video.video_tensor = video.url.load_key_frames()
         model = MyEmbeddingModel()
         video.embedding = model(video.video_tensor)
         video.name = Text(text='my first video')
@@ -75,11 +75,11 @@ class Video(BaseDocument):
             ),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.video.video_tensor = mmdoc.video.url.load(only_keyframes=True)
+        mmdoc.video.video_tensor = mmdoc.video.url.load_key_frames()
     """
 
     url: Optional[VideoUrl]
-    audio_tensor: Optional[AudioTensor]
+    audio: Optional[Audio] = Audio()
     video_tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
