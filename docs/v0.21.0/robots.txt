@@ -1,0 +1,2 @@
+User-agent: *
+sitemap: https://docarray.jina.ai/sitemap.xml

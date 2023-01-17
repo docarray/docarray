@@ -1,0 +1,7 @@
+docarray.array.opensearch module
+================================
+
+.. automodule:: docarray.array.opensearch
+   :members:
+   :undoc-members:
+   :show-inheritance:

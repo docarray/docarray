@@ -1,0 +1,7 @@
+docarray.array.storage.milvus.backend module
+============================================
+
+.. automodule:: docarray.array.storage.milvus.backend
+   :members:
+   :undoc-members:
+   :show-inheritance:

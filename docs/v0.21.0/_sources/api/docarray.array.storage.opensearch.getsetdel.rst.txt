@@ -1,0 +1,7 @@
+docarray.array.storage.opensearch.getsetdel module
+==================================================
+
+.. automodule:: docarray.array.storage.opensearch.getsetdel
+   :members:
+   :undoc-members:
+   :show-inheritance:
