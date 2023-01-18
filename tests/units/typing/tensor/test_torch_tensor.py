@@ -90,7 +90,11 @@ def test_parametrized():
 
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
-    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(shape))
+    MyTT = TorchTensor[3, 224, 224]
+    tensor = parse_obj_as(MyTT, torch.zeros(shape))
+
+    assert MyTT.__name__ == 'TorchTensor[3, 224, 224]'
+    assert MyTT.__qualname__ == 'TorchTensor[3, 224, 224]'
 
     assert tensor.__class__.__name__ == 'TorchTensor'
     assert tensor.__class__.__qualname__ == 'TorchTensor'
