@@ -14,7 +14,7 @@
 
 <!-- start elevator-pitch -->
 
-> :arrow_up: **DocArray v2**: We are currently working on v2 of DocArray. Keep reading here if you are interested in the
+> ⬆️ **DocArray v2**: We are currently working on v2 of DocArray. Keep reading here if you are interested in the
 > current (stable) version, or check out the [v2 alpha branch](https://github.com/docarray/docarray/tree/feat-rewrite-v2#readme)
 > and [v2 roadmap](https://github.com/docarray/docarray/issues/780)!
 
