@@ -1,6 +1,6 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union, overload
 
 if TYPE_CHECKING:
     import numpy as np
@@ -48,7 +48,11 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor, TAbstractTensor]
 
     @staticmethod
     @abstractmethod
-    def empty(shape: Tuple[int, ...]) -> 'TTensor':
+    def empty(
+        shape: Tuple[int, ...],
+        dtype: Optional[Any] = None,
+        device: Optional[Any] = None,
+    ) -> 'TTensor':
         ...
 
     @staticmethod
