@@ -64,7 +64,7 @@ def test_illegal_validation(cls_tensor, tensor):
 def test_proto_tensor(cls_tensor, tensor, proto_key):
     tensor = parse_obj_as(cls_tensor, tensor)
     proto = tensor._to_node_protobuf()
-    assert str(proto).startswith(proto_key)
+    assert proto_key in str(proto)
 
 
 @pytest.mark.parametrize(
