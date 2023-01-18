@@ -3,7 +3,8 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_document.io.json import orjson_dumps
-from docarray.typing import Mesh3DUrl
+from docarray.typing import Mesh3DUrl, NdArray
+from docarray.typing.url.url_3d.mesh_url import Mesh3DLoadResults
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
@@ -28,9 +29,32 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 def test_load(file_format, file_path):
     url = parse_obj_as(Mesh3DUrl, file_path)
     vertices, faces = url.load()
+    vertices = url.load()
 
     assert isinstance(vertices, np.ndarray)
+    assert isinstance(vertices, NdArray)
     assert isinstance(faces, np.ndarray)
+    assert isinstance(faces, NdArray)
+    assert vertices.shape[1] == 3
+    assert faces.shape[1] == 3
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_path',
+    [*MESH_FILES.values(), REMOTE_OBJ_FILE],
+)
+@pytest.mark.parametrize('field', [f for f in Mesh3DLoadResults._fields])
+def test_load_one_of_fields(file_path, field):
+    url = parse_obj_as(Mesh3DUrl, file_path)
+    vertices, faces = url.load()
+    vertices = url.load().vertices
+
+    assert isinstance(vertices, np.ndarray)
+    assert isinstance(vertices, NdArray)
+    assert isinstance(faces, np.ndarray)
+    assert isinstance(faces, NdArray)
     assert vertices.shape[1] == 3
     assert faces.shape[1] == 3
 
