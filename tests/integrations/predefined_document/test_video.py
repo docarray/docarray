@@ -13,8 +13,8 @@ REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
 @pytest.mark.parametrize('file_url', [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE])
 def test_video(file_url):
     vid = Video(url=file_url)
-    vid.video_tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
+    vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
 
-    assert isinstance(vid.video_tensor, VideoNdArray)
+    assert isinstance(vid.tensor, VideoNdArray)
     assert isinstance(vid.audio.tensor, AudioNdArray)
     assert isinstance(vid.key_frame_indices, NdArray)

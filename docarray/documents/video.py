@@ -13,7 +13,7 @@ class Video(BaseDocument):
     """
     Document for handling video.
     The Video Document can contain a VideoUrl (`Video.url`), an Audio Document
-    (`Video.audio`), a VideoTensor (`Video.video_tensor`), an AnyTensor representing
+    (`Video.audio`), a VideoTensor (`Video.tensor`), an AnyTensor representing
     the indices of the video's key frames (`Video.key_frame_indices`) and an
     AnyEmbedding (`Video.embedding`).
 
@@ -29,9 +29,9 @@ class Video(BaseDocument):
         vid = Video(
             url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
         )
-        vid.audio.tensor, vid.video_tensor, vid.key_frame_indices = vid.url.load()
+        vid.audio.tensor, vid.tensor, vid.key_frame_indices = vid.url.load()
         model = MyEmbeddingModel()
-        vid.embedding = model(vid.video_tensor)
+        vid.embedding = model(vid.tensor)
 
     You can extend this Document:
 
@@ -52,7 +52,7 @@ class Video(BaseDocument):
         )
         video.video_tensor = video.url.load().video
         model = MyEmbeddingModel()
-        video.embedding = model(video.video_tensor)
+        video.embedding = model(video.tensor)
         video.name = Text(text='my first video')
 
     You can use this Document for composition:
@@ -80,6 +80,6 @@ class Video(BaseDocument):
 
     url: Optional[VideoUrl]
     audio: Optional[Audio] = Audio()
-    video_tensor: Optional[VideoTensor]
+    tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
