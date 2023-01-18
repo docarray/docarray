@@ -41,3 +41,15 @@ def test_shape(array, result):
 def test_empty():
     tensor = TorchCompBackend.empty((10, 3))
     assert tensor.shape == (10, 3)
+
+
+def test_empty_dtype():
+    tensor = TorchCompBackend.empty((10, 3), dtype=torch.int32)
+    assert tensor.shape == (10, 3)
+    assert tensor.dtype == torch.int32
+
+
+def test_empty_device():
+    tensor = TorchCompBackend.empty((10, 3), device='meta')
+    assert tensor.shape == (10, 3)
+    assert tensor.device == torch.device('meta')
