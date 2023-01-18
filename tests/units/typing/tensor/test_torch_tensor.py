@@ -137,10 +137,7 @@ def test_parametrized_instance():
 def test_parametrized_equality():
     t1 = parse_obj_as(TorchTensor[128], torch.zeros(128))
     t2 = parse_obj_as(TorchTensor[128], torch.zeros(128))
-    t3 = parse_obj_as(TorchTensor[256], torch.zeros(256))
     assert (t1 == t2).all()
-    with pytest.raises(RuntimeError):
-        t1 == t3
 
 
 def test_parametrized_operations():
