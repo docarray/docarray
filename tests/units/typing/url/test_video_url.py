@@ -14,7 +14,6 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
-from docarray.typing.url.video_url import VideoLoadResult
 from tests import TOYDATA_DIR
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
@@ -48,14 +47,19 @@ def test_load(file_url):
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
 @pytest.mark.parametrize(
-    'field',
-    [f for f in VideoLoadResult._fields],
+    'field, attr_cls',
+    [
+        ('video', VideoNdArray),
+        ('audio', AudioNdArray),
+        ('key_frame_indices', NdArray),
+    ],
 )
-def test_load_one_of_named_tuple_results(file_url, field):
+def test_load_one_of_named_tuple_results(file_url, field, attr_cls):
     url = parse_obj_as(VideoUrl, file_url)
     result = getattr(url.load(), field)
 
     assert isinstance(result, np.ndarray)
+    assert isinstance(result, attr_cls)
 
 
 @pytest.mark.slow
