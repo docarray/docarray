@@ -403,7 +403,7 @@ match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', t
 
 to try out the alpha you can install it via git:
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.17.alpha#egg=docarray[common,torch,image]"
+pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[common,torch,image]"
 ```
 or from the latest development branch
 ```shell
