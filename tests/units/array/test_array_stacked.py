@@ -352,3 +352,17 @@ def test_keep_dtype_torch():
     da = da.stack()
     assert da[0].tensor.dtype == torch.int32
     assert da.tensor.dtype == torch.int32
+
+
+def test_keep_dtype_np():
+    class MyDoc(BaseDocument):
+        tensor: NdArray
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=np.zeros([2, 4], dtype=np.int32)) for _ in range(3)]
+    )
+    assert da[0].tensor.dtype == np.int32
+
+    da = da.stack()
+    assert da[0].tensor.dtype == np.int32
+    assert da.tensor.dtype == np.int32
