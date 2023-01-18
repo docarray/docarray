@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
+from pydantic import parse_obj_as
 
 from docarray.typing import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
@@ -71,4 +72,4 @@ class PointCloud3DUrl(Url3D):
             mesh = self._load_trimesh_instance(force='mesh')
             point_cloud = np.array(mesh.sample(samples))
 
-        return point_cloud
+        return parse_obj_as(NdArray, point_cloud)
