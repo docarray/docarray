@@ -14,6 +14,7 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
+from docarray.typing.url.video_url import VideoLoadResults
 from tests import TOYDATA_DIR
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
@@ -28,7 +29,7 @@ REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
 )
 def test_load(file_url):
     url = parse_obj_as(VideoUrl, file_url)
-    audio, video, indices = url.load()
+    video, audio, indices = url.load()
 
     assert isinstance(audio, np.ndarray)
     assert isinstance(audio, AudioNdArray)
@@ -46,12 +47,15 @@ def test_load(file_url):
     'file_url',
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
-def test_load_key_frames(file_url):
+@pytest.mark.parametrize(
+    'field',
+    [f for f in VideoLoadResults._fields],
+)
+def test_load_one_of_named_tuple_results(file_url, field):
     url = parse_obj_as(VideoUrl, file_url)
-    key_frames = url.load_key_frames()
+    result = getattr(url.load(), field)
 
-    assert isinstance(key_frames, np.ndarray)
-    assert isinstance(key_frames, VideoNdArray)
+    assert isinstance(result, np.ndarray)
 
 
 @pytest.mark.slow
@@ -66,7 +70,7 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
         tensor: Optional[VideoTorchTensor]
 
     doc = MyVideoDoc(video_url=file_url)
-    doc.tensor = doc.video_url.load_key_frames()
+    doc.tensor = doc.video_url.load().video
 
     assert isinstance(doc.tensor, torch.Tensor)
     assert isinstance(doc.tensor, VideoTorchTensor)

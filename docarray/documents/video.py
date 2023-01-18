@@ -50,7 +50,7 @@ class Video(BaseDocument):
         video = MyVideo(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
         )
-        video.video_tensor = video.url.load_key_frames()
+        video.video_tensor = video.url.load().video
         model = MyEmbeddingModel()
         video.embedding = model(video.video_tensor)
         video.name = Text(text='my first video')
@@ -75,7 +75,7 @@ class Video(BaseDocument):
             ),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.video.video_tensor = mmdoc.video.url.load_key_frames()
+        mmdoc.video.video_tensor = mmdoc.video.url.load().video
     """
 
     url: Optional[VideoUrl]
