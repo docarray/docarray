@@ -1,12 +1,11 @@
-from collections import defaultdict
 from contextlib import contextmanager
 from typing import (
     TYPE_CHECKING,
     Any,
-    DefaultDict,
     Dict,
     Iterable,
     List,
+    Mapping,
     Type,
     TypeVar,
     Union,
@@ -28,14 +27,11 @@ if TYPE_CHECKING:
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-try:
-    import torch
-except ImportError:
-    torch_imported = False
-else:
-    from docarray.typing import TorchTensor
 
-    torch_imported = True
+try:
+    from docarray.typing import TorchTensor
+except ImportError:
+    TorchTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 
@@ -65,7 +61,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union[T, AbstractTensor]] = {}
+        self._columns: Dict[str, Union['DocumentArrayStacked', AbstractTensor]] = {}
 
         self.from_document_array(docs)
 
@@ -78,7 +74,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _from_columns(
         cls: Type[T],
         docs: DocumentArray,
-        columns: Dict[str, Union[T, AbstractTensor]],
+        columns: Mapping[str, Union['DocumentArrayStacked', AbstractTensor]],
     ) -> T:
         # below __class_getitem__ is called explicitly instead
         # of doing DocumentArrayStacked[docs.document_type]
@@ -91,7 +87,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         da_stacked._docs = docs
         return da_stacked
 
-    def to(self: T, device: str):
+    def to(self: T, device: str) -> T:
         """Move all tensors of this DocumentArrayStacked to the given device
 
         :param device: the device to move the data to
@@ -110,70 +106,77 @@ class DocumentArrayStacked(AnyDocumentArray):
             else:  # recursive call
                 col_docarray = cast(T, col)
                 col_docarray.to(device)
+        return self
 
     @classmethod
-    def _create_columns(
-        cls: Type[T], docs: DocumentArray, tensor_type: Type['AbstractTensor']
-    ) -> Dict[str, Union[T, AbstractTensor]]:
-        columns_fields = list()
+    def _get_columns_schema(
+        cls: Type[T],
+        tensor_type: Type[AbstractTensor],
+    ) -> Mapping[str, Union[Type[AbstractTensor], Type[BaseDocument]]]:
+        """
+        Return the list of fields that are tensors and the list of fields that are
+        documents
+        :param tensor_type: the default tensor type fallback in case of union of tensor
+        :return: a tuple of two lists, the first one is the list of fields that are
+        tensors, the second one is the list of fields that are documents
+        """
+
+        column_schema: Dict[str, Union[Type[AbstractTensor], Type[BaseDocument]]] = {}
+
         for field_name, field in cls.document_type.__fields__.items():
             field_type = field.outer_type_
             if is_tensor_union(field_type):
-                columns_fields.append(field_name)
+                column_schema[field_name] = tensor_type
             elif isinstance(field_type, type):
-                is_torch_subclass = (
-                    issubclass(field_type, torch.Tensor) if torch_imported else False
-                )
+                if issubclass(field_type, (BaseDocument, AbstractTensor)):
+                    column_schema[field_name] = field_type
 
-                if (
-                    is_torch_subclass
-                    or issubclass(field_type, BaseDocument)
-                    or issubclass(field_type, NdArray)
-                ):
-                    columns_fields.append(field_name)
+        return column_schema
 
-        if not columns_fields:
-            # nothing to stack
+    @classmethod
+    def _create_columns(
+        cls: Type[T], docs: DocumentArray, tensor_type: Type[AbstractTensor]
+    ) -> Dict[str, Union['DocumentArrayStacked', AbstractTensor]]:
+
+        if len(docs) == 0:
             return {}
 
-        columns: Dict[str, Union[T, AbstractTensor]] = dict()
+        column_schema = cls._get_columns_schema(tensor_type)
 
-        columns_to_stack: DefaultDict[
-            str, Union[List[AbstractTensor], List[BaseDocument]]
-        ] = defaultdict(  # type: ignore
-            list  # type: ignore
-        )  # type: ignore
+        columns: Dict[str, Union[DocumentArrayStacked, AbstractTensor]] = dict()
 
-        for doc in docs:
-            for field_to_stack in columns_fields:
-                val = getattr(doc, field_to_stack)
-                if val is None:
-                    type_ = cls.document_type._get_field_type(field_to_stack)
-                    if is_tensor_union(type_):
+        for field, type_ in column_schema.items():
+            if issubclass(type_, AbstractTensor):
+                tensor = getattr(docs[0], field)
+                column_shape = (
+                    (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
+                )
+                columns[field] = type_._docarray_from_native(
+                    type_.get_comp_backend().empty(
+                        column_shape,
+                        dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
+                        device=tensor.device if hasattr(tensor, 'device') else None,
+                    )
+                )
+
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field)
+                    if val is None:
                         val = tensor_type.get_comp_backend().none_value()
-                columns_to_stack[field_to_stack].append(val)
-                delattr(doc, field_to_stack)
 
-        for field_to_stack, to_stack in columns_to_stack.items():
+                    cast(AbstractTensor, columns[field])[i] = val
+                    setattr(doc, field, columns[field][i])
+                    del val
 
-            type_ = cls.document_type._get_field_type(field_to_stack)
-            if is_tensor_union(type_):
-                columns[field_to_stack] = tensor_type.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
-            elif isinstance(type_, type):
-                if issubclass(type_, BaseDocument):
-                    columns[field_to_stack] = DocumentArray.__class_getitem__(type_)(
-                        to_stack, tensor_type=tensor_type
-                    ).stack()
-
-                elif issubclass(type_, AbstractTensor):
-                    columns[field_to_stack] = type_.__docarray_stack__(to_stack)  # type: ignore # noqa: E501
+            elif issubclass(type_, BaseDocument):
+                columns[field] = getattr(docs, field).stack()
 
         return columns
 
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[List, T, AbstractTensor]:
+    ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -224,18 +227,6 @@ class DocumentArrayStacked(AnyDocumentArray):
         for i in range(len(self)):
             yield self[i]
 
-    def __getitem_without_columns__(self, item):  # note this should handle slices
-        """Return the document at the given index with the columns item put to None"""
-        doc = self._docs[item]
-        for field in self._columns.keys():
-            if hasattr(doc, field):
-                delattr(doc, field)
-        return doc
-
-    def __iter_without_columns__(self):
-        for i in range(len(self)):
-            yield self.__getitem_without_columns__(i)
-
     def __len__(self):
         return len(self._docs)
 
@@ -262,7 +253,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         )
 
         da_proto = DocumentArrayProto()
-        for doc in self.__iter_without_columns__():
+        for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
         columns_proto: Dict[str, UnionArrayProto] = dict()
@@ -336,7 +327,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
-        if len(flattened) == 1 and isinstance(flattened[0], (NdArray, TorchTensor)):
+        cls_to_check = (NdArray, TorchTensor) if TorchTensor is not None else (NdArray,)
+
+        if len(flattened) == 1 and isinstance(flattened[0], cls_to_check):
             return flattened[0]
         else:
             return flattened

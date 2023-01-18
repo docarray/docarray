@@ -1,6 +1,5 @@
-import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
@@ -19,11 +18,17 @@ from docarray.base_document.base_node import BaseNode
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
 
-torch_base = type(torch.Tensor)  # type: Any
-node_base = type(BaseNode)  # type: Any
+torch_base: type = type(torch.Tensor)
+node_base: type = type(BaseNode)
 
 
-class metaTorchAndNode(torch_base, node_base):
+# the mypy error suppression below should not be necessary anymore once the following
+# is released in mypy: https://github.com/python/mypy/pull/14135
+class metaTorchAndNode(
+    AbstractTensor.__parametrized_meta__,  # type: ignore
+    torch_base,  # type: ignore
+    node_base,  # type: ignore
+):  # type: ignore
     pass
 
 
@@ -52,26 +57,29 @@ class TorchTensor(
         class MyDoc(BaseDocument):
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
+            square_crop: TorchTensor[3, 'x', 'x']
 
 
         # create a document with tensors
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(3, 224, 224),
+            square_crop=torch.zeros(3, 64, 64),
         )
 
         # automatic shape conversion
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
+            square_crop=torch.zeros(3, 128, 128),
         )
 
         # !! The following will raise an error due to shape mismatch !!
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224),  # this will fail validation
+            square_crop=torch.zeros(3, 128, 64),  # this will also fail validation
         )
-
     """
 
     __parametrized_meta__ = metaTorchAndNode
@@ -85,23 +93,6 @@ class TorchTensor(
         yield cls.validate
 
     @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
-        if t.shape == shape:
-            return t
-        else:
-            warnings.warn(
-                f'Tensor shape mismatch. Reshaping tensor '
-                f'of shape {t.shape} to shape {shape}'
-            )
-            try:
-                value = cls.__docarray_from_native__(t.view(shape))
-                return cast(T, value)
-            except RuntimeError:
-                raise ValueError(
-                    f'Cannot reshape tensor of shape {t.shape} to shape {shape}'
-                )
-
-    @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
@@ -111,12 +102,12 @@ class TorchTensor(
         if isinstance(value, TorchTensor):
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
-            return cls.__docarray_from_native__(value)
+            return cls._docarray_from_native(value)
 
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
-                return cls.__docarray_from_native__(arr)
+                return cls._docarray_from_native(arr)
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
@@ -162,7 +153,7 @@ class TorchTensor(
         return value
 
     @classmethod
-    def __docarray_from_native__(cls: Type[T], value: torch.Tensor) -> T:
+    def _docarray_from_native(cls: Type[T], value: torch.Tensor) -> T:
         """Create a TorchTensor from a native torch.Tensor
 
         :param value: the native torch.Tensor
@@ -178,7 +169,7 @@ class TorchTensor(
         :param value: the numpy array
         :return: a TorchTensor
         """
-        return cls.__docarray_from_native__(torch.from_numpy(value))
+        return cls._docarray_from_native(torch.from_numpy(value))
 
     def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should

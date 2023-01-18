@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union, overload
 
+import numpy as np
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
@@ -31,7 +32,7 @@ def _usqueeze_if_scalar(t: torch.Tensor):
     return t
 
 
-class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
+class TorchCompBackend(AbstractComputationalBackend[torch.Tensor, 'TorchTensor']):
     """
     Computational backend for PyTorch.
     """
@@ -61,13 +62,75 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.to(device)
 
     @staticmethod
+    def empty(
+        shape: Tuple[int, ...],
+        dtype: Optional[Any] = None,
+        device: Optional[Any] = None,
+    ) -> torch.Tensor:
+        extra_param = {}
+        if dtype is not None:
+            extra_param['dtype'] = dtype
+        if device is not None:
+            extra_param['device'] = device
+
+        return torch.empty(shape, **extra_param)
+
+    @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
+
+    @staticmethod
+    def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
+        return array.cpu().detach().numpy()
 
     @staticmethod
     def none_value() -> Any:
         """Provide a compatible value that represents None in torch."""
         return torch.tensor(float('nan'))
+
+    @staticmethod
+    def shape(tensor: 'torch.Tensor') -> Tuple[int, ...]:
+        return tuple(tensor.shape)
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'TorchTensor', shape: Tuple[int, ...]) -> 'TorchTensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @overload
+    @staticmethod
+    def reshape(tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        ...
+
+    @staticmethod
+    def reshape(
+        tensor: Union['torch.Tensor', 'TorchTensor'], shape: Tuple[int, ...]
+    ) -> Union['torch.Tensor', 'TorchTensor']:
+        """
+        Gives a new shape to tensor without changing its data.
+
+        :param tensor: tensor to be reshaped
+        :param shape: the new shape
+        :return: a tensor with the same data and number of elements as tensor
+            but with the specified shape.
+        """
+        return tensor.reshape(shape)
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """

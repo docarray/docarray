@@ -30,7 +30,7 @@ def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
+class NumpyCompBackend(AbstractComputationalBackend[np.ndarray, NdArray]):
     """
     Computational backend for Numpy.
     """
@@ -65,9 +65,68 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array.ndim
 
     @staticmethod
+    def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
+        return array
+
+    @staticmethod
+    def empty(
+        shape: Tuple[int, ...],
+        dtype: Optional[Any] = None,
+        device: Optional[Any] = None,
+    ) -> 'np.ndarray':
+        if device is not None:
+            raise NotImplementedError('Numpy does not support devices (GPU).')
+        return np.empty(shape, dtype=dtype)
+
+    @staticmethod
     def none_value() -> Any:
         """Provide a compatible value that represents None in numpy."""
         return None
+
+    @staticmethod
+    def shape(array: 'np.ndarray') -> Tuple[int, ...]:
+        """Get shape of array"""
+        return array.shape
+
+    @overload
+    @staticmethod
+    def reshape(array: 'NdArray', shape: Tuple[int, ...]) -> 'NdArray':
+        """
+        Gives a new shape to array without changing its data.
+
+        :param array: array to be reshaped
+        :param shape: the new shape
+        :return: a array with the same data and number of elements as array
+            but with the specified shape.
+        """
+        ...
+
+    @overload
+    @staticmethod
+    def reshape(array: 'np.ndarray', shape: Tuple[int, ...]) -> 'np.ndarray':
+        """
+        Gives a new shape to array without changing its data.
+
+        :param array: array to be reshaped
+        :param shape: the new shape
+        :return: a array with the same data and number of elements as array
+            but with the specified shape.
+        """
+        ...
+
+    @staticmethod
+    def reshape(
+        array: Union['np.ndarray', 'NdArray'], shape: Tuple[int, ...]
+    ) -> Union['np.ndarray', 'NdArray']:
+        """
+        Gives a new shape to array without changing its data.
+
+        :param array: array to be reshaped
+        :param shape: the new shape
+        :return: a array with the same data and number of elements as array
+            but with the specified shape.
+        """
+        return array.reshape(shape)
 
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """

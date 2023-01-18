@@ -195,7 +195,7 @@ def test_context_manager():
 
 def test_stack_union():
     class Image(BaseDocument):
-        tensor: Union[TorchTensor[3, 224, 224], NdArray[3, 224, 224]]
+        tensor: Union[NdArray[3, 224, 224], TorchTensor[3, 224, 224]]
 
     batch = DocumentArray[Image](
         [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
@@ -267,7 +267,7 @@ def test_get_from_slice_stacked():
     N = 10
 
     da = DocumentArray[Doc](
-        (Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
+        [Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N)]
     ).stack()
 
     da_sliced = da[0:10:2]
@@ -334,7 +334,35 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[Image]([Image(tensor=torch.zeros(3, 5))], tensor_type=NdArray)
+    da = DocumentArray[Image]([Image(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')
+
+
+def test_keep_dtype_torch():
+    class MyDoc(BaseDocument):
+        tensor: TorchTensor
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=torch.zeros([2, 4], dtype=torch.int32)) for _ in range(3)]
+    )
+    assert da[0].tensor.dtype == torch.int32
+
+    da = da.stack()
+    assert da[0].tensor.dtype == torch.int32
+    assert da.tensor.dtype == torch.int32
+
+
+def test_keep_dtype_np():
+    class MyDoc(BaseDocument):
+        tensor: NdArray
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=np.zeros([2, 4], dtype=np.int32)) for _ in range(3)]
+    )
+    assert da[0].tensor.dtype == np.int32
+
+    da = da.stack()
+    assert da[0].tensor.dtype == np.int32
+    assert da.tensor.dtype == np.int32

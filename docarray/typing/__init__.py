@@ -3,6 +3,7 @@ from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
+from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url import (
     AnyUrl,
     AudioUrl,
@@ -10,17 +11,20 @@ from docarray.typing.url import (
     Mesh3DUrl,
     PointCloud3DUrl,
     TextUrl,
+    VideoUrl,
 )
 
 __all__ = [
-    'AudioNdArray',
     'NdArray',
+    'AudioNdArray',
+    'VideoNdArray',
     'AnyEmbedding',
     'ImageUrl',
     'AudioUrl',
     'TextUrl',
     'Mesh3DUrl',
     'PointCloud3DUrl',
+    'VideoUrl',
     'AnyUrl',
     'ID',
     'AnyTensor',
@@ -34,5 +38,8 @@ except ImportError:
 else:
     from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
     from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
+    from docarray.typing.tensor.video.video_torch_tensor import VideoTorchTensor  # noqa
 
-    __all__.extend(['AudioTorchTensor', 'TorchEmbedding', 'TorchTensor'])
+    __all__.extend(
+        ['AudioTorchTensor', 'TorchEmbedding', 'TorchTensor', 'VideoTorchTensor']
+    )
