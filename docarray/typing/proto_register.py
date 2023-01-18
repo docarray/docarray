@@ -1,7 +1,6 @@
-from typing import Callable
-from docarray.typing.abstract_type import AbstractType
-from typing import Type
+from typing import Callable, Type
 
+from docarray.typing.abstract_type import AbstractType
 
 _PROTO_TYPE_NAME_TO_CLASS = {}
 
@@ -13,6 +12,7 @@ def register_proto(
     :param cls: the class to register
     :return: the class
     """
+
     def _register(cls: Type['AbstractType']) -> Type['AbstractType']:
         cls._proto_type_name = proto_type_name
 

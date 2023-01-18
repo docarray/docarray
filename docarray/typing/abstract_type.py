@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Optional
+from typing import TYPE_CHECKING, Any, Type, TypeVar
 
 from pydantic import BaseConfig
 from pydantic.fields import ModelField
@@ -13,7 +13,7 @@ T = TypeVar('T')
 
 
 class AbstractType(BaseNode):
-    _proto_type_name : str
+    _proto_type_name: str
 
     @classmethod
     def __get_validators__(cls):

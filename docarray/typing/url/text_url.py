@@ -1,12 +1,9 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from docarray.typing.proto_register import register_proto
-
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
-
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
+
 
 @register_proto(proto_type_name='text_url')
 class TextUrl(AnyUrl):

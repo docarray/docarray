@@ -13,11 +13,10 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import NodeProto
-
 T = TypeVar('T', bound='ImageUrl')
 
 IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
+
 
 @register_proto(proto_type_name='image_url')
 class ImageUrl(AnyUrl):

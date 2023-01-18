@@ -7,12 +7,14 @@ from docarray.typing.url.url_3d.url_3d import Url3D
 
 T = TypeVar('T', bound='Mesh3DUrl')
 
+
 @register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
+
     def load(self: T) -> Tuple[np.ndarray, np.ndarray]:
         """
         Load the data from the url into a tuple of two numpy.ndarrays containing

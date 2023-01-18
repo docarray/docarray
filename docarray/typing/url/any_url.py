@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyUrl')
 
+
 @register_proto(proto_type_name='any_url')
 class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (

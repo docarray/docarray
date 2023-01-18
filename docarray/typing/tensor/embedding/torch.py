@@ -11,7 +11,7 @@ embedding_base = type(EmbeddingMixin)  # type: Any
 class metaTorchAndEmbedding(torch_base, embedding_base):
     pass
 
+
 @register_proto(proto_type_name='torch_embedding')
 class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
     alternative_type = TorchTensor
-

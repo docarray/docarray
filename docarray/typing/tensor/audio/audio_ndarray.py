@@ -8,6 +8,7 @@ MAX_INT_16 = 2**15
 
 T = TypeVar('T', bound='AudioNdArray')
 
+
 @register_proto(proto_type_name='audio_ndarray')
 class AudioNdArray(AbstractAudioTensor, NdArray):
     """

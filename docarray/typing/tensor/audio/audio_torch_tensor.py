@@ -7,6 +7,7 @@ from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 
 T = TypeVar('T', bound='AudioTorchTensor')
 
+
 @register_proto(proto_type_name='audio_torch_tensor')
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
