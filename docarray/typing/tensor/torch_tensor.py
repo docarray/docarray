@@ -216,11 +216,11 @@ class TorchTensor(
         return nd_proto
 
     @staticmethod
-    def get_comp_backend() -> Type['TorchCompBackend']:
+    def get_comp_backend() -> 'TorchCompBackend':
         """Return the computational backend of the tensor"""
         from docarray.computation.torch_backend import TorchCompBackend
 
-        return TorchCompBackend
+        return TorchCompBackend()
 
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
