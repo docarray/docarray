@@ -338,3 +338,17 @@ def test_to_device_numpy():
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')
+
+
+def test_keep_dtype_torch():
+    class MyDoc(BaseDocument):
+        tensor: TorchTensor
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(tensor=torch.zeros([2, 4], dtype=torch.int32)) for _ in range(3)]
+    )
+    assert da[0].tensor.dtype == torch.int32
+
+    da.stack()
+    assert da[0].tensor.dtype == torch.int32
+    assert da.tensor.dtype == torch.int32
