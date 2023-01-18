@@ -138,6 +138,8 @@ def test_parametrized_instance():
     assert isinstance(t, np.ndarray)
 
     assert not isinstance(t, NdArray[256])
+    assert not isinstance(t, NdArray[2, 64])
+    assert not isinstance(t, NdArray[2, 2, 32])
 
 
 def test_parametrized_equality():

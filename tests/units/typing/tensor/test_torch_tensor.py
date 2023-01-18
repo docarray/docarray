@@ -130,6 +130,8 @@ def test_parametrized_instance():
     assert isinstance(t, torch.Tensor)
 
     assert not isinstance(t, TorchTensor[256])
+    assert not isinstance(t, TorchTensor[2, 128])
+    assert not isinstance(t, TorchTensor[2, 2, 64])
 
 
 def test_parametrized_equality():
