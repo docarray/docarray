@@ -151,11 +151,10 @@ class DocumentArrayStacked(AnyDocumentArray):
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
                 )
-
                 columns[field] = type_._docarray_from_native(
                     type_.get_comp_backend().empty(
                         column_shape,
-                        dtype=tensor.dtype,
+                        dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
                         device=tensor.device if hasattr(tensor, 'device') else None,
                     )
                 )

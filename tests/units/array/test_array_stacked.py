@@ -195,7 +195,7 @@ def test_context_manager():
 
 def test_stack_union():
     class Image(BaseDocument):
-        tensor: Union[TorchTensor[3, 224, 224], NdArray[3, 224, 224]]
+        tensor: Union[NdArray[3, 224, 224], TorchTensor[3, 224, 224]]
 
     batch = DocumentArray[Image](
         [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
@@ -334,7 +334,7 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[Image]([Image(tensor=torch.zeros(3, 5))], tensor_type=NdArray)
+    da = DocumentArray[Image]([Image(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')
