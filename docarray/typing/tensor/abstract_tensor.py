@@ -1,6 +1,18 @@
 import abc
+import warnings
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
@@ -12,6 +24,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='AbstractTensor')
+TTensor = TypeVar('TTensor')
 ShapeT = TypeVar('ShapeT')
 
 
@@ -54,10 +67,11 @@ class _ParametrizedMeta(type):
         return super().__instancecheck__(instance)
 
 
-class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
+class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
     _proto_type_name: str
+
     def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
@@ -71,26 +85,58 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
         return NodeProto(ndarray=nd_proto, type=self._proto_type_name)
 
     @classmethod
-    @abc.abstractmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
-
         It is called when a tensor is assigned to a field of this type.
         i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
-
         The intended behaviour is as follows:
         - If the shape of `t` is equal to `shape`, return `t`.
         - If the shape of `t` is not equal to `shape`,
             but can be reshaped to `shape`, return `t` reshaped to `shape`.
         - If the shape of `t` is not equal to `shape`
             and cannot be reshaped to `shape`, raise a ValueError.
-
         :param t: The tensor to validate.
         :param shape: The shape to validate against.
         :return: The validated tensor.
         """
-        ...
+        comp_be = t.get_comp_backend()()  # mypy Generics require instantiation
+        tshape = comp_be.shape(t)
+        if tshape == shape:
+            return t
+        elif any(isinstance(dim, str) for dim in shape):
+            if len(tshape) != len(shape):
+                raise ValueError(
+                    f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                )
+            known_dims: Dict[str, int] = {}
+            for tdim, dim in zip(tshape, shape):
+                if isinstance(dim, int) and tdim != dim:
+                    raise ValueError(
+                        f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                    )
+                elif isinstance(dim, str):
+                    if dim in known_dims and known_dims[dim] != tdim:
+                        raise ValueError(
+                            f'Tensor shape mismatch. Expected {shape}, got {tshape}'
+                        )
+                    else:
+                        known_dims[dim] = tdim
+            else:
+                return t
+        else:
+            shape = cast(Tuple[int], shape)
+            warnings.warn(
+                f'Tensor shape mismatch. Reshaping tensor '
+                f'of shape {tshape} to shape {shape}'
+            )
+            try:
+                value = cls._docarray_from_native(comp_be.reshape(t, shape))
+                return cast(T, value)
+            except RuntimeError:
+                raise ValueError(
+                    f'Cannot reshape tensor of shape {tshape} to shape {shape}'
+                )
 
     @classmethod
     def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
@@ -168,7 +214,7 @@ class AbstractTensor(Generic[ShapeT], AbstractType, ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_comp_backend() -> Type[AbstractComputationalBackend]:
+    def get_comp_backend() -> Type[AbstractComputationalBackend[TTensor, T]]:
         """The computational backend compatible with this tensor type."""
         ...
 

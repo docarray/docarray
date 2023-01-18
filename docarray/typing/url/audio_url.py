@@ -12,11 +12,10 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import NodeProto
-
 T = TypeVar('T', bound='AudioUrl')
 
 AUDIO_FILE_FORMATS = ['wav']
+
 
 @register_proto(proto_type_name='audio_url')
 class AudioUrl(AnyUrl):
@@ -52,7 +51,7 @@ class AudioUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import Document
+            from docarray import BaseDocument
             import numpy as np
 
             from docarray.typing import AudioUrl
