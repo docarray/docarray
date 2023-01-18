@@ -1,18 +1,17 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union
 
 if TYPE_CHECKING:
     import numpy as np
 
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
-TAbstractTensor = TypeVar('TAbstractTensor')
 TTensorRetrieval = TypeVar('TTensorRetrieval')
 TTensorMetrics = TypeVar('TTensorMetrics')
 
 
-class AbstractComputationalBackend(ABC, typing.Generic[TTensor, TAbstractTensor]):
+class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     """
     Abstract base class for computational backends.
     Every supported tensor/ML framework (numpy, torch etc.) should define its own
@@ -73,37 +72,9 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor, TAbstractTensor]
         """Get shape of tensor"""
         ...
 
-    @overload
-    @staticmethod
-    def reshape(tensor: 'TAbstractTensor', shape: Tuple[int, ...]) -> 'TAbstractTensor':
-        """
-        Gives a new shape to tensor without changing its data.
-
-        :param tensor: tensor to be reshaped
-        :param shape: the new shape
-        :return: a tensor with the same data and number of elements as tensor
-            but with the specified shape.
-        """
-        ...
-
-    @overload
-    @staticmethod
-    def reshape(tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
-        """
-        Gives a new shape to tensor without changing its data.
-
-        :param tensor: tensor to be reshaped
-        :param shape: the new shape
-        :return: a tensor with the same data and number of elements as tensor
-            but with the specified shape.
-        """
-        ...
-
     @staticmethod
     @abstractmethod
-    def reshape(
-        tensor: Union['TTensor', 'TAbstractTensor'], shape: Tuple[int, ...]
-    ) -> Union['TTensor', 'TAbstractTensor']:
+    def reshape(tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
         """
         Gives a new shape to tensor without changing its data.
 
