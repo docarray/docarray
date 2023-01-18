@@ -54,8 +54,14 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array
 
     @staticmethod
-    def empty(shape: Tuple[int, ...]) -> 'np.ndarray':
-        return np.empty(shape)
+    def empty(
+        shape: Tuple[int, ...],
+        dtype: Optional[Any] = None,
+        device: Optional[Any] = None,
+    ) -> 'np.ndarray':
+        if device is not None:
+            raise NotImplementedError('Numpy does not support devices (GPU).')
+        return np.empty(shape, dtype=dtype)
 
     @staticmethod
     def none_value() -> Any:

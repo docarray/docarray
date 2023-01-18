@@ -46,8 +46,18 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.to(device)
 
     @staticmethod
-    def empty(shape: Tuple[int, ...]) -> torch.Tensor:
-        return torch.empty(shape)
+    def empty(
+        shape: Tuple[int, ...],
+        dtype: Optional[Any] = None,
+        device: Optional[Any] = None,
+    ) -> torch.Tensor:
+        extra_param = {}
+        if dtype is not None:
+            extra_param['dtype'] = dtype
+        if device is not None:
+            extra_param['device'] = device
+
+        return torch.empty(shape, **extra_param)
 
     @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
