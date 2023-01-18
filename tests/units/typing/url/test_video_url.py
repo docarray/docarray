@@ -14,7 +14,7 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
-from docarray.typing.url.video_url import VideoLoadResults
+from docarray.typing.url.video_url import VideoLoadResult
 from tests import TOYDATA_DIR
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
@@ -49,7 +49,7 @@ def test_load(file_url):
 )
 @pytest.mark.parametrize(
     'field',
-    [f for f in VideoLoadResults._fields],
+    [f for f in VideoLoadResult._fields],
 )
 def test_load_one_of_named_tuple_results(file_url, field):
     url = parse_obj_as(VideoUrl, file_url)

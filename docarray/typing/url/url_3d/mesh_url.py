@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='Mesh3DUrl')
 
 
-class Mesh3DLoadResults(NamedTuple):
+class Mesh3DLoadResult(NamedTuple):
     vertices: NdArray
     faces: NdArray
 
@@ -34,7 +34,7 @@ class Mesh3DUrl(Url3D):
 
         return NodeProto(mesh_url=str(self))
 
-    def load(self: T) -> Mesh3DLoadResults:
+    def load(self: T) -> Mesh3DLoadResult:
         """
         Load the data from the url into a named tuple of two NdArrays containing
         vertices and faces information.
@@ -67,4 +67,4 @@ class Mesh3DUrl(Url3D):
         vertices = parse_obj_as(NdArray, mesh.vertices.view(np.ndarray))
         faces = parse_obj_as(NdArray, mesh.faces.view(np.ndarray))
 
-        return Mesh3DLoadResults(vertices=vertices, faces=faces)
+        return Mesh3DLoadResult(vertices=vertices, faces=faces)

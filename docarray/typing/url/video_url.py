@@ -18,7 +18,7 @@ T = TypeVar('T', bound='VideoUrl')
 VIDEO_FILE_FORMATS = ['mp4']
 
 
-class VideoLoadResults(NamedTuple):
+class VideoLoadResult(NamedTuple):
     video: VideoNdArray
     audio: AudioNdArray
     key_frame_indices: NdArray
@@ -56,7 +56,7 @@ class VideoUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load(self: T, **kwargs) -> VideoLoadResults:
+    def load(self: T, **kwargs) -> VideoLoadResult:
         """
         Load the data from the url into a named Tuple of VideoNdArray, AudioNdArray and
         NdArray.
@@ -138,4 +138,4 @@ class VideoUrl(AnyUrl):
         video = parse_obj_as(VideoNdArray, np.stack(video_frames))
         indices = parse_obj_as(NdArray, keyframe_indices)
 
-        return VideoLoadResults(video=video, audio=audio, key_frame_indices=indices)
+        return VideoLoadResult(video=video, audio=audio, key_frame_indices=indices)
