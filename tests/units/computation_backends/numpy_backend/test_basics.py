@@ -39,3 +39,14 @@ def test_shape(array, result):
 def test_empty():
     array = NumpyCompBackend.empty((10, 3))
     assert array.shape == (10, 3)
+
+
+def test_empty_dtype():
+    tensor = NumpyCompBackend.empty((10, 3), dtype=np.int32)
+    assert tensor.shape == (10, 3)
+    assert tensor.dtype == np.int32
+
+
+def test_empty_device():
+    with pytest.raises(NotImplementedError):
+        NumpyCompBackend.empty((10, 3), device='meta')
