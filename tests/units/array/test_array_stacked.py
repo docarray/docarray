@@ -349,6 +349,6 @@ def test_keep_dtype_torch():
     )
     assert da[0].tensor.dtype == torch.int32
 
-    da.stack()
+    da = da.stack()
     assert da[0].tensor.dtype == torch.int32
     assert da.tensor.dtype == torch.int32
