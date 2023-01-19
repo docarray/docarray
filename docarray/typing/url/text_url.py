@@ -1,28 +1,16 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
-
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
 
 
+@_register_proto(proto_type_name='text_url')
 class TextUrl(AnyUrl):
     """
     URL to a text file.
     Can be remote (web) URL, or a local file path.
     """
-
-    def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to
-        be converted into a protobuf
-
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        return NodeProto(text_url=str(self))
 
     def load_to_bytes(self, timeout: Optional[float] = None) -> bytes:
         """

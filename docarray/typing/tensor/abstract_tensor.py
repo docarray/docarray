@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import NdArrayProto
+    from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='AbstractTensor')
 TTensor = TypeVar('TTensor')
@@ -70,7 +70,19 @@ class _ParametrizedMeta(type):
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
-    _PROTO_FIELD_NAME: str
+    _proto_type_name: str
+
+    def _to_node_protobuf(self: T) -> 'NodeProto':
+        """Convert itself into a NodeProto protobuf message. This function should
+        be called when the Document is nested into another Document that need to be
+        converted into a protobuf
+        :param field: field in which to store the content in the node proto
+        :return: the nested item protobuf message
+        """
+        from docarray.proto import NodeProto
+
+        nd_proto = self.to_protobuf()
+        return NodeProto(ndarray=nd_proto, type=self._proto_type_name)
 
     @classmethod
     def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:

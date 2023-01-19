@@ -4,15 +4,6 @@ from docarray.proto import DocumentProto, NodeProto
 from docarray.typing import NdArray
 
 
-def test_nested_item_proto():
-    NodeProto(text='hello')
-    NodeProto(nested=DocumentProto())
-
-
-def test_nested_optional_item_proto():
-    NodeProto()
-
-
 def test_ndarray():
 
     original_ndarray = np.zeros((3, 224, 224))

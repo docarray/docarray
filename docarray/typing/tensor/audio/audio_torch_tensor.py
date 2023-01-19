@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
@@ -7,6 +8,7 @@ from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 T = TypeVar('T', bound='AudioTorchTensor')
 
 
+@_register_proto(proto_type_name='audio_torch_tensor')
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
     Subclass of TorchTensor, to represent an audio tensor.
@@ -49,8 +51,6 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
-
-    _PROTO_FIELD_NAME = 'audio_torch_tensor'
 
     def to_audio_bytes(self):
         import torch

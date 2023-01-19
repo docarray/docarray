@@ -72,7 +72,8 @@ def test_all_types():
         np_embedding=np.zeros((128,)),
         nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
     )
-    doc = MyDoc.from_protobuf(doc.to_protobuf())
+    doc = doc.to_protobuf()
+    doc = MyDoc.from_protobuf(doc)
 
     assert doc.img_url == 'test.png'
     assert doc.txt_url == 'test.txt'

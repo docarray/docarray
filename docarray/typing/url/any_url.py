@@ -4,6 +4,7 @@ from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
 from docarray.typing.abstract_type import AbstractType
+from docarray.typing.proto_register import _register_proto
 
 if TYPE_CHECKING:
     from pydantic.networks import Parts
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AnyUrl')
 
 
+@_register_proto(proto_type_name='any_url')
 class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
@@ -27,7 +29,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(any_url=str(self))
+        return NodeProto(text=str(self), type=self._proto_type_name)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':

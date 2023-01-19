@@ -4,6 +4,8 @@ from uuid import UUID
 from pydantic import BaseConfig, parse_obj_as
 from pydantic.fields import ModelField
 
+from docarray.typing.proto_register import _register_proto
+
 if TYPE_CHECKING:
     from docarray.proto import NodeProto
 
@@ -12,6 +14,7 @@ from docarray.typing.abstract_type import AbstractType
 T = TypeVar('T', bound='ID')
 
 
+@_register_proto(proto_type_name='id')
 class ID(str, AbstractType):
     """
     Represent an unique ID
@@ -44,7 +47,7 @@ class ID(str, AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(id=self)
+        return NodeProto(text=self, type=self._proto_type_name)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:

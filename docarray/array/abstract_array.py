@@ -92,7 +92,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(chunks=self.to_protobuf())
+        return NodeProto(document_array=self.to_protobuf())
 
     @abstractmethod
     def traverse_flat(

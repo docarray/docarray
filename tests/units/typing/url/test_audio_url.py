@@ -105,4 +105,4 @@ def test_illegal_validation(path_to_file):
 def test_proto_audio_url(file_url):
     uri = parse_obj_as(AudioUrl, file_url)
     proto = uri._to_node_protobuf()
-    assert str(proto).startswith('audio_url')
+    assert 'audio_url' in str(proto)

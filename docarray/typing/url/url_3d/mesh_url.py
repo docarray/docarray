@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, NamedTuple, TypeVar
+from typing import NamedTuple, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
 
 from docarray.typing import NdArray
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.url_3d.url_3d import Url3D
-
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='Mesh3DUrl')
 
@@ -17,22 +15,12 @@ class Mesh3DLoadResult(NamedTuple):
     faces: NdArray
 
 
+@_register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that needs to
-        be converted into a protobuf
-
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        return NodeProto(mesh_url=str(self))
 
     def load(self: T) -> Mesh3DLoadResult:
         """

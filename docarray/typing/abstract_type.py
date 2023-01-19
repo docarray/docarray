@@ -13,6 +13,8 @@ T = TypeVar('T')
 
 
 class AbstractType(BaseNode):
+    _proto_type_name: str
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
