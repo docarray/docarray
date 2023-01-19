@@ -1,11 +1,11 @@
 from typing import Optional
 
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
 
 
-@register_proto(proto_type_name='text_url')
+@_register_proto(proto_type_name='text_url')
 class TextUrl(AnyUrl):
     """
     URL to a text file.

@@ -1,6 +1,6 @@
 from typing import Any  # noqa: F401
 
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.embedding.embedding_mixin import EmbeddingMixin
 from docarray.typing.tensor.torch_tensor import TorchTensor
 
@@ -12,6 +12,6 @@ class metaTorchAndEmbedding(torch_base, embedding_base):
     pass
 
 
-@register_proto(proto_type_name='torch_embedding')
+@_register_proto(proto_type_name='torch_embedding')
 class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
     alternative_type = TorchTensor

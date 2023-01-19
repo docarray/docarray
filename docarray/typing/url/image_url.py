@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
 
@@ -18,7 +18,7 @@ T = TypeVar('T', bound='ImageUrl')
 IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
 
-@register_proto(proto_type_name='image_url')
+@_register_proto(proto_type_name='image_url')
 class ImageUrl(AnyUrl):
     """
     URL to a .png, .jpeg, or .jpg file.

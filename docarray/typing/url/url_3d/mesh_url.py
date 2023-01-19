@@ -4,7 +4,7 @@ import numpy as np
 from pydantic import parse_obj_as
 
 from docarray.typing import NdArray
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 T = TypeVar('T', bound='Mesh3DUrl')
@@ -15,7 +15,7 @@ class Mesh3DLoadResult(NamedTuple):
     faces: NdArray
 
 
-@register_proto(proto_type_name='mesh_url')
+@_register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
     URL to a .obj, .glb, or .ply file containing 3D mesh information.

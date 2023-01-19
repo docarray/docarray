@@ -1,11 +1,11 @@
-from typing import Callable, Type
+from typing import Callable, Dict, Type
 
 from docarray.typing.abstract_type import AbstractType
 
-_PROTO_TYPE_NAME_TO_CLASS = {}
+_PROTO_TYPE_NAME_TO_CLASS: Dict[str, Type[AbstractType]] = {}
 
 
-def register_proto(
+def _register_proto(
     proto_type_name: str,
 ) -> Callable[[Type[AbstractType]], Type[AbstractType]]:
     """Register a new type to be used in the protobuf serialization.

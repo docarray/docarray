@@ -4,7 +4,7 @@ import numpy as np
 from pydantic.tools import parse_obj_as
 
 from docarray.typing import AudioNdArray, NdArray
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
 
@@ -23,7 +23,7 @@ class VideoLoadResult(NamedTuple):
     key_frame_indices: NdArray
 
 
-@register_proto(proto_type_name='video_url')
+@_register_proto(proto_type_name='video_url')
 class VideoUrl(AnyUrl):
     """
     URL to a .wav file.

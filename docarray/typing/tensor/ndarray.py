@@ -13,7 +13,7 @@ from typing import (
 
 import numpy as np
 
-from docarray.typing.proto_register import register_proto
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -37,7 +37,7 @@ class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ign
     pass
 
 
-@register_proto(proto_type_name='ndarray')
+@_register_proto(proto_type_name='ndarray')
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of np.ndarray, intended for use in a Document.
