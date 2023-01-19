@@ -29,6 +29,11 @@ def register_proto(
     :return: the class
     """
 
+    if proto_type_name in _PROTO_TYPE_NAME_TO_CLASS.keys():
+        raise ValueError(
+            f'the key {proto_type_name} is already registered in the global registry'
+        )
+
     def _register(cls: Type['AbstractType']) -> Type['AbstractType']:
         cls._proto_type_name = proto_type_name
 
