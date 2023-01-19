@@ -34,7 +34,7 @@ def test_save_audio_ndarray(file_url, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
 
     audio = Audio(url=file_url)
-    audio.tensor = parse_obj_as(AudioNdArray, audio.url.load())
+    audio.tensor = audio.url.load()
     assert isinstance(audio.tensor, np.ndarray)
     assert isinstance(audio.tensor, AudioNdArray)
 

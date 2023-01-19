@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
+from pydantic import parse_obj_as
 
+from docarray.typing import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:
@@ -27,10 +29,9 @@ class PointCloud3DUrl(Url3D):
 
         return NodeProto(point_cloud_url=str(self))
 
-    def load(self: T, samples: int, multiple_geometries: bool = False) -> np.ndarray:
+    def load(self: T, samples: int, multiple_geometries: bool = False) -> NdArray:
         """
-        Load the data from the url into a numpy.ndarray containing point cloud
-        information.
+        Load the data from the url into an NdArray containing point cloud information.
 
         EXAMPLE USAGE
 
@@ -71,4 +72,4 @@ class PointCloud3DUrl(Url3D):
             mesh = self._load_trimesh_instance(force='mesh')
             point_cloud = np.array(mesh.sample(samples))
 
-        return point_cloud
+        return parse_obj_as(NdArray, point_cloud)
