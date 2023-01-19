@@ -115,4 +115,4 @@ def test_illegal_validation(path_to_file):
 def test_proto_video_url(file_url):
     uri = parse_obj_as(VideoUrl, file_url)
     proto = uri._to_node_protobuf()
-    assert str(proto).startswith('video_url')
+    assert 'video_url' in str(proto)
