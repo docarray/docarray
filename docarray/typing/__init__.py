@@ -29,6 +29,7 @@ __all__ = [
     'AnyUrl',
     'ID',
     'AnyTensor',
+    'NdArrayEmbedding',
 ]
 
 try:

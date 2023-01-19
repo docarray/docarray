@@ -205,8 +205,19 @@ class TorchTensor(
         return nd_proto
 
     @staticmethod
-    def get_comp_backend() -> Type['TorchCompBackend']:
+    def get_comp_backend() -> 'TorchCompBackend':
         """Return the computational backend of the tensor"""
         from docarray.computation.torch_backend import TorchCompBackend
 
-        return TorchCompBackend
+        return TorchCompBackend()
+
+    @classmethod
+    def __torch_function__(cls, func, types, args=(), kwargs=None):
+        # this tells torch to treat all of our custom tensors just like
+        # torch.Tensor's. Otherwise, torch will complain that it doesn't
+        # know how to handle our custom tensor type.
+        docarray_torch_tensors = TorchTensor.__subclasses__()
+        types_ = tuple(
+            torch.Tensor if t in docarray_torch_tensors else t for t in types
+        )
+        return super().__torch_function__(func, types_, args, kwargs)

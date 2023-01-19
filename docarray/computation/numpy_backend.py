@@ -1,10 +1,9 @@
 import warnings
-from typing import Any, List, Optional, Tuple, Union, overload
+from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
 
 from docarray.computation import AbstractComputationalBackend
-from docarray.typing import NdArray
 
 
 def _expand_if_single_axis(*matrices: np.ndarray) -> List[np.ndarray]:
@@ -30,7 +29,7 @@ def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-class NumpyCompBackend(AbstractComputationalBackend[np.ndarray, NdArray]):
+class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     """
     Computational backend for Numpy.
     """
@@ -41,22 +40,8 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray, NdArray]):
     ) -> 'np.ndarray':
         return np.stack(tensors, axis=dim)
 
-    @overload
-    @staticmethod
-    def to_device(tensor: 'NdArray', device: str) -> 'NdArray':
-        """Move the tensor to the specified device."""
-        ...
-
-    @overload
     @staticmethod
     def to_device(tensor: 'np.ndarray', device: str) -> 'np.ndarray':
-        """Move the tensor to the specified device."""
-        ...
-
-    @staticmethod
-    def to_device(
-        tensor: Union['np.ndarray', 'NdArray'], device: str
-    ) -> Union['np.ndarray', 'NdArray']:
         """Move the tensor to the specified device."""
         raise NotImplementedError('Numpy does not support devices (GPU).')
 
@@ -88,36 +73,8 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray, NdArray]):
         """Get shape of array"""
         return array.shape
 
-    @overload
-    @staticmethod
-    def reshape(array: 'NdArray', shape: Tuple[int, ...]) -> 'NdArray':
-        """
-        Gives a new shape to array without changing its data.
-
-        :param array: array to be reshaped
-        :param shape: the new shape
-        :return: a array with the same data and number of elements as array
-            but with the specified shape.
-        """
-        ...
-
-    @overload
     @staticmethod
     def reshape(array: 'np.ndarray', shape: Tuple[int, ...]) -> 'np.ndarray':
-        """
-        Gives a new shape to array without changing its data.
-
-        :param array: array to be reshaped
-        :param shape: the new shape
-        :return: a array with the same data and number of elements as array
-            but with the specified shape.
-        """
-        ...
-
-    @staticmethod
-    def reshape(
-        array: Union['np.ndarray', 'NdArray'], shape: Tuple[int, ...]
-    ) -> Union['np.ndarray', 'NdArray']:
         """
         Gives a new shape to array without changing its data.
 
