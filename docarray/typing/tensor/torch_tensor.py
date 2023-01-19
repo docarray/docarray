@@ -33,7 +33,7 @@ class metaTorchAndNode(
     pass
 
 
-@_register_proto(proto_type_name='torch')
+@_register_proto(proto_type_name='torch_tensor')
 class TorchTensor(
     torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
 ):
