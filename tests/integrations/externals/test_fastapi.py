@@ -6,7 +6,7 @@ from httpx import AsyncClient
 from docarray import BaseDocument
 from docarray.base_document import DocumentResponse
 from docarray.documents import Image, Text
-from docarray.typing import NdArray
+from docarray.typing import AnyTensor, NdArray
 
 
 @pytest.mark.asyncio
@@ -107,3 +107,27 @@ async def test_sentence_to_embeddings():
     assert isinstance(doc, OutputDoc)
     assert doc.embedding_clip.shape == (100, 1)
     assert doc.embedding_bert.shape == (100, 1)
+
+
+@pytest.mark.asyncio
+async def test_image():
+    class InputDoc(BaseDocument):
+        img: Image
+
+    class OutputDoc(BaseDocument):
+        embedding: AnyTensor
+
+    input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
+
+    app = FastAPI()
+
+    @app.post("/embed/", response_model=OutputDoc, response_class=DocumentResponse)
+    async def embed(doc: InputDoc) -> OutputDoc:
+        doc = OutputDoc(embedding=np.zeros((100, 1)))
+        return doc
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/embed/", data=input_doc.json())
+
+    doc = OutputDoc.parse_raw(response.content.decode())
+    assert doc.embedding.shape == (100, 1)
