@@ -155,18 +155,25 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
 
     try:
         iterable_attrs = [
-            k for k, v in node.__dict__.items() if isinstance(v, docarray.DocumentArray)
+            k
+            for k, v in node.__dict__.items()
+            if isinstance(v, docarray.DocumentArray)
+            or isinstance(v, docarray.BaseDocument)
         ]
         for attr in iterable_attrs:
-            value = getattr(node, attr)
             _icon = ':diamond_with_a_dot:'
+            value = getattr(node, attr)
+            if isinstance(value, docarray.BaseDocument):
+                _icon = ':large_orange_diamond:'
             _match_tree = tree.add(
-                f'{_icon} [b]{attr.capitalize()}: ' f'{value.__class__.__name__}[/b]'
+                f'{_icon} [b]{attr}: ' f'{value.__class__.__name__}[/b]'
             )
+            if isinstance(value, docarray.BaseDocument):
+                value = [value]
             for i, d in enumerate(value):
                 if i == 2:
                     _plot_recursion(
-                        f'... {len(value) - 2} more {d.__class__.__name__} documents',
+                        f'... {len(value) - 2} more {d.__class__.__name__} documents\n',
                         _match_tree,
                     )
                     break
