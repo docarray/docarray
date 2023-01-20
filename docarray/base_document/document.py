@@ -61,6 +61,36 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         t = _plot_recursion(node=self)
         print(t)
 
+    def schema_summary(self) -> None:
+        from rich import print
+        from rich.panel import Panel
+
+        panel = Panel(
+            self.get_schema(), title='Document Schema', expand=False, padding=(1, 3)
+        )
+        print(panel)
+
+    def get_schema(self, doc_name: str = None) -> Tree:
+        from rich.tree import Tree
+
+        n = self.__class__.__name__
+
+        tree = Tree(n) if doc_name is None else Tree(f'{doc_name}: {n}')
+        annotations = self.__annotations__
+        for k, v in annotations.items():
+            value = getattr(self, k)
+            if isinstance(value, BaseDocument):
+                tree.add(value.get_schema(doc_name=k))
+            else:
+                t = str(v).replace('[', '\[')
+                import re
+
+                t = re.sub('[a-zA-Z_]*[.]', '', t)
+                if 'Union' in t and 'NoneType' in t:
+                    t = t.replace('Union', 'Optional').replace(', NoneType', '')
+                tree.add(f'{k}: {t}')
+        return tree
+
     def __rich_console__(self, console, options):
         kls = self.__class__.__name__
         id_abbrv = getattr(self, 'id')[:7]
@@ -136,7 +166,7 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
             for i, d in enumerate(value):
                 if i == 2:
                     _plot_recursion(
-                        f' ... {len(value) - 2} more {d.__class__} documents',
+                        f'... {len(value) - 2} more {d.__class__.__name__} documents',
                         _match_tree,
                     )
                     break
