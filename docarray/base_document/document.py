@@ -54,6 +54,10 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         """
         return cls.__fields__[field].outer_type_
 
+    def _ipython_display_(self):
+        """Displays the object in IPython as a side effect"""
+        self.summary()
+
     def summary(self) -> None:
         """Print non-empty fields and nested structure of this Document object."""
         from rich import print
