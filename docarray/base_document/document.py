@@ -60,6 +60,10 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         )
         rich.print(panel)
 
+    def _ipython_display_(self):
+        """Displays the object in IPython as a side effect"""
+        self.summary()
+
     @classmethod
     def get_schema(cls, doc_name: Optional[str] = None) -> Tree:
         """Get Documents schema as a rich.tree.Tree object."""
@@ -114,7 +118,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         for k, v in self.__dict__.items():
             col_1 = f'{k}: {v.__class__.__name__}'
             if (
-                isinstance(v, ID | docarray.DocumentArray | docarray.BaseDocument)
+                isinstance(v, (ID, docarray.DocumentArray, docarray.BaseDocument))
                 or k.startswith('_')
                 or v is None
             ):
@@ -124,7 +128,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
                 if len(v) > 50:
                     col_2 += f' ... (length: {len(v)})'
                 table.add_row(col_1, text.Text(col_2))
-            elif isinstance(v, np.ndarray | torch.Tensor):
+            elif isinstance(v, (np.ndarray, torch.Tensor)):
                 if isinstance(v, torch.Tensor):
                     v = v.detach().cpu().numpy()
                 if v.squeeze().ndim == 1 and len(v) < 200:
@@ -134,7 +138,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
                         col_1,
                         text.Text(f'{type(v)} of shape {v.shape}, dtype: {v.dtype}'),
                     )
-            elif isinstance(v, tuple | list):
+            elif isinstance(v, (tuple, list)):
                 col_2 = ''
                 for i, x in enumerate(v):
                     if len(col_2) + len(str(x)) < 50:
@@ -165,7 +169,7 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
         iterable_attrs = [
             k
             for k, v in node.__dict__.items()
-            if isinstance(v, docarray.DocumentArray | docarray.BaseDocument)
+            if isinstance(v, (docarray.DocumentArray, docarray.BaseDocument))
         ]
         for attr in iterable_attrs:
             value = getattr(node, attr)
