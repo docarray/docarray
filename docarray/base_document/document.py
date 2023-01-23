@@ -5,6 +5,7 @@ import numpy as np
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
 from rich.tree import Tree
+from typing_inspect import is_optional_type, is_union_type
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -78,7 +79,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
             t = str(v).replace('[', '\[')
             t = re.sub('[a-zA-Z_]*[.]', '', t)
 
-            if v.__name__ in ['Union', 'Optional']:
+            if is_union_type(v) or is_optional_type(v):
                 sub_tree = Tree(f'{k}: {t}')
                 for arg in v.__args__:
                     if issubclass(arg, BaseDocument):
