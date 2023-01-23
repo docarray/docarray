@@ -214,30 +214,3 @@ class DocumentArray(AnyDocumentArray):
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened
-
-    def summary(self):
-        """Print the structure and attribute summary of this DocumentArray object.
-
-        .. warning::
-            Calling {meth}`.summary` on large DocumentArray can be slow.
-
-        """
-        from rich import box
-        from rich.console import Console
-        from rich.panel import Panel
-        from rich.table import Table
-
-        tables = []
-        console = Console()
-
-        table = Table(box=box.SIMPLE, highlight=True)
-        table.show_header = False
-        table.add_row('Type', self.__class__.__name__)
-        table.add_row('Length', str(len(self)))
-        tables.append(Panel(table, title='DocumentArray Summary', expand=False))
-
-        doc_schema = self.document_type().get_schema()
-        panel = Panel(doc_schema, title='Document Schema', expand=False, padding=(1, 3))
-        tables.append(panel)
-
-        console.print(*tables)
