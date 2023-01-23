@@ -100,7 +100,6 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         nd_proto = self.to_protobuf()
         return NodeProto(ndarray=nd_proto, type=self._proto_type_name)
 
-
     @classmethod
     def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
         """Every tensor has to implement this method in order to
