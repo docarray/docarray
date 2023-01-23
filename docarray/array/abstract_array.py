@@ -231,7 +231,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         table.add_row('Length', str(len(self)))
         tables.append(Panel(table, title='DocumentArray Summary', expand=False))
 
-        doc_schema = self.document_type.get_schema()
+        doc_schema = self.document_type._get_schema()
         panel = Panel(doc_schema, title='Document Schema', expand=False, padding=(1, 3))
         tables.append(panel)
 
