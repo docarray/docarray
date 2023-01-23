@@ -93,7 +93,7 @@ from docarray.documents import Text as BaseText
 
 
 class Tokens(BaseDocument):
-    input_ids: TorchTensor[512]
+    input_ids: TorchTensor[48]
     attention_mask: TorchTensor
 ```
 
@@ -102,7 +102,7 @@ class Text(BaseText):
     tokens: Optional[Tokens]
 ```
 Notice the `TorchTensor` type. It is a thin wrapper around `torch.Tensor` that can be use like any other torch tensor, 
-but also enables additional features. One such feature is shape parametrization (`TorchTensor[512]`), which lets you
+but also enables additional features. One such feature is shape parametrization (`TorchTensor[48]`), which lets you
 hint and even enforce the desired shape of any tensor!
 
 To represent our image data, we use the `Image` Document that is included in DocArray:
@@ -167,7 +167,9 @@ class TextPreprocess:
         self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased")
 
     def __call__(self, text: str) -> Tokens:
-        return Tokens(**self.tokenizer(text, padding="max_length", truncation=True))
+        return Tokens(
+            **self.tokenizer(text, padding="max_length", truncation=True, max_length=48)
+        )
 ```
 
 `VisionPreprocess` and `TextPreprocess` implement standard preprocessing steps for images and text, nothing special here.
@@ -225,7 +227,7 @@ text_preprocess = TextPreprocess()
 ```python
 dataset = PairDataset("captions.txt", vision_preprocess, text_preprocess)
 loader = DataLoader(
-    dataset, batch_size=64, collate_fn=PairDataset.collate_fn, shuffle=True
+    dataset, batch_size=128, collate_fn=PairDataset.collate_fn, shuffle=True
 )
 ```
 
