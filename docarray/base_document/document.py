@@ -14,20 +14,8 @@ from docarray.math.helper import minmax_normalize
 from docarray.typing import ID
 
 if TYPE_CHECKING:
-    # import colorsys
-    # from typing import Any, Optional, TypeVar
-    # import numpy as np
-    # from rich.color import Color
     from rich.console import Console, ConsoleOptions, RenderResult
     from rich.measure import Measurement
-
-    # from rich.segment import Segment
-    # from rich.style import Style
-    # from rich.tree import Tree
-    #
-    # import docarray
-    # from docarray.math.helper import minmax_normalize
-    # from docarray.typing import ID
 
 
 class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
@@ -54,49 +42,62 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         """
         return cls.__fields__[field].outer_type_
 
+    def summary(self) -> None:
+        """Print non-empty fields and nested structure of this Document object."""
+        import rich
+
+        t = _plot_recursion(node=self)
+        rich.print(t)
+
+    @classmethod
+    def schema_summary(cls) -> None:
+        """Print a summary of the Documents schema."""
+        import rich
+
+        panel = rich.panel.Panel(
+            cls.get_schema(), title='Document Schema', expand=False, padding=(1, 3)
+        )
+        rich.print(panel)
+
     def _ipython_display_(self):
         """Displays the object in IPython as a side effect"""
         self.summary()
 
-    def summary(self) -> None:
-        """Print non-empty fields and nested structure of this Document object."""
-        from rich import print
-
-        t = _plot_recursion(node=self)
-        print(t)
-
-    def schema_summary(self) -> None:
-        from rich import print
-        from rich.panel import Panel
-
-        panel = Panel(
-            self.get_schema(), title='Document Schema', expand=False, padding=(1, 3)
-        )
-        print(panel)
-
     @classmethod
-    def get_schema(cls, doc_name: str = None) -> Tree:
+    def get_schema(cls, doc_name: Optional[str] = None) -> Tree:
         import re
 
         from rich.tree import Tree
 
-        n = cls.__name__
+        import docarray
 
-        tree = Tree(n) if doc_name is None else Tree(f'{doc_name}: {n}')
-        annotations = cls.__annotations__
-        for k, v in annotations.items():
-            x = cls._get_field_type(k)
+        name = cls.__name__
+        tree = Tree(name) if doc_name is None else Tree(f'{doc_name}: {name}')
+
+        for k, v in cls.__annotations__.items():
+
+            field_type = cls._get_field_type(k)
+
             t = str(v).replace('[', '\[')
             t = re.sub('[a-zA-Z_]*[.]', '', t)
 
-            if str(v).startswith('typing.Union'):
+            if str(v).startswith('typing.Union') or str(v).startswith(
+                'typing.Optional'
+            ):
                 sub_tree = Tree(f'{k}: {t}')
                 for arg in v.__args__:
                     if issubclass(arg, BaseDocument):
                         sub_tree.add(arg.get_schema())
+                    elif issubclass(arg, docarray.DocumentArray):
+                        sub_tree.add(arg.document_type.get_schema())
                 tree.add(sub_tree)
-            elif issubclass(x, BaseDocument):
-                tree.add(x.get_schema(doc_name=k))
+            elif issubclass(field_type, BaseDocument):
+                tree.add(field_type.get_schema(doc_name=k))
+            elif issubclass(field_type, docarray.DocumentArray):
+                name = v.__name__.replace('[', '\[')
+                sub_tree = Tree(f'{k}: {name}')
+                sub_tree.add(field_type.document_type.get_schema())
+                tree.add(sub_tree)
             else:
                 tree.add(f'{k}: {t}')
         return tree
@@ -106,56 +107,49 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         id_abbrv = getattr(self, 'id')[:7]
         yield f":page_facing_up: [b]{kls}" f"[/b]: [cyan]{id_abbrv} ...[cyan]"
 
-        from collections.abc import Iterable
-
         import torch
         from rich import box, text
         from rich.table import Table
 
-        my_table = Table(
-            'Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True
-        )
+        import docarray
+
+        table = Table('Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True)
 
         for k, v in self.__dict__.items():
-            col_1, col_2 = '', ''
-
-            if isinstance(v, ID) or k.startswith('_') or v is None:
+            col_1 = f'{k}: {v.__class__.__name__}'
+            if (
+                isinstance(v, ID | docarray.DocumentArray | docarray.BaseDocument)
+                or k.startswith('_')
+                or v is None
+            ):
                 continue
             elif isinstance(v, str):
-                col_1 = f'{k}: {v.__class__.__name__}'
                 col_2 = str(v)[:50]
                 if len(v) > 50:
                     col_2 += f' ... (length: {len(v)})'
-            elif isinstance(v, np.ndarray) or isinstance(v, torch.Tensor):
-                col_1 = f'{k}: {v.__class__.__name__}'
-
+                table.add_row(col_1, text.Text(col_2))
+            elif isinstance(v, np.ndarray | torch.Tensor):
                 if isinstance(v, torch.Tensor):
                     v = v.detach().cpu().numpy()
-                if v.squeeze().ndim == 1 and len(v) < 1000:
-                    col_2 = ColorBoxArray(v.squeeze())
+                if v.squeeze().ndim == 1 and len(v) < 50:
+                    table.add_row(col_1, ColorBoxArray(v.squeeze()))
                 else:
-                    col_2 = f'{type(v)} of shape {v.shape}, dtype: {v.dtype}'
-
-            elif isinstance(v, tuple) or isinstance(v, list):
-                col_1 = f'{k}: {v.__class__.__name__}'
+                    table.add_row(
+                        col_1,
+                        text.Text(f'{type(v)} of shape {v.shape}, dtype: {v.dtype}'),
+                    )
+            elif isinstance(v, tuple | list):
+                col_2 = ''
                 for i, x in enumerate(v):
                     if len(col_2) + len(str(x)) < 50:
                         col_2 = str(v[:i])
                     else:
                         col_2 = f'{col_2[:-1]}, ...] (length: {len(v)})'
                         break
-            elif not isinstance(v, Iterable):
-                col_1 = f'{k}: {v.__class__.__name__}'
-                col_2 = str(v)
-            else:
-                continue
+                table.add_row(col_1, text.Text(col_2))
 
-            if not isinstance(col_2, ColorBoxArray):
-                col_2 = text.Text(col_2)
-            my_table.add_row(col_1, col_2)
-
-        if my_table.rows:
-            yield my_table
+        if table.rows:
+            yield table
 
 
 def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
@@ -163,34 +157,30 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
 
     tree = Tree(node) if tree is None else tree.add(node)
 
-    try:
+    if hasattr(node, '__dict__'):
         iterable_attrs = [
             k
             for k, v in node.__dict__.items()
-            if isinstance(v, docarray.DocumentArray)
-            or isinstance(v, docarray.BaseDocument)
+            if isinstance(v, docarray.DocumentArray | docarray.BaseDocument)
         ]
         for attr in iterable_attrs:
-            _icon = ':diamond_with_a_dot:'
             value = getattr(node, attr)
+            attr_type = value.__class__.__name__
+            icon = ':diamond_with_a_dot:'
+
             if isinstance(value, docarray.BaseDocument):
-                _icon = ':large_orange_diamond:'
-            _match_tree = tree.add(
-                f'{_icon} [b]{attr}: ' f'{value.__class__.__name__}[/b]'
-            )
-            if isinstance(value, docarray.BaseDocument):
+                icon = ':large_orange_diamond:'
                 value = [value]
+
+            _match_tree = tree.add(f'{icon} [b]{attr}: ' f'{attr_type}[/b]')
             for i, d in enumerate(value):
                 if i == 2:
+                    doc_cls = d.__class__.__name__
                     _plot_recursion(
-                        f'... {len(value) - 2} more {d.__class__.__name__} documents\n',
-                        _match_tree,
+                        f'... {len(value) - 2} more {doc_cls} documents\n', _match_tree
                     )
                     break
                 _plot_recursion(d, _match_tree)
-
-    except Exception:
-        pass
 
     return tree
 
