@@ -16,6 +16,7 @@ from docarray.typing.url import (
 
 __all__ = [
     'NdArray',
+    'NdArrayEmbedding',
     'AudioNdArray',
     'VideoNdArray',
     'AnyEmbedding',

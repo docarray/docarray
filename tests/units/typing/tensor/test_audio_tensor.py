@@ -57,14 +57,14 @@ def test_illegal_validation(cls_tensor, tensor):
 @pytest.mark.parametrize(
     'cls_tensor,tensor,proto_key',
     [
-        (AudioTorchTensor, torch.zeros(1000, 2), AudioTorchTensor._PROTO_FIELD_NAME),
-        (AudioNdArray, np.zeros((1000, 2)), AudioNdArray._PROTO_FIELD_NAME),
+        (AudioTorchTensor, torch.zeros(1000, 2), AudioTorchTensor._proto_type_name),
+        (AudioNdArray, np.zeros((1000, 2)), AudioNdArray._proto_type_name),
     ],
 )
 def test_proto_tensor(cls_tensor, tensor, proto_key):
     tensor = parse_obj_as(cls_tensor, tensor)
     proto = tensor._to_node_protobuf()
-    assert str(proto).startswith(proto_key)
+    assert proto_key in str(proto)
 
 
 @pytest.mark.parametrize(

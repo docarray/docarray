@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x8a\x05\n\tNodeProto\x12\x0e\n\x04\x62lob\x18\x01 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x0e\n\x04text\x18\x03 \x01(\tH\x00\x12)\n\x06nested\x18\x04 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12.\n\x06\x63hunks\x18\x05 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12+\n\tembedding\x18\x06 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x11\n\x07\x61ny_url\x18\x07 \x01(\tH\x00\x12\x13\n\timage_url\x18\x08 \x01(\tH\x00\x12\x12\n\x08text_url\x18\t \x01(\tH\x00\x12\x0c\n\x02id\x18\n \x01(\tH\x00\x12.\n\x0ctorch_tensor\x18\x0b \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x12\n\x08mesh_url\x18\x0c \x01(\tH\x00\x12\x19\n\x0fpoint_cloud_url\x18\r \x01(\tH\x00\x12\x13\n\taudio_url\x18\x0e \x01(\tH\x00\x12/\n\raudio_ndarray\x18\x0f \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x34\n\x12\x61udio_torch_tensor\x18\x10 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x13\n\tvideo_url\x18\x11 \x01(\tH\x00\x12/\n\rvideo_ndarray\x18\x12 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x34\n\x12video_torch_tensor\x18\x13 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
+    b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"\xe7\x01\n\tNodeProto\x12\x0e\n\x04\x62lob\x18\x01 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x0e\n\x04text\x18\x03 \x01(\tH\x00\x12+\n\x08\x64ocument\x18\x04 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x05 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12\x0e\n\x04type\x18\x06 \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
 )
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
@@ -32,17 +32,17 @@ if _descriptor._USE_C_DESCRIPTORS == False:
     _NDARRAYPROTO._serialized_start = 125
     _NDARRAYPROTO._serialized_end = 228
     _NODEPROTO._serialized_start = 231
-    _NODEPROTO._serialized_end = 881
-    _DOCUMENTPROTO._serialized_start = 884
-    _DOCUMENTPROTO._serialized_end = 1014
-    _DOCUMENTPROTO_DATAENTRY._serialized_start = 950
-    _DOCUMENTPROTO_DATAENTRY._serialized_end = 1014
-    _DOCUMENTARRAYPROTO._serialized_start = 1016
-    _DOCUMENTARRAYPROTO._serialized_end = 1075
-    _UNIONARRAYPROTO._serialized_start = 1078
-    _UNIONARRAYPROTO._serialized_end = 1212
-    _DOCUMENTARRAYSTACKEDPROTO._serialized_start = 1215
-    _DOCUMENTARRAYSTACKEDPROTO._serialized_end = 1429
-    _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY._serialized_start = 1356
-    _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY._serialized_end = 1429
+    _NODEPROTO._serialized_end = 462
+    _DOCUMENTPROTO._serialized_start = 465
+    _DOCUMENTPROTO._serialized_end = 595
+    _DOCUMENTPROTO_DATAENTRY._serialized_start = 531
+    _DOCUMENTPROTO_DATAENTRY._serialized_end = 595
+    _DOCUMENTARRAYPROTO._serialized_start = 597
+    _DOCUMENTARRAYPROTO._serialized_end = 656
+    _UNIONARRAYPROTO._serialized_start = 659
+    _UNIONARRAYPROTO._serialized_end = 793
+    _DOCUMENTARRAYSTACKEDPROTO._serialized_start = 796
+    _DOCUMENTARRAYSTACKEDPROTO._serialized_end = 1010
+    _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY._serialized_start = 937
+    _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY._serialized_end = 1010
 # @@protoc_insertion_point(module_scope)

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, List, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
 
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 
+@_register_proto(proto_type_name='video_torch_tensor')
 class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode):
     """
     Subclass of TorchTensor, to represent a video tensor.
@@ -20,8 +22,6 @@ class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode
     EXAMPLE USAGE
 
     """
-
-    _PROTO_FIELD_NAME = 'video_torch_tensor'
 
     @classmethod
     def validate(

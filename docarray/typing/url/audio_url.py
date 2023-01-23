@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 import numpy as np
 from pydantic import parse_obj_as
 
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16, AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
@@ -11,29 +12,17 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import NodeProto
-
 T = TypeVar('T', bound='AudioUrl')
 
 AUDIO_FILE_FORMATS = ['wav']
 
 
+@_register_proto(proto_type_name='audio_url')
 class AudioUrl(AnyUrl):
     """
     URL to a .wav file.
     Can be remote (web) URL, or a local file path.
     """
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that needs to
-        be converted into a protobuf
-
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        return NodeProto(audio_url=str(self))
 
     @classmethod
     def validate(

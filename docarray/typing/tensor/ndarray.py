@@ -13,6 +13,7 @@ from typing import (
 
 import numpy as np
 
+from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.computation.numpy_backend import NumpyCompBackend
-    from docarray.proto import NdArrayProto, NodeProto
+    from docarray.proto import NdArrayProto
 
 from docarray.base_document.base_node import BaseNode
 
@@ -36,6 +37,7 @@ class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ign
     pass
 
 
+@_register_proto(proto_type_name='ndarray')
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of np.ndarray, intended for use in a Document.
@@ -83,7 +85,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         )
     """
 
-    _PROTO_FIELD_NAME = 'ndarray'
     __parametrized_meta__ = metaNumpy
 
     @classmethod
@@ -159,18 +160,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         :return: a numpy ndarray
         """
         return self.view(np.ndarray)
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        """Convert itself into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to be
-        converted into a protobuf
-        :param field: field in which to store the content in the node proto
-        :return: the nested item protobuf message
-        """
-        from docarray.proto import NodeProto
-
-        nd_proto = self.to_protobuf()
-        return NodeProto(**{self._PROTO_FIELD_NAME: nd_proto})
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
