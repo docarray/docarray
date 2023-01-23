@@ -74,24 +74,30 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         )
         print(panel)
 
-    def get_schema(self, doc_name: str = None) -> Tree:
+    @classmethod
+    def get_schema(cls, doc_name: str = None) -> Tree:
+        import re
+
         from rich.tree import Tree
 
-        n = self.__class__.__name__
+        n = cls.__name__
 
         tree = Tree(n) if doc_name is None else Tree(f'{doc_name}: {n}')
-        annotations = self.__annotations__
+        annotations = cls.__annotations__
         for k, v in annotations.items():
-            value = getattr(self, k)
-            if isinstance(value, BaseDocument):
-                tree.add(value.get_schema(doc_name=k))
-            else:
-                t = str(v).replace('[', '\[')
-                import re
+            x = cls._get_field_type(k)
+            t = str(v).replace('[', '\[')
+            t = re.sub('[a-zA-Z_]*[.]', '', t)
 
-                t = re.sub('[a-zA-Z_]*[.]', '', t)
-                if 'Union' in t and 'NoneType' in t:
-                    t = t.replace('Union', 'Optional').replace(', NoneType', '')
+            if str(v).startswith('typing.Union'):
+                sub_tree = Tree(f'{k}: {t}')
+                for arg in v.__args__:
+                    if issubclass(arg, BaseDocument):
+                        sub_tree.add(arg.get_schema())
+                tree.add(sub_tree)
+            elif issubclass(x, BaseDocument):
+                tree.add(x.get_schema(doc_name=k))
+            else:
                 tree.add(f'{k}: {t}')
         return tree
 
