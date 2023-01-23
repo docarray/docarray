@@ -59,10 +59,6 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         )
         rich.print(panel)
 
-    def _ipython_display_(self):
-        """Displays the object in IPython as a side effect"""
-        self.summary()
-
     @classmethod
     def get_schema(cls, doc_name: Optional[str] = None) -> Tree:
         import re
@@ -81,9 +77,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
             t = str(v).replace('[', '\[')
             t = re.sub('[a-zA-Z_]*[.]', '', t)
 
-            if str(v).startswith('typing.Union') or str(v).startswith(
-                'typing.Optional'
-            ):
+            if v.__name__ in ['Union', 'Optional']:
                 sub_tree = Tree(f'{k}: {t}')
                 for arg in v.__args__:
                     if issubclass(arg, BaseDocument):
@@ -94,8 +88,8 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
             elif issubclass(field_type, BaseDocument):
                 tree.add(field_type.get_schema(doc_name=k))
             elif issubclass(field_type, docarray.DocumentArray):
-                name = v.__name__.replace('[', '\[')
-                sub_tree = Tree(f'{k}: {name}')
+                field_cls = v.__name__.replace('[', '\[')
+                sub_tree = Tree(f'{k}: {field_cls}')
                 sub_tree.add(field_type.document_type.get_schema())
                 tree.add(sub_tree)
             else:
