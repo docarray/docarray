@@ -13,7 +13,11 @@ def da():
     class Text(BaseDocument):
         text: str
 
-    return DocumentArray([Text(text='hello') for _ in range(10)])
+    return DocumentArray[Text]([Text(text='hello') for _ in range(10)])
+
+
+def test_repr(da):
+    assert da.__repr__() == '<DocumentArray[Text] (length=10)>'
 
 
 def test_iterate(da):
