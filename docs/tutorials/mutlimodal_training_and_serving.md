@@ -47,6 +47,7 @@ pythonic multi-modal PyTorch code.
 #!pip install torchvision
 #!pip install transformers
 #!pip install fastapi
+#!pip install pandas
 ```
 
 ```python
