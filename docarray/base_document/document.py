@@ -61,11 +61,12 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
 
     @classmethod
     def get_schema(cls, doc_name: Optional[str] = None) -> Tree:
+        """Get Documents schema as a rich.tree.Tree object."""
         import re
 
         from rich.tree import Tree
 
-        import docarray
+        from docarray import DocumentArray
 
         name = cls.__name__
         tree = Tree(name) if doc_name is None else Tree(f'{doc_name}: {name}')
@@ -82,12 +83,12 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
                 for arg in v.__args__:
                     if issubclass(arg, BaseDocument):
                         sub_tree.add(arg.get_schema())
-                    elif issubclass(arg, docarray.DocumentArray):
+                    elif issubclass(arg, DocumentArray):
                         sub_tree.add(arg.document_type.get_schema())
                 tree.add(sub_tree)
             elif issubclass(field_type, BaseDocument):
                 tree.add(field_type.get_schema(doc_name=k))
-            elif issubclass(field_type, docarray.DocumentArray):
+            elif issubclass(field_type, DocumentArray):
                 field_cls = v.__name__.replace('[', '\[')
                 sub_tree = Tree(f'{k}: {field_cls}')
                 sub_tree.add(field_type.document_type.get_schema())
@@ -125,7 +126,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
             elif isinstance(v, np.ndarray | torch.Tensor):
                 if isinstance(v, torch.Tensor):
                     v = v.detach().cpu().numpy()
-                if v.squeeze().ndim == 1 and len(v) < 50:
+                if v.squeeze().ndim == 1 and len(v) < 200:
                     table.add_row(col_1, ColorBoxArray(v.squeeze()))
                 else:
                     table.add_row(
@@ -147,6 +148,14 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
 
 
 def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
+    """
+    Store node's children in rich.tree.Tree recursively.
+
+    :param node: Node to get children from.
+    :param tree: Append to this tree if not None, else use node as root.
+    :return: Tree with all children.
+
+    """
     import docarray
 
     tree = Tree(node) if tree is None else tree.add(node)
@@ -166,20 +175,25 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
                 icon = ':large_orange_diamond:'
                 value = [value]
 
-            _match_tree = tree.add(f'{icon} [b]{attr}: ' f'{attr_type}[/b]')
+            match_tree = tree.add(f'{icon} [b]{attr}: ' f'{attr_type}[/b]')
             for i, d in enumerate(value):
                 if i == 2:
-                    doc_cls = d.__class__.__name__
+                    doc_type = d.__class__.__name__
                     _plot_recursion(
-                        f'... {len(value) - 2} more {doc_cls} documents\n', _match_tree
+                        node=f'... {len(value) - 2} more {doc_type} documents\n',
+                        tree=match_tree,
                     )
                     break
-                _plot_recursion(d, _match_tree)
+                _plot_recursion(d, match_tree)
 
     return tree
 
 
 class ColorBoxArray:
+    """
+    Rich representation of an array as coloured blocks.
+    """
+
     def __init__(self, array):
         self._array = minmax_normalize(array, (0, 5))
 
