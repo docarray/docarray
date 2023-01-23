@@ -173,25 +173,24 @@ class TextPreprocess:
 `VisionPreprocess` and `TextPreprocess` implement standard preprocessing steps for images and text, nothing special here.
 
 ```python
+import pandas as pd
+
+
 class PairDataset(Dataset):
     def __init__(
         self,
         file: str,
         vision_preprocess: VisionPreprocess,
         text_preprocess: TextPreprocess,
-        N=None,
+        N: Optional[int] = None,
     ):
-        self.docs = DocumentArray[PairTextImage]([])
-
-        with open("captions.txt", "r") as f:
-            lines = list(f.readlines())
-            lines = lines[1:N] if N else lines[1:]
-            for line in lines:
-                line = line.split(",")
-                doc = PairTextImage(
-                    text=Text(text=line[1]), image=Image(url=f"Images/{line[0]}")
-                )
-                self.docs.append(doc)
+        df = pd.read_csv(file, nrows=N)
+        self.docs = DocumentArray[PairTextImage](
+            PairTextImage(
+                text=Text(text=i.caption), image=Image(url=f"Images/{i.image}")
+            )
+            for i in df.itertuples()
+        )
 
         self.vision_preprocess = vision_preprocess
         self.text_preprocess = text_preprocess
@@ -199,8 +198,8 @@ class PairDataset(Dataset):
     def __len__(self):
         return len(self.docs)
 
-    def __getitem__(self, item):
-        doc = self.docs[item].copy()
+    def __getitem__(self, item: int):
+        doc = self.docs[item].copy(deep=True)
         doc.image.tensor = self.vision_preprocess(doc.image.url)
         doc.text.tokens = self.text_preprocess(doc.text.text)
         return doc
