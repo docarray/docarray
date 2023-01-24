@@ -1,5 +1,15 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from docarray.base_document import BaseDocument
 from docarray.typing import NdArray
@@ -16,6 +26,7 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
     tensor_type: Type['AbstractTensor'] = NdArray
+    __typed_da__: Dict[BaseDocument, Type] = {}
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -23,28 +34,31 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )
 
-        class _DocumentArrayTyped(cls):  # type: ignore
-            document_type: Type[BaseDocument] = item
+        if item not in cls.__typed_da__:
 
-        for field in _DocumentArrayTyped.document_type.__fields__.keys():
+            class _DocumentArrayTyped(cls):  # type: ignore
+                document_type: Type[BaseDocument] = item
 
-            def _property_generator(val: str):
-                def _getter(self):
-                    return self._get_array_attribute(val)
+            for field in _DocumentArrayTyped.document_type.__fields__.keys():
 
-                def _setter(self, value):
-                    self._set_array_attribute(val, value)
+                def _property_generator(val: str):
+                    def _getter(self):
+                        return self._get_array_attribute(val)
 
-                # need docstring for the property
-                return property(fget=_getter, fset=_setter)
+                    def _setter(self, value):
+                        self._set_array_attribute(val, value)
 
-            setattr(_DocumentArrayTyped, field, _property_generator(field))
-            # this generates property on the fly based on the schema of the item
+                    # need docstring for the property
+                    return property(fget=_getter, fset=_setter)
 
-        _DocumentArrayTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
-        _DocumentArrayTyped.__qualname__ = f'{cls.__name__}[{item.__name__}]'
+                setattr(_DocumentArrayTyped, field, _property_generator(field))
+                # this generates property on the fly based on the schema of the item
 
-        return _DocumentArrayTyped
+            _DocumentArrayTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
+            _DocumentArrayTyped.__qualname__ = f'{cls.__name__}[{item.__name__}]'
+            cls.__typed_da__[item] = _DocumentArrayTyped
+
+        return cls.__typed_da__[item]
 
     @abstractmethod
     def _get_array_attribute(
