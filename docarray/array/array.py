@@ -1,6 +1,16 @@
 from contextlib import contextmanager
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    List,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from typing_inspect import is_union_type
 
@@ -19,6 +29,7 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound='DocumentArray')
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
 def _delegate_meth_to_data(meth_name: str) -> Callable:
@@ -38,7 +49,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
-class DocumentArray(AnyDocumentArray):
+class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     """
      DocumentArray is a container of Documents.
 
