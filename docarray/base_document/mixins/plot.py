@@ -1,11 +1,10 @@
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
 from rich.tree import Tree
 from typing_inspect import is_optional_type, is_union_type
 
-from docarray.base_document import BaseNode
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -128,7 +127,7 @@ class PlotMixin(AbstractDocument):
             yield table
 
 
-def _plot_recursion(node: Union[BaseNode, Any], tree: Optional[Tree] = None) -> Tree:
+def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
     """
     Store node's children in rich.tree.Tree recursively.
 
