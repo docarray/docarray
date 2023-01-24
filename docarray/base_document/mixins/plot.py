@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
 from rich.tree import Tree
 from typing_inspect import is_optional_type, is_union_type
 
+from docarray.base_document import BaseNode
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -127,7 +128,7 @@ class PlotMixin(AbstractDocument):
             yield table
 
 
-def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
+def _plot_recursion(node: Union[BaseNode, Any], tree: Optional[Tree] = None) -> Tree:
     """
     Store node's children in rich.tree.Tree recursively.
 
@@ -136,7 +137,7 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
     :return: Tree with all children.
 
     """
-    import docarray
+    from docarray import BaseDocument, DocumentArray
 
     tree = Tree(node) if tree is None else tree.add(node)
 
@@ -144,23 +145,24 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
         nested_attrs = [
             k
             for k, v in node.__dict__.items()
-            if isinstance(v, (docarray.DocumentArray, docarray.BaseDocument))
+            if isinstance(v, (DocumentArray, BaseDocument))
         ]
         for attr in nested_attrs:
             value = getattr(node, attr)
             attr_type = value.__class__.__name__
             icon = ':diamond_with_a_dot:'
 
-            if isinstance(value, docarray.BaseDocument):
+            if isinstance(value, BaseDocument):
                 icon = ':large_orange_diamond:'
                 value = [value]
 
             match_tree = tree.add(f'{icon} [b]{attr}: ' f'{attr_type}[/b]')
+            max_show = 2
             for i, d in enumerate(value):
-                if i == 2:
+                if i == max_show:
                     doc_type = d.__class__.__name__
                     _plot_recursion(
-                        node=f'... {len(value) - 2} more {doc_type} documents\n',
+                        node=f'... {len(value) - max_show} more {doc_type} documents\n',
                         tree=match_tree,
                     )
                     break
