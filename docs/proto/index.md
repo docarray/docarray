@@ -1,7 +1,5 @@
 ```{include} docs.md
-```
-
-## 
+``
 
 `````{admonition} Note
 :class: caution
