@@ -7,8 +7,8 @@ from rich.tree import Tree
 from typing_inspect import is_optional_type, is_union_type
 
 from docarray.base_document.abstract_document import AbstractDocument
-from docarray.math.helper import minmax_normalize
 from docarray.typing import ID
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from rich.console import Console, ConsoleOptions, RenderResult
@@ -176,8 +176,8 @@ class ColorBoxArray:
     Rich representation of an array as coloured blocks.
     """
 
-    def __init__(self, array):
-        self._array = minmax_normalize(array, (0, 5))
+    def __init__(self, array: AbstractTensor):
+        self._array = array.get_comp_backend().minmax_normalize(array, (0, 5))
 
     def __rich_console__(
         self, console: 'Console', options: 'ConsoleOptions'

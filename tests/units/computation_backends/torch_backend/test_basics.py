@@ -53,3 +53,33 @@ def test_empty_device():
     tensor = TorchCompBackend.empty((10, 3), device='meta')
     assert tensor.shape == (10, 3)
     assert tensor.device == torch.device('meta')
+
+
+@pytest.mark.parametrize(
+    'array,t_range,x_range,result',
+    [
+        (
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+            (0, 10),
+            None,
+            torch.tensor([0, 2, 4, 6, 8, 10]),
+        ),
+        (
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+            (0, 10),
+            (0, 10),
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+        ),
+        (
+            torch.tensor([[0.0, 1.0], [0.0, 1.0]]),
+            (0, 10),
+            None,
+            torch.tensor([[0.0, 10.0], [0.0, 10.0]]),
+        ),
+    ],
+)
+def test_minmax_normalize(array, t_range, x_range, result):
+    output = TorchCompBackend.minmax_normalize(
+        tensor=array, t_range=t_range, x_range=x_range
+    )
+    assert torch.allclose(output, result)
