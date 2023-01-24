@@ -1,53 +1,22 @@
 from typing import Optional
 
-import pandas as pd
-import torchvision
-from transformers import AutoTokenizer
+import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.data import TorchDataset
-from docarray.documents import Image
-from docarray.documents import Text
-from docarray.documents import Text as BaseText
-from docarray.typing import TorchTensor
-
-
-class Tokens(BaseDocument):
-    input_ids: TorchTensor[48]
-    attention_mask: TorchTensor
-
-
-class Text(BaseText):
-    tokens: Optional[Tokens]
+from docarray.documents import Image, Text
 
 
 class ImagePreprocess:
-    def __init__(self):
-        self.transform = torchvision.transforms.Compose(
-            [
-                torchvision.transforms.ToTensor(),
-                torchvision.transforms.Resize(232),
-                torchvision.transforms.RandomCrop(224),
-                torchvision.transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
-            ]
-        )
-
     def __call__(self, image: Image) -> None:
-        image.tensor = self.transform(image.url.load())
+        assert isinstance(image, Image)
+        image.tensor = torch.randn(3, 32, 32)
 
 
 class TextPreprocess:
-    def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased")
-
     def __call__(self, text: Text) -> None:
-        text.tokens = Tokens(
-            **self.tokenizer(
-                text.text, padding="max_length", truncation=True, max_length=48
-            )
-        )
+        assert isinstance(text, Text)
+        text.embedding = torch.randn(64)
 
 
 def test_torch_dataset():
@@ -59,14 +28,15 @@ def test_torch_dataset():
 
     class Mydataset(TorchDataset[PairTextImage]):
         def __init__(self, csv_file: str, preprocessing: Optional[dict] = None):
-            df = pd.read_csv(csv_file)
-            da = DocumentArray[PairTextImage](
-                PairTextImage(
-                    text=Text(text=i.caption),
-                    image=Image(url=f"tests/toydata/image-data/{i.image}"),
+            with open(csv_file, "r") as f:
+                f.readline()
+                da = DocumentArray[PairTextImage](
+                    PairTextImage(
+                        text=Text(text=i[1]),
+                        image=Image(url=f"tests/toydata/image-data/{i[0]}"),
+                    )
+                    for i in map(lambda x: x.strip().split(","), f.readlines())
                 )
-                for i in df.itertuples()
-            )
             super().__init__(da, preprocessing)
 
     from torch.utils.data import DataLoader
