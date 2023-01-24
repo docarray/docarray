@@ -61,7 +61,7 @@ class PlotMixin(AbstractDocument):
                     field_type = Optional[field_type]
 
                 field_cls = str(field_type).replace('[', '\[')
-                field_cls = re.sub("<class '|'>|[a-zA-Z_]*[.]", '', field_cls)
+                field_cls = re.sub('<class \'|\'>|[a-zA-Z_]*[.]', '', field_cls)
 
                 node_name = f'{field_name}: {field_cls}'
 
