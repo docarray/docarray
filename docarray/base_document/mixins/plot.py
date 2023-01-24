@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING, Any, Optional
 
 import numpy as np
+import rich
+from rich.highlighter import RegexHighlighter
 from rich.tree import Tree
 from typing_inspect import is_optional_type, is_union_type
 
@@ -24,12 +26,16 @@ class PlotMixin(AbstractDocument):
     @classmethod
     def schema_summary(cls) -> None:
         """Print a summary of the Documents schema."""
-        import rich
+        from rich.console import Console
+        from rich.panel import Panel
 
-        panel = rich.panel.Panel(
+        panel = Panel(
             cls._get_schema(), title='Document Schema', expand=False, padding=(1, 3)
         )
-        rich.print(panel)
+        highlighter = SchemaHighlighter()
+
+        console = Console(highlighter=highlighter, theme=highlighter.theme)
+        console.print(panel)
 
     def _ipython_display_(self):
         """Displays the object in IPython as a side effect"""
@@ -44,8 +50,8 @@ class PlotMixin(AbstractDocument):
 
         from docarray import BaseDocument, DocumentArray
 
-        name = cls.__name__
-        tree = Tree(name) if doc_name is None else Tree(f'{doc_name}: {name}')
+        root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
+        tree = Tree(root, highlight=True)
 
         for k, v in cls.__annotations__.items():
 
@@ -55,7 +61,7 @@ class PlotMixin(AbstractDocument):
             t = re.sub('[a-zA-Z_]*[.]', '', t)
 
             if is_union_type(v) or is_optional_type(v):
-                sub_tree = Tree(f'{k}: {t}')
+                sub_tree = Tree(f'{k}: {t}', highlight=True)
                 for arg in v.__args__:
                     if issubclass(arg, BaseDocument):
                         sub_tree.add(arg._get_schema())
@@ -66,7 +72,7 @@ class PlotMixin(AbstractDocument):
                 tree.add(field_type._get_schema(doc_name=k))
             elif issubclass(field_type, DocumentArray):
                 field_cls = v.__name__.replace('[', '\[')
-                sub_tree = Tree(f'{k}: {field_cls}')
+                sub_tree = Tree(f'{k}: {field_cls}', highlight=True)
                 sub_tree.add(field_type.document_type._get_schema())
                 tree.add(sub_tree)
             else:
@@ -197,3 +203,23 @@ class ColorBoxArray:
         from rich.measure import Measurement
 
         return Measurement(1, options.max_width)
+
+
+class SchemaHighlighter(RegexHighlighter):
+    """Highlighter to apply colors to a Document's schema tree."""
+
+    highlights = [
+        r"(?P<class>^[A-Z][a-zA-Z]*)",
+        r"(?P<attr>^.*(?=:))",
+        r"(?P<attr_type>(?<=:).*$)",
+        r"(?P<other_chars>[\[\],:])",
+    ]
+
+    theme = rich.theme.Theme(
+        {
+            "class": "orange3",
+            "attr": "green4",
+            "attr_type": "medium_purple3",
+            "other_chars": "black",
+        }
+    )
