@@ -52,6 +52,12 @@ def test_empty_device():
         NumpyCompBackend.empty((10, 3), device='meta')
 
 
+def test_squeeze():
+    tensor = np.zeros(shape=(1, 1, 3, 1))
+    squeezed = NumpyCompBackend.squeeze(tensor)
+    assert squeezed.shape == (3,)
+
+
 @pytest.mark.parametrize(
     'array,t_range,x_range,result',
     [

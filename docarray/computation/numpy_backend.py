@@ -50,6 +50,13 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return array.ndim
 
     @staticmethod
+    def squeeze(tensor: 'np.ndarray') -> 'np.ndarray':
+        """
+        Returns a tensor with all the dimensions of tensor of size 1 removed.
+        """
+        return tensor.squeeze()
+
+    @staticmethod
     def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
         return array
 
@@ -84,6 +91,16 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
             but with the specified shape.
         """
         return array.reshape(shape)
+
+    @staticmethod
+    def detach(tensor: 'np.ndarray') -> 'np.ndarray':
+        """
+        Returns the tensor detached from its current graph.
+
+        :param tensor: tensor to be detached
+        :return: a detached tensor with the same data.
+        """
+        return tensor
 
     @staticmethod
     def minmax_normalize(

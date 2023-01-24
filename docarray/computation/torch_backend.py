@@ -64,6 +64,13 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return array.ndim
 
     @staticmethod
+    def squeeze(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """
+        Returns a tensor with all the dimensions of tensor of size 1 removed.
+        """
+        return torch.squeeze(tensor)
+
+    @staticmethod
     def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
         return array.cpu().detach().numpy()
 
@@ -88,6 +95,16 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
             but with the specified shape.
         """
         return tensor.reshape(shape)
+
+    @staticmethod
+    def detach(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """
+        Returns the tensor detached from its current graph.
+
+        :param tensor: tensor to be detached
+        :return: a detached tensor with the same data.
+        """
+        return tensor.detach()
 
     @staticmethod
     def minmax_normalize(

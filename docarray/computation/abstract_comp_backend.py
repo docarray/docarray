@@ -39,6 +39,14 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def squeeze(tensor: 'TTensor') -> 'TTensor':
+        """
+        Returns a tensor with all the dimensions of tensor of size 1 removed.
+        """
+        ...
+
+    @staticmethod
+    @abstractmethod
     def to_numpy(array: 'TTensor') -> 'np.ndarray':
         """
         Convert array to np.ndarray.
@@ -82,6 +90,17 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         :param shape: the new shape
         :return: a tensor with the same data and number of elements as tensor
             but with the specified shape.
+        """
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def detach(tensor: 'TTensor') -> 'TTensor':
+        """
+        Returns the tensor detached from its current graph.
+
+        :param tensor: tensor to be detached
+        :return: a detached tensor with the same data.
         """
         ...
 

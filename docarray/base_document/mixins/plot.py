@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-import numpy as np
 import rich
 from rich.highlighter import RegexHighlighter
 from rich.tree import Tree
@@ -84,7 +83,6 @@ class PlotMixin(AbstractDocument):
         id_abbrv = getattr(self, 'id')[:7]
         yield f":page_facing_up: [b]{kls}" f"[/b]: [cyan]{id_abbrv} ...[cyan]"
 
-        import torch
         from rich import box, text
         from rich.table import Table
 
@@ -105,15 +103,15 @@ class PlotMixin(AbstractDocument):
                 if len(v) > 50:
                     col_2 += f' ... (length: {len(v)})'
                 table.add_row(col_1, text.Text(col_2))
-            elif isinstance(v, (np.ndarray, torch.Tensor)):
-                if isinstance(v, torch.Tensor):
-                    v = v.detach().cpu().numpy()
-                if v.squeeze().ndim == 1 and len(v) < 200:
-                    table.add_row(col_1, ColorBoxArray(v.squeeze()))
+            elif isinstance(v, AbstractTensor):
+                comp = v.get_comp_backend()
+                v_squeezed = comp.squeeze(comp.detach(v))
+                if comp.n_dim(v_squeezed) == 1 and comp.shape(v_squeezed)[0] < 200:
+                    table.add_row(col_1, ColorBoxArray(v_squeezed))
                 else:
                     table.add_row(
                         col_1,
-                        text.Text(f'{type(v)} of shape {v.shape}, dtype: {v.dtype}'),
+                        text.Text(f'{type(v)} of shape {comp.shape(v)}'),
                     )
             elif isinstance(v, (tuple, list)):
                 col_2 = ''
@@ -177,7 +175,8 @@ class ColorBoxArray:
     """
 
     def __init__(self, array: AbstractTensor):
-        self._array = array.get_comp_backend().minmax_normalize(array, (0, 5))
+        comp_be = array.get_comp_backend()
+        self._array = comp_be.minmax_normalize(comp_be.detach(array), (0, 5))
 
     def __rich_console__(
         self, console: 'Console', options: 'ConsoleOptions'

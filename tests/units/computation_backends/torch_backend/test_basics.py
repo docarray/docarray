@@ -55,6 +55,12 @@ def test_empty_device():
     assert tensor.device == torch.device('meta')
 
 
+def test_squeeze():
+    tensor = torch.zeros(size=(1, 1, 3, 1))
+    squeezed = TorchCompBackend.squeeze(tensor)
+    assert squeezed.shape == (3,)
+
+
 @pytest.mark.parametrize(
     'array,t_range,x_range,result',
     [
