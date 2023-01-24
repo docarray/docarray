@@ -223,16 +223,10 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         from rich.panel import Panel
         from rich.table import Table
 
-        tables = []
-
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
         table.add_row('Type', self.__class__.__name__)
         table.add_row('Length', str(len(self)))
-        tables.append(Panel(table, title='DocumentArray Summary', expand=False))
 
-        doc_schema = self.document_type._get_schema()
-        panel = Panel(doc_schema, title='Document Schema', expand=False, padding=(1, 3))
-        tables.append(panel)
-
-        Console().print(*tables)
+        Console().print(Panel(table, title='DocumentArray Summary', expand=False))
+        self.document_type.schema_summary()
