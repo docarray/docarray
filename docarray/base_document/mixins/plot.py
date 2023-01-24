@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-import rich
 from rich.highlighter import RegexHighlighter
+from rich.theme import Theme
 from rich.tree import Tree
 from typing_inspect import is_optional_type, is_union_type
 
@@ -86,40 +86,40 @@ class PlotMixin(AbstractDocument):
         from rich import box, text
         from rich.table import Table
 
-        import docarray
+        from docarray import BaseDocument, DocumentArray
 
         table = Table('Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True)
 
-        for k, v in self.__dict__.items():
-            col_1 = f'{k}: {v.__class__.__name__}'
+        for field_name, value in self.__dict__.items():
+            col_1 = f'{field_name}: {value.__class__.__name__}'
             if (
-                isinstance(v, (ID, docarray.DocumentArray, docarray.BaseDocument))
-                or k.startswith('_')
-                or v is None
+                isinstance(value, (ID, DocumentArray, BaseDocument))
+                or field_name.startswith('_')
+                or value is None
             ):
                 continue
-            elif isinstance(v, str):
-                col_2 = str(v)[:50]
-                if len(v) > 50:
-                    col_2 += f' ... (length: {len(v)})'
+            elif isinstance(value, str):
+                col_2 = str(value)[:50]
+                if len(value) > 50:
+                    col_2 += f' ... (length: {len(value)})'
                 table.add_row(col_1, text.Text(col_2))
-            elif isinstance(v, AbstractTensor):
-                comp = v.get_comp_backend()
-                v_squeezed = comp.squeeze(comp.detach(v))
+            elif isinstance(value, AbstractTensor):
+                comp = value.get_comp_backend()
+                v_squeezed = comp.squeeze(comp.detach(value))
                 if comp.n_dim(v_squeezed) == 1 and comp.shape(v_squeezed)[0] < 200:
                     table.add_row(col_1, ColorBoxArray(v_squeezed))
                 else:
                     table.add_row(
                         col_1,
-                        text.Text(f'{type(v)} of shape {comp.shape(v)}'),
+                        text.Text(f'{type(value)} of shape {comp.shape(value)}'),
                     )
-            elif isinstance(v, (tuple, list)):
+            elif isinstance(value, (tuple, list)):
                 col_2 = ''
-                for i, x in enumerate(v):
+                for i, x in enumerate(value):
                     if len(col_2) + len(str(x)) < 50:
-                        col_2 = str(v[:i])
+                        col_2 = str(value[:i])
                     else:
-                        col_2 = f'{col_2[:-1]}, ...] (length: {len(v)})'
+                        col_2 = f'{col_2[:-1]}, ...] (length: {len(value)})'
                         break
                 table.add_row(col_1, text.Text(col_2))
 
@@ -214,7 +214,7 @@ class SchemaHighlighter(RegexHighlighter):
         r"(?P<other_chars>[\[\],:])",
     ]
 
-    theme = rich.theme.Theme(
+    theme = Theme(
         {
             "class": "orange3",
             "attr": "green4",
