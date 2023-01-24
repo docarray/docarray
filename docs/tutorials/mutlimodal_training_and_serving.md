@@ -47,6 +47,7 @@ pythonic multi-modal PyTorch code.
 #!pip install torchvision
 #!pip install transformers
 #!pip install fastapi
+#!pip install pandas
 ```
 
 ```python
@@ -93,7 +94,7 @@ from docarray.documents import Text as BaseText
 
 
 class Tokens(BaseDocument):
-    input_ids: TorchTensor[512]
+    input_ids: TorchTensor[48]
     attention_mask: TorchTensor
 ```
 
@@ -102,7 +103,7 @@ class Text(BaseText):
     tokens: Optional[Tokens]
 ```
 Notice the `TorchTensor` type. It is a thin wrapper around `torch.Tensor` that can be use like any other torch tensor, 
-but also enables additional features. One such feature is shape parametrization (`TorchTensor[512]`), which lets you
+but also enables additional features. One such feature is shape parametrization (`TorchTensor[48]`), which lets you
 hint and even enforce the desired shape of any tensor!
 
 To represent our image data, we use the `Image` Document that is included in DocArray:
@@ -167,31 +168,32 @@ class TextPreprocess:
         self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased")
 
     def __call__(self, text: str) -> Tokens:
-        return Tokens(**self.tokenizer(text, padding="max_length", truncation=True))
+        return Tokens(
+            **self.tokenizer(text, padding="max_length", truncation=True, max_length=48)
+        )
 ```
 
 `VisionPreprocess` and `TextPreprocess` implement standard preprocessing steps for images and text, nothing special here.
 
 ```python
+import pandas as pd
+
+
 class PairDataset(Dataset):
     def __init__(
         self,
         file: str,
         vision_preprocess: VisionPreprocess,
         text_preprocess: TextPreprocess,
-        N=None,
+        N: Optional[int] = None,
     ):
-        self.docs = DocumentArray[PairTextImage]([])
-
-        with open("captions.txt", "r") as f:
-            lines = list(f.readlines())
-            lines = lines[1:N] if N else lines[1:]
-            for line in lines:
-                line = line.split(",")
-                doc = PairTextImage(
-                    text=Text(text=line[1]), image=Image(url=f"Images/{line[0]}")
-                )
-                self.docs.append(doc)
+        df = pd.read_csv(file, nrows=N)
+        self.docs = DocumentArray[PairTextImage](
+            PairTextImage(
+                text=Text(text=i.caption), image=Image(url=f"Images/{i.image}")
+            )
+            for i in df.itertuples()
+        )
 
         self.vision_preprocess = vision_preprocess
         self.text_preprocess = text_preprocess
@@ -199,8 +201,8 @@ class PairDataset(Dataset):
     def __len__(self):
         return len(self.docs)
 
-    def __getitem__(self, item):
-        doc = self.docs[item].copy()
+    def __getitem__(self, item: int):
+        doc = self.docs[item].copy(deep=True)
         doc.image.tensor = self.vision_preprocess(doc.image.url)
         doc.text.tokens = self.text_preprocess(doc.text.text)
         return doc
@@ -226,7 +228,7 @@ text_preprocess = TextPreprocess()
 ```python
 dataset = PairDataset("captions.txt", vision_preprocess, text_preprocess)
 loader = DataLoader(
-    dataset, batch_size=64, collate_fn=PairDataset.collate_fn, shuffle=True
+    dataset, batch_size=128, collate_fn=PairDataset.collate_fn, shuffle=True
 )
 ```
 
