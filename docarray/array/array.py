@@ -76,7 +76,7 @@ class DocumentArray(AnyDocumentArray):
 
     def __init__(
         self,
-        docs: Iterable[BaseDocument],
+        docs: Iterable[BaseDocument] = list(),
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data = [doc_ for doc_ in docs]
