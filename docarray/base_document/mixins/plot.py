@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
@@ -12,6 +12,8 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 if TYPE_CHECKING:
     from rich.console import Console, ConsoleOptions, RenderResult
     from rich.measure import Measurement
+
+    from docarray.base_document import BaseNode
 
 
 class PlotMixin(AbstractDocument):
@@ -52,30 +54,37 @@ class PlotMixin(AbstractDocument):
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
 
-        for k, v in cls.__annotations__.items():
+        for field_name, value in cls.__fields__.items():
+            if field_name != 'id':
+                field_type = value.type_
+                if not value.required:
+                    field_type = Optional[field_type]
 
-            field_type = cls._get_field_type(k)
+                field_cls = str(field_type).replace('[', '\[')
+                field_cls = re.sub("<class '|'>|[a-zA-Z_]*[.]", '', field_cls)
 
-            t = str(v).replace('[', '\[')
-            t = re.sub('[a-zA-Z_]*[.]', '', t)
+                node_name = f'{field_name}: {field_cls}'
 
-            if is_union_type(v) or is_optional_type(v):
-                sub_tree = Tree(f'{k}: {t}', highlight=True)
-                for arg in v.__args__:
-                    if issubclass(arg, BaseDocument):
-                        sub_tree.add(arg._get_schema())
-                    elif issubclass(arg, DocumentArray):
-                        sub_tree.add(arg.document_type._get_schema())
-                tree.add(sub_tree)
-            elif issubclass(field_type, BaseDocument):
-                tree.add(field_type._get_schema(doc_name=k))
-            elif issubclass(field_type, DocumentArray):
-                field_cls = v.__name__.replace('[', '\[')
-                sub_tree = Tree(f'{k}: {field_cls}', highlight=True)
-                sub_tree.add(field_type.document_type._get_schema())
-                tree.add(sub_tree)
-            else:
-                tree.add(f'{k}: {t}')
+                if is_union_type(field_type) or is_optional_type(field_type):
+                    sub_tree = Tree(node_name, highlight=True)
+                    for arg in field_type.__args__:
+                        if issubclass(arg, BaseDocument):
+                            sub_tree.add(arg._get_schema())
+                        elif issubclass(arg, DocumentArray):
+                            sub_tree.add(arg.document_type._get_schema())
+                    tree.add(sub_tree)
+
+                elif issubclass(field_type, BaseDocument):
+                    tree.add(field_type._get_schema(doc_name=field_name))
+
+                elif issubclass(field_type, DocumentArray):
+                    sub_tree = Tree(node_name, highlight=True)
+                    sub_tree.add(field_type.document_type._get_schema())
+                    tree.add(sub_tree)
+
+                else:
+                    tree.add(node_name)
+
         return tree
 
     def __rich_console__(self, console, options):
@@ -127,7 +136,7 @@ class PlotMixin(AbstractDocument):
             yield table
 
 
-def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
+def _plot_recursion(node: Union['BaseNode', Any], tree: Optional[Tree] = None) -> Tree:
     """
     Store node's children in rich.tree.Tree recursively.
 
@@ -138,7 +147,7 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
     """
     from docarray import BaseDocument, DocumentArray
 
-    tree = Tree(node) if tree is None else tree.add(node)
+    tree = Tree(node) if tree is None else tree.add(node)  # type: ignore
 
     if hasattr(node, '__dict__'):
         nested_attrs = [
