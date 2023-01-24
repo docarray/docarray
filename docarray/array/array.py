@@ -1,6 +1,16 @@
 from contextlib import contextmanager
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from typing_inspect import is_union_type
 
@@ -73,6 +83,7 @@ class DocumentArray(AnyDocumentArray):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
+    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self,

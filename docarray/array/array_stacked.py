@@ -56,6 +56,7 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     document_type: Type[BaseDocument] = AnyDocument
     _docs: DocumentArray
+    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self: T,
