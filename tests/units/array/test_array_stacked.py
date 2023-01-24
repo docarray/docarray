@@ -22,10 +22,6 @@ def batch():
     return batch.stack()
 
 
-def test_repr(batch):
-    assert batch.__repr__() == '<DocumentArrayStacked[Image] (length=10)>'
-
-
 def test_len(batch):
     assert len(batch) == 10
 

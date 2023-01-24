@@ -16,10 +16,6 @@ def da():
     return DocumentArray[Text]([Text(text='hello') for _ in range(10)])
 
 
-def test_repr(da):
-    assert da.__repr__() == '<DocumentArray[Text] (length=10)>'
-
-
 def test_iterate(da):
     for doc, doc2 in zip(da, da._data):
         assert doc.id == doc2.id

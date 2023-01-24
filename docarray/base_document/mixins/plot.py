@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
 
 class PlotMixin(AbstractDocument):
+    rich_table_width = 80
+
     def summary(self) -> None:
         """Print non-empty fields and nested structure of this Document object."""
         import rich
@@ -97,7 +99,13 @@ class PlotMixin(AbstractDocument):
 
         from docarray import BaseDocument, DocumentArray
 
-        table = Table('Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True)
+        table = Table(
+            'Attribute',
+            'Value',
+            width=self.rich_table_width,
+            box=box.ROUNDED,
+            highlight=True,
+        )
 
         for field_name, value in self.__dict__.items():
             col_1 = f'{field_name}: {value.__class__.__name__}'
