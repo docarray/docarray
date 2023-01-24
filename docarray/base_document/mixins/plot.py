@@ -141,12 +141,12 @@ def _plot_recursion(node: Any, tree: Optional[Tree] = None) -> Tree:
     tree = Tree(node) if tree is None else tree.add(node)
 
     if hasattr(node, '__dict__'):
-        iterable_attrs = [
+        nested_attrs = [
             k
             for k, v in node.__dict__.items()
             if isinstance(v, (docarray.DocumentArray, docarray.BaseDocument))
         ]
-        for attr in iterable_attrs:
+        for attr in nested_attrs:
             value = getattr(node, attr)
             attr_type = value.__class__.__name__
             icon = ':diamond_with_a_dot:'
