@@ -71,8 +71,6 @@ class PlotMixin(AbstractDocument):
                 tree.add(sub_tree)
             else:
                 tree.add(f'{k}: {t}')
-        tree.add("[blue_violet]Sister").add("[dark_sea_green4]Husband").add("[blue]Son")
-        tree.add(Tree("[dark_orange]Whatever"))
         return tree
 
     def __rich_console__(self, console, options):
