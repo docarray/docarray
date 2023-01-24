@@ -26,7 +26,7 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
     tensor_type: Type['AbstractTensor'] = NdArray
-    __typed_da__: Dict[BaseDocument, Type] = {}
+    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
