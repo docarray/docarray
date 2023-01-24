@@ -123,10 +123,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         )
         r = (b - a) * (tensor - min_d) / (max_d - min_d + eps) + a
 
-        dtype = tensor.dtype
-        x = torch.clip(r, *((a, b) if a < b else (b, a)))
-        z = x.to(dtype)
-        return z
+        normalized = torch.clip(r, *((a, b) if a < b else (b, a)))
+        return normalized.to(tensor.dtype)
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """
