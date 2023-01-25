@@ -1,12 +1,14 @@
 from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
+from torch.utils.data import Dataset
+
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import TorchTensor
 
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class MultiModalDataset(Generic[T_doc]):
+class MultiModalDataset(Dataset, Generic[T_doc]):
     """
     A dataset that can be used inside a PyTorch DataLoader.
     In other words, it implements the PyTorch Dataset interface.
