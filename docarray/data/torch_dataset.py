@@ -6,10 +6,17 @@ from docarray.typing import TorchTensor
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class TorchDataset(Generic[T_doc]):
-    """Torch Dataset from DocumentArray"""
+class MultiModalDataset(Generic[T_doc]):
+    """
+    A dataset that can be used inside a PyTorch DataLoader.
+    In other words, it implements the PyTorch Dataset interface.
+
+    :param da: the DocumentArray to be used as the dataset
+    :param preprocessing: a dictionary of field names and preprocessing functions
+    """
 
     document_type: Optional[Type[BaseDocument]] = None
+    __typed_ds__: Dict[Type[BaseDocument], Type['MultiModalDataset']] = {}
 
     def __init__(
         self, da: 'DocumentArray[T_doc]', preprocessing: Dict[str, Callable]
@@ -39,13 +46,17 @@ class TorchDataset(Generic[T_doc]):
         return batch_da.stack()
 
     @classmethod
-    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['TorchDataset']:
+    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['MultiModalDataset']:
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )
 
-        class _TypedDataset(cls):  # type: ignore
-            document_type = item
+        if item not in cls.__typed_ds__:
 
-        return _TypedDataset
+            class _TypedDataset(cls):  # type: ignore
+                document_type = item
+
+            cls.__typed_ds__[item] = _TypedDataset
+
+        return cls.__typed_ds__[item]

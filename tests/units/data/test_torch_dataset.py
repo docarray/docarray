@@ -3,7 +3,7 @@ from typing import Optional
 import torch
 
 from docarray import BaseDocument, DocumentArray
-from docarray.data import TorchDataset
+from docarray.data import MultiModalDataset
 from docarray.documents import Image, Text
 
 
@@ -26,7 +26,7 @@ def test_torch_dataset():
         text: Text
         image: Image
 
-    class Mydataset(TorchDataset[PairTextImage]):
+    class Mydataset(MultiModalDataset[PairTextImage]):
         def __init__(self, csv_file: str, preprocessing: Optional[dict] = None):
             with open(csv_file, "r") as f:
                 f.readline()
