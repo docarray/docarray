@@ -50,3 +50,29 @@ def test_empty_dtype():
 def test_empty_device():
     with pytest.raises(NotImplementedError):
         NumpyCompBackend.empty((10, 3), device='meta')
+
+
+def test_squeeze():
+    tensor = np.zeros(shape=(1, 1, 3, 1))
+    squeezed = NumpyCompBackend.squeeze(tensor)
+    assert squeezed.shape == (3,)
+
+
+@pytest.mark.parametrize(
+    'array,t_range,x_range,result',
+    [
+        (np.array([0, 1, 2, 3, 4, 5]), (0, 10), None, np.array([0, 2, 4, 6, 8, 10])),
+        (np.array([0, 1, 2, 3, 4, 5]), (0, 10), (0, 10), np.array([0, 1, 2, 3, 4, 5])),
+        (
+            np.array([[0.0, 1.0], [0.0, 1.0]]),
+            (0, 10),
+            None,
+            np.array([[0.0, 10.0], [0.0, 10.0]]),
+        ),
+    ],
+)
+def test_minmax_normalize(array, t_range, x_range, result):
+    output = NumpyCompBackend.minmax_normalize(
+        tensor=array, t_range=t_range, x_range=x_range
+    )
+    assert np.allclose(output, result)
