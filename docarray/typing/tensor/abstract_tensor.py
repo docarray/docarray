@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Generic,
     List,
+    Optional,
     Tuple,
     Type,
     TypeVar,
@@ -63,6 +64,19 @@ class _ParametrizedMeta(type):
     def __instancecheck__(cls, instance):
         is_tensor = isinstance(instance, AbstractTensor)
         if is_tensor:  # custom handling
+            _cls = cast(Type[AbstractTensor], cls)
+            if (
+                _cls.__unparametrizedcls__
+            ):  # This is not None if the tensor is parametrized
+                if (
+                    _cls.get_comp_backend().shape(instance)
+                    != _cls.__docarray_target_shape__
+                ):
+                    return False
+                return any(
+                    issubclass(candidate, _cls.__unparametrizedcls__)
+                    for candidate in type(instance).mro()
+                )
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
 
@@ -70,6 +84,8 @@ class _ParametrizedMeta(type):
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
+    __unparametrizedcls__: Optional[type] = None
+    __docarray_target_shape__: Optional[Tuple[int, ...]] = None
     _proto_type_name: str
 
     def _to_node_protobuf(self: T) -> 'NodeProto':
@@ -172,6 +188,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
             cls,  # type: ignore
             metaclass=cls.__parametrized_meta__,  # type: ignore
         ):
+            __unparametrizedcls__ = cls
             __docarray_target_shape__ = shape
 
             @classmethod
