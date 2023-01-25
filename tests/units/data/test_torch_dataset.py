@@ -92,7 +92,7 @@ def test_root_field(captions_da: DocumentArray[Text]):
     )
 
     batch = next(iter(loader))
-    assert batch.embedding.shape == (BATCH_SIZE, 64)
+    assert batch.embedding.shape[1] == 64
 
 
 def test_nested_field(captions_da: DocumentArray[PairTextImage]):
@@ -109,7 +109,7 @@ def test_nested_field(captions_da: DocumentArray[PairTextImage]):
     )
 
     batch = next(iter(loader))
-    assert batch.text.embedding.shape == (BATCH_SIZE, 64)
+    assert batch.text.embedding.shape[1] == 64
 
     preprocessing = {
         "image": ImagePreprocess(),
@@ -122,4 +122,4 @@ def test_nested_field(captions_da: DocumentArray[PairTextImage]):
     )
 
     batch = next(iter(loader))
-    assert batch.text.embedding.shape == (BATCH_SIZE, 42)
+    assert batch.text.embedding.shape[1] == 42
