@@ -1,14 +1,11 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from docarray.array.abstract_array import AnyDocumentArray
 
 
 class DocumentArraySummary:
-    def __init__(
-        self,
-        da: Optional['AnyDocumentArray'] = None,
-    ):
+    def __init__(self, da: 'AnyDocumentArray'):
         self.da = da
 
     def summary(self) -> None:
