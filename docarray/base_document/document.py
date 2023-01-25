@@ -1,7 +1,9 @@
 import os
+from io import StringIO
 from typing import Type
 
 import orjson
+import rich
 from pydantic import BaseModel, Field, parse_obj_as
 
 from docarray.base_document.abstract_document import AbstractDocument
@@ -34,3 +36,8 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         :return:
         """
         return cls.__fields__[field].outer_type_
+
+    def __str__(self):
+        output = StringIO()
+        rich.print(self, file=output)
+        return output.getvalue().strip()
