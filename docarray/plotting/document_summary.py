@@ -106,7 +106,7 @@ class DocumentSummary:
     def __rich_console__(self, console, options):
         kls = self.doc.__class__.__name__
         id_abbrv = getattr(self.doc, 'id')[:7]
-        yield f":page_facing_up: [b]{kls}" f"[/b]: [cyan]{id_abbrv} ...[cyan]"
+        yield f':page_facing_up: [b]{kls} [/b]: [cyan]{id_abbrv} ...[cyan]'
 
         from rich import box, text
         from rich.table import Table
@@ -242,17 +242,19 @@ class SchemaHighlighter(RegexHighlighter):
     """Highlighter to apply colors to a Document's schema tree."""
 
     highlights = [
-        r"(?P<class>^[A-Z][a-zA-Z]*)",
-        r"(?P<attr>^.*(?=:))",
-        r"(?P<attr_type>(?<=:).*$)",
-        r"(?P<other_chars>[\[\],:])",
+        r'(?P<class>^[A-Z][a-zA-Z]*)',
+        r'(?P<attr>^.*(?=:))',
+        r'(?P<attr_type>(?<=:).*$)',
+        r'(?P<union_or_opt>Union|Optional)',
+        r'(?P<other_chars>[\[\],:])',
     ]
 
     theme = Theme(
         {
-            "class": "orange3",
-            "attr": "green4",
-            "attr_type": "medium_purple3",
-            "other_chars": "black",
+            'class': 'orange3',
+            'attr': 'green4',
+            'attr_type': 'medium_orchid',
+            'union_or_opt': 'medium_purple4',
+            'other_chars': 'black',
         }
     )
