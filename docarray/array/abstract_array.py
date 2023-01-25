@@ -2,6 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
+from docarray.display.document_array_summary import DocumentArraySummary
 from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
 
@@ -16,6 +17,9 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
     tensor_type: Type['AbstractTensor'] = NdArray
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} (length={len(self)})>'
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -209,3 +213,10 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             return sequence
         else:
             return [item for sublist in sequence for item in sublist]
+
+    def summary(self):
+        """
+        Print a summary of this DocumentArray object and a summary of the schema of its
+        Document type.
+        """
+        DocumentArraySummary(self).summary()
