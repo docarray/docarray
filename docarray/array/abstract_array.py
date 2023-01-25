@@ -2,6 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, List, Sequence, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
+from docarray.display.document_array_summary import DocumentArraySummary
 from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
 
@@ -218,15 +219,4 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         Print a summary of this DocumentArray object and a summary of the schema of its
         Document type.
         """
-        from rich import box
-        from rich.console import Console
-        from rich.panel import Panel
-        from rich.table import Table
-
-        table = Table(box=box.SIMPLE, highlight=True)
-        table.show_header = False
-        table.add_row('Type', self.__class__.__name__)
-        table.add_row('Length', str(len(self)))
-
-        Console().print(Panel(table, title='DocumentArray Summary', expand=False))
-        self.document_type.schema_summary()
+        DocumentArraySummary(self).summary()

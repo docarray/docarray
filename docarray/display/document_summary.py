@@ -7,12 +7,12 @@ from typing_extensions import TYPE_CHECKING
 from typing_inspect import is_optional_type, is_union_type
 
 from docarray.base_document.abstract_document import AbstractDocument
+from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from rich.console import Console, ConsoleOptions, RenderResult
-    from rich.measure import Measurement
 
 
 class DocumentSummary:
@@ -21,10 +21,8 @@ class DocumentSummary:
     def __init__(
         self,
         doc: Optional['AbstractDocument'] = None,
-        doc_cls: Optional[Type['AbstractDocument']] = None,
     ):
         self.doc = doc
-        self.doc_cls = doc_cls
 
     def summary(self) -> None:
         """Print non-empty fields and nested structure of this Document object."""
@@ -103,7 +101,9 @@ class DocumentSummary:
 
         return tree
 
-    def __rich_console__(self, console, options):
+    def __rich_console__(
+        self, console: 'Console', options: 'ConsoleOptions'
+    ) -> 'RenderResult':
         kls = self.doc.__class__.__name__
         id_abbrv = getattr(self.doc, 'id')[:7]
         yield f':page_facing_up: [b]{kls} [/b]: [cyan]{id_abbrv} ...[cyan]'
@@ -135,15 +135,7 @@ class DocumentSummary:
                     col_2 += f' ... (length: {len(value)})'
                 table.add_row(col_1, text.Text(col_2))
             elif isinstance(value, AbstractTensor):
-                comp = value.get_comp_backend()
-                v_squeezed = comp.squeeze(comp.detach(value))
-                if comp.n_dim(v_squeezed) == 1 and comp.shape(v_squeezed)[0] < 200:
-                    table.add_row(col_1, ColorBoxArray(v_squeezed))
-                else:
-                    table.add_row(
-                        col_1,
-                        text.Text(f'{type(value)} of shape {comp.shape(value)}'),
-                    )
+                table.add_row(col_1, TensorDisplay(tensor=value))
             elif isinstance(value, (tuple, list)):
                 col_2 = ''
                 for i, x in enumerate(value):
@@ -201,41 +193,6 @@ class DocumentSummary:
                     DocumentSummary._plot_recursion(DocumentSummary(doc=d), match_tree)
 
         return tree
-
-
-class ColorBoxArray:
-    """
-    Rich representation of an array as coloured blocks.
-    """
-
-    def __init__(self, array: AbstractTensor):
-        comp_be = array.get_comp_backend()
-        self._array = comp_be.minmax_normalize(comp_be.detach(array), (0, 5))
-
-    def __rich_console__(
-        self, console: 'Console', options: 'ConsoleOptions'
-    ) -> 'RenderResult':
-        import colorsys
-
-        from rich.color import Color
-        from rich.segment import Segment
-        from rich.style import Style
-
-        h = 0.75
-        for idx, y in enumerate(self._array):
-            lightness = 0.1 + ((y / 5) * 0.7)
-            r, g, b = colorsys.hls_to_rgb(h, lightness + 0.7 / 10, 1.0)
-            color = Color.from_rgb(r * 255, g * 255, b * 255)
-            yield Segment('▄', Style(color=color, bgcolor=color))
-            if idx != 0 and idx % options.max_width == 0:
-                yield Segment.line()
-
-    def __rich_measure__(
-        self, console: 'Console', options: 'ConsoleOptions'
-    ) -> 'Measurement':
-        from rich.measure import Measurement
-
-        return Measurement(1, options.max_width)
 
 
 class SchemaHighlighter(RegexHighlighter):
