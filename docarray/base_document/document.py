@@ -18,6 +18,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
+    _console: rich.console.Console = rich.console.Console()
 
     class Config:
         json_loads = orjson.loads
@@ -37,8 +38,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         return cls.__fields__[field].outer_type_
 
     def __str__(self):
-        console = rich.console.Console()
-        with console.capture() as capture:
-            console.print(self)
+        with self._console.capture() as capture:
+            self._console.print(self)
 
         return capture.get().strip()
