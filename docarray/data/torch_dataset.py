@@ -30,7 +30,16 @@ class MultiModalDataset(Generic[T_doc]):
     def __getitem__(self, item: int):
         doc = self.da[item].copy(deep=True)
         for field, preprocess in self._preprocessing.items():
-            preprocess(doc.__getattribute__(field))
+            if len(field) == 0:
+                doc = preprocess(doc) or doc
+            else:
+                acc_path = field.split('.')
+                _field_ref = doc
+                for attr in acc_path[:-1]:
+                    _field_ref = getattr(_field_ref, attr)
+                attr = acc_path[-1]
+                value = getattr(_field_ref, attr)
+                setattr(_field_ref, attr, preprocess(value) or value)
         return doc
 
     @classmethod
