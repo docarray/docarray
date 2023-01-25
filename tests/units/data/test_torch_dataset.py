@@ -82,6 +82,19 @@ def test_primitives(captions_da: DocumentArray[PairTextImage]):
     assert all(t.endswith(' meow') for t in batch.text)
 
 
+def test_root_field(captions_da: DocumentArray[Text]):
+    BATCH_SIZE = 32
+
+    preprocessing = {"": TextPreprocess()}
+    dataset = MultiModalDataset[Text](captions_da.text, preprocessing)
+    loader = DataLoader(
+        dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
+    )
+
+    batch = next(iter(loader))
+    assert batch.embedding.shape == (BATCH_SIZE, 64)
+
+
 def test_nested_field(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
