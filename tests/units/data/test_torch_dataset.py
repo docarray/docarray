@@ -1,10 +1,15 @@
-from typing import Optional
-
+import pytest
 import torch
+from torch.utils.data import DataLoader
 
 from docarray import BaseDocument, DocumentArray
 from docarray.data import MultiModalDataset
 from docarray.documents import Image, Text
+
+
+class PairTextImage(BaseDocument):
+    text: Text
+    image: Image
 
 
 class ImagePreprocess:
@@ -16,44 +21,92 @@ class ImagePreprocess:
 class TextPreprocess:
     def __call__(self, text: Text) -> None:
         assert isinstance(text, Text)
-        text.embedding = torch.randn(64)
+        if text.text.endswith(' meow'):
+            text.embedding = torch.randn(42)
+        else:
+            text.embedding = torch.randn(64)
 
 
-def test_torch_dataset():
+class Meowification:
+    def __call__(self, text: str) -> None:
+        assert isinstance(text, str)
+        return text + ' meow'
+
+
+@pytest.fixture
+def captions_da() -> DocumentArray[PairTextImage]:
+    with open("tests/toydata/captions.csv", "r") as f:
+        f.readline()
+        da = DocumentArray[PairTextImage](
+            PairTextImage(
+                text=Text(text=i[1]),
+                image=Image(url=f"tests/toydata/image-data/{i[0]}"),
+            )
+            for i in map(lambda x: x.strip().split(","), f.readlines())
+        )
+    return da
+
+
+# TEMPORARY PATCH WHILE WE WAIT FOR ISINSTANCE TO BE FIXED
+isinstance = lambda x, y: str(x.__class__) == str(y)  # noqa: E731
+
+
+def test_torch_dataset(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
-    class PairTextImage(BaseDocument):
-        text: Text
-        image: Image
-
-    class Mydataset(MultiModalDataset[PairTextImage]):
-        def __init__(self, csv_file: str, preprocessing: Optional[dict] = None):
-            with open(csv_file, "r") as f:
-                f.readline()
-                da = DocumentArray[PairTextImage](
-                    PairTextImage(
-                        text=Text(text=i[1]),
-                        image=Image(url=f"tests/toydata/image-data/{i[0]}"),
-                    )
-                    for i in map(lambda x: x.strip().split(","), f.readlines())
-                )
-            super().__init__(da, preprocessing)
-
-    from torch.utils.data import DataLoader
-
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
-    dataset = Mydataset(
-        csv_file="tests/toydata/captions.csv", preprocessing=preprocessing
-    )
+    dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
     loader = DataLoader(
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )
 
     from docarray.array.array_stacked import DocumentArrayStacked
 
-    # TEMPORARY PATCH WHILE WE WAIT FOR ISINSTANCE TO BE FIXED
-    isinstance = lambda x, y: str(x.__class__) == str(y)  # noqa: E731
-
+    batch_lens = []
     for batch in loader:
         assert isinstance(batch, DocumentArrayStacked[PairTextImage])
-        assert len(batch) == BATCH_SIZE
+        batch_lens.append(len(batch))
+    assert all(x == BATCH_SIZE for x in batch_lens[:-1])
+
+
+def test_primitives(captions_da: DocumentArray[PairTextImage]):
+    BATCH_SIZE = 32
+
+    preprocessing = {"text": Meowification()}
+    dataset = MultiModalDataset[Text](captions_da.text, preprocessing)
+    loader = DataLoader(
+        dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
+    )
+
+    batch = next(iter(loader))
+    assert all(t.endswith(' meow') for t in batch.text)
+
+
+def test_nested_field(captions_da: DocumentArray[PairTextImage]):
+    BATCH_SIZE = 32
+
+    preprocessing = {
+        "image": ImagePreprocess(),
+        "text": TextPreprocess(),
+        "text.text": Meowification(),
+    }
+    dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
+    loader = DataLoader(
+        dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
+    )
+
+    batch = next(iter(loader))
+    assert batch.text.embedding.shape == (BATCH_SIZE, 64)
+
+    preprocessing = {
+        "image": ImagePreprocess(),
+        "text.text": Meowification(),
+        "text": TextPreprocess(),
+    }
+    dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
+    loader = DataLoader(
+        dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
+    )
+
+    batch = next(iter(loader))
+    assert batch.text.embedding.shape == (BATCH_SIZE, 42)
