@@ -2,14 +2,16 @@ import os
 from typing import Type
 
 import orjson
-import rich
 from pydantic import BaseModel, Field, parse_obj_as
+from rich.console import Console
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import PlotMixin, ProtoMixin
 from docarray.typing import ID
+
+_console: Console = Console()
 
 
 class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
@@ -18,7 +20,6 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
-    _console: rich.console.Console = rich.console.Console()
 
     class Config:
         json_loads = orjson.loads
@@ -38,7 +39,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         return cls.__fields__[field].outer_type_
 
     def __str__(self):
-        with self._console.capture() as capture:
-            self._console.print(self)
+        with _console.capture() as capture:
+            _console.print(self)
 
         return capture.get().strip()
