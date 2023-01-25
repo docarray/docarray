@@ -1,5 +1,4 @@
 import os
-from io import StringIO
 from typing import Type
 
 import orjson
@@ -38,6 +37,8 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         return cls.__fields__[field].outer_type_
 
     def __str__(self):
-        output = StringIO()
-        rich.print(self, file=output)
-        return output.getvalue().strip()
+        console = rich.console.Console()
+        with console.capture() as capture:
+            console.print(self)
+
+        return capture.get().strip()
