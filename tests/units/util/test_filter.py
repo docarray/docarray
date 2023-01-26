@@ -21,13 +21,29 @@ class MMDoc(BaseDocument):
 
 @pytest.fixture
 def docs():
-    mmdoc1 = MMDoc(text_doc=Text(text='Text Doc of Document 1'), text='Text of Document 1',
-                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')], dictionary={})
-    mmdoc2 = MMDoc(text_doc=Text(text='Text Doc of Document 2'), text='Text of Document 2',
-                   image=Image(url='exampleimage.jpg'), price=3, dictionary={'a': 0, 'b': 1, 'c': 2})
-    mmdoc3 = MMDoc(text_doc=Text(text='Text Doc of Document 3'), text='Text of Document 3', price=1000, boolean=True,
-                   categories=['cat1', 'cat2'],
-                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')], optional_num=30, dictionary={'a': 0, 'b': 1})
+    mmdoc1 = MMDoc(
+        text_doc=Text(text='Text Doc of Document 1'),
+        text='Text of Document 1',
+        sub_docs=[Text(text='subtext1'), Text(text='subtext2')],
+        dictionary={},
+    )
+    mmdoc2 = MMDoc(
+        text_doc=Text(text='Text Doc of Document 2'),
+        text='Text of Document 2',
+        image=Image(url='exampleimage.jpg'),
+        price=3,
+        dictionary={'a': 0, 'b': 1, 'c': 2},
+    )
+    mmdoc3 = MMDoc(
+        text_doc=Text(text='Text Doc of Document 3'),
+        text='Text of Document 3',
+        price=1000,
+        boolean=True,
+        categories=['cat1', 'cat2'],
+        sub_docs=[Text(text='subtext1'), Text(text='subtext2')],
+        optional_num=30,
+        dictionary={'a': 0, 'b': 1},
+    )
     docs = DocumentArray[MMDoc]([mmdoc1, mmdoc2, mmdoc3])
 
     return docs
@@ -160,7 +176,12 @@ def test_array_simple_filters(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_placehold_filter(dict_api):
-    docs = DocumentArray[MMDoc]([MMDoc(text='A', text_doc=Text(text='A')), MMDoc(text='A', text_doc=Text(text='B'))])
+    docs = DocumentArray[MMDoc](
+        [
+            MMDoc(text='A', text_doc=Text(text='A')),
+            MMDoc(text='A', text_doc=Text(text='B')),
+        ]
+    )
 
     if dict_api:
         method = lambda query: filter(docs, query)
@@ -181,15 +202,46 @@ def test_logic_filter(docs, dict_api):
         method = lambda query: filter(docs, query)
     else:
         method = lambda query: filter(docs, json.dumps(query))
-    result = method({'$or': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}})
+    result = method(
+        {
+            '$or': {
+                'text': {'$eq': 'Text of Document 1'},
+                'text_doc': {'$eq': 'Text Doc of Document 2'},
+            }
+        }
+    )
     assert len(result) == 2
 
-    result = method({'$not': {'$or': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}}})
+    result = method(
+        {
+            '$not': {
+                '$or': {
+                    'text': {'$eq': 'Text of Document 1'},
+                    'text_doc': {'$eq': 'Text Doc of Document 2'},
+                }
+            }
+        }
+    )
     assert len(result) == 1
 
-    result = method({'$and': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}})
+    result = method(
+        {
+            '$and': {
+                'text': {'$eq': 'Text of Document 1'},
+                'text_doc': {'$eq': 'Text Doc of Document 2'},
+            }
+        }
+    )
     assert len(result) == 0
 
-    result = method({'$not': {'$and': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}}})
+    result = method(
+        {
+            '$not': {
+                '$and': {
+                    'text': {'$eq': 'Text of Document 1'},
+                    'text_doc': {'$eq': 'Text Doc of Document 2'},
+                }
+            }
+        }
+    )
     assert len(result) == 3
-

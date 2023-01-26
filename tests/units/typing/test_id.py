@@ -35,4 +35,3 @@ def test_operators(id):
     assert parsed_id != 'aljdñjd'
     assert str(id)[0:1] in parsed_id
     assert 'docarray' not in parsed_id
-
