@@ -112,7 +112,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
-    def dtype(tensor: 'TTensor'):
+    def dtype(tensor: 'TTensor') -> Any:
         """Get the data type of the tensor."""
         ...
 
