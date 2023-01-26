@@ -91,8 +91,11 @@ class Text(BaseDocument):
             # BaseModel has a default equality
             return super().__eq__(other)
 
-    def __contains__(self, item):
-        return self.text.__contains__(item)
+    def __contains__(self, item: str):
+        if self.text is not None:
+            return self.text.__contains__(item)
+        else:
+            return False
 
     def __str__(self):
         return self.text

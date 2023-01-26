@@ -1,11 +1,11 @@
-from typing import Dict, TYPE_CHECKING, Optional
+from typing import Dict, TYPE_CHECKING, Optional, Union, List
 
-from docarray.utils.lookup import Q, LookupNode, LookupLeaf
+from docarray.utils.lookup import Q, LookupNode, LookupLeaf, LookupTreeElem
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument
 
-LOGICAL_OPERATORS = {'$and': 'and', '$or': 'or', '$not': True}
+LOGICAL_OPERATORS: Dict[str, Union[str, bool]] = {'$and': 'and', '$or': 'or', '$not': True}
 
 COMPARISON_OPERATORS = {
     '$lt': 'lt',
@@ -31,9 +31,11 @@ SUPPORTED_OPERATORS = {
 }
 
 
-def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
+def _parse_lookups(data: Union[Dict, List] = {}, root_node: Optional[LookupTreeElem] = None):
     if isinstance(data, dict):
         for key, value in data.items():
+
+            node: Optional[LookupTreeElem] = None
             if isinstance(root_node, LookupLeaf):
                 root = LookupNode()
                 root.add_child(root_node)
@@ -41,7 +43,7 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
 
             if key in LOGICAL_OPERATORS:
                 if key == '$not':
-                    node = LookupNode(negate=LOGICAL_OPERATORS[key])
+                    node = LookupNode(negate=True)
                 else:
                     node = LookupNode(op=LOGICAL_OPERATORS[key])
                 node = _parse_lookups(value, root_node=node)
@@ -63,7 +65,7 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                     op, val = items[0]
                     if op in LOGICAL_OPERATORS:
                         if op == '$not':
-                            node = LookupNode(negate=LOGICAL_OPERATORS[op])
+                            node = LookupNode(negate=True)
                         else:
                             node = LookupNode(op=LOGICAL_OPERATORS[op])
                         node = _parse_lookups(val, root_node=node)
@@ -81,7 +83,8 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                         node.add_child(_node)
 
             if root_node and node:
-                root_node.add_child(node)
+                if isinstance(root_node, LookupNode):
+                    root_node.add_child(node)
             elif node:
                 root_node = node
 
@@ -89,7 +92,8 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
         for d in data:
             node = _parse_lookups(d)
             if root_node and node:
-                root_node.add_child(node)
+                if isinstance(root_node, LookupNode):
+                    root_node.add_child(node)
             elif node:
                 root_node = node
     else:
@@ -101,7 +105,7 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
 class QueryParser:
     """A class to parse dict condition to lookup query."""
 
-    def __init__(self, conditions: Dict = {}):
+    def __init__(self, conditions: Union[Dict, List] = {}):
         self.conditions = conditions
         self.lookup_groups = _parse_lookups(self.conditions)
 

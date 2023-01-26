@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union
 
 from functools import partial
 
@@ -183,9 +183,9 @@ class LookupNode(LookupTreeElem):
 
     """
 
-    def __init__(self, op: str = 'and', negate: bool = False):
+    def __init__(self, op: Union[str, bool] = 'and', negate: bool = False):
         super(LookupNode, self).__init__()
-        self.children = []
+        self.children: List[LookupNode] = []
         self.op = op
         self.negate = negate
 
