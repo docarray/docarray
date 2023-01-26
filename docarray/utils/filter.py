@@ -1,16 +1,10 @@
 import json
 
-from typing import NamedTuple, Union, Dict, List
+from typing import Union, Dict, List
 
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
-from docarray.typing import AnyTensor
-
-
-class FilterResult(NamedTuple):
-    documents: DocumentArray
-    scores: AnyTensor
 
 
 def filter(
