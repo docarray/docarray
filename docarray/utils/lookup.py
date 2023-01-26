@@ -106,7 +106,7 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
     elif last == 'lte':
         return iff_not_none(value, lambda y: y <= val)
     elif last == 'regex':
-        return iff_not_none(value, lambda y: re.search(val, y) is not None)
+        return iff_not_none(str(value), lambda y: re.search(val, y) is not None)
     elif last == 'size':
         return iff_not_none(value, lambda y: len(y) == val)
     elif last == 'exists':

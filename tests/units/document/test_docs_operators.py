@@ -13,3 +13,6 @@ def test_text_document_operators():
 
     doc3 = Text(id='other-id', text='text', url='url.com')
     assert doc != doc3
+
+    assert 't' in doc
+    assert 'a' not in doc
