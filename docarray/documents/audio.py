@@ -1,8 +1,18 @@
-from typing import Optional, TypeVar
+from typing import Any, Optional, Type, TypeVar, Union
+
+import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AudioUrl
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
+
+try:
+    import torch
+
+    torch_available = True
+except ImportError:
+    torch_available = False
 
 T = TypeVar('T', bound='Audio')
 
@@ -76,3 +86,17 @@ class Audio(BaseDocument):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[str, AbstractTensor, Any],
+    ) -> T:
+        if isinstance(value, str):
+            value = cls(url=value)
+        elif isinstance(value, (AbstractTensor, np.ndarray)) or (
+            torch_available and isinstance(value, torch.Tensor)
+        ):
+            value = cls(tensor=value)
+
+        return super().validate(value)
