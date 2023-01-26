@@ -103,12 +103,22 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         return tensor
 
     @staticmethod
+    def dtype(tensor: 'np.ndarray') -> np.dtype:
+        """Get the data type of the tensor."""
+        return tensor.dtype
+
+    @staticmethod
+    def isnan(tensor: 'np.ndarray') -> 'np.ndarray':
+        """Check element-wise for nan and return result as a boolean array"""
+        return np.isnan(tensor)
+
+    @staticmethod
     def minmax_normalize(
         tensor: 'np.ndarray',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
-    ):
+    ) -> 'np.ndarray':
         """
         Normalize values in `tensor` into `t_range`.
 

@@ -106,12 +106,24 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def dtype(tensor: 'TTensor'):
+        """Get the data type of the tensor."""
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def isnan(tensor: 'TTensor') -> 'TTensor':
+        """Check element-wise for nan and return result as a boolean array"""
+        ...
+
+    @staticmethod
+    @abstractmethod
     def minmax_normalize(
         tensor: 'TTensor',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
-    ):
+    ) -> 'TTensor':
         """
         Normalize values in `tensor` into `t_range`.
 

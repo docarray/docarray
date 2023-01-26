@@ -107,12 +107,22 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.detach()
 
     @staticmethod
+    def dtype(tensor: 'torch.Tensor') -> torch.dtype:
+        """Get the data type of the tensor."""
+        return tensor.dtype
+
+    @staticmethod
+    def isnan(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """Check element-wise for nan and return result as a boolean array"""
+        return torch.isnan(tensor)
+
+    @staticmethod
     def minmax_normalize(
         tensor: 'torch.Tensor',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
-    ):
+    ) -> 'torch.Tensor':
         """
         Normalize values in `tensor` into `t_range`.
 
