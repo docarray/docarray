@@ -87,7 +87,7 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
         return value in val
     elif last == 'nin':
         val = guard_iter(val)
-        return not (value in val)
+        return value not in val
     elif last == 'startswith':
         val = guard_str(val)
         return iff_not_none(value, lambda y: y.startswith(val))
@@ -143,7 +143,8 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
     else:
         # return value == val
         raise ValueError(
-            f'The given compare operator "{last}" (derived from "{key}") is not supported'
+            f'The given compare operator "{last}" (derived from "{key}")'
+            f' is not supported'
         )
 
 
@@ -198,7 +199,7 @@ class LookupNode(LookupTreeElem):
         :param doc : the document to match
         :return: returns true if lookup passed
         """
-        print(f' evaluate document Lookupnode')
+        print('evaluate document Lookupnode')
         results = map(lambda x: x.evaluate(doc), self.children)
         result = any(results) if self.op == 'or' else all(results)
         return not result if self.negate else result

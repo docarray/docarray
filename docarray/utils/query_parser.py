@@ -5,7 +5,11 @@ from docarray.utils.lookup import Q, LookupNode, LookupLeaf, LookupTreeElem
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument
 
-LOGICAL_OPERATORS: Dict[str, Union[str, bool]] = {'$and': 'and', '$or': 'or', '$not': True}
+LOGICAL_OPERATORS: Dict[str, Union[str, bool]] = {
+    '$and': 'and',
+    '$or': 'or',
+    '$not': True,
+}
 
 COMPARISON_OPERATORS = {
     '$lt': 'lt',
@@ -31,7 +35,9 @@ SUPPORTED_OPERATORS = {
 }
 
 
-def _parse_lookups(data: Union[Dict, List] = {}, root_node: Optional[LookupTreeElem] = None):
+def _parse_lookups(
+    data: Union[Dict, List] = {}, root_node: Optional[LookupTreeElem] = None
+):
     if isinstance(data, dict):
         for key, value in data.items():
 
@@ -50,7 +56,8 @@ def _parse_lookups(data: Union[Dict, List] = {}, root_node: Optional[LookupTreeE
 
             elif key.startswith('$'):
                 raise ValueError(
-                    f'The operator {key} is not supported yet, please double check the given filters!'
+                    f'The operator {key} is not supported yet,'
+                    f' please double check the given filters!'
                 )
             else:
                 if not value or not isinstance(value, dict):
@@ -73,7 +80,8 @@ def _parse_lookups(data: Union[Dict, List] = {}, root_node: Optional[LookupTreeE
                         node = Q(**{f'{key}__{SUPPORTED_OPERATORS[op]}': val})
                     else:
                         raise ValueError(
-                            f'The operator {op} is not supported yet, please double check the given filters!'
+                            f'The operator {op} is not supported yet, '
+                            f'please double check the given filters!'
                         )
 
                 else:

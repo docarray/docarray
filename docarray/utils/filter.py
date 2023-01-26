@@ -23,7 +23,8 @@ def filter(
 
     :param index: the index of Documents to filter in
     :param query: the query to filter by
-    :return: A DocumentArray containing the Documents inside DocumentArray that fullfil the filter conditions
+    :return: A DocumentArray containing the Documents
+    inside DocumentArray that fullfil the filter conditions
     """
     from docarray.utils.query_parser import QueryParser
 

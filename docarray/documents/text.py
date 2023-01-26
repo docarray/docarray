@@ -64,10 +64,11 @@ class Text(BaseDocument):
         )
         mmdoc.text_doc.text = mmdoc.text_doc.url.load()
 
-    This Document can be compared against another Document of the same type or a string. When compared against
-    another object of the same type, the pydantic BaseModel equality check will apply which checks the equality of every
-    attribute, including `id`. When compared against a str, it will check the equality of the `text` attribute against the
-    given string.
+    This Document can be compared against another Document of the same type or a string.
+    When compared against another object of the same type, the pydantic BaseModel
+    equality check will apply which checks the equality of every attribute,
+    including `id`. When compared against a str, it will check the equality
+    of the `text` attribute against the given string.
 
     .. code-block:: python
 
