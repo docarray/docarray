@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image, Text
 from docarray.utils.filter import filter
@@ -16,17 +16,18 @@ class MMDoc(BaseDocument):
     boolean: bool = False
     categories: Optional[List[str]] = None
     sub_docs: Optional[List[Text]] = None
+    dictionary: Optional[Dict[str, Any]] = None
 
 
 @pytest.fixture
 def docs():
     mmdoc1 = MMDoc(text_doc=Text(text='Text Doc of Document 1'), text='Text of Document 1',
-                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')])
+                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')], dictionary={})
     mmdoc2 = MMDoc(text_doc=Text(text='Text Doc of Document 2'), text='Text of Document 2',
-                   image=Image(url='exampleimage.jpg'), price=3)
+                   image=Image(url='exampleimage.jpg'), price=3, dictionary={'a': 0, 'b': 1, 'c': 2})
     mmdoc3 = MMDoc(text_doc=Text(text='Text Doc of Document 3'), text='Text of Document 3', price=1000, boolean=True,
                    categories=['cat1', 'cat2'],
-                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')], optional_num=30)
+                   sub_docs=[Text(text='subtext1'), Text(text='subtext2')], optional_num=30, dictionary={'a': 0, 'b': 1})
     docs = DocumentArray[MMDoc]([mmdoc1, mmdoc2, mmdoc3])
 
     return docs
@@ -78,11 +79,22 @@ def test_simple_filter(docs, dict_api):
     result = method({'price': {'$lte': 500}})
     assert len(result) == 2
 
+    result = method({'dictionary': {'$eq': {}}})
+    assert len(result) == 1
+    assert result[0].dictionary == {}
+
+    result = method({'dictionary': {'$eq': {'a': 0, 'b': 1}}})
+    assert len(result) == 1
+    assert result[0].dictionary == {'a': 0, 'b': 1}
+
+    result = method({'text': {'$neq': 'Text of Document 1'}})
+    assert len(result) == 2
+
     # EXISTS DOES NOT SEEM TO WORK
     result = method({'optional_num': {'$exists': True}})
-    assert len(result) == 1
+    assert len(result) == 3
     result = method({'optional_num': {'$exists': False}})
-    assert len(result) == 2
+    assert len(result) == 0
 
     result = method({'price': {'$exists': True}})
     assert len(result) == 3
@@ -95,6 +107,40 @@ def test_simple_filter(docs, dict_api):
 
     result = method({'optional_num': {'$lte': 20}})
     assert len(result) == 0
+
+
+@pytest.mark.parametrize('dict_api', [True, False])
+def test_nested_filter(docs, dict_api):
+    if dict_api:
+        method = lambda query: filter(docs, query)
+    else:
+        method = lambda query: filter(docs, json.dumps(query))
+
+    result = method({'dictionary__a': {'$eq': 0}})
+    assert len(result) == 2
+    for res in result:
+        assert res.dictionary['a'] == 0
+
+    result = method({'dictionary__c': {'$exists': True}})
+    assert len(result) == 1
+    assert res.dictionary['c'] == 2
+
+    result = method({'image__url': {'$eq': 'exampleimage.jpg'}})
+    assert len(result) == 1
+    assert result[0].image.url == 'exampleimage.jpg'
+
+    result = method({'dictionary.a': {'$eq': 0}})
+    assert len(result) == 2
+    for res in result:
+        assert res.dictionary['a'] == 0
+
+    result = method({'dictionary.c': {'$exists': True}})
+    assert len(result) == 1
+    assert res.dictionary['c'] == 2
+
+    result = method({'image.url': {'$eq': 'exampleimage.jpg'}})
+    assert len(result) == 1
+    assert result[0].image.url == 'exampleimage.jpg'
 
 
 @pytest.mark.parametrize('dict_api', [True, False])
@@ -122,36 +168,28 @@ def test_placehold_filter(dict_api):
         method = lambda query: filter(docs, json.dumps(query))
 
     # DOES NOT SEEM TO WORK
-    result = method({'text': {'$eq': '{text_docs}'}})
+    result = method({'text': {'$eq': '{text_doc}'}})
     assert len(result) == 1
 
-    result = method({'text_docs': {'$eq': '{text}'}})
+    result = method({'text_doc': {'$eq': '{text}'}})
     assert len(result) == 1
 
-#
-#
-# def test_logic_filter(docs):
-#     result = docs.find({'$or': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
-#     assert len(result) == 2
-#     assert result[0].tags['x'] == 0.3 and result[1].tags['x'] == 0.8
-#
-#     result = docs.find({'$or': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
-#     assert len(result) == 2
-#     assert result[0].tags['x'] == 0.3
-#
-#     result = docs.find({'tags__x': {'$gte': 0.1, '$lte': 0.5}})
-#     assert len(result) == 1
-#     assert result[0].tags['y'] == 0.6
-#
-#     result = docs.find({'$and': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
-#     assert len(result) == 1
-#     assert result[0].tags['y'] == 0.6
-#
-#     result = docs.find({'$not': {'tags__x': {'$gte': 0.5}}})
-#     assert len(result) == 4
-#     assert 'x' not in result[0].tags or result[0].tags['x'] < 0.5
-#
-#     result = docs.find({'$not': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
-#     assert len(result) == 4
-#
-#
+
+@pytest.mark.parametrize('dict_api', [True, False])
+def test_logic_filter(docs, dict_api):
+    if dict_api:
+        method = lambda query: filter(docs, query)
+    else:
+        method = lambda query: filter(docs, json.dumps(query))
+    result = method({'$or': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}})
+    assert len(result) == 2
+
+    result = method({'$not': {'$or': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}}})
+    assert len(result) == 1
+
+    result = method({'$and': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}})
+    assert len(result) == 0
+
+    result = method({'$not': {'$and': {'text': {'$eq': 'Text of Document 1'}, 'text_doc': {'$eq': 'Text Doc of Document 2'}}}})
+    assert len(result) == 3
+

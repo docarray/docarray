@@ -64,10 +64,13 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
         else:
             raise ValueError(f'The placeholder `{val}` is illegal')
 
-    value = getattr(doc, get_key, None)
-
-    if value is None:
-        raise ValueError(f' The value `{val}` is not part of th Document {doc}')
+    field_exists = True
+    try:
+        value = getattr(doc, get_key)
+    except AttributeError:
+        field_exists = False
+        if last != 'exists':
+            raise ValueError(f' The key `{get_key}` is not part of th Document {doc}')
 
     if last == 'exact':
         return value == val
@@ -114,20 +117,29 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
             raise ValueError(
                 '$exists operator can only accept True/False as value for comparison'
             )
-
-        if '__' in get_key:
-            if value is None and val is True:
-                return False
-            elif value is None and val is False:
-                return True
-            elif value is not None and val is True:
-                return True
-            else:  # value is not None and val is False:
-                return False
-        else:
-            #return (_is_not_empty(get_key, value)) == val
-
-            return False #TODO: Joan understand this
+        return val and field_exists
+        # if value is None and val is True:
+        #     return False
+        # elif value is None and val is False:
+        #     return True
+        # elif value is not None and val is True:
+        #     return True
+        # else:  # value is not None and val is False:
+        #     return False
+        # # if '__' in get_key:
+        #     if value is None and val is True:
+        #         return False
+        #     elif value is None and val is False:
+        #         return True
+        #     elif value is not None and val is True:
+        #         return True
+        #     else:  # value is not None and val is False:
+        #         return False
+        # else:
+        #     print(f' HEY JOAN HERE')
+        #     return (_is_not_empty(get_key, value)) == val
+        #
+        #     return False #TODO: Joan understand this
     else:
         # return value == val
         raise ValueError(
@@ -186,6 +198,7 @@ class LookupNode(LookupTreeElem):
         :param doc : the document to match
         :return: returns true if lookup passed
         """
+        print(f' evaluate document Lookupnode')
         results = map(lambda x: x.evaluate(doc), self.children)
         result = any(results) if self.op == 'or' else all(results)
         return not result if self.negate else result
@@ -214,6 +227,7 @@ class LookupLeaf(LookupTreeElem):
         :param doc : the document to match
         :return: returns true if lookup passed
         """
+        print(f' evaluate document Lookupleaf {doc} with lookups {self.lookups}')
         result = all(lookup(k, v, doc) for k, v in self.lookups.items())
         return not result if self.negate else result
 
