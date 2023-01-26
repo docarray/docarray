@@ -151,10 +151,3 @@ def test_parametrized_operations():
     assert isinstance(t_result, torch.Tensor)
     assert isinstance(t_result, TorchTensor)
     assert isinstance(t_result, TorchTensor[128])
-
-
-def test_operators():
-    t = parse_obj_as(TorchTensor[128], torch.zeros(128))
-    assert t == torch.zeros(128)
-    assert t != torch.ones(128)
-

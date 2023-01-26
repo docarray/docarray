@@ -8,5 +8,8 @@ def test_text_document_operators():
     assert doc == 'text'
     assert doc != 'url.com'
 
-    doc2 = Text(text='text', url='url.com')
+    doc2 = Text(id=doc.id, text='text', url='url.com')
     assert doc == doc2
+
+    doc3 = Text(id='other-id', text='text', url='url.com')
+    assert doc != doc3

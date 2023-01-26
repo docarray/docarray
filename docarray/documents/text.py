@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
@@ -69,9 +69,9 @@ class Text(BaseDocument):
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Union[str, 'Text']) -> bool:
         if isinstance(other, str):
             return self.text == other
         else:
             # BaseModel has a default equality
-            super().__eq__(other)
+            return super().__eq__(other)
