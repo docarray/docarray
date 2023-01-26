@@ -24,17 +24,17 @@ def test_video(file_url):
     assert isinstance(vid.key_frame_indices, NdArray)
 
 
-def test_image_np():
+def test_video_np():
     image = parse_obj_as(Video, np.zeros((10, 10, 3)))
     assert (image.tensor == np.zeros((10, 10, 3))).all()
 
 
-def test_image_torch():
+def test_video_torch():
     image = parse_obj_as(Video, torch.zeros(10, 10, 3))
     assert (image.tensor == torch.zeros(10, 10, 3)).all()
 
 
-def test_image_shortcut_doc():
+def test_video_shortcut_doc():
     class MyDoc(BaseDocument):
         image: Video
         image2: Video
