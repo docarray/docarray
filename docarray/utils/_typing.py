@@ -1,5 +1,4 @@
 import collections
-from types import GenericAlias
 from typing import Any, _AnnotatedAlias, _GenericAlias
 
 from typing_inspect import is_union_type
@@ -20,7 +19,7 @@ def get_args(tp):
     """
     if isinstance(tp, _AnnotatedAlias):
         return (tp.__origin__,) + tp.__metadata__
-    if isinstance(tp, (_GenericAlias, GenericAlias)):
+    if isinstance(tp, _GenericAlias):
         res = tp.__args__
         if tp.__origin__ is collections.abc.Callable and res[0] is not Ellipsis:
             res = (list(res[:-1]), res[-1])
