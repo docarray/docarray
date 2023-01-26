@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Any
 
 from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
@@ -63,13 +63,28 @@ class Text(BaseDocument):
             text_doc=Text(text="hello world, how are you doing?"),
         )
         mmdoc.text_doc.text = mmdoc.text_doc.url.load()
+
+    This Document can be compared against another Document of the same type or a string. When compared against
+    another object of the same type, the pydantic BaseModel equality check will apply which checks the equality of every
+    attribute, including `id`. When compared against a str, it will check the equality of the `text` attribute against the
+    given string.
+
+    .. code-block:: python
+
+        from docarray.documents Text
+
+        doc = Text(text='This is the main text', url='exampleurl.com')
+        doc2 = Text(text='This is the main text', url='exampleurl.com')
+
+        doc == 'This is the main text' # True
+        doc == doc2 # False, their ids are not equivalent
     """
 
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
 
-    def __eq__(self, other: Union[str, 'Text']) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):
             return self.text == other
         else:
