@@ -26,29 +26,29 @@ class DocumentArraySummary:
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
         table.add_row('Type', self.da.__class__.__name__)
-        table.add_row('Length', str(len(self.da)))
+        table.add_row('Length', str(len(self.da)), end_section=True)
 
         if isinstance(self.da, DocumentArrayStacked):
-            table.add_section()
             table.add_row('Stacked columns:')
             stacked_fields = self._get_stacked_fields(da=self.da)
-            for field in stacked_fields:
-                da = self.da
-                for attr in field.split('.'):
-                    da = getattr(da, attr)
+            for field_name in stacked_fields:
+                val = self.da
+                for attr in field_name.split('.'):
+                    val = getattr(val, attr)
 
-                if isinstance(da, AbstractTensor):
-                    col_1 = f'  • {field}:'
-                    comp_be = da.get_comp_backend()
-                    cls_name = da.__class__.__name__
-                    if comp_be.isnan(da).all():
-                        col_2 = f'None ({cls_name})'
+                if isinstance(val, AbstractTensor):
+                    comp_be = val.get_comp_backend()
+                    if comp_be.isnan(val).all():
+                        col_2 = f'None ({val.__class__.__name__})'
                     else:
                         col_2 = (
-                            f'{cls_name} of shape {comp_be.shape(da)}, '
-                            f'dtype: {comp_be.shape(da)}'
+                            f'{val.__class__.__name__} of shape {comp_be.shape(val)}'
+                            f', dtype: {comp_be.dtype(val)}'
                         )
-                    table.add_row(col_1, col_2)
+                        if comp_be.device(val):
+                            col_2 += f', device: {comp_be.device(val)}'
+
+                    table.add_row(f'  • {field_name}:', col_2)
 
         Console().print(Panel(table, title='DocumentArray Summary', expand=False))
         self.da.document_type.schema_summary()
@@ -56,9 +56,9 @@ class DocumentArraySummary:
     @staticmethod
     def _get_stacked_fields(da: 'DocumentArrayStacked') -> List[str]:
         """
-        Returns a list of field names that are stacked of a DocumentArrayStacked
-        instance, i.e. all the fields that are of type AbstractTensor. Nested field
-        paths are dot separated.
+        Return a list of the field names of a DocumentArrayStacked instance that are
+        stacked, i.e. all the fields that are of type AbstractTensor. Nested field
+        paths are separated by dot, such as: 'attr.nested_attr'.
         """
         from docarray.array import DocumentArrayStacked
 
