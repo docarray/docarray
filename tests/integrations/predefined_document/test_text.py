@@ -19,4 +19,7 @@ def test_doc():
         text1: Text
         text2: Text
 
-    MyDoc(text1='hello', text2=Text(text='world'))
+    doc = MyDoc(text1='hello', text2=Text(text='world'))
+
+    assert doc.text1.text == 'hello'
+    assert doc.text2.text == 'world'
