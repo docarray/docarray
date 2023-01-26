@@ -12,7 +12,6 @@ from docarray.typing import ID
     'id', ['1234', 1234, UUID('cf57432e-809e-4353-adbd-9d5c0d733868')]
 )
 def test_id_validation(id):
-
     parsed_id = parse_obj_as(ID, id)
 
     assert parsed_id == str(id)
@@ -25,3 +24,15 @@ def test_json_schema():
 def test_dump_json():
     id = parse_obj_as(ID, 1234)
     orjson_dumps(id)
+
+
+@pytest.mark.parametrize(
+    'id', ['1234', 1234, UUID('cf57432e-809e-4353-adbd-9d5c0d733868')]
+)
+def test_operators(id):
+    parsed_id = parse_obj_as(ID, id)
+    assert parsed_id == str(id)
+    assert parsed_id != 'aljdñjd'
+    assert str(id)[0:1] in parsed_id
+    assert 'docarray' not in parsed_id
+

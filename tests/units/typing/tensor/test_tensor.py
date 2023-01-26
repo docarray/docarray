@@ -157,3 +157,9 @@ def test_parametrized_operations():
     assert isinstance(t_result, np.ndarray)
     assert isinstance(t_result, NdArray)
     assert isinstance(t_result, NdArray[128])
+
+
+def test_operators():
+    t = parse_obj_as(NdArray[128], np.zeros(128))
+    assert t == np.zeros(128)
+    assert t != np.ones(128)
