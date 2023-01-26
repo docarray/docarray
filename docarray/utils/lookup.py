@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 import re
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Union, Any, Sequence
 
 from functools import partial
 
@@ -35,6 +35,49 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument
 
 PLACEHOLDER_PATTERN = re.compile(r'\{\s*([a-zA-Z0-9_]*)\s*}')
+
+
+def dunder_get(_dict: Any, key: str) -> Any:
+    """Returns value for a specified dunderkey
+
+    A "dunderkey" is just a fieldname that may or may not contain
+    double underscores (dunderscores!) for referencing nested keys in
+    a dict. eg::
+     >>> data = {'a': {'b': 1}}
+     >>> dunder_get(data, 'a.b')
+
+    key 'b' can be referrenced as 'a__b'
+
+    :param _dict: (dict, list, struct or object) which we want to index into
+    :param key: (str) that represents a first level or nested key in the dict
+    :return: (mixed) value corresponding to the key
+
+    """
+
+    if _dict is None:
+        return None
+
+    part1: Union[str, int]
+    try:
+        part1, part2 = key.split('.', 1)
+    except ValueError:
+        part1, part2 = key, ''
+
+    try:
+        part1 = int(part1)  # parse int parameter
+    except ValueError:
+        pass
+
+    if isinstance(part1, int):
+        result = _dict[part1]
+    elif isinstance(_dict, dict):
+        result = _dict[part1]
+    elif isinstance(_dict, Sequence):
+        result = _dict[int(part1)]
+    else:
+        result = getattr(_dict, part1)
+
+    return dunder_get(result, part2) if part2 else result
 
 
 def lookup(key, val, doc: 'BaseDocument') -> bool:
@@ -51,9 +94,9 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
 
     will return True if doc.text == doc.tags['name'] else False
 
-    :param key  : the field name to find
-    :param val  : object to match the value in the document against
-    :param doc : the document to match
+    :param key: the field name to find
+    :param val: object to match the value in the document against
+    :param doc: the document to match
     """
     get_key, last = dunder_partition(key)
 
@@ -66,12 +109,14 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
 
     field_exists = True
     try:
-        value = getattr(doc, get_key)
-    except AttributeError:
+        if '.' in get_key:
+            value = dunder_get(doc, get_key)
+        else:
+            value = getattr(doc, get_key)
+    except (AttributeError, KeyError):
         field_exists = False
         if last != 'exists':
-            raise ValueError(f' The key `{get_key}` is not part of th Document {doc}')
-
+            return False
     if last == 'exact':
         return value == val
     elif last == 'neq':
@@ -118,30 +163,7 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
                 '$exists operator can only accept True/False as value for comparison'
             )
         return val and field_exists
-        # if value is None and val is True:
-        #     return False
-        # elif value is None and val is False:
-        #     return True
-        # elif value is not None and val is True:
-        #     return True
-        # else:  # value is not None and val is False:
-        #     return False
-        # # if '__' in get_key:
-        #     if value is None and val is True:
-        #         return False
-        #     elif value is None and val is False:
-        #         return True
-        #     elif value is not None and val is True:
-        #         return True
-        #     else:  # value is not None and val is False:
-        #         return False
-        # else:
-        #     print(f' HEY JOAN HERE')
-        #     return (_is_not_empty(get_key, value)) == val
-        #
-        #     return False #TODO: Joan understand this
     else:
-        # return value == val
         raise ValueError(
             f'The given compare operator "{last}" (derived from "{key}")'
             f' is not supported'
@@ -199,7 +221,6 @@ class LookupNode(LookupTreeElem):
         :param doc : the document to match
         :return: returns true if lookup passed
         """
-        print('evaluate document Lookupnode')
         results = map(lambda x: x.evaluate(doc), self.children)
         result = any(results) if self.op == 'or' else all(results)
         return not result if self.negate else result
@@ -228,7 +249,6 @@ class LookupLeaf(LookupTreeElem):
         :param doc : the document to match
         :return: returns true if lookup passed
         """
-        print(f' evaluate document Lookupleaf {doc} with lookups {self.lookups}')
         result = all(lookup(k, v, doc) for k, v in self.lookups.items())
         return not result if self.negate else result
 

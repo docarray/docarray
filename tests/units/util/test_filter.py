@@ -132,19 +132,6 @@ def test_nested_filter(docs, dict_api):
     else:
         method = lambda query: filter(docs, json.dumps(query))
 
-    result = method({'dictionary__a': {'$eq': 0}})
-    assert len(result) == 2
-    for res in result:
-        assert res.dictionary['a'] == 0
-
-    result = method({'dictionary__c': {'$exists': True}})
-    assert len(result) == 1
-    assert res.dictionary['c'] == 2
-
-    result = method({'image__url': {'$eq': 'exampleimage.jpg'}})
-    assert len(result) == 1
-    assert result[0].image.url == 'exampleimage.jpg'
-
     result = method({'dictionary.a': {'$eq': 0}})
     assert len(result) == 2
     for res in result:
@@ -152,7 +139,7 @@ def test_nested_filter(docs, dict_api):
 
     result = method({'dictionary.c': {'$exists': True}})
     assert len(result) == 1
-    assert res.dictionary['c'] == 2
+    assert result[0].dictionary['c'] == 2
 
     result = method({'image.url': {'$eq': 'exampleimage.jpg'}})
     assert len(result) == 1
