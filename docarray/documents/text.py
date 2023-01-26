@@ -68,3 +68,10 @@ class Text(BaseDocument):
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, str):
+            return self.text == other
+        else:
+            # BaseModel has a default equality
+            super().__eq__(other)
