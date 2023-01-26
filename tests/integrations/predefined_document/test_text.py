@@ -6,12 +6,12 @@ from docarray.documents import Text
 
 def test_simple_init():
     t = Text(text='hello')
-    t.text == 'hello'
+    assert t.text == 'hello'
 
 
 def test_str_init():
     t = parse_obj_as(Text, 'hello')
-    t.text == 'hello'
+    assert t.text == 'hello'
 
 
 def test_doc():
