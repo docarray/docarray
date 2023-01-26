@@ -46,6 +46,11 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         raise NotImplementedError('Numpy does not support devices (GPU).')
 
     @staticmethod
+    def device(tensor: 'np.ndarray') -> Optional[str]:
+        """Return device on which the tensor is allocated."""
+        return None
+
+    @staticmethod
     def n_dim(array: 'np.ndarray') -> int:
         return array.ndim
 

@@ -46,6 +46,11 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.to(device)
 
     @staticmethod
+    def device(tensor: 'torch.Tensor') -> Optional[str]:
+        """Return device on which the tensor is allocated."""
+        return tensor.device
+
+    @staticmethod
     def empty(
         shape: Tuple[int, ...],
         dtype: Optional[Any] = None,

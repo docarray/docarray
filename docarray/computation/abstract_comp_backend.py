@@ -76,6 +76,12 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def device(tensor: 'TTensor') -> Optional[str]:
+        """Return device on which the tensor is allocated."""
+        ...
+
+    @staticmethod
+    @abstractmethod
     def shape(tensor: 'TTensor') -> Tuple[int, ...]:
         """Get shape of tensor"""
         ...
