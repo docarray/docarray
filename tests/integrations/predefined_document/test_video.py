@@ -1,5 +1,9 @@
+import numpy as np
 import pytest
+import torch
+from pydantic import parse_obj_as
 
+from docarray import BaseDocument
 from docarray.documents import Video
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from tests import TOYDATA_DIR
@@ -18,3 +22,29 @@ def test_video(file_url):
     assert isinstance(vid.tensor, VideoNdArray)
     assert isinstance(vid.audio.tensor, AudioNdArray)
     assert isinstance(vid.key_frame_indices, NdArray)
+
+
+def test_image_np():
+    image = parse_obj_as(Video, np.zeros((10, 10, 3)))
+    assert (image.tensor == np.zeros((10, 10, 3))).all()
+
+
+def test_image_torch():
+    image = parse_obj_as(Video, torch.zeros(10, 10, 3))
+    assert (image.tensor == torch.zeros(10, 10, 3)).all()
+
+
+def test_image_shortcut_doc():
+    class MyDoc(BaseDocument):
+        image: Video
+        image2: Video
+        image3: Video
+
+    doc = MyDoc(
+        image='http://myurl.mp4',
+        image2=np.zeros((10, 10, 3)),
+        image3=torch.zeros(10, 10, 3),
+    )
+    assert doc.image.url == 'http://myurl.mp4'
+    assert (doc.image2.tensor == np.zeros((10, 10, 3))).all()
+    assert (doc.image3.tensor == torch.zeros(10, 10, 3)).all()
