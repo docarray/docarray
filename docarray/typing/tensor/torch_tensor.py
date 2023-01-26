@@ -160,7 +160,10 @@ class TorchTensor(
         :param value: the native torch.Tensor
         :return: a TorchTensor
         """
-        value.__class__ = cls
+        if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
+            value.__class__ = cls.__unparametrizedcls__
+        else:
+            value.__class__ = cls
         return cast(T, value)
 
     @classmethod

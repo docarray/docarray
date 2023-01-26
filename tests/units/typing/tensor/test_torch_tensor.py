@@ -90,11 +90,15 @@ def test_parametrized():
 
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
-    tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(shape))
+    MyTT = TorchTensor[3, 224, 224]
+    tensor = parse_obj_as(MyTT, torch.zeros(shape))
 
-    assert tensor.__class__.__name__ == 'TorchTensor[3, 224, 224]'
-    assert tensor.__class__.__qualname__ == 'TorchTensor[3, 224, 224]'
-    assert f'{tensor[0][0][0]}' == 'TorchTensor[3, 224, 224](0.)'
+    assert MyTT.__name__ == 'TorchTensor[3, 224, 224]'
+    assert MyTT.__qualname__ == 'TorchTensor[3, 224, 224]'
+
+    assert tensor.__class__.__name__ == 'TorchTensor'
+    assert tensor.__class__.__qualname__ == 'TorchTensor'
+    assert f'{tensor[0][0][0]}' == 'TorchTensor(0.)'
 
 
 def test_torch_embedding():
@@ -130,6 +134,8 @@ def test_parametrized_instance():
     assert isinstance(t, torch.Tensor)
 
     assert not isinstance(t, TorchTensor[256])
+    assert not isinstance(t, TorchTensor[2, 128])
+    assert not isinstance(t, TorchTensor[2, 2, 64])
 
 
 def test_parametrized_equality():

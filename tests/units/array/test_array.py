@@ -13,7 +13,7 @@ def da():
     class Text(BaseDocument):
         text: str
 
-    return DocumentArray([Text(text='hello') for _ in range(10)])
+    return DocumentArray[Text]([Text(text='hello') for _ in range(10)])
 
 
 def test_iterate(da):
@@ -59,6 +59,11 @@ def test_document_array():
     da = DocumentArray([Text(text='hello') for _ in range(10)])
 
     assert len(da) == 10
+
+
+def test_empty_array():
+    da = DocumentArray()
+    len(da) == 0
 
 
 def test_document_array_fixed_type():
