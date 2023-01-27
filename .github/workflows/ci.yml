@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - feat-rewrite-v2
-  pull_request_target:
+  pull_request:
     types: [opened, reopened]
 jobs:
 
