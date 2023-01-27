@@ -89,8 +89,8 @@ class Text(BaseDocument):
 
     @classmethod
     def validate(
-            cls: Type[T],
-            value: Union[str, Any],
+        cls: Type[T],
+        value: Union[str, Any],
     ) -> T:
         if isinstance(value, str):
             value = cls(text=value)
