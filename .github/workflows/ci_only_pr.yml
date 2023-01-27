@@ -5,7 +5,7 @@ on:
     branches:
       - feat-rewrite-v2
   pull_request:
-    types: [opened, reopened]
+    types: [opened, synchronize, reopened]
 
 jobs:
   assign-label-to-pr:
