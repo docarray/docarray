@@ -6,6 +6,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
+from docarray import BaseDocument
 from docarray.documents import Audio
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
@@ -83,3 +84,29 @@ def test_extend_audio(file_url):
 
     assert isinstance(my_audio.tensor, AudioNdArray)
     assert isinstance(my_audio.url, AudioUrl)
+
+
+def test_audio_np():
+    audio = parse_obj_as(Audio, np.zeros((10, 10, 3)))
+    assert (audio.tensor == np.zeros((10, 10, 3))).all()
+
+
+def test_audio_torch():
+    audio = parse_obj_as(Audio, torch.zeros(10, 10, 3))
+    assert (audio.tensor == torch.zeros(10, 10, 3)).all()
+
+
+def test_audio_shortcut_doc():
+    class MyDoc(BaseDocument):
+        audio: Audio
+        audio2: Audio
+        audio3: Audio
+
+    doc = MyDoc(
+        audio='http://myurl.wav',
+        audio2=np.zeros((10, 10, 3)),
+        audio3=torch.zeros(10, 10, 3),
+    )
+    assert doc.audio.url == 'http://myurl.wav'
+    assert (doc.audio2.tensor == np.zeros((10, 10, 3))).all()
+    assert (doc.audio3.tensor == torch.zeros(10, 10, 3)).all()

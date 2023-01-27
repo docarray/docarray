@@ -1,8 +1,10 @@
-from typing import Optional, Any
+from typing import Any, Optional, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
+
+T = TypeVar('T', bound='Text')
 
 
 class Text(BaseDocument):
@@ -84,6 +86,15 @@ class Text(BaseDocument):
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
+
+    @classmethod
+    def validate(
+            cls: Type[T],
+            value: Union[str, Any],
+    ) -> T:
+        if isinstance(value, str):
+            value = cls(text=value)
+        return super().validate(value)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):
