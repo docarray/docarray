@@ -1,4 +1,4 @@
-from typing import Dict, TYPE_CHECKING, Optional, Union, List
+from typing import Dict, Any, Optional, Union, List
 
 from docarray.utils.query_language.lookup import (
     Q,
@@ -7,8 +7,6 @@ from docarray.utils.query_language.lookup import (
     LookupTreeElem,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDocument
 
 LOGICAL_OPERATORS: Dict[str, Union[str, bool]] = {
     '$and': 'and',
@@ -122,8 +120,8 @@ class QueryParser:
         self.conditions = conditions
         self.lookup_groups = _parse_lookups(self.conditions)
 
-    def evaluate(self, doc: 'BaseDocument') -> bool:
+    def evaluate(self, doc: Any) -> bool:
         return self.lookup_groups.evaluate(doc) if self.lookup_groups else True
 
-    def __call__(self, doc: 'BaseDocument') -> bool:
+    def __call__(self, doc: Any) -> bool:
         return self.evaluate(doc)

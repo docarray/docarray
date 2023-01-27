@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 import re
-from typing import List, Union, Any, Sequence
+from typing import List, Union, Any, Sequence, Callable, Tuple, Optional, Iterator
 
 from functools import partial
 
@@ -179,17 +179,17 @@ class LookupTreeElem(object):
     def __init__(self):
         self.negate = False
 
-    def evaluate(self, item):
+    def evaluate(self, item: Any) -> bool:
         raise NotImplementedError
 
-    def __or__(self, other):
+    def __or__(self, other: 'LookupTreeElem'):
         node = LookupNode()
         node.op = 'or'
         node.add_child(self)
         node.add_child(other)
         return node
 
-    def __and__(self, other):
+    def __and__(self, other: 'LookupTreeElem'):
         node = LookupNode()
         node.add_child(self)
         node.add_child(other)
@@ -212,10 +212,10 @@ class LookupNode(LookupTreeElem):
         self.op = op
         self.negate = negate
 
-    def add_child(self, child):
+    def add_child(self, child) -> None:
         self.children.append(child)
 
-    def evaluate(self, doc: Any):
+    def evaluate(self, doc: Any) -> bool:
         """Evaluates the expression represented by the object for the document
 
         :param doc : the document to match
@@ -243,7 +243,7 @@ class LookupLeaf(LookupTreeElem):
         super(LookupLeaf, self).__init__()
         self.lookups = kwargs
 
-    def evaluate(self, doc: Any):
+    def evaluate(self, doc: Any) -> bool:
         """Evaluates the expression represented by the object for the document
 
         :param doc : the document to match
@@ -277,7 +277,7 @@ class LookupyError(Exception):
 ## utility functions
 
 
-def dunder_partition(key: str):
+def dunder_partition(key: str) -> Tuple[str, Optional[str]]:
     """Splits a dunderkey into 2 parts
     The first part is everything before the final double underscore
     The second part is after the final double underscore
@@ -285,10 +285,10 @@ def dunder_partition(key: str):
         >>> ('a__b', 'c')
     """
     parts = key.rsplit('__', 1)
-    return tuple(parts) if len(parts) > 1 else (parts[0], None)
+    return (parts[0], parts[1]) if len(parts) > 1 else (parts[0], None)
 
 
-def iff(precond, val, f):
+def iff(precond: Callable, val: Any, f: Callable) -> bool:
     """If and only if the precond is True
 
     Shortcut function for precond(val) and f(val). It is mainly used
@@ -305,16 +305,13 @@ def iff(precond, val, f):
 iff_not_none = partial(iff, lambda x: x is not None)
 
 
-def guard_type(classinfo, val):
-    if not isinstance(val, classinfo):
-        raise LookupyError('Value not a {classinfo}'.format(classinfo=classinfo))
+def guard_str(val: Any) -> str:
+    if not isinstance(val, str):
+        raise LookupyError('Value not a {classinfo}'.format(classinfo=str))
     return val
 
 
-guard_str = partial(guard_type, str)
-
-
-def guard_iter(val):
+def guard_iter(val: Any) -> Iterator:
     try:
         iter(val)
     except TypeError:
