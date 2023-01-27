@@ -56,7 +56,7 @@ def filter(
     :return: A DocumentArray containing the Documents
     in `docs` that fulfill the filter conditions in the `query`
     """
-    from docarray.utils.query_parser import QueryParser
+    from docarray.utils.query_language.query_parser import QueryParser
 
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
