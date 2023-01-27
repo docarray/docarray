@@ -232,3 +232,47 @@ def test_logic_filter(docs, dict_api):
         }
     )
     assert len(result) == 3
+
+
+@pytest.mark.parametrize('dict_api', [True, False])
+def test_from_docstring(dict_api):
+    class MyDocument(BaseDocument):
+        caption: Text
+        image: Image
+        price: int
+
+    docs = DocumentArray[MyDocument](
+        [
+            MyDocument(
+                caption='A tiger in the jungle',
+                image=Image(url='tigerphoto.png'),
+                price=100,
+            ),
+            MyDocument(
+                caption='A swimming turtle', image=Image(url='turtlepic.png'), price=50
+            ),
+            MyDocument(
+                caption='A couple birdwatching with binoculars',
+                image=Image(url='binocularsphoto.png'),
+                price=30,
+            ),
+        ]
+    )
+
+    query = {
+        '$and': {
+            'image.url': {'$regex': 'photo'},
+            'price': {'$lte': 50},
+        }
+    }
+
+    if dict_api:
+        method = lambda query: filter(docs, query)
+    else:
+        method = lambda query: filter(docs, json.dumps(query))
+
+    results = method(query)
+    assert len(results) == 1
+    assert results[0].price == 30
+    assert results[0].caption == 'A couple birdwatching with binoculars'
+    assert results[0].image.url == 'binocularsphoto.png'
