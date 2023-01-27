@@ -103,11 +103,25 @@ class Text(BaseDocument):
             # BaseModel has a default equality
             return super().__eq__(other)
 
-    def __contains__(self, item: str):
+    def __contains__(self, item: str) -> bool:
+        """
+        This method makes `Text` behave the same as an `str`.
+
+            .. code-block:: python
+
+            from docarray.documents import Text
+
+            t = Text(text='this is my text document')
+            assert 'text' in t
+            assert 'docarray' not in t
+
+        :param item: A string to be checked if is a substring of `text` attribute
+        :return: A boolean determining the presence of `item` as a substring in `text`
+        """
         if self.text is not None:
             return self.text.__contains__(item)
         else:
             return False
 
-    def get_string_for_regex_filter(self):
+    def _get_string_for_regex_filter(self):
         return self.text

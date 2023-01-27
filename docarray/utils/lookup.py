@@ -153,7 +153,7 @@ def lookup(key: str, val: Any, doc: 'BaseDocument') -> bool:
     elif last == 'lte':
         return iff_not_none(value, lambda y: y <= val)
     elif last == 'regex':
-        v = getattr(value, 'get_string_for_regex_filter', lambda *args: value)()
+        v = getattr(value, '_get_string_for_regex_filter', lambda *args: value)()
         return iff_not_none(v, lambda y: re.search(val, y) is not None)
     elif last == 'size':
         return iff_not_none(value, lambda y: len(y) == val)

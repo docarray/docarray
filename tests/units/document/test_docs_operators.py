@@ -16,3 +16,7 @@ def test_text_document_operators():
 
     assert 't' in doc
     assert 'a' not in doc
+
+    t = Text(text='this is my text document')
+    assert 'text' in t
+    assert 'docarray' not in t

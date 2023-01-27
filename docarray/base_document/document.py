@@ -44,5 +44,5 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
         return capture.get().strip()
 
-    def get_string_for_regex_filter(self):
+    def _get_string_for_regex_filter(self):
         return str(self)
