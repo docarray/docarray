@@ -142,6 +142,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3588,4 +3589,59 @@
 
  - [[```245d8329```](https://github.com/jina-ai/docarray/commit/245d8329c9878d8d7cf0ffd0dbbd928c18e38784)] __-__ rename license to be consist with lfai standards (#921) (*Nan Wang*)
  - [[```a9edde28```](https://github.com/jina-ai/docarray/commit/a9edde28cb9df79adeaf3955909d0ef8d96396ca)] __-__ __version__: the next version will be 0.20.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-21-0></a>
+## Release Note (`0.21.0`)
+
+> Release time: 2023-01-17 09:10:50
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Johannes Messner,  Charlotte Gerhaher,  samsja,  AlaeddineAbdessalem,  Anne Yang,  Han Xiao,  Michael Günther,  Alex Cureton-Griffiths,  Alvin Prayuda,  Jay Bhambhani,  Marco Luca Sbodio,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```3e7f5149```](https://github.com/jina-ai/docarray/commit/3e7f5149eacfd2475b85966acb0ba8bf2619e78e)] __-__ add color to point cloud display (#961) (*Charlotte Gerhaher*)
+ - [[```7d998f16```](https://github.com/jina-ai/docarray/commit/7d998f1693a5605a5c6191b90b62e0527e68f220)] __-__ add language attribute to RedisConfig (#953) (*Anne Yang*)
+ - [[```6ec0cf51```](https://github.com/jina-ai/docarray/commit/6ec0cf5150e658ec6ec53640807a686aaef18d0d)] __-__ opensearch integration (#853) (*Jay Bhambhani*)
+
+### 🐞 Bug fixes
+
+ - [[```a9247095```](https://github.com/jina-ai/docarray/commit/a9247095297f9eb12da772b0d4b6b770e99a21ab)] __-__ doc from dataclass with list (#1018) (*Charlotte Gerhaher*)
+ - [[```18dd57f0```](https://github.com/jina-ai/docarray/commit/18dd57f05f336bda7d45b2354c637595aa90963e)] __-__ value extraction of point cloud colors enum in display (#995) (*Charlotte Gerhaher*)
+ - [[```a1f4a43f```](https://github.com/jina-ai/docarray/commit/a1f4a43f6671f6f33c154c9b0b68e4de22f795fc)] __-__ replace newline with whitespace to fix display in plot embeddings (#963) (*Charlotte Gerhaher*)
+ - [[```14433761```](https://github.com/jina-ai/docarray/commit/144337617f2926380c200cabaacf086d89663bac)] __-__ unwanted coercion in to_pydantic_model (#949) (*Johannes Messner*)
+ - [[```67d2b7cc```](https://github.com/jina-ai/docarray/commit/67d2b7cc8ede8d509c019c3be0c0e3c8b785b9ba)] __-__ calculate relevant docs on index instead of queries (#950) (*Michael Günther*)
+ - [[```4cde8c86```](https://github.com/jina-ai/docarray/commit/4cde8c867e6755f26253dc67e8a0a6ca864c326f)] __-__ remove broken link (#937) (*samsja*)
+ - [[```6bbcde82```](https://github.com/jina-ai/docarray/commit/6bbcde82945fb52873dcedca94f4821492ad94b7)] __-__ remove offset index create on list like false (#936) (*Alvin Prayuda*)
+ - [[```a5a6778a```](https://github.com/jina-ai/docarray/commit/a5a6778adbb6a5e59d4b216c3fd6e6b002bed995)] __-__ add support for remote audio files (#933) (*Charlotte Gerhaher*)
+ - [[```35f68f9e```](https://github.com/jina-ai/docarray/commit/35f68f9eb83631051c48d21e9af1d1a8af0a2875)] __-__ query operator $exists does not work correctly with tags (#911) (#923) (*Marco Luca Sbodio*)
+
+### 📗 Documentation
+
+ - [[```26e072cf```](https://github.com/jina-ai/docarray/commit/26e072cf6e97595851fee3d862c7ddeb8ef5c00e)] __-__ link to v2 in the readme (#1021) (*Johannes Messner*)
+ - [[```8c1770f6```](https://github.com/jina-ai/docarray/commit/8c1770f644ed2798a051224504ba7d0a2f822c1f)] __-__ link to discord (#1010) (*Johannes Messner*)
+ - [[```7cf4056a```](https://github.com/jina-ai/docarray/commit/7cf4056ab3bf9b5b29bdce2841b8445076f910d4)] __-__ have less versions to avoid deployment timeout (#977) (*AlaeddineAbdessalem*)
+ - [[```12d41faf```](https://github.com/jina-ai/docarray/commit/12d41faf733f7532ca95dd0754598deced60b9c9)] __-__ fix data management section not appearing in documentation (#967) (*AlaeddineAbdessalem*)
+ - [[```b18f5da4```](https://github.com/jina-ai/docarray/commit/b18f5da4f0bb39f0f13695372650986ec7e8adbd)] __-__ link to opensearch docs in sidebar (#960) (*AlaeddineAbdessalem*)
+ - [[```ceb16ec3```](https://github.com/jina-ai/docarray/commit/ceb16ec3afea08ab167816569c8609ff16f22861)] __-__ multimodal to datatypes (#934) (*Alex Cureton-Griffiths*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3940c5b0```](https://github.com/jina-ai/docarray/commit/3940c5b077985b4e0b196ea91376683051c58087)] __-__ fix evaluate tests (#1014) (*Johannes Messner*)
+ - [[```8895320d```](https://github.com/jina-ai/docarray/commit/8895320d2eb854abaf3f47f57f2b34309d1fcf89)] __-__ remove doc stores from eval tests (#1013) (*Johannes Messner*)
+ - [[```a5493e97```](https://github.com/jina-ai/docarray/commit/a5493e974c2f209080bcdd710d34fbb0e93c1223)] __-__ stabalize milvus (#1012) (*Johannes Messner*)
+ - [[```7de23e66```](https://github.com/jina-ai/docarray/commit/7de23e6696b77681b61d7d7eefcfdb28c98a0c1b)] __-__ increase docs deploy timeout (#968) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```ca2973f0```](https://github.com/jina-ai/docarray/commit/ca2973f03f8209e5d1f831bf08e84dff033322d7)] __-__ bump version (#1023) (*Johannes Messner*)
+ - [[```6f805cd9```](https://github.com/jina-ai/docarray/commit/6f805cd9acfa19ec7000e49e9df401e8af26c0ee)] __-__ Debug ci (#1002) (*Johannes Messner*)
+ - [[```e812ec99```](https://github.com/jina-ai/docarray/commit/e812ec9927576de6fa9d48687006dd473d459798)] __-__ __ci__: hide hubble import (#1001) (*samsja*)
+ - [[```19e90bbd```](https://github.com/jina-ai/docarray/commit/19e90bbd8e5d5b042aade4fbd8d7b33c32dbbed6)] __-__ update gov with tsc menbers (#964) (*samsja*)
+ - [[```60d12385```](https://github.com/jina-ai/docarray/commit/60d1238579b48ae8ae37b3f4265daf19b32cf7c0)] __-__ fix readme (*Han Xiao*)
+ - [[```ed690c89```](https://github.com/jina-ai/docarray/commit/ed690c89395738f7a37949b74c7d3b8be26829fc)] __-__ add different python version to ci (#935) (*samsja*)
+ - [[```622e33fd```](https://github.com/jina-ai/docarray/commit/622e33fdde4f1bbdbe4a7ceb947d94b59e20b334)] __-__ __version__: the next version will be 0.20.2 (*Jina Dev Bot*)
 
