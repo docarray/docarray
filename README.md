@@ -404,8 +404,8 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 
 
 <!-- start support-pitch -->
-## Support
+## Support & talk to us
 - Join our [Discord server](https://discord.gg/WaMp6PVPgR) and chat with other community members about ideas.
-
+- Join our [public meetings](https://calendar.google.com/calendar/u/2?cid=Y180NmJjYjQ3ZjEzN2QzOThjZjhjZmM2MzM0YTYyMjRkMjVhMjY1NTBlMGZkNjZkOGFmOWUyNjZiMDU4ODkyYmIxQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20) where we discuss the future of the project.
 
 > DocArray is a trademark of LF AI Projects, LLC
