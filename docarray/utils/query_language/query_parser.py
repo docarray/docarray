@@ -1,6 +1,11 @@
 from typing import Dict, TYPE_CHECKING, Optional, Union, List
 
-from docarray.utils.query_language.lookup import Q, LookupNode, LookupLeaf, LookupTreeElem
+from docarray.utils.query_language.lookup import (
+    Q,
+    LookupNode,
+    LookupLeaf,
+    LookupTreeElem,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument

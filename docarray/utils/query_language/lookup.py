@@ -27,12 +27,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 import re
-from typing import TYPE_CHECKING, List, Union, Any, Sequence
+from typing import List, Union, Any, Sequence
 
 from functools import partial
-
-if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDocument
 
 PLACEHOLDER_PATTERN = re.compile(r'\{\s*([a-zA-Z0-9_]*)\s*}')
 
@@ -79,7 +76,7 @@ def point_get(_dict: Any, key: str) -> Any:
     return point_get(result, part2) if part2 else result
 
 
-def lookup(key: str, val: Any, doc: 'BaseDocument') -> bool:
+def lookup(key: str, val: Any, doc: Any) -> bool:
     """Checks if key-val pair exists in doc using various lookup types
 
     The lookup types are derived from the `key` and then used to check
@@ -162,7 +159,10 @@ def lookup(key: str, val: Any, doc: 'BaseDocument') -> bool:
             raise ValueError(
                 '$exists operator can only accept True/False as value for comparison'
             )
-        return val and field_exists
+        if val:
+            return field_exists
+        else:
+            return not field_exists
     else:
         raise ValueError(
             f'The given compare operator "{last}" (derived from "{key}")'
@@ -215,7 +215,7 @@ class LookupNode(LookupTreeElem):
     def add_child(self, child):
         self.children.append(child)
 
-    def evaluate(self, doc: 'BaseDocument'):
+    def evaluate(self, doc: Any):
         """Evaluates the expression represented by the object for the document
 
         :param doc : the document to match
@@ -243,7 +243,7 @@ class LookupLeaf(LookupTreeElem):
         super(LookupLeaf, self).__init__()
         self.lookups = kwargs
 
-    def evaluate(self, doc: 'BaseDocument'):
+    def evaluate(self, doc: Any):
         """Evaluates the expression represented by the object for the document
 
         :param doc : the document to match
@@ -312,8 +312,6 @@ def guard_type(classinfo, val):
 
 
 guard_str = partial(guard_type, str)
-guard_list = partial(guard_type, list)
-guard_Q = partial(guard_type, Q)
 
 
 def guard_iter(val):
