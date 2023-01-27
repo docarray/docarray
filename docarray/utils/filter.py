@@ -54,7 +54,7 @@ def filter(
     :param docs: the DocumentArray where to apply the filter
     :param query: the query to filter by
     :return: A DocumentArray containing the Documents
-    inside DocumentArray that fullfil the filter conditions
+    in `docs` that fulfill the filter conditions in the `query`
     """
     from docarray.utils.query_parser import QueryParser
 

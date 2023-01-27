@@ -37,16 +37,15 @@ if TYPE_CHECKING:  # pragma: no cover
 PLACEHOLDER_PATTERN = re.compile(r'\{\s*([a-zA-Z0-9_]*)\s*}')
 
 
-def dunder_get(_dict: Any, key: str) -> Any:
-    """Returns value for a specified dunderkey
+def point_get(_dict: Any, key: str) -> Any:
+    """Returns value for a specified "dot separated key"
 
-    A "dunderkey" is just a fieldname that may or may not contain
-    double underscores (dunderscores!) for referencing nested keys in
-    a dict. eg::
+    A "dot separated key" is just a fieldname that may or may not contain
+    ".") for referencing nested keys in a dict or object. eg::
      >>> data = {'a': {'b': 1}}
      >>> dunder_get(data, 'a.b')
 
-    key 'b' can be referrenced as 'a__b'
+    key 'b' can be referrenced as 'a.b'
 
     :param _dict: (dict, list, struct or object) which we want to index into
     :param key: (str) that represents a first level or nested key in the dict
@@ -77,10 +76,10 @@ def dunder_get(_dict: Any, key: str) -> Any:
     else:
         result = getattr(_dict, part1)
 
-    return dunder_get(result, part2) if part2 else result
+    return point_get(result, part2) if part2 else result
 
 
-def lookup(key, val, doc: 'BaseDocument') -> bool:
+def lookup(key: str, val: Any, doc: 'BaseDocument') -> bool:
     """Checks if key-val pair exists in doc using various lookup types
 
     The lookup types are derived from the `key` and then used to check
@@ -110,7 +109,7 @@ def lookup(key, val, doc: 'BaseDocument') -> bool:
     field_exists = True
     try:
         if '.' in get_key:
-            value = dunder_get(doc, get_key)
+            value = point_get(doc, get_key)
         else:
             value = getattr(doc, get_key)
     except (AttributeError, KeyError):
@@ -278,7 +277,7 @@ class LookupyError(Exception):
 ## utility functions
 
 
-def dunder_partition(key):
+def dunder_partition(key: str):
     """Splits a dunderkey into 2 parts
     The first part is everything before the final double underscore
     The second part is after the final double underscore

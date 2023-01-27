@@ -37,7 +37,7 @@ SUPPORTED_OPERATORS = {
 
 def _parse_lookups(
     data: Union[Dict, List] = {}, root_node: Optional[LookupTreeElem] = None
-):
+) -> Optional[LookupTreeElem]:
     if isinstance(data, dict):
         for key, value in data.items():
 
@@ -117,8 +117,8 @@ class QueryParser:
         self.conditions = conditions
         self.lookup_groups = _parse_lookups(self.conditions)
 
-    def evaluate(self, doc: 'BaseDocument'):
+    def evaluate(self, doc: 'BaseDocument') -> bool:
         return self.lookup_groups.evaluate(doc) if self.lookup_groups else True
 
-    def __call__(self, doc: 'BaseDocument'):
+    def __call__(self, doc: 'BaseDocument') -> bool:
         return self.evaluate(doc)

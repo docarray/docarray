@@ -32,7 +32,7 @@ def docs():
         text='Text of Document 2',
         image=Image(url='exampleimage.jpg'),
         price=3,
-        dictionary={'a': 0, 'b': 1, 'c': 2},
+        dictionary={'a': 0, 'b': 1, 'c': 2, 'd': {'e': 3}},
     )
     mmdoc3 = MMDoc(
         text_doc=Text(text='Text Doc of Document 3'),
@@ -140,6 +140,14 @@ def test_nested_filter(docs, dict_api):
     result = method({'dictionary.c': {'$exists': True}})
     assert len(result) == 1
     assert result[0].dictionary['c'] == 2
+
+    result = method({'dictionary.d.e': {'$exists': True}})
+    assert len(result) == 1
+    assert result[0].dictionary['d'] == {'e': 3}
+
+    result = method({'dictionary.d.e': {'$eq': 3}})
+    assert len(result) == 1
+    assert result[0].dictionary['d'] == {'e': 3}
 
     result = method({'image.url': {'$eq': 'exampleimage.jpg'}})
     assert len(result) == 1
