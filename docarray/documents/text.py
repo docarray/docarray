@@ -109,5 +109,5 @@ class Text(BaseDocument):
         else:
             return False
 
-    def __str__(self):
+    def get_string_for_regex_filter(self):
         return self.text
