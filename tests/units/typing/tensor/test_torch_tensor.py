@@ -82,10 +82,10 @@ def test_parametrized():
     assert tensor.shape == (3, 224, 224)
 
     with pytest.raises(ValueError):
-        tensor = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 60, 128))
+        _ = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 60, 128))
 
     with pytest.raises(ValueError):
-        tensor = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 60))
+        _ = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 60))
 
 
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
