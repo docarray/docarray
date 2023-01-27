@@ -1,7 +1,11 @@
 name: PR
 
 on:
-  pull_request:
+  push:
+    branches:
+      - feat-rewrite-v2
+  pull_request_target:
+    types: [opened, reopened]
 
 jobs:
   assign-label-to-pr:
