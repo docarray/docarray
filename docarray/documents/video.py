@@ -1,10 +1,20 @@
-from typing import Optional, TypeVar
+from typing import Any, Optional, Type, TypeVar, Union
+
+import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.documents import Audio
 from docarray.typing import AnyEmbedding, AnyTensor
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
+
+try:
+    import torch
+
+    torch_available = True
+except ImportError:
+    torch_available = False
 
 T = TypeVar('T', bound='Video')
 
@@ -83,3 +93,17 @@ class Video(BaseDocument):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[str, AbstractTensor, Any],
+    ) -> T:
+        if isinstance(value, str):
+            value = cls(url=value)
+        elif isinstance(value, (AbstractTensor, np.ndarray)) or (
+            torch_available and isinstance(value, torch.Tensor)
+        ):
+            value = cls(tensor=value)
+
+        return super().validate(value)

@@ -46,6 +46,11 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.to(device)
 
     @staticmethod
+    def device(tensor: 'torch.Tensor') -> Optional[str]:
+        """Return device on which the tensor is allocated."""
+        return str(tensor.device)
+
+    @staticmethod
     def empty(
         shape: Tuple[int, ...],
         dtype: Optional[Any] = None,
@@ -62,6 +67,13 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     @staticmethod
     def n_dim(array: 'torch.Tensor') -> int:
         return array.ndim
+
+    @staticmethod
+    def squeeze(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """
+        Returns a tensor with all the dimensions of tensor of size 1 removed.
+        """
+        return torch.squeeze(tensor)
 
     @staticmethod
     def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
@@ -88,6 +100,63 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
             but with the specified shape.
         """
         return tensor.reshape(shape)
+
+    @staticmethod
+    def detach(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """
+        Returns the tensor detached from its current graph.
+
+        :param tensor: tensor to be detached
+        :return: a detached tensor with the same data.
+        """
+        return tensor.detach()
+
+    @staticmethod
+    def dtype(tensor: 'torch.Tensor') -> torch.dtype:
+        """Get the data type of the tensor."""
+        return tensor.dtype
+
+    @staticmethod
+    def isnan(tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """Check element-wise for nan and return result as a boolean array"""
+        return torch.isnan(tensor)
+
+    @staticmethod
+    def minmax_normalize(
+        tensor: 'torch.Tensor',
+        t_range: Tuple = (0, 1),
+        x_range: Optional[Tuple] = None,
+        eps: float = 1e-7,
+    ) -> 'torch.Tensor':
+        """
+        Normalize values in `tensor` into `t_range`.
+
+        `tensor` can be a 1D array or a 2D array. When `tensor` is a 2D array, then
+        normalization is row-based.
+
+        .. note::
+            - with `t_range=(0, 1)` will normalize the min-value of data to 0, max to 1;
+            - with `t_range=(1, 0)` will normalize the min-value of data to 1, max value
+              of the data to 0.
+
+        :param tensor: the data to be normalized
+        :param t_range: a tuple represents the target range.
+        :param x_range: a tuple represents tensors range.
+        :param eps: a small jitter to avoid divide by zero
+        :return: normalized data in `t_range`
+        """
+        a, b = t_range
+
+        min_d = (
+            x_range[0] if x_range else torch.min(tensor, dim=-1, keepdim=True).values
+        )
+        max_d = (
+            x_range[1] if x_range else torch.max(tensor, dim=-1, keepdim=True).values
+        )
+        r = (b - a) * (tensor - min_d) / (max_d - min_d + eps) + a
+
+        normalized = torch.clip(r, *((a, b) if a < b else (b, a)))
+        return normalized.to(tensor.dtype)
 
     class Retrieval(AbstractComputationalBackend.Retrieval[torch.Tensor]):
         """

@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
+from pydantic import parse_obj_as
 
+from docarray import BaseDocument
 from docarray.documents import Mesh3D
 from tests import TOYDATA_DIR
 
@@ -19,3 +21,19 @@ def test_mesh(file_url):
 
     assert isinstance(mesh.vertices, np.ndarray)
     assert isinstance(mesh.faces, np.ndarray)
+
+
+def test_str_init():
+    t = parse_obj_as(Mesh3D, 'http://hello.ply')
+    assert t.url == 'http://hello.ply'
+
+
+def test_doc():
+    class MyDoc(BaseDocument):
+        mesh1: Mesh3D
+        mesh2: Mesh3D
+
+    doc = MyDoc(mesh1='http://hello.ply', mesh2=Mesh3D(url='http://hello.ply'))
+
+    assert doc.mesh1.url == 'http://hello.ply'
+    assert doc.mesh2.url == 'http://hello.ply'

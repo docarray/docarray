@@ -38,6 +38,17 @@ def test_shape(array, result):
     assert type(shape) == tuple
 
 
+@pytest.mark.parametrize('dtype', [torch.int64, torch.float64, torch.int, torch.float])
+def test_dtype(dtype):
+    tensor = torch.tensor([1, 2, 3], dtype=dtype)
+    assert TorchCompBackend.dtype(tensor) == dtype
+
+
+def test_device():
+    tensor = torch.tensor([1, 2, 3])
+    assert TorchCompBackend.device(tensor) == 'cpu'
+
+
 def test_empty():
     tensor = TorchCompBackend.empty((10, 3))
     assert tensor.shape == (10, 3)
@@ -53,3 +64,39 @@ def test_empty_device():
     tensor = TorchCompBackend.empty((10, 3), device='meta')
     assert tensor.shape == (10, 3)
     assert tensor.device == torch.device('meta')
+
+
+def test_squeeze():
+    tensor = torch.zeros(size=(1, 1, 3, 1))
+    squeezed = TorchCompBackend.squeeze(tensor)
+    assert squeezed.shape == (3,)
+
+
+@pytest.mark.parametrize(
+    'array,t_range,x_range,result',
+    [
+        (
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+            (0, 10),
+            None,
+            torch.tensor([0, 2, 4, 6, 8, 10]),
+        ),
+        (
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+            (0, 10),
+            (0, 10),
+            torch.tensor([0, 1, 2, 3, 4, 5]),
+        ),
+        (
+            torch.tensor([[0.0, 1.0], [0.0, 1.0]]),
+            (0, 10),
+            None,
+            torch.tensor([[0.0, 10.0], [0.0, 10.0]]),
+        ),
+    ],
+)
+def test_minmax_normalize(array, t_range, x_range, result):
+    output = TorchCompBackend.minmax_normalize(
+        tensor=array, t_range=t_range, x_range=x_range
+    )
+    assert torch.allclose(output, result)

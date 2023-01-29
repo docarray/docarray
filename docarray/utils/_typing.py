@@ -1,6 +1,6 @@
-from typing import Any, get_args
+from typing import Any
 
-from typing_inspect import is_union_type
+from typing_inspect import get_args, is_union_type
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 

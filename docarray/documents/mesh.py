@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Any, Optional, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, Mesh3DUrl
+
+T = TypeVar('T', bound='Mesh3D')
 
 
 class Mesh3D(BaseDocument):
@@ -77,3 +79,12 @@ class Mesh3D(BaseDocument):
     vertices: Optional[AnyTensor]
     faces: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[str, Any],
+    ) -> T:
+        if isinstance(value, str):
+            value = cls(url=value)
+        return super().validate(value)

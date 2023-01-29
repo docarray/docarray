@@ -3,15 +3,18 @@ from typing import Type
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
+from rich.console import Console
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
-from docarray.base_document.mixins import ProtoMixin
+from docarray.base_document.mixins import PlotMixin, ProtoMixin
 from docarray.typing import ID
 
+_console: Console = Console()
 
-class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
+
+class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
     """
     The base class for Document
     """
@@ -34,3 +37,12 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
         :return:
         """
         return cls.__fields__[field].outer_type_
+
+    def __str__(self):
+        with _console.capture() as capture:
+            _console.print(self)
+
+        return capture.get().strip()
+
+    def _get_string_for_regex_filter(self):
+        return str(self)

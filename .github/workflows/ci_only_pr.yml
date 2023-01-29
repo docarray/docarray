@@ -1,7 +1,11 @@
 name: PR
 
 on:
+  push:
+    branches:
+      - feat-rewrite-v2
   pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   assign-label-to-pr:
@@ -37,7 +41,7 @@ jobs:
           ref: ${{ env.BRANCH_NAME }}
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.7
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
