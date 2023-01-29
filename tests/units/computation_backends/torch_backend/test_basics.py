@@ -38,6 +38,17 @@ def test_shape(array, result):
     assert type(shape) == tuple
 
 
+@pytest.mark.parametrize('dtype', [torch.int64, torch.float64, torch.int, torch.float])
+def test_dtype(dtype):
+    tensor = torch.tensor([1, 2, 3], dtype=dtype)
+    assert TorchCompBackend.dtype(tensor) == dtype
+
+
+def test_device():
+    tensor = torch.tensor([1, 2, 3])
+    assert TorchCompBackend.device(tensor) == 'cpu'
+
+
 def test_empty():
     tensor = TorchCompBackend.empty((10, 3))
     assert tensor.shape == (10, 3)

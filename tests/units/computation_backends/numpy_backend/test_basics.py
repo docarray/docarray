@@ -36,6 +36,17 @@ def test_shape(array, result):
     assert type(shape) == tuple
 
 
+def test_device():
+    array = np.array([1, 2, 3])
+    assert NumpyCompBackend.device(array) is None
+
+
+@pytest.mark.parametrize('dtype', [np.int64, np.float64, np.int, np.float])
+def test_dtype(dtype):
+    array = np.array([1, 2, 3], dtype=dtype)
+    assert NumpyCompBackend.dtype(array) == dtype
+
+
 def test_empty():
     array = NumpyCompBackend.empty((10, 3))
     assert array.shape == (10, 3)

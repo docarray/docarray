@@ -1,7 +1,19 @@
-from typing import Optional
+from typing import Any, Optional, Type, TypeVar, Union
+
+import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+
+try:
+    import torch
+
+    torch_available = True
+except ImportError:
+    torch_available = False
+
+T = TypeVar('T', bound='PointCloud3D')
 
 
 class PointCloud3D(BaseDocument):
@@ -75,3 +87,17 @@ class PointCloud3D(BaseDocument):
     url: Optional[PointCloud3DUrl]
     tensor: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[str, AbstractTensor, Any],
+    ) -> T:
+        if isinstance(value, str):
+            value = cls(url=value)
+        elif isinstance(value, (AbstractTensor, np.ndarray)) or (
+            torch_available and isinstance(value, torch.Tensor)
+        ):
+            value = cls(tensor=value)
+
+        return super().validate(value)
