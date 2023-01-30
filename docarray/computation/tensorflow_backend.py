@@ -7,6 +7,7 @@ import tensorflow._api.v2.experimental.numpy as tnp
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.computation.numpy_backend import NumpyCompBackend
+from docarray.typing import TensorFlowTensor
 
 
 class TensorFlowCompBackend(NumpyCompBackend, AbstractComputationalBackend[tf.Tensor]):
@@ -16,72 +17,75 @@ class TensorFlowCompBackend(NumpyCompBackend, AbstractComputationalBackend[tf.Te
 
     @staticmethod
     def stack(
-        tensors: Union[List['tf.Tensor'], Tuple['tf.Tensor']], dim: int = 0
-    ) -> 'tf.Tensor':
-        return tnp.stack(tensors, axis=dim)
+        tensors: Union[List['TensorFlowTensor'], Tuple['TensorFlowTensor']],
+        dim: int = 0,
+    ) -> 'TensorFlowTensor':
+        return TensorFlowTensor(tnp.stack([t.tensor for t in tensors], axis=dim))
 
     @staticmethod
-    def n_dim(array: 'tf.Tensor') -> int:
-        return tnp.ndim(array)
+    def n_dim(array: 'TensorFlowTensor') -> int:
+        return tnp.ndim(array.tensor)
 
     @staticmethod
-    def squeeze(tensor: 'tf.Tensor') -> 'tf.Tensor':
-        return tnp.squeeze(tensor)
+    def squeeze(tensor: 'TensorFlowTensor') -> 'TensorFlowTensor':
+        return TensorFlowTensor(tnp.squeeze(tensor.tensor))
 
     @staticmethod
-    def to_numpy(array: 'tf.Tensor') -> 'np.ndarray':
-        return array.numpy()
+    def to_numpy(array: 'TensorFlowTensor') -> 'np.ndarray':
+        return array.tensor.numpy()
 
     @staticmethod
     def empty(
         shape: Tuple[int, ...],
         dtype: Optional[Any] = None,
         device: Optional[Any] = None,
-    ) -> 'tf.Tensor':
-        return tnp.empty(shape=shape, dtype=dtype)
+    ) -> 'TensorFlowTensor':
+        return TensorFlowTensor(tnp.empty(shape=shape, dtype=dtype))
 
     @staticmethod
     def none_value() -> typing.Any:
         return tf.constant(float('nan'))
 
     @staticmethod
-    def to_device(tensor: 'tf.Tensor', device: str) -> 'tf.Tensor':
+    def to_device(tensor: 'TensorFlowTensor', device: str) -> 'TensorFlowTensor':
         pass
 
     @staticmethod
-    def device(tensor: 'tf.Tensor') -> Optional[str]:
+    def device(tensor: 'TensorFlowTensor') -> Optional[str]:
         return tensor.device
 
     @staticmethod
-    def shape(tensor: 'tf.Tensor') -> Tuple[int, ...]:
-        return tuple(tnp.shape(tensor))
+    def shape(tensor: 'TensorFlowTensor') -> Tuple[int, ...]:
+        return tuple(tnp.shape(tensor.tensor))
 
     @staticmethod
-    def reshape(tensor: 'tf.Tensor', shape: Tuple[int, ...]) -> 'tf.Tensor':
-        return tf.reshape(tensor, shape)
+    def reshape(
+        tensor: 'TensorFlowTensor', shape: Tuple[int, ...]
+    ) -> 'TensorFlowTensor':
+        return tf.reshape(tensor.tensor, shape)
 
     @staticmethod
-    def detach(tensor: 'tf.Tensor') -> 'tf.Tensor':
-        return tf.stop_gradient(tensor)
+    def detach(tensor: 'TensorFlowTensor') -> 'TensorFlowTensor':
+        return TensorFlowTensor(tf.stop_gradient(tensor))
 
     @staticmethod
-    def dtype(tensor: 'tf.Tensor') -> tf.dtypes:
-        return tensor.dtype
+    def dtype(tensor: 'TensorFlowTensor') -> tf.dtypes:
+        return tensor.tensor.dtype
 
     @staticmethod
-    def isnan(tensor: 'tf.Tensor') -> 'tf.Tensor':
-        return tnp.isnan(tensor)
+    def isnan(tensor: 'TensorFlowTensor') -> TensorFlowTensor:
+        return TensorFlowTensor(tnp.isnan(tensor.tensor))
 
     @staticmethod
     def minmax_normalize(
-        tensor: 'tf.Tensor',
+        tensor: 'TensorFlowTensor',
         t_range: Tuple = (0.0, 1.0),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
-    ) -> 'tf.Tensor':
+    ) -> 'TensorFlowTensor':
         a, b = t_range
 
-        t = tf.cast(tensor, tf.float32)
+        t = tf.cast(tensor.tensor, tf.float32)
         min_d = x_range[0] if x_range else tnp.min(t, axis=-1, keepdims=True)
         max_d = x_range[1] if x_range else tnp.max(t, axis=-1, keepdims=True)
 
@@ -89,4 +93,4 @@ class TensorFlowCompBackend(NumpyCompBackend, AbstractComputationalBackend[tf.Te
         print(f"i = {i}")
 
         normalized = tnp.clip(i, *((a, b) if a < b else (b, a)))
-        return tf.cast(normalized, tensor.dtype)
+        return tf.cast(normalized, tensor.tensor.dtype)
