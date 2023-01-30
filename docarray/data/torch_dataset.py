@@ -15,6 +15,80 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     :param da: the DocumentArray to be used as the dataset
     :param preprocessing: a dictionary of field names and preprocessing functions
+
+    The preprocessing dictionary passed to the constructor consists of keys that are
+    field names and values that are functions that take a single argument and return
+    a single argument.
+
+    EXAMPLE USAGE
+    .. code-block:: python
+    from torch.utils.data import DataLoader
+    from docarray import DocumentArray
+    from docarray.data import MultiModalDataset
+    from docarray.documents import Text
+
+
+    def prepend_number(text: str):
+        return f"Number {text}"
+
+
+    da = DocumentArray[Text](Text(text=str(i)) for i in range(16))
+    ds = MultiModalDataset[Text](da, preprocessing={'text': prepend_number})
+    loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[Text].collate_fn)
+    for batch in loader:
+        print(batch.text)
+
+    Nested fields can be accessed by using dot notation.
+    The document itself can be accessed using the empty string as the key.
+
+    Transformations that operate on reference types (such as Documents) can optionally
+    not return a value.
+
+    The transformations will be applied according to their order in the dictionary.
+
+    EXAMPLE USAGE
+    .. code-block:: python
+    import torch
+    from torch.utils.data import DataLoader
+    from docarray import DocumentArray, BaseDocument
+    from docarray.data import MultiModalDataset
+    from docarray.documents import Text
+
+
+    class Thesis(BaseDocument):
+        title: Text
+
+
+    class Student(BaseDocument):
+        thesis: Thesis
+
+
+    def embed_title(title: Text):
+        title.embedding = torch.ones(4)
+
+
+    def normalize_embedding(thesis: Thesis):
+        thesis.title.embedding = thesis.title.embedding / thesis.title.embedding.norm()
+
+
+    def add_nonsense(student: Student):
+        student.thesis.title.embedding = student.thesis.title.embedding + int(
+            student.thesis.title.text
+        )
+
+
+    da = DocumentArray[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
+    ds = MultiModalDataset[Student](
+        da,
+        preprocessing={
+            "thesis.title": embed_title,
+            "thesis": normalize_embedding,
+            "": add_nonsense,
+        },
+    )
+    loader = DataLoader(ds, batch_size=4, collate_fn=ds.collate_fn)
+    for batch in loader:
+        print(batch.thesis.title.embedding)
     """
 
     document_type: Optional[Type[BaseDocument]] = None
