@@ -1,5 +1,6 @@
 name: BR
-
+## this action is here only for the development phase of docarray v2
+## it will be removed once the new version is released
 on:
   push:
     branches:
