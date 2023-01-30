@@ -51,3 +51,11 @@ def test_image_shortcut_doc():
     assert doc.image.url == 'http://myurl.jpg'
     assert (doc.image2.tensor == np.zeros((10, 10, 3))).all()
     assert (doc.image3.tensor == torch.zeros(10, 10, 3)).all()
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+def test_byte():
+
+    img = Image(url=REMOTE_JPG)
+    img.bytes = img.url.load_bytes()

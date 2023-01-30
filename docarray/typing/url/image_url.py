@@ -93,7 +93,7 @@ class ImageUrl(AnyUrl):
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
         return _move_channel_axis(tensor, axis_layout=axis_layout)
 
-    def load_to_bytes(
+    def load_bytes(
         self,
         image_format: str = 'png',
         width: Optional[int] = None,
