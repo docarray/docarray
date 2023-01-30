@@ -1,6 +1,6 @@
 import orjson
 
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.abstract_type import AbstractType
 
 
 def _default_orjson(obj):
@@ -10,7 +10,7 @@ def _default_orjson(obj):
     :return: return a json compatible object
     """
 
-    if isinstance(obj, AbstractTensor) or hasattr(obj, '_docarray_to_json_compatible'):
+    if isinstance(obj, AbstractType):
         return obj._docarray_to_json_compatible()
     else:
         return obj

@@ -37,3 +37,10 @@ class AbstractType(BaseNode):
     @abstractmethod
     def _to_node_protobuf(self: T) -> 'NodeProto':
         ...
+
+    def _docarray_to_json_compatible(self):
+        """
+        Convert itself into a json compatible object
+        :return: a representation of the tensor compatible with orjson
+        """
+        return self
