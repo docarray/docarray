@@ -1,4 +1,4 @@
-name: PR
+name: BRANCH
 
 on:
   pull_request:
