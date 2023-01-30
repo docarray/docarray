@@ -45,7 +45,7 @@ print(doc.embedding.shape)
 - **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a single, unified data structure, the `Document`
   - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focussed features 
 
-### Use pre-defined `Document`s for common use cases:
+### Use pre-definedd `Document`s for common use cases:
 
 ```python
 from docarray.documents import Image
