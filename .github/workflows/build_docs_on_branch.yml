@@ -1,4 +1,4 @@
-name: PR
+name: BR
 
 on:
   push:
