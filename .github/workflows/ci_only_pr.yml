@@ -1,10 +1,6 @@
 name: PR
 
 on:
-  push:
-    branches:
-      - feat-rewrite-v2
-      - test-build-doc
   pull_request:
     types: [opened, synchronize, reopened]
 

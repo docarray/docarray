@@ -1,0 +1,41 @@
+name: PR
+
+on:
+  push:
+    branches:
+      - feat-rewrite-v2
+      - test-build-doc
+
+jobs:
+
+  deploy-to-netlify:
+    runs-on: ubuntu-latest
+    needs: [assign-label-to-pr]
+    steps:
+      - run: |
+          echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+      - uses: actions/checkout@v2.5.0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Build and Deploy
+        run: |
+          npm i -g netlify-cli
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m pip install wheel
+          python -m pip install poetry
+          cd ..
+          python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
+
+          cd docs
+          export NUM_RELEASES=2 # only 2 last tags to save build time
+          bash makedoc.sh 
+          netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        working-directory: docs
