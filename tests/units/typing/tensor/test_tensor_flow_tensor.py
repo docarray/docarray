@@ -31,12 +31,7 @@ def test_unwrap():
 def test_parametrized():
     # correct shape, single axis
     tf_tensor = parse_obj_as(TensorFlowTensor[128], tf.zeros(128))
-    print(f"tf_tensor = {tf_tensor}")
-    print(f"type(tf_tensor) = {type(tf_tensor)}")
-
     assert isinstance(tf_tensor, TensorFlowTensor)
-    print(f"type(tf_tensor.tensor) = {type(tf_tensor.tensor)}")
-
     assert isinstance(tf_tensor.tensor, tf.Tensor)
     assert tf_tensor.tensor.shape == (128,)
 
