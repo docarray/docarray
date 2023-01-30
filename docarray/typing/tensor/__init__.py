@@ -2,6 +2,7 @@ from docarray.typing.tensor.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.image import ImageNdArray, ImageTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
+from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 
 __all__ = [
     'NdArray',
@@ -10,6 +11,7 @@ __all__ = [
     'NdArrayEmbedding',
     'ImageNdArray',
     'ImageTensor',
+    'TensorFlowTensor',
 ]
 
 try:

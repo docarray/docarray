@@ -5,6 +5,7 @@ from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
+from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url import (
     AnyUrl,
@@ -31,6 +32,7 @@ __all__ = [
     'AnyUrl',
     'ID',
     'AnyTensor',
+    'TensorFlowTensor',
     'NdArrayEmbedding',
     'ImageBytes',
     'ImageTensor',
