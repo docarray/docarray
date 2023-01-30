@@ -10,7 +10,7 @@ def _default_orjson(obj):
     :return: return a json compatible object
     """
 
-    if isinstance(obj, AbstractTensor):
+    if isinstance(obj, AbstractTensor) or hasattr(obj, '_docarray_to_json_compatible'):
         return obj._docarray_to_json_compatible()
     else:
         return obj
