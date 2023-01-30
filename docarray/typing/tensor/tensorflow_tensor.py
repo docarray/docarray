@@ -36,11 +36,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __init__(self, tensor: tf.Tensor):
         super().__init__()
-        self._tensor = tensor
-
-    @property
-    def tensor(self):
-        return self._tensor
+        self.tensor = tensor
 
     @classmethod
     def __get_validators__(cls):
