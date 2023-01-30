@@ -12,8 +12,6 @@ jobs:
   deploy-to-netlify:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2.5.0
       - uses: actions/setup-python@v4
         with:
@@ -34,7 +32,7 @@ jobs:
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh 
-          netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
+          netlify deploy --dir=_build/dirhtml --alias="docarray-v2" --message="Deploying docs to docarray v2"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

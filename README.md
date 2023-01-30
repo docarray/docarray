@@ -416,6 +416,7 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 - [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
 - [Submit ideas, feature requests, and discussions](https://github.com/docarray/docarray/discussions)
+- [v2 Documentation](https://docarray-v2--jina-docs.netlify.app/)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
 
