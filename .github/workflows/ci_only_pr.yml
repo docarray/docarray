@@ -48,15 +48,12 @@ jobs:
       - name: Build and Deploy
         run: |
           npm i -g netlify-cli
-          git fetch origin
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python -m pip install wheel
           python -m pip install poetry
-          cd ..
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
-          git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh 
