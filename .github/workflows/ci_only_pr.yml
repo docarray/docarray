@@ -52,6 +52,7 @@ jobs:
           pip install -r requirements.txt
           python -m pip install wheel
           python -m pip install poetry
+          cd ..
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
           cd docs
