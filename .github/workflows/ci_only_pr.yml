@@ -36,6 +36,7 @@ jobs:
     steps:
       - run: |
           echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+      - uses: actions/checkout@v2.5.0
       - uses: actions/setup-python@v4
         with:
           python-version: 3.7
