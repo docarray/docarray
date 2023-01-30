@@ -18,7 +18,7 @@ T = TypeVar('T', bound='Bytes')
 @_register_proto(proto_type_name='bytes')
 class Bytes(AbstractType, bytes):
     """
-    Represent a base64 encoder objects
+    Represent a byte object
     """
 
     @classmethod

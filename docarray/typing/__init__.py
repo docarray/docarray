@@ -1,3 +1,4 @@
+from docarray.typing.base_64 import Base64
 from docarray.typing.bytes import Bytes
 from docarray.typing.id import ID
 from docarray.typing.tensor.audio import AudioNdArray
@@ -32,6 +33,7 @@ __all__ = [
     'AnyTensor',
     'NdArrayEmbedding',
     'Bytes',
+    'Base64',
 ]
 
 try:
