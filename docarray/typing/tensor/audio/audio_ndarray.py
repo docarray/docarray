@@ -54,6 +54,6 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
 
     """
 
-    def to_audio_bytes(self):
+    def to_bytes(self):
         tensor = (self * MAX_INT_16).astype('<h')
         return tensor.tobytes()

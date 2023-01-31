@@ -52,7 +52,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
     """
 
-    def to_audio_bytes(self):
+    def to_bytes(self):
         import torch
 
         tensor = (self * MAX_INT_16).to(dtype=torch.int16)

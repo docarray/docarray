@@ -9,7 +9,7 @@ T = TypeVar('T', bound='AbstractAudioTensor')
 
 class AbstractAudioTensor(AbstractTensor, ABC):
     @abstractmethod
-    def to_audio_bytes(self):
+    def to_bytes(self):
         """
         Convert audio tensor to bytes.
         """
@@ -36,4 +36,4 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setnchannels(n_channels)
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes(self.to_audio_bytes())
+            f.writeframes(self.to_bytes())
