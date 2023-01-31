@@ -5,6 +5,7 @@ from typing import (
     Any,
     Callable,
     Generic,
+    Dict,
     Iterable,
     List,
     Type,
@@ -84,6 +85,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
+    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self,

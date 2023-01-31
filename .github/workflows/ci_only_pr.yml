@@ -1,9 +1,6 @@
 name: PR
 
 on:
-  push:
-    branches:
-      - feat-rewrite-v2
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -36,9 +33,6 @@ jobs:
       - run: |
           echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
       - uses: actions/checkout@v2.5.0
-        with:
-          repository: jina-ai/docarray
-          ref: ${{ env.BRANCH_NAME }}
       - uses: actions/setup-python@v4
         with:
           python-version: 3.7
@@ -48,7 +42,6 @@ jobs:
       - name: Build and Deploy
         run: |
           npm i -g netlify-cli
-          git fetch origin
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python -m pip install wheel
@@ -56,7 +49,6 @@ jobs:
           cd ..
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
-          git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh 
