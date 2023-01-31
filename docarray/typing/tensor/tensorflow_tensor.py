@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union
 
 import numpy as np
-import tensorflow as tf
+import tensorflow as tf  # type: ignore
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

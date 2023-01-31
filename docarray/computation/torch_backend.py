@@ -34,9 +34,9 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     Computational backend for PyTorch.
     """
 
-    @staticmethod
+    @classmethod
     def stack(
-        tensors: Union[List['torch.Tensor'], Tuple['torch.Tensor']], dim: int = 0
+        cls, tensors: Union[List['torch.Tensor'], Tuple['torch.Tensor']], dim: int = 0
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
@@ -50,8 +50,9 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """Return device on which the tensor is allocated."""
         return str(tensor.device)
 
-    @staticmethod
+    @classmethod
     def empty(
+        cls,
         shape: Tuple[int, ...],
         dtype: Optional[Any] = None,
         device: Optional[Any] = None,
@@ -64,8 +65,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
 
         return torch.empty(shape, **extra_param)
 
-    @staticmethod
-    def n_dim(array: 'torch.Tensor') -> int:
+    @classmethod
+    def n_dim(cls, array: 'torch.Tensor') -> int:
         return array.ndim
 
     @staticmethod
@@ -84,12 +85,12 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """Provide a compatible value that represents None in torch."""
         return torch.tensor(float('nan'))
 
-    @staticmethod
-    def shape(tensor: 'torch.Tensor') -> Tuple[int, ...]:
+    @classmethod
+    def shape(cls, tensor: 'torch.Tensor') -> Tuple[int, ...]:
         return tuple(tensor.shape)
 
-    @staticmethod
-    def reshape(tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
+    @classmethod
+    def reshape(cls, tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
 
         """
         Gives a new shape to tensor without changing its data.
@@ -116,8 +117,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """Get the data type of the tensor."""
         return tensor.dtype
 
-    @staticmethod
-    def isnan(tensor: 'torch.Tensor') -> 'torch.Tensor':
+    @classmethod
+    def isnan(cls, tensor: 'torch.Tensor') -> 'torch.Tensor':
         """Check element-wise for nan and return result as a boolean array"""
         return torch.isnan(tensor)
 
