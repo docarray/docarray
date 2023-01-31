@@ -119,3 +119,50 @@ def test_nested_field(captions_da: DocumentArray[PairTextImage]):
 
     batch = next(iter(loader))
     assert batch.text.embedding.shape[1] == 42
+
+
+def test_torch_dl_multiprocessing(captions_da: DocumentArray[PairTextImage]):
+    BATCH_SIZE = 32
+
+    preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
+    dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
+    loader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        collate_fn=dataset.collate_fn,
+        shuffle=True,
+        num_workers=2,
+        multiprocessing_context='fork',
+    )
+
+    from docarray.array.array_stacked import DocumentArrayStacked
+
+    batch_lens = []
+    for batch in loader:
+        assert isinstance(batch, DocumentArrayStacked[PairTextImage])
+        batch_lens.append(len(batch))
+    assert all(x == BATCH_SIZE for x in batch_lens[:-1])
+
+
+def test_torch_dl_pin_memory(captions_da: DocumentArray[PairTextImage]):
+    BATCH_SIZE = 32
+
+    preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
+    dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
+    loader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        collate_fn=dataset.collate_fn,
+        shuffle=True,
+        pin_memory=True,
+        num_workers=2,
+        multiprocessing_context='fork',
+    )
+
+    from docarray.array.array_stacked import DocumentArrayStacked
+
+    batch_lens = []
+    for batch in loader:
+        assert isinstance(batch, DocumentArrayStacked[PairTextImage])
+        batch_lens.append(len(batch))
+    assert all(x == BATCH_SIZE for x in batch_lens[:-1])
