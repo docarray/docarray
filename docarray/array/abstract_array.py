@@ -27,18 +27,24 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
     tensor_type: Type['AbstractTensor'] = NdArray
-    __typed_da__: Dict[Type[BaseDocument], Type] = {}
+    __typed_da__: Dict[Type['AnyDocumentArray'], Dict[Type[BaseDocument], Type]] = {}
 
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)})>'
 
+    @classmethod
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )
 
-        if item not in cls.__typed_da__:
+        if cls not in cls.__typed_da__:
+            cls.__typed_da__[cls] = {}
+
+        if item not in cls.__typed_da__[cls]:
+            # Promote to global scope so multiprocessing can pickle it
+            global _DocumentArrayTyped
 
             class _DocumentArrayTyped(cls):  # type: ignore
                 document_type: Type[BaseDocument] = item
@@ -58,11 +64,20 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
                 setattr(_DocumentArrayTyped, field, _property_generator(field))
                 # this generates property on the fly based on the schema of the item
 
-            _DocumentArrayTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
-            _DocumentArrayTyped.__qualname__ = f'{cls.__name__}[{item.__name__}]'
-            cls.__typed_da__[item] = _DocumentArrayTyped
+            real_name = f'{cls.__name__}[{item.__name__}]'
+            # The global scope and qualname need to refer to this class
+            # using its real_name.
+            # Otherwise, creating another _DocumentArrayTyped will overwrite this one.
+            globals()[real_name] = _DocumentArrayTyped
+            _DocumentArrayTyped.__qualname__ = (
+                _DocumentArrayTyped.__qualname__[: -len(_DocumentArrayTyped.__name__)]
+                + real_name
+            )
 
-        return cls.__typed_da__[item]
+            _DocumentArrayTyped.__name__ = real_name
+            cls.__typed_da__[cls][item] = _DocumentArrayTyped
+
+        return cls.__typed_da__[cls][item]
 
     @abstractmethod
     def _get_array_attribute(

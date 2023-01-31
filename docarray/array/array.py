@@ -5,7 +5,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    Dict,
     Iterable,
     List,
     Type,
@@ -85,7 +84,6 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
-    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self,
@@ -135,7 +133,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
-            return self.__class__.__class_getitem__(field_type)(
+            return DocumentArray.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self), tensor_type=self.tensor_type
             )
         else:
