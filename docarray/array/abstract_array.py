@@ -15,6 +15,7 @@ from docarray.base_document import BaseDocument
 from docarray.display.document_array_summary import DocumentArraySummary
 from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
+from docarray.utils._typing import change_cls_name
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
@@ -64,17 +65,12 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
                 setattr(_DocumentArrayTyped, field, _property_generator(field))
                 # this generates property on the fly based on the schema of the item
 
-            real_name = f'{cls.__name__}[{item.__name__}]'
-            # The global scope and qualname need to refer to this class
-            # using its real_name.
+            # The global scope and qualname need to refer to this class a unique name.
             # Otherwise, creating another _DocumentArrayTyped will overwrite this one.
-            globals()[real_name] = _DocumentArrayTyped
-            _DocumentArrayTyped.__qualname__ = (
-                _DocumentArrayTyped.__qualname__[: -len(_DocumentArrayTyped.__name__)]
-                + real_name
+            change_cls_name(
+                _DocumentArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
             )
 
-            _DocumentArrayTyped.__name__ = real_name
             cls.__typed_da__[cls][item] = _DocumentArrayTyped
 
         return cls.__typed_da__[cls][item]

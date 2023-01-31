@@ -19,3 +19,16 @@ def is_tensor_union(type_: Any) -> bool:
         return is_union and all(
             (is_type_tensor(t) or issubclass(t, type(None))) for t in get_args(type_)
         )
+
+
+def change_cls_name(cls: type, new_name: str, scope=None) -> None:
+    """Change the name of a class.
+
+    :param cls: the class to change the name of
+    :param new_name: the new name
+    :param scope: the scope in which the class is defined
+    """
+    if scope:
+        scope[new_name] = cls
+    cls.__qualname__ = cls.__qualname__[: -len(cls.__name__)] + new_name
+    cls.__name__ = new_name

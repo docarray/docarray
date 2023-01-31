@@ -4,6 +4,7 @@ from torch.utils.data import Dataset
 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import TorchTensor
+from docarray.utils._typing import change_cls_name
 
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
@@ -138,10 +139,23 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             )
 
         if item not in cls.__typed_ds__:
+            global _TypedDataset
 
             class _TypedDataset(cls):  # type: ignore
                 document_type = item
 
+            change_cls_name(
+                _TypedDataset, f'{cls.__name__}[{item.__name__}]', globals()
+            )
+
             cls.__typed_ds__[item] = _TypedDataset
 
+        MultiModalDataset._init_typed_das(item)
         return cls.__typed_ds__[item]
+
+    @staticmethod
+    def _init_typed_das(item: Type[BaseDocument]):
+        DocumentArray[item]().stack()  # type: ignore
+        for field_type in item.__annotations__.values():
+            if isinstance(field_type, type) and issubclass(field_type, BaseDocument):
+                MultiModalDataset._init_typed_das(field_type)
