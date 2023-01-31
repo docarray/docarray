@@ -47,10 +47,6 @@ def captions_da() -> DocumentArray[PairTextImage]:
     return da
 
 
-# TEMPORARY PATCH WHILE WE WAIT FOR ISINSTANCE TO BE FIXED
-isinstance = lambda x, y: str(x.__class__) == str(y)  # noqa: E731
-
-
 def test_torch_dataset(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
