@@ -23,11 +23,6 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
-from jaxtyping import (
-    AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
-)
-from jaxtyping import Float as JaxTypingFloat
-from jaxtyping import Int as JaxTypingInt
 
 from docarray.base_document.base_node import BaseNode
 
@@ -202,19 +197,3 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
-
-
-# Jaxtyping types
-# TODO(johannes): add all types
-
-
-class metaNpAndJaxtyping(type(JaxTypingDType), type(NdArray)):  # type: ignore
-    pass
-
-
-class IntNdArray(NdArray, JaxTypingInt, metaclass=metaNpAndJaxtyping):
-    __unparametrizedcls__ = np.ndarray
-
-
-class FloatNdArray(NdArray, JaxTypingFloat, metaclass=metaNpAndJaxtyping):
-    __unparametrizedcls__ = np.ndarray

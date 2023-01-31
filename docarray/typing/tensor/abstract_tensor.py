@@ -1,4 +1,5 @@
 import abc
+import inspect
 from abc import ABC
 from collections import defaultdict
 from typing import (
@@ -14,6 +15,7 @@ from typing import (
     Union,
 )
 
+import jaxtyping
 from jaxtyping import (
     AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
 )
@@ -114,26 +116,23 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     @staticmethod
     def _parse_item(item: Any) -> Tuple[Optional[str], Optional[str]]:
+        def _is_jaxtyping_class(_cls: type) -> bool:
+            return inspect.isclass(_cls) and issubclass(_cls, JaxTypingDType)
+
         # put into tuple form
-        if isinstance(item, (int, str)):
+        if isinstance(item, (int, str)) or _is_jaxtyping_class(item):
             item = (item,)
         try:
             item = tuple(item)
         except TypeError:
             raise TypeError(f'{item} is not a valid tensor shape.')
         # parse shape
-        shape_item = (
-            i for i in item if not isinstance(i, tuple)
-        )  # remove the dtype tuple
-        shape = ' '.join([str(s) for s in shape_item]) if shape_item else None
+        shape_item = (i for i in item if not _is_jaxtyping_class(i))
+        shape_str = ' '.join([str(s) for s in shape_item]) if shape_item else None
         # parse dtype
-        dtype_item = [i for i in item if isinstance(i, tuple)]
-        dtype = (
-            None
-            if (not dtype_item or dtype_item[0][0] != 'dtype')
-            else dtype_item[0][1]
-        )
-        return shape, dtype
+        dtypes = [i for i in item if _is_jaxtyping_class(i)]
+        dtype = jaxtyping.Shaped if not dtypes else dtypes[0]
+        return shape_str, dtype
 
     def __class_getitem__(cls, item: Any):
         native_tensor_type = cls.get_comp_backend().native_tensor_type()

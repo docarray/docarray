@@ -3,11 +3,6 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
-from jaxtyping import (
-    AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
-)
-from jaxtyping import Float as JaxTypingFloat
-from jaxtyping import Int as JaxTypingInt
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -227,21 +222,3 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
-
-
-# Jaxtyping types
-# TODO(johannes): add all types
-
-
-class metaTorchAndJaxtyping(type(JaxTypingDType), type(TorchTensor)):  # type: ignore
-    pass
-
-
-class TorchIntTensor(TorchTensor, JaxTypingInt, metaclass=metaTorchAndJaxtyping):
-    __unparametrizedcls__ = TorchTensor
-    ...
-
-
-class TorchFloatTensor(TorchTensor, JaxTypingFloat, metaclass=metaTorchAndJaxtyping):
-    __unparametrizedcls__ = TorchTensor
-    ...
