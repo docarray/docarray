@@ -1,5 +1,5 @@
 import wave
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -10,7 +10,6 @@ MAX_INT_16 = 2**15
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-    @abstractmethod
     def to_bytes(self):
         """
         Convert audio tensor to bytes.
