@@ -17,6 +17,29 @@ from typing import (
 from jaxtyping import (
     AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
 )
+from jaxtyping import BFloat16 as JaxTypingBFloat16
+from jaxtyping import Bool as JaxTypingBool
+from jaxtyping import Complex as JaxTypingComplex
+from jaxtyping import Complex64 as JaxTypingComplex64
+from jaxtyping import Complex128 as JaxTypingComplex128
+from jaxtyping import Float as JaxTypingFloat
+from jaxtyping import Float16 as JaxTypingFloat16
+from jaxtyping import Float32 as JaxTypingFloat32
+from jaxtyping import Float64 as JaxTypingFloat64
+from jaxtyping import Inexact as JaxTypingInexact
+from jaxtyping import Int as JaxTypingInt
+from jaxtyping import Int8 as JaxTypingInt8
+from jaxtyping import Int16 as JaxTypingInt16
+from jaxtyping import Int32 as JaxTypingInt32
+from jaxtyping import Int64 as JaxTypingInt64
+from jaxtyping import Integer as JaxTypingInteger
+from jaxtyping import Num as JaxTypingNum
+from jaxtyping import Shaped as JaxTypingShaped
+from jaxtyping import UInt as JaxTypingUInt
+from jaxtyping import UInt8 as JaxTypingUInt8
+from jaxtyping import UInt16 as JaxTypingUInt16
+from jaxtyping import UInt32 as JaxTypingUInt32
+from jaxtyping import UInt64 as JaxTypingUInt64
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
@@ -28,18 +51,54 @@ T = TypeVar('T', bound='AbstractTensor')
 TTensor = TypeVar('TTensor')
 ShapeT = TypeVar('ShapeT')
 
+ALL_JAX_TYPING_DTYPES = (
+    JaxTypingBool,
+    JaxTypingUInt,
+    JaxTypingInt,
+    JaxTypingInteger,
+    JaxTypingFloat,
+    JaxTypingComplex,
+    JaxTypingInexact,
+    JaxTypingNum,
+    JaxTypingShaped,
+    JaxTypingUInt8,
+    JaxTypingUInt16,
+    JaxTypingUInt32,
+    JaxTypingUInt64,
+    JaxTypingInt8,
+    JaxTypingInt16,
+    JaxTypingInt32,
+    JaxTypingInt64,
+    JaxTypingBFloat16,
+    JaxTypingFloat16,
+    JaxTypingFloat32,
+    JaxTypingFloat64,
+    JaxTypingComplex64,
+    JaxTypingComplex128,
+)
+
 
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
     _proto_type_name: str
     __unparametrizedcls__: Optional[type] = None
     _dtype_classes: DefaultDict[str, List[Type]] = defaultdict(list)
 
-    def __init_subclass__(cls, **kwargs):
+    @classmethod
+    def _create_dtype_classes(cls):
         if issubclass(cls, JaxTypingDType):
-            dtype: str = cls.dtypes[
-                0
-            ]  # assumes only one dtype per subclass. change later
-            cls._dtype_classes[dtype].append(cls)
+            return
+
+        class Meta(type(JaxTypingDType), type(cls)):
+            ...
+
+        for dtype in ALL_JAX_TYPING_DTYPES:
+            classname = f'{cls.__name__}{dtype.__name__}'
+            dtype_subclass = Meta(classname, (cls, dtype), {})
+            cls._dtype_classes[dtype].append(dtype_subclass)
+
+    def __init_subclass__(cls, **kwargs):
+        cls._create_dtype_classes()
+        super().__init_subclass__(**kwargs)
 
     def _to_node_protobuf(self: T) -> 'NodeProto':
         """Convert itself into a NodeProto protobuf message. This function should
