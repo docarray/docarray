@@ -23,7 +23,7 @@ def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
     return unsqueezed
 
 
-def _usqueeze_if_scalar(t: torch.Tensor):
+def _unsqueeze_if_scalar(t: torch.Tensor):
     if len(t.shape) == 0:  # avoid scalar output
         t = t.unsqueeze(0)
     return t
@@ -40,13 +40,13 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     ) -> 'torch.Tensor':
         return torch.stack(tensors, dim=dim)
 
-    @staticmethod
-    def to_device(tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
+    @classmethod
+    def to_device(cls, tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
         """Move the tensor to the specified device."""
         return tensor.to(device)
 
-    @staticmethod
-    def device(tensor: 'torch.Tensor') -> Optional[str]:
+    @classmethod
+    def device(cls, tensor: 'torch.Tensor') -> Optional[str]:
         """Return device on which the tensor is allocated."""
         return str(tensor.device)
 
@@ -69,19 +69,21 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     def n_dim(cls, array: 'torch.Tensor') -> int:
         return array.ndim
 
-    @staticmethod
-    def squeeze(tensor: 'torch.Tensor') -> 'torch.Tensor':
+    @classmethod
+    def squeeze(cls, tensor: 'torch.Tensor') -> 'torch.Tensor':
         """
         Returns a tensor with all the dimensions of tensor of size 1 removed.
         """
         return torch.squeeze(tensor)
 
-    @staticmethod
-    def to_numpy(array: 'torch.Tensor') -> 'np.ndarray':
+    @classmethod
+    def to_numpy(cls, array: 'torch.Tensor') -> 'np.ndarray':
         return array.cpu().detach().numpy()
 
-    @staticmethod
-    def none_value() -> Any:
+    @classmethod
+    def none_value(
+        cls,
+    ) -> Any:
         """Provide a compatible value that represents None in torch."""
         return torch.tensor(float('nan'))
 
@@ -102,8 +104,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """
         return tensor.reshape(shape)
 
-    @staticmethod
-    def detach(tensor: 'torch.Tensor') -> 'torch.Tensor':
+    @classmethod
+    def detach(cls, tensor: 'torch.Tensor') -> 'torch.Tensor':
         """
         Returns the tensor detached from its current graph.
 
@@ -112,8 +114,8 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """
         return tensor.detach()
 
-    @staticmethod
-    def dtype(tensor: 'torch.Tensor') -> torch.dtype:
+    @classmethod
+    def dtype(cls, tensor: 'torch.Tensor') -> torch.dtype:
         """Get the data type of the tensor."""
         return tensor.dtype
 
@@ -122,8 +124,9 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         """Check element-wise for nan and return result as a boolean array"""
         return torch.isnan(tensor)
 
-    @staticmethod
+    @classmethod
     def minmax_normalize(
+        cls,
         tensor: 'torch.Tensor',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
@@ -235,7 +238,7 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
             a_norm = x_mat / torch.clamp(a_n, min=eps)
             b_norm = y_mat / torch.clamp(b_n, min=eps)
             sims = torch.mm(a_norm, b_norm.transpose(0, 1)).squeeze()
-            return _usqueeze_if_scalar(sims)
+            return _unsqueeze_if_scalar(sims)
 
         @staticmethod
         def euclidean_dist(
@@ -262,7 +265,7 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
             x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
 
             dists = torch.cdist(x_mat, y_mat).squeeze()
-            return _usqueeze_if_scalar(dists)
+            return _unsqueeze_if_scalar(dists)
 
         @staticmethod
         def sqeuclidean_dist(
@@ -290,4 +293,4 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
 
             x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
 
-            return _usqueeze_if_scalar((torch.cdist(x_mat, y_mat) ** 2).squeeze())
+            return _unsqueeze_if_scalar((torch.cdist(x_mat, y_mat) ** 2).squeeze())

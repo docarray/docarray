@@ -1,33 +1,33 @@
 import types
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
-import tensorflow as tf  # type: ignore
 
 from docarray.computation import AbstractComputationalBackend
 
+T = TypeVar('T')
 
-class AbstractNumpyBasedBackend(
-    AbstractComputationalBackend[Union[np.ndarray, tf.Tensor]]
-):
+
+class AbstractNumpyBasedBackend(AbstractComputationalBackend[T]):
     _module: types.ModuleType
+    _norm_left: Callable
+    _norm_right: Callable
 
     @classmethod
-    def stack(
-        cls, tensors: Union[List['np.ndarray'], Tuple['np.ndarray']], dim: int = 0
-    ) -> 'np.ndarray':
-        return cls._module.stack(tensors, axis=dim)
+    def stack(cls, tensors: Union[List[T], Tuple[T]], dim: int = 0) -> T:
+        norm_right = [cls._norm_right(t) for t in tensors]
+        return cls._norm_left(cls._module.stack(norm_right, axis=dim))
 
     @classmethod
-    def n_dim(cls, array: 'np.ndarray') -> int:
-        return cls._module.ndim(array)
+    def n_dim(cls, array: T) -> int:
+        return cls._module.ndim(cls._norm_right(array))
 
     @classmethod
-    def squeeze(cls, tensor: 'np.ndarray') -> 'np.ndarray':
+    def squeeze(cls, tensor: T) -> T:
         """
         Returns a tensor with all the dimensions of tensor of size 1 removed.
         """
-        return cls._module.squeeze(tensor)
+        return cls._norm_left(cls._module.squeeze(cls._norm_right(tensor)))
 
     @classmethod
     def empty(
@@ -35,18 +35,18 @@ class AbstractNumpyBasedBackend(
         shape: Tuple[int, ...],
         dtype: Optional[Any] = None,
         device: Optional[Any] = None,
-    ) -> 'np.ndarray':
+    ) -> T:
         if cls._module is np and device is not None:
             raise NotImplementedError('Numpy does not support devices (GPU).')
-        return cls._module.empty(shape, dtype=dtype)
+        return cls._norm_left(cls._module.empty(shape, dtype=dtype))
 
     @classmethod
-    def shape(cls, array: 'np.ndarray') -> Tuple[int, ...]:
+    def shape(cls, array: T) -> Tuple[int, ...]:
         """Get shape of array"""
-        return tuple(cls._module.shape(array))
+        return tuple(cls._module.shape(cls._norm_right(array)))
 
     @classmethod
-    def reshape(cls, array: 'np.ndarray', shape: Tuple[int, ...]) -> 'np.ndarray':
+    def reshape(cls, array: T, shape: Tuple[int, ...]) -> T:
         """
         Gives a new shape to array without changing its data.
 
@@ -55,9 +55,9 @@ class AbstractNumpyBasedBackend(
         :return: a array with the same data and number of elements as array
             but with the specified shape.
         """
-        return cls._module.reshape(array, shape)
+        return cls._norm_left(cls._module.reshape(cls._norm_right(array), shape))
 
     @classmethod
-    def isnan(cls, tensor: 'np.ndarray') -> 'np.ndarray':
+    def isnan(cls, tensor: T) -> T:
         """Check element-wise for nan and return result as a boolean array"""
-        return cls._module.isnan(tensor)
+        return cls._norm_left(cls._module.isnan(cls._norm_right(tensor)))

@@ -30,34 +30,42 @@ def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
+def identity(array: np.ndarray) -> np.ndarray:
+    return array
+
+
 class NumpyCompBackend(AbstractNumpyBasedBackend):
     """
     Computational backend for Numpy.
     """
 
     _module = np
+    _norm_left = identity
+    _norm_right = identity
 
-    @staticmethod
-    def to_device(tensor: 'np.ndarray', device: str) -> 'np.ndarray':
+    @classmethod
+    def to_device(cls, tensor: 'np.ndarray', device: str) -> 'np.ndarray':
         """Move the tensor to the specified device."""
         raise NotImplementedError('Numpy does not support devices (GPU).')
 
-    @staticmethod
-    def device(tensor: 'np.ndarray') -> Optional[str]:
+    @classmethod
+    def device(cls, tensor: 'np.ndarray') -> Optional[str]:
         """Return device on which the tensor is allocated."""
         return None
 
-    @staticmethod
-    def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
+    @classmethod
+    def to_numpy(cls, array: 'np.ndarray') -> 'np.ndarray':
         return array
 
-    @staticmethod
-    def none_value() -> Any:
+    @classmethod
+    def none_value(
+        cls,
+    ) -> Any:
         """Provide a compatible value that represents None in numpy."""
         return None
 
-    @staticmethod
-    def detach(tensor: 'np.ndarray') -> 'np.ndarray':
+    @classmethod
+    def detach(cls, tensor: 'np.ndarray') -> 'np.ndarray':
         """
         Returns the tensor detached from its current graph.
 
@@ -66,13 +74,14 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
         """
         return tensor
 
-    @staticmethod
-    def dtype(tensor: 'np.ndarray') -> np.dtype:
+    @classmethod
+    def dtype(cls, tensor: 'np.ndarray') -> np.dtype:
         """Get the data type of the tensor."""
         return tensor.dtype
 
-    @staticmethod
+    @classmethod
     def minmax_normalize(
+        cls,
         tensor: 'np.ndarray',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
@@ -108,8 +117,9 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
         Abstract class for retrieval and ranking functionalities
         """
 
-        @staticmethod
+        @classmethod
         def top_k(
+            cls,
             values: 'np.ndarray',
             k: int,
             descending: bool = False,

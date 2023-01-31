@@ -29,25 +29,25 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def n_dim(array: 'TTensor') -> int:
+    def n_dim(cls, array: 'TTensor') -> int:
         """
         Get the number of the array dimensions.
         """
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def squeeze(tensor: 'TTensor') -> 'TTensor':
+    def squeeze(cls, tensor: 'TTensor') -> 'TTensor':
         """
         Returns a tensor with all the dimensions of tensor of size 1 removed.
         """
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def to_numpy(array: 'TTensor') -> 'np.ndarray':
+    def to_numpy(cls, array: 'TTensor') -> 'np.ndarray':
         """
         Convert array to np.ndarray.
         """
@@ -63,21 +63,21 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     ) -> 'TTensor':
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def none_value() -> typing.Any:
+    def none_value(cls) -> typing.Any:
         """Provide a compatible value that represents None in the Tensor Backend."""
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def to_device(tensor: 'TTensor', device: str) -> 'TTensor':
+    def to_device(cls, tensor: 'TTensor', device: str) -> 'TTensor':
         """Move the tensor to the specified device."""
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def device(tensor: 'TTensor') -> Optional[str]:
+    def device(cls, tensor: 'TTensor') -> Optional[str]:
         """Return device on which the tensor is allocated."""
         ...
 
@@ -87,9 +87,9 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """Get shape of tensor"""
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def reshape(tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
+    def reshape(cls, tensor: 'TTensor', shape: Tuple[int, ...]) -> 'TTensor':
         """
         Gives a new shape to tensor without changing its data.
 
@@ -100,9 +100,9 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def detach(tensor: 'TTensor') -> 'TTensor':
+    def detach(cls, tensor: 'TTensor') -> 'TTensor':
         """
         Returns the tensor detached from its current graph.
 
@@ -111,9 +111,9 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def dtype(tensor: 'TTensor') -> Any:
+    def dtype(cls, tensor: 'TTensor') -> Any:
         """Get the data type of the tensor."""
         ...
 
@@ -123,9 +123,10 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """Check element-wise for nan and return result as a boolean array"""
         ...
 
-    @staticmethod
+    @classmethod
     @abstractmethod
     def minmax_normalize(
+        cls,
         tensor: 'TTensor',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
