@@ -6,11 +6,10 @@ import tensorflow as tf
 import tensorflow._api.v2.experimental.numpy as tnp
 
 from docarray.computation import AbstractComputationalBackend
-from docarray.computation.numpy_backend import NumpyCompBackend
 from docarray.typing import TensorFlowTensor
 
 
-class TensorFlowCompBackend(NumpyCompBackend, AbstractComputationalBackend[tf.Tensor]):
+class TensorFlowCompBackend(AbstractComputationalBackend[tf.Tensor]):
     """
     Computational backend for TensorFlow.
     """
@@ -94,3 +93,53 @@ class TensorFlowCompBackend(NumpyCompBackend, AbstractComputationalBackend[tf.Te
 
         normalized = tnp.clip(i, *((a, b) if a < b else (b, a)))
         return tf.cast(normalized, tensor.tensor.dtype)
+
+    class Retrieval(AbstractComputationalBackend.Retrieval[tf.Tensor]):
+        """
+        Abstract class for retrieval and ranking functionalities
+        """
+
+        @staticmethod
+        def top_k(
+            values: 'TensorFlowTensor',
+            k: int,
+            descending: bool = False,
+            device: Optional[str] = None,
+        ) -> Tuple['tf.Tensor', 'tf.Tensor']:
+            """
+            Retrieves the top k smallest values in `values`,
+            and returns them alongside their indices in the input `values`.
+            Can also be used to retrieve the top k largest values,
+            by setting the `descending` flag.
+
+            :param values: Torch tensor of values to rank.
+                Should be of shape (n_queries, n_values_per_query).
+                Inputs of shape (n_values_per_query,) will be expanded
+                to (1, n_values_per_query).
+            :param k: number of values to retrieve
+            :param descending: retrieve largest values instead of smallest values
+            :param device: the computational device to use,
+                can be either `cpu` or a `cuda` device.
+            :return: Tuple containing the retrieved values, and their indices.
+                Both ar of shape (n_queries, k)
+            """
+            values = values.tensor
+            if device is not None:
+                values = values.to(device)
+            if len(values.shape) <= 1:
+                values = tf.expand_dims(values, axis=0)
+
+            len_values = values.shape[-1] if len(values.shape) > 1 else len(values)
+            k = min(k, len_values)
+
+            if not descending:
+                values = -values
+
+            result = tf.math.top_k(input=values, k=k, sorted=True)
+            res_values = result.values
+            res_indices = result.indices
+
+            if not descending:
+                res_values = -result.values
+
+            return TensorFlowTensor(res_values), TensorFlowTensor(res_indices)
