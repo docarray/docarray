@@ -35,6 +35,10 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
     """
 
     @staticmethod
+    def native_tensor_type() -> type:
+        return np.ndarray
+
+    @staticmethod
     def stack(
         tensors: Union[List['np.ndarray'], Tuple['np.ndarray']], dim: int = 0
     ) -> 'np.ndarray':

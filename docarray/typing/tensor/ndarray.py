@@ -23,18 +23,18 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
+from jaxtyping import (
+    AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
+)
+from jaxtyping import Float as JaxTypingFloat
+from jaxtyping import Int as JaxTypingInt
+
 from docarray.base_document.base_node import BaseNode
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
 
 tensor_base: type = type(BaseNode)
-
-
-# the mypy error suppression below should not be necessary anymore once the following
-# is released in mypy: https://github.com/python/mypy/pull/14135
-class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ignore
-    pass
 
 
 @_register_proto(proto_type_name='ndarray')
@@ -85,7 +85,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         )
     """
 
-    __parametrized_meta__ = metaNumpy
+    _base_array_class = np.ndarray
 
     @classmethod
     def __get_validators__(cls):
@@ -202,3 +202,19 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
+
+
+# Jaxtyping types
+# TODO(johannes): add all types
+
+
+class metaNpAndJaxtyping(type(JaxTypingDType), type(NdArray)):  # type: ignore
+    pass
+
+
+class IntNdArray(NdArray, JaxTypingInt, metaclass=metaNpAndJaxtyping):
+    ...
+
+
+class FloatNdArray(NdArray, JaxTypingFloat, metaclass=metaNpAndJaxtyping):
+    ...

@@ -35,6 +35,10 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
     """
 
     @staticmethod
+    def native_tensor_type() -> type:
+        return torch.Tensor
+
+    @staticmethod
     def stack(
         tensors: Union[List['torch.Tensor'], Tuple['torch.Tensor']], dim: int = 0
     ) -> 'torch.Tensor':

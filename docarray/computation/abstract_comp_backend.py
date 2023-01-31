@@ -21,6 +21,12 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @staticmethod
     @abstractmethod
+    def native_tensor_type() -> type:
+        """The native tensor type for this computational backend."""
+        ...
+
+    @staticmethod
+    @abstractmethod
     def stack(
         tensors: Union[List['TTensor'], Tuple['TTensor']], dim: int = 0
     ) -> 'TTensor':

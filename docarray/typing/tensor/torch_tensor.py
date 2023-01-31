@@ -3,6 +3,11 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
+from jaxtyping import (
+    AbstractDtype as JaxTypingDType,  # type: ignore  # TODO(johannes) add all the types
+)
+from jaxtyping import Float as JaxTypingFloat
+from jaxtyping import Int as JaxTypingInt
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -26,7 +31,6 @@ node_base: type = type(BaseNode)
 # the mypy error suppression below should not be necessary anymore once the following
 # is released in mypy: https://github.com/python/mypy/pull/14135
 class metaTorchAndNode(
-    AbstractTensor.__parametrized_meta__,  # type: ignore
     torch_base,  # type: ignore
     node_base,  # type: ignore
 ):  # type: ignore
@@ -83,8 +87,7 @@ class TorchTensor(
             square_crop=torch.zeros(3, 128, 64),  # this will also fail validation
         )
     """
-
-    __parametrized_meta__ = metaTorchAndNode
+    _base_array_class = torch.Tensor
 
     @classmethod
     def __get_validators__(cls):
@@ -224,3 +227,19 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
+
+
+# Jaxtyping types
+# TODO(johannes): add all types
+
+
+class metaTorchAndJaxtyping(type(JaxTypingDType), type(TorchTensor)):  # type: ignore
+    pass
+
+
+class TorchIntTensor(TorchTensor, JaxTypingInt, metaclass=metaTorchAndJaxtyping):
+    ...
+
+
+class TorchFloatTensor(TorchTensor, JaxTypingFloat, metaclass=metaTorchAndJaxtyping):
+    ...
