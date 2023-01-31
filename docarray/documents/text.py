@@ -27,6 +27,14 @@ class Text(BaseDocument):
         model = MyEmbeddingModel()
         txt_doc.embedding = model(txt_doc.text)
 
+    You can initialize directly from a string:
+
+    .. code-block:: python
+
+        from docarray.documents import Text
+
+        txt_doc = Text('hello world')
+
     You can extend this Document:
 
     .. code-block:: python
@@ -86,6 +94,11 @@ class Text(BaseDocument):
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
+
+    def __init__(self, text: Optional[str] = None, **kwargs):
+        if 'text' not in kwargs:
+            kwargs['text'] = text
+        super().__init__(**kwargs)
 
     @classmethod
     def validate(
