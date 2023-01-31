@@ -5,7 +5,8 @@ import numpy as np
 from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16, AudioNdArray
+from docarray.typing.tensor.audio.abstract_audio_tensor import MAX_INT_16
+from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
 if TYPE_CHECKING:

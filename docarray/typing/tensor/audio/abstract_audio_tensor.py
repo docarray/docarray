@@ -6,6 +6,8 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
+MAX_INT_16 = 2**15
+
 
 class AbstractAudioTensor(AbstractTensor, ABC):
     @abstractmethod
@@ -13,7 +15,9 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         """
         Convert audio tensor to bytes.
         """
-        ...
+        tensor = self.get_comp_backend().to_numpy(self)
+        tensor = (tensor * MAX_INT_16).astype('<h')
+        return tensor.tobytes()
 
     def save_to_wav_file(
         self: 'T',

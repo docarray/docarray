@@ -1,11 +1,6 @@
-from typing import TypeVar
-
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
-from docarray.typing.tensor.audio.audio_ndarray import MAX_INT_16
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
-
-T = TypeVar('T', bound='AudioTorchTensor')
 
 
 @_register_proto(proto_type_name='audio_torch_tensor')
@@ -52,8 +47,4 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
     """
 
-    def to_bytes(self):
-        import torch
-
-        tensor = (self * MAX_INT_16).to(dtype=torch.int16)
-        return tensor.cpu().detach().numpy().tobytes()
+    ...
