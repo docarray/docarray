@@ -7,7 +7,6 @@ from docarray.typing import (
     AnyEmbedding,
     AnyTensor,
     AnyUrl,
-    Bytes,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
@@ -51,8 +50,7 @@ def test_all_types():
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
         nested_docs: DocumentArray[NestedDoc]
-        bytes_: Bytes
-        bytes_simple: bytes
+        bytes_: bytes
 
     doc = MyDoc(
         img_url='test.png',
@@ -71,7 +69,6 @@ def test_all_types():
         np_embedding=np.zeros((128,)),
         nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
         bytes_=b'hello',
-        bytes_simple=b'hello_simple',
     )
     doc = doc.to_protobuf()
     doc = MyDoc.from_protobuf(doc)
@@ -112,4 +109,3 @@ def test_all_types():
     assert (doc.embedding == np.zeros((3, 224, 224))).all()
 
     assert doc.bytes_ == b'hello'
-    assert doc.bytes_simple == b'hello_simple'

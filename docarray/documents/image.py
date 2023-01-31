@@ -3,7 +3,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 import numpy as np
 
 from docarray.base_document import BaseDocument
-from docarray.typing import AnyEmbedding, AnyTensor, Bytes, ImageUrl
+from docarray.typing import AnyEmbedding, AnyTensor, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='Image')
@@ -82,12 +82,12 @@ class Image(BaseDocument):
     url: Optional[ImageUrl]
     tensor: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[Bytes]
+    bytes: Optional[bytes]
 
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[str, AbstractTensor, Bytes, Any],
+        value: Union[str, AbstractTensor, Any],
     ) -> T:
         if isinstance(value, str):
             value = cls(url=value)

@@ -1,4 +1,3 @@
-from docarray.typing.bytes import Bytes
 from docarray.typing.id import ID
 from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
@@ -31,7 +30,6 @@ __all__ = [
     'ID',
     'AnyTensor',
     'NdArrayEmbedding',
-    'Bytes',
 ]
 
 try:
