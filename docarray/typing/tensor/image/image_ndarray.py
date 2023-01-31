@@ -41,6 +41,4 @@ class ImageNdArray(AbstractImageTensor, NdArray):
 
     """
 
-    def to_bytes(self):
-        tensor = (self * MAX_INT_16).astype('<h')
-        return tensor.tobytes()
+    ...

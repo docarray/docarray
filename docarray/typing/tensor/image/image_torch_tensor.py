@@ -2,7 +2,6 @@ from typing import TypeVar
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.image.abstract_image_tensor import AbstractImageTensor
-from docarray.typing.tensor.image.image_ndarray import MAX_INT_16
 from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 
 T = TypeVar('T', bound='ImageTorchTensor')
@@ -43,8 +42,4 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
     """
 
-    def to_image_bytes(self):
-        import torch
-
-        tensor = (self * MAX_INT_16).to(dtype=torch.int16)
-        return tensor.cpu().detach().numpy().tobytes()
+    ...

@@ -59,3 +59,15 @@ def test_byte():
 
     img = Image(url=REMOTE_JPG)
     img.bytes = img.url.load_bytes()
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+def test_byte_from_tensor():
+
+    img = Image(url=REMOTE_JPG)
+    img.tensor = img.url.load()
+    img.bytes = img.tensor.to_bytes()
+
+    assert isinstance(img.bytes, bytes)
+    assert len(img.bytes) > 0
