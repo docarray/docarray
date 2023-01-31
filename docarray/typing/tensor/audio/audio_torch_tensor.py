@@ -27,6 +27,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
             title: str
             audio_tensor: Optional[AudioTorchTensor]
             url: Optional[AudioUrl]
+            bytes_: Optional[bytes]
 
 
         doc_1 = MyAudioDoc(
@@ -35,7 +36,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         )
 
         doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
-
+        doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
         doc_2 = MyAudioDoc(
             title='my_second_audio_doc',
@@ -44,7 +45,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
         doc_2.audio_tensor = doc_2.url.load()
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
-
+        doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
     """
 
     ...

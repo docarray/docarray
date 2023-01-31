@@ -27,6 +27,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
             title: str
             audio_tensor: Optional[AudioNdArray]
             url: Optional[AudioUrl]
+            bytes_: Optional[bytes]
 
 
         # from tensor
@@ -36,6 +37,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         )
 
         doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
+        doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
         # from url
         doc_2 = MyAudioDoc(
@@ -45,6 +47,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
 
         doc_2.audio_tensor = doc_2.url.load()
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
+        doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
 
     """
 

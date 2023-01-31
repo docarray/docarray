@@ -86,6 +86,7 @@ class Audio(BaseDocument):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
+    bytes: Optional[bytes]
 
     @classmethod
     def validate(

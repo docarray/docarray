@@ -96,6 +96,11 @@ def test_audio_torch():
     assert (audio.tensor == torch.zeros(10, 10, 3)).all()
 
 
+def test_audio_bytes():
+    audio = parse_obj_as(Audio, torch.zeros(10, 10, 3))
+    audio.bytes = audio.tensor.to_bytes()
+
+
 def test_audio_shortcut_doc():
     class MyDoc(BaseDocument):
         audio: Audio
