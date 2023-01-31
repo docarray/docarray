@@ -55,13 +55,13 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
         return cls._norm_right(array).numpy()
 
     @classmethod
-    def none_value(
-        cls,
-    ) -> typing.Any:
+    def none_value(cls) -> typing.Any:
+        """Provide a compatible value that represents None in numpy."""
         return tf.constant(float('nan'))
 
     @classmethod
     def to_device(cls, tensor: 'TensorFlowTensor', device: str) -> 'TensorFlowTensor':
+        """Move the tensor to the specified device."""
         if cls.device(tensor) == device:
             return tensor
         else:
@@ -70,14 +70,22 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
 
     @classmethod
     def device(cls, tensor: 'TensorFlowTensor') -> Optional[str]:
+        """Return device on which the tensor is allocated."""
         return cls._norm_right(tensor).device
 
     @classmethod
     def detach(cls, tensor: 'TensorFlowTensor') -> 'TensorFlowTensor':
+        """
+        Returns the tensor detached from its current graph.
+
+        :param tensor: tensor to be detached
+        :return: a detached tensor with the same data.
+        """
         return cls._norm_left(tf.stop_gradient(cls._norm_right(tensor)))
 
     @classmethod
     def dtype(cls, tensor: 'TensorFlowTensor') -> tf.dtypes:
+        """Get the data type of the tensor."""
         return cls._norm_right(tensor).dtype
 
     @classmethod
@@ -99,38 +107,39 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
         normalized = tnp.clip(i, *((a, b) if a < b else (b, a)))
         return cls._norm_left(tf.cast(normalized, tensor.tensor.dtype))
 
-    class Retrieval(AbstractComputationalBackend.Retrieval[tf.Tensor]):
+    class Retrieval(AbstractComputationalBackend.Retrieval[TensorFlowTensor]):
         """
         Abstract class for retrieval and ranking functionalities
         """
 
         @staticmethod
         def top_k(
-            values: 'tf.Tensor',
+            values: 'TensorFlowTensor',
             k: int,
             descending: bool = False,
             device: Optional[str] = None,
-        ) -> Tuple['tf.Tensor', 'tf.Tensor']:
+        ) -> Tuple['TensorFlowTensor', 'TensorFlowTensor']:
             """
             Retrieves the top k smallest values in `values`,
             and returns them alongside their indices in the input `values`.
             Can also be used to retrieve the top k largest values,
             by setting the `descending` flag.
 
-            :param values: Torch tensor of values to rank.
+            :param values: TensorFlowTensor of values to rank.
                 Should be of shape (n_queries, n_values_per_query).
                 Inputs of shape (n_values_per_query,) will be expanded
                 to (1, n_values_per_query).
             :param k: number of values to retrieve
             :param descending: retrieve largest values instead of smallest values
-            :param device: the computational device to use,
-                can be either `cpu` or a `cuda` device.
-            :return: Tuple containing the retrieved values, and their indices.
-                Both ar of shape (n_queries, k)
+            :param device: the computational device to use.
+            :return: Tuple of TensorFlowTensors containing the retrieved values, and
+                their indices. Both are of shape (n_queries, k)
             """
+            comp_be = TensorFlowCompBackend
             if device is not None:
-                values = values.to(device)
+                values = comp_be.to_device(values, device)
 
+            values = comp_be._norm_right(values)
             if len(values.shape) <= 1:
                 values = tf.expand_dims(values, axis=0)
 
@@ -147,7 +156,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             if not descending:
                 res_values = -result.values
 
-            return res_values, res_indices
+            return comp_be._norm_left(res_values), comp_be._norm_left(res_indices)
 
     class Metrics(AbstractComputationalBackend.Metrics[tf.Tensor]):
         """
