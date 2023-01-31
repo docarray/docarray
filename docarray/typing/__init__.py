@@ -1,4 +1,6 @@
+from docarray.typing.bytes import ImageBytes
 from docarray.typing.id import ID
+from docarray.typing.tensor import ImageNdArray, ImageTensor
 from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
@@ -30,6 +32,9 @@ __all__ = [
     'ID',
     'AnyTensor',
     'NdArrayEmbedding',
+    'ImageBytes',
+    'ImageTensor',
+    'ImageNdArray',
 ]
 
 try:
