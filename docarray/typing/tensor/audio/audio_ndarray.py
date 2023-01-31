@@ -49,7 +49,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
             url='https://www.kozco.com/tech/piano2.wav',
         )
 
-        doc_2.audio_tensor = parse_obj_as(AudioNdArray, doc_2.url.load())
+        doc_2.audio_tensor = doc_2.url.load()
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
 
     """
