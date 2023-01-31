@@ -31,6 +31,7 @@ ShapeT = TypeVar('ShapeT')
 
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
     _proto_type_name: str
+    __unparametrizedcls__: Optional[type] = None
     _dtype_classes: DefaultDict[str, List[Type]] = defaultdict(list)
 
     def __init_subclass__(cls, **kwargs):

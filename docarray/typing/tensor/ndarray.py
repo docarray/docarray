@@ -213,8 +213,8 @@ class metaNpAndJaxtyping(type(JaxTypingDType), type(NdArray)):  # type: ignore
 
 
 class IntNdArray(NdArray, JaxTypingInt, metaclass=metaNpAndJaxtyping):
-    ...
+    __unparametrizedcls__ = np.ndarray
 
 
 class FloatNdArray(NdArray, JaxTypingFloat, metaclass=metaNpAndJaxtyping):
-    ...
+    __unparametrizedcls__ = np.ndarray

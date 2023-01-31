@@ -238,8 +238,10 @@ class metaTorchAndJaxtyping(type(JaxTypingDType), type(TorchTensor)):  # type: i
 
 
 class TorchIntTensor(TorchTensor, JaxTypingInt, metaclass=metaTorchAndJaxtyping):
+    __unparametrizedcls__ = TorchTensor
     ...
 
 
 class TorchFloatTensor(TorchTensor, JaxTypingFloat, metaclass=metaTorchAndJaxtyping):
+    __unparametrizedcls__ = TorchTensor
     ...
