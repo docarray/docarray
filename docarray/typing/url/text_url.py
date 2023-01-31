@@ -12,7 +12,7 @@ class TextUrl(AnyUrl):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load_to_bytes(self, timeout: Optional[float] = None) -> bytes:
+    def load_bytes(self, timeout: Optional[float] = None) -> bytes:
         """
         Load the text file into a bytes object.
 
