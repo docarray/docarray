@@ -58,9 +58,7 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
         return array
 
     @classmethod
-    def none_value(
-        cls,
-    ) -> Any:
+    def none_value(cls) -> Any:
         """Provide a compatible value that represents None in numpy."""
         return None
 

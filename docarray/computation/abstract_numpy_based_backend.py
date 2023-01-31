@@ -1,4 +1,5 @@
 import types
+from abc import ABC
 from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
@@ -8,18 +9,20 @@ from docarray.computation import AbstractComputationalBackend
 T = TypeVar('T')
 
 
-class AbstractNumpyBasedBackend(AbstractComputationalBackend[T]):
+class AbstractNumpyBasedBackend(AbstractComputationalBackend[T], ABC):
     _module: types.ModuleType
     _norm_left: Callable
     _norm_right: Callable
 
     @classmethod
     def stack(cls, tensors: Union[List[T], Tuple[T]], dim: int = 0) -> T:
+        """Stack a list of tensors along a new axis."""
         norm_right = [cls._norm_right(t) for t in tensors]
         return cls._norm_left(cls._module.stack(norm_right, axis=dim))
 
     @classmethod
     def n_dim(cls, array: T) -> int:
+        """Get the number of the array dimensions."""
         return cls._module.ndim(cls._norm_right(array))
 
     @classmethod
