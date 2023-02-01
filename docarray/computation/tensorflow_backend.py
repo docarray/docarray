@@ -205,10 +205,10 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
 
         @staticmethod
         def euclidean_dist(
-            x_mat: 'tf.Tensor',
-            y_mat: 'tf.Tensor',
+            x_mat: 'TensorFlowTensor',
+            y_mat: 'TensorFlowTensor',
             device: Optional[str] = None,
-        ) -> 'tf.Tensor':
+        ) -> 'TensorFlowTensor':
             """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
             :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -222,14 +222,25 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 The index [i_x, i_y] contains the euclidian distance between
                 x_mat[i_x] and y_mat[i_y].
             """
-            ...
+            x_mat: tf.Tensor = TensorFlowCompBackend._norm_right(x_mat)
+            y_mat: tf.Tensor = TensorFlowCompBackend._norm_right(y_mat)
+
+            with tf.device(device):
+                x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
+
+                dists = tf.squeeze(
+                    tf.norm(tf.subtract(x_mat, y_mat), axis=-1, ord='euclidean')
+                )
+                dists = _unsqueeze_if_scalar(dists)
+
+            return TensorFlowCompBackend._norm_left(dists)
 
         @staticmethod
         def sqeuclidean_dist(
-            x_mat: 'tf.Tensor',
-            y_mat: 'tf.Tensor',
+            x_mat: 'TensorFlowTensor',
+            y_mat: 'TensorFlowTensor',
             device: Optional[str] = None,
-        ) -> 'tf.Tensor':
+        ) -> 'TensorFlowTensor':
             """Pairwise Squared Euclidian distances between all vectors
                 in x_mat and y_mat.
 
@@ -246,4 +257,9 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 The index [i_x, i_y] contains the euclidian distance between
                 x_mat[i_x] and y_mat[i_y].
             """
-            ...
+            dists = TensorFlowCompBackend.Metrics.euclidean_dist(x_mat, y_mat)
+            squared: tf.Tensor = tf.math.square(
+                TensorFlowCompBackend._norm_right(dists)
+            )
+
+            return TensorFlowCompBackend._norm_left(squared)
