@@ -1,13 +1,15 @@
-from typing import Callable, Dict, Type
+from typing import Callable, Dict, Type, TypeVar
 
 from docarray.typing.abstract_type import AbstractType
 
 _PROTO_TYPE_NAME_TO_CLASS: Dict[str, Type[AbstractType]] = {}
 
+T = TypeVar(name='T', bound='AbstractType')
+
 
 def _register_proto(
     proto_type_name: str,
-) -> Callable[[Type[AbstractType]], Type[AbstractType]]:
+) -> Callable[[Type[T]], Type[T]]:
     """Register a new type to be used in the protobuf serialization.
 
     This will add the type key to the global registry of types key used in the proto
@@ -34,7 +36,7 @@ def _register_proto(
             f'the key {proto_type_name} is already registered in the global registry'
         )
 
-    def _register(cls: Type['AbstractType']) -> Type['AbstractType']:
+    def _register(cls: Type[T]) -> Type[T]:
         cls._proto_type_name = proto_type_name
 
         _PROTO_TYPE_NAME_TO_CLASS[proto_type_name] = cls
