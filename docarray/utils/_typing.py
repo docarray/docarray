@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from typing_inspect import get_args, is_union_type
 
@@ -21,7 +21,7 @@ def is_tensor_union(type_: Any) -> bool:
         )
 
 
-def change_cls_name(cls: type, new_name: str, scope=None) -> None:
+def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> None:
     """Change the name of a class.
 
     :param cls: the class to change the name of
