@@ -2,8 +2,8 @@ import os
 import urllib
 
 import numpy as np
-import PIL
 import pytest
+from PIL import Image
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_document.io.json import orjson_dumps
@@ -141,12 +141,11 @@ def test_load_timeout():
     ],
 )
 def test_load_to_bytes(image_format, path_to_img):
-    w, h = 224, 224
     url = parse_obj_as(ImageUrl, path_to_img)
-    _bytes = url.load_bytes(width=w, height=h)
+    _bytes = url.load_bytes()
     assert isinstance(_bytes, bytes)
-    img = PIL.Image.frombytes(mode='1', size=(w, h), data=_bytes)
-    assert isinstance(img, PIL.Image.Image)
+    img = Image.frombytes(mode='1', size=(224, 224), data=_bytes)
+    assert isinstance(img, Image.Image)
 
 
 @pytest.mark.parametrize(

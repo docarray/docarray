@@ -87,10 +87,10 @@ class ImageUrl(AnyUrl):
             Only relevant if URL is not local
         :return: np.ndarray representing the image as RGB values
         """
+        from docarray.typing.bytes.image_bytes import ImageBytes
 
-        buffer = self.load_bytes(timeout=timeout)
-        tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
-        return _move_channel_axis(tensor, axis_layout=axis_layout)
+        buffer = ImageBytes(self.load_bytes(timeout=timeout))
+        return buffer.load(width, height, axis_layout)
 
 
 def _image_tensor_to_bytes(arr: np.ndarray, image_format: str) -> bytes:

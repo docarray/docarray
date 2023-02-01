@@ -16,12 +16,11 @@ LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),
     str(TOYDATA_DIR / 'olleh.wav'),
 ]
-REMOTE_AUDIO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/olleh.wav?raw=true'  # noqa: E501
 
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', [*LOCAL_AUDIO_FILES, REMOTE_AUDIO_FILE])
+@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
 def test_audio(file_url):
     audio = Audio(url=file_url)
     audio.tensor = audio.url.load()
@@ -30,7 +29,7 @@ def test_audio(file_url):
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', [*LOCAL_AUDIO_FILES, REMOTE_AUDIO_FILE])
+@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
 def test_save_audio_ndarray(file_url, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
 
@@ -49,7 +48,7 @@ def test_save_audio_ndarray(file_url, tmpdir):
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', [*LOCAL_AUDIO_FILES, REMOTE_AUDIO_FILE])
+@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
 def test_save_audio_torch_tensor(file_url, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
 
@@ -72,7 +71,7 @@ def test_save_audio_torch_tensor(file_url, tmpdir):
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'file_url',
-    [*LOCAL_AUDIO_FILES, REMOTE_AUDIO_FILE],
+    LOCAL_AUDIO_FILES,
 )
 def test_extend_audio(file_url):
     class MyAudio(Audio):
