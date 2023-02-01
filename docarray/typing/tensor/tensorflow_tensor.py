@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import tensorflow as tf  # type: ignore
@@ -21,6 +21,8 @@ tf_base: type = type(tf.Tensor)
 node_base: type = type(BaseNode)
 
 
+# the mypy error suppression below should not be necessary anymore once the following
+# is released in mypy: https://github.com/python/mypy/pull/14135
 class metaTensorFlow(
     AbstractTensor.__parametrized_meta__,  # type: ignore
     node_base,  # type: ignore
@@ -52,7 +54,9 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        if isinstance(value, tf.Tensor):
+        if isinstance(value, TensorFlowTensor):
+            return cast(T, value)
+        elif isinstance(value, tf.Tensor):
             return cls(tensor=value)
         else:
             try:
@@ -112,7 +116,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         """
         return cls._docarray_from_native(tf.convert_to_tensor(value))
 
-    def unwrap(self):
+    def unwrap(self) -> tf.Tensor:
         """
         Return the original tensorflow.Tensor without any memory copy.
 
