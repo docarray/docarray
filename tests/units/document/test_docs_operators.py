@@ -20,3 +20,7 @@ def test_text_document_operators():
     t = Text(text='this is my text document')
     assert 'text' in t
     assert 'docarray' not in t
+
+    text = Text()
+    assert text is not None
+    assert text.text is None
