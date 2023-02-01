@@ -130,3 +130,25 @@ class VideoUrl(AnyUrl):
         indices = parse_obj_as(NdArray, keyframe_indices)
 
         return VideoLoadResult(video=video, audio=audio, key_frame_indices=indices)
+
+    def load_bytes(self) -> bytes:
+        """
+        load a video url to bytes
+
+        :return: bytes containing the video.
+
+
+        EXAMPLE USAGE
+
+        .. code-block:: python
+            from pydantic import parse_obj_as
+            from docarray.typing import VideoUrl
+
+            url = parse_obj_as(VideoUrl, 'my_video.mp4')
+
+            video_bytes = url.load_bytes()
+
+        """
+        with open(str(self), 'rb') as f:
+            bytes_ = f.read()
+        return bytes_

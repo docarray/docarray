@@ -124,3 +124,11 @@ def test_proto_video_url(file_url):
     uri = parse_obj_as(VideoUrl, file_url)
     proto = uri._to_node_protobuf()
     assert 'video_url' in str(proto)
+
+
+def test_load_bytes():
+    file_url = LOCAL_VIDEO_FILE
+    uri = parse_obj_as(VideoUrl, file_url)
+    video_bytes = uri.load_bytes()
+    assert isinstance(video_bytes, bytes)
+    assert len(video_bytes) > 0
