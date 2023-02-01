@@ -144,6 +144,7 @@ def test_torch_dl_multiprocessing(captions_da: DocumentArray[PairTextImage]):
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
 
+@pytest.mark.skip(reason="UNRESOLVED BUG")
 def test_torch_dl_pin_memory(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 

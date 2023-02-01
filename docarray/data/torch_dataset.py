@@ -1,6 +1,7 @@
 from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from torch.utils.data import Dataset
+from typing_inspect import is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import TorchTensor
@@ -155,7 +156,14 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     @staticmethod
     def _init_typed_das(item: Type[BaseDocument]):
+        # Leaf Node
+        if not isinstance(item, type) or not issubclass(item, BaseDocument):
+            return
+
+        # Document
         DocumentArray[item]().stack()  # type: ignore
         for field_type in item.__annotations__.values():
-            if isinstance(field_type, type) and issubclass(field_type, BaseDocument):
-                MultiModalDataset._init_typed_das(field_type)
+            if is_union_type(field_type):
+                for union_type in field_type.__args__:
+                    MultiModalDataset._init_typed_das(union_type)
+            MultiModalDataset._init_typed_das(field_type)
