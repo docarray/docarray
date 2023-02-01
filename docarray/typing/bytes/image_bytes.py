@@ -7,7 +7,6 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.url.image_url import _move_channel_axis, _to_image_tensor
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -88,5 +87,25 @@ class ImageBytes(bytes, AbstractType):
         :return: np.ndarray representing the image as RGB values
         """
 
-        tensor = _to_image_tensor(BytesIO(self), width=width, height=height)
-        return _move_channel_axis(tensor, axis_layout=axis_layout)
+        from PIL import Image as PILImage
+
+        raw_img = PILImage.open(BytesIO(self))
+        if width or height:
+            new_width = width or raw_img.width
+            new_height = height or raw_img.height
+            raw_img = raw_img.resize((new_width, new_height))
+        try:
+            tensor = np.array(raw_img.convert('RGB'))
+        except Exception:
+            tensor = np.array(raw_img)
+
+        return self._move_channel_axis(tensor, axis_layout=axis_layout)
+
+    @staticmethod
+    def _move_channel_axis(
+        tensor: np.ndarray, axis_layout: Tuple[str, str, str] = ('H', 'W', 'C')
+    ) -> np.ndarray:
+        """Moves channel axis around."""
+        channel_to_offset = {'H': 0, 'W': 1, 'C': 2}
+        permutation = tuple(channel_to_offset[axis] for axis in axis_layout)
+        return np.transpose(tensor, permutation)
