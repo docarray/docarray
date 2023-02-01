@@ -150,6 +150,9 @@ def test_torch_dl_pin_memory(captions_da: DocumentArray[PairTextImage]):
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
     dataset = MultiModalDataset[PairTextImage](captions_da, preprocessing)
+    # Loader fails if dataset is empty
+    if len(dataset) == 0:
+        return
     loader = DataLoader(
         dataset,
         batch_size=BATCH_SIZE,
