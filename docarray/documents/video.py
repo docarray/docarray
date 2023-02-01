@@ -86,6 +86,11 @@ class Video(BaseDocument):
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.video.video_tensor = mmdoc.video.url.load().video
+
+        # or
+
+        mmdoc.video.bytes = mmdoc.video.url.load_bytes()
+
     """
 
     url: Optional[VideoUrl]
@@ -93,6 +98,7 @@ class Video(BaseDocument):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+    bytes: Optional[bytes] = None
 
     @classmethod
     def validate(
