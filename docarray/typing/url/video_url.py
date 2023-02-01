@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING, Any, NamedTuple, Type, TypeVar, Union
 import numpy as np
 from pydantic.tools import parse_obj_as
 
-from docarray.typing import AudioNdArray, NdArray
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
 

@@ -85,10 +85,10 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 if isinstance(value, BaseNode):
                     nested_item = value._to_node_protobuf()
 
-                elif type(value) is str:
+                elif isinstance(value, str):
                     nested_item = NodeProto(text=value)
 
-                elif type(value) is bytes:
+                elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
                 elif value is None:
                     nested_item = NodeProto()
