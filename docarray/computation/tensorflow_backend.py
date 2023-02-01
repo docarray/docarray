@@ -29,7 +29,7 @@ def _unsqueeze_if_single_axis(*matrices: tf.Tensor) -> List[tf.Tensor]:
 
 def _unsqueeze_if_scalar(t: tf.Tensor):
     if len(t.shape) == 0:  # avoid scalar output
-        t = t.unsqueeze(0)
+        t = tf.expand_dims(t, 0)
     return t
 
 
@@ -158,18 +158,18 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
 
             return comp_be._norm_left(res_values), comp_be._norm_left(res_indices)
 
-    class Metrics(AbstractComputationalBackend.Metrics[tf.Tensor]):
+    class Metrics(AbstractComputationalBackend.Metrics[TensorFlowTensor]):
         """
         Abstract base class for metrics (distances and similarities).
         """
 
         @staticmethod
         def cosine_sim(
-            x_mat: 'tf.Tensor',
-            y_mat: 'tf.Tensor',
+            x_mat: 'TensorFlowTensor',
+            y_mat: 'TensorFlowTensor',
             eps: float = 1e-7,
             device: Optional[str] = None,
-        ) -> 'tf.Tensor':
+        ) -> 'TensorFlowTensor':
             """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
             :param x_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
@@ -184,15 +184,24 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 The index [i_x, i_y] contains the cosine distance between
                 x_mat[i_x] and y_mat[i_y].
             """
-            if device is not None:
-                with tf.device(device):
-                    x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
+            x_mat: tf.Tensor = TensorFlowCompBackend._norm_right(x_mat)
+            y_mat: tf.Tensor = TensorFlowCompBackend._norm_right(y_mat)
 
-                    a_n, b_n = x_mat.norm(dim=1)[:, None], y_mat.norm(dim=1)[:, None]
-                    a_norm = x_mat / tf.clamp(a_n, min=eps)
-                    b_norm = y_mat / tf.clamp(b_n, min=eps)
-                    sims = tf.mm(a_norm, b_norm.transpose(0, 1)).squeeze()
-                    return _unsqueeze_if_scalar(sims)
+            with tf.device(device):
+                x_mat, y_mat = _unsqueeze_if_single_axis(x_mat, y_mat)
+
+                a_n = tf.linalg.normalize(x_mat, axis=1)[1]
+                b_n = tf.linalg.normalize(y_mat, axis=1)[1]
+                a_norm = x_mat / tf.clip_by_value(
+                    a_n, clip_value_min=eps, clip_value_max=tf.float32.max
+                )
+                b_norm = y_mat / tf.clip_by_value(
+                    b_n, clip_value_min=eps, clip_value_max=tf.float32.max
+                )
+                sims = tf.squeeze(tf.linalg.matmul(a_norm, tf.transpose(b_norm)))
+                sims = _unsqueeze_if_scalar(sims)
+
+            return TensorFlowCompBackend._norm_left(sims)
 
         @staticmethod
         def euclidean_dist(
