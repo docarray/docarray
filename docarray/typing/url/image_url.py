@@ -6,7 +6,6 @@ import numpy as np
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.typing.url.helper import _uri_to_blob
 
 if TYPE_CHECKING:
     import PIL
@@ -89,50 +88,9 @@ class ImageUrl(AnyUrl):
         :return: np.ndarray representing the image as RGB values
         """
 
-        buffer = _uri_to_blob(self, timeout=timeout)
+        buffer = self.load_bytes(timeout=timeout)
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
         return _move_channel_axis(tensor, axis_layout=axis_layout)
-
-    def load_bytes(
-        self,
-        image_format: str = 'png',
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        timeout: Optional[float] = None,
-    ) -> bytes:
-        """Load image at URL to bytes (buffer).
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            from docarray import BaseDocument
-            from docarray.typing import ImageUrl
-            import numpy as np
-
-
-            class MyDoc(BaseDocument):
-                img_url: ImageUrl
-
-
-            doc = MyDoc(
-                img_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
-                "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
-            )
-
-            img_tensor = doc.img_url.load_to_bytes(image_format='jpg')
-            assert isinstance(img_tensor, bytes)
-
-        :param image_format: File format of the file located the the url.
-            Supported formats are `png`, `jpg`, and `jpeg`.
-        :param width: Before converting to bytes, resize the image to this width.
-        :param height: Before converting to bytes, resize the image to this height.
-        :param timeout: timeout (sec) for urlopen network request.
-            Only relevant if URL is not local
-        :return: The image as bytes (buffer).
-        """
-        image_tensor = self.load(width=width, height=height, timeout=timeout)
-        return _image_tensor_to_bytes(image_tensor, image_format=image_format)
 
 
 def _image_tensor_to_bytes(arr: np.ndarray, image_format: str) -> bytes:
