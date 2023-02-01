@@ -36,13 +36,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 value.type if value.WhichOneof('docarray_type') is not None else None
             )
 
-            if torch_imported:
-                from docarray.typing import TorchEmbedding
-                from docarray.typing.tensor.torch_tensor import TorchTensor
-
-                content_type_dict['torch'] = TorchTensor
-                content_type_dict['torch_embedding'] = TorchEmbedding
-
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
                     getattr(value, content_key)

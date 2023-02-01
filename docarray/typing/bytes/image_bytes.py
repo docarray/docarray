@@ -2,25 +2,26 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar
 
 import numpy as np
+from pydantic import parse_obj_as
 from pydantic.validators import bytes_validator
 
+from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.image_url import _move_channel_axis, _to_image_tensor
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
+
+    from docarray.proto import NodeProto
+
 T = TypeVar('T', bound='ImageBytes')
 
 
 @_register_proto(proto_type_name='image_bytes')
-class ImageBytes(bytes):
+class ImageBytes(bytes, AbstractType):
     """
     Bytes that store an image
     """
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
 
     @classmethod
     def validate(
@@ -32,6 +33,15 @@ class ImageBytes(bytes):
 
         value = bytes_validator(value)
         return cls(value)
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: T) -> T:
+        return parse_obj_as(cls, pb_msg)
+
+    def _to_node_protobuf(self: T) -> 'NodeProto':
+        from docarray.proto import NodeProto
+
+        return NodeProto(blob=self, type=self._proto_type_name)
 
     def load(
         self,
