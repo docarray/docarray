@@ -193,24 +193,28 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 The index [i_x, i_y] contains the cosine distance between
                 x_mat[i_x] and y_mat[i_y].
             """
-            x_mat_tf: tf.Tensor = TensorFlowCompBackend._norm_right(x_mat)
-            y_mat_tf: tf.Tensor = TensorFlowCompBackend._norm_right(y_mat)
+            comp_be = TensorFlowCompBackend
+            x_mat_tf: tf.Tensor = comp_be._norm_right(x_mat)
+            y_mat_tf: tf.Tensor = comp_be._norm_right(y_mat)
 
             with tf.device(device):
-                x_mat_tf, y_mat_tf = _unsqueeze_if_single_axis(x_mat_tf, y_mat_tf)
+                x_mat_tf = tf.identity(x_mat_tf)
+                y_mat_tf = tf.identity(y_mat_tf)
 
-                a_n = tf.linalg.normalize(x_mat_tf, axis=1)[1]
-                b_n = tf.linalg.normalize(y_mat_tf, axis=1)[1]
-                a_norm = x_mat_tf / tf.clip_by_value(
-                    a_n, clip_value_min=eps, clip_value_max=tf.float32.max
-                )
-                b_norm = y_mat_tf / tf.clip_by_value(
-                    b_n, clip_value_min=eps, clip_value_max=tf.float32.max
-                )
-                sims = tf.squeeze(tf.linalg.matmul(a_norm, tf.transpose(b_norm)))
-                sims = _unsqueeze_if_scalar(sims)
+            x_mat_tf, y_mat_tf = _unsqueeze_if_single_axis(x_mat_tf, y_mat_tf)
 
-            return TensorFlowCompBackend._norm_left(sims)
+            a_n = tf.linalg.normalize(x_mat_tf, axis=1)[1]
+            b_n = tf.linalg.normalize(y_mat_tf, axis=1)[1]
+            a_norm = x_mat_tf / tf.clip_by_value(
+                a_n, clip_value_min=eps, clip_value_max=tf.float32.max
+            )
+            b_norm = y_mat_tf / tf.clip_by_value(
+                b_n, clip_value_min=eps, clip_value_max=tf.float32.max
+            )
+            sims = tf.squeeze(tf.linalg.matmul(a_norm, tf.transpose(b_norm)))
+            sims = _unsqueeze_if_scalar(sims)
+
+            return comp_be._norm_left(sims)
 
         @staticmethod
         def euclidean_dist(
@@ -231,18 +235,20 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 The index [i_x, i_y] contains the euclidian distance between
                 x_mat[i_x] and y_mat[i_y].
             """
-            x_mat_tf: tf.Tensor = TensorFlowCompBackend._norm_right(x_mat)
-            y_mat_tf: tf.Tensor = TensorFlowCompBackend._norm_right(y_mat)
+            comp_be = TensorFlowCompBackend
+            x_mat_tf: tf.Tensor = comp_be._norm_right(x_mat)
+            y_mat_tf: tf.Tensor = comp_be._norm_right(y_mat)
 
             with tf.device(device):
-                x_mat_tf, y_mat_tf = _unsqueeze_if_single_axis(x_mat_tf, y_mat_tf)
+                x_mat_tf = tf.identity(x_mat_tf)
+                y_mat_tf = tf.identity(y_mat_tf)
 
-                dists = tf.squeeze(
-                    tf.norm(tf.subtract(x_mat_tf, y_mat_tf), axis=-1, ord='euclidean')
-                )
-                dists = _unsqueeze_if_scalar(dists)
+            x_mat_tf, y_mat_tf = _unsqueeze_if_single_axis(x_mat_tf, y_mat_tf)
 
-            return TensorFlowCompBackend._norm_left(dists)
+            dists = tf.squeeze(tf.norm(tf.subtract(x_mat_tf, y_mat_tf), axis=-1))
+            dists = _unsqueeze_if_scalar(dists)
+
+            return comp_be._norm_left(dists)
 
         @staticmethod
         def sqeuclidean_dist(

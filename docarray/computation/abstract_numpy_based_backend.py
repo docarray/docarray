@@ -10,8 +10,14 @@ T = TypeVar('T')
 
 
 class AbstractNumpyBasedBackend(AbstractComputationalBackend[T], ABC):
-    _module: types.ModuleType
+    """
+    Abstract base class for computational backends that are based on numpy.
+    This includes numpy (np) itself and tensorflow.experimental.numpy (tnp).
+    The overlap of those two is gathered in this abstract backend. Other functions
+    should be defined in corresponding subclasses.
+    """
 
+    _module: types.ModuleType
     # _norm_left() and _norm_right() are functions to transform the input/output
     # from cls_A -> cls_B and back depending on the subclass. This is especially
     # important for the TensorFlowTensor class:

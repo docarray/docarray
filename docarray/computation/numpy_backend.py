@@ -115,9 +115,8 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
         Abstract class for retrieval and ranking functionalities
         """
 
-        @classmethod
+        @staticmethod
         def top_k(
-            cls,
             values: 'np.ndarray',
             k: int,
             descending: bool = False,
