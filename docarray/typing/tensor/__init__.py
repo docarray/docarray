@@ -26,7 +26,7 @@ else:
     __all__.extend(['TorchEmbedding', 'TorchTensor', 'ImageTorchTensor'])
 
 try:
-    import tensorflow as tf  # noqa: F401; type: ignore
+    import tensorflow as tf  # type: ignore # noqa: F401
 except ImportError:
     pass
 else:

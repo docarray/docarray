@@ -11,7 +11,8 @@ from docarray.typing import TensorFlowTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: tf.Tensor) -> List[tf.Tensor]:
-    """Unsqueezes tensors that only have one axis, at dim 0.
+    """
+    Unsqueezes tensors that only have one axis, at dim 0.
     This ensures that all outputs can be treated as matrices, not vectors.
 
     :param matrices: Matrices to be unsqueezed
@@ -27,7 +28,13 @@ def _unsqueeze_if_single_axis(*matrices: tf.Tensor) -> List[tf.Tensor]:
     return unsqueezed
 
 
-def _unsqueeze_if_scalar(t: tf.Tensor):
+def _unsqueeze_if_scalar(t: tf.Tensor) -> tf.Tensor:
+    """
+    Unsqueezes tensor of a scalar, from shape () to shape (1,).
+
+    :param t: tensor to unsqueeze.
+    :return: unsqueezed tf.Tensor
+    """
     if len(t.shape) == 0:  # avoid scalar output
         t = tf.expand_dims(t, 0)
     return t

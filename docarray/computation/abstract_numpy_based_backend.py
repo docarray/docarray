@@ -11,6 +11,13 @@ T = TypeVar('T')
 
 class AbstractNumpyBasedBackend(AbstractComputationalBackend[T], ABC):
     _module: types.ModuleType
+
+    # _norm_left() and _norm_right() are functions to transform the input/output
+    # from cls_A -> cls_B and back depending on the subclass. This is especially
+    # important for the TensorFlowTensor class:
+    # If a TensorFlowTensor instance is input to a function, we first want to
+    # transform it to a tf.Tensor, since the tf.Tensor is what the _module of
+    # AbstractNumpyBasedBackend works on. Vice versa for the output.
     _norm_left: Callable
     _norm_right: Callable
 

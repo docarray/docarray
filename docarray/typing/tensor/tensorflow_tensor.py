@@ -33,6 +33,72 @@ class metaTensorFlow(
 
 @_register_proto(proto_type_name='tensorflow_tensor')
 class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow):
+    """
+    TensorFlowTensor class with a `.tensor` attribute of type `tf.Tensor`, intended for
+    use in a Document.
+    This enables (de)serialization from/to protobuf and json, data validation,
+    and coersion from compatible types like numpy.ndarray.
+
+    This type can also be used in a parametrized way, specifying the shape of the
+    tensor.
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import BaseDocument
+        from docarray.typing import TensorFlowTensor
+        import tensorflow as tf
+
+
+        class MyDoc(BaseDocument):
+            tensor: TensorFlowTensor
+            image_tensor: TensorFlowTensor[3, 224, 224]
+            square_crop: TensorFlowTensor[3, 'x', 'x']
+
+
+        # create a document with tensors
+        doc = MyDoc(
+            tensor=tf.zeros((128,)),
+            image_tensor=tf.zeros((3, 224, 224)),
+            square_crop=tf.zeros((3, 64, 64)),
+        )
+
+        # automatic shape conversion
+        doc = MyDoc(
+            tensor=tf.zeros((128,)),
+            image_tensor=tf.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+            square_crop=tf.zeros((3, 128, 128)),
+        )
+
+        # !! The following will raise an error due to shape mismatch !!
+        doc = MyDoc(
+            tensor=tf.zeros((128,)),
+            image_tensor=tf.zeros((224, 224)),  # this will fail validation
+            square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
+        )
+
+    If you want to call functions provided by tensorflow you have to access the
+    `.tensor` attribute or call `.unwrap()` on your TensorFlowTensor instance:
+
+    .. code-block:: python
+        from docarray.typing import TensorFlowTensor
+        import tensorflow as tf
+
+
+        t = TensorFlowTensor(tf.zeros((224, 224)))
+
+        # tensorflow functions
+        broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
+        broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
+        broadcasted = tf.broadcast_to(t, (3, 224, 224))  # this will fail
+
+        # tensorflow.Tensor methods:
+        arr = t.tensor.numpy()
+        arr = t.unwrap().numpy()
+        arr = t.numpy()  # this will fail
+
+    """
 
     __parametrized_meta__ = metaTensorFlow
 
@@ -70,9 +136,11 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     @classmethod
     def _docarray_from_native(cls: Type[T], value: Union[tf.Tensor, T]) -> T:
-        """Create a TensorFlowTensor from a native tensorflow.Tensor
+        """
+        Create a TensorFlowTensor from a tensorflow.Tensor or TensorFlowTensor
+        instance.
 
-        :param value: the native tf.Tensor
+        :param value: instance of tf.Tensor or TensorFlowTensor
         :return: a TensorFlowTensor
         """
         if isinstance(value, TensorFlowTensor):
@@ -108,11 +176,20 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         return self.unwrap().numpy()
 
     def to_protobuf(self) -> 'NdArrayProto':
-        pass
+        """
+        Transform self into an NdArrayProto protobuf message.
+        """
+        raise NotImplementedError
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
-        pass
+        """
+        Read ndarray from a proto msg.
+        :param pb_msg:
+        :return: a TensorFlowTensor
+        """
+
+        raise NotImplementedError
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
@@ -121,7 +198,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         :param value: the numpy array
         :return: a TensorFlowTensor
         """
-        return TensorFlowTensor(tf.convert_to_tensor(value))
+        return cls._docarray_from_native(tf.convert_to_tensor(value))
 
     def unwrap(self) -> tf.Tensor:
         """
@@ -140,7 +217,6 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             # here t1 is a docarray TensorFlowTensor
             t2 = t.unwrap()
             # here t2 is a pure tf.Tensor but t1 is still a Docarray TensorFlowTensor
-            # But both share the same underlying memory
 
 
         :return: a tf.Tensor
