@@ -49,7 +49,7 @@ class ImageBytes(bytes, AbstractType):
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
     ) -> np.ndarray:
         """
-        Load the data from the bytes into a numpy.ndarray image tensor
+        Load the image from the bytes into a numpy.ndarray image tensor
 
         EXAMPLE USAGE
 
