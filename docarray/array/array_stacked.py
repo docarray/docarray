@@ -86,6 +86,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         # see bug here: https://github.com/python/mypy/issues/13026
         # as of 2023-01-05 it should be fixed on mypy master, though, see
         # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
+
+        # TODO(johannes): does this properly associate each doc
+        #  with a slice in the column?
         da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
         da_stacked._columns = columns
         da_stacked._docs = docs
@@ -203,20 +206,25 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(self._docs, field, values)
 
     def __getitem__(self, item):
-        if isinstance(item, (slice, tuple)):
+        if item is None:
+            return self  # PyTorch behaviour
+        # multiple docs case
+        if isinstance(item, (slice, Iterable)):
             return self._get_from_data_and_columns(item)
+        # single doc case
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
         return doc
 
-    def _get_from_data_and_columns(self: T, item: Union[Tuple, slice]) -> T:
+    def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
         """Delegates the access to the data and the columns,
         and combines into a stacked da.
 
         :param item: the item used as index. Needs to be a valid index for both
             DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
+        :return: a DocumentArrayStacked, indexed according to `item`
         """
         if isinstance(item, tuple):
             item = list(item)
