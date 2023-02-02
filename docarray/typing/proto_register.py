@@ -4,7 +4,7 @@ from docarray.typing.abstract_type import AbstractType
 
 _PROTO_TYPE_NAME_TO_CLASS: Dict[str, Type[AbstractType]] = {}
 
-T = TypeVar(name='T', bound='AbstractType')
+T = TypeVar('T', bound='AbstractType')
 
 
 def _register_proto(
