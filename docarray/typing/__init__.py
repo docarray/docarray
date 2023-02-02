@@ -58,3 +58,12 @@ else:
             'ImageTorchTensor',
         ]
     )
+
+try:
+    import tensorflow as tf  # noqa: F401
+except ImportError:
+    pass
+else:
+    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
+
+    __all__.extend(['TensorFlowTensor'])

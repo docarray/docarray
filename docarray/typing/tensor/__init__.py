@@ -24,3 +24,12 @@ else:
     from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
 
     __all__.extend(['TorchEmbedding', 'TorchTensor', 'ImageTorchTensor'])
+
+try:
+    import tensorflow as tf  # noqa: F401
+except ImportError:
+    pass
+else:
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
+
+    __all__.extend(['TensorFlowTensor'])
