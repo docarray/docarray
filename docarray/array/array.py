@@ -13,6 +13,7 @@ from typing import (
     Union,
 )
 
+import numpy as np
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -98,24 +99,54 @@ class DocumentArray(AnyDocumentArray):
         return len(self._data)
 
     def __getitem__(self, item):
+        item = self._normalize_index_item(item)
+
         if type(item) == slice:
             return self.__class__(self._data[item])
 
-        index_has_getitem = hasattr(item, '__getitem__')
-        is_valid_bulk_index = index_has_getitem and isinstance(item, Iterable)
-        if is_valid_bulk_index:
-            head = item[0]
-            if isinstance(head, bool):
-                return self._get_from_mask(item)
-            elif isinstance(head, int):
-                return self._get_from_indices(item)
-            else:
-                raise TypeError(f'Invalid type {type(head)} for indexing')
-        else:
+        if isinstance(item, int):
             return self._data[item]
+
+        if item is None:
+            return self
+
+        # _normalize_index_item() guarantees the line below is correct
+        head = item[0]  # type: ignore
+        if isinstance(head, bool):
+            return self._get_from_mask(item)
+        elif isinstance(head, int):
+            return self._get_from_indices(item)
+        else:
+            raise TypeError(f'Invalid type {type(head)} for indexing')
 
     def __iter__(self):
         return iter(self._data)
+
+    @staticmethod
+    def _normalize_index_item(
+        item: Any,
+    ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
+        if item is None or isinstance(item, (int, slice)):
+            return item
+
+        index_has_getitem = hasattr(item, '__getitem__')
+        is_valid_bulk_index = index_has_getitem and isinstance(item, Iterable)
+        if not is_valid_bulk_index:
+            raise ValueError(f'Invalid index type {type(item)}')
+
+        if isinstance(item, np.ndarray) and (
+            item.dtype == np.bool or item.dtype == np.int
+        ):
+            return item.tolist()
+
+        try:
+            import torch  # noqa: F401
+        except ImportError:
+            raise ValueError(f'Invalid index type {type(item)}')
+        if isinstance(item, torch.Tensor) and (
+            item.dtype == torch.bool or item.dtype == torch.int
+        ):
+            return item.tolist()
 
     def _get_from_indices(self: T, item: Iterable[int]) -> T:
         offset_to_doc = self._get_offset_to_doc()
