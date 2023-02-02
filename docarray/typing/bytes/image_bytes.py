@@ -19,7 +19,7 @@ T = TypeVar('T', bound='ImageBytes')
 @_register_proto(proto_type_name='image_bytes')
 class ImageBytes(bytes, AbstractType):
     """
-    Bytes that store an image
+    Bytes that store an image and that can be load into an image tensor
     """
 
     @classmethod
