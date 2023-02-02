@@ -57,7 +57,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         if isinstance(value, TensorFlowTensor):
             return cast(T, value)
         elif isinstance(value, tf.Tensor):
-            return cls(tensor=value)
+            return cls._docarray_from_native(value)
         else:
             try:
                 arr: tf.Tensor = tf.constant(value)
@@ -69,17 +69,24 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         )
 
     @classmethod
-    def _docarray_from_native(cls: Type[T], value: tf.Tensor) -> T:
+    def _docarray_from_native(cls: Type[T], value: Union[tf.Tensor, T]) -> T:
         """Create a TensorFlowTensor from a native tensorflow.Tensor
 
         :param value: the native tf.Tensor
         :return: a TensorFlowTensor
         """
-        if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
-            cls_param = cls.__unparametrizedcls__
+        if isinstance(value, TensorFlowTensor):
+            if cls.__unparametrizedcls__:  # None if the tensor is parametrized
+                value.__class__ = cls.__unparametrizedcls__
+            else:
+                value.__class__ = cls
+            return cast(T, value)
         else:
-            cls_param = cls
-        return cls_param(tensor=value)
+            if cls.__unparametrizedcls__:  # None if the tensor is parametrized
+                cls_param = cls.__unparametrizedcls__
+            else:
+                cls_param = cls
+            return cls_param(tensor=value)
 
     @staticmethod
     def get_comp_backend() -> 'TensorFlowCompBackend':
@@ -114,7 +121,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         :param value: the numpy array
         :return: a TensorFlowTensor
         """
-        return cls._docarray_from_native(tf.convert_to_tensor(value))
+        return TensorFlowTensor(tf.convert_to_tensor(value))
 
     def unwrap(self) -> tf.Tensor:
         """
