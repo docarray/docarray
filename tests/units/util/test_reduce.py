@@ -30,9 +30,12 @@ def doc1():
         categories=['a', 'b', 'c'],
         price=10,
         matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc]([MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]),
+        matches_with_same_id=DocumentArray[MMDoc](
+            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        ),
         test_set={'a', 'a'},
-        inner_doc=InnerDoc(integer=2, l=['c', 'd']))
+        inner_doc=InnerDoc(integer=2, l=['c', 'd']),
+    )
 
 
 @pytest.fixture
@@ -44,9 +47,12 @@ def doc2(doc1):
         price=5,
         opt_int=5,
         matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc]([MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]),
+        matches_with_same_id=DocumentArray[MMDoc](
+            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        ),
         test_set={'a', 'b'},
-        inner_doc=InnerDoc(integer=3, l=['a', 'b']))
+        inner_doc=InnerDoc(integer=3, l=['a', 'b']),
+    )
 
 
 def test_reduce_docs(doc1, doc2):
@@ -114,7 +120,20 @@ def test_reduce_all(doc1, doc2):
     assert len(da1) == 5
     merged_doc = result[0]
     assert merged_doc.text == 'hey here'
-    assert merged_doc.categories == ['a', 'b', 'c', 'd', 'e', 'f', 'a', 'b', 'c', 'd', 'e', 'f']
+    assert merged_doc.categories == [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+    ]
     assert len(merged_doc.matches) == 2
     assert merged_doc.opt_int == 5
     assert merged_doc.price == 10
