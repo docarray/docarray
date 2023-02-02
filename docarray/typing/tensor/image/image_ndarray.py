@@ -10,6 +10,8 @@ class ImageNdArray(AbstractImageTensor, NdArray):
     """
     Subclass of NdArray, to represent an image tensor.
     Adds image-specific features to the tensor.
+    For instance the ability convert the tensor back to image bytes which are
+    optimized to send over the wire
 
 
     EXAMPLE USAGE
@@ -25,19 +27,22 @@ class ImageNdArray(AbstractImageTensor, NdArray):
         import numpy as np
 
 
-        class MyAudioDoc(Document):
+        class MyImageDoc(Document):
             title: str
             tensor: Optional[ImageNdArray]
             url: Optional[ImageUrl]
+            bytes: Optional[bytes]
 
 
         # from url
-        doc_2 = MyAudioDoc(
+        doc = MyImageDoc(
             title='my_second_audio_doc',
             url='https://an.image.png',
         )
 
-        doc_2.audio_tensor = doc_2.url.load()
+        doc.tensor = doc.url.load()
+
+        doc.bytes = doc.tensor.to_bytes()
 
     """
 

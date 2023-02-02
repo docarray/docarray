@@ -12,6 +12,8 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
     """
     Subclass of TorchTensor, to represent an image tensor.
     Adds image-specific features to the tensor.
+    For instance the ability convert the tensor back to image bytes which are
+    optimized to send over the wire
 
 
     EXAMPLE USAGE
@@ -29,17 +31,18 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
         class MyImageDoc(Document):
             title: str
-            image_tensor: Optional[ImageTorchTensor]
+            tensor: Optional[ImageTorchTensor]
             url: Optional[ImageUrl]
+            bytes: Optional[bytes]
 
 
-        doc_1 = MyImageDoc(
+        doc = MyImageDoc(
             title='my_second_image_doc',
             url='https://www.kozco.com/tech/piano2.wav',
         )
 
-        doc_1.image_tensor = doc_2.url.load()
-
+        doc.tensor = doc.url.load()
+        doc.bytes = doc.tensor.to_bytes()
     """
 
     ...
