@@ -1,9 +1,9 @@
 from docarray import DocumentArray
-from typing import List, Optional, Dict, Tuple, _GenericAlias
+from typing import List, Optional, Dict, _GenericAlias
 from docarray.base_document import BaseDocument
 
 
-def _types_analysis(doc: 'BaseDocument') -> Tuple[List[str]]:
+def _types_analysis(doc: 'BaseDocument') -> List[List[str]]:
     simple_non_empty_fields: List[str] = []
     list_fields: List[str] = []
     set_fields: List[str] = []
@@ -24,7 +24,7 @@ def _types_analysis(doc: 'BaseDocument') -> Tuple[List[str]]:
                 nested_docs_fields.append(field_name)
             else:
                 simple_non_empty_fields.append(field_name)
-    return tuple([simple_non_empty_fields, list_fields, set_fields, nested_docarray_fields, nested_docs_fields])
+    return [simple_non_empty_fields, list_fields, set_fields, nested_docarray_fields, nested_docs_fields]
 
 
 """
@@ -48,10 +48,19 @@ def reduce_docs(doc1: 'BaseDocument', doc2: 'BaseDocument') -> 'BaseDocument':
     :param doc1: first Document
     :param doc2: second Document
     """
-    doc1_simple_non_empty_fields, doc1_list_fields, doc1_set_fields, doc1_nested_docarray_fields, doc1_nested_docs_fields = _types_analysis(
-        doc1)
-    doc2_simple_non_empty_fields, doc2_list_fields, doc2_set_fields, doc2_nested_docarray_fields, doc2_nested_docs_fields = _types_analysis(
-        doc2)
+    doc1_fields = _types_analysis(doc1)
+    doc1_simple_non_empty_fields = doc1_fields[0]
+    doc1_list_fields             = doc1_fields[1]
+    doc1_set_fields              = doc1_fields[2]
+    doc1_nested_docarray_fields  = doc1_fields[3]
+    doc1_nested_docs_fields      = doc1_fields[4]
+
+    doc2_fields = _types_analysis(doc2)
+    doc2_simple_non_empty_fields = doc2_fields[0]
+    doc2_list_fields             = doc2_fields[1]
+    doc2_set_fields              = doc2_fields[2]
+    doc2_nested_docarray_fields  = doc2_fields[3]
+    doc2_nested_docs_fields      = doc2_fields[4]
 
     # update only fields that are set in doc2 and not set in doc1
     update_simple_fields = set(doc2_simple_non_empty_fields) - set(doc1_simple_non_empty_fields)
@@ -116,30 +125,25 @@ def reduce(left: DocumentArray, other: DocumentArray, left_id_map: Optional[Dict
     return left
 
 
-def reduce_all(left: DocumentArray, others: List[DocumentArray]) -> DocumentArray:
+def reduce_all(docarrays: List[DocumentArray]) -> DocumentArray:
     """
-    Reduces a list of DocumentArrays and this DocumentArray into one DocumentArray. Changes are applied to this
-    DocumentArray in-place.
+    Reduces a list of DocumentArrays into one DocumentArray. Changes are applied to the first DocumentArray in-place.
 
-    Reduction consists in reducing this DocumentArray with every DocumentArray in `others` sequentially using
-    :class:`DocumentArray`.:method:`reduce`.
     The resulting DocumentArray contains Documents of all DocumentArrays.
-    If a Document exists in many DocumentArrays, data properties are merged with priority to the left-most
+    If a Document exists (identified by their ID) in many DocumentArrays, data properties are merged with priority to the left-most
     DocumentArrays (that is, if a data attribute is set in a Document belonging to many DocumentArrays, the
     attribute value of the left-most DocumentArray is kept).
-    Matches and chunks of a Document belonging to many DocumentArrays are also reduced in the same way.
-    Other non-data properties are ignored.
-
+    Nested DocumentArrays belonging to many DocumentArrays are also reduced in the same way.
     .. note::
-        - Matches are not kept in a sorted order when they are reduced. You might want to re-sort them in a later
-            step.
+        - Nested DocumentArrays order does not follow any specific rule. You might want to re-sort them in a later step.
         - The final result depends on the order of DocumentArrays when applying reduction.
 
-    :param left:
-    :param others: List of DocumentArrays to be reduced
+    :param docarrays: List of DocumentArrays to be reduced
     :return: the resulting DocumentArray
     """
-    assert len(left) > 0, 'In order to reduce DocumentArrays we should have a non empty DocumentArray'
+    assert len(docarrays) > 1, 'In order to reduce DocumentArrays we should have more than one DocumentArray'
+    left = docarrays[0]
+    others = docarrays[1:]
     left_id_map = {doc.id: i for i, doc in enumerate(left)}
     for da in others:
         reduce(left, da, left_id_map)
