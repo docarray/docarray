@@ -36,13 +36,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 value.type if value.WhichOneof('docarray_type') is not None else None
             )
 
-            if torch_imported:
-                from docarray.typing import TorchEmbedding
-                from docarray.typing.tensor.torch_tensor import TorchTensor
-
-                content_type_dict['torch'] = TorchTensor
-                content_type_dict['torch_embedding'] = TorchEmbedding
-
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
                     getattr(value, content_key)
@@ -85,10 +78,10 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 if isinstance(value, BaseNode):
                     nested_item = value._to_node_protobuf()
 
-                elif type(value) is str:
+                elif isinstance(value, str):
                     nested_item = NodeProto(text=value)
 
-                elif type(value) is bytes:
+                elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
                 elif value is None:
                     nested_item = NodeProto()

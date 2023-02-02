@@ -1,5 +1,5 @@
 from docarray import DocumentArray
-from typing import List, Optional, Dict, _GenericAlias # type: ignore
+from typing import List, Optional, Dict, _GenericAlias  # type: ignore
 from docarray.base_document import BaseDocument
 
 

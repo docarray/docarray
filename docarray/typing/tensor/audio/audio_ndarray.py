@@ -1,12 +1,6 @@
-from typing import TypeVar
-
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.ndarray import NdArray
-
-MAX_INT_16 = 2**15
-
-T = TypeVar('T', bound='AudioNdArray')
 
 
 @_register_proto(proto_type_name='audio_ndarray')
@@ -33,6 +27,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
             title: str
             audio_tensor: Optional[AudioNdArray]
             url: Optional[AudioUrl]
+            bytes_: Optional[bytes]
 
 
         # from tensor
@@ -42,6 +37,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         )
 
         doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
+        doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
         # from url
         doc_2 = MyAudioDoc(
@@ -49,11 +45,10 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
             url='https://www.kozco.com/tech/piano2.wav',
         )
 
-        doc_2.audio_tensor = parse_obj_as(AudioNdArray, doc_2.url.load())
+        doc_2.audio_tensor = doc_2.url.load()
         doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
+        doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
 
     """
 
-    def to_audio_bytes(self):
-        tensor = (self * MAX_INT_16).astype('<h')
-        return tensor.tobytes()
+    ...
