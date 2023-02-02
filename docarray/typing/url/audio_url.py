@@ -4,7 +4,6 @@ import numpy as np
 
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
 if TYPE_CHECKING:
@@ -39,7 +38,7 @@ class AudioUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load(self: T) -> AudioNdArray:
+    def load(self: T) -> np.ndarray:
         """
         Load the data from the url into an AudioNdArray.
 
