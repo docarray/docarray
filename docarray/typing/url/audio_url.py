@@ -1,12 +1,9 @@
-import io
-import wave
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
-from pydantic import parse_obj_as
 
+from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.audio.abstract_audio_tensor import MAX_INT_16
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.url.any_url import AnyUrl
 
@@ -42,11 +39,10 @@ class AudioUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load(self: T, dtype: str = 'float32') -> AudioNdArray:
+    def load(self: T) -> AudioNdArray:
         """
         Load the data from the url into an AudioNdArray.
 
-        :param dtype: Data-type of the returned array; default: float32.
         :return: AudioNdArray representing the audio file content.
 
         EXAMPLE USAGE
@@ -70,27 +66,5 @@ class AudioUrl(AnyUrl):
 
         """
 
-        file = self.load_bytes()
-
-        # note wave is Python built-in mod. https://docs.python.org/3/library/wave.html
-        with wave.open(io.BytesIO(file)) as ifile:
-            samples = ifile.getnframes()
-            audio = ifile.readframes(samples)
-
-            # Convert buffer to float32 using NumPy
-            audio_as_np_int16 = np.frombuffer(audio, dtype=np.int16)
-            audio_as_np_float32 = audio_as_np_int16.astype(dtype=dtype)
-
-            # Normalise float32 array so that values are between -1.0 and +1.0
-            audio_norm = audio_as_np_float32 / MAX_INT_16
-
-            channels = ifile.getnchannels()
-            if channels == 2:
-                # 1 for mono, 2 for stereo
-                audio_stereo = np.empty((int(len(audio_norm) / channels), channels))
-                audio_stereo[:, 0] = audio_norm[range(0, len(audio_norm), 2)]
-                audio_stereo[:, 1] = audio_norm[range(1, len(audio_norm), 2)]
-
-                return parse_obj_as(AudioNdArray, audio_stereo)
-            else:
-                return parse_obj_as(AudioNdArray, audio_norm)
+        bytes_ = AudioBytes(self.load_bytes())
+        return bytes_.load()
