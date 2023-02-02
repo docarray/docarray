@@ -100,20 +100,37 @@ class DocumentArray(AnyDocumentArray):
     def __getitem__(self, item):
         if type(item) == slice:
             return self.__class__(self._data[item])
-        elif isinstance(item, Iterable):
-            offset_to_doc = self._get_offset_to_doc()
-            results = []
-            for ix in item:
-                try:
-                    results.append(offset_to_doc[ix])
-                except KeyError:
-                    raise IndexError(f'Index {ix} is out of range')
-            return self.__class__(results)
+
+        index_has_getitem = hasattr(item, '__getitem__')
+        is_valid_bulk_index = index_has_getitem and isinstance(item, Iterable)
+        if is_valid_bulk_index:
+            head = item[0]
+            if isinstance(head, bool):
+                return self._get_from_mask(item)
+            elif isinstance(head, int):
+                return self._get_from_indices(item)
+            else:
+                raise TypeError(f'Invalid type {type(head)} for indexing')
         else:
             return self._data[item]
 
     def __iter__(self):
         return iter(self._data)
+
+    def _get_from_indices(self: T, item: Iterable[int]) -> T:
+        offset_to_doc = self._get_offset_to_doc()
+        results = []
+        for ix in item:
+            try:
+                results.append(offset_to_doc[ix])
+            except KeyError:
+                raise IndexError(f'Index {ix} is out of range')
+        return self.__class__(results)
+
+    def _get_from_mask(self: T, item: Iterable[bool]) -> T:
+        return self.__class__(
+            (doc for doc, mask_value in zip(self, item) if mask_value)
+        )
 
     append = _delegate_meth_to_data('append')
     extend = _delegate_meth_to_data('extend')
