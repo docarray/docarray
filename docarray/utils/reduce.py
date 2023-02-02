@@ -1,6 +1,5 @@
 from docarray import DocumentArray
 from typing import List, Optional, Dict, TYPE_CHECKING, Tuple, _GenericAlias
-from typing_inspect import is_union_type
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -20,14 +19,8 @@ def _array_fields(doc: 'BaseDocument') -> Tuple[str]:
     ret: List[str] = []
     for field_name, field in doc.__fields__.items():
         field_type = field.outer_type_
-        print(f'HEY {field_type} => {type(field_type)}')
-        print(f' {isinstance(field_type, _GenericAlias)}')
-        if isinstance(field_type, _GenericAlias):
-            print(field_type.__origin__)
-        if isinstance(field_type, DocumentArray) or (isinstance(field_type, _GenericAlias) and field_type.__origin__ is list):
+        if (not isinstance(field_type, _GenericAlias) and issubclass(field_type, DocumentArray)) or (isinstance(field_type, _GenericAlias) and field_type.__origin__ is list) or (isinstance(field_type, _GenericAlias) and (field_type.__origin__ is set)):
             ret.append(field_name)
-        else:
-            print(f' hhey 2')
     return tuple(ret)
 
 
@@ -69,7 +62,10 @@ def reduce_docs(doc1: 'BaseDocument', doc2: 'BaseDocument', array_fields: Option
         if array1 is None and array2 is not None:
             setattr(doc1, field, array2)
         elif array1 is not None and array2 is not None:
-            array1.extend(array2)
+            if isinstance(array1, set):
+                array1.update(array2)
+            else:
+                array1.extend(array2)
             setattr(doc1, field, array1)  # I am not sure if this is optimal, how can I do (doc1.field.extend())
 
     return doc1
