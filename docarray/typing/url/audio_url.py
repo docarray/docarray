@@ -1,3 +1,4 @@
+import io
 import wave
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
@@ -68,23 +69,11 @@ class AudioUrl(AnyUrl):
             assert isinstance(doc.audio_tensor, np.ndarray)
 
         """
-        import io
 
-        file: Union[io.BytesIO, T]
-
-        if self.startswith('http'):
-            import requests
-
-            resp = requests.get(self)
-            resp.raise_for_status()
-            file = io.BytesIO()
-            file.write(resp.content)
-            file.seek(0)
-        else:
-            file = self
+        file = self.load_bytes()
 
         # note wave is Python built-in mod. https://docs.python.org/3/library/wave.html
-        with wave.open(file) as ifile:
+        with wave.open(io.BytesIO(file)) as ifile:
             samples = ifile.getnframes()
             audio = ifile.readframes(samples)
 
