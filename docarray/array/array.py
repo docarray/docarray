@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -87,10 +88,10 @@ class DocumentArray(AnyDocumentArray):
 
     def __init__(
         self,
-        docs: Iterable[BaseDocument] = list(),
+        docs: Optional[Iterable[BaseDocument]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
-        self._data = [doc_ for doc_ in docs]
+        self._data = list(docs) if docs is not None else []
         self.tensor_type = tensor_type
 
     def __len__(self):
@@ -99,6 +100,15 @@ class DocumentArray(AnyDocumentArray):
     def __getitem__(self, item):
         if type(item) == slice:
             return self.__class__(self._data[item])
+        elif isinstance(item, Iterable):
+            offset_to_doc = self._get_offset_to_doc()
+            results = []
+            for ix in item:
+                try:
+                    results.append(offset_to_doc[ix])
+                except KeyError:
+                    raise IndexError(f'Index {ix} is out of range')
+            return self.__class__(results)
         else:
             return self._data[item]
 
@@ -112,6 +122,12 @@ class DocumentArray(AnyDocumentArray):
     remove = _delegate_meth_to_data('remove')
     reverse = _delegate_meth_to_data('reverse')
     sort = _delegate_meth_to_data('sort')
+
+    def _get_offset_to_doc(self) -> Dict[int, BaseDocument]:
+        offset_to_doc = {}
+        for i, doc in enumerate(self):
+            offset_to_doc[i] = doc
+        return offset_to_doc
 
     def _get_array_attribute(
         self: T,

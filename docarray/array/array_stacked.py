@@ -6,6 +6,7 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -72,11 +73,13 @@ class DocumentArrayStacked(AnyDocumentArray):
         self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
 
     @classmethod
-    def _from_columns(
+    def _from_da_and_columns(
         cls: Type[T],
         docs: DocumentArray,
         columns: Mapping[str, Union['DocumentArrayStacked', AbstractTensor]],
     ) -> T:
+        """Create a DocumentArrayStacked from a DocumentArray
+        and an associated dict of columns"""
         # below __class_getitem__ is called explicitly instead
         # of doing DocumentArrayStacked[docs.document_type]
         # because mypy has issues with class[...] notation at runtime.
@@ -199,25 +202,28 @@ class DocumentArrayStacked(AnyDocumentArray):
         else:
             setattr(self._docs, field, values)
 
-    def __getitem__(self, item):  # note this should handle slices
-        if isinstance(item, slice):
-            return self._get_slice(item)
+    def __getitem__(self, item):
+        if isinstance(item, (slice, tuple)):
+            return self._get_from_data_and_columns(item)
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
         return doc
 
-    def _get_slice(self: T, item: slice) -> T:
-        """Return a slice of the DocumentArrayStacked
+    def _get_from_data_and_columns(self: T, item: Union[Tuple, slice]) -> T:
+        """Delegates the access to the data and the columns,
+        and combines into a stacked da.
 
-        :param item: the slice to apply
-        :return: a DocumentArrayStacked
+        :param item: the item used as index. Needs to be a valid index for both
+            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
         """
-
-        columns_sliced = {k: col[item] for k, col in self._columns.items()}
-        columns_sliced_ = cast(Dict[str, Union[AbstractTensor, T]], columns_sliced)
-        return self._from_columns(self._docs[item], columns_sliced_)
+        if isinstance(item, tuple):
+            item = list(item)
+        docs_indexed = self._docs[item]
+        columns_indexed = {k: col[item] for k, col in self._columns.items()}
+        columns_indexed_ = cast(Dict[str, Union[AbstractTensor, T]], columns_indexed)
+        return self._from_da_and_columns(docs_indexed, columns_indexed_)
 
     def __iter__(self):
         for i in range(len(self)):
