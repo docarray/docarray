@@ -9,6 +9,9 @@ class AbstractImageTensor(AbstractTensor, ABC):
     def to_bytes(self, format: str = 'PNG') -> bytes:
         """
         Convert image tensor to bytes.
+
+        :param format: the image format use to store the image, can be 'PNG' , 'JPG' ...
+        :return: bytes
         """
         from PIL import Image
 
