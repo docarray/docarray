@@ -73,12 +73,17 @@ class Mesh3D(BaseDocument):
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.mesh.vertices, mmdoc.mesh.faces = mmdoc.mesh.url.load()
+
+        # or
+        mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
+
     """
 
     url: Optional[Mesh3DUrl]
     vertices: Optional[AnyTensor]
     faces: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+    bytes: Optional[bytes]
 
     @classmethod
     def validate(

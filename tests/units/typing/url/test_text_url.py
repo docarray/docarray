@@ -31,7 +31,7 @@ def test_load(url, expected_beginning):
 def test_load_to_bytes(url):
     uri = parse_obj_as(TextUrl, url)
 
-    txt_bytes = uri.load_to_bytes()
+    txt_bytes = uri.load_bytes()
     assert isinstance(txt_bytes, bytes)
 
 
@@ -48,7 +48,7 @@ def test_load_timeout():
     with pytest.raises(urllib.error.URLError):
         _ = url.load(timeout=0.001)
     with pytest.raises(urllib.error.URLError):
-        _ = url.load_to_bytes(timeout=0.001)
+        _ = url.load_bytes(timeout=0.001)
 
 
 def test_json_schema():

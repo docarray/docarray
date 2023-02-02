@@ -4,6 +4,7 @@ import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AudioUrl
+from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 
@@ -81,11 +82,19 @@ class Audio(BaseDocument):
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.audio.tensor = mmdoc.audio.url.load()
+
+        # equivalent to
+
+        mmdoc.audio.bytes = mmdoc.audio.url.load_bytes()
+
+        mmdoc.audio.tensor = mmdoc.audio.bytes.load()
+
     """
 
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
+    bytes: Optional[AudioBytes]
 
     @classmethod
     def validate(

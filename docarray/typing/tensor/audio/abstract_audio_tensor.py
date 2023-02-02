@@ -1,19 +1,22 @@
 import wave
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
+MAX_INT_16 = 2**15
+
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-    @abstractmethod
-    def to_audio_bytes(self):
+    def to_bytes(self):
         """
         Convert audio tensor to bytes.
         """
-        ...
+        tensor = self.get_comp_backend().to_numpy(self)
+        tensor = (tensor * MAX_INT_16).astype('<h')
+        return tensor.tobytes()
 
     def save_to_wav_file(
         self: 'T',
@@ -36,4 +39,4 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setnchannels(n_channels)
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes(self.to_audio_bytes())
+            f.writeframes(self.to_bytes())
