@@ -163,7 +163,6 @@ class DocumentArrayStacked(AnyDocumentArray):
 
             elif issubclass(type_, AbstractTensor):
                 tensor = getattr(docs[0], field)
-
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
                 )
@@ -240,7 +239,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         columns_sliced = {}
         for k, col in self._columns.items():
-            if not isinstance(col[item], TensorFlowTensor):
+            if isinstance(col[item], TensorFlowTensor):
                 columns_sliced[k] = TensorFlowTensor(col.tensor[item])
             else:
                 columns_sliced[k] = col[item]
