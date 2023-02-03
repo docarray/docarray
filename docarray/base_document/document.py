@@ -1,9 +1,10 @@
 import os
-from typing import Type, List, _GenericAlias  # type: ignore
+from typing import List, Type
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
 from rich.console import Console
+from typing_inspect import get_origin
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -68,13 +69,16 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                 from docarray import BaseDocument
                 from docarray.documents import Text
 
+
                 class MyDocument(BaseDocument):
                     content: str
                     title: Optional[str] = None
                     tags_: List
 
-                doc1 = MyDocument(content='Core content of the document',
-                    title='Title', tags_=['python', 'AI'])
+
+                doc1 = MyDocument(
+                    content='Core content of the document', title='Title', tags_=['python', 'AI']
+                )
                 doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
 
                 doc1.update(doc2)
@@ -92,10 +96,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                 f'{type(self)} with Document of type '
                 f'{type(other)}'
             )
-        from docarray.utils.reduce import reduce
-        from docarray import DocumentArray
-
         from collections import namedtuple
+
+        from docarray import DocumentArray
+        from docarray.utils.reduce import reduce
 
         # Declaring namedtuple()
         _FieldGroups = namedtuple(
@@ -123,32 +127,26 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             for field_name, field in doc.__fields__.items():
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_type(field_name)
-                    if not isinstance(field_type, _GenericAlias) and issubclass(
+
+                    if isinstance(field_type, type) and issubclass(
                         field_type, DocumentArray
                     ):
                         nested_docarray_fields.append(field_name)
-                    elif (
-                        isinstance(field_type, _GenericAlias)
-                        and field_type.__origin__ is list
-                    ):
-                        list_fields.append(field_name)
-                    elif (
-                        isinstance(field_type, _GenericAlias)
-                        and field_type.__origin__ is set
-                    ):
-                        set_fields.append(field_name)
-                    elif (
-                        isinstance(field_type, _GenericAlias)
-                        and field_type.__origin__ is dict
-                    ):
-                        dict_fields.append(field_name)
                     else:
-                        v = getattr(doc, field_name)
-                        if v:
-                            if isinstance(v, BaseDocument):
-                                nested_docs_fields.append(field_name)
-                            else:
-                                simple_non_empty_fields.append(field_name)
+                        origin = get_origin(field_type)
+                        if origin is list:
+                            list_fields.append(field_name)
+                        elif origin is set:
+                            set_fields.append(field_name)
+                        elif origin is dict:
+                            dict_fields.append(field_name)
+                        else:
+                            v = getattr(doc, field_name)
+                            if v:
+                                if isinstance(v, BaseDocument):
+                                    nested_docs_fields.append(field_name)
+                                else:
+                                    simple_non_empty_fields.append(field_name)
             return _FieldGroups(
                 simple_non_empty_fields,
                 list_fields,
