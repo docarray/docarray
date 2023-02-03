@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
@@ -19,6 +20,7 @@ from docarray.typing import (
 from docarray.typing.tensor import NdArrayEmbedding
 
 
+@pytest.mark.proto
 def test_multi_modal_doc_proto():
     class MyMultiModalDoc(BaseDocument):
         image: Image
@@ -31,6 +33,7 @@ def test_multi_modal_doc_proto():
     MyMultiModalDoc.from_protobuf(doc.to_protobuf())
 
 
+@pytest.mark.proto
 def test_all_types():
     class NestedDoc(BaseDocument):
         tensor: NdArray

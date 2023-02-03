@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
@@ -6,6 +7,7 @@ from docarray.documents import Image, Text
 from docarray.typing import NdArray
 
 
+@pytest.mark.proto
 def test_simple_proto():
     class CustomDoc(BaseDocument):
         text: str
@@ -22,6 +24,7 @@ def test_simple_proto():
         assert (doc1.tensor == doc2.tensor).all()
 
 
+@pytest.mark.proto
 def test_nested_proto():
     class CustomDocument(BaseDocument):
         text: Text
@@ -39,6 +42,7 @@ def test_nested_proto():
     DocumentArray[CustomDocument].from_protobuf(da.to_protobuf())
 
 
+@pytest.mark.proto
 def test_nested_proto_any_doc():
     class CustomDocument(BaseDocument):
         text: Text
@@ -56,6 +60,7 @@ def test_nested_proto_any_doc():
     DocumentArray.from_protobuf(da.to_protobuf())
 
 
+@pytest.mark.proto
 def test_stacked_proto():
     class CustomDocument(BaseDocument):
         image: NdArray

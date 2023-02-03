@@ -37,14 +37,12 @@ def test_iterator(batch):
 
 
 def test_stack_setter(batch):
-
     batch.tensor = torch.ones(10, 3, 224, 224)
 
     assert (batch.tensor == torch.ones(10, 3, 224, 224)).all()
 
 
 def test_stack_optional(batch):
-
     assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
 
@@ -67,7 +65,6 @@ def test_stack_numpy():
 
 
 def test_stack(batch):
-
     assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
     assert batch._columns['tensor'].data_ptr() == batch.tensor.data_ptr()
@@ -138,11 +135,12 @@ def test_unstack_nested_document():
         assert (doc.img.tensor == torch.zeros(3, 224, 224)).all()
 
 
+@pytest.mark.proto
 def test_proto_stacked_mode_torch(batch):
-
     batch.from_protobuf(batch.to_protobuf())
 
 
+@pytest.mark.proto
 def test_proto_stacked_mode_numpy():
     class MyDoc(BaseDocument):
         tensor: NdArray[3, 224, 224]
