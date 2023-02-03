@@ -1,8 +1,8 @@
 import pytest
-from typing import Optional, List, Dict, Any, Set
+from typing import Optional, List, Dict, Set
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
-from docarray.utils.reduce import reduce_docs, reduce, reduce_all
+from docarray.utils.reduce import reduce, reduce_all
 
 
 class InnerDoc(BaseDocument):
@@ -55,22 +55,6 @@ def doc2(doc1):
         inner_doc=InnerDoc(integer=3, l=['a', 'b']),
         test_dict={'a': 10, 'b': 10, 'c': 3, 'z': None},
     )
-
-
-def test_reduce_docs(doc1, doc2):
-    reduce_docs(doc1, doc2)
-    # doc1 is changed in place (no extra memory)
-    assert doc1.text == 'hey here 2'
-    assert doc1.categories == ['a', 'b', 'c', 'd', 'e', 'f']
-    assert len(doc1.matches) == 2
-    assert doc1.opt_int == 5
-    assert doc1.price == 5
-    assert doc1.test_set == {'a', 'b'}
-    assert len(doc1.matches_with_same_id) == 1
-    assert len(doc1.matches_with_same_id[0].matches) == 2
-    assert doc1.inner_doc.integer == 3
-    assert doc1.inner_doc.l == ['c', 'd', 'a', 'b']
-    assert doc1.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4, 'z': None}
 
 
 def test_reduce_different_ids():
