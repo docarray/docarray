@@ -35,6 +35,7 @@ except ImportError:
     TorchTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
+IndexType = Union[int, slice, Iterable[int], Iterable[bool], None]
 
 
 class DocumentArrayStacked(AnyDocumentArray):
@@ -87,8 +88,6 @@ class DocumentArrayStacked(AnyDocumentArray):
         # as of 2023-01-05 it should be fixed on mypy master, though, see
         # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
 
-        # TODO(johannes): does this properly associate each doc
-        #  with a slice in the column?
         da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
         da_stacked._columns = columns
         da_stacked._docs = docs
@@ -205,7 +204,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         else:
             setattr(self._docs, field, values)
 
-    def __getitem__(self, item):
+    def __getitem__(self: T, item: IndexType) -> Union[T, BaseDocument]:
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
@@ -216,6 +215,16 @@ class DocumentArrayStacked(AnyDocumentArray):
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             setattr(doc, field, self._columns[field][item])
+        return doc
+
+    def __setitem__(self: T, key: IndexType, value: Union[T, BaseDocument]):
+        # multiple docs case
+        if isinstance(key, (slice, Iterable)):
+            return self._set_data_and_columns(key, value)
+        # single doc case
+        doc = self._docs[key]
+        for field in self._columns.keys():
+            setattr(doc, field, self._columns[field][key])
         return doc
 
     def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
@@ -232,6 +241,35 @@ class DocumentArrayStacked(AnyDocumentArray):
         columns_indexed = {k: col[item] for k, col in self._columns.items()}
         columns_indexed_ = cast(Dict[str, Union[AbstractTensor, T]], columns_indexed)
         return self._from_da_and_columns(docs_indexed, columns_indexed_)
+
+    def _set_data_and_columns(
+        self: T, index_item: Union[Tuple, Iterable], value: Union[T, BaseDocument]
+    ):
+        """Delegates the setting to the data and the columns.
+
+        :param index_item: the key used as index. Needs to be a valid index for both
+            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
+        :value: the value to set at the `key` location
+        """
+        if isinstance(index_item, tuple):
+            index_item = list(index_item)
+        # set data and prepare columns
+        if isinstance(value, DocumentArray):
+            self._docs[index_item] = value
+            columns_to_set = self._create_columns(value, self.tensor_type)
+        elif isinstance(value, BaseDocument):
+            self._docs[index_item] = value
+            columns_to_set = self._create_columns(
+                DocumentArray[self.document_type]([value]), self.tensor_type
+            )
+        elif isinstance(value, DocumentArrayStacked):
+            self._docs[index_item] = value._docs
+            columns_to_set = value._columns
+        else:
+            raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
+        # set columns
+        for col_key, col in self._columns.items():
+            self._columns[col_key][index_item] = columns_to_set[col_key]
 
     def __iter__(self):
         for i in range(len(self)):

@@ -31,6 +31,7 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound='DocumentArray')
+IndexType = Union[int, slice, Iterable[int], Iterable[bool], None]
 
 
 def _delegate_meth_to_data(meth_name: str) -> Callable:
@@ -98,7 +99,7 @@ class DocumentArray(AnyDocumentArray):
     def __len__(self):
         return len(self._data)
 
-    def __getitem__(self, item):
+    def __getitem__(self: T, item: IndexType) -> Union[BaseDocument, T]:
         item = self._normalize_index_item(item)
 
         if type(item) == slice:
@@ -119,6 +120,21 @@ class DocumentArray(AnyDocumentArray):
         else:
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
+    def __setitem__(self: T, key: IndexType, value: Union[T, BaseDocument]):
+        key = self._normalize_index_item(key)
+
+        if isinstance(key, (int, slice)):
+            self._data[key] = value
+        else:
+            # _normalize_index_item() guarantees the line below is correct
+            head = key[0]  # type: ignore
+            if isinstance(head, bool):
+                return self._set_by_mask(key, value)
+            elif isinstance(head, int):
+                return self._set_by_indices(key, value)
+            else:
+                raise TypeError(f'Invalid type {type(head)} for indexing')
+
     def __iter__(self):
         return iter(self._data)
 
@@ -126,7 +142,7 @@ class DocumentArray(AnyDocumentArray):
     def _normalize_index_item(
         item: Any,
     ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
-        if item is None or isinstance(item, (int, slice)):
+        if item is None or isinstance(item, (int, slice, tuple, list)):
             return item
 
         index_has_getitem = hasattr(item, '__getitem__')
@@ -135,7 +151,7 @@ class DocumentArray(AnyDocumentArray):
             raise ValueError(f'Invalid index type {type(item)}')
 
         if isinstance(item, np.ndarray) and (
-            item.dtype == np.bool or item.dtype == np.int
+            item.dtype == np.bool or np.issubdtype(item.dtype, np.integer)
         ):
             return item.tolist()
 
@@ -143,10 +159,17 @@ class DocumentArray(AnyDocumentArray):
             import torch  # noqa: F401
         except ImportError:
             raise ValueError(f'Invalid index type {type(item)}')
-        if isinstance(item, torch.Tensor) and (
-            item.dtype == torch.bool or item.dtype == torch.int
-        ):
+        allowed_torch_dtypes = [
+            torch.bool,
+            torch.int8,
+            torch.int16,
+            torch.int32,
+            torch.int64,
+        ]
+        if isinstance(item, torch.Tensor) and (item.dtype in allowed_torch_dtypes):
             return item.tolist()
+
+        return item
 
     def _get_from_indices(self: T, item: Iterable[int]) -> T:
         offset_to_doc = self._get_offset_to_doc()
@@ -158,10 +181,27 @@ class DocumentArray(AnyDocumentArray):
                 raise IndexError(f'Index {ix} is out of range')
         return self.__class__(results)
 
+    def _set_by_indices(self: T, item: Iterable[int], value: Iterable[BaseDocument]):
+        # here we cannot use _get_offset_to_doc() because we need to change the doc
+        # that a given offset points to, not just retrieve it.
+        # Future optimization idea: _data could be List[DocContainer], where
+        # DocContainer points to the doc. Then we could use _get_offset_to_container()
+        # to swap the doc in the container.
+        for ix, doc_to_set in zip(item, value):
+            try:
+                self._data[ix] = doc_to_set
+            except KeyError:
+                raise IndexError(f'Index {ix} is out of range')
+
     def _get_from_mask(self: T, item: Iterable[bool]) -> T:
         return self.__class__(
             (doc for doc, mask_value in zip(self, item) if mask_value)
         )
+
+    def _set_by_mask(self: T, item: Iterable[bool], value: Iterable[BaseDocument]):
+        for i, doc_to_set, mask_value in zip(range(len(self)), value, item):
+            if mask_value:
+                self._data[i] = doc_to_set
 
     append = _delegate_meth_to_data('append')
     extend = _delegate_meth_to_data('extend')
