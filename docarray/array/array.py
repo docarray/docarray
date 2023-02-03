@@ -12,6 +12,8 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
+    overload,
 )
 
 import numpy as np
@@ -32,7 +34,7 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound='DocumentArray')
-IndexType = Union[int, slice, Iterable[int], Iterable[bool], None]
+IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 def _delegate_meth_to_data(meth_name: str) -> Callable:
@@ -100,7 +102,15 @@ class DocumentArray(AnyDocumentArray):
     def __len__(self):
         return len(self._data)
 
-    def __getitem__(self: T, item: IndexType) -> Union[BaseDocument, T]:
+    @overload
+    def __getitem__(self: T, item: int) -> BaseDocument:
+        ...
+
+    @overload
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        ...
+
+    def __getitem__(self, item):
         item = self._normalize_index_item(item)
 
         if type(item) == slice:
@@ -121,18 +131,23 @@ class DocumentArray(AnyDocumentArray):
         else:
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
-    def __setitem__(self: T, key: IndexType, value: Union[T, BaseDocument]):
-        key = self._normalize_index_item(key)
+    def __setitem__(self: T, key: IndexIterType, value: Union[T, BaseDocument]):
+        key_norm = self._normalize_index_item(key)
 
-        if isinstance(key, (int, slice)):
-            self._data[key] = value
+        if isinstance(key_norm, (int, slice)):
+            self._data[key_norm] = value  # TODO(johannes): idk why mypy fails here
         else:
             # _normalize_index_item() guarantees the line below is correct
-            head = key[0]  # type: ignore
+            head = key_norm[0]  # type: ignore
             if isinstance(head, bool):
-                return self._set_by_mask(key, value)
+                key_norm_ = cast(Iterable[bool], key_norm)
+                value_ = cast(Sequence[BaseDocument], value)  # this is no strictly true
+                # set_by_mask requires value_ to have getitem which
+                # _normalize_index_item() ensures
+                return self._set_by_mask(key_norm_, value_)
             elif isinstance(head, int):
-                return self._set_by_indices(key, value)
+                key_norm__ = cast(Iterable[int], key_norm)
+                return self._set_by_indices(key_norm__, value)
             else:
                 raise TypeError(f'Invalid type {type(head)} for indexing')
 
@@ -152,7 +167,7 @@ class DocumentArray(AnyDocumentArray):
             raise ValueError(f'Invalid index type {type(item)}')
 
         if isinstance(item, np.ndarray) and (
-            item.dtype == np.bool or np.issubdtype(item.dtype, np.integer)
+            item.dtype == np.bool_ or np.issubdtype(item.dtype, np.integer)
         ):
             return item.tolist()
 

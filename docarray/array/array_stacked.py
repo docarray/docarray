@@ -11,6 +11,7 @@ from typing import (
     TypeVar,
     Union,
     cast,
+    overload,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -35,7 +36,7 @@ except ImportError:
     TorchTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
-IndexType = Union[int, slice, Iterable[int], Iterable[bool], None]
+IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 class DocumentArrayStacked(AnyDocumentArray):
@@ -204,12 +205,21 @@ class DocumentArrayStacked(AnyDocumentArray):
         else:
             setattr(self._docs, field, values)
 
-    def __getitem__(self: T, item: IndexType) -> Union[T, BaseDocument]:
+    @overload
+    def __getitem__(self: T, item: int) -> BaseDocument:
+        ...
+
+    @overload
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        ...
+
+    def __getitem__(self, item):
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
         if isinstance(item, (slice, Iterable)):
-            return self._get_from_data_and_columns(item)
+            item_ = cast(Iterable, item)
+            return self._get_from_data_and_columns(item_)
         # single doc case
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
@@ -217,7 +227,9 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(doc, field, self._columns[field][item])
         return doc
 
-    def __setitem__(self: T, key: IndexType, value: Union[T, BaseDocument]):
+    def __setitem__(
+        self: T, key: Union[int, IndexIterType], value: Union[T, BaseDocument]
+    ):
         # multiple docs case
         if isinstance(key, (slice, Iterable)):
             return self._set_data_and_columns(key, value)
@@ -243,7 +255,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         return self._from_da_and_columns(docs_indexed, columns_indexed_)
 
     def _set_data_and_columns(
-        self: T, index_item: Union[Tuple, Iterable], value: Union[T, BaseDocument]
+        self: T,
+        index_item: Union[Tuple, Iterable, slice],
+        value: Union[T, BaseDocument],
     ):
         """Delegates the setting to the data and the columns.
 
@@ -254,13 +268,15 @@ class DocumentArrayStacked(AnyDocumentArray):
         if isinstance(index_item, tuple):
             index_item = list(index_item)
         # set data and prepare columns
+        columns_to_set: Dict[str, Union[DocumentArrayStacked, AbstractTensor]]
         if isinstance(value, DocumentArray):
             self._docs[index_item] = value
             columns_to_set = self._create_columns(value, self.tensor_type)
         elif isinstance(value, BaseDocument):
             self._docs[index_item] = value
             columns_to_set = self._create_columns(
-                DocumentArray[self.document_type]([value]), self.tensor_type
+                DocumentArray.__class_getitem__(self.document_type)([value]),
+                self.tensor_type,
             )
         elif isinstance(value, DocumentArrayStacked):
             self._docs[index_item] = value._docs
@@ -269,6 +285,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
         # set columns
         for col_key, col in self._columns.items():
+            # TODO(johannes): idk why mypy fails the line below
             self._columns[col_key][index_item] = columns_to_set[col_key]
 
     def __iter__(self):
