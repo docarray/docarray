@@ -77,7 +77,9 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
 
                 doc1 = MyDocument(
-                    content='Core content of the document', title='Title', tags_=['python', 'AI']
+                    content='Core content of the document',
+                    title='Title',
+                    tags_=['python', 'AI']
                 )
                 doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
 
