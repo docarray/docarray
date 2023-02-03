@@ -28,7 +28,7 @@ def test_len(batch):
 
 def test_getitem(batch):
     for i in range(len(batch)):
-        assert (batch[i].tensor == torch.zeros(3, 224, 224)).all()
+        assert (batch[i].tensor.tensor == torch.zeros(3, 224, 224)).all()
 
 
 def test_iterator(batch):

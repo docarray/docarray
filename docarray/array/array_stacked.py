@@ -15,7 +15,7 @@ from typing import (
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TensorFlowTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
 
@@ -143,25 +143,41 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field, type_ in column_schema.items():
             if issubclass(type_, AbstractTensor):
                 tensor = getattr(docs[0], field)
+                is_tf_tensor = isinstance(tensor, TensorFlowTensor)
+                if is_tf_tensor:
+                    tensor = tensor.tensor
+
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
                 )
-                columns[field] = type_._docarray_from_native(
-                    type_.get_comp_backend().empty(
-                        column_shape,
-                        dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
-                        device=tensor.device if hasattr(tensor, 'device') else None,
+                if not is_tf_tensor:
+                    columns[field] = type_._docarray_from_native(
+                        type_.get_comp_backend().empty(
+                            column_shape,
+                            dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
+                            device=tensor.device if hasattr(tensor, 'device') else None,
+                        )
                     )
-                )
 
+                tf_stack = []
                 for i, doc in enumerate(docs):
                     val = getattr(doc, field)
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
 
-                    cast(AbstractTensor, columns[field])[i] = val
-                    setattr(doc, field, columns[field][i])
-                    del val
+                    if is_tf_tensor:
+                        tf_stack.append(val.tensor)
+                        del val.tensor
+                    else:
+                        cast(AbstractTensor, columns[field])[i] = val
+                        setattr(doc, field, columns[field][i])  # TODO in if: same
+                        del val
+
+                if is_tf_tensor:
+                    import tensorflow as tf
+
+                    stacked: tf.Tensor = tf.stack(tf_stack)
+                    columns[field] = TensorFlowTensor(stacked)
 
             elif issubclass(type_, BaseDocument):
                 columns[field] = getattr(docs, field).stack()
@@ -204,7 +220,11 @@ class DocumentArrayStacked(AnyDocumentArray):
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
-            setattr(doc, field, self._columns[field][item])
+            if isinstance(self._columns[field], TensorFlowTensor):
+                c = self._columns[field].tensor[item]
+            else:
+                c = self._columns[field][item]
+            setattr(doc, field, c)
         return doc
 
     def _get_slice(self: T, item: slice) -> T:
@@ -213,8 +233,13 @@ class DocumentArrayStacked(AnyDocumentArray):
         :param item: the slice to apply
         :return: a DocumentArrayStacked
         """
+        columns_sliced = {}
+        for k, col in self._columns.items():
+            if not isinstance(col[item], TensorFlowTensor):
+                columns_sliced[k] = TensorFlowTensor(col.tensor[item])
+            else:
+                columns_sliced[k] = col[item]
 
-        columns_sliced = {k: col[item] for k, col in self._columns.items()}
         columns_sliced_ = cast(Dict[str, Union[AbstractTensor, T]], columns_sliced)
         return self._from_columns(self._docs[item], columns_sliced_)
 
@@ -270,7 +295,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         for i, doc in enumerate(self._docs):
             for field in self._columns.keys():
                 val = self._columns[field]
-                setattr(doc, field, val[i])
+                if isinstance(val, TensorFlowTensor):
+                    setattr(doc, field, val.tensor[i])
+                else:
+                    setattr(doc, field, val[i])
 
                 # NOTE: here we might need to copy the tensor
                 # see here
