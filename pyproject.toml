@@ -71,10 +71,10 @@ exclude = 'docarray/proto/pb2/*'
 
 
 [tool.isort]
-skip_glob= ['docarray/proto/pb2/*']
+skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']
 
 [tool.ruff]
-exclude = ['docarray/proto/pb2/*', 'docs/*']
+exclude = ['docarray/proto/pb2/*', 'docarray/proto/pb/*', 'docs/*']
 
 [tool.pytest.ini_options]
 markers = [
