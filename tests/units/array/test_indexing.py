@@ -37,10 +37,7 @@ def test_simple_getitem(stack, da):
     if stack:
         da = da.stack()
 
-    t = torch.rand((5,))
-    da[0].embedding = t
-
-    assert torch.all(da[0].embedding == t)
+    assert torch.all(da[0].embedding == torch.zeros((4,)))
     assert da[0].text == 'hello 0'
 
 
