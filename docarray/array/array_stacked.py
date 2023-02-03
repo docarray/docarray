@@ -159,7 +159,7 @@ class DocumentArrayStacked(AnyDocumentArray):
                 columns[field] = TensorFlowTensor(stacked)
                 for i, doc in enumerate(docs):
                     val = getattr(doc, field)
-                    val.tensor = columns[field]
+                    val.tensor = columns[field][i]
 
             elif issubclass(type_, AbstractTensor):
                 tensor = getattr(docs[0], field)
@@ -225,10 +225,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             if isinstance(self._columns[field], TensorFlowTensor):
-                c = self._columns[field].tensor[item]
+                val = self._columns[field].tensor[item]
             else:
-                c = self._columns[field][item]
-            setattr(doc, field, c)
+                val = self._columns[field][item]
+            setattr(doc, field, val)
         return doc
 
     def _get_slice(self: T, item: slice) -> T:
@@ -239,7 +239,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         columns_sliced = {}
         for k, col in self._columns.items():
-            if isinstance(col[item], TensorFlowTensor):
+            if isinstance(col, TensorFlowTensor):
                 columns_sliced[k] = TensorFlowTensor(col.tensor[item])
             else:
                 columns_sliced[k] = col[item]

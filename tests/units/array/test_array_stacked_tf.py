@@ -44,6 +44,20 @@ def test_stack_setter(batch):
     assert tnp.allclose(batch.tensor, tf.ones((10, 3, 224, 224)))
 
 
+def test_set_after_stacking(batch):
+    class Image(BaseDocument):
+        tensor: TensorFlowTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+    batch.tensor.tensor = tf.ones((10, 3, 224, 224))
+    for i, doc in enumerate(batch):
+        assert tnp.allclose(doc.tensor.tensor, batch.tensor.tensor[i])
+
+
 def test_stack_optional(batch):
 
     assert tnp.allclose(batch._columns['tensor'].tensor, tf.zeros((10, 3, 224, 224)))
@@ -71,14 +85,6 @@ def test_stack_mod_nested_document():
 
 
 def test_convert_to_da(batch):
-    class Image(BaseDocument):
-        tensor: TensorFlowTensor[3, 224, 224]
-
-    batch = DocumentArray[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
-    )
-
-    batch = batch.stack()
     da = batch.unstack()
 
     for doc in da:
