@@ -9,7 +9,7 @@ license='Apache 2.0'
 python = "^3.7"
 pydantic = "^1.10.2"
 numpy = "^1.17.3"
-protobuf = { version = ">=3.19.0,<=5", optional = true }
+protobuf = { version = ">=3.19.0", optional = true }
 torch = { version = "^1.0.0", optional = true }
 orjson = "^3.8.2"
 pillow = {version = "^9.3.0", optional = true }
