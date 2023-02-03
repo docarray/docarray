@@ -46,3 +46,39 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
     def _get_string_for_regex_filter(self):
         return str(self)
+
+    def update(self, other: 'BaseDocument'):
+        """
+        Updates the content of this Document with the contents of other using
+        :func:`~docarray.utils.reduce.reduce_docs`.
+
+        It behaves as an update operation for Dictionaries, except that since
+        it is applied to a static schema type, the presence of the field is
+        given by the field not having a None value.
+
+            EXAMPLE USAGE
+
+            .. code-block:: python
+
+                from docarray import BaseDocument
+                from docarray.documents import Text
+
+                class MyDocument(BaseDocument):
+                    content: str
+                    title: Optional[str] = None
+                    tags_: List
+
+                doc1 = MyDocument(content='Core content of the document',
+                    title='Title', tags_=['python', 'AI'])
+                doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+
+                doc1.update(doc2)
+                assert doc1.content == 'Core content updated'
+                assert doc1.title == 'Title'
+                assert doc1.tags_ == ['python', 'AI', 'docarray']
+
+        :param other: The Document with which to update the contents of this
+        """
+        from docarray.utils.reduce import reduce_docs
+
+        reduce_docs(self, other)

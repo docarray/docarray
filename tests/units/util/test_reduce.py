@@ -35,7 +35,7 @@ def doc1():
         ),
         test_set={'a', 'a'},
         inner_doc=InnerDoc(integer=2, l=['c', 'd']),
-        test_dict={'a': 0, 'b': 2, 'd': 4}
+        test_dict={'a': 0, 'b': 2, 'd': 4, 'z': 3},
     )
 
 
@@ -53,36 +53,24 @@ def doc2(doc1):
         ),
         test_set={'a', 'b'},
         inner_doc=InnerDoc(integer=3, l=['a', 'b']),
-        test_dict={'a': 10, 'b': 10, 'c': 3}
+        test_dict={'a': 10, 'b': 10, 'c': 3, 'z': None},
     )
 
 
 def test_reduce_docs(doc1, doc2):
-    result = reduce_docs(doc1, doc2)
-    assert result.text == 'hey here'
-    assert len(result.matches) == 2
-    assert result.categories == ['a', 'b', 'c', 'd', 'e', 'f']
-    assert result.opt_int == 5
-    assert result.price == 10
-    assert result.test_set == {'a', 'b'}
-    assert len(result.matches_with_same_id) == 1
-    assert len(result.matches_with_same_id[0].matches) == 2
-    assert result.inner_doc.integer == 2
-    assert result.inner_doc.l == ['c', 'd', 'a', 'b']
-    assert result.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4}
-
+    reduce_docs(doc1, doc2)
     # doc1 is changed in place (no extra memory)
-    assert doc1.text == 'hey here'
+    assert doc1.text == 'hey here 2'
     assert doc1.categories == ['a', 'b', 'c', 'd', 'e', 'f']
     assert len(doc1.matches) == 2
     assert doc1.opt_int == 5
-    assert doc1.price == 10
+    assert doc1.price == 5
     assert doc1.test_set == {'a', 'b'}
     assert len(doc1.matches_with_same_id) == 1
     assert len(doc1.matches_with_same_id[0].matches) == 2
-    assert doc1.inner_doc.integer == 2
+    assert doc1.inner_doc.integer == 3
     assert doc1.inner_doc.l == ['c', 'd', 'a', 'b']
-    assert doc1.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4}
+    assert doc1.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4, 'z': None}
 
 
 def test_reduce_different_ids():
@@ -102,15 +90,15 @@ def test_reduce(doc1, doc2):
     # da1 is changed in place (no extra memory)
     assert len(da1) == 3
     merged_doc = result[0]
-    assert merged_doc.text == 'hey here'
+    assert merged_doc.text == 'hey here 2'
     assert merged_doc.categories == ['a', 'b', 'c', 'd', 'e', 'f']
     assert len(merged_doc.matches) == 2
     assert merged_doc.opt_int == 5
-    assert merged_doc.price == 10
+    assert merged_doc.price == 5
     assert merged_doc.test_set == {'a', 'b'}
     assert len(merged_doc.matches_with_same_id) == 1
     assert len(merged_doc.matches_with_same_id[0].matches) == 2
-    assert merged_doc.inner_doc.integer == 2
+    assert merged_doc.inner_doc.integer == 3
     assert merged_doc.inner_doc.l == ['c', 'd', 'a', 'b']
 
 
@@ -123,7 +111,7 @@ def test_reduce_all(doc1, doc2):
     # da1 is changed in place (no extra memory)
     assert len(da1) == 5
     merged_doc = result[0]
-    assert merged_doc.text == 'hey here'
+    assert merged_doc.text == 'hey here 2'
     assert merged_doc.categories == [
         'a',
         'b',
@@ -140,9 +128,9 @@ def test_reduce_all(doc1, doc2):
     ]
     assert len(merged_doc.matches) == 2
     assert merged_doc.opt_int == 5
-    assert merged_doc.price == 10
+    assert merged_doc.price == 5
     assert merged_doc.test_set == {'a', 'b'}
     assert len(merged_doc.matches_with_same_id) == 1
     assert len(merged_doc.matches_with_same_id[0].matches) == 2
-    assert merged_doc.inner_doc.integer == 2
+    assert merged_doc.inner_doc.integer == 3
     assert merged_doc.inner_doc.l == ['c', 'd', 'a', 'b', 'c', 'd', 'a', 'b']
