@@ -33,6 +33,11 @@ try:
 except ImportError:
     TorchTensor = None  # type: ignore
 
+try:
+    import tensorflow as tf
+except ImportError:
+    pass
+
 T = TypeVar('T', bound='DocumentArrayStacked')
 
 
@@ -141,43 +146,43 @@ class DocumentArrayStacked(AnyDocumentArray):
         columns: Dict[str, Union[DocumentArrayStacked, AbstractTensor]] = dict()
 
         for field, type_ in column_schema.items():
-            if issubclass(type_, AbstractTensor):
-                tensor = getattr(docs[0], field)
-                is_tf_tensor = isinstance(tensor, TensorFlowTensor)
-                if is_tf_tensor:
-                    tensor = tensor.tensor
-
-                column_shape = (
-                    (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
-                )
-                if not is_tf_tensor:
-                    columns[field] = type_._docarray_from_native(
-                        type_.get_comp_backend().empty(
-                            column_shape,
-                            dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
-                            device=tensor.device if hasattr(tensor, 'device') else None,
-                        )
-                    )
-
+            if isinstance(getattr(docs[0], field), TensorFlowTensor):
                 tf_stack = []
                 for i, doc in enumerate(docs):
                     val = getattr(doc, field)
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
+                    tf_stack.append(val.tensor)
+                    del val.tensor
 
-                    if is_tf_tensor:
-                        tf_stack.append(val.tensor)
-                        del val.tensor
-                    else:
-                        cast(AbstractTensor, columns[field])[i] = val
-                        setattr(doc, field, columns[field][i])  # TODO in if: same
-                        del val
+                stacked: tf.Tensor = tf.stack(tf_stack)
+                columns[field] = TensorFlowTensor(stacked)
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field)
+                    val.tensor = columns[field]
 
-                if is_tf_tensor:
-                    import tensorflow as tf
+            elif issubclass(type_, AbstractTensor):
+                tensor = getattr(docs[0], field)
 
-                    stacked: tf.Tensor = tf.stack(tf_stack)
-                    columns[field] = TensorFlowTensor(stacked)
+                column_shape = (
+                    (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
+                )
+                columns[field] = type_._docarray_from_native(
+                    type_.get_comp_backend().empty(
+                        column_shape,
+                        dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
+                        device=tensor.device if hasattr(tensor, 'device') else None,
+                    )
+                )
+
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field)
+                    if val is None:
+                        val = tensor_type.get_comp_backend().none_value()
+
+                    cast(AbstractTensor, columns[field])[i] = val
+                    setattr(doc, field, columns[field][i])
+                    del val
 
             elif issubclass(type_, BaseDocument):
                 columns[field] = getattr(docs, field).stack()
