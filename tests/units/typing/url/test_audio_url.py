@@ -95,6 +95,7 @@ def test_illegal_validation(path_to_file):
         parse_obj_as(AudioUrl, path_to_file)
 
 
+@pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize(

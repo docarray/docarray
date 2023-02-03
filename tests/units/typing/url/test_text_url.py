@@ -35,6 +35,7 @@ def test_load_to_bytes(url):
     assert isinstance(txt_bytes, bytes)
 
 
+@pytest.mark.proto
 def test_proto_text_url():
 
     uri = parse_obj_as(TextUrl, LOCAL_TXT)
