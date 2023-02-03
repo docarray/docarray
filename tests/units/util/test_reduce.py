@@ -17,10 +17,10 @@ class MMDoc(BaseDocument):
     image: Optional[Image] = None
     matches: Optional[DocumentArray] = None
     matches_with_same_id: Optional[DocumentArray] = None
-    dictionary: Optional[Dict[str, Any]] = None
     opt_int: Optional[int] = None
     test_set: Optional[Set] = None
     inner_doc: Optional[InnerDoc] = None
+    test_dict: Optional[Dict] = None
 
 
 @pytest.fixture
@@ -35,6 +35,7 @@ def doc1():
         ),
         test_set={'a', 'a'},
         inner_doc=InnerDoc(integer=2, l=['c', 'd']),
+        test_dict={'a': 0, 'b': 2, 'd': 4}
     )
 
 
@@ -52,6 +53,7 @@ def doc2(doc1):
         ),
         test_set={'a', 'b'},
         inner_doc=InnerDoc(integer=3, l=['a', 'b']),
+        test_dict={'a': 10, 'b': 10, 'c': 3}
     )
 
 
@@ -67,6 +69,7 @@ def test_reduce_docs(doc1, doc2):
     assert len(result.matches_with_same_id[0].matches) == 2
     assert result.inner_doc.integer == 2
     assert result.inner_doc.l == ['c', 'd', 'a', 'b']
+    assert result.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4}
 
     # doc1 is changed in place (no extra memory)
     assert doc1.text == 'hey here'
@@ -79,6 +82,7 @@ def test_reduce_docs(doc1, doc2):
     assert len(doc1.matches_with_same_id[0].matches) == 2
     assert doc1.inner_doc.integer == 2
     assert doc1.inner_doc.l == ['c', 'd', 'a', 'b']
+    assert doc1.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4}
 
 
 def test_reduce_different_ids():
