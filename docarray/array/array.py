@@ -8,6 +8,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Sequence,
     Type,
     TypeVar,
     Union,
@@ -161,9 +162,6 @@ class DocumentArray(AnyDocumentArray):
             raise ValueError(f'Invalid index type {type(item)}')
         allowed_torch_dtypes = [
             torch.bool,
-            torch.int8,
-            torch.int16,
-            torch.int32,
             torch.int64,
         ]
         if isinstance(item, torch.Tensor) and (item.dtype in allowed_torch_dtypes):
@@ -198,10 +196,12 @@ class DocumentArray(AnyDocumentArray):
             (doc for doc, mask_value in zip(self, item) if mask_value)
         )
 
-    def _set_by_mask(self: T, item: Iterable[bool], value: Iterable[BaseDocument]):
-        for i, doc_to_set, mask_value in zip(range(len(self)), value, item):
+    def _set_by_mask(self: T, item: Iterable[bool], value: Sequence[BaseDocument]):
+        i_value = 0
+        for i, mask_value in zip(range(len(self)), item):
             if mask_value:
-                self._data[i] = doc_to_set
+                self._data[i] = value[i_value]
+                i_value += 1
 
     append = _delegate_meth_to_data('append')
     extend = _delegate_meth_to_data('extend')
