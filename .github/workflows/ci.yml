@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.7
-      - name: Prepare enviroment
+      - name: Prepare environment
         run: |
           python -m pip install --upgrade pip
           python -m pip install poetry
@@ -91,105 +91,105 @@ jobs:
 #          echo "matrix=$value" >> $GITHUB_OUTPUT
 #    outputs:
 #      matrix: ${{ steps.set-matrix.outputs.matrix }}
-#
-#  docarray-test:
-#    needs: [lint-ruff, check-black, import-test]
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python-version: [3.7]
-##        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
-#        test-path: [tests/integrations, tests/units]
-#    steps:
-#      - uses: actions/checkout@v2.5.0
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v4
+
+  docarray-test:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+#        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
+        test-path: [tests/integrations, tests/units]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          pip install tensorflow==2.11.0
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
+        timeout-minutes: 30
+#        env:
+#          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+#      - name: Check codecov file
+#        id: check_files
+#        uses: andstor/file-existence-action@v1
 #        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Prepare environment
-#        run: |
-#          python -m pip install --upgrade pip
-#          python -m pip install poetry
-#          poetry install --all-extras
-#          pip install tensorflow==2.11.0
-#
-#      - name: Test
-#        id: test
-#        run: |
-#          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
-#        timeout-minutes: 30
-##        env:
-##          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
-##      - name: Check codecov file
-##        id: check_files
-##        uses: andstor/file-existence-action@v1
-##        with:
-##          files: "coverage.xml"
-##      - name: Upload coverage from test to Codecov
-##        uses: codecov/codecov-action@v3.1.1
-##        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
-##        with:
-##          file: coverage.xml
-##          flags: ${{ steps.test.outputs.codecov_flag }}
-##          fail_ci_if_error: false
-##          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-#
-#
-#
-#  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
-#    needs: [lint-ruff, check-black, import-test]
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python-version: [3.7]
-#        test-path: [tests/integrations, tests/units]
-#    steps:
-#      - uses: actions/checkout@v2.5.0
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v4
+#          files: "coverage.xml"
+#      - name: Upload coverage from test to Codecov
+#        uses: codecov/codecov-action@v3.1.1
+#        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
 #        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Prepare environment
-#        run: |
-#          python -m pip install --upgrade pip
-#          python -m pip install poetry
-#          rm poetry.lock
-#          poetry install --all-extras
-#
-#      - name: Test
-#        id: test
-#        run: |
-#          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
-#        timeout-minutes: 30
-#
-#
-#  docarray-test-proto3:
-#    needs: [lint-ruff, check-black, import-test]
-#    runs-on: ubuntu-latest
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        python-version: [3.7]
-#    steps:
-#      - uses: actions/checkout@v2.5.0
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: ${{ matrix.python-version }}
-#      - name: Prepare environment
-#        run: |
-#          python -m pip install --upgrade pip
-#          python -m pip install poetry
-#          poetry install --all-extras
-#          pip install protobuf==3.19.0 # we check that we support 3.19
-#
-#      - name: Test
-#        id: test
-#        run: |
-#          poetry run pytest -m 'proto' tests
-#        timeout-minutes: 30
+#          file: coverage.xml
+#          flags: ${{ steps.test.outputs.codecov_flag }}
+#          fail_ci_if_error: false
+#          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+
+
+
+  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+        test-path: [tests/integrations, tests/units]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          rm poetry.lock
+          poetry install --all-extras
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
+        timeout-minutes: 30
+
+
+  docarray-test-proto3:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          pip install protobuf==3.19.0 # we check that we support 3.19
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'proto' tests
+        timeout-minutes: 30
 
 
   docarray-test-tensorflow:
@@ -216,20 +216,21 @@ jobs:
       - name: Test
         id: test
         run: |
+          pip show tensorflow
           poetry run pytest -m 'tensorflow' tests
         timeout-minutes: 30
 
-#
-#  # just for blocking the merge until all parallel core-test are successful
-#  success-all-test:
-#    needs: [docarray-test, check-mypy]
-#    if: always()
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: technote-space/workflow-conclusion-action@v2
-#      - name: Check Failure
-#        if: env.WORKFLOW_CONCLUSION == 'failure'
-#        run: exit 1
-#      - name: Success
-#        if: ${{ success() }}
-#        run: echo "All Done"
+
+  # just for blocking the merge until all parallel core-test are successful
+  success-all-test:
+    needs: [docarray-test, check-mypy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Check Failure
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        run: exit 1
+      - name: Success
+        if: ${{ success() }}
+        run: echo "All Done"
