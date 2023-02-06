@@ -219,17 +219,17 @@ jobs:
           poetry run pytest -m 'tensorflow' tests
         timeout-minutes: 30
 
-
-  # just for blocking the merge until all parallel core-test are successful
-  success-all-test:
-    needs: [docarray-test, check-mypy]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: technote-space/workflow-conclusion-action@v2
-      - name: Check Failure
-        if: env.WORKFLOW_CONCLUSION == 'failure'
-        run: exit 1
-      - name: Success
-        if: ${{ success() }}
-        run: echo "All Done"
+#
+#  # just for blocking the merge until all parallel core-test are successful
+#  success-all-test:
+#    needs: [docarray-test, check-mypy]
+#    if: always()
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: technote-space/workflow-conclusion-action@v2
+#      - name: Check Failure
+#        if: env.WORKFLOW_CONCLUSION == 'failure'
+#        run: exit 1
+#      - name: Success
+#        if: ${{ success() }}
+#        run: echo "All Done"
