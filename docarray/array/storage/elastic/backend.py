@@ -134,8 +134,6 @@ class BackendMixin(BaseBackendMixin):
     def _build_schema_from_elastic_config(self, elastic_config):
         da_schema = {
             'mappings': {
-                'dynamic': 'true',
-                '_source': {'enabled': 'true'},
                 'properties': {
                     'embedding': {
                         'type': 'dense_vector',
@@ -174,6 +172,7 @@ class BackendMixin(BaseBackendMixin):
     def _build_client(self):
         client = Elasticsearch(
             hosts=self._config.hosts,
+            timeout=None,
             **self._config.es_config,
         )
 
@@ -184,7 +183,9 @@ class BackendMixin(BaseBackendMixin):
 
         if not self._client.indices.exists(index=self._config.index_name):
             self._client.indices.create(
-                index=self._config.index_name, mappings=schema['mappings']
+                index=self._config.index_name, body=schema
+                # index=self._config.index_name, mappings=schema['mapings']
+                # mappings not valid arg in v7
             )
 
         self._client.indices.refresh(index=self._config.index_name)
@@ -262,7 +263,10 @@ class BackendMixin(BaseBackendMixin):
 
         if n_docs != 0:
             offsets = [x for x in range(n_docs)]
-            resp = self._client.mget(index=self._index_name_offset2id, ids=offsets)
+            # resp = self._client.mget(index=self._index_name_offset2id, ids=offsets)
+            # ids not valid arg for mget
+            # create 'body' json of 'ids' to offsets idx
+            resp = self._client.mget(index=self._index_name_offset2id, body={'ids':[x for x in offsets]})
             ids = [x['_source']['blob'] for x in resp['docs']]
             return ids
         else:
