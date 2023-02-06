@@ -35,8 +35,11 @@ try:
     import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor
+
+    tf_available = True
 except (ImportError, TypeError):
     TensorFlowTensor = None  # type: ignore
+    tf_available = False
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 
@@ -146,7 +149,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         columns: Dict[str, Union[DocumentArrayStacked, AbstractTensor]] = dict()
 
         for field, type_ in column_schema.items():
-            if isinstance(getattr(docs[0], field), TensorFlowTensor):
+            if tf_available and isinstance(getattr(docs[0], field), TensorFlowTensor):
                 tf_stack = []
                 for i, doc in enumerate(docs):
                     val = getattr(doc, field)
