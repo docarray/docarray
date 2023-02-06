@@ -56,7 +56,6 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     document_type: Type[BaseDocument] = AnyDocument
     _docs: DocumentArray
-    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self: T,
@@ -230,7 +229,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
         """create a Document from a protobuf message"""
 
-        docs = DocumentArray(
+        docs: DocumentArray = DocumentArray(
             cls.document_type.from_protobuf(doc_proto)
             for doc_proto in pb_msg.list_.docs
         )
