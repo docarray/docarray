@@ -135,6 +135,8 @@ class BackendMixin(BaseBackendMixin):
         da_schema = {
             'mappings': {
                 'properties': {
+                    # 'dynamic': 'true',                 unsupported in v7
+                    # '_source': {'enabled': 'true'},    unsupported in v7
                     'embedding': {
                         'type': 'dense_vector',
                         'dims': elastic_config.n_dim,
