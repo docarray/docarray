@@ -95,6 +95,9 @@ jobs:
   docarray-test:
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
+    paths-ignore:
+      - 'tests/units/array/test_array_stacked_tf.py'
+      - 'tests/integrations/typing/test_tensorflow_tensor.py'
     strategy:
       fail-fast: false
       matrix:
