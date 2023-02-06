@@ -13,10 +13,9 @@ try:
     from docarray.typing import TensorFlowTensor
 except (ImportError, TypeError) as e:
     print(f"e = {e}")
-    TensorFlow = None
+    TensorFlowTensor = None
 
 
-@pytest.mark.tensorflow
 @pytest.fixture()
 def batch():
     class Image(BaseDocument):
