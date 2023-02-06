@@ -54,6 +54,15 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
+def _is_np_int(item: Any) -> bool:
+    dtype = getattr(item, 'dtype', None)
+    if dtype is not None:
+        try:
+            return np.issubdtype(dtype, np.integer)
+        except TypeError:
+            return False
+
+
 class DocumentArray(AnyDocumentArray):
     """
      DocumentArray is a container of Documents.
@@ -160,6 +169,9 @@ class DocumentArray(AnyDocumentArray):
     ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
         if item is None or isinstance(item, (int, slice, tuple, list)):
             return item
+
+        if _is_np_int(item):
+            return item.item()
 
         index_has_getitem = hasattr(item, '__getitem__')
         is_valid_bulk_index = index_has_getitem and isinstance(item, Iterable)
