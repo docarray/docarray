@@ -35,7 +35,7 @@ try:
 
     from docarray.typing import NdArray, TensorFlowTensor
 except (ImportError, TypeError):
-    TensorFlowTensor = None
+    TensorFlowTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 
