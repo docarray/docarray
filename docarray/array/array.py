@@ -116,7 +116,7 @@ class DocumentArray(AnyDocumentArray):
         da[0]  # index by position
         da[0:5:2]  # index by slice
         da[[0, 2, 3]]  # index by list of indices
-        da[da.tensor > 0.5]  # index by boolean mask
+        da[True, False, True, True, ...]  # index by boolean mask
 
 
     """
