@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
@@ -7,6 +8,7 @@ from docarray.typing import (
     AnyEmbedding,
     AnyTensor,
     AnyUrl,
+    ImageBytes,
     ImageUrl,
     Mesh3DUrl,
     NdArray,
@@ -18,14 +20,11 @@ from docarray.typing import (
 from docarray.typing.tensor import NdArrayEmbedding
 
 
+@pytest.mark.proto
 def test_multi_modal_doc_proto():
     class MyMultiModalDoc(BaseDocument):
         image: Image
         text: Text
-
-    class MySUperDoc(BaseDocument):
-        doc: MyMultiModalDoc
-        description: str
 
     doc = MyMultiModalDoc(
         image=Image(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
@@ -34,6 +33,7 @@ def test_multi_modal_doc_proto():
     MyMultiModalDoc.from_protobuf(doc.to_protobuf())
 
 
+@pytest.mark.proto
 def test_all_types():
     class NestedDoc(BaseDocument):
         tensor: NdArray
@@ -54,6 +54,8 @@ def test_all_types():
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
         nested_docs: DocumentArray[NestedDoc]
+        bytes_: bytes
+        img_bytes: ImageBytes
 
     doc = MyDoc(
         img_url='test.png',
@@ -71,6 +73,8 @@ def test_all_types():
         torch_embedding=torch.zeros((128,)),
         np_embedding=np.zeros((128,)),
         nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
+        bytes_=b'hello',
+        img_bytes=b'img',
     )
     doc = doc.to_protobuf()
     doc = MyDoc.from_protobuf(doc)
@@ -107,3 +111,8 @@ def test_all_types():
     assert isinstance(doc.np_embedding, np.ndarray)
 
     assert (doc.embedding == np.zeros((3, 224, 224))).all()
+
+    assert (doc.embedding == np.zeros((3, 224, 224))).all()
+
+    assert doc.bytes_ == b'hello'
+    assert doc.img_bytes == b'img'

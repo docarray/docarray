@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
 
 from pydantic import BaseConfig
 from pydantic.fields import ModelField
@@ -13,7 +13,7 @@ T = TypeVar('T')
 
 
 class AbstractType(BaseNode):
-    _proto_type_name: str
+    _proto_type_name: Optional[str] = None
 
     @classmethod
     def __get_validators__(cls):
@@ -37,3 +37,10 @@ class AbstractType(BaseNode):
     @abstractmethod
     def _to_node_protobuf(self: T) -> 'NodeProto':
         ...
+
+    def _docarray_to_json_compatible(self):
+        """
+        Convert itself into a json compatible object
+        :return: a representation of the tensor compatible with orjson
+        """
+        return self

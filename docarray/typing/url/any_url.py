@@ -1,3 +1,7 @@
+import os
+import urllib
+import urllib.parse
+import urllib.request
 from typing import TYPE_CHECKING, Optional, Type, TypeVar
 
 from pydantic import AnyUrl as BaseAnyUrl
@@ -103,3 +107,21 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         :return: url
         """
         return parse_obj_as(cls, pb_msg)
+
+    def load_bytes(self, timeout: Optional[float] = None) -> bytes:
+        """Convert url to bytes. This will either load or download the file and save
+        it into a bytes object.
+        :param uri: the URI of Document. Can be a local file path or a (remote) URL
+        :param timeout: timeout for urlopen. Only relevant if URI is not local
+        :return: bytes.
+        """
+        if urllib.parse.urlparse(self).scheme in {'http', 'https', 'data'}:
+            req = urllib.request.Request(self, headers={'User-Agent': 'Mozilla/5.0'})
+            urlopen_kwargs = {'timeout': timeout} if timeout is not None else {}
+            with urllib.request.urlopen(req, **urlopen_kwargs) as fp:  # type: ignore
+                return fp.read()
+        elif os.path.exists(self):
+            with open(self, 'rb') as fp:
+                return fp.read()
+        else:
+            raise FileNotFoundError(f'`{self}` is not a URL or a valid local path')

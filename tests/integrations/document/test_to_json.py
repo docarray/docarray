@@ -14,12 +14,14 @@ def doc_and_class():
         url: AnyUrl
         txt: str
         torch_tensor: TorchTensor
+        bytes_: bytes
 
     doc = Mmdoc(
         img=np.zeros((10)),
         url='http://doccaray.io',
         txt='hello',
         torch_tensor=torch.zeros(10),
+        bytes_=b'hello',
     )
     return doc, Mmdoc
 

@@ -1,11 +1,23 @@
-from docarray.proto.pb2.docarray_pb2 import (
-    DocumentArrayProto,
-    DocumentArrayStackedProto,
-    DocumentProto,
-    NdArrayProto,
-    NodeProto,
-    UnionArrayProto,
-)
+from google.protobuf import __version__ as __pb__version__
+
+if __pb__version__.startswith('4'):
+    from docarray.proto.pb.docarray_pb2 import (
+        DocumentArrayProto,
+        DocumentArrayStackedProto,
+        DocumentProto,
+        NdArrayProto,
+        NodeProto,
+        UnionArrayProto,
+    )
+else:
+    from docarray.proto.pb2.docarray_pb2 import (
+        DocumentArrayProto,
+        DocumentArrayStackedProto,
+        DocumentProto,
+        NdArrayProto,
+        NodeProto,
+        UnionArrayProto,
+    )
 
 __all__ = [
     'DocumentArrayProto',

@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
-import docarray.utils.misc
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
@@ -28,13 +27,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
             content_type = (
                 value.type if value.WhichOneof('docarray_type') is not None else None
             )
-
-            if docarray.utils.misc.is_torch_available():
-                from docarray.typing import TorchEmbedding
-                from docarray.typing.tensor.torch_tensor import TorchTensor
-
-                content_type_dict['torch'] = TorchTensor
-                content_type_dict['torch_embedding'] = TorchEmbedding
 
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
@@ -78,10 +70,10 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 if isinstance(value, BaseNode):
                     nested_item = value._to_node_protobuf()
 
-                elif type(value) is str:
+                elif isinstance(value, str):
                     nested_item = NodeProto(text=value)
 
-                elif type(value) is bytes:
+                elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
                 elif value is None:
                     nested_item = NodeProto()
