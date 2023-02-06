@@ -69,7 +69,7 @@ class _ParametrizedMeta(type):
                 _cls.__unparametrizedcls__
             ):  # This is not None if the tensor is parametrized
                 if (
-                    _cls.get_comp_backend().shape(instance)
+                    instance.get_comp_backend().shape(instance)
                     != _cls.__docarray_target_shape__
                 ):
                     return False
