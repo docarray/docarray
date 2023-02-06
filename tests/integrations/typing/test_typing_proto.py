@@ -11,7 +11,6 @@ from docarray.typing import (
     Mesh3DUrl,
     NdArray,
     PointCloud3DUrl,
-    TensorFlowTensor,
     TextUrl,
     TorchTensor,
 )
@@ -50,9 +49,11 @@ def test_proto_all_types():
             assert isinstance(value, doc._get_field_type(field))
 
 
-@pytest.mark.proto
+@pytest.mark.tensorflow
 def test_proto_all_types_proto3():
     import tensorflow as tf
+
+    from docarray.typing import TensorFlowTensor
 
     class Mymmdoc(BaseDocument):
         tensor: NdArray

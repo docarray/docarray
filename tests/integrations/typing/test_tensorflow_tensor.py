@@ -1,10 +1,17 @@
-import tensorflow as tf
-import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+import pytest
 
 from docarray import BaseDocument
-from docarray.typing import TensorFlowTensor
+
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
+@pytest.mark.tensorflow
 def test_set_tensorflow_tensor():
     class MyDocument(BaseDocument):
         t: TensorFlowTensor

@@ -1,10 +1,17 @@
 import numpy as np
-import tensorflow as tf
-import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+import pytest
 import torch
 
 from docarray import BaseDocument
-from docarray.typing import AnyTensor, NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import AnyTensor, NdArray, TorchTensor
+
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
 def test_set_tensor():
@@ -22,6 +29,12 @@ def test_set_tensor():
     assert isinstance(d.tensor, TorchTensor)
     assert isinstance(d.tensor, torch.Tensor)
     assert (d.tensor == torch.zeros((3, 224, 224))).all()
+
+
+@pytest.mark.tensorflow
+def test_set_tensor():
+    class MyDocument(BaseDocument):
+        tensor: AnyTensor
 
     d = MyDocument(tensor=tf.zeros((3, 224, 224)))
 
