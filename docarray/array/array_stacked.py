@@ -228,7 +228,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
             value = self._columns[field]
-            if isinstance(value, TensorFlowTensor):
+            if tf_available and isinstance(value, TensorFlowTensor):
                 new_value = value.tensor[item]
             else:
                 new_value = value[item]
@@ -243,7 +243,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         columns_sliced: Dict[str, AnyTensor] = {}
         for k, col in self._columns.items():
-            if isinstance(col, TensorFlowTensor):
+            if tf_available and isinstance(col, TensorFlowTensor):
                 columns_sliced[k] = TensorFlowTensor(col.tensor[item])
             else:
                 columns_sliced[k] = col[item]
@@ -303,7 +303,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         for i, doc in enumerate(self._docs):
             for field in self._columns.keys():
                 val = self._columns[field]
-                if isinstance(val, TensorFlowTensor):
+                if tf_available and isinstance(val, TensorFlowTensor):
                     setattr(doc, field, val.tensor[i])
                 else:
                     setattr(doc, field, val[i])
