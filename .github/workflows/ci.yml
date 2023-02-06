@@ -188,7 +188,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -k 'proto' tests
+          poetry run pytest -m 'proto' tests
         timeout-minutes: 30
 
 
@@ -216,7 +216,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -k 'tensorflow' tests
+          poetry run pytest -m 'tensorflow' tests
         timeout-minutes: 30
 
 
