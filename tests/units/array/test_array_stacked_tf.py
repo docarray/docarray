@@ -12,7 +12,7 @@ try:
 
     from docarray.typing import TensorFlowTensor
 except (ImportError, TypeError) as e:
-    print(f"e = {e}")
+    print(f"exception = {e}")
     TensorFlowTensor = None
 
 
