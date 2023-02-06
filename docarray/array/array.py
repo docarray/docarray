@@ -185,13 +185,9 @@ class DocumentArray(AnyDocumentArray):
         return item
 
     def _get_from_indices(self: T, item: Iterable[int]) -> T:
-        offset_to_doc = self._get_offset_to_doc()
         results = []
         for ix in item:
-            try:
-                results.append(offset_to_doc[ix])
-            except KeyError:
-                raise IndexError(f'Index {ix} is out of range')
+            results.append(self._data[ix])
         return self.__class__(results)
 
     def _set_by_indices(self: T, item: Iterable[int], value: Iterable[BaseDocument]):
@@ -225,12 +221,6 @@ class DocumentArray(AnyDocumentArray):
     remove = _delegate_meth_to_data('remove')
     reverse = _delegate_meth_to_data('reverse')
     sort = _delegate_meth_to_data('sort')
-
-    def _get_offset_to_doc(self) -> Dict[int, BaseDocument]:
-        offset_to_doc = {}
-        for i, doc in enumerate(self):
-            offset_to_doc[i] = doc
-        return offset_to_doc
 
     def _get_array_attribute(
         self: T,
