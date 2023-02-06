@@ -11,6 +11,8 @@ try:
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing import TensorFlowTensor
+
+    print("passed!")
 except (ImportError, TypeError) as e:
     print(f"exception = {e}")
     TensorFlowTensor = None
