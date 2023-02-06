@@ -57,9 +57,21 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     fields[field] = value.text
                 elif content_key == 'blob':
                     fields[field] = value.blob
+                elif content_key == 'integer':
+                    fields[field] = value.integer
+                elif content_key == 'float':
+                    fields[field] = value.float
+                elif content_key == 'boolean':
+                    fields[field] = value.boolean
+                else:
+                    raise ValueError(
+                        f'key {content_key} is not supported for'
+                        f' deserialization'
+                    )
+
             else:
                 raise ValueError(
-                    f'type {content_type}, with key {content_key}  is not supported for'
+                    f'type {content_type}, with key {content_key} is not supported for'
                     f' deserialization'
                 )
 
@@ -94,7 +106,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     nested_item = NodeProto(blob=value)
 
                 elif isinstance(value, (list, set, tuple)):
-                    # TOOD(Joan): Check how to build ListValue
+                    # TODO(Joan): Check how to build ListValue
                     nested_item = NodeProto(float=value[0])
                 elif value is None:
                     nested_item = NodeProto()
