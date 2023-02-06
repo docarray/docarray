@@ -133,6 +133,36 @@ jobs:
 #          fail_ci_if_error: false
 #          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
+
+
+  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+        test-path: [tests/integrations, tests/units]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          rm poetry.lock
+          poetry install --all-extras
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest ${{ matrix.test-path }}
+        timeout-minutes: 30
+
+
   docarray-test-proto3:
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
