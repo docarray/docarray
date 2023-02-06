@@ -1,19 +1,12 @@
 from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 
+import docarray.utils.misc
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
-
-
-try:
-    import torch  # noqa: F401
-except ImportError:
-    torch_imported = False
-else:
-    torch_imported = True
 
 
 T = TypeVar('T', bound='ProtoMixin')
@@ -36,7 +29,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 value.type if value.WhichOneof('docarray_type') is not None else None
             )
 
-            if torch_imported:
+            if docarray.utils.misc.is_torch_available():
                 from docarray.typing import TorchEmbedding
                 from docarray.typing.tensor.torch_tensor import TorchTensor
 

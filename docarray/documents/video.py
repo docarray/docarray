@@ -8,13 +8,11 @@ from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
+from docarray.utils.misc import is_torch_available
 
-try:
+torch_available = is_torch_available()
+if torch_available:
     import torch
-
-    torch_available = True
-except ImportError:
-    torch_available = False
 
 T = TypeVar('T', bound='Video')
 

@@ -22,6 +22,7 @@ from typing_inspect import is_union_type
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
+from docarray.utils.misc import is_torch_available
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -167,9 +168,11 @@ class DocumentArray(AnyDocumentArray):
     def _normalize_index_item(
         item: Any,
     ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
+        # basic index types
         if item is None or isinstance(item, (int, slice, tuple, list)):
             return item
 
+        # numpy index types
         if _is_np_int(item):
             return item.item()
 
@@ -183,9 +186,11 @@ class DocumentArray(AnyDocumentArray):
         ):
             return item.tolist()
 
-        try:
-            import torch  # noqa: F401
-        except ImportError:
+        # torch index types
+        torch_available = is_torch_available()
+        if torch_available:
+            import torch
+        else:
             raise ValueError(f'Invalid index type {type(item)}')
         allowed_torch_dtypes = [
             torch.bool,

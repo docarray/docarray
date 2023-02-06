@@ -6,13 +6,11 @@ from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
+from docarray.utils.misc import is_torch_available
 
-try:
+torch_available = is_torch_available()
+if torch_available:
     import torch
-
-    torch_available = True
-except ImportError:
-    torch_available = False
 
 T = TypeVar('T', bound='Audio')
 

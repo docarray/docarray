@@ -5,15 +5,13 @@ import numpy as np
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_torch_available
 
 T = TypeVar('T', bound='Image')
 
-try:
+torch_available = is_torch_available()
+if torch_available:
     import torch
-
-    torch_available = True
-except ImportError:
-    torch_available = False
 
 
 class Image(BaseDocument):
