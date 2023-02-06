@@ -26,24 +26,45 @@ message NdArrayProto {
   google.protobuf.Struct parameters = 2;
 }
 
+message KeyValuePair {
+  google.protobuf.Value key = 1;
+  google.protobuf.Value value = 2;
+}
+
+message GenericDictValue {
+  repeated KeyValuePair entries = 1;
+}
 
 //
 message NodeProto {
 
   oneof content {
-    bytes blob = 1;
-    // the ndarray of the image/audio/video document
-    NdArrayProto ndarray = 2;
     // a text
-    string text = 3;
+    string text = 1;
+    //an integer
+    int32 integer = 2;
+    // a float
+    double float = 3;
+    //a boolean
+    bool boolean = 4;
+    // a bytes representation
+    bytes blob = 5;
+    // the ndarray of the image/audio/video document
+    NdArrayProto ndarray = 6;
     // a sub Document
-    DocumentProto document = 4;
+    DocumentProto document = 7;
     // a sub DocumentArray
-    DocumentArrayProto document_array = 5;
+    DocumentArrayProto document_array = 8;
+    //any list, could cover lists, sets and tuples
+    google.protobuf.ListValue list = 9;
+    // dictionary with string as keys
+    google.protobuf.Struct struct = 10;
+    //any dictionary
+    GenericDictValue dict = 11;
   }
 
   oneof docarray_type {
-    string type = 6;
+    string type = 12;
   }
 
 }

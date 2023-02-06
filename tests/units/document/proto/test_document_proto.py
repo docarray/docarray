@@ -128,9 +128,14 @@ def test_optional_field_nested_in_doc():
 def test_integer_field():
     class Meow(BaseDocument):
         age: int
+        wealth: float
+        registered: bool
 
-    d = Meow(age=30)
-    assert Meow.from_protobuf(d.to_protobuf()).age == 30
+    d = Meow(age=30, wealth=100.5, registered=True)
+    rebuilt_doc = Meow.from_protobuf(d.to_protobuf())
+    assert rebuilt_doc.age == 30
+    assert rebuilt_doc.wealth == 100.5
+    assert rebuilt_doc.registered
 
 
 def test_list_set_dict_tuple_field():

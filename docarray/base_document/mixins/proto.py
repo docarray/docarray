@@ -81,8 +81,21 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 elif isinstance(value, str):
                     nested_item = NodeProto(text=value)
 
+                elif isinstance(value, bool):
+                    nested_item = NodeProto(boolean=value)
+
+                elif isinstance(value, int):
+                    nested_item = NodeProto(integer=value)
+
+                elif isinstance(value, float):
+                    nested_item = NodeProto(float=value)
+
                 elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
+
+                elif isinstance(value, (list, set, tuple)):
+                    # TOOD(Joan): Check how to build ListValue
+                    nested_item = NodeProto(float=value[0])
                 elif value is None:
                     nested_item = NodeProto()
                 else:
