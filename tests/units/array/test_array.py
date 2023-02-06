@@ -213,7 +213,7 @@ def test_get_bulk_attributes_union_type():
         assert text == f'hello{i}'
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_get_bulk_attributes_union_type_nested():
     class MyDoc(BaseDocument):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]

@@ -6,7 +6,7 @@ from docarray import BaseDocument
 from docarray.typing import TensorFlowTensor
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_set_tensorflow_tensor():
     class MyDocument(BaseDocument):
         t: TensorFlowTensor

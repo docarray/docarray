@@ -10,7 +10,7 @@ except (ImportError, TypeError):
     pass
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 @pytest.mark.parametrize(
     'shape,result',
     [
@@ -25,7 +25,7 @@ def test_n_dim(shape, result):
     assert TensorFlowCompBackend.n_dim(array) == result
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 @pytest.mark.parametrize(
     'shape,result',
     [
@@ -41,48 +41,48 @@ def test_shape(shape, result):
     assert type(shape) == tuple
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_to_device():
     array = TensorFlowTensor(tf.constant([1, 2, 3]))
     array = TensorFlowCompBackend.to_device(array, 'CPU:0')
     assert array.tensor.device.endswith('CPU:0')
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 @pytest.mark.parametrize('dtype', ['int64', 'float64', 'int8', 'double'])
 def test_dtype(dtype):
     array = TensorFlowTensor(tf.constant([1, 2, 3], dtype=getattr(tf, dtype)))
     assert TensorFlowCompBackend.dtype(array) == dtype
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_empty():
     array = TensorFlowCompBackend.empty((10, 3))
     assert array.tensor.shape == (10, 3)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_empty_dtype():
     tf_tensor = TensorFlowCompBackend.empty((10, 3), dtype=tf.int32)
     assert tf_tensor.tensor.shape == (10, 3)
     assert tf_tensor.tensor.dtype == tf.int32
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_empty_device():
     tensor = TensorFlowCompBackend.empty((10, 3), device='CPU:0')
     assert tensor.tensor.shape == (10, 3)
     assert tensor.tensor.device.endswith('CPU:0')
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_squeeze():
     tensor = TensorFlowTensor(tf.zeros(shape=(1, 1, 3, 1)))
     squeezed = TensorFlowCompBackend.squeeze(tensor)
     assert squeezed.tensor.shape == (3,)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 @pytest.mark.parametrize(
     'data_input,t_range,x_range,data_result',
     [
@@ -114,14 +114,14 @@ def test_minmax_normalize(data_input, t_range, x_range, data_result):
     assert np.allclose(output.tensor, tf.constant(data_result))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_reshape():
     tensor = TensorFlowTensor(tf.zeros((3, 224, 224)))
     reshaped = TensorFlowCompBackend.reshape(tensor, (224, 224, 3))
     assert reshaped.tensor.shape == (224, 224, 3)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack():
     t0 = TensorFlowTensor(tf.zeros((3, 224, 224)))
     t1 = TensorFlowTensor(tf.ones((3, 224, 224)))

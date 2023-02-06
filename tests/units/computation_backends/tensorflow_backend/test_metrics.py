@@ -11,7 +11,7 @@ except (ImportError, TypeError):
     metrics = None
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_cosine_sim_tf():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))
@@ -27,7 +27,7 @@ def test_cosine_sim_tf():
     tf.experimental.numpy.allclose(diag_dists, tf.ones(5))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_euclidean_dist_tf():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))
@@ -60,7 +60,7 @@ def test_euclidean_dist_tf():
     )
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_sqeuclidean_dist_torch():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))

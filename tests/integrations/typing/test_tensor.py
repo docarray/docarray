@@ -31,7 +31,7 @@ def test_set_tensor():
     assert (d.tensor == torch.zeros((3, 224, 224))).all()
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_set_tensor():
     class MyDocument(BaseDocument):
         tensor: AnyTensor

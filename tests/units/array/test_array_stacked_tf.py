@@ -28,24 +28,24 @@ def batch():
     return batch.stack()
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_len(batch):
     assert len(batch) == 10
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_getitem(batch):
     for i in range(len(batch)):
         assert tnp.allclose(batch[i].tensor.tensor, tf.zeros((3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_iterator(batch):
     for doc in batch:
         assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_setter(batch):
 
     batch.tensor = tf.ones((10, 3, 224, 224))
@@ -53,7 +53,7 @@ def test_stack_setter(batch):
     assert tnp.allclose(batch.tensor, tf.ones((10, 3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_set_after_stacking(batch):
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
@@ -68,14 +68,14 @@ def test_set_after_stacking(batch):
         assert tnp.allclose(doc.tensor.tensor, batch.tensor.tensor[i])
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_optional(batch):
 
     assert tnp.allclose(batch._columns['tensor'].tensor, tf.zeros((10, 3, 224, 224)))
     assert tnp.allclose(batch.tensor.tensor, tf.zeros((10, 3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_mod_nested_document():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
@@ -96,7 +96,7 @@ def test_stack_mod_nested_document():
     assert tnp.allclose(batch.img.tensor.tensor, tf.zeros((10, 3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_convert_to_da(batch):
     da = batch.unstack()
 
@@ -104,7 +104,7 @@ def test_convert_to_da(batch):
         assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_unstack_nested_document():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
@@ -123,7 +123,7 @@ def test_unstack_nested_document():
         assert tnp.allclose(doc.img.tensor.tensor, tf.zeros((3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_call():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
@@ -139,7 +139,7 @@ def test_stack_call():
     assert da.tensor.tensor.shape == (10, 3, 224, 224)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_context_manager():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
@@ -162,7 +162,7 @@ def test_context_manager():
         assert tnp.allclose(doc.tensor.tensor, tf.ones((3, 224, 224)))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_union():
     class Image(BaseDocument):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
@@ -177,7 +177,7 @@ def test_stack_union():
     batch.stack()
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_any_tensor_with_tf():
     tensor = tf.zeros((3, 224, 224))
 
@@ -196,7 +196,7 @@ def test_any_tensor_with_tf():
     assert isinstance(da._columns['tensor'], TensorFlowTensor)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_any_tensor_with_optional():
     tensor = tf.zeros((3, 224, 224))
 
@@ -219,7 +219,7 @@ def test_any_tensor_with_optional():
     assert isinstance(da.img._columns['tensor'].tensor, tf.Tensor)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_get_from_slice_stacked():
     class Doc(BaseDocument):
         text: str
@@ -236,7 +236,7 @@ def test_get_from_slice_stacked():
     assert tensors.shape == (5, 3, 224, 224)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_stack_none():
     class MyDoc(BaseDocument):
         tensor: Optional[AnyTensor]
@@ -248,7 +248,7 @@ def test_stack_none():
     assert 'tensor' in da._columns.keys()
 
 
-@pytest.mark.tensorflow
+@pytest.mark.tensor_flow
 def test_keep_dtype_tf():
     class MyDoc(BaseDocument):
         tensor: TensorFlowTensor
