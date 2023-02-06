@@ -60,7 +60,11 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
         It behaves as an update operation for Dictionaries, except that since
         it is applied to a static schema type, the presence of the field is
-        given by the field not having a None value.
+        given by the field not having a None value and that DocumentArrays,
+        lists and sets are concatenated. It is worth mentioning that Tuples
+        are not merged together since they are meant to be inmutable,
+        so they behave as regular types and the value of `self` is updated
+        with the value of `other`
 
             EXAMPLE USAGE
 
