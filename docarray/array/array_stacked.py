@@ -15,6 +15,7 @@ from typing import (
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
+from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
 
@@ -33,7 +34,7 @@ except ImportError:
 try:
     import tensorflow as tf  # type: ignore
 
-    from docarray.typing import NdArray, TensorFlowTensor
+    from docarray.typing import TensorFlowTensor
 except (ImportError, TypeError):
     TensorFlowTensor = None  # type: ignore
 
