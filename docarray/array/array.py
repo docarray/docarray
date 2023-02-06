@@ -57,9 +57,10 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 def _is_np_int(item: Any) -> bool:
     dtype = getattr(item, 'dtype', None)
-    if dtype is not None:
+    ndim = getattr(item, 'ndim', None)
+    if dtype is not None and ndim is not None:
         try:
-            return np.issubdtype(dtype, np.integer)
+            return ndim == 0 and np.issubdtype(dtype, np.integer)
         except TypeError:
             return False
 
