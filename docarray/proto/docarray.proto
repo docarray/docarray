@@ -61,14 +61,9 @@ message DocumentArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
 
-message UnionArrayProto { // represent the column of the da stacked
-    oneof content {
-        DocumentArrayStackedProto document_array = 1;
-        NdArrayProto ndarray = 2;
-    }
-}
-
 message DocumentArrayStackedProto{
   DocumentArrayProto list_ = 1; // a list of Documents
-  map<string, UnionArrayProto> columns = 2; // a dict of columns
+  map<string, DocumentArrayStackedProto> doc_columns = 2; // a dict of document columns
+  map<string, NdArrayProto> tensor_columns = 3; // a dict of tensor columns
+
 }
