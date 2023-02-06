@@ -1,12 +1,18 @@
 from typing import Optional, Union
 
 import pytest
-import tensorflow as tf
-import tensorflow._api.v2.experimental.numpy as tnp
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.typing import AnyTensor, NdArray, TensorFlowTensor
+from docarray.typing import AnyTensor, NdArray
+
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
 @pytest.fixture()
