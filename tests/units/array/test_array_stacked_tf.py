@@ -1,21 +1,12 @@
 from typing import Optional, Union
 
 import pytest
+import tensorflow as tf
+import tensorflow._api.v2.experimental.numpy as tnp
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.typing import AnyTensor, NdArray
-
-try:
-    import tensorflow as tf
-    import tensorflow._api.v2.experimental.numpy as tnp
-
-    from docarray.typing import TensorFlowTensor
-
-    print("passed!")
-except (ImportError, TypeError) as e:
-    print(f"exception = {e}")
-    TensorFlowTensor = None
+from docarray.typing import AnyTensor, NdArray, TensorFlowTensor
 
 
 @pytest.fixture()
