@@ -285,7 +285,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
         # set columns
         for col_key, col in self._columns.items():
-            # TODO(johannes): idk why mypy fails the line below
+            # mypy is confused by a map that points to a union
             self._columns[col_key][index_item] = columns_to_set[col_key]
 
     def __iter__(self):

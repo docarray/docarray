@@ -63,6 +63,7 @@ def _is_np_int(item: Any) -> bool:
             return ndim == 0 and np.issubdtype(dtype, np.integer)
         except TypeError:
             return False
+    return False  # this is unreachable, but mypy wants it
 
 
 class DocumentArray(AnyDocumentArray):
@@ -145,8 +146,12 @@ class DocumentArray(AnyDocumentArray):
     def __setitem__(self: T, key: IndexIterType, value: Union[T, BaseDocument]):
         key_norm = self._normalize_index_item(key)
 
-        if isinstance(key_norm, (int, slice)):
-            self._data[key_norm] = value  # TODO(johannes): idk why mypy fails here
+        if isinstance(key_norm, int):
+            value_int = cast(BaseDocument, value)
+            self._data[key_norm] = value_int
+        elif isinstance(key_norm, slice):
+            value_slice = cast(T, value)
+            self._data[key_norm] = value_slice
         else:
             # _normalize_index_item() guarantees the line below is correct
             head = key_norm[0]  # type: ignore
