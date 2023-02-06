@@ -59,7 +59,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --without dev
-          pip install tensorflow==2.11.0
+          poetry run pip install tensorflow==2.11.0
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocumentArray, BaseDocument'
 
@@ -112,12 +112,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          pip install tensorflow==2.11.0
+          poetry run pip install tensorflow==2.11.0
 
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not tensor_flow" ${{ matrix.test-path }}
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
         timeout-minutes: 30
 #        env:
 #          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -161,7 +161,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not tensor_flow" ${{ matrix.test-path }}
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
         timeout-minutes: 30
 
 
@@ -183,7 +183,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          pip install protobuf==3.19.0 # we check that we support 3.19
+          poetry run pip install protobuf==3.19.0 # we check that we support 3.19
 
       - name: Test
         id: test
@@ -217,7 +217,7 @@ jobs:
         id: test
         run: |
           poetry run pip show tensorflow
-          poetry run pytest -m 'tensor_flow' tests
+          poetry run pytest -m 'tensorflow' tests
         timeout-minutes: 30
 
 

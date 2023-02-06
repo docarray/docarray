@@ -10,7 +10,7 @@ except (ImportError, TypeError):
     pass
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_coercion_behavior():
     t_np = parse_obj_as(NdArray[128], np.zeros(128))
     t_th = parse_obj_as(TorchTensor[128], np.zeros(128))

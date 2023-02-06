@@ -49,7 +49,7 @@ def test_proto_all_types():
             assert isinstance(value, doc._get_field_type(field))
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_proto_all_types_proto3():
     import tensorflow as tf
 

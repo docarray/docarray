@@ -15,7 +15,7 @@ except (ImportError, TypeError):
     pass
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_proto_tensor():
     from docarray.proto.pb2.docarray_pb2 import NdArrayProto
 
@@ -28,18 +28,18 @@ def test_proto_tensor():
     assert tnp.allclose(tensor.tensor, from_proto.tensor)
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_json_schema():
     schema_json_of(TensorFlowTensor)
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_dump_json():
     tensor = parse_obj_as(TensorFlowTensor, tf.zeros((3, 224, 224)))
     orjson_dumps(tensor)
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_unwrap():
     tf_tensor = parse_obj_as(TensorFlowTensor, tf.zeros((3, 224, 224)))
     unwrapped = tf_tensor.unwrap()
@@ -51,7 +51,7 @@ def test_unwrap():
     assert np.allclose(unwrapped, np.zeros((3, 224, 224)))
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_from_ndarray():
     nd = np.array([1, 2, 3])
     tensor = TensorFlowTensor.from_ndarray(nd)
@@ -59,7 +59,7 @@ def test_from_ndarray():
     assert isinstance(tensor.tensor, tf.Tensor)
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized():
     # correct shape, single axis
     tf_tensor = parse_obj_as(TensorFlowTensor[128], tf.zeros(128))
@@ -84,7 +84,7 @@ def test_parametrized():
         parse_obj_as(TensorFlowTensor[3, 224, 224], tf.zeros((224, 224)))
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized_with_str():
     # test independent variable dimensions
     tf_tensor = parse_obj_as(TensorFlowTensor[3, 'x', 'y'], tf.zeros((3, 224, 224)))
@@ -116,7 +116,7 @@ def test_parametrized_with_str():
         _ = parse_obj_as(TensorFlowTensor[3, 'x', 'x'], tf.zeros((3, 60)))
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
     MyTFT = TensorFlowTensor[3, 224, 224]
@@ -130,7 +130,7 @@ def test_parameterized_tensor_class_name(shape):
     assert f'{tensor.tensor[0][0][0]}' == '0.0'
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized_subclass():
     c1 = TensorFlowTensor[128]
     c2 = TensorFlowTensor[128]
@@ -140,7 +140,7 @@ def test_parametrized_subclass():
     assert not issubclass(c1, TensorFlowTensor[256])
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized_instance():
     t = parse_obj_as(TensorFlowTensor[128], tf.zeros((128,)))
     assert isinstance(t, TensorFlowTensor[128])
@@ -152,14 +152,14 @@ def test_parametrized_instance():
     assert not isinstance(t, TensorFlowTensor[2, 2, 64])
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized_equality():
     t1 = parse_obj_as(TensorFlowTensor[128], tf.zeros((128,)))
     t2 = parse_obj_as(TensorFlowTensor[128], tf.zeros((128,)))
     assert tf.experimental.numpy.allclose(t1.tensor, t2.tensor)
 
 
-@pytest.mark.tensor_flow
+@pytest.mark.tensorflow
 def test_parametrized_operations():
     t1 = parse_obj_as(TensorFlowTensor[128], tf.zeros((128,)))
     t2 = parse_obj_as(TensorFlowTensor[128], tf.zeros((128,)))
