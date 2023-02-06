@@ -1,17 +1,12 @@
-import sys
 from typing import Optional, Union
 
-print(f"getattr(sys, 'base_prefix', None) = {getattr(sys, 'base_prefix', None)}")
-print(f"getattr(sys, 'real_prefix', None) = {getattr(sys, 'real_prefix', None)}")
-print(f"sys.prefix = {sys.prefix}")
+import pytest
+import tensorflow as tf
+import tensorflow._api.v2.experimental.numpy as tnp
 
-import pytest  # noqa: E402
-import tensorflow as tf  # noqa: E402
-import tensorflow._api.v2.experimental.numpy as tnp  # noqa: E402
-
-from docarray import BaseDocument, DocumentArray  # noqa: E402
-from docarray.array import DocumentArrayStacked  # noqa: E402
-from docarray.typing import AnyTensor, NdArray, TensorFlowTensor  # noqa: E402
+from docarray import BaseDocument, DocumentArray
+from docarray.array import DocumentArrayStacked
+from docarray.typing import AnyTensor, NdArray, TensorFlowTensor
 
 
 @pytest.fixture()
