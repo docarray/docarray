@@ -5,7 +5,12 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
-from docarray.typing import NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import NdArray, TorchTensor
+
+try:
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
 @pytest.fixture()
@@ -208,6 +213,7 @@ def test_get_bulk_attributes_union_type():
         assert text == f'hello{i}'
 
 
+@pytest.mark.tensorflow
 def test_get_bulk_attributes_union_type_nested():
     class MyDoc(BaseDocument):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]

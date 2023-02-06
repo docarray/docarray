@@ -1,9 +1,16 @@
 import numpy as np
+import pytest
 from pydantic import parse_obj_as
 
-from docarray.typing import NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import NdArray, TorchTensor
+
+try:
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
+@pytest.mark.tensorflow
 def test_coercion_behavior():
     t_np = parse_obj_as(NdArray[128], np.zeros(128))
     t_th = parse_obj_as(TorchTensor[128], np.zeros(128))

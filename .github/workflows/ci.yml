@@ -210,7 +210,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          pip install protobuf==3.19.0 # we check that we support 3.19 
+          pip install protobuf==3.19.0
           pip install tensorflow==2.11.0
 
       - name: Test
