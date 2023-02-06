@@ -3,8 +3,8 @@ from typing import NamedTuple, TypeVar
 import numpy as np
 from pydantic import parse_obj_as
 
-from docarray.typing import NdArray
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 T = TypeVar('T', bound='Mesh3DUrl')

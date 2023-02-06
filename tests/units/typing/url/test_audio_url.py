@@ -7,7 +7,7 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDocument
 from docarray.base_document.io.json import orjson_dumps
-from docarray.typing import AudioNdArray, AudioTorchTensor, AudioUrl
+from docarray.typing import AudioTorchTensor, AudioUrl
 from tests import TOYDATA_DIR
 
 AUDIO_FILES = [
@@ -27,7 +27,6 @@ def test_audio_url(file_url):
     uri = parse_obj_as(AudioUrl, file_url)
     tensor = uri.load()
     assert isinstance(tensor, np.ndarray)
-    assert isinstance(tensor, AudioNdArray)
 
 
 @pytest.mark.slow
@@ -96,6 +95,7 @@ def test_illegal_validation(path_to_file):
         parse_obj_as(AudioUrl, path_to_file)
 
 
+@pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize(

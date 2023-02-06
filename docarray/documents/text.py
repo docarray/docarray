@@ -74,6 +74,11 @@ class Text(BaseDocument):
         )
         mmdoc.text_doc.text = mmdoc.text_doc.url.load()
 
+        #or
+
+        mmdoc.text_doc.bytes = mmdoc.text_doc.url.load_bytes()
+
+
     This Document can be compared against another Document of the same type or a string.
     When compared against another object of the same type, the pydantic BaseModel
     equality check will apply which checks the equality of every attribute,
@@ -94,6 +99,7 @@ class Text(BaseDocument):
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
+    bytes: Optional[bytes] = None
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
