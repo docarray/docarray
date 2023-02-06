@@ -83,6 +83,7 @@ class DocumentArray(AnyDocumentArray):
     .. code-block:: python
         from docarray import BaseDocument, DocumentArray
         from docarray.typing import NdArray, ImageUrl
+        from typing import Optional
 
 
         class Image(BaseDocument):
@@ -96,8 +97,28 @@ class DocumentArray(AnyDocumentArray):
 
 
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
-    fields at the DocumentArray level (for example `da.tensor`). You can also set
-    fields, with `da.tensor = np.random.random([10, 100])`
+    fields at the DocumentArray level (for example `da.tensor` or `da.url`).
+    You can also set fields, with `da.tensor = np.random.random([10, 100])`:
+
+    .. code-block:: python
+        print(da.url)
+        # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
+        import numpy as np
+
+        da.tensor = np.random.random([10, 100])
+        print(da.tensor)
+        # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
+        #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
+
+    You can index into a DocumentArray like a numpy array or torch tensor:
+
+    .. code-block:: python
+        da[0]  # index by position
+        da[0:5:2]  # index by slice
+        da[[0, 2, 3]]  # index by list of indices
+        da[da.tensor > 0.5]  # index by boolean mask
+
+
     """
 
     document_type: Type[BaseDocument] = AnyDocument
