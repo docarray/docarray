@@ -1,11 +1,18 @@
-import tensorflow as tf
+import pytest
 
-from docarray.computation.tensorflow_backend import TensorFlowCompBackend
-from docarray.typing import TensorFlowTensor
+try:
+    import tensorflow as tf
+
+    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
 
 metrics = TensorFlowCompBackend.Metrics
 
 
+@pytest.mark.tensorflow
 def test_cosine_sim_tf():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))
@@ -21,6 +28,7 @@ def test_cosine_sim_tf():
     tf.experimental.numpy.allclose(diag_dists, tf.ones(5))
 
 
+@pytest.mark.tensorflow
 def test_euclidean_dist_tf():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))
@@ -53,6 +61,7 @@ def test_euclidean_dist_tf():
     )
 
 
+@pytest.mark.tensorflow
 def test_sqeuclidean_dist_torch():
     a = TensorFlowTensor(tf.random.normal((128,)))
     b = TensorFlowTensor(tf.random.normal((128,)))

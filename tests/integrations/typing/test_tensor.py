@@ -11,7 +11,7 @@ try:
 
     from docarray.typing import TensorFlowTensor
 except (ImportError, TypeError):
-    pass
+    TensorFlowTensor = None
 
 
 def test_set_tensor():

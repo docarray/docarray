@@ -1,10 +1,17 @@
-import tensorflow as tf
-import tensorflow._api.v2.experimental.numpy as tnp
+import pytest
 
 from docarray.computation.tensorflow_backend import TensorFlowCompBackend
-from docarray.typing import TensorFlowTensor
+
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
 
 
+@pytest.mark.tensorflow
 def test_top_k_descending_false():
     top_k = TensorFlowCompBackend.Retrieval.top_k
 
@@ -31,6 +38,7 @@ def test_top_k_descending_false():
     assert tnp.allclose(indices.tensor[1], tf.constant([2, 4, 6]))
 
 
+@pytest.mark.tensorflow
 def test_top_k_descending_true():
     top_k = TensorFlowCompBackend.Retrieval.top_k
 
