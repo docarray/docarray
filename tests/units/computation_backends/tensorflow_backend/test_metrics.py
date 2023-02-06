@@ -5,11 +5,10 @@ try:
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.typing import TensorFlowTensor
+
+    metrics = TensorFlowCompBackend.Metrics
 except (ImportError, TypeError):
-    pass
-
-
-metrics = TensorFlowCompBackend.Metrics
+    metrics = None
 
 
 @pytest.mark.tensorflow

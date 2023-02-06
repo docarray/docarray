@@ -12,30 +12,30 @@ except (ImportError, TypeError):
 
 @pytest.mark.tensorflow
 @pytest.mark.parametrize(
-    'array,result',
+    'shape,result',
     [
-        (tf.zeros((5)), 1),
-        (tf.zeros((1, 5)), 2),
-        (tf.zeros((5, 5)), 2),
-        (tf.zeros(()), 0),
+        ((5), 1),
+        ((1, 5), 2),
+        ((5, 5), 2),
+        ((), 0),
     ],
 )
-def test_n_dim(array, result):
-    array = TensorFlowTensor(array)
+def test_n_dim(shape, result):
+    array = TensorFlowTensor(tf.zeros(shape))
     assert TensorFlowCompBackend.n_dim(array) == result
 
 
 @pytest.mark.tensorflow
 @pytest.mark.parametrize(
-    'array,result',
+    'shape,result',
     [
-        (tf.zeros((10,)), (10,)),
-        (tf.zeros((5, 5)), (5, 5)),
-        (tf.zeros(()), ()),
+        ((10,), (10,)),
+        ((5, 5), (5, 5)),
+        ((), ()),
     ],
 )
-def test_shape(array, result):
-    array = TensorFlowTensor(array)
+def test_shape(shape, result):
+    array = TensorFlowTensor(tf.zeros(shape))
     shape = TensorFlowCompBackend.shape(array)
     assert shape == result
     assert type(shape) == tuple
@@ -49,9 +49,9 @@ def test_to_device():
 
 
 @pytest.mark.tensorflow
-@pytest.mark.parametrize('dtype', [tf.int64, tf.float64, tf.int8, tf.double])
+@pytest.mark.parametrize('dtype', ['int64', 'float64', 'int8', 'double'])
 def test_dtype(dtype):
-    array = TensorFlowTensor(tf.constant([1, 2, 3], dtype=dtype))
+    array = TensorFlowTensor(tf.constant([1, 2, 3], dtype=getattr(tf, dtype)))
     assert TensorFlowCompBackend.dtype(array) == dtype
 
 
@@ -84,34 +84,34 @@ def test_squeeze():
 
 @pytest.mark.tensorflow
 @pytest.mark.parametrize(
-    'array,t_range,x_range,result',
+    'data_input,t_range,x_range,data_result',
     [
         (
-            tf.constant([0, 1, 2, 3, 4, 5]),
+            [0, 1, 2, 3, 4, 5],
             (0, 10),
             None,
-            tf.constant([0, 2, 4, 6, 8, 10]),
+            [0, 2, 4, 6, 8, 10],
         ),
         (
-            tf.constant([0, 1, 2, 3, 4, 5]),
+            [0, 1, 2, 3, 4, 5],
             (0, 10),
             (0, 10),
-            tf.constant([0, 1, 2, 3, 4, 5]),
+            [0, 1, 2, 3, 4, 5],
         ),
         (
-            tf.constant([[0.0, 1.0], [0.0, 1.0]]),
+            [[0.0, 1.0], [0.0, 1.0]],
             (0, 10),
             None,
-            tf.constant([[0.0, 10.0], [0.0, 10.0]]),
+            [[0.0, 10.0], [0.0, 10.0]],
         ),
     ],
 )
-def test_minmax_normalize(array, t_range, x_range, result):
-    array = TensorFlowTensor(array)
+def test_minmax_normalize(data_input, t_range, x_range, data_result):
+    array = TensorFlowTensor(tf.constant(data_input))
     output = TensorFlowCompBackend.minmax_normalize(
         tensor=array, t_range=t_range, x_range=x_range
     )
-    assert np.allclose(output.tensor, result)
+    assert np.allclose(output.tensor, tf.constant(data_result))
 
 
 @pytest.mark.tensorflow

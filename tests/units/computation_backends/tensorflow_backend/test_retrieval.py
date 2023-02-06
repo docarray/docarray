@@ -1,11 +1,10 @@
 import pytest
 
-from docarray.computation.tensorflow_backend import TensorFlowCompBackend
-
 try:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
+    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.typing import TensorFlowTensor
 except (ImportError, TypeError):
     pass
