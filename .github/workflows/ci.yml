@@ -216,7 +216,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          pip show tensorflow
+          poetry run pip show tensorflow
           poetry run pytest -m 'tensor_flow' tests
         timeout-minutes: 30
 
