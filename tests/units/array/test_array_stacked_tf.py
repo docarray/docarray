@@ -11,8 +11,9 @@ try:
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
-    pass
+except (ImportError, TypeError) as e:
+    print(f"e = {e}")
+    TensorFlow = None
 
 
 @pytest.mark.tensorflow
