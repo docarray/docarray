@@ -4,8 +4,9 @@
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
+from google.protobuf import message as _message
+from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
-from google.protobuf.internal import builder as _builder
 
 # @@protoc_insertion_point(imports)
 
@@ -18,8 +19,117 @@ DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
     b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"\xe7\x01\n\tNodeProto\x12\x0e\n\x04\x62lob\x18\x01 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x0e\n\x04text\x18\x03 \x01(\tH\x00\x12+\n\x08\x64ocument\x18\x04 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x05 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12\x0e\n\x04type\x18\x06 \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
 )
 
-_builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'docarray_pb2', globals())
+
+_DENSENDARRAYPROTO = DESCRIPTOR.message_types_by_name['DenseNdArrayProto']
+_NDARRAYPROTO = DESCRIPTOR.message_types_by_name['NdArrayProto']
+_NODEPROTO = DESCRIPTOR.message_types_by_name['NodeProto']
+_DOCUMENTPROTO = DESCRIPTOR.message_types_by_name['DocumentProto']
+_DOCUMENTPROTO_DATAENTRY = _DOCUMENTPROTO.nested_types_by_name['DataEntry']
+_DOCUMENTARRAYPROTO = DESCRIPTOR.message_types_by_name['DocumentArrayProto']
+_UNIONARRAYPROTO = DESCRIPTOR.message_types_by_name['UnionArrayProto']
+_DOCUMENTARRAYSTACKEDPROTO = DESCRIPTOR.message_types_by_name[
+    'DocumentArrayStackedProto'
+]
+_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY = (
+    _DOCUMENTARRAYSTACKEDPROTO.nested_types_by_name['ColumnsEntry']
+)
+DenseNdArrayProto = _reflection.GeneratedProtocolMessageType(
+    'DenseNdArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _DENSENDARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DenseNdArrayProto)
+    },
+)
+_sym_db.RegisterMessage(DenseNdArrayProto)
+
+NdArrayProto = _reflection.GeneratedProtocolMessageType(
+    'NdArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _NDARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.NdArrayProto)
+    },
+)
+_sym_db.RegisterMessage(NdArrayProto)
+
+NodeProto = _reflection.GeneratedProtocolMessageType(
+    'NodeProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _NODEPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.NodeProto)
+    },
+)
+_sym_db.RegisterMessage(NodeProto)
+
+DocumentProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentProto',
+    (_message.Message,),
+    {
+        'DataEntry': _reflection.GeneratedProtocolMessageType(
+            'DataEntry',
+            (_message.Message,),
+            {
+                'DESCRIPTOR': _DOCUMENTPROTO_DATAENTRY,
+                '__module__': 'docarray_pb2'
+                # @@protoc_insertion_point(class_scope:docarray.DocumentProto.DataEntry)
+            },
+        ),
+        'DESCRIPTOR': _DOCUMENTPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentProto)
+    },
+)
+_sym_db.RegisterMessage(DocumentProto)
+_sym_db.RegisterMessage(DocumentProto.DataEntry)
+
+DocumentArrayProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _DOCUMENTARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentArrayProto)
+    },
+)
+_sym_db.RegisterMessage(DocumentArrayProto)
+
+UnionArrayProto = _reflection.GeneratedProtocolMessageType(
+    'UnionArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _UNIONARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.UnionArrayProto)
+    },
+)
+_sym_db.RegisterMessage(UnionArrayProto)
+
+DocumentArrayStackedProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentArrayStackedProto',
+    (_message.Message,),
+    {
+        'ColumnsEntry': _reflection.GeneratedProtocolMessageType(
+            'ColumnsEntry',
+            (_message.Message,),
+            {
+                'DESCRIPTOR': _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY,
+                '__module__': 'docarray_pb2'
+                # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto.ColumnsEntry)
+            },
+        ),
+        'DESCRIPTOR': _DOCUMENTARRAYSTACKEDPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto)
+    },
+)
+_sym_db.RegisterMessage(DocumentArrayStackedProto)
+_sym_db.RegisterMessage(DocumentArrayStackedProto.ColumnsEntry)
+
 if _descriptor._USE_C_DESCRIPTORS == False:
 
     DESCRIPTOR._options = None

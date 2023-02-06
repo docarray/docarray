@@ -1,6 +1,7 @@
 from typing import Optional
 
 import numpy as np
+import pytest
 import torch
 
 from docarray import DocumentArray
@@ -8,6 +9,7 @@ from docarray.base_document import BaseDocument
 from docarray.typing import NdArray, TorchTensor
 
 
+@pytest.mark.proto
 def test_proto_simple():
     class CustomDoc(BaseDocument):
         text: str
@@ -17,6 +19,7 @@ def test_proto_simple():
     CustomDoc.from_protobuf(doc.to_protobuf())
 
 
+@pytest.mark.proto
 def test_proto_ndarray():
     class CustomDoc(BaseDocument):
         tensor: NdArray
@@ -29,6 +32,7 @@ def test_proto_ndarray():
     assert (new_doc.tensor == tensor).all()
 
 
+@pytest.mark.proto
 def test_proto_with_nested_doc():
     class CustomInnerDoc(BaseDocument):
         tensor: NdArray
@@ -42,6 +46,7 @@ def test_proto_with_nested_doc():
     CustomDoc.from_protobuf(doc.to_protobuf())
 
 
+@pytest.mark.proto
 def test_proto_with_chunks_doc():
     class CustomInnerDoc(BaseDocument):
         tensor: NdArray
@@ -64,6 +69,7 @@ def test_proto_with_chunks_doc():
         assert (chunk1.tensor == chunk2.tensor).all()
 
 
+@pytest.mark.proto
 def test_proto_with_nested_doc_pytorch():
     class CustomInnerDoc(BaseDocument):
         tensor: TorchTensor
@@ -79,6 +85,7 @@ def test_proto_with_nested_doc_pytorch():
     CustomDoc.from_protobuf(doc.to_protobuf())
 
 
+@pytest.mark.proto
 def test_proto_with_chunks_doc_pytorch():
     class CustomInnerDoc(BaseDocument):
         tensor: TorchTensor
@@ -101,6 +108,7 @@ def test_proto_with_chunks_doc_pytorch():
         assert (chunk1.tensor == chunk2.tensor).all()
 
 
+@pytest.mark.proto
 def test_optional_field_in_doc():
     class CustomDoc(BaseDocument):
         text: Optional[str]
@@ -108,6 +116,7 @@ def test_optional_field_in_doc():
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
 
+@pytest.mark.proto
 def test_optional_field_nested_in_doc():
     class InnerDoc(BaseDocument):
         title: str

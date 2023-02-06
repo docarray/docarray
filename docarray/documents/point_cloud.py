@@ -82,11 +82,17 @@ class PointCloud3D(BaseDocument):
             text=Text(text='hello world, how are you doing?'),
         )
         mmdoc.point_cloud.tensor = mmdoc.point_cloud.url.load(samples=100)
+
+        # or
+
+        mmdoc.point_cloud.bytes = mmdoc.point_cloud.url.load_bytes()
+
     """
 
     url: Optional[PointCloud3DUrl]
     tensor: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
+    bytes: Optional[bytes]
 
     @classmethod
     def validate(
