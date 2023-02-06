@@ -193,7 +193,7 @@ def get_flickr8k_da(file: str = "captions.txt", N: Optional[int] = None):
 
 In the `get_flickr8k_da` method we process the Flickr8k dataset into a `DocumentArray`.
 
-Now let's instantiate this dataset using the `MultiModalDataset` class. The constructor takes in the da and a dictionary of preprocessing transformations:
+Now let's instantiate this dataset using the `MultiModalDataset` class. The constructor takes in the `da` and a dictionary of preprocessing transformations:
 
 ```python
 da = get_flickr8k_da()
