@@ -15,7 +15,6 @@ from typing import (
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
-from docarray.typing import NdArray, TensorFlowTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
 
@@ -24,18 +23,18 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentArrayStackedProto
-    from docarray.typing import TorchTensor
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 try:
-    from docarray.typing import TorchTensor
+    from docarray.typing import AnyTensor, TorchTensor
 except ImportError:
     TorchTensor = None  # type: ignore
 
 try:
-    import tensorflow as tf
-except ImportError:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import NdArray, TensorFlowTensor
+except (ImportError, TypeError):
     pass
 
 T = TypeVar('T', bound='DocumentArrayStacked')
@@ -224,11 +223,12 @@ class DocumentArrayStacked(AnyDocumentArray):
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
-            if isinstance(self._columns[field], TensorFlowTensor):
-                val = self._columns[field].tensor[item]
+            value = self._columns[field]
+            if isinstance(value, TensorFlowTensor):
+                new_value = value.tensor[item]
             else:
-                val = self._columns[field][item]
-            setattr(doc, field, val)
+                new_value = value[item]
+            setattr(doc, field, new_value)
         return doc
 
     def _get_slice(self: T, item: slice) -> T:
@@ -237,7 +237,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         :param item: the slice to apply
         :return: a DocumentArrayStacked
         """
-        columns_sliced = {}
+        columns_sliced: Dict[str, AnyTensor] = {}
         for k, col in self._columns.items():
             if isinstance(col, TensorFlowTensor):
                 columns_sliced[k] = TensorFlowTensor(col.tensor[item])

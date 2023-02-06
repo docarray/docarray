@@ -54,6 +54,7 @@ def test_illegal_validation(cls_tensor, tensor):
         parse_obj_as(cls_tensor, tensor)
 
 
+@pytest.mark.proto
 @pytest.mark.parametrize(
     'cls_tensor,tensor,proto_key',
     [

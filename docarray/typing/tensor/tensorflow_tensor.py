@@ -179,7 +179,17 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         """
         Transform self into an NdArrayProto protobuf message.
         """
-        raise NotImplementedError
+        from docarray.proto import NdArrayProto
+
+        nd_proto = NdArrayProto()
+
+        value_np = self.tensor.numpy()
+        nd_proto.dense.buffer = value_np.tobytes()
+        nd_proto.dense.ClearField('shape')
+        nd_proto.dense.shape.extend(list(value_np.shape))
+        nd_proto.dense.dtype = value_np.dtype.str
+
+        return nd_proto
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
@@ -188,8 +198,16 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         :param pb_msg:
         :return: a TensorFlowTensor
         """
-
-        raise NotImplementedError
+        source = pb_msg.dense
+        if source.buffer:
+            x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
+            return cls.from_ndarray(x.reshape(source.shape))
+        elif len(source.shape) > 0:
+            return cls.from_ndarray(np.zeros(source.shape))
+        else:
+            raise ValueError(
+                f'Proto message {pb_msg} cannot be cast to a TensorFlowTensor.'
+            )
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:

@@ -1,12 +1,35 @@
 import numpy as np
 import pytest
-import tensorflow as tf
+from google.protobuf import __version__ as __pb__version__
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
-from tensorflow.python.framework.errors_impl import InvalidArgumentError
 
 from docarray.base_document.io.json import orjson_dumps
-from docarray.typing import TensorFlowTensor
+
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+    from tensorflow.python.framework.errors_impl import InvalidArgumentError
+
+    from docarray.typing import TensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
+
+@pytest.mark.proto
+@pytest.mark.skipif(
+    __pb__version__.startswith('4'), reason="Tensorflow requires protobuf 3"
+)
+def test_proto_tensor():
+    from docarray.proto.pb2.docarray_pb2 import NdArrayProto
+
+    tensor = parse_obj_as(TensorFlowTensor, tf.zeros((3, 224, 224)))
+    proto = tensor.to_protobuf()
+    assert isinstance(proto, NdArrayProto)
+
+    from_proto = TensorFlowTensor.from_protobuf(proto)
+    assert isinstance(from_proto, TensorFlowTensor)
+    assert tnp.allclose(tensor.tensor, from_proto.tensor)
 
 
 def test_json_schema():

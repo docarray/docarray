@@ -10,7 +10,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
-    import numpy as np
     from docarray.proto import NdArrayProto
     from docarray.computation.torch_backend import TorchCompBackend
 
