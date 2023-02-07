@@ -149,6 +149,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         columns: Dict[str, Union[DocumentArrayStacked, AbstractTensor]] = dict()
 
         for field, type_ in column_schema.items():
+            # tensorflow does not allow item assignment, therefore the optimized way of
+            # initializing an empty array and assigning values to it iteratively does
+            # not work here, therefore handle separately.
             if tf_available and isinstance(getattr(docs[0], field), TensorFlowTensor):
                 tf_stack = []
                 for i, doc in enumerate(docs):
