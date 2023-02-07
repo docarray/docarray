@@ -6,10 +6,12 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Tuple,
     Type,
     TypeVar,
     Union,
     cast,
+    overload,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -34,6 +36,7 @@ except ImportError:
     TorchTensor = None  # type: ignore
 
 T = TypeVar('T', bound='DocumentArrayStacked')
+IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 class DocumentArrayStacked(AnyDocumentArray):
@@ -61,29 +64,37 @@ class DocumentArrayStacked(AnyDocumentArray):
         self: T,
         docs: DocumentArray,
     ):
-        self._columns: Dict[str, Union['DocumentArrayStacked', AbstractTensor]] = {}
+        self._doc_columns: Dict[str, 'DocumentArrayStacked'] = {}
+        self._tensor_columns: Dict[str, AbstractTensor] = {}
 
         self.from_document_array(docs)
 
     def from_document_array(self: T, docs: DocumentArray):
         self._docs = docs
         self.tensor_type = self._docs.tensor_type
-        self._columns = self._create_columns(docs, tensor_type=self.tensor_type)
+        self._doc_columns, self._tensor_columns = self._create_columns(
+            docs, tensor_type=self.tensor_type
+        )
 
     @classmethod
-    def _from_columns(
+    def _from_da_and_columns(
         cls: Type[T],
         docs: DocumentArray,
-        columns: Mapping[str, Union['DocumentArrayStacked', AbstractTensor]],
+        doc_columns: Dict[str, 'DocumentArrayStacked'],
+        tensor_columns: Dict[str, AbstractTensor],
     ) -> T:
+        """Create a DocumentArrayStacked from a DocumentArray
+        and an associated dict of columns"""
         # below __class_getitem__ is called explicitly instead
         # of doing DocumentArrayStacked[docs.document_type]
         # because mypy has issues with class[...] notation at runtime.
         # see bug here: https://github.com/python/mypy/issues/13026
         # as of 2023-01-05 it should be fixed on mypy master, though, see
         # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
-        da_stacked = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
-        da_stacked._columns = columns
+
+        da_stacked: T = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
+        da_stacked._doc_columns = doc_columns
+        da_stacked._tensor_columns = tensor_columns
         da_stacked._docs = docs
         return da_stacked
 
@@ -92,15 +103,14 @@ class DocumentArrayStacked(AnyDocumentArray):
 
         :param device: the device to move the data to
         """
-        for field in self._columns.keys():
-            col = self._columns[field]
-            if isinstance(col, AbstractTensor):
-                self._columns[field] = col.__class__._docarray_from_native(
-                    col.get_comp_backend().to_device(col, device)
-                )
-            else:  # recursive call
-                col_docarray = cast(T, col)
-                col_docarray.to(device)
+        for field in self._tensor_columns.keys():
+            col_tens: AbstractTensor = self._tensor_columns[field]
+            self._tensor_columns[field] = col_tens.__class__._docarray_from_native(
+                col_tens.get_comp_backend().to_device(col_tens, device)
+            )
+        for field in self._doc_columns.keys():
+            col_doc: 'DocumentArrayStacked' = self._doc_columns[field]
+            col_doc.to(device)
         return self
 
     @classmethod
@@ -131,14 +141,15 @@ class DocumentArrayStacked(AnyDocumentArray):
     @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type[AbstractTensor]
-    ) -> Dict[str, Union['DocumentArrayStacked', AbstractTensor]]:
+    ) -> Tuple[Dict[str, 'DocumentArrayStacked'], Dict[str, AbstractTensor]]:
 
         if len(docs) == 0:
-            return {}
+            return {}, {}
 
         column_schema = cls._get_columns_schema(tensor_type)
 
-        columns: Dict[str, Union[DocumentArrayStacked, AbstractTensor]] = dict()
+        doc_columns: Dict[str, DocumentArrayStacked] = dict()
+        tensor_columns: Dict[str, AbstractTensor] = dict()
 
         for field, type_ in column_schema.items():
             if issubclass(type_, AbstractTensor):
@@ -146,7 +157,7 @@ class DocumentArrayStacked(AnyDocumentArray):
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
                 )
-                columns[field] = type_._docarray_from_native(
+                tensor_columns[field] = type_._docarray_from_native(
                     type_.get_comp_backend().empty(
                         column_shape,
                         dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
@@ -159,14 +170,14 @@ class DocumentArrayStacked(AnyDocumentArray):
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
 
-                    cast(AbstractTensor, columns[field])[i] = val
-                    setattr(doc, field, columns[field][i])
+                    cast(AbstractTensor, tensor_columns[field])[i] = val
+                    setattr(doc, field, tensor_columns[field][i])
                     del val
 
             elif issubclass(type_, BaseDocument):
-                columns[field] = getattr(docs, field).stack()
+                doc_columns[field] = getattr(docs, field).stack()
 
-        return columns
+        return doc_columns, tensor_columns
 
     def _get_array_attribute(
         self: T,
@@ -178,8 +189,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        if field in self._columns.keys():
-            return self._columns[field]
+        if field in self._doc_columns.keys():
+            return self._doc_columns[field]
+        elif field in self._tensor_columns.keys():
+            return self._tensor_columns[field]
         else:
             return getattr(self._docs, field)
 
@@ -193,30 +206,117 @@ class DocumentArrayStacked(AnyDocumentArray):
         :param field: name of the fields to extract
         :values: the values to set at the DocumentArray level
         """
-        if field in self._columns.keys() and not isinstance(values, List):
-            self._columns[field] = values
+        if field in self._doc_columns.keys() and not isinstance(values, List):
+            values_ = cast(T, values)
+            self._doc_columns[field] = values_
+        elif field in self._tensor_columns.keys() and not isinstance(values, List):
+            values__ = cast(AbstractTensor, values)
+            self._tensor_columns[field] = values__
         else:
             setattr(self._docs, field, values)
 
-    def __getitem__(self, item):  # note this should handle slices
-        if isinstance(item, slice):
-            return self._get_slice(item)
+    @overload
+    def __getitem__(self: T, item: int) -> BaseDocument:
+        ...
+
+    @overload
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        ...
+
+    def __getitem__(self, item):
+        if item is None:
+            return self  # PyTorch behaviour
+        # multiple docs case
+        if isinstance(item, (slice, Iterable)):
+            item_ = cast(Iterable, item)
+            return self._get_from_data_and_columns(item_)
+        # single doc case
         doc = self._docs[item]
-        # NOTE: this could be speed up by using a cache
-        for field in self._columns.keys():
-            setattr(doc, field, self._columns[field][item])
+        for field in self._doc_columns.keys():
+            setattr(doc, field, self._doc_columns[field][item])
+        for field in self._tensor_columns.keys():
+            setattr(doc, field, self._tensor_columns[field][item])
         return doc
 
-    def _get_slice(self: T, item: slice) -> T:
-        """Return a slice of the DocumentArrayStacked
+    def __setitem__(
+        self: T, key: Union[int, IndexIterType], value: Union[T, BaseDocument]
+    ):
+        # multiple docs case
+        if isinstance(key, (slice, Iterable)):
+            return self._set_data_and_columns(key, value)
+        # single doc case
+        doc = self._docs[key]
+        for field in self._doc_columns.keys():
+            setattr(doc, field, self._doc_columns[field][key])
+        for field in self._doc_columns.keys():
+            setattr(doc, field, self._doc_columns[field][key])
+        return doc
 
-        :param item: the slice to apply
-        :return: a DocumentArrayStacked
+    def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
+        """Delegates the access to the data and the columns,
+        and combines into a stacked da.
+
+        :param item: the item used as index. Needs to be a valid index for both
+            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
+        :return: a DocumentArrayStacked, indexed according to `item`
         """
+        if isinstance(item, tuple):
+            item = list(item)
+        # get documents
+        docs_indexed = self._docs[item]
+        # get doc columns
+        doc_columns_indexed = {k: col[item] for k, col in self._doc_columns.items()}
+        doc_columns_indexed_ = cast(
+            Dict[str, 'DocumentArrayStacked'], doc_columns_indexed
+        )
+        # get tensor columns
+        tensor_columns_indexed = {
+            k: col[item] for k, col in self._tensor_columns.items()
+        }
+        return self._from_da_and_columns(
+            docs_indexed, doc_columns_indexed_, tensor_columns_indexed
+        )
 
-        columns_sliced = {k: col[item] for k, col in self._columns.items()}
-        columns_sliced_ = cast(Dict[str, Union[AbstractTensor, T]], columns_sliced)
-        return self._from_columns(self._docs[item], columns_sliced_)
+    def _set_data_and_columns(
+        self: T,
+        index_item: Union[Tuple, Iterable, slice],
+        value: Union[T, BaseDocument],
+    ):
+        """Delegates the setting to the data and the columns.
+
+        :param index_item: the key used as index. Needs to be a valid index for both
+            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
+        :value: the value to set at the `key` location
+        """
+        if isinstance(index_item, tuple):
+            index_item = list(index_item)
+
+        # set data and prepare columns
+        doc_cols_to_set: Dict[str, DocumentArrayStacked]
+        tens_cols_to_set: Dict[str, AbstractTensor]
+        if isinstance(value, DocumentArray):
+            self._docs[index_item] = value
+            doc_cols_to_set, tens_cols_to_set = self._create_columns(
+                value, self.tensor_type
+            )
+        elif isinstance(value, BaseDocument):
+            self._docs[index_item] = value
+            doc_cols_to_set, tens_cols_to_set = self._create_columns(
+                DocumentArray.__class_getitem__(self.document_type)([value]),
+                self.tensor_type,
+            )
+        elif isinstance(value, DocumentArrayStacked):
+            self._docs[index_item] = value._docs
+            doc_cols_to_set = value._doc_columns
+            tens_cols_to_set = value._tensor_columns
+        else:
+            raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
+
+        # set columns
+        for col_key in self._doc_columns.keys():
+            self._doc_columns[col_key][index_item] = doc_cols_to_set[col_key]
+        for col_key in self._tensor_columns.keys():
+            self._tensor_columns[col_key][index_item] = tens_cols_to_set[col_key]
 
     def __iter__(self):
         for i in range(len(self)):
@@ -233,10 +333,11 @@ class DocumentArrayStacked(AnyDocumentArray):
             cls.document_type.from_protobuf(doc_proto)
             for doc_proto in pb_msg.list_.docs
         )
-        da = cls(DocumentArray([]))
+        da: T = cls(DocumentArray([]))
 
         da._docs = docs
-        da._columns = pb_msg.columns
+        da._doc_columns = pb_msg.doc_columns
+        da._tensor_columns = pb_msg.tensor_columns
         return da
 
     def to_protobuf(self) -> 'DocumentArrayStackedProto':
@@ -244,23 +345,25 @@ class DocumentArrayStacked(AnyDocumentArray):
         from docarray.proto import (
             DocumentArrayProto,
             DocumentArrayStackedProto,
-            UnionArrayProto,
+            NdArrayProto,
         )
 
         da_proto = DocumentArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
-        columns_proto: Dict[str, UnionArrayProto] = dict()
-        for field, column in self._columns.items():
-            if isinstance(column, DocumentArrayStacked):
-                columns_proto[field] = UnionArrayProto(
-                    document_array=DocumentArrayProto(stack=column.to_protobuf())
-                )
-            elif isinstance(column, AbstractTensor):
-                columns_proto[field] = UnionArrayProto(ndarray=column.to_protobuf())
+        doc_columns_proto: Dict[str, DocumentArrayStackedProto] = dict()
+        tens_columns_proto: Dict[str, NdArrayProto] = dict()
+        for field, col_doc in self._doc_columns.items():
+            doc_columns_proto[field] = col_doc.to_protobuf()
+        for field, col_tens in self._tensor_columns.items():
+            tens_columns_proto[field] = col_tens.to_protobuf()
 
-        return DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
+        return DocumentArrayStackedProto(
+            list_=da_proto,
+            doc_columns=doc_columns_proto,
+            tensor_columns=tens_columns_proto,
+        )
 
     def unstack(self: T) -> DocumentArray:
         """Convert DocumentArrayStacked into a DocumentArray.
@@ -268,18 +371,26 @@ class DocumentArrayStacked(AnyDocumentArray):
         Note this destroys the arguments and returns a new DocumentArray
         """
         for i, doc in enumerate(self._docs):
-            for field in self._columns.keys():
-                val = self._columns[field]
-                setattr(doc, field, val[i])
+            for field in self._doc_columns.keys():
+                val_doc = self._doc_columns[field]
+                setattr(doc, field, val_doc[i])
+
+            for field in self._tensor_columns.keys():
+                val_tens = self._tensor_columns[field]
+                setattr(doc, field, val_tens[i])
 
                 # NOTE: here we might need to copy the tensor
                 # see here
                 # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
                 # -when-the-original-tensor-is-deleted/167294 # noqa: E501
 
-        for field in list(self._columns.keys()):
+        for field in list(self._doc_columns.keys()):
             # list needed here otherwise we are modifying the dict while iterating
-            del self._columns[field]
+            del self._doc_columns[field]
+
+        for field in list(self._tensor_columns.keys()):
+            # list needed here otherwise we are modifying the dict while iterating
+            del self._tensor_columns[field]
 
         da_list = self._docs
         return da_list

@@ -8,12 +8,6 @@ from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
-try:
-    import torch  # noqa: F401
-except ImportError:
-    torch_imported = False
-else:
-    torch_imported = True
 
 T = TypeVar('T', bound='ProtoMixin')
 
