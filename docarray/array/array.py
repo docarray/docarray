@@ -100,6 +100,7 @@ class DocumentArray(AnyDocumentArray):
     fields at the DocumentArray level (for example `da.tensor` or `da.url`).
     You can also set fields, with `da.tensor = np.random.random([10, 100])`:
 
+
     .. code-block:: python
         print(da.url)
         # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
@@ -110,7 +111,9 @@ class DocumentArray(AnyDocumentArray):
         # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
         #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
 
+
     You can index into a DocumentArray like a numpy array or torch tensor:
+
 
     .. code-block:: python
         da[0]  # index by position
