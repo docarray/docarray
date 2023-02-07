@@ -36,7 +36,7 @@ class LegacyDocument(BaseDocument):
     tensor: Optional[AnyTensor]
     chunks: Optional[DocumentArray[LegacyDocument]]
     matches: Optional[DocumentArray[LegacyDocument]]
-    blob: Optional[Any]
+    blob: Optional[bytes]
     text: Optional[str]
     url: Optional[str]
     embedding: Optional[AnyEmbedding]
