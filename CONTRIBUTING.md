@@ -67,11 +67,11 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
-### Install dependency with poetry
+### Install dependencies using poetry
 
-We use [Poetry](https://python-poetry.org/) to manage our dependency.
+We use [Poetry](https://python-poetry.org/) to manage our dependencies.
 
-To getting stared with DocArray development you should do
+To get stared with DocArray development you should do:
 
 ```shell
 pip install poetry
@@ -80,14 +80,12 @@ poetry install --all-extras # this will install all of the dependency needed for
 
 This will automatically create a virtual environment and install all the dependency from the `lockfile` of Poetry.
 
-To run your code you need to do either
-
-Activate the environment 
+To run your code you need to either activate the environment:
 ```shell
 poetry shell
 python XYZ
 ```
-or use `poetry run`
+or use `poetry run`:
 
 ```shell
 poetry run python scratch.py
