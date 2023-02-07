@@ -345,22 +345,25 @@ class DocumentArrayStacked(AnyDocumentArray):
         from docarray.proto import (
             DocumentArrayProto,
             DocumentArrayStackedProto,
-            UnionArrayProto,
+            NdArrayProto,
         )
 
         da_proto = DocumentArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
-        columns_proto: Dict[str, UnionArrayProto] = dict()
+        doc_columns_proto: Dict[str, DocumentArrayStackedProto] = dict()
+        tens_columns_proto: Dict[str, NdArrayProto] = dict()
         for field, col_doc in self._doc_columns.items():
-            columns_proto[field] = UnionArrayProto(
-                document_array=DocumentArrayProto(stack=col_doc.to_protobuf())
-            )
+            doc_columns_proto[field] = col_doc.to_protobuf()
         for field, col_tens in self._tensor_columns.items():
-            columns_proto[field] = UnionArrayProto(ndarray=col_tens.to_protobuf())
+            tens_columns_proto[field] = col_tens.to_protobuf()
 
-        return DocumentArrayStackedProto(list_=da_proto, columns=columns_proto)
+        return DocumentArrayStackedProto(
+            list_=da_proto,
+            doc_columns=doc_columns_proto,
+            tensor_columns=tens_columns_proto,
+        )
 
     def unstack(self: T) -> DocumentArray:
         """Convert DocumentArrayStacked into a DocumentArray.
