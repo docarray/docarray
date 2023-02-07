@@ -37,7 +37,16 @@ def test_len(batch):
 @pytest.mark.tensorflow
 def test_getitem(batch):
     for i in range(len(batch)):
-        assert tnp.allclose(batch[i].tensor.tensor, tf.zeros((3, 224, 224)))
+        item = batch[i]
+        assert isinstance(item.tensor, TensorFlowTensor)
+        assert tnp.allclose(item.tensor.tensor, tf.zeros((3, 224, 224)))
+
+
+@pytest.mark.tensorflow
+def test_get_slice(batch):
+    sliced = batch[0:2]
+    assert isinstance(sliced, DocumentArrayStacked)
+    assert len(sliced) == 2
 
 
 @pytest.mark.tensorflow

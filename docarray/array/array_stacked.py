@@ -165,7 +165,8 @@ class DocumentArrayStacked(AnyDocumentArray):
                 columns[field] = TensorFlowTensor(stacked)
                 for i, doc in enumerate(docs):
                     val = getattr(doc, field)
-                    val.tensor = columns[field][i]
+                    x = columns[field][i].tensor
+                    val.tensor = x
 
             elif issubclass(type_, AbstractTensor):
                 tensor = getattr(docs[0], field)
@@ -230,12 +231,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         doc = self._docs[item]
         # NOTE: this could be speed up by using a cache
         for field in self._columns.keys():
-            value = self._columns[field]
-            if tf_available and isinstance(value, TensorFlowTensor):
-                new_value = value.tensor[item]
-            else:
-                new_value = value[item]
-            setattr(doc, field, new_value)
+            setattr(doc, field, self._columns[field][item])
         return doc
 
     def _get_slice(self: T, item: slice) -> T:
@@ -246,10 +242,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         columns_sliced: Dict[str, AnyTensor] = {}
         for k, col in self._columns.items():
-            if tf_available and isinstance(col, TensorFlowTensor):
-                columns_sliced[k] = TensorFlowTensor(col.tensor[item])
-            else:
-                columns_sliced[k] = col[item]
+            columns_sliced[k] = col[item]
 
         columns_sliced_ = cast(Dict[str, Union[AbstractTensor, T]], columns_sliced)
         return self._from_columns(self._docs[item], columns_sliced_)
@@ -305,11 +298,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         """
         for i, doc in enumerate(self._docs):
             for field in self._columns.keys():
-                val = self._columns[field]
-                if tf_available and isinstance(val, TensorFlowTensor):
-                    setattr(doc, field, val.tensor[i])
-                else:
-                    setattr(doc, field, val[i])
+                setattr(doc, field, self._columns[field][i])
 
                 # NOTE: here we might need to copy the tensor
                 # see here

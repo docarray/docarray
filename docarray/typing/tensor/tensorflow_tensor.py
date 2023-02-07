@@ -134,6 +134,12 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         super().__init__()
         self.tensor = tensor
 
+    def __getitem__(self, item):
+        from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+
+        output = self.unwrap()[item]
+        return TensorFlowCompBackend._cast_output(t=output)
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
