@@ -125,6 +125,7 @@ def test_optional_field_nested_in_doc():
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
 
+@pytest.mark.proto
 def test_integer_field():
     class Meow(BaseDocument):
         age: int
@@ -138,6 +139,7 @@ def test_integer_field():
     assert rebuilt_doc.registered
 
 
+@pytest.mark.proto
 def test_list_set_dict_tuple_field():
     class MyDoc(BaseDocument):
         list_: List
@@ -145,7 +147,9 @@ def test_list_set_dict_tuple_field():
         tuple_: Tuple
         set_: Set
 
-    d = MyDoc(list_=[0, 1, 2], dict_={'a': 0, 'b': 1}, tuple_=tuple([0, 1]), set_={0, 1})
+    d = MyDoc(
+        list_=[0, 1, 2], dict_={'a': 0, 'b': 1}, tuple_=tuple([0, 1]), set_={0, 1}
+    )
     rebuilt_doc = MyDoc.from_protobuf(d.to_protobuf())
     assert rebuilt_doc.list_ == [0, 1, 2]
     assert rebuilt_doc.dict_ == {'a': 0, 'b': 1}
