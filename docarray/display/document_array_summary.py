@@ -60,18 +60,15 @@ class DocumentArraySummary:
         stacked, i.e. all the fields that are of type AbstractTensor. Nested field
         paths are separated by dot, such as: 'attr.nested_attr'.
         """
-        from docarray.array import DocumentArrayStacked
-
         fields = []
-        for field_name, value in da._columns.items():
-            if isinstance(value, AbstractTensor):
-                fields.append(field_name)
-            elif isinstance(value, DocumentArrayStacked):
-                fields.extend(
-                    [
-                        f'{field_name}.{x}'
-                        for x in DocumentArraySummary._get_stacked_fields(da=value)
-                    ]
-                )
+        for field_name, value_tens in da._tensor_columns.items():
+            fields.append(field_name)
+        for field_name, value_doc in da._doc_columns.items():
+            fields.extend(
+                [
+                    f'{field_name}.{x}'
+                    for x in DocumentArraySummary._get_stacked_fields(da=value_doc)
+                ]
+            )
 
         return fields

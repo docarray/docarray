@@ -7,7 +7,6 @@ if __pb__version__.startswith('4'):
         DocumentProto,
         NdArrayProto,
         NodeProto,
-        UnionArrayProto,
     )
 else:
     from docarray.proto.pb2.docarray_pb2 import (
@@ -16,7 +15,6 @@ else:
         DocumentProto,
         NdArrayProto,
         NodeProto,
-        UnionArrayProto,
     )
 
 __all__ = [
@@ -26,5 +24,4 @@ __all__ = [
     'NodeProto',
     'DocumentArrayStackedProto',
     'DocumentArrayProto',
-    'UnionArrayProto',
 ]
