@@ -42,6 +42,14 @@ def test_simple_getitem(stack, da):
 
 
 @pytest.mark.parametrize('stack', [True, False])
+def test_get_none(stack, da):
+    if stack:
+        da = da.stack()
+
+    assert da[None] is da
+
+
+@pytest.mark.parametrize('stack', [True, False])
 @pytest.mark.parametrize('index', [(1, 2, 3, 4, 6), [1, 2, 3, 4, 6]])
 def test_iterable_getitem(stack, da, index):
     if stack:
