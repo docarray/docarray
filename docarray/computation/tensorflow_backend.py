@@ -54,12 +54,12 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
     """
 
     _module = tnp
-    _norm_left: Callable = norm_left
-    _norm_right: Callable = norm_right
+    _cast_output: Callable = norm_left
+    _get_tensor: Callable = norm_right
 
     @classmethod
     def to_numpy(cls, array: 'TensorFlowTensor') -> 'np.ndarray':
-        return cls._norm_right(array).numpy()
+        return cls._get_tensor(array).numpy()
 
     @classmethod
     def none_value(cls) -> typing.Any:
@@ -73,12 +73,12 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             return tensor
         else:
             with tf.device(device):
-                return cls._norm_left(tf.identity(cls._norm_right(tensor)))
+                return cls._cast_output(tf.identity(cls._get_tensor(tensor)))
 
     @classmethod
     def device(cls, tensor: 'TensorFlowTensor') -> Optional[str]:
         """Return device on which the tensor is allocated."""
-        return cls._norm_right(tensor).device
+        return cls._get_tensor(tensor).device
 
     @classmethod
     def detach(cls, tensor: 'TensorFlowTensor') -> 'TensorFlowTensor':
@@ -88,12 +88,12 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
         :param tensor: tensor to be detached
         :return: a detached tensor with the same data.
         """
-        return cls._norm_left(tf.stop_gradient(cls._norm_right(tensor)))
+        return cls._cast_output(tf.stop_gradient(cls._get_tensor(tensor)))
 
     @classmethod
     def dtype(cls, tensor: 'TensorFlowTensor') -> tf.dtypes:
         """Get the data type of the tensor."""
-        return cls._norm_right(tensor).dtype
+        return cls._get_tensor(tensor).dtype
 
     @classmethod
     def minmax_normalize(
@@ -105,14 +105,14 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
     ) -> 'TensorFlowTensor':
         a, b = t_range
 
-        t = tf.cast(cls._norm_right(tensor), tf.float32)
+        t = tf.cast(cls._get_tensor(tensor), tf.float32)
         min_d = x_range[0] if x_range else tnp.min(t, axis=-1, keepdims=True)
         max_d = x_range[1] if x_range else tnp.max(t, axis=-1, keepdims=True)
 
         i = (b - a) * (t - min_d) / (max_d - min_d + tf.constant(eps) + a)
 
         normalized = tnp.clip(i, *((a, b) if a < b else (b, a)))
-        return cls._norm_left(tf.cast(normalized, tensor.tensor.dtype))
+        return cls._cast_output(tf.cast(normalized, tensor.tensor.dtype))
 
     class Retrieval(AbstractComputationalBackend.Retrieval[TensorFlowTensor]):
         """
@@ -146,7 +146,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             if device is not None:
                 values = comp_be.to_device(values, device)
 
-            tf_values: tf.Tensor = comp_be._norm_right(values)
+            tf_values: tf.Tensor = comp_be._get_tensor(values)
             if len(tf_values.shape) <= 1:
                 tf_values = tf.expand_dims(tf_values, axis=0)
 
@@ -165,7 +165,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             if not descending:
                 res_values = -result.values
 
-            return comp_be._norm_left(res_values), comp_be._norm_left(res_indices)
+            return comp_be._cast_output(res_values), comp_be._cast_output(res_indices)
 
     class Metrics(AbstractComputationalBackend.Metrics[TensorFlowTensor]):
         """
@@ -194,8 +194,8 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 x_mat[i_x] and y_mat[i_y].
             """
             comp_be = TensorFlowCompBackend
-            x_mat_tf: tf.Tensor = comp_be._norm_right(x_mat)
-            y_mat_tf: tf.Tensor = comp_be._norm_right(y_mat)
+            x_mat_tf: tf.Tensor = comp_be._get_tensor(x_mat)
+            y_mat_tf: tf.Tensor = comp_be._get_tensor(y_mat)
 
             with tf.device(device):
                 x_mat_tf = tf.identity(x_mat_tf)
@@ -214,7 +214,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             sims = tf.squeeze(tf.linalg.matmul(a_norm, tf.transpose(b_norm)))
             sims = _unsqueeze_if_scalar(sims)
 
-            return comp_be._norm_left(sims)
+            return comp_be._cast_output(sims)
 
         @staticmethod
         def euclidean_dist(
@@ -236,8 +236,8 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
                 x_mat[i_x] and y_mat[i_y].
             """
             comp_be = TensorFlowCompBackend
-            x_mat_tf: tf.Tensor = comp_be._norm_right(x_mat)
-            y_mat_tf: tf.Tensor = comp_be._norm_right(y_mat)
+            x_mat_tf: tf.Tensor = comp_be._get_tensor(x_mat)
+            y_mat_tf: tf.Tensor = comp_be._get_tensor(y_mat)
 
             with tf.device(device):
                 x_mat_tf = tf.identity(x_mat_tf)
@@ -248,7 +248,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             dists = tf.squeeze(tf.norm(tf.subtract(x_mat_tf, y_mat_tf), axis=-1))
             dists = _unsqueeze_if_scalar(dists)
 
-            return comp_be._norm_left(dists)
+            return comp_be._cast_output(dists)
 
         @staticmethod
         def sqeuclidean_dist(
@@ -274,7 +274,7 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
             """
             dists = TensorFlowCompBackend.Metrics.euclidean_dist(x_mat, y_mat)
             squared: tf.Tensor = tf.math.square(
-                TensorFlowCompBackend._norm_right(dists)
+                TensorFlowCompBackend._get_tensor(dists)
             )
 
-            return TensorFlowCompBackend._norm_left(squared)
+            return TensorFlowCompBackend._cast_output(squared)

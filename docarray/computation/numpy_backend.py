@@ -40,8 +40,8 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
     """
 
     _module = np
-    _norm_left = identity
-    _norm_right = identity
+    _cast_output = identity
+    _get_tensor = identity
 
     @classmethod
     def to_device(cls, tensor: 'np.ndarray', device: str) -> 'np.ndarray':
