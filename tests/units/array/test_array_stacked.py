@@ -365,3 +365,14 @@ def test_keep_dtype_np():
     da = da.stack()
     assert da[0].tensor.dtype == np.int32
     assert da.tensor.dtype == np.int32
+
+
+def test_del_item(batch):
+    assert len(batch) == 10
+    assert batch.tensor.shape[0] == 10
+    del batch[2]
+    assert len(batch) == 9
+    assert batch.tensor.shape[0] == 9
+    del batch[0:2]
+    assert len(batch) == 7
+    assert batch.tensor.shape[0] == 7

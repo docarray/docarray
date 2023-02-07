@@ -29,7 +29,6 @@ if TYPE_CHECKING:
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-
 try:
     from docarray.typing import TorchTensor
 except ImportError:
@@ -49,10 +48,14 @@ class DocumentArrayStacked(AnyDocumentArray):
     but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
     stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
     you can be precise a Document schema by using the `DocumentArray[MyDocument]`
-    syntax where MyDocument is a Document class  (i.e. schema).
+    syntax where MyDocument is a Document class (i.e. schema).
     This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
+    .. note::
+        Deleting elements of a DocumentArrayStacked will rebuild the tensors from a
+        reference to the updated unstacked DocumentArray. This operation may be slow
+         as this class is not designed for so regular update.
     :param docs: a DocumentArray
 
     """
@@ -251,6 +254,21 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field in self._doc_columns.keys():
             setattr(doc, field, self._doc_columns[field][key])
         return doc
+
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        if key is None:
+            return
+
+        del self._docs[key]
+        self.from_document_array(self._docs)
 
     def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
         """Delegates the access to the data and the columns,
