@@ -6,19 +6,20 @@ authors=['DocArray']
 license='Apache 2.0'
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pydantic = "^1.10.2"
-numpy = "^1.22"
-protobuf = { version = "^4.21.9", optional = true }
-torch = { version = "^1.0.0", optional = true }
-orjson = "^3.8.2"
-pillow = {version = "^9.3.0", optional = true }
-types-pillow = {version = "^9.3.0.1", optional = true }
-trimesh = {version = "^3.17.1", optional = true}
-typing-inspect = "^0.8.0"
-types-requests = "^2.28.11.6"
-av = {version = "^10.0.0", optional = true}
-fastapi = {version = "^0.87.0", optional = true }
+python = ">=3.7"
+pydantic = ">=1.10.2"
+numpy = ">=1.17.3"
+protobuf = { version = ">=3.19.0", optional = true }
+torch = { version = ">=1.0.0", optional = true }
+orjson = ">=3.8.2"
+pillow = {version = ">=9.3.0", optional = true }
+types-pillow = {version = ">=9.3.0.1", optional = true }
+trimesh = {version = ">=3.17.1", optional = true}
+typing-inspect = ">=0.8.0"
+types-requests = ">=2.28.11.6"
+av = {version = ">=10.0.0", optional = true}
+fastapi = {version = ">=0.87.0", optional = true }
+rich = ">=13.1.0"
 
 [tool.poetry.extras]
 common = ["protobuf"]
