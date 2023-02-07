@@ -34,15 +34,63 @@ class metaTensorFlow(
 @_register_proto(proto_type_name='tensorflow_tensor')
 class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow):
     """
-    TensorFlowTensor class with a `.tensor` attribute of type `tf.Tensor`, intended for
-    use in a Document.
+    TensorFlowTensor class with a :attr:`~docarray.typing.TensorFlowTensor.tensor`
+    attribute of type :class:`tf.Tensor`, intended for use in a Document.
+
     This enables (de)serialization from/to protobuf and json, data validation,
     and coersion from compatible types like numpy.ndarray.
 
     This type can also be used in a parametrized way, specifying the shape of the
     tensor.
 
+    In comparison to :class:`~docarray.typing.TorchTensor` and
+    :class:`~docarray.typing.NdArray`, :class:`~docarray.typing.TensorFlowTensor` is not
+    a subclass of :class:`tf.Tensor` (or :class:`torch.Tensor`, :class:`np.ndarray`
+    respectively).
+    Instead, the :class:`tf.Tensor` is stored in
+    :attr:`~docarray.typing.TensorFlowTensor.tensor`.
+    Therefore, to do operations on the actual tensor data you have to always access the
+    :attr:`~docarray.typing.TensorFlowTensor.tensor` attribute.
+
     EXAMPLE USAGE
+
+    .. code-block:: python
+
+        import tensorflow as tf
+        from docarray.typing import TensorFlowTensor
+
+
+        t = TensorFlowTensor(tensor=tf.zeros((224, 224)))
+
+        # tensorflow functions
+        broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
+        broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
+        broadcasted = tf.broadcast_to(t, (3, 224, 224))  # this will fail
+
+        # tensorflow.Tensor methods:
+        arr = t.tensor.numpy()
+        arr = t.unwrap().numpy()
+        arr = t.numpy()  # this will fail
+
+    The :class:`~docarray.computation.tensorflow_backend.TensorFlowBackend` however,
+    operates on our :class:`~docarray.typing.TensorFlowTensor` instances.
+    Here, you do not have to access the :attr:`~docarray.typing.TensorFlowTensor.tensor`
+    but can instead just hand over your :class:`~docarray.typing.TensorFlowTensor`
+    instance.
+
+    .. code-block:: python
+
+        import tensorflow as tf
+        from docarray.typing import TensorFlowTensor
+
+
+        zeros = TensorFlowTensor(tensor=tf.zeros((3, 224, 224)))
+
+        comp_be = zeros.get_comp_backend()
+        reshaped = comp_be.reshape(zeros, (224, 224, 3))
+        assert comp_be.shape(reshaped) == (224, 224, 3)
+
+    You can use :class:`~docarray.typing.TensorFlowTensor` in a Document as follows:
 
     .. code-block:: python
 
@@ -77,26 +125,6 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             image_tensor=tf.zeros((224, 224)),  # this will fail validation
             square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
         )
-
-    If you want to call functions provided by tensorflow you have to access the
-    `.tensor` attribute or call `.unwrap()` on your TensorFlowTensor instance:
-
-    .. code-block:: python
-        from docarray.typing import TensorFlowTensor
-        import tensorflow as tf
-
-
-        t = TensorFlowTensor(tf.zeros((224, 224)))
-
-        # tensorflow functions
-        broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
-        broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
-        broadcasted = tf.broadcast_to(t, (3, 224, 224))  # this will fail
-
-        # tensorflow.Tensor methods:
-        arr = t.tensor.numpy()
-        arr = t.unwrap().numpy()
-        arr = t.numpy()  # this will fail
 
     """
 
