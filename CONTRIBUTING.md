@@ -67,6 +67,35 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
+### Install dependency with poetry
+
+We use [Poetry](https://python-poetry.org/) to manage our dependency.
+
+To getting stared with DocArray development you should do
+
+```shell
+pip install poetry
+poetry install --all-extras # this will install all of the dependency needed for development
+```
+
+This will automatically create a virtual environment and install all the dependency from the `lockfile` of Poetry.
+
+To run your code you need to do either
+
+Activate the environment 
+```shell
+poetry shell
+python XYZ
+```
+or use `poetry run`
+
+```shell
+poetry run python scratch.py
+poetry run pip xyz
+poetry run pytest
+poetry run XYZ
+```
+
 ### Install pre-commit hooks
 
 In DocArray we use git's pre-commit hooks in order to make sure the code matches our standards of quality and documentation.
