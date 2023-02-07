@@ -120,7 +120,6 @@ For branches, commits, and PRs we follow some basic naming conventions:
 * Short (under 70 characters is best)
 * In general, follow the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) guidelines
 
-Note: If you don't follow naming conventions, your commit will be automatically flagged to be fixed.
 
 ### Specify the correct types
 
