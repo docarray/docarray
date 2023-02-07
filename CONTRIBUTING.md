@@ -143,31 +143,6 @@ feat: add hat wobble
 - test: Adding missing tests or correcting existing tests
 - chore: updating grunt tasks etc.; no production code change
 
-### Naming your Branch
-
-Your branch name should follow the format `type-scope(-issue_id)`:
-
-* `type` is one of the [types above](#specify-the-correct-types)
-* `scope` is optional, and represents the module your branch is working on.
-* `issue_id` is [the GitHub issue](https://github.com/jina-ai/docarray/issues) number. Having the correct issue number will automatically link the Pull Request on this branch to that issue.
-
-> Good examples:
->
-```text
-fix-executor-loader-113
-chore-update-version
-docs-add-cloud-section-33
-```
-
-> Bad examples:
->
-
-| Branch name     | Feedback                                              |
-|-----------------|-------------------------------------------------------|
-| `FIXAWESOME123` | Not descriptive enough, all caps, doesn't follow spec |
-| `NEW-test-1`    | Should be lower case, not descriptive                 |
-| `mybranch-1`    | No type, not descriptive                              |
-
 ### Writing your Commit Message
 
 A good commit message helps us track DocArray's development. A Pull Request with a bad commit message will be *rejected* automatically in the CI pipeline.
