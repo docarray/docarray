@@ -225,7 +225,7 @@ We don't enforce naming of PRs and branches, but we recommend you follow the sam
 
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
-Locally you can do unittest via:
+Locally you can run the test via:
 
 ```bash
 poetry install --all-extras
