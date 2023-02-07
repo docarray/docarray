@@ -87,7 +87,7 @@ Most of our codebase is written in Python.
 
 ### PEP compliance
 
-We comply to the official PEP: E9, F63, F7, F82 code style and required every contribution to follow it. This is enforced by using [flake8](https://github.com/PyCQA/flake8) in our CI and in our [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks).
+We comply to the official PEP: E9, F63, F7, F82 code style and required every contribution to follow it. This is enforced by using [ruff](https://github.com/charliermarsh/ruff) in our CI and in our [pre-commit hooks](https://github.com/docarray/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks).
 
 ### Python version
 DocArray is compatible with Python 3.7 and above, therefore we can't accept contribution that used features from the newest Python versions without ensuring compatibility with python 3.7
