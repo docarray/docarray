@@ -10,7 +10,7 @@ docker run --rm \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
 cp ../README.md .
-cp ../CONTRIBUTING.md.md .
+cp ../CONTRIBUTING.md .
 
 
 cat README.md index_init.md > index.md
