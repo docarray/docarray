@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"Z\n\x0cKeyValuePair\x12#\n\x03key\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Value\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value\";\n\x10GenericDictValue\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.docarray.KeyValuePair\"\xa1\x03\n\tNodeProto\x12\x0e\n\x04text\x18\x01 \x01(\tH\x00\x12\x11\n\x07integer\x18\x02 \x01(\x05H\x00\x12\x0f\n\x05\x66loat\x18\x03 \x01(\x01H\x00\x12\x11\n\x07\x62oolean\x18\x04 \x01(\x08H\x00\x12\x0e\n\x04\x62lob\x18\x05 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x06 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12+\n\x08\x64ocument\x18\x07 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x08 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12*\n\x04list\x18\t \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12)\n\x06struct\x18\n \x01(\x0b\x32\x17.google.protobuf.StructH\x00\x12*\n\x04\x64ict\x18\x0b \x01(\x0b\x32\x1a.docarray.GenericDictValueH\x00\x12\x0e\n\x04type\x18\x0c \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"Z\n\x0cKeyValuePair\x12#\n\x03key\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Value\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value\";\n\x10GenericDictValue\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.docarray.KeyValuePair\"\xcb\x03\n\tNodeProto\x12\x0e\n\x04text\x18\x01 \x01(\tH\x00\x12\x11\n\x07integer\x18\x02 \x01(\x05H\x00\x12\x0f\n\x05\x66loat\x18\x03 \x01(\x01H\x00\x12\x11\n\x07\x62oolean\x18\x04 \x01(\x08H\x00\x12\x0e\n\x04\x62lob\x18\x05 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x06 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12+\n\x08\x64ocument\x18\x07 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x08 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12*\n\x04list\x18\t \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12)\n\x03set\x18\n \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12+\n\x05tuple\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12\'\n\x04\x64ict\x18\x0c \x01(\x0b\x32\x17.google.protobuf.StructH\x00\x12\x0e\n\x04type\x18\r \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
 
@@ -255,22 +255,29 @@ _NODEPROTO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='struct', full_name='docarray.NodeProto.struct', index=9,
+      name='set', full_name='docarray.NodeProto.set', index=9,
       number=10, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='dict', full_name='docarray.NodeProto.dict', index=10,
+      name='tuple', full_name='docarray.NodeProto.tuple', index=10,
       number=11, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='type', full_name='docarray.NodeProto.type', index=11,
-      number=12, type=9, cpp_type=9, label=1,
+      name='dict', full_name='docarray.NodeProto.dict', index=11,
+      number=12, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='docarray.NodeProto.type', index=12,
+      number=13, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -298,7 +305,7 @@ _NODEPROTO = _descriptor.Descriptor(
     fields=[]),
   ],
   serialized_start=384,
-  serialized_end=801,
+  serialized_end=843,
 )
 
 
@@ -336,8 +343,8 @@ _DOCUMENTPROTO_DATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=870,
-  serialized_end=934,
+  serialized_start=912,
+  serialized_end=976,
 )
 
 _DOCUMENTPROTO = _descriptor.Descriptor(
@@ -367,8 +374,8 @@ _DOCUMENTPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=804,
-  serialized_end=934,
+  serialized_start=846,
+  serialized_end=976,
 )
 
 
@@ -399,8 +406,8 @@ _DOCUMENTARRAYPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=936,
-  serialized_end=995,
+  serialized_start=978,
+  serialized_end=1037,
 )
 
 
@@ -443,8 +450,8 @@ _UNIONARRAYPROTO = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=998,
-  serialized_end=1132,
+  serialized_start=1040,
+  serialized_end=1174,
 )
 
 
@@ -482,8 +489,8 @@ _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1276,
-  serialized_end=1349,
+  serialized_start=1318,
+  serialized_end=1391,
 )
 
 _DOCUMENTARRAYSTACKEDPROTO = _descriptor.Descriptor(
@@ -520,8 +527,8 @@ _DOCUMENTARRAYSTACKEDPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1135,
-  serialized_end=1349,
+  serialized_start=1177,
+  serialized_end=1391,
 )
 
 _NDARRAYPROTO.fields_by_name['dense'].message_type = _DENSENDARRAYPROTO
@@ -533,8 +540,9 @@ _NODEPROTO.fields_by_name['ndarray'].message_type = _NDARRAYPROTO
 _NODEPROTO.fields_by_name['document'].message_type = _DOCUMENTPROTO
 _NODEPROTO.fields_by_name['document_array'].message_type = _DOCUMENTARRAYPROTO
 _NODEPROTO.fields_by_name['list'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
-_NODEPROTO.fields_by_name['struct'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
-_NODEPROTO.fields_by_name['dict'].message_type = _GENERICDICTVALUE
+_NODEPROTO.fields_by_name['set'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
+_NODEPROTO.fields_by_name['tuple'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
+_NODEPROTO.fields_by_name['dict'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
 _NODEPROTO.oneofs_by_name['content'].fields.append(
   _NODEPROTO.fields_by_name['text'])
 _NODEPROTO.fields_by_name['text'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
@@ -563,8 +571,11 @@ _NODEPROTO.oneofs_by_name['content'].fields.append(
   _NODEPROTO.fields_by_name['list'])
 _NODEPROTO.fields_by_name['list'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
 _NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['struct'])
-_NODEPROTO.fields_by_name['struct'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
+  _NODEPROTO.fields_by_name['set'])
+_NODEPROTO.fields_by_name['set'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
+_NODEPROTO.oneofs_by_name['content'].fields.append(
+  _NODEPROTO.fields_by_name['tuple'])
+_NODEPROTO.fields_by_name['tuple'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
 _NODEPROTO.oneofs_by_name['content'].fields.append(
   _NODEPROTO.fields_by_name['dict'])
 _NODEPROTO.fields_by_name['dict'].containing_oneof = _NODEPROTO.oneofs_by_name['content']

@@ -148,6 +148,6 @@ def test_list_set_dict_tuple_field():
     d = MyDoc(list_=[0, 1, 2], dict_={'a': 0, 'b': 1}, tuple_=tuple([0, 1]), set_={0, 1})
     rebuilt_doc = MyDoc.from_protobuf(d.to_protobuf())
     assert rebuilt_doc.list_ == [0, 1, 2]
-    assert rebuilt_doc.dict_ == [0, 1, 2]
+    assert rebuilt_doc.dict_ == {'a': 0, 'b': 1}
     assert rebuilt_doc.tuple_ == (0, 1)
     assert rebuilt_doc.set_ == {0, 1}

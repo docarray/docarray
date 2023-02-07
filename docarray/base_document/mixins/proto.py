@@ -3,10 +3,13 @@ from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
+from google.protobuf.struct_pb2 import ListValue
+from google.protobuf.struct_pb2 import Struct
+from google.protobuf.json_format import MessageToDict
+
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
-
 
 try:
     import torch  # noqa: F401
@@ -14,7 +17,6 @@ except ImportError:
     torch_imported = False
 else:
     torch_imported = True
-
 
 T = TypeVar('T', bound='ProtoMixin')
 
@@ -63,6 +65,14 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     fields[field] = value.float
                 elif content_key == 'boolean':
                     fields[field] = value.boolean
+                elif content_key == 'list':
+                    fields[field] = MessageToDict(value.list)
+                elif content_key == 'set':
+                    fields[field] = set(MessageToDict(value.set))
+                elif content_key == 'tuple':
+                    fields[field] = tuple(MessageToDict(value.tuple))
+                elif content_key == 'dict':
+                    fields[field] = MessageToDict(value.dict)
                 else:
                     raise ValueError(
                         f'key {content_key} is not supported for'
@@ -105,9 +115,28 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
 
-                elif isinstance(value, (list, set, tuple)):
-                    # TODO(Joan): Check how to build ListValue
-                    nested_item = NodeProto(float=value[0])
+                elif isinstance(value, list):
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(list=lvalue)
+
+                elif isinstance(value, set):
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(set=lvalue)
+
+                elif isinstance(value, tuple):
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(tuple=lvalue)
+
+                elif isinstance(value, dict):
+                    struct = Struct()
+                    struct.update(value)
+                    nested_item = NodeProto(dict=struct)
                 elif value is None:
                     nested_item = NodeProto()
                 else:

@@ -55,16 +55,18 @@ message NodeProto {
     DocumentProto document = 7;
     // a sub DocumentArray
     DocumentArrayProto document_array = 8;
-    //any list, could cover lists, sets and tuples
+    //any list
     google.protobuf.ListValue list = 9;
+    //any set
+    google.protobuf.ListValue set = 10;
+    //any tuple
+    google.protobuf.ListValue tuple = 11;
     // dictionary with string as keys
-    google.protobuf.Struct struct = 10;
-    //any dictionary
-    GenericDictValue dict = 11;
+    google.protobuf.Struct dict = 12;
   }
 
   oneof docarray_type {
-    string type = 12;
+    string type = 13;
   }
 
 }
