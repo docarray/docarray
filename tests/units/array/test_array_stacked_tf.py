@@ -81,7 +81,9 @@ def test_set_after_stacking(batch):
 @pytest.mark.tensorflow
 def test_stack_optional(batch):
 
-    assert tnp.allclose(batch._columns['tensor'].tensor, tf.zeros((10, 3, 224, 224)))
+    assert tnp.allclose(
+        batch._tensor_columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
+    )
     assert tnp.allclose(batch.tensor.tensor, tf.zeros((10, 3, 224, 224)))
 
 
@@ -100,7 +102,8 @@ def test_stack_mod_nested_document():
     batch = batch.stack()
 
     assert tnp.allclose(
-        batch._columns['img']._columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
+        batch._doc_columns['img']._tensor_columns['tensor'].tensor,
+        tf.zeros((10, 3, 224, 224)),
     )
 
     assert tnp.allclose(batch.img.tensor.tensor, tf.zeros((10, 3, 224, 224)))
@@ -202,8 +205,8 @@ def test_any_tensor_with_tf():
     for i in range(len(da)):
         assert tnp.allclose(da[i].tensor.tensor, tensor)
 
-    assert 'tensor' in da._columns.keys()
-    assert isinstance(da._columns['tensor'], TensorFlowTensor)
+    assert 'tensor' in da._tensor_columns.keys()
+    assert isinstance(da._tensor_columns['tensor'], TensorFlowTensor)
 
 
 @pytest.mark.tensorflow
@@ -224,9 +227,9 @@ def test_any_tensor_with_optional():
     for i in range(len(da)):
         assert tnp.allclose(da.img[i].tensor.tensor, tensor)
 
-    assert 'tensor' in da.img._columns.keys()
-    assert isinstance(da.img._columns['tensor'], TensorFlowTensor)
-    assert isinstance(da.img._columns['tensor'].tensor, tf.Tensor)
+    assert 'tensor' in da.img._tensor_columns.keys()
+    assert isinstance(da.img._tensor_columns['tensor'], TensorFlowTensor)
+    assert isinstance(da.img._tensor_columns['tensor'].tensor, tf.Tensor)
 
 
 @pytest.mark.tensorflow
@@ -255,7 +258,7 @@ def test_stack_none():
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
     ).stack()
 
-    assert 'tensor' in da._columns.keys()
+    assert 'tensor' in da._tensor_columns.keys()
 
 
 @pytest.mark.tensorflow

@@ -235,14 +235,17 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         """The computational backend compatible with this tensor type."""
         ...
 
-    def __getitem__(self, item):
+    @abc.abstractmethod
+    def __getitem__(self: T, item) -> T:
         """Get a slice of this tensor."""
         ...
 
+    @abc.abstractmethod
     def __setitem__(self, index, value):
         """Set a slice of this tensor."""
         ...
 
+    @abc.abstractmethod
     def __iter__(self):
         """Iterate over the elements of this tensor."""
         ...

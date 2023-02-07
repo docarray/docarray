@@ -140,6 +140,12 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         output = self.unwrap()[item]
         return TensorFlowCompBackend._cast_output(t=output)
 
+    def __setitem__(self, index, value):
+        """Set a slice of this tensor."""
+
+    def __iter__(self):
+        """Iterate over the elements of this tensor."""
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the

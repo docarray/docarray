@@ -3,9 +3,11 @@
 # source: docarray.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -13,682 +15,175 @@ _sym_db = _symbol_database.Default()
 
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
-
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='docarray.proto',
-  package='docarray',
-  syntax='proto3',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"Z\n\x0cKeyValuePair\x12#\n\x03key\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Value\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value\";\n\x10GenericDictValue\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.docarray.KeyValuePair\"\xcb\x03\n\tNodeProto\x12\x0e\n\x04text\x18\x01 \x01(\tH\x00\x12\x11\n\x07integer\x18\x02 \x01(\x05H\x00\x12\x0f\n\x05\x66loat\x18\x03 \x01(\x01H\x00\x12\x11\n\x07\x62oolean\x18\x04 \x01(\x08H\x00\x12\x0e\n\x04\x62lob\x18\x05 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x06 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12+\n\x08\x64ocument\x18\x07 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x08 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12*\n\x04list\x18\t \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12)\n\x03set\x18\n \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12+\n\x05tuple\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12\'\n\x04\x64ict\x18\x0c \x01(\x0b\x32\x17.google.protobuf.StructH\x00\x12\x0e\n\x04type\x18\r \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x86\x01\n\x0fUnionArrayProto\x12=\n\x0e\x64ocument_array\x18\x01 \x01(\x0b\x32#.docarray.DocumentArrayStackedProtoH\x00\x12)\n\x07ndarray\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x42\t\n\x07\x63ontent\"\xd6\x01\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12\x41\n\x07\x63olumns\x18\x02 \x03(\x0b\x32\x30.docarray.DocumentArrayStackedProto.ColumnsEntry\x1aI\n\x0c\x43olumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.UnionArrayProto:\x02\x38\x01\x62\x06proto3'
-  ,
-  dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
-
-
-
-
-_DENSENDARRAYPROTO = _descriptor.Descriptor(
-  name='DenseNdArrayProto',
-  full_name='docarray.DenseNdArrayProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='buffer', full_name='docarray.DenseNdArrayProto.buffer', index=0,
-      number=1, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='shape', full_name='docarray.DenseNdArrayProto.shape', index=1,
-      number=2, type=13, cpp_type=3, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='dtype', full_name='docarray.DenseNdArrayProto.dtype', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=58,
-  serialized_end=123,
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"g\n\x0cNdArrayProto\x12*\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\nparameters\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct\"Z\n\x0cKeyValuePair\x12#\n\x03key\x18\x01 \x01(\x0b\x32\x16.google.protobuf.Value\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.google.protobuf.Value\";\n\x10GenericDictValue\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.docarray.KeyValuePair\"\xcb\x03\n\tNodeProto\x12\x0e\n\x04text\x18\x01 \x01(\tH\x00\x12\x11\n\x07integer\x18\x02 \x01(\x05H\x00\x12\x0f\n\x05\x66loat\x18\x03 \x01(\x01H\x00\x12\x11\n\x07\x62oolean\x18\x04 \x01(\x08H\x00\x12\x0e\n\x04\x62lob\x18\x05 \x01(\x0cH\x00\x12)\n\x07ndarray\x18\x06 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12+\n\x08\x64ocument\x18\x07 \x01(\x0b\x32\x17.docarray.DocumentProtoH\x00\x12\x36\n\x0e\x64ocument_array\x18\x08 \x01(\x0b\x32\x1c.docarray.DocumentArrayProtoH\x00\x12*\n\x04list\x18\t \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12)\n\x03set\x18\n \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12+\n\x05tuple\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.ListValueH\x00\x12\'\n\x04\x64ict\x18\x0c \x01(\x0b\x32\x17.google.protobuf.StructH\x00\x12\x0e\n\x04type\x18\r \x01(\tH\x01\x42\t\n\x07\x63ontentB\x0f\n\rdocarray_type\"\x82\x01\n\rDocumentProto\x12/\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32!.docarray.DocumentProto.DataEntry\x1a@\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.docarray.NodeProto:\x02\x38\x01\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProto\"\x88\x03\n\x19\x44ocumentArrayStackedProto\x12+\n\x05list_\x18\x01 \x01(\x0b\x32\x1c.docarray.DocumentArrayProto\x12H\n\x0b\x64oc_columns\x18\x02 \x03(\x0b\x32\x33.docarray.DocumentArrayStackedProto.DocColumnsEntry\x12N\n\x0etensor_columns\x18\x03 \x03(\x0b\x32\x36.docarray.DocumentArrayStackedProto.TensorColumnsEntry\x1aV\n\x0f\x44ocColumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x32\n\x05value\x18\x02 \x01(\x0b\x32#.docarray.DocumentArrayStackedProto:\x02\x38\x01\x1aL\n\x12TensorColumnsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12%\n\x05value\x18\x02 \x01(\x0b\x32\x16.docarray.NdArrayProto:\x02\x38\x01\x62\x06proto3'
 )
 
 
-_NDARRAYPROTO = _descriptor.Descriptor(
-  name='NdArrayProto',
-  full_name='docarray.NdArrayProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='dense', full_name='docarray.NdArrayProto.dense', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='parameters', full_name='docarray.NdArrayProto.parameters', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=125,
-  serialized_end=228,
+_DENSENDARRAYPROTO = DESCRIPTOR.message_types_by_name['DenseNdArrayProto']
+_NDARRAYPROTO = DESCRIPTOR.message_types_by_name['NdArrayProto']
+_KEYVALUEPAIR = DESCRIPTOR.message_types_by_name['KeyValuePair']
+_GENERICDICTVALUE = DESCRIPTOR.message_types_by_name['GenericDictValue']
+_NODEPROTO = DESCRIPTOR.message_types_by_name['NodeProto']
+_DOCUMENTPROTO = DESCRIPTOR.message_types_by_name['DocumentProto']
+_DOCUMENTPROTO_DATAENTRY = _DOCUMENTPROTO.nested_types_by_name['DataEntry']
+_DOCUMENTARRAYPROTO = DESCRIPTOR.message_types_by_name['DocumentArrayProto']
+_DOCUMENTARRAYSTACKEDPROTO = DESCRIPTOR.message_types_by_name[
+    'DocumentArrayStackedProto'
+]
+_DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY = (
+    _DOCUMENTARRAYSTACKEDPROTO.nested_types_by_name['DocColumnsEntry']
 )
-
-
-_KEYVALUEPAIR = _descriptor.Descriptor(
-  name='KeyValuePair',
-  full_name='docarray.KeyValuePair',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='docarray.KeyValuePair.key', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='docarray.KeyValuePair.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=230,
-  serialized_end=320,
+_DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY = (
+    _DOCUMENTARRAYSTACKEDPROTO.nested_types_by_name['TensorColumnsEntry']
 )
-
-
-_GENERICDICTVALUE = _descriptor.Descriptor(
-  name='GenericDictValue',
-  full_name='docarray.GenericDictValue',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='entries', full_name='docarray.GenericDictValue.entries', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=322,
-  serialized_end=381,
+DenseNdArrayProto = _reflection.GeneratedProtocolMessageType(
+    'DenseNdArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _DENSENDARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DenseNdArrayProto)
+    },
 )
-
-
-_NODEPROTO = _descriptor.Descriptor(
-  name='NodeProto',
-  full_name='docarray.NodeProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='text', full_name='docarray.NodeProto.text', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='integer', full_name='docarray.NodeProto.integer', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='float', full_name='docarray.NodeProto.float', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='boolean', full_name='docarray.NodeProto.boolean', index=3,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='blob', full_name='docarray.NodeProto.blob', index=4,
-      number=5, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='ndarray', full_name='docarray.NodeProto.ndarray', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='document', full_name='docarray.NodeProto.document', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='document_array', full_name='docarray.NodeProto.document_array', index=7,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='list', full_name='docarray.NodeProto.list', index=8,
-      number=9, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='set', full_name='docarray.NodeProto.set', index=9,
-      number=10, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='tuple', full_name='docarray.NodeProto.tuple', index=10,
-      number=11, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='dict', full_name='docarray.NodeProto.dict', index=11,
-      number=12, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='type', full_name='docarray.NodeProto.type', index=12,
-      number=13, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='content', full_name='docarray.NodeProto.content',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-    _descriptor.OneofDescriptor(
-      name='docarray_type', full_name='docarray.NodeProto.docarray_type',
-      index=1, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=384,
-  serialized_end=843,
-)
-
-
-_DOCUMENTPROTO_DATAENTRY = _descriptor.Descriptor(
-  name='DataEntry',
-  full_name='docarray.DocumentProto.DataEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='docarray.DocumentProto.DataEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='docarray.DocumentProto.DataEntry.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=b'8\001',
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=912,
-  serialized_end=976,
-)
-
-_DOCUMENTPROTO = _descriptor.Descriptor(
-  name='DocumentProto',
-  full_name='docarray.DocumentProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='data', full_name='docarray.DocumentProto.data', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_DOCUMENTPROTO_DATAENTRY, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=846,
-  serialized_end=976,
-)
-
-
-_DOCUMENTARRAYPROTO = _descriptor.Descriptor(
-  name='DocumentArrayProto',
-  full_name='docarray.DocumentArrayProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='docs', full_name='docarray.DocumentArrayProto.docs', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=978,
-  serialized_end=1037,
-)
-
-
-_UNIONARRAYPROTO = _descriptor.Descriptor(
-  name='UnionArrayProto',
-  full_name='docarray.UnionArrayProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='document_array', full_name='docarray.UnionArrayProto.document_array', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='ndarray', full_name='docarray.UnionArrayProto.ndarray', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='content', full_name='docarray.UnionArrayProto.content',
-      index=0, containing_type=None,
-      create_key=_descriptor._internal_create_key,
-    fields=[]),
-  ],
-  serialized_start=1040,
-  serialized_end=1174,
-)
-
-
-_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY = _descriptor.Descriptor(
-  name='ColumnsEntry',
-  full_name='docarray.DocumentArrayStackedProto.ColumnsEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='docarray.DocumentArrayStackedProto.ColumnsEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='docarray.DocumentArrayStackedProto.ColumnsEntry.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=b'8\001',
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1318,
-  serialized_end=1391,
-)
-
-_DOCUMENTARRAYSTACKEDPROTO = _descriptor.Descriptor(
-  name='DocumentArrayStackedProto',
-  full_name='docarray.DocumentArrayStackedProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='list_', full_name='docarray.DocumentArrayStackedProto.list_', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='columns', full_name='docarray.DocumentArrayStackedProto.columns', index=1,
-      number=2, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1177,
-  serialized_end=1391,
-)
-
-_NDARRAYPROTO.fields_by_name['dense'].message_type = _DENSENDARRAYPROTO
-_NDARRAYPROTO.fields_by_name['parameters'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
-_KEYVALUEPAIR.fields_by_name['key'].message_type = google_dot_protobuf_dot_struct__pb2._VALUE
-_KEYVALUEPAIR.fields_by_name['value'].message_type = google_dot_protobuf_dot_struct__pb2._VALUE
-_GENERICDICTVALUE.fields_by_name['entries'].message_type = _KEYVALUEPAIR
-_NODEPROTO.fields_by_name['ndarray'].message_type = _NDARRAYPROTO
-_NODEPROTO.fields_by_name['document'].message_type = _DOCUMENTPROTO
-_NODEPROTO.fields_by_name['document_array'].message_type = _DOCUMENTARRAYPROTO
-_NODEPROTO.fields_by_name['list'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
-_NODEPROTO.fields_by_name['set'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
-_NODEPROTO.fields_by_name['tuple'].message_type = google_dot_protobuf_dot_struct__pb2._LISTVALUE
-_NODEPROTO.fields_by_name['dict'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['text'])
-_NODEPROTO.fields_by_name['text'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['integer'])
-_NODEPROTO.fields_by_name['integer'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['float'])
-_NODEPROTO.fields_by_name['float'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['boolean'])
-_NODEPROTO.fields_by_name['boolean'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['blob'])
-_NODEPROTO.fields_by_name['blob'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['ndarray'])
-_NODEPROTO.fields_by_name['ndarray'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['document'])
-_NODEPROTO.fields_by_name['document'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['document_array'])
-_NODEPROTO.fields_by_name['document_array'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['list'])
-_NODEPROTO.fields_by_name['list'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['set'])
-_NODEPROTO.fields_by_name['set'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['tuple'])
-_NODEPROTO.fields_by_name['tuple'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['content'].fields.append(
-  _NODEPROTO.fields_by_name['dict'])
-_NODEPROTO.fields_by_name['dict'].containing_oneof = _NODEPROTO.oneofs_by_name['content']
-_NODEPROTO.oneofs_by_name['docarray_type'].fields.append(
-  _NODEPROTO.fields_by_name['type'])
-_NODEPROTO.fields_by_name['type'].containing_oneof = _NODEPROTO.oneofs_by_name['docarray_type']
-_DOCUMENTPROTO_DATAENTRY.fields_by_name['value'].message_type = _NODEPROTO
-_DOCUMENTPROTO_DATAENTRY.containing_type = _DOCUMENTPROTO
-_DOCUMENTPROTO.fields_by_name['data'].message_type = _DOCUMENTPROTO_DATAENTRY
-_DOCUMENTARRAYPROTO.fields_by_name['docs'].message_type = _DOCUMENTPROTO
-_UNIONARRAYPROTO.fields_by_name['document_array'].message_type = _DOCUMENTARRAYSTACKEDPROTO
-_UNIONARRAYPROTO.fields_by_name['ndarray'].message_type = _NDARRAYPROTO
-_UNIONARRAYPROTO.oneofs_by_name['content'].fields.append(
-  _UNIONARRAYPROTO.fields_by_name['document_array'])
-_UNIONARRAYPROTO.fields_by_name['document_array'].containing_oneof = _UNIONARRAYPROTO.oneofs_by_name['content']
-_UNIONARRAYPROTO.oneofs_by_name['content'].fields.append(
-  _UNIONARRAYPROTO.fields_by_name['ndarray'])
-_UNIONARRAYPROTO.fields_by_name['ndarray'].containing_oneof = _UNIONARRAYPROTO.oneofs_by_name['content']
-_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY.fields_by_name['value'].message_type = _UNIONARRAYPROTO
-_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY.containing_type = _DOCUMENTARRAYSTACKEDPROTO
-_DOCUMENTARRAYSTACKEDPROTO.fields_by_name['list_'].message_type = _DOCUMENTARRAYPROTO
-_DOCUMENTARRAYSTACKEDPROTO.fields_by_name['columns'].message_type = _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY
-DESCRIPTOR.message_types_by_name['DenseNdArrayProto'] = _DENSENDARRAYPROTO
-DESCRIPTOR.message_types_by_name['NdArrayProto'] = _NDARRAYPROTO
-DESCRIPTOR.message_types_by_name['KeyValuePair'] = _KEYVALUEPAIR
-DESCRIPTOR.message_types_by_name['GenericDictValue'] = _GENERICDICTVALUE
-DESCRIPTOR.message_types_by_name['NodeProto'] = _NODEPROTO
-DESCRIPTOR.message_types_by_name['DocumentProto'] = _DOCUMENTPROTO
-DESCRIPTOR.message_types_by_name['DocumentArrayProto'] = _DOCUMENTARRAYPROTO
-DESCRIPTOR.message_types_by_name['UnionArrayProto'] = _UNIONARRAYPROTO
-DESCRIPTOR.message_types_by_name['DocumentArrayStackedProto'] = _DOCUMENTARRAYSTACKEDPROTO
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-DenseNdArrayProto = _reflection.GeneratedProtocolMessageType('DenseNdArrayProto', (_message.Message,), {
-  'DESCRIPTOR' : _DENSENDARRAYPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.DenseNdArrayProto)
-  })
 _sym_db.RegisterMessage(DenseNdArrayProto)
 
-NdArrayProto = _reflection.GeneratedProtocolMessageType('NdArrayProto', (_message.Message,), {
-  'DESCRIPTOR' : _NDARRAYPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.NdArrayProto)
-  })
+NdArrayProto = _reflection.GeneratedProtocolMessageType(
+    'NdArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _NDARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.NdArrayProto)
+    },
+)
 _sym_db.RegisterMessage(NdArrayProto)
 
-KeyValuePair = _reflection.GeneratedProtocolMessageType('KeyValuePair', (_message.Message,), {
-  'DESCRIPTOR' : _KEYVALUEPAIR,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.KeyValuePair)
-  })
+KeyValuePair = _reflection.GeneratedProtocolMessageType(
+    'KeyValuePair',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _KEYVALUEPAIR,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.KeyValuePair)
+    },
+)
 _sym_db.RegisterMessage(KeyValuePair)
 
-GenericDictValue = _reflection.GeneratedProtocolMessageType('GenericDictValue', (_message.Message,), {
-  'DESCRIPTOR' : _GENERICDICTVALUE,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.GenericDictValue)
-  })
+GenericDictValue = _reflection.GeneratedProtocolMessageType(
+    'GenericDictValue',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _GENERICDICTVALUE,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.GenericDictValue)
+    },
+)
 _sym_db.RegisterMessage(GenericDictValue)
 
-NodeProto = _reflection.GeneratedProtocolMessageType('NodeProto', (_message.Message,), {
-  'DESCRIPTOR' : _NODEPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.NodeProto)
-  })
+NodeProto = _reflection.GeneratedProtocolMessageType(
+    'NodeProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _NODEPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.NodeProto)
+    },
+)
 _sym_db.RegisterMessage(NodeProto)
 
-DocumentProto = _reflection.GeneratedProtocolMessageType('DocumentProto', (_message.Message,), {
-
-  'DataEntry' : _reflection.GeneratedProtocolMessageType('DataEntry', (_message.Message,), {
-    'DESCRIPTOR' : _DOCUMENTPROTO_DATAENTRY,
-    '__module__' : 'docarray_pb2'
-    # @@protoc_insertion_point(class_scope:docarray.DocumentProto.DataEntry)
-    })
-  ,
-  'DESCRIPTOR' : _DOCUMENTPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.DocumentProto)
-  })
+DocumentProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentProto',
+    (_message.Message,),
+    {
+        'DataEntry': _reflection.GeneratedProtocolMessageType(
+            'DataEntry',
+            (_message.Message,),
+            {
+                'DESCRIPTOR': _DOCUMENTPROTO_DATAENTRY,
+                '__module__': 'docarray_pb2'
+                # @@protoc_insertion_point(class_scope:docarray.DocumentProto.DataEntry)
+            },
+        ),
+        'DESCRIPTOR': _DOCUMENTPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentProto)
+    },
+)
 _sym_db.RegisterMessage(DocumentProto)
 _sym_db.RegisterMessage(DocumentProto.DataEntry)
 
-DocumentArrayProto = _reflection.GeneratedProtocolMessageType('DocumentArrayProto', (_message.Message,), {
-  'DESCRIPTOR' : _DOCUMENTARRAYPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.DocumentArrayProto)
-  })
+DocumentArrayProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentArrayProto',
+    (_message.Message,),
+    {
+        'DESCRIPTOR': _DOCUMENTARRAYPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentArrayProto)
+    },
+)
 _sym_db.RegisterMessage(DocumentArrayProto)
 
-UnionArrayProto = _reflection.GeneratedProtocolMessageType('UnionArrayProto', (_message.Message,), {
-  'DESCRIPTOR' : _UNIONARRAYPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.UnionArrayProto)
-  })
-_sym_db.RegisterMessage(UnionArrayProto)
-
-DocumentArrayStackedProto = _reflection.GeneratedProtocolMessageType('DocumentArrayStackedProto', (_message.Message,), {
-
-  'ColumnsEntry' : _reflection.GeneratedProtocolMessageType('ColumnsEntry', (_message.Message,), {
-    'DESCRIPTOR' : _DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY,
-    '__module__' : 'docarray_pb2'
-    # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto.ColumnsEntry)
-    })
-  ,
-  'DESCRIPTOR' : _DOCUMENTARRAYSTACKEDPROTO,
-  '__module__' : 'docarray_pb2'
-  # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto)
-  })
+DocumentArrayStackedProto = _reflection.GeneratedProtocolMessageType(
+    'DocumentArrayStackedProto',
+    (_message.Message,),
+    {
+        'DocColumnsEntry': _reflection.GeneratedProtocolMessageType(
+            'DocColumnsEntry',
+            (_message.Message,),
+            {
+                'DESCRIPTOR': _DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY,
+                '__module__': 'docarray_pb2'
+                # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto.DocColumnsEntry)
+            },
+        ),
+        'TensorColumnsEntry': _reflection.GeneratedProtocolMessageType(
+            'TensorColumnsEntry',
+            (_message.Message,),
+            {
+                'DESCRIPTOR': _DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY,
+                '__module__': 'docarray_pb2'
+                # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto.TensorColumnsEntry)
+            },
+        ),
+        'DESCRIPTOR': _DOCUMENTARRAYSTACKEDPROTO,
+        '__module__': 'docarray_pb2'
+        # @@protoc_insertion_point(class_scope:docarray.DocumentArrayStackedProto)
+    },
+)
 _sym_db.RegisterMessage(DocumentArrayStackedProto)
-_sym_db.RegisterMessage(DocumentArrayStackedProto.ColumnsEntry)
+_sym_db.RegisterMessage(DocumentArrayStackedProto.DocColumnsEntry)
+_sym_db.RegisterMessage(DocumentArrayStackedProto.TensorColumnsEntry)
 
+if _descriptor._USE_C_DESCRIPTORS == False:
 
-_DOCUMENTPROTO_DATAENTRY._options = None
-_DOCUMENTARRAYSTACKEDPROTO_COLUMNSENTRY._options = None
+    DESCRIPTOR._options = None
+    _DOCUMENTPROTO_DATAENTRY._options = None
+    _DOCUMENTPROTO_DATAENTRY._serialized_options = b'8\001'
+    _DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY._options = None
+    _DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY._serialized_options = b'8\001'
+    _DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY._options = None
+    _DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY._serialized_options = b'8\001'
+    _DENSENDARRAYPROTO._serialized_start = 58
+    _DENSENDARRAYPROTO._serialized_end = 123
+    _NDARRAYPROTO._serialized_start = 125
+    _NDARRAYPROTO._serialized_end = 228
+    _KEYVALUEPAIR._serialized_start = 230
+    _KEYVALUEPAIR._serialized_end = 320
+    _GENERICDICTVALUE._serialized_start = 322
+    _GENERICDICTVALUE._serialized_end = 381
+    _NODEPROTO._serialized_start = 384
+    _NODEPROTO._serialized_end = 843
+    _DOCUMENTPROTO._serialized_start = 846
+    _DOCUMENTPROTO._serialized_end = 976
+    _DOCUMENTPROTO_DATAENTRY._serialized_start = 912
+    _DOCUMENTPROTO_DATAENTRY._serialized_end = 976
+    _DOCUMENTARRAYPROTO._serialized_start = 978
+    _DOCUMENTARRAYPROTO._serialized_end = 1037
+    _DOCUMENTARRAYSTACKEDPROTO._serialized_start = 1040
+    _DOCUMENTARRAYSTACKEDPROTO._serialized_end = 1432
+    _DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY._serialized_start = 1268
+    _DOCUMENTARRAYSTACKEDPROTO_DOCCOLUMNSENTRY._serialized_end = 1354
+    _DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY._serialized_start = 1356
+    _DOCUMENTARRAYSTACKEDPROTO_TENSORCOLUMNSENTRY._serialized_end = 1432
 # @@protoc_insertion_point(module_scope)
