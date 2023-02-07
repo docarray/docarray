@@ -178,7 +178,7 @@ Let's search for `"she entered the room"` in *Pride and Prejudice*:
 ````{admonition} SciPy
 :class: note
 
-The example below uses SciPy to speed up computations. To install scipy you can run `pip install scipy`, or install
+The example below uses SciPy to speed up computations. To install SciPy you can run `pip install scipy`, or install
 it together with other optional dependencies using `pip install "docarray[full]"`.
 
 Alternatively, you can run the example below without SciPy by setting `use_scipy=False` in the `.match()` method.
