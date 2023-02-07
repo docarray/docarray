@@ -6,7 +6,7 @@ from docarray import BaseDocument, DocumentArray
 from docarray.typing import AnyEmbedding, AnyTensor
 
 
-class Document(BaseDocument):
+class LegacyDocument(BaseDocument):
     """
     This Document is the LegacyDocument. It follows the same schema as in DocArray v1.
     It can be useful to start migrating a codebase from v1 to v2.
@@ -17,10 +17,10 @@ class Document(BaseDocument):
     .. code-block:: python
 
         from docarray import DocumentArray
-        from docarray.documents.legacy import Document
+        from docarray.documents.legacy import LegacyDocument
         import numpy as np
 
-        doc = Document(text='hello')
+        doc = LegacyDocument(text='hello')
         doc.url = 'http://myimg.png'
         doc.tensor = np.zeros((3, 224, 224))
         doc.embedding = np.zeros((100, 1))
@@ -34,8 +34,8 @@ class Document(BaseDocument):
     """
 
     tensor: Optional[AnyTensor]
-    chunks: Optional[DocumentArray[Document]]
-    matches: Optional[DocumentArray[Document]]
+    chunks: Optional[DocumentArray[LegacyDocument]]
+    matches: Optional[DocumentArray[LegacyDocument]]
     blob: Optional[Any]
     text: Optional[str]
     url: Optional[str]

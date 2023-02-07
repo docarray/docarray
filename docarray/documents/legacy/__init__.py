@@ -1,3 +1,3 @@
-from docarray.documents.legacy.legacy_document import Document
+from docarray.documents.legacy.legacy_document import LegacyDocument
 
-__all__ = ['Document']
+__all__ = ['LegacyDocument']
