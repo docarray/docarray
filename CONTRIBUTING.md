@@ -230,8 +230,10 @@ We don't enforce naming of PRs and branches, but we recommend you follow the sam
 Locally you can do unittest via:
 
 ```bash
-pip install ".[test]"
-pytest -v -s tests
+poetry install --all-extras
+poetry run pip install protobuf==3.19.0
+poetry run pip install tensorflow
+poetry run pytest -v -s tests
 ```
 
 ### Test policy
