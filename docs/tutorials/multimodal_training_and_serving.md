@@ -67,7 +67,7 @@ from transformers import AutoTokenizer, DistilBertModel
 ```
 
 ```python
-DEVICE = "cuda:2"  # change to your favourite device
+DEVICE = "cuda:0"  # change to your favourite device
 ```
 
 <!-- #region tags=[] -->
@@ -158,8 +158,8 @@ class VisionPreprocess:
             ]
         )
 
-    def __call__(self, url: ImageUrl) -> TorchTensor[3, 224, 224]:
-        return self.transform(url.load())
+    def __call__(self, image: Image) -> None:
+        image.tensor = self.transform(image.url.load())
 ```
 
 ```python
@@ -167,9 +167,12 @@ class TextPreprocess:
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased")
 
-    def __call__(self, text: str) -> Tokens:
-        return Tokens(
-            **self.tokenizer(text, padding="max_length", truncation=True, max_length=48)
+    def __call__(self, text: Text) -> None:
+        assert isinstance(text, Text)
+        text.tokens = Tokens(
+            **self.tokenizer(
+                text.text, padding="max_length", truncation=True, max_length=48
+            )
         )
 ```
 
@@ -179,56 +182,35 @@ class TextPreprocess:
 import pandas as pd
 
 
-class PairDataset(Dataset):
-    def __init__(
-        self,
-        file: str,
-        vision_preprocess: VisionPreprocess,
-        text_preprocess: TextPreprocess,
-        N: Optional[int] = None,
-    ):
-        df = pd.read_csv(file, nrows=N)
-        self.docs = DocumentArray[PairTextImage](
-            PairTextImage(
-                text=Text(text=i.caption), image=Image(url=f"Images/{i.image}")
-            )
-            for i in df.itertuples()
-        )
-
-        self.vision_preprocess = vision_preprocess
-        self.text_preprocess = text_preprocess
-
-    def __len__(self):
-        return len(self.docs)
-
-    def __getitem__(self, item: int):
-        doc = self.docs[item].copy(deep=True)
-        doc.image.tensor = self.vision_preprocess(doc.image.url)
-        doc.text.tokens = self.text_preprocess(doc.text.text)
-        return doc
-
-    @staticmethod
-    def collate_fn(batch: List[PairTextImage]):
-        batch = DocumentArray[PairTextImage](batch, tensor_type=TorchTensor)
-        batch = batch.stack()
-
-        return batch
+def get_flickr8k_da(file: str = "captions.txt", N: Optional[int] = None):
+    df = pd.read_csv(file, nrows=N)
+    da = DocumentArray[PairTextImage](
+        PairTextImage(text=Text(text=i.caption), image=Image(url=f"Images/{i.image}"))
+        for i in df.itertuples()
+    )
+    return da
 ```
 
-In the `PairDataset` class we can already see some of the beauty of DocArray.
-The dataset will return Documents that contain the text and image data, accessible via `doc.text` and `doc.image`.
+In the `get_flickr8k_da` method we process the Flickr8k dataset into a `DocumentArray`.
 
-Now let's instantiate this dataset:
+Now let's instantiate this dataset using the `MultiModalDataset` class. The constructor takes in the `da` and a dictionary of preprocessing transformations:
 
 ```python
-vision_preprocess = VisionPreprocess()
-text_preprocess = TextPreprocess()
+da = get_flickr8k_da()
+preprocessing = {"image": VisionPreprocess(), "text": TextPreprocess()}
 ```
 
 ```python
-dataset = PairDataset("captions.txt", vision_preprocess, text_preprocess)
+from docarray.data import MultiModalDataset
+
+dataset = MultiModalDataset[PairTextImage](da=da, preprocessing=preprocessing)
 loader = DataLoader(
-    dataset, batch_size=128, collate_fn=PairDataset.collate_fn, shuffle=True
+    dataset,
+    batch_size=128,
+    collate_fn=dataset.collate_fn,
+    shuffle=True,
+    num_workers=4,
+    multiprocessing_context="fork",
 )
 ```
 
@@ -325,9 +307,11 @@ which is exactly what our model can operate on.
 So let's write a training loop and train our encoders:
 
 ```python tags=[]
+from tqdm import tqdm
+
 with torch.autocast(device_type="cuda", dtype=torch.float16):
     for epoch in range(num_epoch):
-        for i, batch in enumerate(loader):  
+        for i, batch in tqdm(enumerate(loader), total=len(loader), desc=f"Epoch {epoch}"):
             batch.to(DEVICE)  # DocumentArray can be moved to device
 
             optim.zero_grad()
@@ -335,7 +319,7 @@ with torch.autocast(device_type="cuda", dtype=torch.float16):
             batch.image.embedding = vision_encoder(batch.image)
             batch.text.embedding = text_encoder(batch.text)
             loss = clip_loss(batch.image, batch.text)
-            if i % 10 == 0:
+            if i % 30 == 0:
                 print(f"{i+epoch} steps , loss : {loss}")
             loss.backward()
             optim.step()
@@ -373,11 +357,15 @@ text_encoder = text_encoder.eval()
 Now all we need to do is to tell FastAPI what methods it should use to serve the model:
 
 ```python
+text_preprocess = TextPreprocess()
+```
+
+```python
 @app.post("/embed_text/", response_model=Text, response_class=DocumentResponse)
 async def embed_text(doc: Text) -> Text:
     with torch.autocast(device_type="cuda", dtype=torch.float16):
         with torch.inference_mode():
-            doc.tokens = text_preprocess(doc.text)
+            text_preprocess(doc)
             da = DocumentArray[Text]([doc], tensor_type=TorchTensor).stack()
             da.to(DEVICE)
             doc.embedding = text_encoder(da)[0].to('cpu')

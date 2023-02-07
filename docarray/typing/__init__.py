@@ -44,8 +44,15 @@ except ImportError:
 else:
     from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
     from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
+    from docarray.typing.tensor.image import ImageTorchTensor  # noqa:  F401
     from docarray.typing.tensor.video.video_torch_tensor import VideoTorchTensor  # noqa
 
     __all__.extend(
-        ['AudioTorchTensor', 'TorchEmbedding', 'TorchTensor', 'VideoTorchTensor']
+        [
+            'AudioTorchTensor',
+            'TorchEmbedding',
+            'TorchTensor',
+            'VideoTorchTensor',
+            'ImageTorchTensor',
+        ]
     )

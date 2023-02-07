@@ -4,7 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
+    Generic,
     Iterable,
     List,
     Optional,
@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound='DocumentArray')
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
@@ -66,7 +67,7 @@ def _is_np_int(item: Any) -> bool:
     return False  # this is unreachable, but mypy wants it
 
 
-class DocumentArray(AnyDocumentArray):
+class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     """
      DocumentArray is a container of Documents.
 
@@ -125,7 +126,6 @@ class DocumentArray(AnyDocumentArray):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
-    __typed_da__: Dict[Type[BaseDocument], Type] = {}
 
     def __init__(
         self,
@@ -289,7 +289,7 @@ class DocumentArray(AnyDocumentArray):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
-            return self.__class__.__class_getitem__(field_type)(
+            return DocumentArray.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self), tensor_type=self.tensor_type
             )
         else:

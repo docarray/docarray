@@ -4,6 +4,7 @@ from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
+
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
@@ -49,9 +50,36 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     fields[field] = value.text
                 elif content_key == 'blob':
                     fields[field] = value.blob
+                elif content_key == 'integer':
+                    fields[field] = value.integer
+                elif content_key == 'float':
+                    fields[field] = value.float
+                elif content_key == 'boolean':
+                    fields[field] = value.boolean
+                elif content_key == 'list':
+                    from google.protobuf.json_format import MessageToDict
+
+                    fields[field] = MessageToDict(value.list)
+                elif content_key == 'set':
+                    from google.protobuf.json_format import MessageToDict
+
+                    fields[field] = set(MessageToDict(value.set))
+                elif content_key == 'tuple':
+                    from google.protobuf.json_format import MessageToDict
+
+                    fields[field] = tuple(MessageToDict(value.tuple))
+                elif content_key == 'dict':
+                    from google.protobuf.json_format import MessageToDict
+
+                    fields[field] = MessageToDict(value.dict)
+                else:
+                    raise ValueError(
+                        f'key {content_key} is not supported for' f' deserialization'
+                    )
+
             else:
                 raise ValueError(
-                    f'type {content_type}, with key {content_key}  is not supported for'
+                    f'type {content_type}, with key {content_key} is not supported for'
                     f' deserialization'
                 )
 
@@ -73,8 +101,48 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 elif isinstance(value, str):
                     nested_item = NodeProto(text=value)
 
+                elif isinstance(value, bool):
+                    nested_item = NodeProto(boolean=value)
+
+                elif isinstance(value, int):
+                    nested_item = NodeProto(integer=value)
+
+                elif isinstance(value, float):
+                    nested_item = NodeProto(float=value)
+
                 elif isinstance(value, bytes):
                     nested_item = NodeProto(blob=value)
+
+                elif isinstance(value, list):
+                    from google.protobuf.struct_pb2 import ListValue
+
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(list=lvalue)
+
+                elif isinstance(value, set):
+                    from google.protobuf.struct_pb2 import ListValue
+
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(set=lvalue)
+
+                elif isinstance(value, tuple):
+                    from google.protobuf.struct_pb2 import ListValue
+
+                    lvalue = ListValue()
+                    for item in value:
+                        lvalue.append(item)
+                    nested_item = NodeProto(tuple=lvalue)
+
+                elif isinstance(value, dict):
+                    from google.protobuf.struct_pb2 import Struct
+
+                    struct = Struct()
+                    struct.update(value)
+                    nested_item = NodeProto(dict=struct)
                 elif value is None:
                     nested_item = NodeProto()
                 else:
