@@ -259,6 +259,7 @@ def test_stack_none():
     ).stack()
 
     assert 'tensor' in da._tensor_columns.keys()
+    assert da.tensor.tensor is None
 
 
 @pytest.mark.tensorflow

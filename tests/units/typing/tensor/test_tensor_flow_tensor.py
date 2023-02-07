@@ -167,3 +167,12 @@ def test_parametrized_operations():
     assert isinstance(t_result, tf.Tensor)
     assert not isinstance(t_result, TensorFlowTensor)
     assert not isinstance(t_result, TensorFlowTensor[128])
+
+
+@pytest.mark.tensorflow
+def test_set_item():
+    t = TensorFlowTensor(tensor=tf.zeros((3, 224, 224)))
+    t[0] = tf.ones((1, 224, 224))
+    assert tnp.allclose(t.tensor[0], tf.ones((1, 224, 224)))
+    assert tnp.allclose(t.tensor[1], tf.zeros((1, 224, 224)))
+    assert tnp.allclose(t.tensor[2], tf.zeros((1, 224, 224)))

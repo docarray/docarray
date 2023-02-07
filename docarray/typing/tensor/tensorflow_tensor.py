@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import tensorflow as tf  # type: ignore
+import tensorflow._api.v2.experimental.numpy as tnp
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -137,14 +138,26 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     def __getitem__(self, item):
         from docarray.computation.tensorflow_backend import TensorFlowCompBackend
 
-        output = self.unwrap()[item]
-        return TensorFlowCompBackend._cast_output(t=output)
+        tensor = self.unwrap()
+        if tensor is not None:
+            tensor = tensor[item]
+        return TensorFlowCompBackend._cast_output(t=tensor)
 
     def __setitem__(self, index, value):
-        """Set a slice of this tensor."""
+        """Set a slice of this tensor's tf.Tensor"""
+        if tnp.all(tf.math.is_nan(value)):
+            self.tensor = None
+        else:
+            t = self.unwrap()
+            var = tf.Variable(t)
+            var[index].assign(value)
+            self.tensor = tf.constant(var)
 
     def __iter__(self):
-        """Iterate over the elements of this tensor."""
+        """Iterate over the elements of this tensor's tf.Tensor."""
+        tensor = self.unwrap()
+        for i in range(len(tensor)):
+            yield tensor[i]
 
     @classmethod
     def __get_validators__(cls):
