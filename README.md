@@ -277,6 +277,13 @@ You instantly win in code readability and maintainability. And for the same pric
 schema definition (see below). Everything handles in a pythonic manner by relying on type hints.
 
 
+## Coming from TensorFlow
+
+To use DocArray with tensorflow we first need to install the following extras:
+```
+pip install tensorflow==2.11.0
+pip install protobuf==3.19.0
+```
 
 ## Coming from FastAPI
 
