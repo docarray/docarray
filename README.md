@@ -209,22 +209,22 @@ class MyMultiModalModel(nn.Module):
         self.text_encoder = TextEncoder()
 
     def forward(self, text_1, text_2, image_1, image_2, audio_1, audio_2):
-        emnedding_text_1 = self.text_encoder(text_1)
-        emnedding_text_2 = self.text_encoder(text_2)
+        embedding_text_1 = self.text_encoder(text_1)
+        embedding_text_2 = self.text_encoder(text_2)
 
-        emnedding_image_1 = self.image_encoder(image_1)
-        emnedding_image_2 = self.image_encoder(image_2)
+        embedding_image_1 = self.image_encoder(image_1)
+        embedding_image_2 = self.image_encoder(image_2)
 
-        emnedding_audio_1 = self.image_encoder(audio_1)
-        emnedding_audio_2 = self.image_encoder(audio_2)
+        embedding_audio_1 = self.image_encoder(audio_1)
+        embedding_audio_2 = self.image_encoder(audio_2)
 
         return (
-            emnedding_text_1,
-            emnedding_text_2,
-            emnedding_image_1,
-            emnedding_image_2,
-            emnedding_audio_1,
-            emnedding_audio_2,
+            embedding_text_1,
+            embedding_text_2,
+            embedding_image_1,
+            embedding_image_2,
+            embedding_audio_1,
+            embedding_audio_2,
         )
 ```
 
@@ -258,14 +258,14 @@ class MyPodcastModel(nn.Module):
         self.image_encoder = ImageEncoder()
         self.text_encoder = TextEncoder()
 
-    def forward_podcast(da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+    def forward_podcast(self, da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
         da.audio.embedding = self.audio_encoder(da.audio.tensor)
         da.text.embedding = self.text_encoder(da.text.tensor)
         da.image.embedding = self.image_encoder(da.image.tensor)
 
         return da
 
-    def forward(da: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
+    def forward(self, da: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
         da.left = self.forward_podcast(da.left)
         da.right = self.forward_podcast(da.right)
 
@@ -279,11 +279,92 @@ schema definition (see below). Everything handles in a pythonic manner by relyin
 
 ## Coming from TensorFlow
 
-To use DocArray with tensorflow we first need to install the following extras:
+Similar to the PyTorch approach, you can also use DocArray with TensorFlow to handle and represent multi-modal data inside your ML model.
+
+First off, to use DocArray with TensorFlow we first need to install it as follows:
 ```
 pip install tensorflow==2.11.0
 pip install protobuf==3.19.0
 ```
+
+Now, lets look at an example for TensorFlow without using DocArray:
+
+```python
+import tensorflow as tf
+
+
+class MyMultiModalModel(tf.keras.Model):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = AudioEncoder()
+        self.image_encoder = ImageEncoder()
+        self.text_encoder = TextEncoder()
+
+    def call(self, inputs, training=None, mask=None):
+        embedding_text_1 = self.text_encoder(inputs[0])
+        embedding_text_2 = self.text_encoder(inputs[1])
+
+        embedding_image_1 = self.image_encoder(inputs[2])
+        embedding_image_2 = self.image_encoder(inputs[3])
+
+        embedding_audio_1 = self.image_encoder(inputs[4])
+        embedding_audio_2 = self.image_encoder(inputs[5])
+
+        return (
+            embedding_text_1,
+            embedding_text_2,
+            embedding_image_1,
+            embedding_image_2,
+            embedding_audio_1,
+            embedding_audio_2,
+        )
+```
+
+Not the most readable option if you ask us. Let's take a look at the same example while using DocArray:
+
+```python
+from docarray import DocumentArray, BaseDocument
+from docarray.documents import Image, Text, Audio
+
+import tensorflow as tf
+
+
+class Podcast(BaseDocument):
+    text: Text
+    image: Image
+    audio: Audio
+
+
+class PairPodcast(BaseDocument):
+    left: Podcast
+    right: Podcast
+
+
+class MyPodcastModel(tf.keras.Model):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = AudioEncoder()
+        self.image_encoder = ImageEncoder()
+        self.text_encoder = TextEncoder()
+
+    def forward_podcast(self, da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+        da.audio.embedding = self.audio_encoder(
+            da.audio.tensor.tensor
+        )  # get TensorFlowTensor's .tensor attr
+        da.text.embedding = self.text_encoder(da.text.tensor.tensor)
+        da.image.embedding = self.image_encoder(da.image.tensor.tensor)
+
+        return da
+
+    def call(self, inputs: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
+        inputs.left = self.forward_podcast(inputs.left)
+        inputs.right = self.forward_podcast(inputs.right)
+
+        return inputs
+```
+
+Much nicer, don't you think? One main difference to using DocArray with PyTorch, is that when using TensorFlowTensor's, you have to access it's `.tensor` attribute directly, as it can be seen in `.forward_podcast()` above. This is due to the fact that while `TorchTensor` is a subclass of `torch.Tensor`, `TensorFlowTensor` is not a subclass of `tf.Tensor` but instead stores a `tf.Tensor` in its `.tensor` attribute.
+
 
 ## Coming from FastAPI
 
