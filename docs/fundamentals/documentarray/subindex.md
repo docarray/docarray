@@ -29,7 +29,7 @@ class MyDocument:
 _docs = [
     Document(
         MyDocument(
-            image='https://docarray.jina.ai/_images/apple.png', paragraph='hello world'
+            image='https://docs.docarray.org/_images/apple.png', paragraph='hello world'
         )
     )
     for _ in range(10)
@@ -85,7 +85,7 @@ _docs = [
         text='hello world',
         chunks=[
             Document(
-                uri='https://docarray.jina.ai/_images/apple.png'
+                uri='https://docs.docarray.org/_images/apple.png'
             ).load_uri_to_image_tensor()
         ],
     )

@@ -1,6 +1,6 @@
 # One Million Scale Benchmark
 
-```{figure} https://docarray.jina.ai/_images/benchmark-banner.gif
+```{figure} https://docs.docarray.org/_images/benchmark-banner.gif
 :width: 0 %
 :scale: 0 %
 ```

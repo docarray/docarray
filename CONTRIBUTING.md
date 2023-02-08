@@ -268,7 +268,7 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 
 [MyST](https://myst-parser.readthedocs.io/en/latest/) Elements Usage
 
-1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
+1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docs.docarray.org/fundamentals/document/#document) 
 2. Use the `{admonition}` boxes with care.
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
 
