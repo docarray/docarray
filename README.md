@@ -319,9 +319,6 @@ class MyPodcastModel(tf.keras.Model):
         return inputs
 ```
 
-
-
-
 ## Coming from FastAPI
 
 Documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI:
