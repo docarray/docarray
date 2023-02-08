@@ -72,6 +72,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
      DocumentArray is a container of Documents.
 
     :param docs: iterable of Document
+    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
 
     A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
@@ -112,9 +113,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
         #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
 
-
     You can index into a DocumentArray like a numpy array or torch tensor:
-
 
     .. code-block:: python
         da[0]  # index by position
@@ -122,6 +121,11 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         da[[0, 2, 3]]  # index by list of indices
         da[True, False, True, True, ...]  # index by boolean mask
 
+    You can delete items from a DocumentArray like a Python List
+
+    .. code-block:: python
+        del da[0]  # remove first element from DocumentArray
+        del da[0:5]  # remove elements fro 0 to 5 from DocumentArray
 
     """
 
@@ -381,3 +385,19 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened
+
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        key = self._normalize_index_item(key)
+
+        if key is None:
+            return
+
+        del self._data[key]
