@@ -12,6 +12,7 @@ from typing import (
     Union,
     cast,
     overload,
+    Optional,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -53,6 +54,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     the type 'MyDocument'.
 
     :param docs: a DocumentArray
+    :param tensor_type: Class used to wrap the stacked tensors
 
     """
 
@@ -61,18 +63,28 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     def __init__(
         self: T,
-        docs: DocumentArray,
+        docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]] = None,
+        tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._doc_columns: Dict[str, 'DocumentArrayStacked'] = {}
         self._tensor_columns: Dict[str, AbstractTensor] = {}
+        self.tensor_type = tensor_type
 
         self.from_document_array(docs)
 
-    def from_document_array(self: T, docs: DocumentArray):
-        self._docs = docs
+    def from_document_array(
+        self: T, docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]]
+    ):
+        self._docs = (
+            docs
+            if isinstance(docs, DocumentArray)
+            else DocumentArray.__class_getitem__(self.document_type)(
+                docs, tensor_type=self.tensor_type
+            )
+        )
         self.tensor_type = self._docs.tensor_type
         self._doc_columns, self._tensor_columns = self._create_columns(
-            docs, tensor_type=self.tensor_type
+            self._docs, tensor_type=self.tensor_type
         )
 
     @classmethod

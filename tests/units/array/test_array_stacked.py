@@ -22,6 +22,18 @@ def batch():
     return batch.stack()
 
 
+def test_create_from_list_docs():
+    list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
+    assert len(da_stacked) == 10
+    assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
+
+
+def test_create_from_None():
+    da_stacked = DocumentArrayStacked[Image]()
+    assert len(da_stacked) == 0
+
+
 def test_len(batch):
     assert len(batch) == 10
 

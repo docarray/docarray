@@ -72,6 +72,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
      DocumentArray is a container of Documents.
 
     :param docs: iterable of Document
+    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
 
     A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
