@@ -50,7 +50,6 @@ def test_proto_all_types():
 
 
 @pytest.mark.tensorflow
-@pytest.mark.proto
 def test_proto_all_types_proto3():
     import tensorflow as tf
 
