@@ -65,6 +65,7 @@ def test_validation(cls_tensor, tensor):
     assert isinstance(arr, cls_tensor)
 
 
+@pytest.mark.tensorflow
 @pytest.mark.parametrize(
     'cls_tensor,tensor',
     [

@@ -23,6 +23,7 @@ def test_set_tensorflow_tensor():
     assert tnp.allclose(doc.t.tensor, tf.zeros((3, 224, 224)))
 
 
+@pytest.mark.tensorflow
 def test_set_tf_embedding():
     class MyDocument(BaseDocument):
         embedding: TensorFlowEmbedding

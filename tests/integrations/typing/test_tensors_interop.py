@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 
 from docarray.typing import (
@@ -26,6 +27,7 @@ def test_torch_tensors_interop():
     assert t_result.shape == (128,)
 
 
+@pytest.mark.tensorflow
 def test_tensorflow_tensors_interop():
     t1 = AudioTensorFlowTensor(tf.random.normal((128,)))
     t2 = TensorFlowEmbedding(tf.random.normal((128,)))
