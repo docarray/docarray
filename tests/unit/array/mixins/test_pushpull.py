@@ -191,7 +191,7 @@ class MyDocument:
             [
                 Document(
                     MyDocument(
-                        image='https://docarray.jina.ai/_images/apple.png',
+                        image='https://docs.docarray.org/_images/apple.png',
                         paragraph='hello world',
                     )
                 )

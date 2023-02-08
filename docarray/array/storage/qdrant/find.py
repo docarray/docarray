@@ -135,7 +135,7 @@ class FindMixin:
         """Returns a subset of documents by filtering by the given filter (`Qdrant` filter)..
         :param limit: number of retrieved items
         :param filter: filter query used for filtering.
-        For more information: https://docarray.jina.ai/advanced/document-store/qdrant/#qdrant
+        For more information: https://docs.docarray.org/advanced/document-store/qdrant/#qdrant
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
 
