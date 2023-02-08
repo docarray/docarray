@@ -34,13 +34,13 @@ DocArray is a library for nested, unstructured, multimodal data in transit, incl
 
 🛸 **IDE integration**: pretty-print and visualization on Jupyter notebook and Google Colab; comprehensive autocomplete and type hints in PyCharm and VS Code.
 
-Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
+Read more on [why should you use DocArray](https://docs.docarray.org/get-started/what-is/) and [comparison to alternatives](https://docs.docarray.org/get-started/what-is/#comparing-to-alternatives).
 
 <!-- end elevator-pitch -->
 
 DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
-## [Documentation](https://docarray.jina.ai)
+## [Documentation](https://docs.docarray.org)
 
 ## Install 
 
@@ -52,7 +52,7 @@ or via Conda:
 ```shell
 conda install -c conda-forge docarray
 ```
-[Commonly used features](https://docarray.jina.ai/#install) can be enabled via `pip install "docarray[common]"`.
+[Commonly used features](https://docs.docarray.org/#install) can be enabled via `pip install "docarray[common]"`.
 
 
 ## Get Started
@@ -141,7 +141,7 @@ Here the feature embedding is done by simple [feature hashing](https://en.wikipe
 
 ### Example 3: external storage for out-of-memory data
 
-When your data is too big, storing in memory is not the best idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and AnnLite. They're all unified under **the exact same user experience and API**. Take the above snippet: you only need to change one line to use SQLite:
+When your data is too big, storing in memory is not the best idea. DocArray supports [multiple storage backends](https://docs.docarray.org/advanced/document-store/) such as SQLite, Weaviate, Qdrant and AnnLite. They're all unified under **the exact same user experience and API**. Take the above snippet: you only need to change one line to use SQLite:
 
 ```python
 da = DocumentArray(
@@ -208,7 +208,7 @@ left_da.plot_image_sprites()
 ```
 
 <p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
+<a href="https://docs.docarray.org"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
 </p>
 
 ### Apply preprocessing
@@ -254,7 +254,7 @@ left_da.plot_embeddings(image_sprites=True)
 ```
 
 <p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
+<a href="https://docs.docarray.org"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
 </p>
 
 Fun is fun, but our goal is to match left images against right images, and so far we have only handled the left. Let's repeat the same procedure for the right:
@@ -334,8 +334,8 @@ Better see it.
 ```
 
 <p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
+<a href="https://docs.docarray.org"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
+<a href="https://docs.docarray.org"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
 Here we reversed the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so you can visualize them using image sprites.  
@@ -400,7 +400,7 @@ Now anyone who knows the token `my_shared_da` can pull and work on it.
 left_da = DocumentArray.pull('<username>/my_shared_da')
 ```
 
-Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
+Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docs.docarray.org).
 
 
 <!-- start support-pitch -->

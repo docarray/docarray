@@ -59,7 +59,7 @@ def _re_traversal_path_split(path: str) -> List[str]:
         m = TRAVERSAL_PATH_LIST_REGEX.match(remainder)
         if not m:
             raise ValueError(
-                f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
+                f'`path`:{path} is invalid, please refer to https://docs.docarray.org/fundamentals/documentarray/access-elements/#index-by-nested-structure'
             )
         group_dict = m.groupdict()
         current, remainder = group_dict['traversal_path'], group_dict['paths_remainder']
@@ -144,7 +144,7 @@ class TraverseMixin:
                         )
             else:
                 raise ValueError(
-                    f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
+                    f'`path`:{path} is invalid, please refer to https://docs.docarray.org/fundamentals/documentarray/access-elements/#index-by-nested-structure'
                 )
         elif filter_fn is None:
             yield docs

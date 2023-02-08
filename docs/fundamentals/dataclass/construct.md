@@ -418,7 +418,7 @@ This section explains the behavior of field annotations in detail.
     class ColumnArticle:
         feature_image: BannerDoc
         description: Text = 'this is a column article'
-        website: str = 'https://docarray.jina.ai'
+        website: str = 'https://docs.docarray.org'
 
 
     Document(ColumnArticle(feature_image=BannerDoc())).summary()
@@ -431,7 +431,7 @@ This section explains the behavior of field annotations in detail.
     ╭────────────────────┬─────────────────────────────────────────────────────────╮
     │ Attribute          │ Value                                                   │
     ├────────────────────┼─────────────────────────────────────────────────────────┤
-    │ tags               │ {'website': 'https://docarray.jina.ai'}                          │
+    │ tags               │ {'website': 'https://docs.docarray.org'}                          │
     ╰────────────────────┴─────────────────────────────────────────────────────────╯
     └── 💠 Chunks
         ├── 📄 Document: cb1df29a384a6d39aa81e5af93316c4d

@@ -22,7 +22,7 @@ VER_FILE=../__init__.py
 
 if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
     echo "Error: Please specify the [PATH_TO_GRPC_PYTHON_PLUGIN], refer more details at " \
-      "https://docarray.jina.ai/"
+      "https://docs.docarray.org/"
     printf "\n"
     echo "USAGE:"
     printf "\t"

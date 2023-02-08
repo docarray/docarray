@@ -40,7 +40,7 @@ setup(
     zip_safe=False,
     install_requires=['numpy', 'rich>=12.0.0', 'jina-hubble-sdk>=0.24.0'],
     extras_require={
-        # req usage, please see https://docarray.jina.ai/#install
+        # req usage, please see https://docs.docarray.org/#install
         'common': [
             'protobuf>=3.13.0',
             'lz4',
@@ -149,7 +149,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     project_urls={
-        'Documentation': 'https://docarray.jina.ai',
+        'Documentation': 'https://docs.docarray.org',
         'Source': 'https://github.com/jina-ai/docarray/',
         'Tracker': 'https://github.com/jina-ai/docarray/issues',
     },
