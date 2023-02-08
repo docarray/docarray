@@ -7,7 +7,7 @@ else:
 
 
 try:
-    import tensorflow as tf  # noqa: F401
+    import tensorflow as tf  # type: ignore # noqa: F401
 except (ImportError, TypeError):
     tf_imported = False
 else:
