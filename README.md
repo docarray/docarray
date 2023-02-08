@@ -287,83 +287,38 @@ pip install tensorflow==2.11.0
 pip install protobuf==3.19.0
 ```
 
-Now, lets look at an example for TensorFlow without using DocArray:
+Compared to using DocArray with PyTorch, there is one main difference when using it with TensorFlow:\
+While DocArray's `TorchTensor` is a subclass of `torch.Tensor`, this is not the case for the `TensorFlowTensor`: Due to technical limitations on `tf.Tensor`, docarray's `TensorFlowTensor` is not a subclass of `tf.Tensor` but instead stores a `tf.Tensor` in its `.tensor` attribute. 
+
+How does this effect you? Whenever you want to access the tensor data to e.g. do operations with it or hand it to your ML model, instead of handing over your `TensorFlowTensor` instance, you need to access its `.tensor` attribute.
+
+This would look like the following:
 
 ```python
-import tensorflow as tf
+from typing import Optional
 
-
-class MyMultiModalModel(tf.keras.Model):
-    def __init__(self):
-        super().__init__()
-        self.audio_encoder = AudioEncoder()
-        self.image_encoder = ImageEncoder()
-        self.text_encoder = TextEncoder()
-
-    def call(self, inputs, training=None, mask=None):
-        embedding_text_1 = self.text_encoder(inputs[0])
-        embedding_text_2 = self.text_encoder(inputs[1])
-
-        embedding_image_1 = self.image_encoder(inputs[2])
-        embedding_image_2 = self.image_encoder(inputs[3])
-
-        embedding_audio_1 = self.image_encoder(inputs[4])
-        embedding_audio_2 = self.image_encoder(inputs[5])
-
-        return (
-            embedding_text_1,
-            embedding_text_2,
-            embedding_image_1,
-            embedding_image_2,
-            embedding_audio_1,
-            embedding_audio_2,
-        )
-```
-
-Not the most readable option if you ask us. Let's take a look at the same example while using DocArray:
-
-```python
 from docarray import DocumentArray, BaseDocument
-from docarray.documents import Image, Text, Audio
 
 import tensorflow as tf
 
 
 class Podcast(BaseDocument):
-    text: Text
-    image: Image
-    audio: Audio
-
-
-class PairPodcast(BaseDocument):
-    left: Podcast
-    right: Podcast
+    audio_tensor: Optional[AudioTensorFlowTensor]
+    embedding: Optional[AudioTensorFlowTensor]
 
 
 class MyPodcastModel(tf.keras.Model):
     def __init__(self):
         super().__init__()
         self.audio_encoder = AudioEncoder()
-        self.image_encoder = ImageEncoder()
-        self.text_encoder = TextEncoder()
 
-    def forward_podcast(self, da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
-        da.audio.embedding = self.audio_encoder(
-            da.audio.tensor.tensor
-        )  # get TensorFlowTensor's .tensor attr
-        da.text.embedding = self.text_encoder(da.text.tensor.tensor)
-        da.image.embedding = self.image_encoder(da.image.tensor.tensor)
-
-        return da
-
-    def call(self, inputs: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
-        inputs.left = self.forward_podcast(inputs.left)
-        inputs.right = self.forward_podcast(inputs.right)
-
+    def call(self, inputs: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+        inputs.audio_tensor.embedding = self.audio_encoder(
+            inputs.audio_tensor.tensor
+        )  # access audio_tensor's .tensor attribute
         return inputs
 ```
 
-Much nicer, don't you think? One main difference to using DocArray with PyTorch, is that when using TensorFlowTensor's, you have to access it's `.tensor` attribute directly, as it can be seen in `.forward_podcast()` above. This is due to the fact that while `TorchTensor` is a subclass of `torch.Tensor`, `TensorFlowTensor` is not a subclass of `tf.Tensor` but instead stores a `tf.Tensor` in its `.tensor` attribute.
 
 
 ## Coming from FastAPI
