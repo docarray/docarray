@@ -203,7 +203,7 @@ feat: add remote api
 
 #### DCO and signed commit
 
-Commits need to be signed. Indeed, the DocArray repo enforces the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) HitHub app.
+Commits need to be signed. Indeed, the DocArray repo enforces the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) GitHub app.
 
 To sign your commits you need to [use the `-s` argument](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) when committing:
 
