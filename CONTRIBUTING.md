@@ -18,9 +18,9 @@ In this guide, we're going to go through the steps for each kind of contribution
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 <a name="-bugs-and-issues"></a>
-## 🐞 Bugs and Issues
+## 🐞 Bugs and issues
 
-### Submitting Issues
+### Submitting issues
 
 We love to get issue reports. But we love it even more if they're in the right format. For any bugs you encounter, we need you to:
 
@@ -33,7 +33,7 @@ There are also a couple of nice to haves:
 * **Screenshots:** If they're relevant
 
 <a name="-making-your-first-submission"></a>
-## 🥇 Making Your First Submission
+## 🥇 Making your first submission
 
 0. Associate your local git config with your GitHub account. If this is your first time using git you can follow [the steps](#associate-with-github-account).
 1. Fork the DocArray repo and clone onto your computer. 
@@ -48,7 +48,7 @@ There are also a couple of nice to haves:
 
 **Note:** If you're just fixing a typo or grammatical issue, you can go straight to a pull request.
 
-### Associate with GitHub Account
+### Associate with GitHub account
 
 - Confirm username and email on [your profile page](https://github.com/settings/profile).
 - Set git config on your computer.
@@ -67,7 +67,7 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
-### Install dependencies using poetry
+### Installing dependencies using poetry
 
 We use [Poetry](https://python-poetry.org/) to manage our dependencies.
 
@@ -136,7 +136,7 @@ Note: Example code in the documentation should also follow our code style conven
 
 
 <a name="-naming-conventions"></a>
-## ☑️ Naming Conventions
+## ☑️ Naming conventions
 
 For branches, commits, and PRs we follow some basic naming conventions:
 
@@ -170,7 +170,7 @@ feat: add hat wobble
 - test: Adding missing tests or correcting existing tests
 - chore: updating grunt tasks etc.; no production code change
 
-### Writing your Commit Message
+### Writing your commit message
 
 A good commit message helps us track DocArray's development. A Pull Request with a bad commit message will be *rejected* automatically in the CI pipeline.
 
@@ -201,7 +201,7 @@ feat: add remote api
 | `fix(array):fix array serialization`                                                            | Missing space after `:`            |
 | `hello: add hello-world`                                                                        | Type `hello` is not allowed        |
 
-#### DCO and Signed commit
+#### DCO and signed commit
 
 Commits need to be signed. Indeed, the DocArray repo enforces the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) HitHub app.
 
@@ -211,7 +211,7 @@ To sign your commits you need to [use the `-s` argument](https://docs.github.com
 git commit -m -s 'feat: add a new feature'
 ```
 
-#### What if I Mess Up?
+#### What if I mess up?
 
 We all make mistakes. GitHub has a guide on [rewriting commit messages](https://docs.github.com/en/free-pro-team@latest/github/committing-changes-to-your-project/changing-a-commit-message) so they can adhere to our standards.
 
@@ -221,7 +221,7 @@ You can also install [commitlint](https://commitlint.js.org/#/) onto your own ma
 echo "<commit message>" | commitlint
 ```
 
-### Naming your Pull Request
+### Naming your pull request
 
 We don't enforce naming of PRs and branches, but we recommend you follow the same style. It can simply be one of your commit messages, just copy/paste it, e.g. `fix(readme): improve the readability and move sections`.
 
@@ -266,7 +266,7 @@ versions. Therefore, compilation is a two-step process:
     3. Compile the protobuf definitions in the `pb` directory. From `docarray/proto/` run `path/to/v-3-21/bin/protoc -I . --python_out="pb" docarray.proto`.
 
 <a name="-contributing-documentation"></a>
-## 📖 Contributing Documentation
+## 📖 Contributing documentation
 
 Good docs make developers happy, and we love happy developers! We've got a few different types of docs:
 
