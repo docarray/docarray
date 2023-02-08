@@ -18,14 +18,14 @@ from docarray.typing import (
     TorchTensor,
 )
 from docarray.typing.tensor import NdArrayEmbedding
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing import TensorFlowEmbedding, TensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 
 @pytest.mark.proto

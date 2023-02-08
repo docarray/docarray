@@ -21,6 +21,7 @@ from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -28,20 +29,19 @@ if TYPE_CHECKING:
 
     from docarray.proto import DocumentArrayStackedProto
 
-try:
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing import TorchTensor
-except ImportError:
+else:
     TorchTensor = None  # type: ignore
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor
-
-    tf_available = True
-except (ImportError, TypeError):
+else:
     TensorFlowTensor = None  # type: ignore
-    tf_available = False
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]

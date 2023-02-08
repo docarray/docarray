@@ -1,24 +1,19 @@
 from typing import Union
 
 from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
+from docarray.utils.misc import is_tf_available, is_torch_available
 
-try:
-    torch_available = True
-    import torch  # noqa: F401
-
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing.tensor.embedding.torch import TorchEmbedding
-except ImportError:
-    torch_available = False
 
-try:
-    tf_available = True
-    import tensorflow as tf  # noqa: F401
 
+tf_available = is_tf_available()
+if tf_available:
     from docarray.typing.tensor.embedding.tensorflow import (
         TensorFlowEmbedding as TFEmbedding,
     )
-except ImportError:
-    tf_available = False
+
 
 if tf_available and torch_available:
     AnyEmbedding = Union[NdArrayEmbedding, TorchEmbedding, TFEmbedding]  # type: ignore

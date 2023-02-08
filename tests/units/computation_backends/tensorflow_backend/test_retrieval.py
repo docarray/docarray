@@ -1,13 +1,14 @@
 import pytest
 
-try:
+from docarray.utils.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 
 @pytest.mark.tensorflow

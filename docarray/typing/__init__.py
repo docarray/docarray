@@ -38,11 +38,12 @@ __all__ = [
     'ImageNdArray',
 ]
 
-try:
+from docarray.utils.misc import is_tf_available, is_torch_available
+
+torch_available = is_torch_available()
+if torch_available:
     import torch  # noqa: F401
-except ImportError:
-    pass
-else:
+
     from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
     from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
     from docarray.typing.tensor.image import ImageTorchTensor  # noqa:  F401
@@ -58,11 +59,10 @@ else:
         ]
     )
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf  # type: ignore # noqa: F401
-except (ImportError, TypeError):
-    pass
-else:
+
     from docarray.typing.tensor import TensorFlowTensor
     from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401

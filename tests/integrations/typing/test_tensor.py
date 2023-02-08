@@ -4,13 +4,15 @@ import torch
 
 from docarray import BaseDocument
 from docarray.typing import AnyTensor, NdArray, TorchTensor
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
 
     from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
+else:
     TensorFlowTensor = None
 
 

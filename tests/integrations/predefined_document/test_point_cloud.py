@@ -5,13 +5,13 @@ from pydantic import parse_obj_as
 
 from docarray import BaseDocument
 from docarray.documents import PointCloud3D
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
-except (ImportError, TypeError):
-    pass
 
 LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'

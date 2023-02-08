@@ -10,16 +10,16 @@ from docarray import BaseDocument
 from docarray.documents import Audio
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing.tensor import TensorFlowTensor
     from docarray.typing.tensor.audio import AudioTensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),

@@ -1,24 +1,18 @@
 from typing import Union
 
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
+from docarray.utils.misc import is_tf_available, is_torch_available
 
-try:
-    torch_available = True
-    import torch  # noqa: F401
-
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing.tensor.video.video_torch_tensor import VideoTorchTensor
-except ImportError:
-    torch_available = False
 
-try:
-    tf_available = True
-    import tensorflow as tf  # noqa: F401
 
+tf_available = is_tf_available()
+if tf_available:
     from docarray.typing.tensor.video.video_tensorflow_tensor import (
         VideoTensorFlowTensor as VideoTFTensor,
     )
-except ImportError:
-    tf_available = False
 
 if tf_available and torch_available:
     VideoTensor = Union[VideoNdArray, VideoTorchTensor, VideoTFTensor]  # type: ignore

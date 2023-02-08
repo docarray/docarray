@@ -1,13 +1,16 @@
 import pytest
 
-try:
+from docarray.utils.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.typing import TensorFlowTensor
 
     metrics = TensorFlowCompBackend.Metrics
-except (ImportError, TypeError):
+else:
     metrics = None
 
 

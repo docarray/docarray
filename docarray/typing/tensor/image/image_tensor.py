@@ -1,24 +1,19 @@
 from typing import Union
 
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
+from docarray.utils.misc import is_tf_available, is_torch_available
 
-try:
-    torch_available = True
-    import torch  # noqa: F401
-
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
-except ImportError:
-    torch_available = False
 
-try:
-    tf_available = True
-    import tensorflow as tf  # noqa: F401
 
+tf_available = is_tf_available()
+if tf_available:
     from docarray.typing.tensor.image.image_tensorflow_tensor import (
         ImageTensorFlowTensor as ImageTFTensor,
     )
-except ImportError:
-    tf_available = False
+
 
 if tf_available and torch_available:
     ImageTensor = Union[ImageNdArray, ImageTorchTensor, ImageTFTensor]  # type: ignore

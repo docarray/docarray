@@ -7,13 +7,13 @@ from docarray.typing import (
     NdArrayEmbedding,
     TorchEmbedding,
 )
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
 
     from docarray.typing import AudioTensorFlowTensor, TensorFlowEmbedding
-except (ImportError, TypeError):
-    pass
 
 
 def test_torch_tensors_interop():
