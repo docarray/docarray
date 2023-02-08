@@ -22,6 +22,18 @@ def batch():
     return batch.stack()
 
 
+def test_create_from_list_docs():
+    list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
+    assert len(da_stacked) == 10
+    assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
+
+
+def test_create_from_None():
+    da_stacked = DocumentArrayStacked[Image]()
+    assert len(da_stacked) == 0
+
+
 def test_len(batch):
     assert len(batch) == 10
 
@@ -365,3 +377,93 @@ def test_keep_dtype_np():
     da = da.stack()
     assert da[0].tensor.dtype == np.int32
     assert da.tensor.dtype == np.int32
+
+
+def test_del_item(batch):
+    assert len(batch) == 10
+    assert batch.tensor.shape[0] == 10
+    with pytest.raises(NotImplementedError):
+        del batch[2]
+
+
+def test_np_scalar():
+    class MyDoc(BaseDocument):
+        scalar: NdArray
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(scalar=np.array(2.0)) for _ in range(3)], tensor_type=NdArray
+    )
+    assert all(doc.scalar.ndim == 0 for doc in da)
+    assert all(doc.scalar == 2.0 for doc in da)
+
+    stacked_da = da.stack()
+    assert type(stacked_da.scalar) == NdArray
+
+    assert all(type(doc.scalar) == NdArray for doc in da)
+    assert all(doc.scalar.ndim == 1 for doc in da)
+    assert all(doc.scalar == 2.0 for doc in da)
+
+    # Make sure they share memory
+    stacked_da.scalar[0] = 3.0
+    assert da[0].scalar == 3.0
+
+
+def test_torch_scalar():
+    class MyDoc(BaseDocument):
+        scalar: TorchTensor
+
+    da = DocumentArray[MyDoc](
+        [MyDoc(scalar=torch.tensor(2.0)) for _ in range(3)], tensor_type=TorchTensor
+    )
+    assert all(doc.scalar.ndim == 0 for doc in da)
+    assert all(doc.scalar == 2.0 for doc in da)
+    stacked_da = da.stack()
+    assert type(stacked_da.scalar) == TorchTensor
+
+    assert all(type(doc.scalar) == TorchTensor for doc in da)
+    assert all(doc.scalar.ndim == 1 for doc in da)
+    assert all(doc.scalar == 2.0 for doc in da)
+
+    # Make sure they share memory
+    stacked_da.scalar[0] = 3.0
+    assert da[0].scalar == 3.0
+
+
+def test_np_nan():
+    class MyDoc(BaseDocument):
+        scalar: Optional[NdArray]
+
+    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)], tensor_type=NdArray)
+    assert all(doc.scalar is None for doc in da)
+    assert all(doc.scalar == doc.scalar for doc in da)
+    stacked_da = da.stack()
+    assert type(stacked_da.scalar) == NdArray
+
+    assert all(type(doc.scalar) == NdArray for doc in da)
+    # Stacking them turns them into np.nan
+    assert all(doc.scalar.ndim == 1 for doc in da)
+    assert all(doc.scalar != doc.scalar for doc in da)  # Test for nan
+
+    # Make sure they share memory
+    stacked_da.scalar[0] = 3.0
+    assert da[0].scalar == 3.0
+
+
+def test_torch_nan():
+    class MyDoc(BaseDocument):
+        scalar: Optional[TorchTensor]
+
+    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)], tensor_type=TorchTensor)
+    assert all(doc.scalar is None for doc in da)
+    assert all(doc.scalar == doc.scalar for doc in da)
+    stacked_da = da.stack()
+    assert type(stacked_da.scalar) == TorchTensor
+
+    assert all(type(doc.scalar) == TorchTensor for doc in da)
+    # Stacking them turns them into torch.nan
+    assert all(doc.scalar.ndim == 1 for doc in da)
+    assert all(doc.scalar != doc.scalar for doc in da)  # Test for nan
+
+    # Make sure they share memory
+    stacked_da.scalar[0] = 3.0
+    assert da[0].scalar == 3.0

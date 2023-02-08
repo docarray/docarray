@@ -12,6 +12,7 @@ from typing import (
     Union,
     cast,
     overload,
+    Optional,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -28,7 +29,6 @@ if TYPE_CHECKING:
     from docarray.proto import DocumentArrayStackedProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
-
 
 try:
     from docarray.typing import TorchTensor
@@ -49,11 +49,12 @@ class DocumentArrayStacked(AnyDocumentArray):
     but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
     stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
     you can be precise a Document schema by using the `DocumentArray[MyDocument]`
-    syntax where MyDocument is a Document class  (i.e. schema).
+    syntax where MyDocument is a Document class (i.e. schema).
     This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
     :param docs: a DocumentArray
+    :param tensor_type: Class used to wrap the stacked tensors
 
     """
 
@@ -62,18 +63,28 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     def __init__(
         self: T,
-        docs: DocumentArray,
+        docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]] = None,
+        tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._doc_columns: Dict[str, 'DocumentArrayStacked'] = {}
         self._tensor_columns: Dict[str, AbstractTensor] = {}
+        self.tensor_type = tensor_type
 
         self.from_document_array(docs)
 
-    def from_document_array(self: T, docs: DocumentArray):
-        self._docs = docs
+    def from_document_array(
+        self: T, docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]]
+    ):
+        self._docs = (
+            docs
+            if isinstance(docs, DocumentArray)
+            else DocumentArray.__class_getitem__(self.document_type)(
+                docs, tensor_type=self.tensor_type
+            )
+        )
         self.tensor_type = self._docs.tensor_type
         self._doc_columns, self._tensor_columns = self._create_columns(
-            docs, tensor_type=self.tensor_type
+            self._docs, tensor_type=self.tensor_type
         )
 
     @classmethod
@@ -171,7 +182,18 @@ class DocumentArrayStacked(AnyDocumentArray):
                         val = tensor_type.get_comp_backend().none_value()
 
                     cast(AbstractTensor, tensor_columns[field])[i] = val
-                    setattr(doc, field, tensor_columns[field][i])
+
+                    # If the stacked tensor is rank 1, the individual tensors are
+                    # rank 0 (scalar)
+                    # This is problematic because indexing a rank 1 tensor in numpy
+                    # returns a value instead of a tensor
+                    # We thus chose to convert the individual rank 0 tensors to rank 1
+                    # This does mean that stacking rank 0 tensors will transform them
+                    # to rank 1
+                    if tensor_columns[field].ndim == 1:
+                        setattr(doc, field, tensor_columns[field][i : i + 1])
+                    else:
+                        setattr(doc, field, tensor_columns[field][i])
                     del val
 
             elif issubclass(type_, BaseDocument):
@@ -251,6 +273,23 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field in self._doc_columns.keys():
             setattr(doc, field, self._doc_columns[field][key])
         return doc
+
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        raise NotImplementedError(
+            f'{self.__class__.__name__} does not implement '
+            f'__del_item__. You are trying to delete an element'
+            f'from {self.__class__.__name__} which is not '
+            f'designed for this operation. Please `unstack`'
+            f' before doing the deletion'
+        )
 
     def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
         """Delegates the access to the data and the columns,

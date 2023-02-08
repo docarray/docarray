@@ -155,3 +155,52 @@ def test_list_set_dict_tuple_field():
     assert rebuilt_doc.dict_ == {'a': 0, 'b': 1}
     assert rebuilt_doc.tuple_ == (0, 1)
     assert rebuilt_doc.set_ == {0, 1}
+
+
+@pytest.mark.proto
+@pytest.mark.parametrize(
+    'dtype',
+    [
+        np.uint,
+        np.uint8,
+        np.uint64,
+        np.int,
+        np.int8,
+        np.int64,
+        np.float,
+        np.float16,
+        np.float128,
+        np.double,
+    ],
+)
+def test_ndarray_dtype(dtype):
+    class MyDoc(BaseDocument):
+        tensor: NdArray
+
+    doc = MyDoc(tensor=np.ndarray([1, 2, 3], dtype=dtype))
+    assert doc.tensor.dtype == dtype
+    assert MyDoc.from_protobuf(doc.to_protobuf()).tensor.dtype == dtype
+    assert MyDoc.parse_obj(doc.dict()).tensor.dtype == dtype
+
+
+@pytest.mark.proto
+@pytest.mark.parametrize(
+    'dtype',
+    [
+        torch.uint8,
+        torch.int,
+        torch.int8,
+        torch.int64,
+        torch.float,
+        torch.float64,
+        torch.double,
+    ],
+)
+def test_torch_dtype(dtype):
+    class MyDoc(BaseDocument):
+        tensor: TorchTensor
+
+    doc = MyDoc(tensor=torch.zeros([5, 5], dtype=dtype))
+    assert doc.tensor.dtype == dtype
+    assert MyDoc.from_protobuf(doc.to_protobuf()).tensor.dtype == dtype
+    assert MyDoc.parse_obj(doc.dict()).tensor.dtype == dtype
