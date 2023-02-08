@@ -18,7 +18,7 @@ def da():
     class Text(BaseDocument):
         text: str
 
-    return DocumentArray[Text]([Text(text='hello') for _ in range(10)])
+    return DocumentArray[Text]([Text(text=f'hello {i}') for i in range(10)])
 
 
 def test_iterate(da):
@@ -266,3 +266,31 @@ def test_get_from_slice():
     assert len(texts) == 5
     for i, text in enumerate(texts):
         assert text == f'hello{i*2}'
+
+
+def test_del_item(da):
+    assert len(da) == 10
+    del da[2]
+    assert len(da) == 9
+    assert da.text == [
+        'hello 0',
+        'hello 1',
+        'hello 3',
+        'hello 4',
+        'hello 5',
+        'hello 6',
+        'hello 7',
+        'hello 8',
+        'hello 9',
+    ]
+    del da[0:2]
+    assert len(da) == 7
+    assert da.text == [
+        'hello 3',
+        'hello 4',
+        'hello 5',
+        'hello 6',
+        'hello 7',
+        'hello 8',
+        'hello 9',
+    ]

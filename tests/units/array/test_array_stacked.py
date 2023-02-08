@@ -22,6 +22,18 @@ def batch():
     return batch.stack()
 
 
+def test_create_from_list_docs():
+    list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
+    assert len(da_stacked) == 10
+    assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
+
+
+def test_create_from_None():
+    da_stacked = DocumentArrayStacked[Image]()
+    assert len(da_stacked) == 0
+
+
 def test_len(batch):
     assert len(batch) == 10
 
@@ -365,6 +377,13 @@ def test_keep_dtype_np():
     da = da.stack()
     assert da[0].tensor.dtype == np.int32
     assert da.tensor.dtype == np.int32
+
+
+def test_del_item(batch):
+    assert len(batch) == 10
+    assert batch.tensor.shape[0] == 10
+    with pytest.raises(NotImplementedError):
+        del batch[2]
 
 
 def test_np_scalar():
