@@ -17,7 +17,7 @@ if torch_available:
 
 tf_available = is_tf_available()
 if tf_available:
-    import tensorflow as tf
+    import tensorflow as tf  # type: ignore
 
 
 T = TypeVar('T', bound='Video')

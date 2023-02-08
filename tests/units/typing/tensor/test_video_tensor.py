@@ -12,14 +12,14 @@ from docarray.typing import (
     VideoNdArray,
     VideoTorchTensor,
 )
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing.tensor.video import VideoTensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 
 @pytest.mark.parametrize(

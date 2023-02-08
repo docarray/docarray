@@ -8,14 +8,14 @@ from pydantic.tools import parse_obj_as, schema_json_of
 from docarray import BaseDocument
 from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import AudioTorchTensor, AudioUrl
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
 
     from docarray.typing.tensor.audio import AudioTensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),

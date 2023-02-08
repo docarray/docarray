@@ -14,14 +14,14 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
 
     from docarray.typing.tensor.video import VideoTensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
 REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501

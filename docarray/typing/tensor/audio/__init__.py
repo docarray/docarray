@@ -6,8 +6,6 @@ from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
-    import torch  # noqa: F401
-
     from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
 
     __all__.extend(['AudioTorchTensor'])
@@ -15,8 +13,6 @@ if torch_available:
 
 tf_available = is_tf_available()
 if tf_available:
-    import tensorflow as tf  # noqa: F401
-
     from docarray.typing.tensor.audio.audio_tensorflow_tensor import (  # noqa
         AudioTensorFlowTensor,
     )
