@@ -19,6 +19,14 @@ from docarray.typing import (
 )
 from docarray.typing.tensor import NdArrayEmbedding
 
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing import TensorFlowEmbedding, TensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
 
 @pytest.mark.proto
 def test_multi_modal_doc_proto():
@@ -112,7 +120,50 @@ def test_all_types():
 
     assert (doc.embedding == np.zeros((3, 224, 224))).all()
 
-    assert (doc.embedding == np.zeros((3, 224, 224))).all()
-
     assert doc.bytes_ == b'hello'
     assert doc.img_bytes == b'img'
+
+
+@pytest.mark.tensorflow
+def test_tensorflow_types():
+    class NestedDoc(BaseDocument):
+        tensor: TensorFlowTensor
+
+    class MyDoc(BaseDocument):
+        tf_tensor: TensorFlowTensor
+        tf_tensor_param: TensorFlowTensor[224, 224, 3]
+        generic_tf_tensor: AnyTensor
+        embedding: AnyEmbedding
+        tf_embedding: TensorFlowEmbedding[128]
+        nested_docs: DocumentArray[NestedDoc]
+
+    doc = MyDoc(
+        tf_tensor=tf.zeros((3, 224, 224)),
+        tf_tensor_param=tf.zeros((3, 224, 224)),
+        generic_tf_tensor=tf.zeros((3, 224, 224)),
+        embedding=tf.zeros((3, 224, 224)),
+        tf_embedding=tf.zeros((128,)),
+        nested_docs=DocumentArray[NestedDoc]([NestedDoc(tensor=tf.zeros((128,)))]),
+    )
+    doc = doc.to_protobuf()
+    doc = MyDoc.from_protobuf(doc)
+
+    assert tnp.allclose(doc.tf_tensor.tensor, tf.zeros((3, 224, 224)))
+    assert isinstance(doc.tf_tensor.tensor, tf.Tensor)
+    assert isinstance(doc.tf_tensor, TensorFlowTensor)
+
+    assert tnp.allclose(doc.tf_tensor_param.tensor, tf.zeros((224, 224, 3)))
+    assert isinstance(doc.tf_tensor_param.tensor, tf.Tensor)
+    assert isinstance(doc.tf_tensor_param, TensorFlowTensor)
+
+    assert tnp.allclose(doc.generic_tf_tensor.tensor, tf.zeros((3, 224, 224)))
+    assert isinstance(doc.generic_tf_tensor.tensor, tf.Tensor)
+    assert isinstance(doc.generic_tf_tensor, TensorFlowTensor)
+
+    assert tnp.allclose(doc.tf_embedding.tensor, tf.zeros((128,)))
+    assert isinstance(doc.tf_embedding.tensor, tf.Tensor)
+    assert isinstance(doc.tf_embedding, TensorFlowTensor)
+
+    assert tnp.allclose(doc.embedding.tensor, tf.zeros((3, 224, 224)))
+    assert isinstance(doc.embedding.tensor, tf.Tensor)
+    assert isinstance(doc.embedding, TensorFlowTensor)
