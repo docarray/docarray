@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import tensorflow as tf  # type: ignore
-import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -145,13 +144,11 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __setitem__(self, index, value):
         """Set a slice of this tensor's tf.Tensor"""
-        if tnp.all(tf.math.is_nan(value)):
-            self.tensor = None
-        else:
-            t = self.unwrap()
-            var = tf.Variable(t)
-            var[index].assign(value)
-            self.tensor = tf.constant(var)
+        t = self.unwrap()
+        value = tf.cast(value, dtype=t.dtype)
+        var = tf.Variable(t)
+        var[index].assign(value)
+        self.tensor = tf.constant(var)
 
     def __iter__(self):
         """Iterate over the elements of this tensor's tf.Tensor."""
