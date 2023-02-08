@@ -52,10 +52,6 @@ class DocumentArrayStacked(AnyDocumentArray):
     This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
-    .. note::
-        Deleting elements of a DocumentArrayStacked will rebuild the tensors from a
-        reference to the updated unstacked DocumentArray. This operation may be slow
-         as this class is not designed for so regular update.
     :param docs: a DocumentArray
 
     """
@@ -174,7 +170,18 @@ class DocumentArrayStacked(AnyDocumentArray):
                         val = tensor_type.get_comp_backend().none_value()
 
                     cast(AbstractTensor, tensor_columns[field])[i] = val
-                    setattr(doc, field, tensor_columns[field][i])
+
+                    # If the stacked tensor is rank 1, the individual tensors are
+                    # rank 0 (scalar)
+                    # This is problematic because indexing a rank 1 tensor in numpy
+                    # returns a value instead of a tensor
+                    # We thus chose to convert the individual rank 0 tensors to rank 1
+                    # This does mean that stacking rank 0 tensors will transform them
+                    # to rank 1
+                    if tensor_columns[field].ndim == 1:
+                        setattr(doc, field, tensor_columns[field][i : i + 1])
+                    else:
+                        setattr(doc, field, tensor_columns[field][i])
                     del val
 
             elif issubclass(type_, BaseDocument):
@@ -264,11 +271,13 @@ class DocumentArrayStacked(AnyDocumentArray):
         ...
 
     def __delitem__(self, key) -> None:
-        if key is None:
-            return
-
-        del self._docs[key]
-        self.from_document_array(self._docs)
+        raise NotImplementedError(
+            f'{self.__class__.__name__} does not implement '
+            f'__del_item__. You are trying to delete an element'
+            f'from {self.__class__.__name__} which is not '
+            f'designed for this operation. Please `unstack`'
+            f' before doing the deletion'
+        )
 
     def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
         """Delegates the access to the data and the columns,

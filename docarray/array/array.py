@@ -398,8 +398,5 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
         if key is None:
             return
-        if type(key) == slice:
-            del self._data[key]
 
-        if isinstance(key, int):
-            del self._data[key]
+        del self._data[key]
