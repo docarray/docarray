@@ -124,15 +124,15 @@ DocArray is compatible with Python 3.7 and above, therefore we can't accept cont
 All of our Python codebase follows formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
 If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contributions that do not respect these conventions.
 
-### Type Hint
+### Type hints
 
-Python is not a strongly typed programming language, nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
-contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **require every contribution
-to utilise type hints**, unless there are strong reasons for not using them.
+Python is not a strongly typed programming language. Nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
+contributes to a better codebase, especially when reading, reviewing and refactoring. Therefore, we **require every contribution
+to use type hints**, unless there are strong reasons for not using them.
 
-Further, DocArray is type checked using **Mypy**, and all contributions will have to pass this type check.
+Further, DocArray is type checked using **[mypy](https://mypy-lang.org/)**, and all contributions will have to pass this type check.
 
-Note: Example code in the documentation should also follow our code style conventions
+Note: Example code in the documentation should also follow our code style conventions.
 
 
 <a name="-naming-conventions"></a>
@@ -203,9 +203,9 @@ feat: add remote api
 
 #### DCO and Signed commit
 
-Commit need to be signed. Indeed the DocArray repo enforce the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) github app
+Commits need to be signed. Indeed, the DocArray repo enforces the [Developer Certificate of Origin](https://developercertificate.org/) via the [DCO](https://github.com/apps/dco) HitHub app.
 
-To do so you need to use the `-s` argument when commiting:
+To sign your commits you need to [use the `-s` argument](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) when committing:
 
 ```
 git commit -m -s 'feat: add a new feature'
@@ -241,7 +241,7 @@ poetry run pytest -v -s tests
 Every contribution that adds or modifies the behavior of a feature must include a suite of tests that validates that the feature works as expected.
 
 This allows:
-* the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base
+* the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base.
 * the contributors to be sure that they don't break already-merged features when refactoring or modifying the code base.
 
 <a name="-compiling-protobuf"></a>
@@ -295,7 +295,7 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
 
 
-Note: Example code in the documentation should also follow our code style conventions that you can find above
+Note: Example code in the documentation should also follow our [code style conventions]().
 
 ### Building documentation on your local machine
 
