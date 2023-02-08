@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import tensorflow as tf  # type: ignore
-import tensorflow._api.v2.experimental.numpy as tnp
+import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

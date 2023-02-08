@@ -206,7 +206,8 @@ class DocumentArrayStacked(AnyDocumentArray):
                     # We thus chose to convert the individual rank 0 tensors to rank 1
                     # This does mean that stacking rank 0 tensors will transform them
                     # to rank 1
-                    if tensor_columns[field].ndim == 1:
+                    tensor = tensor_columns[field]
+                    if tensor.get_comp_backend().n_dim(tensor) == 1:
                         setattr(doc, field, tensor_columns[field][i : i + 1])
                     else:
                         setattr(doc, field, tensor_columns[field][i])

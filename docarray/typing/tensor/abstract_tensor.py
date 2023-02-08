@@ -265,9 +265,3 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         :return: a representation of the tensor compatible with orjson
         """
         ...
-
-    @property
-    @abc.abstractmethod
-    def ndim(self) -> int:
-        """The number of dimensions / rank of this tensor."""
-        ...
