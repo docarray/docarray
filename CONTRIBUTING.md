@@ -126,7 +126,7 @@ If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray
 
 ### Type hints
 
-Python is not a strongly typed programming language. Nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
+Python is not a strongly typed programming language. Nevertheless, the use of [type hints](https://docs.python.org/3/library/typing.html)  
 contributes to a better codebase, especially when reading, reviewing and refactoring. Therefore, we **require every contribution
 to use type hints**, unless there are strong reasons for not using them.
 
