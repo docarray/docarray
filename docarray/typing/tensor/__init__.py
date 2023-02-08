@@ -29,6 +29,8 @@ try:
 except (ImportError, TypeError):
     pass
 else:
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
-    __all__.extend(['TensorFlowTensor'])
+    __all__.extend(['TensorFlowEmbedding', 'TensorFlowTensor', 'ImageTensorFlowTensor'])

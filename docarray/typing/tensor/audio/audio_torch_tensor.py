@@ -17,13 +17,12 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         from typing import Optional
 
         import torch
-        from pydantic import parse_obj_as
 
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import AudioTorchTensor, AudioUrl
 
 
-        class MyAudioDoc(Document):
+        class MyAudioDoc(BaseDocument):
             title: str
             audio_tensor: Optional[AudioTorchTensor]
             url: Optional[AudioUrl]

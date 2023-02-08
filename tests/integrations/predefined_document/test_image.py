@@ -6,6 +6,12 @@ from pydantic import parse_obj_as
 from docarray import BaseDocument
 from docarray.documents import Image
 
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+except (ImportError, TypeError):
+    pass
+
 REMOTE_JPG = (
     'https://upload.wikimedia.org/wikipedia/commons/8/80/'
     'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
@@ -35,6 +41,12 @@ def test_image_np():
 def test_image_torch():
     image = parse_obj_as(Image, torch.zeros(10, 10, 3))
     assert (image.tensor == torch.zeros(10, 10, 3)).all()
+
+
+@pytest.mark.tensorflow
+def test_image_tensorflow():
+    image = Image(tensor=tf.zeros((10, 10, 3)))
+    assert tnp.allclose(image.tensor.tensor, tf.zeros((10, 10, 3)))
 
 
 def test_image_shortcut_doc():

@@ -1,12 +1,18 @@
+from typing import TypeVar
+
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
-from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor, metaTensorFlow
+
+T = TypeVar('T', bound='AudioTensorFlowTensor')
 
 
-@_register_proto(proto_type_name='audio_ndarray')
-class AudioNdArray(AbstractAudioTensor, NdArray):
+@_register_proto(proto_type_name='audio_tensorflow_tensor')
+class AudioTensorFlowTensor(
+    AbstractAudioTensor, TensorFlowTensor, metaclass=metaTensorFlow
+):
     """
-    Subclass of NdArray, to represent an audio tensor.
+    Subclass of TensorFlowTensor, to represent an audio tensor.
     Adds audio-specific features to the tensor.
 
 
@@ -16,28 +22,29 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
 
         from typing import Optional
 
+        import tensorflow as tf
+        from pydantic import parse_obj_as
+
         from docarray import BaseDocument
-        from docarray.typing import AudioNdArray, AudioUrl
-        import numpy as np
+        from docarray.typing import AudioTensorFlowTensor, AudioUrl
 
 
         class MyAudioDoc(BaseDocument):
             title: str
-            audio_tensor: Optional[AudioNdArray]
+            audio_tensor: Optional[AudioTensorFlowTensor]
             url: Optional[AudioUrl]
             bytes_: Optional[bytes]
 
 
-        # from tensor
         doc_1 = MyAudioDoc(
             title='my_first_audio_doc',
-            audio_tensor=np.random.rand(1000, 2),
+            audio_tensor=tf.random.normal((1000, 2)),
         )
 
         doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
         doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
-        # from url
+
         doc_2 = MyAudioDoc(
             title='my_second_audio_doc',
             url='https://www.kozco.com/tech/piano2.wav',

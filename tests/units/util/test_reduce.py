@@ -1,5 +1,7 @@
+from typing import Dict, List, Optional, Set
+
 import pytest
-from typing import Optional, List, Dict, Set
+
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 from docarray.utils.reduce import reduce, reduce_all
@@ -7,7 +9,7 @@ from docarray.utils.reduce import reduce, reduce_all
 
 class InnerDoc(BaseDocument):
     integer: int
-    l: List
+    inner_list: List
 
 
 class MMDoc(BaseDocument):
@@ -34,7 +36,7 @@ def doc1():
             [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'a'},
-        inner_doc=InnerDoc(integer=2, l=['c', 'd']),
+        inner_doc=InnerDoc(integer=2, inner_list=['c', 'd']),
         test_dict={'a': 0, 'b': 2, 'd': 4, 'z': 3},
     )
 
@@ -52,7 +54,7 @@ def doc2(doc1):
             [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'b'},
-        inner_doc=InnerDoc(integer=3, l=['a', 'b']),
+        inner_doc=InnerDoc(integer=3, inner_list=['a', 'b']),
         test_dict={'a': 10, 'b': 10, 'c': 3, 'z': None},
     )
 
@@ -83,7 +85,7 @@ def test_reduce(doc1, doc2):
     assert len(merged_doc.matches_with_same_id) == 1
     assert len(merged_doc.matches_with_same_id[0].matches) == 2
     assert merged_doc.inner_doc.integer == 3
-    assert merged_doc.inner_doc.l == ['c', 'd', 'a', 'b']
+    assert merged_doc.inner_doc.inner_list == ['c', 'd', 'a', 'b']
 
 
 def test_reduce_all(doc1, doc2):
@@ -117,4 +119,4 @@ def test_reduce_all(doc1, doc2):
     assert len(merged_doc.matches_with_same_id) == 1
     assert len(merged_doc.matches_with_same_id[0].matches) == 2
     assert merged_doc.inner_doc.integer == 3
-    assert merged_doc.inner_doc.l == ['c', 'd', 'a', 'b', 'c', 'd', 'a', 'b']
+    assert merged_doc.inner_doc.inner_list == ['c', 'd', 'a', 'b', 'c', 'd', 'a', 'b']

@@ -32,7 +32,7 @@ def test_set_tensor():
 
 
 @pytest.mark.tensorflow
-def test_set_tensor():
+def test_set_tensor_tensorflow():
     class MyDocument(BaseDocument):
         tensor: AnyTensor
 

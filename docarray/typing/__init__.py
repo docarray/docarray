@@ -63,6 +63,18 @@ try:
 except (ImportError, TypeError):
     pass
 else:
-    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor import TensorFlowTensor
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa
 
-    __all__.extend(['TensorFlowTensor'])
+    __all__.extend(
+        [
+            'TensorFlowTensor',
+            'TensorFlowEmbedding',
+            'AudioTensorFlowTensor',
+            'ImageTensorFlowTensor',
+            'VideoTensorFlowTensor',
+        ]
+    )
