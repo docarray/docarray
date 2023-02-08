@@ -268,9 +268,26 @@ class BackendMixin(BaseBackendMixin):
             # resp = self._client.mget(index=self._index_name_offset2id, ids=offsets)
             # ids not valid arg for mget
             # create 'body' json of 'ids' to offsets idx
-            resp = self._client.mget(index=self._index_name_offset2id, body={'ids':[x for x in offsets]})
-            ids = [x['_source']['blob'] for x in resp['docs']]
+
+            # gw: refactored to deal with large datasets
+            # resp = self._client.mget(index=self._index_name_offset2id, body={'ids':[x for x in offsets]})
+            # ids = [x['_source']['blob'] for x in resp['docs']]
+            # return ids
+            def gen_chunks(arr):
+                '''Generate subsets of the input array using python generators to economize mem usage.'''
+                chunk_size = 5000 # TODO: Should figure out the right size here
+                for i in range(0, len(arr), chunk_size):
+                    yield arr[i:i+chunk_size]
+            ids = []
+            for chunk in gen_chunks( offsets ):
+                print("_get_offset2ids_meta: got chunk of size=", len(chunk) )
+                resp = self._client.mget(index=self._index_name_offset2id, body={'ids':[x for x in chunk]})
+                ids += [x['_source']['blob'] for x in resp['docs']]
+                print("_get_offset2ids_meta: ids size is now=", len(ids) )
+                resp = self._client.mget(index=self._index_name_offset2id, body={'ids':[x for x in chunk]})
+            print("_get_offset2ids_meta: Done final size=", len(ids), "original n_docs=", n_docs)
             return ids
+            # gw: refactored to deal with large datasets
         else:
             return []
 
