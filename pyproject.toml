@@ -81,5 +81,6 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "internet: marks tests as requiring internet (deselect with '-m \"not internet\"')",
     "asyncio: marks that run async tests",
-    "proto: mark tests that run with proto"
+    "proto: mark tests that run with proto",
+    "tensorflow: marks test using tensorflow and proto 3"
 ]

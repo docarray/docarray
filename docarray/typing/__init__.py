@@ -31,6 +31,7 @@ __all__ = [
     'AnyUrl',
     'ID',
     'AnyTensor',
+    'TensorFlowTensor',
     'NdArrayEmbedding',
     'ImageBytes',
     'ImageTensor',
@@ -56,3 +57,12 @@ else:
             'ImageTorchTensor',
         ]
     )
+
+try:
+    import tensorflow as tf  # type: ignore # noqa: F401
+except (ImportError, TypeError):
+    pass
+else:
+    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
+
+    __all__.extend(['TensorFlowTensor'])

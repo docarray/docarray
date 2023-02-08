@@ -27,13 +27,21 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentArrayStackedProto
-    from docarray.typing import TorchTensor
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 try:
     from docarray.typing import TorchTensor
 except ImportError:
     TorchTensor = None  # type: ignore
+
+try:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+    tf_available = True
+except (ImportError, TypeError):
+    TensorFlowTensor = None  # type: ignore
+    tf_available = False
 
 T = TypeVar('T', bound='DocumentArrayStacked')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
@@ -163,7 +171,26 @@ class DocumentArrayStacked(AnyDocumentArray):
         tensor_columns: Dict[str, AbstractTensor] = dict()
 
         for field, type_ in column_schema.items():
-            if issubclass(type_, AbstractTensor):
+            if tf_available and isinstance(getattr(docs[0], field), TensorFlowTensor):
+                # tf.Tensor does not allow item assignment, therefore the optimized way
+                # of initializing an empty array and assigning values to it iteratively
+                # does not work here, therefore handle separately.
+                tf_stack = []
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field)
+                    if val is None:
+                        val = tensor_type.get_comp_backend().none_value()
+                    tf_stack.append(val.tensor)
+                    del val.tensor
+
+                stacked: tf.Tensor = tf.stack(tf_stack)
+                tensor_columns[field] = TensorFlowTensor(stacked)
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field)
+                    x = tensor_columns[field][i].tensor
+                    val.tensor = x
+
+            elif issubclass(type_, AbstractTensor):
                 tensor = getattr(docs[0], field)
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
@@ -190,7 +217,8 @@ class DocumentArrayStacked(AnyDocumentArray):
                     # We thus chose to convert the individual rank 0 tensors to rank 1
                     # This does mean that stacking rank 0 tensors will transform them
                     # to rank 1
-                    if tensor_columns[field].ndim == 1:
+                    tensor = tensor_columns[field]
+                    if tensor.get_comp_backend().n_dim(tensor) == 1:
                         setattr(doc, field, tensor_columns[field][i : i + 1])
                     else:
                         setattr(doc, field, tensor_columns[field][i])

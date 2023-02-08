@@ -1,7 +1,9 @@
 import numpy as np
 import pytest
+from pydantic import parse_obj_as
 
 from docarray.computation.numpy_backend import NumpyCompBackend
+from docarray.typing import NdArray
 
 
 def test_to_device():
@@ -87,3 +89,16 @@ def test_minmax_normalize(array, t_range, x_range, result):
         tensor=array, t_range=t_range, x_range=x_range
     )
     assert np.allclose(output, result)
+
+
+def test_stack():
+    t0 = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
+    t1 = parse_obj_as(NdArray, np.ones((3, 224, 224)))
+
+    stacked1 = NumpyCompBackend.stack([t0, t1], dim=0)
+    assert isinstance(stacked1, np.ndarray)
+    assert stacked1.shape == (2, 3, 224, 224)
+
+    stacked2 = NumpyCompBackend.stack([t0, t1], dim=-1)
+    assert isinstance(stacked2, np.ndarray)
+    assert stacked2.shape == (3, 224, 224, 2)

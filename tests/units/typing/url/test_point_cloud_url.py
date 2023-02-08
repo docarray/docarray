@@ -88,6 +88,7 @@ def test_validation(file_format, path_to_file):
         assert isinstance(url, str)
 
 
+@pytest.mark.proto
 def test_proto_point_cloud_url():
     uri = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
     uri._to_node_protobuf()

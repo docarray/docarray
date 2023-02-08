@@ -69,7 +69,7 @@ class _ParametrizedMeta(type):
                 _cls.__unparametrizedcls__
             ):  # This is not None if the tensor is parametrized
                 if (
-                    _cls.get_comp_backend().shape(instance)
+                    instance.get_comp_backend().shape(instance)
                     != _cls.__docarray_target_shape__
                 ):
                     return False
@@ -264,10 +264,4 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        ...
-
-    @property
-    @abc.abstractmethod
-    def ndim(self) -> int:
-        """The number of dimensions / rank of this tensor."""
         ...
