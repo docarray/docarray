@@ -33,7 +33,7 @@ web = ["fastapi"]
 pytest = ">=6.1"
 pre-commit = ">=2.20.0"
 jupyterlab = ">=3.5.0"
-mypy = ">=0.990"
+mypy = ">=1"
 types-protobuf = ">=3.20.4"
 black = ">=22.10.0"
 isort = ">=5.10.1"
