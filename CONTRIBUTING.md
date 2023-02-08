@@ -185,7 +185,7 @@ For example, a commit that fixes a bug in the executor module should be phrased 
 > Good examples:
 >
 ```text
-fix(indexer): fix wrong sharding number in indexer
+fix(elastic): fix batching in elastic document store
 feat: add remote api
 ```
 
@@ -276,7 +276,7 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 ### Documentation guidelines
 
-1. Decide if your page is a **guide or a tutorial**. Make sure it fits its section.
+1. Decide if your page is a **user guide or a how-to**, like in the `Data Types` section. Make sure it fits its section.
 2. Use “**you**” instead of “we” or “I”. It **engages** the reader more.
 3. **Sentence case** for headers. (Use [https://convertcase.net/](https://convertcase.net/) to check)
 4. Keep sentences short. If possible, **fewer than 13 words**.
