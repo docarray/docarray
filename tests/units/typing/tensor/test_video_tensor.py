@@ -66,17 +66,15 @@ def test_validation(cls_tensor, tensor):
 
 
 @pytest.mark.tensorflow
-@pytest.mark.parametrize(
-    'cls_tensor,tensor',
-    [
-        (VideoTensorFlowTensor, np.zeros((1, 224, 224, 3))),
-        (VideoTensorFlowTensor, tf.zeros((1, 224, 224, 3))),
-        (VideoTensorFlowTensor, torch.zeros((1, 224, 224, 3))),
-    ],
-)
-def test_validation_tensorflow(cls_tensor, tensor):
-    arr = parse_obj_as(cls_tensor, tensor)
-    assert isinstance(arr, cls_tensor)
+def test_validation_tensorflow():
+    arr = parse_obj_as(VideoTensorFlowTensor, np.zeros((1, 224, 224, 3)))
+    assert isinstance(arr, VideoTensorFlowTensor)
+
+    arr = parse_obj_as(VideoTensorFlowTensor, tf.zeros((1, 224, 224, 3)))
+    assert isinstance(arr, VideoTensorFlowTensor)
+
+    arr = parse_obj_as(VideoTensorFlowTensor, torch.zeros((1, 224, 224, 3)))
+    assert isinstance(arr, VideoTensorFlowTensor)
 
 
 @pytest.mark.parametrize(
