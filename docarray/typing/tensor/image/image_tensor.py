@@ -14,12 +14,10 @@ if tf_available:
         ImageTensorFlowTensor as ImageTFTensor,
     )
 
-
+ImageTensor = Union[ImageNdArray]  # type: ignore
 if tf_available and torch_available:
     ImageTensor = Union[ImageNdArray, ImageTorchTensor, ImageTFTensor]  # type: ignore
 elif tf_available:
     ImageTensor = Union[ImageNdArray, ImageTFTensor]  # type: ignore
-elif tf_available:
+elif torch_available:
     ImageTensor = Union[ImageNdArray, ImageTorchTensor]  # type: ignore
-else:
-    ImageTensor = Union[ImageNdArray]  # type: ignore

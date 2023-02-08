@@ -19,5 +19,5 @@ if tf_available and torch_available:
     AudioTensor = Union[AudioNdArray, AudioTorchTensor, AudioTFTensor]  # type: ignore
 elif tf_available:
     AudioTensor = Union[AudioNdArray, AudioTFTensor]  # type: ignore
-elif tf_available:
+elif torch_available:
     AudioTensor = Union[AudioNdArray, AudioTorchTensor]  # type: ignore

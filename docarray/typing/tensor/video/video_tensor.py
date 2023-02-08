@@ -18,7 +18,7 @@ if tf_available and torch_available:
     VideoTensor = Union[VideoNdArray, VideoTorchTensor, VideoTFTensor]  # type: ignore
 elif tf_available:
     VideoTensor = Union[VideoNdArray, VideoTFTensor]  # type: ignore
-elif tf_available:
+elif torch_available:
     VideoTensor = Union[VideoNdArray, VideoTorchTensor]  # type: ignore
 else:
     VideoTensor = Union[VideoNdArray]  # type: ignore

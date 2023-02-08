@@ -19,7 +19,7 @@ if tf_available and torch_available:
     AnyEmbedding = Union[NdArrayEmbedding, TorchEmbedding, TFEmbedding]  # type: ignore
 elif tf_available:
     AnyEmbedding = Union[NdArrayEmbedding, TFEmbedding]  # type: ignore
-elif tf_available:
+elif torch_available:
     AnyEmbedding = Union[NdArrayEmbedding, TorchEmbedding]  # type: ignore
 else:
     AnyEmbedding = Union[NdArrayEmbedding]  # type: ignore
