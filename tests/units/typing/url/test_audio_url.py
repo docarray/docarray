@@ -10,6 +10,13 @@ from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import AudioTorchTensor, AudioUrl
 from tests import TOYDATA_DIR
 
+try:
+    import tensorflow as tf
+
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
 AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),
     str(TOYDATA_DIR / 'olleh.wav'),
@@ -45,6 +52,25 @@ def test_load_audio_url_to_audio_torch_tensor_field(file_url):
 
     assert isinstance(doc.tensor, torch.Tensor)
     assert isinstance(doc.tensor, AudioTorchTensor)
+
+
+@pytest.mark.tensorflow
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [*AUDIO_FILES, REMOTE_AUDIO_FILE],
+)
+def test_load_audio_url_to_audio_tensorflow_tensor_field(file_url):
+    class MyAudioDoc(BaseDocument):
+        audio_url: AudioUrl
+        tensor: Optional[AudioTensorFlowTensor]
+
+    doc = MyAudioDoc(audio_url=file_url)
+    doc.tensor = doc.audio_url.load()
+
+    assert isinstance(doc.tensor, AudioTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
 
 
 @pytest.mark.slow

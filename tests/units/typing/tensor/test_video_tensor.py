@@ -13,6 +13,14 @@ from docarray.typing import (
     VideoTorchTensor,
 )
 
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing.tensor.video import VideoTensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
 
 @pytest.mark.parametrize(
     'tensor,cls_video_tensor,cls_tensor',
@@ -32,6 +40,18 @@ def test_set_video_tensor(tensor, cls_video_tensor, cls_tensor):
     assert (doc.tensor == tensor).all()
 
 
+@pytest.mark.tensorflow
+def test_set_video_tensor_tensorflow():
+    class MyVideoDoc(BaseDocument):
+        tensor: VideoTensorFlowTensor
+
+    doc = MyVideoDoc(tensor=tf.zeros((1, 224, 224, 3)))
+
+    assert isinstance(doc.tensor, VideoTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
+    assert tnp.allclose(doc.tensor.tensor, tf.zeros((1, 224, 224, 3)))
+
+
 @pytest.mark.parametrize(
     'cls_tensor,tensor',
     [
@@ -41,6 +61,19 @@ def test_set_video_tensor(tensor, cls_video_tensor, cls_tensor):
     ],
 )
 def test_validation(cls_tensor, tensor):
+    arr = parse_obj_as(cls_tensor, tensor)
+    assert isinstance(arr, cls_tensor)
+
+
+@pytest.mark.parametrize(
+    'cls_tensor,tensor',
+    [
+        (VideoTensorFlowTensor, np.zeros((1, 224, 224, 3))),
+        (VideoTensorFlowTensor, tf.zeros((1, 224, 224, 3))),
+        (VideoTensorFlowTensor, torch.zeros((1, 224, 224, 3))),
+    ],
+)
+def test_validation_tensorflow(cls_tensor, tensor):
     arr = parse_obj_as(cls_tensor, tensor)
     assert isinstance(arr, cls_tensor)
 
@@ -78,6 +111,13 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
     assert proto_key in str(proto)
 
 
+@pytest.mark.tensorflow
+def test_proto_tensor_tensorflow():
+    tensor = parse_obj_as(VideoTensorFlowTensor, tf.zeros((1, 224, 224, 3)))
+    proto = tensor._to_node_protobuf()
+    assert VideoTensorFlowTensor._proto_type_name in str(proto)
+
+
 @pytest.mark.parametrize(
     'video_tensor',
     [
@@ -87,6 +127,14 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
 )
 def test_save_video_tensor_to_file(video_tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
+    video_tensor.save(tmp_file)
+    assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.tensorflow
+def test_save_video_tensorflow_tensor_to_file(tmpdir):
+    tmp_file = str(tmpdir / 'tmp.mp4')
+    video_tensor = parse_obj_as(VideoTensorFlowTensor, tf.zeros((1, 224, 224, 3)))
     video_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
 

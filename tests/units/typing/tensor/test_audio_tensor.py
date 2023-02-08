@@ -9,6 +9,14 @@ from docarray import BaseDocument
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
 
+try:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor
+except (ImportError, TypeError):
+    pass
+
 
 @pytest.mark.parametrize(
     'tensor,cls_audio_tensor,cls_tensor',
@@ -27,6 +35,17 @@ def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
     assert (doc.tensor == tensor).all()
 
 
+@pytest.mark.tensorflow
+def test_set_audio_tensorflow_tensor():
+    class MyAudioDoc(BaseDocument):
+        tensor: AudioTensorFlowTensor
+
+    doc = MyAudioDoc(tensor=tf.zeros((1000, 2)))
+    assert isinstance(doc.tensor, AudioTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
+    assert tnp.allclose(doc.tensor.tensor, tf.zeros((1000, 2)))
+
+
 @pytest.mark.parametrize(
     'cls_tensor,tensor',
     [
@@ -38,6 +57,12 @@ def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
 def test_validation(cls_tensor, tensor):
     arr = parse_obj_as(cls_tensor, tensor)
     assert isinstance(arr, cls_tensor)
+
+
+@pytest.mark.tensorflow
+def test_validation_tensorflow():
+    arr = parse_obj_as(AudioTensorFlowTensor, tf.zeros((1000, 2)))
+    assert isinstance(arr, AudioTensorFlowTensor)
 
 
 @pytest.mark.parametrize(
@@ -68,6 +93,13 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
     assert proto_key in str(proto)
 
 
+@pytest.mark.tensorflow
+def test_proto_tensor_tensorflow():
+    tensor = parse_obj_as(AudioTensorFlowTensor, tf.zeros((1000, 2)))
+    proto = tensor._to_node_protobuf()
+    assert AudioTensorFlowTensor._proto_type_name in str(proto)
+
+
 @pytest.mark.parametrize(
     'cls_tensor,tensor',
     [
@@ -78,5 +110,13 @@ def test_proto_tensor(cls_tensor, tensor, proto_key):
 def test_save_audio_tensor_to_wav_file(cls_tensor, tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
     audio_tensor = parse_obj_as(cls_tensor, tensor)
+    audio_tensor.save_to_wav_file(tmp_file)
+    assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.tensorflow
+def test_save_audio_tensorflow_tensor_to_wav_file(tmpdir):
+    tmp_file = str(tmpdir / 'tmp.wav')
+    audio_tensor = parse_obj_as(AudioTensorFlowTensor, tf.zeros((1000, 2)))
     audio_tensor.save_to_wav_file(tmp_file)
     assert os.path.isfile(tmp_file)
