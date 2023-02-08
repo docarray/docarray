@@ -29,7 +29,6 @@ if TYPE_CHECKING:
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-
 try:
     from docarray.typing import TorchTensor
 except ImportError:
@@ -49,7 +48,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
     stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
     you can be precise a Document schema by using the `DocumentArray[MyDocument]`
-    syntax where MyDocument is a Document class  (i.e. schema).
+    syntax where MyDocument is a Document class (i.e. schema).
     This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
@@ -262,6 +261,23 @@ class DocumentArrayStacked(AnyDocumentArray):
         for field in self._doc_columns.keys():
             setattr(doc, field, self._doc_columns[field][key])
         return doc
+
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        raise NotImplementedError(
+            f'{self.__class__.__name__} does not implement '
+            f'__del_item__. You are trying to delete an element'
+            f'from {self.__class__.__name__} which is not '
+            f'designed for this operation. Please `unstack`'
+            f' before doing the deletion'
+        )
 
     def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
         """Delegates the access to the data and the columns,

@@ -367,6 +367,13 @@ def test_keep_dtype_np():
     assert da.tensor.dtype == np.int32
 
 
+def test_del_item(batch):
+    assert len(batch) == 10
+    assert batch.tensor.shape[0] == 10
+    with pytest.raises(NotImplementedError):
+        del batch[2]
+
+
 def test_np_scalar():
     class MyDoc(BaseDocument):
         scalar: NdArray
