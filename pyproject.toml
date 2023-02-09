@@ -20,13 +20,15 @@ types-requests = ">=2.28.11.6"
 av = {version = ">=10.0.0", optional = true}
 fastapi = {version = ">=0.87.0", optional = true }
 rich = ">=13.1.0"
+jina-hubble-sdk = {version = "^0.33.1", optional = true }
+pyglet = {version = "1.5.27", optional = true }
 
 [tool.poetry.extras]
 common = ["protobuf"]
 torch = ["torch"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
-mesh = ["trimesh"]
+mesh = ["trimesh", "jina-hubble-sdk", "pyglet"]
 web = ["fastapi"]
 
 [tool.poetry.dev-dependencies]
