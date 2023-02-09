@@ -93,6 +93,7 @@ class PointCloud3D(BaseDocument):
 
     url: Optional[PointCloud3DUrl]
     tensor: Optional[AnyTensor]
+    color_tensor: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
     bytes: Optional[bytes]
 
@@ -111,3 +112,26 @@ class PointCloud3D(BaseDocument):
             value = cls(tensor=value)
 
         return super().validate(value)
+
+    def display(self) -> None:
+        """Plot interactive point cloud from :attr:`.tensor`"""
+        import trimesh
+        from hubble.utils.notebook import is_notebook
+        from IPython.display import display
+
+        colors = (
+            self.color_tensor
+            if self.color_tensor
+            else np.tile(np.array([0, 0, 0]), (len(self.tensor), 1))
+        )
+
+        pc = trimesh.points.PointCloud(
+            vertices=self.tensor,
+            colors=colors,
+        )
+
+        if is_notebook():
+            s = trimesh.Scene(geometry=pc)
+            display(s.show())
+        else:
+            display(pc.show())

@@ -93,3 +93,18 @@ class Mesh3D(BaseDocument):
         if isinstance(value, str):
             value = cls(url=value)
         return super().validate(value)
+
+    def display(self):
+        """Plot mesh consisting of vertices and faces."""
+        from IPython.display import display
+
+        if self.url:
+            # mesh from uri
+            mesh = self.url._load_trimesh_instance()
+            display(mesh.show())
+        else:
+            # mesh from vertices and faces tensors
+            import trimesh
+
+            mesh = trimesh.Trimesh(vertices=self.vertices, faces=self.faces)
+            display(mesh.show())
