@@ -83,10 +83,3 @@ message DocumentProto {
 message DocumentArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
-
-message DocumentArrayStackedProto{
-  DocumentArrayProto list_ = 1; // a list of Documents
-  map<string, DocumentArrayStackedProto> doc_columns = 2; // a dict of document columns
-  map<string, NdArrayProto> tensor_columns = 3; // a dict of tensor columns
-
-}
