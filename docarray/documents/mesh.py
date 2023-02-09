@@ -94,28 +94,27 @@ class Mesh3D(BaseDocument):
             value = cls(url=value)
         return super().validate(value)
 
-    def display(self, display_from: str = 'url'):
+    def display(self, display_from: str = 'url') -> None:
         """
         Plot mesh consisting of vertices and faces.
+        :param display_from: display from either url or tensors (vertices and faces).
         """
+        import trimesh
         from IPython.display import display
 
         if display_from not in ['tensor', 'url']:
             raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
 
-        if not getattr(self, display_from):
-            raise ValueError(
-                f'Can not to display point cloud from {display_from} when the '
-                f'{display_from} is None.'
-            )
-
-        if self.url:
-            # mesh from uri
+        if display_from == 'url':
+            if self.url is None:
+                raise ValueError('Can\'t display mesh from url when the url is None.')
             mesh = self.url._load_trimesh_instance()
             display(mesh.show())
         else:
-            # mesh from vertices and faces tensors
-            import trimesh
+            if self.vertices is None or self.faces is None:
+                raise ValueError(
+                    'Can\'t display mesh from tensor when vertices and/or faces is None'
+                )
 
             mesh = trimesh.Trimesh(vertices=self.vertices, faces=self.faces)
             display(mesh.show())

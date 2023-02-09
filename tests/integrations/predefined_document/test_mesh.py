@@ -44,6 +44,9 @@ def test_display_illegal_param():
     with pytest.raises(ValueError):
         mesh.display(display_from='tensor')
 
-    mesh = Mesh3D(vertices=np.zeros((10, 3)), faces=np.ones(10, 3))
+    mesh = Mesh3D(vertices=np.zeros((10, 3)), faces=np.ones((10, 3)))
     with pytest.raises(ValueError):
         mesh.display(display_from='url')
+
+    with pytest.raises(ValueError):
+        mesh.display(display_from='illegal')

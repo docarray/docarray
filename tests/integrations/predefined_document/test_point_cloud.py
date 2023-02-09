@@ -83,3 +83,6 @@ def test_display_illegal_param():
     pc = PointCloud3D(tensor=np.zeros((10, 3)))
     with pytest.raises(ValueError):
         pc.display(display_from='url')
+
+    with pytest.raises(ValueError):
+        pc.display(display_from='illegal')

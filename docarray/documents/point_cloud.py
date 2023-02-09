@@ -116,6 +116,9 @@ class PointCloud3D(BaseDocument):
     def display(self, display_from: str = 'url', samples: int = 10000) -> None:
         """
         Plot interactive point cloud from :attr:`.tensor`
+        :param display_from: display point cloud from either url or tensor.
+        :param samples: number of points to sample from the mesh, will be ignored if
+            displayed from tensor.
         """
         import trimesh
         from hubble.utils.notebook import is_notebook
@@ -124,7 +127,7 @@ class PointCloud3D(BaseDocument):
         if display_from not in ['tensor', 'url']:
             raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
 
-        if not getattr(self, display_from):
+        if getattr(self, display_from) is None:
             raise ValueError(
                 f'Can not to display point cloud from {display_from} when the '
                 f'{display_from} is None.'
