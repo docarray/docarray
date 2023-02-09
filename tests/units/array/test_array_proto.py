@@ -1,10 +1,11 @@
 import numpy as np
 import pytest
+import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.documents import Image, Text
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.mark.proto
@@ -60,13 +61,17 @@ def test_nested_proto_any_doc():
     DocumentArray.from_protobuf(da.to_protobuf())
 
 
+@pytest.mark.parametrize(
+    'type_tensor,val',
+    [(NdArray, np.zeros((3, 224, 224))), (TorchTensor, torch.zeros(3, 224, 224))],
+)
 @pytest.mark.proto
-def test_stacked_proto():
+def test_stacked_proto(type_tensor, val):
     class CustomDocument(BaseDocument):
-        image: NdArray
+        image: type_tensor
 
     da = DocumentArray[CustomDocument](
-        [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
+        [CustomDocument(image=val) for _ in range(10)]
     ).stack()
 
     da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())

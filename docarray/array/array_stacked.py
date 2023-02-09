@@ -6,13 +6,13 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
-    Optional,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocumentArrayStackedProto
+    from docarray.proto import DocumentArrayProto
 
 torch_available = is_torch_available()
 if torch_available:
@@ -393,44 +393,16 @@ class DocumentArrayStacked(AnyDocumentArray):
         return len(self._docs)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message"""
 
-        docs: DocumentArray = DocumentArray(
-            cls.document_type.from_protobuf(doc_proto)
-            for doc_proto in pb_msg.list_.docs
+        return cls(
+            [cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs]
         )
-        da: T = cls(DocumentArray([]))
 
-        da._docs = docs
-        da._doc_columns = pb_msg.doc_columns
-        da._tensor_columns = pb_msg.tensor_columns
-        return da
-
-    def to_protobuf(self) -> 'DocumentArrayStackedProto':
+    def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocumentArray into a Protobuf message"""
-        from docarray.proto import (
-            DocumentArrayProto,
-            DocumentArrayStackedProto,
-            NdArrayProto,
-        )
-
-        da_proto = DocumentArrayProto()
-        for doc in self:
-            da_proto.docs.append(doc.to_protobuf())
-
-        doc_columns_proto: Dict[str, DocumentArrayStackedProto] = dict()
-        tens_columns_proto: Dict[str, NdArrayProto] = dict()
-        for field, col_doc in self._doc_columns.items():
-            doc_columns_proto[field] = col_doc.to_protobuf()
-        for field, col_tens in self._tensor_columns.items():
-            tens_columns_proto[field] = col_tens.to_protobuf()
-
-        return DocumentArrayStackedProto(
-            list_=da_proto,
-            doc_columns=doc_columns_proto,
-            tensor_columns=tens_columns_proto,
-        )
+        return self._docs.to_protobuf()
 
     def unstack(self: T) -> DocumentArray:
         """Convert DocumentArrayStacked into a DocumentArray.
