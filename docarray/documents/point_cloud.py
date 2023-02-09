@@ -122,7 +122,10 @@ class PointCloud3D(BaseDocument):
         colors = (
             self.color_tensor
             if self.color_tensor
-            else np.tile(np.array([0, 0, 0]), (len(self.tensor), 1))
+            else np.tile(
+                np.array([0, 0, 0]),
+                (self.tensor.get_comp_backend().shape(self.tensor)[0], 1),
+            )
         )
 
         pc = trimesh.points.PointCloud(
