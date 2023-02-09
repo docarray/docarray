@@ -127,27 +127,24 @@ class PointCloud3D(BaseDocument):
         if display_from not in ['tensor', 'url']:
             raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
 
-        if getattr(self, display_from) is None:
-            raise ValueError(
-                f'Can not to display point cloud from {display_from} when the '
-                f'{display_from} is None.'
-            )
-
         if display_from == 'url':
+            if self.url is None:
+                raise ValueError(
+                    'Can\'t display point cloud from url when url is None.'
+                )
             tensor = self.url.load(samples=samples)
             colors = np.tile(
                 np.array([0, 0, 0]), (tensor.get_comp_backend().shape(tensor)[0], 1)
             )
         else:
+            if self.tensor is None:
+                raise ValueError('Can\'t display mesh from tensor when tensor is None.')
             tensor = self.tensor
             comp_be = self.tensor.get_comp_backend()
             colors = (
                 self.color_tensor
                 if self.color_tensor
-                else np.tile(
-                    np.array([0, 0, 0]),
-                    (comp_be.shape(tensor)[0], 1),
-                )
+                else np.tile(np.array([0, 0, 0]), (comp_be.shape(tensor)[0], 1))
             )
 
         pc = trimesh.points.PointCloud(vertices=tensor, colors=colors)
