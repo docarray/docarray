@@ -113,25 +113,41 @@ class PointCloud3D(BaseDocument):
 
         return super().validate(value)
 
-    def display(self) -> None:
-        """Plot interactive point cloud from :attr:`.tensor`"""
+    def display(self, display_from: str = 'url', samples: int = 10000) -> None:
+        """
+        Plot interactive point cloud from :attr:`.tensor`
+        """
         import trimesh
         from hubble.utils.notebook import is_notebook
         from IPython.display import display
 
-        colors = (
-            self.color_tensor
-            if self.color_tensor
-            else np.tile(
-                np.array([0, 0, 0]),
-                (self.tensor.get_comp_backend().shape(self.tensor)[0], 1),
-            )
-        )
+        if display_from not in ['tensor', 'url']:
+            raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
 
-        pc = trimesh.points.PointCloud(
-            vertices=self.tensor,
-            colors=colors,
-        )
+        if not getattr(self, display_from):
+            raise ValueError(
+                f'Can not to display point cloud from {display_from} when the '
+                f'{display_from} is None.'
+            )
+
+        if display_from == 'url':
+            tensor = self.url.load(samples=samples)
+            colors = np.tile(
+                np.array([0, 0, 0]), (tensor.get_comp_backend().shape(tensor)[0], 1)
+            )
+        else:
+            tensor = self.tensor
+            comp_be = self.tensor.get_comp_backend()
+            colors = (
+                self.color_tensor
+                if self.color_tensor
+                else np.tile(
+                    np.array([0, 0, 0]),
+                    (comp_be.shape(tensor)[0], 1),
+                )
+            )
+
+        pc = trimesh.points.PointCloud(vertices=tensor, colors=colors)
 
         if is_notebook():
             s = trimesh.Scene(geometry=pc)

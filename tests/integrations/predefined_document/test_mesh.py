@@ -37,3 +37,13 @@ def test_doc():
 
     assert doc.mesh1.url == 'http://hello.ply'
     assert doc.mesh2.url == 'http://hello.ply'
+
+
+def test_display_illegal_param():
+    mesh = Mesh3D(url='http://myurl.ply')
+    with pytest.raises(ValueError):
+        mesh.display(display_from='tensor')
+
+    mesh = Mesh3D(vertices=np.zeros((10, 3)), faces=np.ones(10, 3))
+    with pytest.raises(ValueError):
+        mesh.display(display_from='url')

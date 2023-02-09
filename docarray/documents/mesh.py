@@ -94,9 +94,20 @@ class Mesh3D(BaseDocument):
             value = cls(url=value)
         return super().validate(value)
 
-    def display(self):
-        """Plot mesh consisting of vertices and faces."""
+    def display(self, display_from: str = 'url'):
+        """
+        Plot mesh consisting of vertices and faces.
+        """
         from IPython.display import display
+
+        if display_from not in ['tensor', 'url']:
+            raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
+
+        if not getattr(self, display_from):
+            raise ValueError(
+                f'Can not to display point cloud from {display_from} when the '
+                f'{display_from} is None.'
+            )
 
         if self.url:
             # mesh from uri
