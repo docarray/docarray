@@ -4,7 +4,6 @@ from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
-
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
@@ -46,16 +45,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
             elif content_key is None:
                 fields[field] = None
             elif content_type is None:
-                if content_key == 'text':
-                    fields[field] = value.text
-                elif content_key == 'blob':
-                    fields[field] = value.blob
-                elif content_key == 'integer':
-                    fields[field] = value.integer
-                elif content_key == 'float':
-                    fields[field] = value.float
-                elif content_key == 'boolean':
-                    fields[field] = value.boolean
+
+                if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
+                    fields[field] = getattr(value, content_key)
                 elif content_key == 'list':
                     from google.protobuf.json_format import MessageToDict
 
