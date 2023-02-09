@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class DocumentSummary:
-    table_width: int = 80
+    table_min_width: int = 40
 
     def __init__(
         self,
@@ -116,7 +116,7 @@ class DocumentSummary:
         table = Table(
             'Attribute',
             'Value',
-            width=self.table_width,
+            min_width=self.table_min_width,
             box=box.ROUNDED,
             highlight=True,
         )
