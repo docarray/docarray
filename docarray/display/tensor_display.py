@@ -60,6 +60,7 @@ class TensorDisplay:
         """
         Compute the width of the table. Depending on the length of the tensor, the width
         should be in the range of 30 (min) and a given `max_width`.
+        :return: the width of the table
         """
         comp_be = self.tensor.get_comp_backend()
         t_squeezed = comp_be.squeeze(comp_be.detach(self.tensor))
