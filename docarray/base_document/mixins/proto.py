@@ -4,7 +4,6 @@ from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
-
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
@@ -14,9 +13,14 @@ T = TypeVar('T', bound='ProtoMixin')
 
 class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
-        """create a Document from a protobuf message"""
-
+    def _get_data_dict_from_proto(
+        cls: Type[T], pb_msg: 'DocumentProto'
+    ) -> Dict[str, Any]:
+        """
+        read the proto and load the data into a dict. Need to be use before calling
+        the validation of pydantic.
+        :return: a dict with the data before validation
+        """
         fields: Dict[str, Any] = {}
 
         for field in pb_msg.data:
@@ -83,7 +87,17 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     f' deserialization'
                 )
 
-        return cls.construct(**fields)
+        return fields
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
+        """create a dict with field and value from proto"""
+        return cls(**cls._get_data_dict_from_proto(pb_msg))
+
+    @classmethod
+    def from_protobuf_w_casting(cls: Type[T], pb_msg: 'DocumentProto') -> T:
+        """create a Document from a protobuf message"""
+        return cls(**cls._get_data_dict_from_proto(pb_msg))
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.

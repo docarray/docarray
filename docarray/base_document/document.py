@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import os
-from typing import List, Type
+from typing import Any, Dict, List, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
@@ -13,6 +15,8 @@ from docarray.base_document.mixins import PlotMixin, ProtoMixin
 from docarray.typing import ID
 
 _console: Console = Console()
+
+T = TypeVar('T', bound='BaseDocument')
 
 
 class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
@@ -213,3 +217,43 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             elif dict1 is not None and dict2 is not None:
                 dict1.update(dict2)
                 setattr(self, field, dict1)
+
+    @classmethod
+    def smart_parse_obj(cls: Type[T], obj: Dict[str, Any]) -> T:
+        """
+        parse the given object, validate the data and return a new initialized objet
+        the difference from `parse_obj` is that it will smartly resolve conflict and
+        undefined key.
+
+        Here we should describe the algo and give an example:
+        :param obj, a dict of field and type
+        :return: a Document initialized from the dict data
+        """
+        fields: Dict[str, Any] = {}
+        for field_name in cls.__fields__.keys() & obj.keys():
+            if isinstance(obj[field_name], cls._get_field_type(field_name)):
+                fields[field_name] = obj[field_name]
+
+        # fields contains for now the field that match in name and in type
+        remaining_field_name = [
+            field_name
+            for field_name in cls.__fields__.keys()
+            if field_name not in fields.keys()
+        ]
+
+        remaining_field_obj = {
+            field_name: field
+            for field_name, field in obj.items()
+            if field_name not in fields.keys()
+        }
+
+        for _, val in remaining_field_obj.items():
+            for field_name in remaining_field_name:
+                if isinstance(val, cls._get_field_type(field_name)):
+                    fields[field_name] = val
+                    break
+
+            if len(fields) == len(cls.__fields__):
+                return cls(**fields)
+
+        raise ValueError('Cannot smartly cast the obj')
