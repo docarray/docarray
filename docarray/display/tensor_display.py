@@ -12,6 +12,8 @@ class TensorDisplay:
     Rich representation of a tensor.
     """
 
+    tensor_min_width: int = 30
+
     def __init__(self, tensor: 'AbstractTensor'):
         self.tensor = tensor
 
@@ -51,4 +53,18 @@ class TensorDisplay:
     ) -> 'Measurement':
         from rich.measure import Measurement
 
-        return Measurement(1, options.max_width)
+        width = self._compute_table_width(max_width=options.max_width)
+        return Measurement(1, width)
+
+    def _compute_table_width(self, max_width: int) -> int:
+        """
+        Compute the width of the table. Depending on the length of the tensor, the width
+        should be in the range of 30 (min) and a given `max_width`.
+        :return: the width of the table
+        """
+        comp_be = self.tensor.get_comp_backend()
+        t_squeezed = comp_be.squeeze(comp_be.detach(self.tensor))
+
+        min_capped = max(comp_be.shape(t_squeezed)[0], self.tensor_min_width)
+        min_max_capped = min(min_capped, max_width)
+        return min_max_capped
