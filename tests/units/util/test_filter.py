@@ -1,7 +1,8 @@
-import pytest
 import json
+from typing import Any, Dict, List, Optional
 
-from typing import Optional, List, Dict, Any
+import pytest
+
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image, Text
 from docarray.utils.filter import filter
@@ -59,9 +60,9 @@ def test_empty_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_simple_filter(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     result = method({'text': {'$eq': 'Text of Document 1'}})
     assert len(result) == 1
@@ -128,9 +129,9 @@ def test_simple_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_nested_filter(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     result = method({'dictionary.a': {'$eq': 0}})
     assert len(result) == 2
@@ -157,9 +158,9 @@ def test_nested_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_array_simple_filters(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     # SIZE DOES NOT SEEM TO WORK
     result = method({'sub_docs': {'$size': 2}})
@@ -179,9 +180,9 @@ def test_placehold_filter(dict_api):
     )
 
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     # DOES NOT SEEM TO WORK
     result = method({'text': {'$eq': '{text_doc}'}})
@@ -194,9 +195,9 @@ def test_placehold_filter(dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_logic_filter(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
     result = method(
         {
             '$or': {
@@ -275,9 +276,9 @@ def test_from_docstring(dict_api):
     }
 
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     results = method(query)
     assert len(results) == 1

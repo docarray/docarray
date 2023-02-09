@@ -6,5 +6,17 @@ else:
     torch_imported = True
 
 
+try:
+    import tensorflow as tf  # type: ignore # noqa: F401
+except (ImportError, TypeError):
+    tf_imported = False
+else:
+    tf_imported = True
+
+
 def is_torch_available():
     return torch_imported
+
+
+def is_tf_available():
+    return tf_imported

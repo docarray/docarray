@@ -5,14 +5,14 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
 from docarray.typing import AnyTensor, NdArray
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 
 @pytest.fixture()

@@ -74,7 +74,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         """
         import av
 
-        np_tensor = self.get_comp_backend().to_numpy(array=self)  # type: ignore
+        np_tensor = self.get_comp_backend().to_numpy(array=self)
         video_tensor = np_tensor.astype('uint8')
 
         with av.open(file_path, mode='w') as container:

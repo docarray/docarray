@@ -21,6 +21,6 @@ repos:
         exclude: ^(docarray/proto/pb/docarray_pb2.py|docarray/proto/pb/docarray_pb2.py|docs/|docarray/resources/)
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.165
+  rev: v0.0.243
   hooks:
     - id: ruff

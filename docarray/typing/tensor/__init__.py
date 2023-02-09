@@ -13,22 +13,23 @@ __all__ = [
     'TensorFlowTensor',
 ]
 
-try:
-    import torch  # noqa: F401
-except ImportError:
-    pass
-else:
+from docarray.utils.misc import is_tf_available, is_torch_available
+
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing.tensor.embedding import TorchEmbedding  # noqa: F401
     from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
     from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
 
     __all__.extend(['TorchEmbedding', 'TorchTensor', 'ImageTorchTensor'])
 
-try:
-    import tensorflow as tf  # type: ignore # noqa: F401
-except (ImportError, TypeError):
-    pass
-else:
+    torch_available = is_torch_available()
+
+
+tf_available = is_tf_available()
+if tf_available:
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
-    __all__.extend(['TensorFlowTensor'])
+    __all__.extend(['TensorFlowEmbedding', 'TensorFlowTensor', 'ImageTensorFlowTensor'])

@@ -1,31 +1,23 @@
 from typing import Union
 
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils.misc import is_tf_available, is_torch_available
 
-try:
-    import torch  # noqa: F401
-
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
 
-    is_torch_available = True
-except ImportError:
-    is_torch_available = False
 
-try:
-    import tensorflow as tf  # type: ignore # noqa: F401
-
+tf_available = is_tf_available()
+if tf_available:
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
-    is_tf_available = True
-except (ImportError, TypeError):
-    is_tf_available = False
 
-
-if is_torch_available and is_tf_available:
+if torch_available and tf_available:
     AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor]
-elif is_torch_available:
+elif torch_available:
     AnyTensor = Union[NdArray, TorchTensor]  # type: ignore
-elif is_tf_available:
+elif tf_available:
     AnyTensor = Union[NdArray, TensorFlowTensor]  # type: ignore
 else:
     AnyTensor = Union[NdArray]  # type: ignore

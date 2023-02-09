@@ -1,14 +1,14 @@
 import pytest
 
 from docarray import BaseDocument
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
 
-    from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
-    pass
+    from docarray.typing import TensorFlowEmbedding, TensorFlowTensor
 
 
 @pytest.mark.tensorflow
@@ -21,3 +21,16 @@ def test_set_tensorflow_tensor():
     assert isinstance(doc.t, TensorFlowTensor)
     assert isinstance(doc.t.tensor, tf.Tensor)
     assert tnp.allclose(doc.t.tensor, tf.zeros((3, 224, 224)))
+
+
+@pytest.mark.tensorflow
+def test_set_tf_embedding():
+    class MyDocument(BaseDocument):
+        embedding: TensorFlowEmbedding
+
+    doc = MyDocument(embedding=tf.zeros((128,)))
+
+    assert isinstance(doc.embedding, TensorFlowTensor)
+    assert isinstance(doc.embedding, TensorFlowEmbedding)
+    assert isinstance(doc.embedding.tensor, tf.Tensor)
+    assert tnp.allclose(doc.embedding.tensor, tf.zeros((128,)))

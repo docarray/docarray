@@ -10,7 +10,16 @@ from docarray import BaseDocument
 from docarray.documents import Audio
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf
+    import tensorflow._api.v2.experimental.numpy as tnp
+
+    from docarray.typing.tensor import TensorFlowTensor
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor
 
 LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),
@@ -67,6 +76,29 @@ def test_save_audio_torch_tensor(file_url, tmpdir):
     assert torch.allclose(audio.tensor, audio_from_file.tensor)
 
 
+@pytest.mark.tensorflow
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
+def test_save_audio_tensorflow(file_url, tmpdir):
+    tmp_file = str(tmpdir / 'tmp.wav')
+
+    audio = Audio(url=file_url)
+    audio.tensor = AudioTensorFlowTensor(tensor=tf.constant(audio.url.load()))
+    assert isinstance(audio.tensor, TensorFlowTensor)
+    assert isinstance(audio.tensor, AudioTensorFlowTensor)
+    assert isinstance(audio.tensor.tensor, tf.Tensor)
+
+    audio.tensor.save_to_wav_file(tmp_file)
+    assert os.path.isfile(tmp_file)
+
+    audio_from_file = Audio(url=tmp_file)
+    audio_from_file.tensor = AudioTensorFlowTensor(
+        tensor=tf.constant(audio_from_file.url.load())
+    )
+    assert tnp.allclose(audio.tensor.tensor, audio_from_file.tensor.tensor)
+
+
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize(
@@ -93,6 +125,12 @@ def test_audio_np():
 def test_audio_torch():
     audio = parse_obj_as(Audio, torch.zeros(10, 10, 3))
     assert (audio.tensor == torch.zeros(10, 10, 3)).all()
+
+
+@pytest.mark.tensorflow
+def test_audio_tensorflow():
+    audio = parse_obj_as(Audio, tf.zeros((10, 10, 3)))
+    assert tnp.allclose(audio.tensor.tensor, tf.zeros((10, 10, 3)))
 
 
 def test_audio_bytes():

@@ -1,11 +1,10 @@
 import io
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
-    @abstractmethod
     def to_bytes(self, format: str = 'PNG') -> bytes:
         """
         Convert image tensor to bytes.

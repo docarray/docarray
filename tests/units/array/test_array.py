@@ -6,11 +6,11 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import NdArray, TorchTensor
+from docarray.utils.misc import is_tf_available
 
-try:
+tf_available = is_tf_available()
+if tf_available:
     from docarray.typing import TensorFlowTensor
-except (ImportError, TypeError):
-    pass
 
 
 @pytest.fixture()
