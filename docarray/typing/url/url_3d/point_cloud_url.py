@@ -7,6 +7,7 @@ from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
+from docarray.utils.misc import is_notebook
 
 T = TypeVar('T', bound='PointCloud3DUrl')
 
@@ -82,7 +83,6 @@ def _display_point_cloud(
         shape (n_points, 3) or (n_points, 4).
     """
     import trimesh
-    from hubble.utils.notebook import is_notebook
     from IPython.display import display
 
     if colors is None:
