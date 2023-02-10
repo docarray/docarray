@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import (
     Any,
     Dict,
     Generator,
     Generic,
     List,
+    NamedTuple,
     Optional,
     Sequence,
     Type,
@@ -12,6 +14,7 @@ from typing import (
     Union,
 )
 
+import numpy as np
 from typing_inspect import is_union_type
 
 from docarray import BaseDocument, DocumentArray
@@ -23,13 +26,25 @@ from docarray.utils.protocols import IsDataclass
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
 
+class FindResultBatched(NamedTuple):
+    documents: List[DocumentArray]
+    scores: np.ndarray
+
+
+@dataclass
+class _Column:
+    docarray_type: Type
+    db_type: Any
+    config: Dict[str, Any]
+
+
 class BaseDocumentStore(ABC, Generic[TSchema]):
     """Abstract class for all Document Stores"""
 
     # the BaseDocument that defines the schema of the store
-    _schema: Type = type(None)  # this is filled automatically
-    # columns with types according to the Document schema
-    _columns_schema: Dict[str, Type] = {}  # this is filled automatically
+    # for subclasses this is filled automatically
+    _schema: Optional[Type[BaseDocument]] = None
+
     # default configurations for every column type
     # a dictionary from a column type (DB specific) to a dictionary
     # of default configurations for that type
@@ -39,18 +54,14 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     _default_column_config: Dict[Any, Dict[str, Any]] = {}
 
     def __init__(self, config: Optional[IsDataclass] = None):
-        if issubclass(self._schema, type(None)):
+        if self._schema is None:
             raise ValueError(
                 'A DocumentStore must be typed with a Document type.'
                 'To do so, use the syntax: DocumentStore[DocumentType]'
             )
         self._config = config
-        # columns with DB specific types
-        self._columns_db = {
-            name: self.python_type_to_db_type(type_)
-            for name, type_ in self._columns_schema.items()
-        }
-        self._column_configs: Dict[Any, Dict[str, Any]] = self._get_column_configs()
+
+        self._columns: Dict[str, _Column] = self._create_columns(self._schema)
 
     @abstractmethod
     def python_type_to_db_type(self, python_type: Type) -> Any:
@@ -83,7 +94,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         metric: str = 'cosine_sim',
         limit: int = 10,
         **kwargs,
-    ) -> List[FindResult]:
+    ) -> FindResultBatched:
         """Find documents in the store"""
         # TODO(johannes) refine method signature
         ...
@@ -96,16 +107,14 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
 
         class _DocumentStoreTyped(cls):  # type: ignore
             _schema: Type[TSchema] = item
-            _columns_schema: Dict[str, Type] = cls._unwrap_columns(_schema)
 
         _DocumentStoreTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
         _DocumentStoreTyped.__qualname__ = f'{cls.__qualname__}[{item.__name__}]'
 
         return _DocumentStoreTyped
 
-    @classmethod
-    def _unwrap_columns(cls, schema: Type[BaseDocument]) -> Dict[str, Type]:
-        columns: Dict[str, Type] = dict()
+    def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
+        columns: Dict[str, _Column] = dict()
         for field_name, field in schema.__fields__.items():
             t_ = field.type_
             if is_union_type(t_):
@@ -126,26 +135,43 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                     columns,
                     **{
                         f'{field_name}__{nested_name}': t
-                        for nested_name, t in cls._unwrap_columns(t_).items()
+                        for nested_name, t in self._create_columns(t_).items()
                     },
                 )
             else:
-                columns[field_name] = t_
+                columns[field_name] = self._create_single_column(field)
         return columns
+
+    def _create_single_column(self, field):
+        type_ = field.type_
+        db_type = self.python_type_to_db_type(type_)
+        config = self._default_column_config[db_type].copy()
+        custom_config = field.field_info.extra
+        config.update(custom_config)
+        return _Column(docarray_type=type_, db_type=db_type, config=config)
 
     def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
         """Flatten a DocumentArray into a DocumentArray of the schema type."""
+        reference_col_db_types = [
+            (name, col.db_type) for name, col in self._columns.items()
+        ]
         if isinstance(docs, AnyDocumentArray):
-            docs_columns = self._unwrap_columns(docs.document_type)
+            input_columns = self._create_columns(docs.document_type)
+            input_col_db_types = [
+                (name, col.db_type) for name, col in input_columns.items()
+            ]
             # this could be relaxed in the future,
             # see schema translation ideas in the design doc
-            return docs_columns == self._columns_schema
+            return reference_col_db_types == input_col_db_types
         else:
             for d in docs:
-                doc_columns = self._unwrap_columns(type(d))
+                input_columns = self._create_columns(type(d))
+                input_col_db_types = [
+                    (name, col.db_type) for name, col in input_columns.items()
+                ]
                 # this could be relaxed in the future,
                 # see schema translation ideas in the design doc
-                if doc_columns != self._columns_schema:
+                if reference_col_db_types != input_col_db_types:
                     return False
             return True
 
@@ -174,21 +200,5 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
             )
         return {
             col_name: (self.get_value(doc, col_name) for doc in docs)
-            for col_name in self._columns_schema
+            for col_name in self._columns
         }
-
-    def _get_column_configs(self) -> Dict[str, Dict[str, Any]]:
-        col_configs: Dict[str, Dict[str, Any]] = {}
-        for col_name, db_type in self._columns_db.items():
-            col_configs[col_name] = self._default_column_config[db_type].copy()
-
-            nestings = col_name.split('__')
-            nested_fields, leaf_field = nestings[:-1], nestings[-1]
-            leaf_doc: Type[BaseDocument] = self._schema
-            for nested_field in nested_fields:
-                # traverse nested document fields
-                leaf_doc = leaf_doc.__fields__[nested_field].type_
-            custom_config = leaf_doc.__fields__[leaf_field].field_info.extra
-            col_configs[col_name].update(custom_config)
-
-        return col_configs
