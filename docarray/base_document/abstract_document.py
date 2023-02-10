@@ -32,7 +32,7 @@ class AbstractDocument(Iterable):
 
     @classmethod
     @abstractmethod
-    def from_protobuf_smart(
+    def smart_parse_obj(
         cls: Type[T],
         pb_msg: 'DocumentProto',
         cast_map: Optional[Mapping[str, str]] = None,
