@@ -4,7 +4,6 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import Mesh3DUrl, NdArray
-from docarray.typing.url.url_3d.mesh_url import Mesh3DLoadResult
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
@@ -28,14 +27,14 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 )
 def test_load(file_format, file_path):
     url = parse_obj_as(Mesh3DUrl, file_path)
-    vertices, faces = url.load()
+    tensors = url.load()
 
-    assert isinstance(vertices, np.ndarray)
-    assert isinstance(vertices, NdArray)
-    assert isinstance(faces, np.ndarray)
-    assert isinstance(faces, NdArray)
-    assert vertices.shape[1] == 3
-    assert faces.shape[1] == 3
+    assert isinstance(tensors.vertices, np.ndarray)
+    assert isinstance(tensors.vertices, NdArray)
+    assert isinstance(tensors.faces, np.ndarray)
+    assert isinstance(tensors.faces, NdArray)
+    assert tensors.vertices.shape[1] == 3
+    assert tensors.faces.shape[1] == 3
 
 
 @pytest.mark.slow
@@ -44,7 +43,7 @@ def test_load(file_format, file_path):
     'file_path',
     [*MESH_FILES.values(), REMOTE_OBJ_FILE],
 )
-@pytest.mark.parametrize('field', [f for f in Mesh3DLoadResult._fields])
+@pytest.mark.parametrize('field', ['vertices', 'faces'])
 def test_load_one_of_fields(file_path, field):
     url = parse_obj_as(Mesh3DUrl, file_path)
     field = getattr(url.load(), field)
