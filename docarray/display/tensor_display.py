@@ -46,7 +46,11 @@ class TensorDisplay:
         else:
             from rich.text import Text
 
-            yield Text(f'{type(self.tensor)} of shape {comp_be.shape(self.tensor)}')
+            yield Text(
+                f'{self.tensor.__class__.__name__} of '
+                f'shape {comp_be.shape(self.tensor)}, '
+                f'dtype: {str(comp_be.dtype(self.tensor))}'
+            )
 
     def __rich_measure__(
         self, console: 'Console', options: 'ConsoleOptions'
@@ -64,7 +68,9 @@ class TensorDisplay:
         """
         comp_be = self.tensor.get_comp_backend()
         t_squeezed = comp_be.squeeze(comp_be.detach(self.tensor))
-
-        min_capped = max(comp_be.shape(t_squeezed)[0], self.tensor_min_width)
-        min_max_capped = min(min_capped, max_width)
-        return min_max_capped
+        if comp_be.n_dim(t_squeezed) == 1 and comp_be.shape(t_squeezed)[0] < max_width:
+            min_capped = max(comp_be.shape(t_squeezed)[0], self.tensor_min_width)
+            min_max_capped = min(min_capped, max_width)
+            return min_max_capped
+        else:
+            return max_width
