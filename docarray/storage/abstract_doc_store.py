@@ -1,5 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Sequence, Type, TypeVar, Union
+from typing import (
+    Any,
+    Dict,
+    Generator,
+    Generic,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from typing_inspect import is_union_type
 
@@ -7,6 +18,7 @@ from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult
+from docarray.utils.protocols import IsDataclass
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -14,19 +26,31 @@ TSchema = TypeVar('TSchema', bound=BaseDocument)
 class BaseDocumentStore(ABC, Generic[TSchema]):
     """Abstract class for all Document Stores"""
 
-    _schema: Type = type(None)
-    _columns: Dict[str, Type] = {}
+    # the BaseDocument that defines the schema of the store
+    _schema: Type = type(None)  # this is filled automatically
+    # columns with types according to the Document schema
+    _columns_schema: Dict[str, Type] = {}  # this is filled automatically
+    # default configurations for every column type
+    # a dictionary from a column type (DB specific) to a dictionary
+    # of default configurations for that type
+    # These configs are used if no configs are specified in the `Field(...)`
+    # of a field in the Document schema (`cls._schema`)
+    # Example: `_default_column_config['VARCHAR'] = {'length': 255}`
+    _default_column_config: Dict[Any, Dict[str, Any]] = {}
 
-    def __init__(self):
+    def __init__(self, config: Optional[IsDataclass] = None):
         if issubclass(self._schema, type(None)):
             raise ValueError(
                 'A DocumentStore must be typed with a Document type.'
                 'To do so, use the syntax: DocumentStore[DocumentType]'
             )
-        self._db_columns = {
+        self._config = config
+        # columns with DB specific types
+        self._columns_db = {
             name: self.python_type_to_db_type(type_)
-            for name, type_ in self._columns.items()
+            for name, type_ in self._columns_schema.items()
         }
+        self._column_configs: Dict[Any, Dict[str, Any]] = self._get_column_configs()
 
     @abstractmethod
     def python_type_to_db_type(self, python_type: Type) -> Any:
@@ -72,7 +96,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
 
         class _DocumentStoreTyped(cls):  # type: ignore
             _schema: Type[TSchema] = item
-            _columns: Dict[str, Type] = cls._unwrap_columns(_schema)
+            _columns_schema: Dict[str, Type] = cls._unwrap_columns(_schema)
 
         _DocumentStoreTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
         _DocumentStoreTyped.__qualname__ = f'{cls.__qualname__}[{item.__name__}]'
@@ -108,3 +132,63 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
             else:
                 columns[field_name] = t_
         return columns
+
+    def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
+        """Flatten a DocumentArray into a DocumentArray of the schema type."""
+        if isinstance(docs, AnyDocumentArray):
+            docs_columns = self._unwrap_columns(docs.document_type)
+            # this could be relaxed in the future,
+            # see schema translation ideas in the design doc
+            return docs_columns == self._columns_schema
+        else:
+            for d in docs:
+                doc_columns = self._unwrap_columns(type(d))
+                # this could be relaxed in the future,
+                # see schema translation ideas in the design doc
+                if doc_columns != self._columns_schema:
+                    return False
+            return True
+
+    @staticmethod
+    def get_value(doc: BaseDocument, col_name: str) -> Any:
+        """Get the value of a column of a document."""
+        if '__' in col_name:
+            fields = col_name.split('__')
+            leaf_doc: BaseDocument = doc
+            for f in fields[:-1]:
+                leaf_doc = getattr(leaf_doc, f)
+            return getattr(leaf_doc, fields[-1])
+        else:
+            return getattr(doc, col_name)
+
+    def get_data_by_columns(
+        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
+    ) -> Dict[str, Generator[Any, None, None]]:
+        """Get the payload of a document."""
+        if isinstance(docs, BaseDocument):
+            docs = [docs]
+        if not self._is_schema_compatible(docs):
+            raise ValueError(
+                'The schema of the documents to be indexed is not compatible'
+                ' with the schema of the store.'
+            )
+        return {
+            col_name: (self.get_value(doc, col_name) for doc in docs)
+            for col_name in self._columns_schema
+        }
+
+    def _get_column_configs(self) -> Dict[str, Dict[str, Any]]:
+        col_configs: Dict[str, Dict[str, Any]] = {}
+        for col_name, db_type in self._columns_db.items():
+            col_configs[col_name] = self._default_column_config[db_type].copy()
+
+            nestings = col_name.split('__')
+            nested_fields, leaf_field = nestings[:-1], nestings[-1]
+            leaf_doc: Type[BaseDocument] = self._schema
+            for nested_field in nested_fields:
+                # traverse nested document fields
+                leaf_doc = leaf_doc.__fields__[nested_field].type_
+            custom_config = leaf_doc.__fields__[leaf_field].field_info.extra
+            col_configs[col_name].update(custom_config)
+
+        return col_configs
