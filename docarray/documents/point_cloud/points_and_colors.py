@@ -3,10 +3,9 @@ from typing import Any, Optional, Type, TypeVar, Union
 import numpy as np
 
 from docarray.base_document import BaseDocument
+from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.typing.tensor.tensor import AnyTensor
-from docarray.typing.url.url_3d.point_cloud_url import _display_point_cloud
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils.misc import is_notebook, is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
@@ -49,8 +48,21 @@ class PointsAndColors(BaseDocument):
         """
         Plot point cloud consisting of points in 3D space and optionally colors.
         """
-        if self.points is None:
-            raise ValueError(
-                'Can\'t display point cloud from tensors when the points are None.'
+        import trimesh
+        from IPython.display import display
+
+        colors = (
+            self.colors
+            if self.colors is not None
+            else np.tile(
+                np.array([0, 0, 0]),
+                (self.points.get_comp_backend().shape(self.points)[0], 1),
             )
-        _display_point_cloud(points=self.points, colors=self.colors)
+        )
+        pc = trimesh.points.PointCloud(vertices=self.points, colors=colors)
+
+        if is_notebook():
+            s = trimesh.Scene(geometry=pc)
+            display(s.show())
+        else:
+            display(pc.show())

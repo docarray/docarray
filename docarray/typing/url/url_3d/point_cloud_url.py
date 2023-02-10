@@ -1,17 +1,15 @@
-from typing import TYPE_CHECKING, Optional, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
 
-from docarray.typing import AnyTensor
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
-from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+
 
 T = TypeVar('T', bound='PointCloud3DUrl')
 
@@ -78,30 +76,4 @@ class PointCloud3DUrl(Url3D):
         Plot point cloud from url.
         :param samples: number of points to sample from the mesh.
         """
-        tensors = self.load(samples=samples)
-        _display_point_cloud(points=tensors.points)
-
-
-def _display_point_cloud(
-    points: AnyTensor, colors: Optional[AbstractTensor] = None
-) -> None:
-    """
-    Plot point cloud from tensors.
-    :param points: tensor representing the point in 3D space, shape (n_points, 3).
-    :param colors: tensor representing the colors as RGB or RGB-A values,
-        shape (n_points, 3) or (n_points, 4).
-    """
-    import trimesh
-    from IPython.display import display
-
-    if colors is None:
-        colors = np.tile(
-            np.array([0, 0, 0]), (points.get_comp_backend().shape(points)[0], 1)
-        )
-    pc = trimesh.points.PointCloud(vertices=points, colors=colors)
-
-    if is_notebook():
-        s = trimesh.Scene(geometry=pc)
-        display(s.show())
-    else:
-        display(pc.show())
+        self.load(samples=samples).display()
