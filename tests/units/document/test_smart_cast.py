@@ -85,3 +85,21 @@ def test_docstring():
     b = B.smart_parse_obj(a.dict())
     assert b.url == a.url  # True
     assert (b.array == a.tensor).all()  # True
+
+
+def test_cast_map():
+    class A(BaseDocument):
+        url_0: AnyUrl
+        url: AnyUrl
+
+        tensor: NdArray
+        tensor_2: NdArray
+
+    class B(BaseDocument):
+        url: AnyUrl
+        array: NdArray
+
+    a = A(url='file.png', url_0='hello', tensor=np.zeros(3), tensor_2=np.zeros(4))
+    b = B.smart_parse_obj(a.dict(), {'url': 'url_0'})
+    assert b.url == a.url_0  # True
+    assert (b.array == a.tensor).all()  # True
