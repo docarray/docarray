@@ -97,7 +97,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf_w_casting(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-        return cls(**cls._get_data_dict_from_proto(pb_msg))
+        return cls.smart_parse_obj(cls._get_data_dict_from_proto(pb_msg))
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.

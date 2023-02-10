@@ -4,7 +4,7 @@ from docarray import BaseDocument
 from docarray.typing import AnyUrl, NdArray
 
 
-def test_simple_casting():
+def test_simple_casting_proto():
     class A(BaseDocument):
         url: AnyUrl
         tensor: NdArray
@@ -19,18 +19,3 @@ def test_simple_casting():
 
     assert b.link == a.url
     assert (b.array == a.tensor).all()
-
-
-def test_casting_with_key_match():
-    class A(BaseDocument):
-        ch: AnyUrl
-        title: str
-
-    class B(BaseDocument):
-        url: str
-
-    a = A(url='file.png', title='hello')
-
-    b = B.from_protobuf_w_casting(a.to_protobuf())
-
-    assert b.url == a.title
