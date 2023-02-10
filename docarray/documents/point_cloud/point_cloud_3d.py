@@ -91,6 +91,22 @@ class PointCloud3D(BaseDocument):
 
         mmdoc.point_cloud.bytes = mmdoc.point_cloud.url.load_bytes()
 
+
+    You can display your point cloud from either its url, or its tensors:
+
+    .. code-block:: python
+
+        from docarray.documents import PointCloud3D
+
+        # display from url
+        pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+        pc.url.display()
+
+        # display from tensors
+        pc.tensors = pc.url.load(samples=10000)
+        model = MyEmbeddingModel()
+        pc.embedding = model(pc.tensors.points)
+
     """
 
     url: Optional[PointCloud3DUrl]

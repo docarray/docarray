@@ -81,7 +81,7 @@ class Mesh3D(BaseDocument):
         mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
 
 
-    You can display your point cloud from either its url, or its tensors:
+    You can display your 3D mesh from either its url, or its tensors:
 
     .. code-block:: python
 
