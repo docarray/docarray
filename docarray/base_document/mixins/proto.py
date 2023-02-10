@@ -101,6 +101,11 @@ class ProtoMixin(AbstractDocument, BaseNode):
         cast_map: Optional[Mapping[str, str]] = None,
     ) -> T:
         """create a Document from a protobuf message"""
+        # TODO this could be optimized. Here we are first loading the data then from the
+        # proto and then only we remove the useless one. We could optimize here
+        # and do the same mechanism than for in the document but instead of checking
+        # the data type we could check the `document_type` from the proto
+        # and we would load only the necessary data
         return cls.smart_parse_obj(cls._get_data_dict_from_proto(pb_msg), cast_map)
 
     def to_protobuf(self) -> 'DocumentProto':
