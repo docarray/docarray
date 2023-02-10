@@ -85,9 +85,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
 
                 doc1 = MyDocument(
-                    content='Core content of the document',
-                    title='Title',
-                    tags_=['python', 'AI']
+                    content='Core content of the document', title='Title', tags_=['python', 'AI']
                 )
                 doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
 
@@ -225,7 +223,55 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         the difference from `parse_obj` is that it will smartly resolve conflict and
         undefined key.
 
-        Here we should describe the algo and give an example:
+        To do this smart cast we follow the simple following algorithm:
+
+        Goal: to instantiate an object from this class we want to select from the
+        input dictionary the field that are valid candidate to respect the Document
+        schema.
+
+        To do so we do:
+
+        1 - We start by selecting all the fields from `obj` that match the Document
+        schema field in name and in type. (The value from obj[field_name] should be
+        an instance of the field type.
+
+        if we collected all the field we are over otherwise:
+
+        2 - For each of the remaining field of the schema we iterate over the
+        remaining value in obj and select the value that match the field type.
+        This is deterministic since Dict are order by default.
+
+        lets take an example
+        .. code-block:: python
+            from docarray import BaseDocument
+            from docarray.typing import AnyUrl, NdArray
+
+
+            class A(BaseDocument):
+                url_0: AnyUrl
+                url: AnyUrl
+
+                tensor: NdArray
+                tensor_2: NdArray
+
+
+            class B(BaseDocument):
+                url: AnyUrl
+                array: NdArray
+
+
+            a = A(url='file.png', tensor=np.zeros(3))
+
+            b = B.smart_parse_obj(a.dict())
+            print(b.link == a.url)  # True
+            print((b.array == a.tensor).all())  # True
+
+        in this example the `url` field of both schema matches in type, so we select
+        the field `url` over `url_0`. Then we need to find a NdArray object for the
+        `array`field. Since they are no `array` field in A picked the first field
+        that is NdArray, in this cas `tensor`
+
+
         :param obj, a dict of field and type
         :return: a Document initialized from the dict data
         """
@@ -233,6 +279,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         for field_name in cls.__fields__.keys() & obj.keys():
             if isinstance(obj[field_name], cls._get_field_type(field_name)):
                 fields[field_name] = obj[field_name]
+
+        if len(fields) == len(cls.__fields__):
+            # if we already collected all the fields we can skip the rest
+            return cls(**fields)
 
         # fields contains for now the field that match in name and in type
         remaining_field_name = [

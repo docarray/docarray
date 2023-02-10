@@ -67,3 +67,21 @@ def test_optional_field():
     b = B.smart_parse_obj(a.dict())
     assert b.link == a.url
     assert (b.array == a.tensor).all()
+
+
+def test_docstring():
+    class A(BaseDocument):
+        url_0: AnyUrl
+        url: AnyUrl
+
+        tensor: NdArray
+        tensor_2: NdArray
+
+    class B(BaseDocument):
+        url: AnyUrl
+        array: NdArray
+
+    a = A(url='file.png', url_0='hello', tensor=np.zeros(3), tensor_2=np.zeros(4))
+    b = B.smart_parse_obj(a.dict())
+    assert b.url == a.url  # True
+    assert (b.array == a.tensor).all()  # True
