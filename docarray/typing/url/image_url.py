@@ -88,3 +88,16 @@ class ImageUrl(AnyUrl):
 
         buffer = ImageBytes(self.load_bytes(timeout=timeout))
         return buffer.load(width, height, axis_layout)
+
+    def display(self) -> None:
+        from hubble.utils.notebook import is_notebook
+        from IPython.core.display import HTML
+        from IPython.display import display
+
+        if is_notebook():
+            src = f'''
+            <body>
+            <image src="{self}" height="200px">
+            </body>
+            '''
+            display(HTML(src))
