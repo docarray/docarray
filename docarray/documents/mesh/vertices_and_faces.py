@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
 from docarray.typing.tensor.tensor import AnyTensor
@@ -15,8 +15,8 @@ class VerticesAndFaces(BaseDocument):
     information (`VerticesAndFaces.faces`).
     """
 
-    vertices: Optional[AnyTensor]
-    faces: Optional[AnyTensor]
+    vertices: AnyTensor
+    faces: AnyTensor
 
     @classmethod
     def validate(
