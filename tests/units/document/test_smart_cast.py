@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import torch
 
@@ -49,3 +51,19 @@ def test_casting_with_key_match_2():
     b = B.smart_parse_obj(a.dict())
 
     assert b.url == a.title
+
+
+def test_optional_field():
+    class A(BaseDocument):
+        url: Optional[AnyUrl]
+        tensor: Optional[NdArray]
+
+    class B(BaseDocument):
+        link: AnyUrl
+        array: NdArray
+
+    a = A(url='file.png', tensor=np.zeros(3))
+
+    b = B.smart_parse_obj(a.dict())
+    assert b.link == a.url
+    assert (b.array == a.tensor).all()
