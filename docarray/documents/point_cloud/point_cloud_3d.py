@@ -28,8 +28,9 @@ class PointCloud3D(BaseDocument):
     representation, the point cloud is a fixed size ndarray (shape=(n_samples, 3)) and
     hence easier for deep learning algorithms to handle.
 
-    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`), an
-    AnyTensor (`PointCloud3D.tensor`), and an AnyEmbedding (`PointCloud3D.embedding`).
+    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`),
+    a PointsAndColors object (`PointCloud3D.tensors`), and an AnyEmbedding
+    (`PointCloud3D.embedding`).
 
     EXAMPLE USAGE:
 

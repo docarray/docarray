@@ -1,3 +1,3 @@
-from docarray.documents.mesh.mesh import Mesh3D
+from docarray.documents.mesh.mesh_3d import Mesh3D
 
 __all__ = ['Mesh3D']

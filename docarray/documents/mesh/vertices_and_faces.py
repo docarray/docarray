@@ -7,7 +7,13 @@ T = TypeVar('T', bound='VerticesAndFaces')
 
 
 class VerticesAndFaces(BaseDocument):
-    """ """
+    """
+    Document for handling 3D mesh tensor data.
+
+    A VerticesAndFaces Document can contain an AnyTensor containing the vertices
+    information (`VerticesAndFaces.vertices`), and an AnyTensor containing the faces
+    information (`VerticesAndFaces.faces`).
+    """
 
     vertices: Optional[AnyTensor]
     faces: Optional[AnyTensor]
