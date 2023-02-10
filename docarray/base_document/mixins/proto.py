@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Type, TypeVar
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -95,9 +95,13 @@ class ProtoMixin(AbstractDocument, BaseNode):
         return cls(**cls._get_data_dict_from_proto(pb_msg))
 
     @classmethod
-    def from_protobuf_w_casting(cls: Type[T], pb_msg: 'DocumentProto') -> T:
+    def from_protobuf_smart(
+        cls: Type[T],
+        pb_msg: 'DocumentProto',
+        cast_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
         """create a Document from a protobuf message"""
-        return cls.smart_parse_obj(cls._get_data_dict_from_proto(pb_msg))
+        return cls.smart_parse_obj(cls._get_data_dict_from_proto(pb_msg), cast_map)
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.

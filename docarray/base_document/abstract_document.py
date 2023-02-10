@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Mapping, Optional, Type, TypeVar
 
 from pydantic.fields import ModelField
 
@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from pydantic.typing import SetStr
 
     from docarray.base_document.mixins.proto import ProtoMixin
-
+    from docarray.proto import DocumentProto
 
 T = TypeVar('T', bound='AbstractDocument')
 
@@ -32,5 +32,9 @@ class AbstractDocument(Iterable):
 
     @classmethod
     @abstractmethod
-    def smart_parse_obj(cls: Type[T], obj: Dict[str, Any]) -> T:
+    def from_protobuf_smart(
+        cls: Type[T],
+        pb_msg: 'DocumentProto',
+        cast_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
         ...
