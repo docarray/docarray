@@ -29,3 +29,8 @@ class AbstractDocument(Iterable):
         construct document without calling validation
         """
         ...
+
+    @classmethod
+    @abstractmethod
+    def smart_parse_obj(cls: Type[T], obj: Dict[str, Any]) -> T:
+        ...
