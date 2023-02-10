@@ -24,25 +24,25 @@ def test_point_cloud(file_url):
     print(f"file_url = {file_url}")
     point_cloud = PointCloud3D(url=file_url)
 
-    point_cloud.tensor = point_cloud.url.load(samples=100)
+    point_cloud.tensors = point_cloud.url.load(samples=100)
 
-    assert isinstance(point_cloud.tensor, np.ndarray)
+    assert isinstance(point_cloud.tensors.points, np.ndarray)
 
 
 def test_point_cloud_np():
     pc = parse_obj_as(PointCloud3D, np.zeros((10, 3)))
-    assert (pc.tensor == np.zeros((10, 3))).all()
+    assert (pc.tensors.points == np.zeros((10, 3))).all()
 
 
 def test_point_cloud_torch():
     pc = parse_obj_as(PointCloud3D, torch.zeros(10, 3))
-    assert (pc.tensor == torch.zeros(10, 3)).all()
+    assert (pc.tensors.points == torch.zeros(10, 3)).all()
 
 
 @pytest.mark.tensorflow
 def test_point_cloud_tensorflow():
     pc = parse_obj_as(PointCloud3D, tf.zeros((10, 3)))
-    assert tnp.allclose(pc.tensor.tensor, tf.zeros((10, 3)))
+    assert tnp.allclose(pc.tensors.points.tensor, tf.zeros((10, 3)))
 
 
 def test_point_cloud_shortcut_doc():
@@ -57,8 +57,8 @@ def test_point_cloud_shortcut_doc():
         pc3=torch.zeros(10, 3),
     )
     assert doc.pc.url == 'http://myurl.ply'
-    assert (doc.pc2.tensor == np.zeros((10, 3))).all()
-    assert (doc.pc3.tensor == torch.zeros(10, 3)).all()
+    assert (doc.pc2.tensors.points == np.zeros((10, 3))).all()
+    assert (doc.pc3.tensors.points == torch.zeros(10, 3)).all()
 
 
 @pytest.mark.tensorflow
@@ -72,17 +72,4 @@ def test_point_cloud_shortcut_doc_tf():
         pc2=tf.zeros((10, 3)),
     )
     assert doc.pc.url == 'http://myurl.ply'
-    assert tnp.allclose(doc.pc2.tensor.tensor, tf.zeros((10, 3)))
-
-
-def test_display_illegal_param():
-    pc = PointCloud3D(url='http://myurl.ply')
-    with pytest.raises(ValueError):
-        pc.display(display_from='tensor')
-
-    pc = PointCloud3D(tensor=np.zeros((10, 3)))
-    with pytest.raises(ValueError):
-        pc.display(display_from='url')
-
-    with pytest.raises(ValueError):
-        pc.display(display_from='illegal')
+    assert tnp.allclose(doc.pc2.tensors.points.tensor, tf.zeros((10, 3)))

@@ -1,13 +1,11 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
-from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.tensor import AnyTensor
 
 T = TypeVar('T', bound='VerticesAndFaces')
 
 
-@_register_proto(proto_type_name='vertices_and_faces')
 class VerticesAndFaces(BaseDocument):
     """ """
 
@@ -19,8 +17,6 @@ class VerticesAndFaces(BaseDocument):
         cls: Type[T],
         value: Union[str, Any],
     ) -> T:
-        if isinstance(value, str):
-            value = cls(url=value)
         return super().validate(value)
 
     def display(self) -> None:

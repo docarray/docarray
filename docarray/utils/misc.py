@@ -31,7 +31,7 @@ def is_notebook() -> bool:
     """
 
     try:
-        shell = get_ipython().__class__.__name__  # noqa: F821
+        shell = get_ipython().__class__.__name__  # type: ignore
     except NameError:
         return False
 

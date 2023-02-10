@@ -1,13 +1,17 @@
-from typing import Optional, TypeVar
+from typing import TYPE_CHECKING, Optional, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
 
+from docarray.typing import AnyTensor
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
 from docarray.utils.misc import is_notebook
+
+if TYPE_CHECKING:
+    from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 
 T = TypeVar('T', bound='PointCloud3DUrl')
 
@@ -19,7 +23,9 @@ class PointCloud3DUrl(Url3D):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load(self: T, samples: int, multiple_geometries: bool = False) -> NdArray:
+    def load(
+        self: T, samples: int, multiple_geometries: bool = False
+    ) -> 'PointsAndColors':
         """
         Load the data from the url into an NdArray containing point cloud information.
 
@@ -50,6 +56,8 @@ class PointCloud3DUrl(Url3D):
 
         :return: np.ndarray representing the point cloud
         """
+        from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+
         if multiple_geometries:
             # try to coerce everything into a scene
             scene = self._load_trimesh_instance(force='scene')
@@ -62,23 +70,24 @@ class PointCloud3DUrl(Url3D):
             mesh = self._load_trimesh_instance(force='mesh')
             point_cloud = np.array(mesh.sample(samples))
 
-        return parse_obj_as(NdArray, point_cloud)
+        points = parse_obj_as(NdArray, point_cloud)
+        return PointsAndColors(points=points, colors=None)
 
     def display(self, samples: int = 10000) -> None:
         """
         Plot point cloud from url.
         :param samples: number of points to sample from the mesh.
         """
-        tensor = self.load(samples=samples)
-        _display_point_cloud(tensor=tensor)
+        tensors = self.load(samples=samples)
+        _display_point_cloud(points=tensors.points)
 
 
 def _display_point_cloud(
-    tensor: AbstractTensor, colors: Optional[AbstractTensor] = None
+    points: AnyTensor, colors: Optional[AbstractTensor] = None
 ) -> None:
     """
     Plot point cloud from tensors.
-    :param tensor: tensor representing the point in 3D space, shape (n_points, 3).
+    :param points: tensor representing the point in 3D space, shape (n_points, 3).
     :param colors: tensor representing the colors as RGB or RGB-A values,
         shape (n_points, 3) or (n_points, 4).
     """
@@ -87,9 +96,9 @@ def _display_point_cloud(
 
     if colors is None:
         colors = np.tile(
-            np.array([0, 0, 0]), (tensor.get_comp_backend().shape(tensor)[0], 1)
+            np.array([0, 0, 0]), (points.get_comp_backend().shape(points)[0], 1)
         )
-    pc = trimesh.points.PointCloud(vertices=tensor, colors=colors)
+    pc = trimesh.points.PointCloud(vertices=points, colors=colors)
 
     if is_notebook():
         s = trimesh.Scene(geometry=pc)

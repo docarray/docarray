@@ -3,9 +3,9 @@ from typing import Any, Optional, Type, TypeVar, Union
 import numpy as np
 
 from docarray.base_document import BaseDocument
-from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
+from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.typing.url.url_3d.point_cloud_url import _display_point_cloud
 from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
@@ -41,9 +41,9 @@ class PointCloud3D(BaseDocument):
 
         # use it directly
         pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensor = pc.url.load(samples=100)
+        pc.tensors = pc.url.load(samples=100)
         model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensor)
+        pc.embedding = model(pc.tensors.points)
 
     You can extend this Document:
 
@@ -59,10 +59,10 @@ class PointCloud3D(BaseDocument):
 
 
         pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensor = pc.url.load(samples=100)
+        pc.tensors = pc.url.load(samples=100)
         model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensor)
-        pc.second_embedding = model(pc.tensor)
+        pc.embedding = model(pc.tensors.points)
+        pc.second_embedding = model(pc.tensors.colors)
 
 
     You can use this Document for composition:
@@ -84,7 +84,7 @@ class PointCloud3D(BaseDocument):
             ),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.point_cloud.tensor = mmdoc.point_cloud.url.load(samples=100)
+        mmdoc.point_cloud.tensors = mmdoc.point_cloud.url.load(samples=100)
 
         # or
 
@@ -93,8 +93,7 @@ class PointCloud3D(BaseDocument):
     """
 
     url: Optional[PointCloud3DUrl]
-    tensor: Optional[AnyTensor]
-    color_tensor: Optional[AnyTensor]
+    tensors: Optional[PointsAndColors]
     embedding: Optional[AnyEmbedding]
     bytes: Optional[bytes]
 
@@ -110,35 +109,6 @@ class PointCloud3D(BaseDocument):
             and isinstance(value, torch.Tensor)
             or (tf_available and isinstance(value, tf.Tensor))
         ):
-            value = cls(tensor=value)
+            value = cls(tensors=PointsAndColors(points=value))
 
         return super().validate(value)
-
-    def display(self, display_from: str = 'url', samples: int = 10000) -> None:
-        """
-        Plot interactive point cloud from :attr:`.tensor`.
-        :param display_from: display point cloud from either url or tensor.
-        :param samples: number of points to sample from the mesh, will be ignored if
-            displayed from tensor.
-        """
-
-        if display_from not in ['tensor', 'url']:
-            raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
-
-        if display_from == 'url':
-            if self.url is None:
-                raise ValueError(
-                    'Can\'t display point cloud from url when url is None.'
-                )
-            self.url.display(samples=samples)
-        else:
-            if self.tensor is None:
-                raise ValueError('Can\'t display mesh from tensor when tensor is None.')
-            tensor = self.tensor
-            comp_be = self.tensor.get_comp_backend()
-            colors = (
-                self.color_tensor
-                if self.color_tensor
-                else np.tile(np.array([0, 0, 0]), (comp_be.shape(tensor)[0], 1))
-            )
-            _display_point_cloud(tensor=tensor, colors=colors)
