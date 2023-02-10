@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Mapping, Optional, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
@@ -217,11 +217,18 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                 setattr(self, field, dict1)
 
     @classmethod
-    def smart_parse_obj(cls: Type[T], obj: Dict[str, Any]) -> T:
+    def smart_parse_obj(
+        cls: Type[T],
+        obj: Mapping[str, Any],
+        cast_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
         """
         parse the given object, validate the data and return a new initialized objet
         the difference from `parse_obj` is that it will smartly resolve conflict and
         undefined key.
+
+        The `cast_map` argument is for you to define an explicit casting from your
+        object field to thies document field.
 
         To do this smart cast we follow the simple following algorithm:
 
@@ -242,6 +249,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         This is deterministic since Dict are order by default.
 
         lets take an example
+
         .. code-block:: python
             from docarray import BaseDocument
             from docarray.typing import AnyUrl, NdArray
@@ -272,11 +280,27 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         that is NdArray, in this cas `tensor`
 
 
-        :param obj, a dict of field and type
+        :param obj: a dict of field and type that will be parsed into the Document
+        :param cast_map: optional explicit mapping.
         :return: a Document initialized from the dict data
         """
         fields: Dict[str, Any] = {}
-        for field_name in cls.__fields__.keys() & obj.keys():
+
+        if cast_map:
+            for field_obj, field_schema in cast_map:
+                fields[field_schema] = obj[field_obj]
+
+        if len(fields) == len(cls.__fields__):
+            # if we already collected all the fields we can skip the rest
+            return cls(**fields)
+
+        remaining_field_name = [
+            field_name
+            for field_name in cls.__fields__.keys()
+            if field_name not in fields.keys()
+        ]
+
+        for field_name in remaining_field_name & obj.keys():
             if isinstance(obj[field_name], cls._get_field_type(field_name)):
                 fields[field_name] = obj[field_name]
 
