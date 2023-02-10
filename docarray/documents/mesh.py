@@ -99,8 +99,6 @@ class Mesh3D(BaseDocument):
         Plot mesh consisting of vertices and faces.
         :param display_from: display from either url or tensors (vertices and faces).
         """
-        import trimesh
-        from IPython.display import display
 
         if display_from not in ['tensor', 'url']:
             raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
@@ -108,9 +106,11 @@ class Mesh3D(BaseDocument):
         if display_from == 'url':
             if self.url is None:
                 raise ValueError('Can\'t display mesh from url when the url is None.')
-            mesh = self.url._load_trimesh_instance()
-            display(mesh.show())
+            self.url.display()
         else:
+            import trimesh
+            from IPython.display import display
+
             if self.vertices is None or self.faces is None:
                 raise ValueError(
                     'Can\'t display mesh from tensor when vertices and/or faces is None'

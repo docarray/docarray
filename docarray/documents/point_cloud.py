@@ -5,6 +5,7 @@ import numpy as np
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.url.url_3d.point_cloud_url import _display_point_cloud
 from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
@@ -115,14 +116,11 @@ class PointCloud3D(BaseDocument):
 
     def display(self, display_from: str = 'url', samples: int = 10000) -> None:
         """
-        Plot interactive point cloud from :attr:`.tensor`
+        Plot interactive point cloud from :attr:`.tensor`.
         :param display_from: display point cloud from either url or tensor.
         :param samples: number of points to sample from the mesh, will be ignored if
             displayed from tensor.
         """
-        import trimesh
-        from hubble.utils.notebook import is_notebook
-        from IPython.display import display
 
         if display_from not in ['tensor', 'url']:
             raise ValueError(f'Expected one of ["tensor", "url"], got "{display_from}"')
@@ -132,10 +130,7 @@ class PointCloud3D(BaseDocument):
                 raise ValueError(
                     'Can\'t display point cloud from url when url is None.'
                 )
-            tensor = self.url.load(samples=samples)
-            colors = np.tile(
-                np.array([0, 0, 0]), (tensor.get_comp_backend().shape(tensor)[0], 1)
-            )
+            self.url.display(samples=samples)
         else:
             if self.tensor is None:
                 raise ValueError('Can\'t display mesh from tensor when tensor is None.')
@@ -146,11 +141,4 @@ class PointCloud3D(BaseDocument):
                 if self.color_tensor
                 else np.tile(np.array([0, 0, 0]), (comp_be.shape(tensor)[0], 1))
             )
-
-        pc = trimesh.points.PointCloud(vertices=tensor, colors=colors)
-
-        if is_notebook():
-            s = trimesh.Scene(geometry=pc)
-            display(s.show())
-        else:
-            display(pc.show())
+            _display_point_cloud(tensor=tensor, colors=colors)

@@ -56,3 +56,12 @@ class Mesh3DUrl(Url3D):
         faces = parse_obj_as(NdArray, mesh.faces.view(np.ndarray))
 
         return Mesh3DLoadResult(vertices=vertices, faces=faces)
+
+    def display(self) -> None:
+        """
+        Plot mesh from url.
+        """
+        from IPython.display import display
+
+        mesh = self._load_trimesh_instance()
+        display(mesh.show())

@@ -1,9 +1,10 @@
-from typing import TypeVar
+from typing import Optional, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
 
@@ -61,3 +62,37 @@ class PointCloud3DUrl(Url3D):
             point_cloud = np.array(mesh.sample(samples))
 
         return parse_obj_as(NdArray, point_cloud)
+
+    def display(self, samples: int = 10000) -> None:
+        """
+        Plot point cloud from url.
+        :param samples: number of points to sample from the mesh.
+        """
+        tensor = self.load(samples=samples)
+        _display_point_cloud(tensor=tensor)
+
+
+def _display_point_cloud(
+    tensor: AbstractTensor, colors: Optional[AbstractTensor] = None
+) -> None:
+    """
+    Plot point cloud from tensors.
+    :param tensor: tensor representing the point in 3D space, shape (n_points, 3).
+    :param colors: tensor representing the colors as RGB or RGB-A values,
+        shape (n_points, 3) or (n_points, 4).
+    """
+    import trimesh
+    from hubble.utils.notebook import is_notebook
+    from IPython.display import display
+
+    if colors is None:
+        colors = np.tile(
+            np.array([0, 0, 0]), (tensor.get_comp_backend().shape(tensor)[0], 1)
+        )
+    pc = trimesh.points.PointCloud(vertices=tensor, colors=colors)
+
+    if is_notebook():
+        s = trimesh.Scene(geometry=pc)
+        display(s.show())
+    else:
+        display(pc.show())
