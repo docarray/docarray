@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 
 from docarray import BaseDocument
-from docarray.typing import AnyUrl, NdArray
+from docarray.typing import AnyUrl, ImageUrl, NdArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 def test_simple_casting_proto():
@@ -52,3 +53,20 @@ def test_fail():
     a = A(url_0='file.png')
     with pytest.raises(ValueError):
         B.from_protobuf_smart(a.to_protobuf())
+
+
+def test_same_class():
+    class A(BaseDocument):
+        url: AnyUrl
+        url_2: ImageUrl
+        tensor: NdArray
+        hello: str
+
+    a = A(url='file.png', url_2='file.jpg', tensor=np.zeros(3), hello='hello')
+    b = A.from_protobuf_smart(a.to_protobuf())
+
+    for field_name in a.__fields__.keys():
+        if issubclass(a._get_field_type(field_name), AbstractTensor):
+            assert (getattr(a, field_name) == getattr(b, field_name)).all()
+        else:
+            assert getattr(a, field_name) == getattr(b, field_name)
