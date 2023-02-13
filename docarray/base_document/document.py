@@ -223,9 +223,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         cast_map: Optional[Mapping[str, str]] = None,
     ) -> T:
         """
-        Parse the given object, validate the data and return a new initialized object of type `cls`.
-        The difference from `parse_obj` is that it will smartly resolve conflicts and
-        undefined keys.
+        Parse the given object, validate the data and return a new initialized object of
+         type `cls`. The difference from
+         :func:`~docarray.document.BaseDocument.parse_obj` is that it will smartly
+         resolve conflicts and undefined keys.
 
         To do this smart cast we follow the simple following algorithm:
 
