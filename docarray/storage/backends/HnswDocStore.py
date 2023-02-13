@@ -7,6 +7,7 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.storage.abstract_doc_store import BaseDocumentStore, FindResultBatched
 from docarray.typing import AnyTensor
+from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
 from docarray.utils.protocols import IsDataclass
 
@@ -37,8 +38,9 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self._index_init_params = ('max_elements', 'ef_construction', 'M')
 
         self._docs_buffer = DocumentArray[self._schema]()
+        self._doc_id_to_hnsw_id = {}
 
-        self._indices = {}
+        self._hnsw_indices = {}
         for col_name, col in self._columns.items():
             col_config = col.config
             if not col_config:
@@ -49,7 +51,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             index = hnswlib.Index(**construct_params)
             init_params = dict((k, col_config[k]) for k in self._index_init_params)
             index.init_index(**init_params)
-            self._indices[col_name] = index
+            self._hnsw_indices[col_name] = index
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
@@ -77,13 +79,17 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         data_by_columns = self.get_data_by_columns(docs)
         doc_buf_len_before = len(self._docs_buffer)
         self._docs_buffer.extend(docs)
-        for col_name, index in self._indices.items():
+
+        hnsw_ids = range(doc_buf_len_before, len(self._docs_buffer))
+        self._doc_id_to_hnsw_id.update(
+            (doc_id, hnsw_id) for doc_id, hnsw_id in zip(docs.id, hnsw_ids)
+        )
+
+        for col_name, index in self._hnsw_indices.items():
             data = data_by_columns[col_name]
             data_np = [self._to_numpy(arr) for arr in data]
             data_stacked = np.stack(data_np)
-            index.add_items(
-                data_stacked, ids=range(doc_buf_len_before, len(self._docs_buffer))
-            )
+            index.add_items(data_stacked, ids=hnsw_ids)
 
     def find_batched(
         self,
@@ -100,7 +106,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
 
-        index = self._indices[embedding_field]
+        index = self._hnsw_indices[embedding_field]
         labels, distances = index.knn_query(query_vec_np, k=limit)
         result_das = [
             DocumentArray[self._schema]([self._docs_buffer[i] for i in ids_per_query])
@@ -109,4 +115,24 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         return FindResultBatched(documents=result_das, scores=distances)
 
     def find(self, *args, **kwargs):
-        ...
+        batched_result = self.find_batched(*args, **kwargs)
+        return FindResult(
+            documents=batched_result.documents[0], scores=batched_result.scores[0]
+        )
+
+    def __delitem__(self, key: Union[str, Sequence[str]]):
+        # delete from the indices
+        if isinstance(key, str):
+            key = [key]
+        for k in key:
+            id_ = self._doc_id_to_hnsw_id[k]
+            for col_name, index in self._hnsw_indices.items():
+                index.mark_deleted(id_)
+            del self._doc_id_to_hnsw_id[k]
+
+        # delete from the buffer
+        # TODO(johannes): this will become delete from SQLite
+        # this is inefficient, but temporary anyways
+        for doc in self._docs_buffer:
+            if doc.id in key:
+                self._docs_buffer.remove(doc)

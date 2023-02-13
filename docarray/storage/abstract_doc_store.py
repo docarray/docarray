@@ -74,6 +74,14 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
+    def __delitem__(self, key: Union[str, Sequence[str]]):
+        """Delete a document from the store, by `id`.
+
+        :param key: id or ids to delete from the Document Store
+        """
+        ...
+
+    @abstractmethod
     def find(
         self,
         query: Union[AnyTensor, BaseDocument],
