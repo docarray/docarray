@@ -227,9 +227,6 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         The difference from `parse_obj` is that it will smartly resolve conflicts and
         undefined keys.
 
-        The `cast_map` argument is for you to define an explicit casting from the schema
-        of this Document to your object input
-
         To do this smart cast we follow the simple following algorithm:
 
         To instantiate an object from this class, `smart_parse_obj()` selects fields from the
@@ -279,7 +276,6 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         `array`field. Since they are no `array` field in A picked the first field
         that is NdArray, in this cas `tensor`
 
-
         You can as well use the `cast_map`argument to explicit precise the mapping for
         certain field. For instance with the Document defines above:
 
@@ -290,7 +286,8 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             print((b.array == a.tensor).all())  # True
 
         :param obj: a dict of field and type that will be parsed into the Document
-        :param cast_map: optional explicit mapping.
+        :param cast_map: define an explicit casting from the schema
+        of this Document to your object input.
         :return: a Document initialized from the dict data
         """
         fields: Dict[str, Any] = {}
