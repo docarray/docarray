@@ -233,16 +233,16 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         input dictionary that are valid candidates to respect the Document
         schema.
 
-        To do so we do:
+        To do so docarray do:
 
-        1 - We start by selecting all the fields from `obj` that match the Document
+        1 - Start by selecting all the fields from `obj` that match the Document
         schema field in name and in type. (The value from obj[field_name] should be
         an instance of the field type)
 
-        if we collected all the fields we are over, otherwise:
+        if all the fields are collected  we are over, otherwise:
 
-        2 - For each of the remaining field of the schema we iterate over the
-        remaining value in obj and select the value that match the field type.
+        2 - For each of the remaining field of the schema, this function iterate over
+        the remaining value in obj and select the value that match the field type.
         This is deterministic since Dict are ordered by default.
 
         lets take an example
@@ -271,10 +271,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             print(b.url == a.url)  # True
             print((b.array == a.tensor).all())  # True
 
-        in this example the `url` field of both schema matches in type, so we select
-        the field `url` over `url_0`. Then we need to find a NdArray object for the
-        `array`field. Since they are no `array` field in A picked the first field
-        that is NdArray, in this cas `tensor`
+        in this example the `url` field of both schema matches in type, therefore
+        the field `url` is selected over `url_0`. So far there is still a missing
+        NdArray object for the `array`field. Since they are no `array` field in A picked
+        the first field that is NdArray, in this cas `tensor`
 
         You can as well use the `cast_map`argument to explicit precise the mapping for
         certain field. For instance with the Document defines above:
