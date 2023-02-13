@@ -10,7 +10,11 @@ import numpy as np
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
-from docarray.storage.abstract_doc_store import BaseDocumentStore, FindResultBatched
+from docarray.storage.abstract_doc_store import (
+    BaseDocumentStore,
+    FindResultBatched,
+    _Column,
+)
 from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
@@ -45,6 +49,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     def __init__(self, config: Optional[IsDataclass] = None):
         super().__init__(config)
         self._work_dir = config.work_dir
+        load_existing = os.path.exists(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
         self._doc_id_to_hnsw_id = {}
@@ -54,24 +59,19 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self._index_construct_params = ('space', 'dim')
         self._index_init_params = ('max_elements', 'ef_construction', 'M')
 
-        self._hnsw_indices = {}
-        for col_name, col in self._columns.items():
-            col_config = col.config
-            if not col_config:
-                continue  # do not create column index if no config is given
-            construct_params = dict(
-                (k, col_config[k]) for k in self._index_construct_params
-            )
-            if col.n_dim:
-                construct_params['dim'] = col.n_dim
-            index = hnswlib.Index(**construct_params)
-            init_params = dict((k, col_config[k]) for k in self._index_init_params)
-            index.init_index(**init_params)
-            self._hnsw_indices[col_name] = index
         self._hnsw_locations = {
             col_name: os.path.join(self._work_dir, f'{col_name}.bin')
-            for col_name in self._hnsw_indices.keys()
+            for col_name, col in self._columns.items()
+            if col.config
         }
+        self._hnsw_indices = {}
+        for col_name, col in self._columns.items():
+            if not col.config:
+                continue  # do not create column index if no config is given
+            if load_existing:
+                self._hnsw_indices[col_name] = self._load_index(col_name, col)
+            else:
+                self._hnsw_indices[col_name] = self._create_index(col)
 
         # SQLite setup
         self._sqlite_db_path = os.path.join(self._work_dir, 'docs_sqlite.db')
@@ -79,6 +79,28 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self._sqlite_cursor = self._sqlite_conn.cursor()
         _create_docs_table(self._sqlite_cursor)
         self._sqlite_conn.commit()
+
+    def _create_index_class(self, col: '_Column') -> hnswlib.Index:
+        '''Create an instance of hnswlib.Index without initializing it.'''
+        construct_params = dict(
+            (k, col.config[k]) for k in self._index_construct_params
+        )
+        if col.n_dim:
+            construct_params['dim'] = col.n_dim
+        return hnswlib.Index(**construct_params)
+
+    def _create_index(self, col: '_Column') -> hnswlib.Index:
+        '''Create a new HNSW index for a column, and initialize it.'''
+        index = self._create_index_class(col)
+        init_params = dict((k, col.config[k]) for k in self._index_init_params)
+        index.init_index(**init_params)
+        return index
+
+    def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
+        '''Load an existing HNSW index from disk.'''
+        index = self._create_index_class(col)
+        index.load_index(self._hnsw_locations[col_name])
+        return index
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
@@ -122,6 +144,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             data_np = [self._to_numpy(arr) for arr in data]
             data_stacked = np.stack(data_np)
             index.add_items(data_stacked, ids=hnsw_ids)
+            index.save_index(self._hnsw_locations[col_name])
 
         _send_docs_to_sqlite(self._sqlite_cursor, docs)
         self._sqlite_conn.commit()
