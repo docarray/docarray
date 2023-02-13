@@ -48,6 +48,8 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             construct_params = dict(
                 (k, col_config[k]) for k in self._index_construct_params
             )
+            if col.n_dim:
+                construct_params['dim'] = col.n_dim
             index = hnswlib.Index(**construct_params)
             init_params = dict((k, col_config[k]) for k in self._index_init_params)
             index.init_index(**init_params)

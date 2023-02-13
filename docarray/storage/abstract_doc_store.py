@@ -35,6 +35,7 @@ class FindResultBatched(NamedTuple):
 class _Column:
     docarray_type: Type
     db_type: Any
+    n_dim: Optional[int]
     config: Dict[str, Any]
 
 
@@ -156,7 +157,18 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         config = self._default_column_config[db_type].copy()
         custom_config = field.field_info.extra
         config.update(custom_config)
-        return _Column(docarray_type=type_, db_type=db_type, config=config)
+        # parse n_dim from parametrized tensor type
+        if (
+            hasattr(type_, '__docarray_target_shape__')
+            and type_.__docarray_target_shape__
+        ):
+            if len(type_.__docarray_target_shape__) == 1:
+                n_dim = type_.__docarray_target_shape__[0]
+            else:
+                n_dim = type_.__docarray_target_shape__
+        else:
+            n_dim = None
+        return _Column(docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim)
 
     def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
         """Flatten a DocumentArray into a DocumentArray of the schema type."""
