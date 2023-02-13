@@ -271,7 +271,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             a = A(url='file.png', tensor=np.zeros(3))
 
             b = B.smart_parse_obj(a.dict())
-            print(b.link == a.url)  # True
+            print(b.url == a.url)  # True
             print((b.array == a.tensor).all())  # True
 
         in this example the `url` field of both schema matches in type, so we select
