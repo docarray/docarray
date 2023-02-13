@@ -59,7 +59,7 @@ There are three other packages that people often compare DocArray to, yet I have
 
 [Hugging Face datasets](https://huggingface.co/docs/datasets/) is a library for easily accessing and sharing datasets for NLP, computer vision, and audio tasks. One of the highlights is its efficient loading of large datasets, which is highly appreciated during training.
 
-In DocArray, there will also be a couple of feature releases soon to allow big data loading with constant memory consumption. However, the biggest difference is that DocArray is focused on **data in transit**, whereas HF Datasets is about **data at rest**. DocArray is focused on active data that is subject to frequent change; and allows efficient transfer between threads, processes and microservices. Data in transit often traverses a network or temporarily resides in memory to be read or updated. That's opposed to Datasets, where training data is stored physically and statically, and is subject to very occasional changes. The figure below depicts the differences:
+The biggest difference is that DocArray is focused on **data in transit**, whereas HF Datasets is about **data at rest**. DocArray is focused on active data that is subject to frequent change; and allows efficient transfer between threads, processes and microservices. Data in transit often traverses a network or temporarily resides in memory to be read or updated. That's opposed to Datasets, where training data is stored physically and statically, and is subject to very occasional changes. The figure below depicts the differences:
 
 ```{figure} compare-data-type.svg
 :width: 90%
