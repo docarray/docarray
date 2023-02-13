@@ -90,14 +90,21 @@ class ImageUrl(AnyUrl):
         return buffer.load(width, height, axis_layout)
 
     def display(self) -> None:
+        """
+        Display image data from url.
+        """
         from hubble.utils.notebook import is_notebook
-        from IPython.core.display import HTML
-        from IPython.display import display
+
+        remote_url = True if self.startswith('http') else False
 
         if is_notebook():
-            src = f'''
-            <body>
-            <image src="{self}" height="200px">
-            </body>
-            '''
-            display(HTML(src))
+            from IPython.display import Image, display
+
+            if remote_url:
+                display(Image(url=self))
+            else:
+                display(Image(filename=self))
+        else:
+            from PIL import Image
+
+            Image.fromarray(self.load()).show()

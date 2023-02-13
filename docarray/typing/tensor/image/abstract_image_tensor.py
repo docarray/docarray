@@ -27,3 +27,20 @@ class AbstractImageTensor(AbstractTensor, ABC):
             img_byte_arr = buffer.getvalue()
 
         return img_byte_arr
+
+    def display(self) -> None:
+        """
+        Display image data from tensor.
+        """
+        from hubble.utils.notebook import is_notebook
+        from PIL import Image
+
+        np_array = self.get_comp_backend().to_numpy(self)
+        img = Image.fromarray(np_array)
+
+        if is_notebook():
+            from IPython.display import display
+
+            display(img)
+        else:
+            img.show()
