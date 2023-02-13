@@ -6,6 +6,7 @@ from docarray.typing import AnyUrl, ImageUrl, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
+@pytest.mark.proto
 def test_simple_casting_proto():
     class A(BaseDocument):
         url: AnyUrl
@@ -23,6 +24,7 @@ def test_simple_casting_proto():
     assert (b.array == a.tensor).all()
 
 
+@pytest.mark.proto
 def test_cast_map_proto():
     class A(BaseDocument):
         url_0: AnyUrl
@@ -42,6 +44,7 @@ def test_cast_map_proto():
     assert (b.array == a.tensor).all()  # True
 
 
+@pytest.mark.proto
 def test_fail():
     class A(BaseDocument):
         url_0: AnyUrl
@@ -55,6 +58,7 @@ def test_fail():
         B.from_protobuf_smart(a.to_protobuf())
 
 
+@pytest.mark.proto
 def test_same_class():
     class A(BaseDocument):
         url: AnyUrl

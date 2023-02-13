@@ -7,6 +7,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Mapping,
     Optional,
     Sequence,
     Type,
@@ -316,9 +317,28 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a Document array from a protobuf message"""
         return cls(
             cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
+        )
+
+    @classmethod
+    def from_protobuf_smart(
+        cls: Type[T],
+        pb_msg: 'DocumentArrayProto',
+        cast_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
+        """create a Document array from a protobuf message with automatic casting
+        see :func:`~docarray.document.BaseDocument.smart_parse_obj` for more
+         information on the casting
+        :param pb_msg: protobuf message
+        :param cast_map: define an explicit casting from the schema of this Document to
+         your object input.
+        :return: a Document initialized from the dict data
+        """
+        return cls(
+            cls.document_type.from_protobuf_smart(doc_proto, cast_map)
+            for doc_proto in pb_msg.docs
         )
 
     def to_protobuf(self) -> 'DocumentArrayProto':

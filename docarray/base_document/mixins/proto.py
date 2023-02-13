@@ -100,7 +100,14 @@ class ProtoMixin(AbstractDocument, BaseNode):
         pb_msg: 'DocumentProto',
         cast_map: Optional[Mapping[str, str]] = None,
     ) -> T:
-        """create a Document from a protobuf message"""
+        """create a Document from a protobuf message"
+        call :func:`~docarray.document.BaseDocument.smart_parse_obj` under the hood
+
+        :param pb_msg: protobuf message
+        :param cast_map: define an explicit casting from the schema
+        of this Document to your object input.
+        :return: a Document initialized from the dict data
+        """
         # TODO this could be optimized. Here we are first loading the data then from the
         # proto and then only we remove the useless one. We could optimize here
         # and do the same mechanism than for in the document but instead of checking

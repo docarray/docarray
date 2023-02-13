@@ -4,7 +4,7 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.documents import Image, Text
-from docarray.typing import NdArray
+from docarray.typing import AnyUrl, NdArray
 
 
 @pytest.mark.proto
@@ -72,3 +72,24 @@ def test_stacked_proto():
     da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())
 
     assert isinstance(da2, DocumentArrayStacked)
+
+
+@pytest.mark.proto
+def test_simple_casting_proto():
+    class A(BaseDocument):
+        url: AnyUrl
+        tensor: NdArray
+
+    class B(BaseDocument):
+        link: AnyUrl
+        array: NdArray
+
+    a = A(url='file.png', tensor=np.zeros(3))
+
+    doc_a = DocumentArray[A]([a for _ in range(10)])
+
+    doc_b = DocumentArray[B].from_protobuf_smart(doc_a.to_protobuf())
+
+    for b in doc_b:
+        assert b.link == a.url
+        assert (b.array == a.tensor).all()
