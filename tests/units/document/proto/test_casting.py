@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from docarray import BaseDocument
 from docarray.typing import AnyUrl, NdArray
@@ -38,3 +39,16 @@ def test_cast_map_proto():
 
     assert b.url == a.url_0  # True
     assert (b.array == a.tensor).all()  # True
+
+
+def test_fail():
+    class A(BaseDocument):
+        url_0: AnyUrl
+
+    class B(BaseDocument):
+        url: AnyUrl
+        array: NdArray
+
+    a = A(url_0='file.png')
+    with pytest.raises(ValueError):
+        B.from_protobuf_smart(a.to_protobuf())
