@@ -223,30 +223,30 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         cast_map: Optional[Mapping[str, str]] = None,
     ) -> T:
         """
-        parse the given object, validate the data and return a new initialized objet
-        the difference from `parse_obj` is that it will smartly resolve conflict and
-        undefined key.
+        Parse the given object, validate the data and return a new initialized object of type `cls`.
+        The difference from `parse_obj` is that it will smartly resolve conflicts and
+        undefined keys.
 
         The `cast_map` argument is for you to define an explicit casting from the schema
         of this Document to your object input
 
         To do this smart cast we follow the simple following algorithm:
 
-        Goal: to instantiate an object from this class we want to select from the
-        input dictionary the field that are valid candidate to respect the Document
+        To instantiate an object from this class, `smart_parse_obj()` selects fields from the
+        input dictionary that are valid candidates to respect the Document
         schema.
 
         To do so we do:
 
         1 - We start by selecting all the fields from `obj` that match the Document
         schema field in name and in type. (The value from obj[field_name] should be
-        an instance of the field type.
+        an instance of the field type)
 
-        if we collected all the field we are over otherwise:
+        if we collected all the fields we are over, otherwise:
 
         2 - For each of the remaining field of the schema we iterate over the
         remaining value in obj and select the value that match the field type.
-        This is deterministic since Dict are order by default.
+        This is deterministic since Dict are ordered by default.
 
         lets take an example
 
