@@ -4,6 +4,7 @@ import numpy as np
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -93,8 +94,6 @@ class ImageUrl(AnyUrl):
         """
         Display image data from url.
         """
-        from hubble.utils.notebook import is_notebook
-
         remote_url = True if self.startswith('http') else False
 
         if is_notebook():

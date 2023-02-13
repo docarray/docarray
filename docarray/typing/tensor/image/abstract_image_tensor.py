@@ -2,6 +2,7 @@ import io
 from abc import ABC
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_notebook
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
@@ -32,7 +33,6 @@ class AbstractImageTensor(AbstractTensor, ABC):
         """
         Display image data from tensor.
         """
-        from hubble.utils.notebook import is_notebook
         from PIL import Image
 
         np_array = self.get_comp_backend().to_numpy(self)
