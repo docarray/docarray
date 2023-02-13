@@ -15,11 +15,13 @@ from typing import (
     cast,
     overload,
     BinaryIO,
+    TextIO,
     Tuple,
-    Generator
+    Generator,
 )
 
 import numpy as np
+import json
 import io
 import os
 import pickle
@@ -31,6 +33,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.utils.misc import is_torch_available
+from docarray.utils.compress import _decompress_bytes
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -46,7 +49,9 @@ T_doc = TypeVar('T_doc', bound=BaseDocument)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-def _get_compress_ctx(algorithm: Optional[str] = None, mode: str = 'wb') -> Optional[Callable]:
+def _get_compress_ctx(
+    algorithm: Optional[str] = None, mode: str = 'wb'
+) -> Optional[Callable]:
     if algorithm == 'lz4':
         import lz4.frame
 
@@ -69,9 +74,9 @@ def _get_compress_ctx(algorithm: Optional[str] = None, mode: str = 'wb') -> Opti
 
 
 def _protocol_and_compress_from_file_path(
-        file_path: str,
-        default_protocol: Optional[str] = None,
-        default_compress: Optional[str] = None,
+    file_path: str,
+    default_protocol: Optional[str] = None,
+    default_compress: Optional[str] = None,
 ) -> Tuple[Optional[str], Optional[str]]:
     """Extract protocol and compression algorithm from a string, use defaults if not found.
     :param file_path: path of a file.
@@ -139,7 +144,7 @@ class _LazyRequestReader:
             try:
                 self.content += next(self._data)
             except StopIteration:
-                return self.content[item.start: -1: item.step]
+                return self.content[item.start : -1 : item.step]
         return self.content[item]
 
 
@@ -208,9 +213,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(
-            self,
-            docs: Optional[Iterable[BaseDocument]] = None,
-            tensor_type: Type['AbstractTensor'] = NdArray,
+        self,
+        docs: Optional[Iterable[BaseDocument]] = None,
+        tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data = list(docs) if docs is not None else []
         self.tensor_type = tensor_type
@@ -274,9 +279,28 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def __iter__(self):
         return iter(self._data)
 
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        key = self._normalize_index_item(key)
+
+        if key is None:
+            return
+
+        del self._data[key]
+
+    def __bytes__(self) -> bytes:
+        return self.to_bytes()
+
     @staticmethod
     def _normalize_index_item(
-            item: Any,
+        item: Any,
     ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
         # basic index types
         if item is None or isinstance(item, (int, slice, tuple, list)):
@@ -292,7 +316,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             raise ValueError(f'Invalid index type {type(item)}')
 
         if isinstance(item, np.ndarray) and (
-                item.dtype == np.bool_ or np.issubdtype(item.dtype, np.integer)
+            item.dtype == np.bool_ or np.issubdtype(item.dtype, np.integer)
         ):
             return item.tolist()
 
@@ -350,8 +374,8 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     sort = _delegate_meth_to_data('sort')
 
     def _get_array_attribute(
-            self: T,
-            field: str,
+        self: T,
+        field: str,
     ) -> Union[List, T, 'TorchTensor', 'NdArray']:
         """Return all values of the fields from all docs this array contains
 
@@ -362,9 +386,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         field_type = self.__class__.document_type._get_field_type(field)
 
         if (
-                not is_union_type(field_type)
-                and isinstance(field_type, type)
-                and issubclass(field_type, BaseDocument)
+            not is_union_type(field_type)
+            and isinstance(field_type, type)
+            and issubclass(field_type, BaseDocument)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -376,9 +400,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             return [getattr(doc, field) for doc in self]
 
     def _set_array_attribute(
-            self: T,
-            field: str,
-            values: Union[List, T, 'AbstractTensor'],
+        self: T,
+        field: str,
+        values: Union[List, T, 'AbstractTensor'],
     ):
         """Set all Documents in this DocumentArray using the passed values
 
@@ -424,10 +448,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def validate(
-            cls: Type[T],
-            value: Union[T, Iterable[BaseDocument]],
-            field: 'ModelField',
-            config: 'BaseConfig',
+        cls: Type[T],
+        value: Union[T, Iterable[BaseDocument]],
+        field: 'ModelField',
+        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, cls):
             return value
@@ -437,32 +461,15 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
     def traverse_flat(
-            self: 'DocumentArray',
-            access_path: str,
+        self: 'DocumentArray',
+        access_path: str,
     ) -> Union[List[Any]]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened
 
-    @overload
-    def __delitem__(self: T, key: int) -> None:
-        ...
-
-    @overload
-    def __delitem__(self: T, key: IndexIterType) -> None:
-        ...
-
-    def __delitem__(self, key) -> None:
-        key = self._normalize_index_item(key)
-
-        if key is None:
-            return
-
-        del self._data[key]
-
-    def __bytes__(self) -> bytes:
-        return self.to_bytes()
+    # Methods to load from/to different formats
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
@@ -483,13 +490,13 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def from_bytes(
-            cls: Type['T'],
-            data: bytes,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
-            *args,
-            **kwargs,
+        cls: Type['T'],
+        data: bytes,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             data,
@@ -501,11 +508,11 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         )
 
     def to_bytes(
-            self,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _file_ctx: Optional[BinaryIO] = None,
-            _show_progress: bool = False,
+        self,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _file_ctx: Optional[BinaryIO] = None,
+        _show_progress: bool = False,
     ) -> bytes:
         """Serialize itself into bytes.
 
@@ -552,8 +559,12 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                         _total_size = 0
                         pbar.start_task(t)
                         for doc in self:
-                            doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
-                            len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
+                            doc_bytes = doc.to_bytes(
+                                protocol=protocol, compress=compress
+                            )
+                            len_doc_as_bytes = len(doc_bytes).to_bytes(
+                                4, 'big', signed=False
+                            )
                             all_bytes = len_doc_as_bytes + doc_bytes
                             f.write(all_bytes)
                             _total_size += len(all_bytes)
@@ -570,7 +581,21 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             if not _file_ctx:
                 return bf.getvalue()
 
+    @classmethod
+    def from_json(
+        cls: Type['T'],
+        file: Union[str, bytes, bytearray],
+    ) -> 'T':
+        json_docs = json.loads(file)
+        return cls([cls.document_type.parse_raw(v) for v in json_docs])
 
+    def to_json(self) -> str:
+        """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
+        :return: JSON serialization of DocumentArray
+        """
+        return json.dumps([doc.json() for doc in self])
+
+    # Methods to load from/to files in different formats
     @property
     def _stream_header(self) -> bytes:
         # Binary format for streaming case
@@ -585,12 +610,82 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         return version_byte + num_docs_as_bytes
 
     @classmethod
+    def _load_binary_all(
+        cls, file_ctx, protocol, compress, show_progress, *args, **kwargs
+    ):
+        """Read a `DocumentArray` object from a binary file
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: a `DocumentArray`
+        """
+        with file_ctx as fp:
+            d = fp.read() if hasattr(fp, 'read') else fp
+
+        if protocol in ('pickle-array', 'protobuf-array'):
+            if _get_compress_ctx(algorithm=compress) is not None:
+                d = _decompress_bytes(d, algorithm=compress)
+                compress = None
+
+        if protocol == 'protobuf-array':
+            from docarray.proto import DocumentArrayProto
+
+            dap = DocumentArrayProto()
+            dap.ParseFromString(d)
+
+            return cls.from_protobuf(dap)
+        elif protocol == 'pickle-array':
+            return pickle.loads(d)
+
+        # Binary format for streaming case
+        else:
+            from rich import filesize
+            from docarray.utils.progress_bar import _get_progressbar
+
+            # 1 byte (uint8)
+            # 8 bytes (uint64)
+            num_docs = int.from_bytes(d[1:9], 'big', signed=False)
+
+            pbar, t = _get_progressbar(
+                'Deserializing', disable=not show_progress, total=num_docs
+            )
+
+            # this 9 is version + num_docs bytes used
+            start_pos = 9
+            docs = []
+            with pbar:
+                _total_size = 0
+                pbar.start_task(t)
+
+                for _ in range(num_docs):
+                    # 4 bytes (uint32)
+                    len_current_doc_in_bytes = int.from_bytes(
+                        d[start_pos : start_pos + 4], 'big', signed=False
+                    )
+                    start_doc_pos = start_pos + 4
+                    end_doc_pos = start_doc_pos + len_current_doc_in_bytes
+                    start_pos = end_doc_pos
+
+                    # variable length bytes doc
+                    doc = cls.document_type.from_bytes(
+                        d[start_doc_pos:end_doc_pos],
+                        protocol=protocol,
+                        compress=compress,
+                    )
+                    docs.append(doc)
+                    _total_size += len_current_doc_in_bytes
+                    pbar.update(
+                        t, advance=1, total_size=str(filesize.decimal(_total_size))
+                    )
+            return cls(docs, *args, **kwargs)
+
+    @classmethod
     def _load_binary_stream(
-            cls: Type['T'],
-            file_ctx: str,
-            protocol=None,
-            compress=None,
-            _show_progress=False,
+        cls: Type['T'],
+        file_ctx: str,
+        protocol=None,
+        compress=None,
+        _show_progress=False,
     ) -> Generator['BaseDocument', None, None]:
         """Yield `Document` objects from a binary file
 
@@ -608,7 +703,6 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
-            version = int.from_bytes(version_numdocs_lendoc0[0:1], 'big', signed=False)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
@@ -636,14 +730,14 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def load_binary(
-            cls: Type['T'],
-            file: Union[str, BinaryIO, bytes, pathlib.Path],
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
-            streaming: bool = False,
-            *args,
-            **kwargs,
+        cls: Type['T'],
+        file: Union[str, BinaryIO, bytes, pathlib.Path],
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
+        streaming: bool = False,
+        *args,
+        **kwargs,
     ) -> Union['DocumentArray', Generator['BaseDocument', None, None]]:
         """Load array elements from a compressed binary file.
 
@@ -688,10 +782,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             )
 
     def save_binary(
-            self,
-            file: Union[str, BinaryIO],
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
+        self,
+        file: Union[str, BinaryIO],
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
     ) -> None:
         """Save DocumentArray into a binary file.
 
@@ -719,3 +813,37 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             file_ctx = open(file, 'wb')
 
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
+
+    def save_json(
+        self, file: Union[str, TextIO], encoding: str = 'utf-8', **kwargs
+    ) -> None:
+        """Save array elements into a JSON file.
+        Comparing to :meth:`save_binary`, it is human-readable but slower to save/load and the file size larger.
+        :param file: File or filename to which the data is saved.
+        :param protocol: `jsonschema` or `protobuf`
+        :param encoding: encoding used to save data into a JSON file. By default, ``utf-8`` is used.
+        """
+        if hasattr(file, 'write'):
+            file_ctx = nullcontext(file)
+        else:
+            file_ctx = open(file, 'w', encoding=encoding)
+
+        with file_ctx as fp:
+            fp.write(self.to_json())
+
+    @classmethod
+    def load_json(
+        cls: Type['T'], file: Union[str, TextIO], encoding: str = 'utf-8', **kwargs
+    ) -> 'T':
+        """Load array elements from a JSON file.
+        :param file: File or filename or a JSON string to which the data is saved.
+        :param encoding: encoding used to load data from a JSON file. By default, ``utf-8`` is used.
+        :return: a DocumentArrayLike object
+        """
+        if hasattr(file, 'read'):
+            file_ctx = nullcontext(file)
+        else:
+            file_ctx = open(file, 'r', encoding=encoding)
+
+        with file_ctx as fp:
+            return cls.from_json(fp.read())

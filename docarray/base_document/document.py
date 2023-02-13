@@ -11,57 +11,10 @@ from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import PlotMixin, ProtoMixin
+from docarray.utils.compress import _compress_bytes, _decompress_bytes
 from docarray.typing import ID
 
 _console: Console = Console()
-
-
-def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
-    if algorithm == 'lz4':
-        import lz4.frame
-
-        data = lz4.frame.compress(data)
-    elif algorithm == 'bz2':
-        import bz2
-
-        data = bz2.compress(data)
-    elif algorithm == 'lzma':
-        import lzma
-
-        data = lzma.compress(data)
-    elif algorithm == 'zlib':
-        import zlib
-
-        data = zlib.compress(data)
-    elif algorithm == 'gzip':
-        import gzip
-
-        data = gzip.compress(data)
-    return data
-
-
-def _decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
-    if algorithm == 'lz4':
-        import lz4.frame
-
-        data = lz4.frame.decompress(data)
-    elif algorithm == 'bz2':
-        import bz2
-
-        data = bz2.decompress(data)
-    elif algorithm == 'lzma':
-        import lzma
-
-        data = lzma.decompress(data)
-    elif algorithm == 'zlib':
-        import zlib
-
-        data = zlib.decompress(data)
-    elif algorithm == 'gzip':
-        import gzip
-
-        data = gzip.decompress(data)
-    return data
 
 
 class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
@@ -184,7 +137,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                     field_type = doc._get_field_type(field_name)
 
                     if isinstance(field_type, type) and issubclass(
-                            field_type, DocumentArray
+                        field_type, DocumentArray
                     ):
                         nested_docarray_fields.append(field_name)
                     else:
@@ -218,7 +171,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             setattr(self, field, getattr(other, field))
 
         for field in set(
-                doc1_fields.nested_docs_fields + doc2_fields.nested_docs_fields
+            doc1_fields.nested_docs_fields + doc2_fields.nested_docs_fields
         ):
             sub_doc_1: BaseDocument = getattr(self, field)
             sub_doc_2: BaseDocument = getattr(other, field)
@@ -244,7 +197,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                 setattr(self, field, array1)
 
         for field in set(
-                doc1_fields.nested_docarray_fields + doc2_fields.nested_docarray_fields
+            doc1_fields.nested_docarray_fields + doc2_fields.nested_docarray_fields
         ):
             array1 = getattr(self, field)
             array2 = getattr(other, field)
@@ -263,9 +216,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
                 dict1.update(dict2)
                 setattr(self, field, dict1)
 
-    def to_bytes(self,
-                 protocol: str = 'pickle-array',
-                 compress: Optional[str] = None):
+    def to_bytes(self, protocol: str = 'pickle-array', compress: Optional[str] = None):
         """Serialize itself into bytes.
 
         For more Pythonic code, please use ``bytes(...)``.
@@ -275,6 +226,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         :return: the binary serialization in bytes
         """
         import pickle
+
         if protocol == 'pickle':
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
@@ -287,10 +239,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
     @classmethod
     def from_bytes(
-            cls: Type['T'],
-            data: bytes,
-            protocol: str = 'pickle',
-            compress: Optional[str] = None,
+        cls: Type['T'],
+        data: bytes,
+        protocol: str = 'pickle',
+        compress: Optional[str] = None,
     ) -> 'T':
         """Build Document object from binary bytes
 
