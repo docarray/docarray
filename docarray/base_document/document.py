@@ -308,7 +308,10 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
         ]
 
         for field_name in remaining_field_name & obj.keys():
-            if isinstance(obj[field_name], cls._get_field_type(field_name)):
+            field_type = cls._get_field_type(field_name)  # TODO handle Union
+            if issubclass(field_type, type) and isinstance(
+                obj[field_name], cls._get_field_type(field_name)
+            ):
                 fields[field_name] = obj[field_name]
 
         if len(fields) == len(cls.__fields__):
