@@ -1,12 +1,16 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
+
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, Mesh3DUrl
 
 T = TypeVar('T', bound='Mesh3D')
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
+TensorT = TypeVar('TensorT', bound=AnyTensor)
 
 
-class Mesh3D(BaseDocument):
+class Mesh3D(BaseDocument, GenericModel, Generic[TensorT, EmbeddingT]):
     """
     Document for handling meshes for 3D data representation.
 
@@ -43,6 +47,7 @@ class Mesh3D(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyMesh3D(Mesh3D):
             name: Optional[Text]
@@ -62,6 +67,7 @@ class Mesh3D(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import Mesh3D, Text
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             mesh: Mesh3D
@@ -80,9 +86,9 @@ class Mesh3D(BaseDocument):
     """
 
     url: Optional[Mesh3DUrl]
-    vertices: Optional[AnyTensor]
-    faces: Optional[AnyTensor]
-    embedding: Optional[AnyEmbedding]
+    vertices: Optional[TensorT]
+    faces: Optional[TensorT]
+    embedding: Optional[EmbeddingT]
     bytes: Optional[bytes]
 
     @classmethod

@@ -1,6 +1,7 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AudioUrl
@@ -19,9 +20,11 @@ if tf_available:
 
 
 T = TypeVar('T', bound='Audio')
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
+AudioTensorT = TypeVar('AudioTensorT', bound=AudioTensor)
 
 
-class Audio(BaseDocument):
+class Audio(BaseDocument, GenericModel, Generic[AudioTensorT, EmbeddingT]):
     """
     Document for handling audios.
 
@@ -51,6 +54,7 @@ class Audio(BaseDocument):
         from docarray.documents import Audio, Text
         from typing import Optional
 
+
         # extend it
         class MyAudio(Audio):
             name: Optional[Text]
@@ -71,6 +75,7 @@ class Audio(BaseDocument):
 
         from docarray import BaseDocument
         from docarray.documents import Audio, Text
+
 
         # compose it
         class MultiModalDoc(Document):
@@ -95,8 +100,8 @@ class Audio(BaseDocument):
     """
 
     url: Optional[AudioUrl]
-    tensor: Optional[AudioTensor]
-    embedding: Optional[AnyEmbedding]
+    tensor: Optional[AudioTensorT]
+    embedding: Optional[EmbeddingT]
     bytes: Optional[AudioBytes]
 
     @classmethod

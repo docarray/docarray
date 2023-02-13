@@ -1,6 +1,7 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
@@ -16,9 +17,11 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 T = TypeVar('T', bound='PointCloud3D')
+TensorT = TypeVar('TensorT', bound=AnyTensor)
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
 
 
-class PointCloud3D(BaseDocument):
+class PointCloud3D(BaseDocument, GenericModel, Generic[TensorT, EmbeddingT]):
     """
     Document for handling point clouds for 3D data representation.
 
@@ -52,6 +55,7 @@ class PointCloud3D(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyPointCloud3D(PointCloud3D):
             second_embedding: Optional[AnyEmbedding]
@@ -70,6 +74,7 @@ class PointCloud3D(BaseDocument):
 
         from docarray import BaseDocument
         from docarray.documents import PointCloud3D, Text
+
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -92,8 +97,8 @@ class PointCloud3D(BaseDocument):
     """
 
     url: Optional[PointCloud3DUrl]
-    tensor: Optional[AnyTensor]
-    embedding: Optional[AnyEmbedding]
+    tensor: Optional[TensorT]
+    embedding: Optional[EmbeddingT]
     bytes: Optional[bytes]
 
     @classmethod

@@ -1,11 +1,13 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.documents import Audio
 from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
 from docarray.utils.misc import is_tf_available, is_torch_available
@@ -21,9 +23,15 @@ if tf_available:
 
 
 T = TypeVar('T', bound='Video')
+VideoTensorT = TypeVar('VideoTensorT', bound=VideoTensor)
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
+TensorT = TypeVar('TensorT', bound=AnyTensor)
+AudioTensorT = TypeVar('AudioTensorT', bound=AudioTensor)
 
 
-class Video(BaseDocument):
+class Video(
+    BaseDocument, GenericModel, Generic[VideoTensorT, AudioTensorT, TensorT, EmbeddingT]
+):
     """
     Document for handling video.
     The Video Document can contain a VideoUrl (`Video.url`), an Audio Document
@@ -98,10 +106,10 @@ class Video(BaseDocument):
     """
 
     url: Optional[VideoUrl]
-    audio: Optional[Audio] = Audio()
-    tensor: Optional[VideoTensor]
-    key_frame_indices: Optional[AnyTensor]
-    embedding: Optional[AnyEmbedding]
+    audio: Optional[Audio[AudioTensorT, EmbeddingT]] = Audio()
+    tensor: Optional[VideoTensorT]
+    key_frame_indices: Optional[TensorT]
+    embedding: Optional[EmbeddingT]
     bytes: Optional[bytes] = None
 
     @classmethod

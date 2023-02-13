@@ -1,13 +1,16 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
+
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
 T = TypeVar('T', bound='Text')
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
 
 
-class Text(BaseDocument):
+class Text(BaseDocument, GenericModel, Generic[EmbeddingT]):
     """
     Document for handling text.
     It can contain a TextUrl (`Text.url`), a str (`Text.text`),
@@ -43,6 +46,7 @@ class Text(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyText(Text):
             second_embedding: Optional[AnyEmbedding]
@@ -61,6 +65,7 @@ class Text(BaseDocument):
 
         from docarray import BaseDocument
         from docarray.documents import Image, Text
+
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -98,7 +103,7 @@ class Text(BaseDocument):
 
     text: Optional[str] = None
     url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
+    embedding: Optional[EmbeddingT] = None
     bytes: Optional[bytes] = None
 
     def __init__(self, text: Optional[str] = None, **kwargs):
