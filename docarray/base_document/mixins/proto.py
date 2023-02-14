@@ -68,25 +68,20 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         for field_name in pb_msg.data:
 
-            do_pass_loop = False
             if field_name not in cls.__fields__.keys():
                 if field_name in field_map.keys():
                     field_name_mapped = field_map[field_name]
                 else:
-                    do_pass_loop = True  # optimization we don't even load the data if the key does not
+                    continue  # optimization we don't even load the data if the key does not
                     # match any field in the cls or in the mapping
             else:
                 field_name_mapped = field_name
 
-            if do_pass_loop:
-                pass
-            else:
+            value = pb_msg.data[field_name]
 
-                value = pb_msg.data[field_name]
-
-                fields[field_name_mapped] = cls._get_content_from_node_proto(
-                    value, field_name_mapped
-                )
+            fields[field_name_mapped] = cls._get_content_from_node_proto(
+                value, field_name_mapped
+            )
 
         return cls(**fields)
 
