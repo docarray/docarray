@@ -28,9 +28,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
         pb_msg: 'DocumentProto',
         field_map: Optional[Mapping[str, str]] = None,
     ) -> T:
-        """create a Document from a protobuf message. You can specify a mapping
-        that will be used to convert key name from the proto to the class fields field
-        name by using the `field_map` field.
+        """Create a Document from a protobuf message. You can optionally specify a mapping
+        that will be used to map keys in the protobuf definition to keys (names) of the Document fields.
 
         .. code-block:: python
             from docarray import BaseDocument
@@ -58,9 +57,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
             assert b.link == a.url
             assert (b.array == a.tensor).all()
 
-        :param pb_msg: the proto message of the Document
-        :param field_map: map proto key to schema key
-        :return: a Document initialize with the proto data
+        :param pb_msg: The proto message representing the Document
+        :param field_map: Optional mapping from proto fields to Document fields
+        :return: A new Document initialized with the data from `pb_msg`
         """
 
         fields: Dict[str, Any] = {}
