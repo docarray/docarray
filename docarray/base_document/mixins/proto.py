@@ -84,14 +84,14 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
                 value = pb_msg.data[field_name]
 
-                fields[field_name_mapped] = cls._proto_get_content_from_node_proto(
+                fields[field_name_mapped] = cls._get_content_from_node_proto(
                     value, field_name_mapped
                 )
 
         return cls(**fields)
 
     @classmethod
-    def _proto_get_content_from_node_proto(cls, value: 'NodeProto', field_name):
+    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name):
         """
         load the proto data from a node proto
 
