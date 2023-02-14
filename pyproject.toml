@@ -75,7 +75,7 @@ skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']
 
 [tool.ruff]
 exclude = ['docarray/proto/pb2/*', 'docarray/proto/pb/*', 'docs/*']
-ignore = ["E501"]
+ignore = ["E501"] # line too long, handled by black
 
 [tool.pytest.ini_options]
 markers = [
