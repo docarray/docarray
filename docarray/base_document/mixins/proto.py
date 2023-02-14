@@ -4,7 +4,6 @@ from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
-
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
@@ -83,7 +82,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     f' deserialization'
                 )
 
-        return cls.construct(**fields)
+        return cls(**fields)
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.
