@@ -7,6 +7,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Mapping,
     Optional,
     Sequence,
     Type,
@@ -316,9 +317,25 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a DocumentArray from a protobuf message"""
+        return cls.from_protobuf_field_map(pb_msg, None)
+
+    @classmethod
+    def from_protobuf_field_map(
+        cls: Type[T],
+        pb_msg: 'DocumentArrayProto',
+        field_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
+        """
+        create a DocumentArray from a protobuf message with a field_map. Apply the same
+        behavior of {meth}`~docarray.BaseDocument.from_protobuf_field_map`
+        :param pb_msg:
+        :param field_map:
+        :return: a DocumentArray initialized from a proto message
+        """
         return cls(
-            cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
+            cls.document_type.from_protobuf_field_map(doc_proto, field_map)
+            for doc_proto in pb_msg.docs
         )
 
     def to_protobuf(self) -> 'DocumentArrayProto':

@@ -1,10 +1,11 @@
 import numpy as np
 import pytest
+import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array_stacked import DocumentArrayStacked
 from docarray.documents import Image, Text
-from docarray.typing import NdArray
+from docarray.typing import AnyUrl, NdArray, TorchTensor
 
 
 @pytest.mark.proto
@@ -72,3 +73,26 @@ def test_stacked_proto():
     da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())
 
     assert isinstance(da2, DocumentArrayStacked)
+
+
+def test_from_proto_field_map():
+    class A(BaseDocument):
+        url: AnyUrl
+        tensor: TorchTensor
+
+    class B(BaseDocument):
+        link: AnyUrl
+        array: TorchTensor
+
+    a = DocumentArray[A]([A(url='hello', tensor=torch.zeros(3)) for _ in range(3)])
+
+    with pytest.raises(ValueError):
+        DocumentArray[B].from_protobuf(a.to_protobuf())
+
+    b = DocumentArray[B].from_protobuf_field_map(
+        a.to_protobuf(), field_map={'url': 'link', 'tensor': 'array'}
+    )
+
+    for doc_b, doc_a in zip(b, a):
+        assert doc_b.link == doc_a.url
+        assert (doc_b.array == doc_a.tensor).all()
