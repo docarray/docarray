@@ -85,7 +85,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
 
     def _create_index_class(self, col: '_Column') -> hnswlib.Index:
-        '''Create an instance of hnswlib.Index without initializing it.'''
+        """Create an instance of hnswlib.Index without initializing it."""
         construct_params = dict(
             (k, col.config[k]) for k in self._index_construct_params
         )
@@ -94,14 +94,14 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         return hnswlib.Index(**construct_params)
 
     def _create_index(self, col: '_Column') -> hnswlib.Index:
-        '''Create a new HNSW index for a column, and initialize it.'''
+        """Create a new HNSW index for a column, and initialize it."""
         index = self._create_index_class(col)
         init_params = dict((k, col.config[k]) for k in self._index_init_params)
         index.init_index(**init_params)
         return index
 
     def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
-        '''Load an existing HNSW index from disk.'''
+        """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
         index.load_index(self._hnsw_locations[col_name])
         return index
@@ -186,6 +186,9 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
         self._delete_docs_from_sqlite(key)
         self._sqlite_conn.commit()
+
+    def num_docs(self) -> int:
+        return self._get_num_docs_sqlite()
 
     # SQLite helpers
     def _create_docs_table(self):

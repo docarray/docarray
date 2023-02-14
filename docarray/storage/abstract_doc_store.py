@@ -64,6 +64,8 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
 
         self._columns: Dict[str, _Column] = self._create_columns(self._schema)
 
+    # Abstract methods
+    # Subclasses must implement these
     @abstractmethod
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
@@ -72,6 +74,11 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     @abstractmethod
     def index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
+        ...
+
+    @abstractmethod
+    def num_docs(self) -> int:
+        """Return the number of indexed documents"""
         ...
 
     @abstractmethod
@@ -108,6 +115,8 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         # TODO(johannes) refine method signature
         ...
 
+    # Behind-the-scenes magic
+    # Subclasses should not need to implement these
     def __class_getitem__(cls, item: Type[TSchema]):
         if not issubclass(item, BaseDocument):
             raise ValueError(
