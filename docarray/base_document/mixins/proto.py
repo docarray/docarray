@@ -103,14 +103,14 @@ class ProtoMixin(AbstractDocument, BaseNode):
         }
 
         content_key = value.WhichOneof('content')
-        content_type = (
+        docarray_type = (
             value.type if value.WhichOneof('docarray_type') is not None else None
         )
 
         return_field: Any
 
-        if content_type in content_type_dict:
-            return_field = content_type_dict[content_type].from_protobuf(
+        if docarray_type in content_type_dict:
+            return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
             )
         elif content_key in ['document', 'document_array']:
@@ -119,7 +119,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             )  # we get to the parent class
         elif content_key is None:
             return_field = None
-        elif content_type is None:
+        elif docarray_type is None:
 
             if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
                 return_field = getattr(value, content_key)
@@ -138,7 +138,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         else:
             raise ValueError(
-                f'type {content_type}, with key {content_key} is not supported for'
+                f'type {docarray_type}, with key {content_key} is not supported for'
                 f' deserialization'
             )
 
