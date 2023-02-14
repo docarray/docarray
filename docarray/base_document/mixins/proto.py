@@ -20,37 +20,74 @@ class ProtoMixin(AbstractDocument, BaseNode):
         :return: a Document initialize with the proto data
         """
 
-        return cls.from_protobuf_with_schema_map(pb_msg)
+        return cls.from_protobuf_field_map(pb_msg)
 
     @classmethod
-    def from_protobuf_with_schema_map(
+    def from_protobuf_field_map(
         cls: Type[T],
         pb_msg: 'DocumentProto',
-        schema_map: Optional[Mapping[str, str]] = None,
+        field_map: Optional[Mapping[str, str]] = None,
     ) -> T:
-        """create a Document from a protobuf message
+        """create a Document from a protobuf message. You can specify a mapping
+        that will be used to convert key name from the proto to the class fields field
+        name by using the `field_map` field.
+
+        .. code-block:: python
+            from docarray import BaseDocument
+            from docarray.typing import AnyUrl, TorchTensor
+
+            import torch
+
+
+            class A(BaseDocument):
+                url: AnyUrl
+                tensor: TorchTensor
+
+
+            class B(BaseDocument):
+                link: AnyUrl
+                array: TorchTensor
+
+
+            a = A(url='hello', tensor=torch.zeros(3))
+
+            b = B.from_protobuf_with_schema_map(
+                a.to_protobuf(), field_map={'url': 'link', 'tensor': 'array'}
+            )
+
+            assert b.link == a.url
+            assert (b.array == a.tensor).all()
 
         :param pb_msg: the proto message of the Document
-        :param schema_map: map proto key to schema key
+        :param field_map: map proto key to schema key
         :return: a Document initialize with the proto data
         """
 
         fields: Dict[str, Any] = {}
 
+        field_map = field_map or {}
+
         for field_name in pb_msg.data:
 
-            field_name_mapped = (
-                field_name if schema_map is None else schema_map[field_name]
-            )
+            do_pass_loop = False
+            if field_name not in cls.__fields__.keys():
+                if field_name in field_map.keys():
+                    field_name_mapped = field_map[field_name]
+                else:
+                    do_pass_loop = True  # optimization we don't even load the data if the key does not
+                    # match any field in the cls or in the mapping
+            else:
+                field_name_mapped = field_name
 
-            if field_name_mapped not in cls.__fields__.keys():
-                pass  # optimization we don't even load the data if the key does not match
+            if do_pass_loop:
+                pass
+            else:
 
-            value = pb_msg.data[field_name]
+                value = pb_msg.data[field_name]
 
-            fields[field_name_mapped] = cls._proto_get_content_from_node_proto(
-                value, field_name_mapped
-            )
+                fields[field_name_mapped] = cls._proto_get_content_from_node_proto(
+                    value, field_name_mapped
+                )
 
         return cls(**fields)
 

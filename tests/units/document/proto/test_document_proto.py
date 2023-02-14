@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import pytest
@@ -6,7 +6,7 @@ import torch
 
 from docarray import DocumentArray
 from docarray.base_document import BaseDocument
-from docarray.typing import NdArray, TorchTensor
+from docarray.typing import AnyUrl, NdArray, TorchTensor
 
 
 @pytest.mark.proto
@@ -204,3 +204,26 @@ def test_torch_dtype(dtype):
     assert doc.tensor.dtype == dtype
     assert MyDoc.from_protobuf(doc.to_protobuf()).tensor.dtype == dtype
     assert MyDoc.parse_obj(doc.dict()).tensor.dtype == dtype
+
+
+@pytest.mark.proto
+def test_proto_schema_map():
+    class A(BaseDocument):
+        url: AnyUrl
+        tensor: TorchTensor
+
+    class B(BaseDocument):
+        link: AnyUrl
+        array: TorchTensor
+
+    a = A(url='hello', tensor=torch.zeros(3))
+
+    with pytest.raises(ValueError):
+        B.from_protobuf(a.to_protobuf())
+
+    b = B.from_protobuf_field_map(
+        a.to_protobuf(), field_map={'url': 'link', 'tensor': 'array'}
+    )
+
+    assert b.link == a.url
+    assert (b.array == a.tensor).all()
