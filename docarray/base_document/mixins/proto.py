@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -49,14 +49,22 @@ class ProtoMixin(AbstractDocument, BaseNode):
         return cls(**fields)
 
     @classmethod
-    def _proto_get_content_from_node_proto(cls, value, field_name):
+    def _proto_get_content_from_node_proto(cls, value: 'NodeProto', field_name):
         """
+        load the proto data from a node proto
 
         :param value: the proto node value
         :param field_name: the name of the field
         :return: the loaded field
         """
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
+        arg_to_container: Dict[str, Callable] = {
+            'list': lambda x: x,
+            'set': set,
+            'tuple': tuple,
+            'dict': dict,
+        }
+
         content_key = value.WhichOneof('content')
         content_type = (
             value.type if value.WhichOneof('docarray_type') is not None else None
@@ -81,32 +89,17 @@ class ProtoMixin(AbstractDocument, BaseNode):
         elif content_key is None:
             return_field = None
         elif content_type is None:
-            if content_key == 'text':
-                return_field = value.text
-            elif content_key == 'blob':
-                return_field = value.blob
-            elif content_key == 'integer':
-                return_field = value.integer
-            elif content_key == 'float':
-                return_field = value.float
-            elif content_key == 'boolean':
-                return_field = value.boolean
-            elif content_key == 'list':
+
+            if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
+                return_field = getattr(value, content_key)
+
+            elif content_key in arg_to_container.keys():
                 from google.protobuf.json_format import MessageToDict
 
-                return_field = MessageToDict(value.list)
-            elif content_key == 'set':
-                from google.protobuf.json_format import MessageToDict
+                return_field = arg_to_container[content_key](
+                    MessageToDict(getattr(value, content_key))
+                )
 
-                return_field = set(MessageToDict(value.set))
-            elif content_key == 'tuple':
-                from google.protobuf.json_format import MessageToDict
-
-                return_field = tuple(MessageToDict(value.tuple))
-            elif content_key == 'dict':
-                from google.protobuf.json_format import MessageToDict
-
-                return_field = MessageToDict(value.dict)
             else:
                 raise ValueError(
                     f'key {content_key} is not supported for' f' deserialization'
