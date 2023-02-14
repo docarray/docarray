@@ -37,75 +37,88 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         schema_map = schema_map or {field: field for field in cls.__fields__.keys()}
 
-        content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
-
         fields: Dict[str, Any] = {}
 
-        for field in pb_msg.data:
-            value = pb_msg.data[field]
+        for field_name in pb_msg.data:
+            value = pb_msg.data[field_name]
 
-            content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
-
-            content_key = value.WhichOneof('content')
-            content_type = (
-                value.type if value.WhichOneof('docarray_type') is not None else None
+            fields[field_name] = cls._proto_get_content_from_node_proto(
+                value, field_name
             )
 
-            if content_type in content_type_dict:
-                fields[field] = content_type_dict[content_type].from_protobuf(
-                    getattr(value, content_key)
-                )
-            elif content_key == 'document':
-                fields[field] = cls._get_field_type(field).from_protobuf(
-                    value.document
-                )  # we get to the parent class
-            elif content_key == 'document_array':
-                from docarray import DocumentArray
+        return cls(**fields)
 
-                fields[field] = DocumentArray.from_protobuf(
-                    value.document_array
-                )  # we get to the parent class
-            elif content_key is None:
-                fields[field] = None
-            elif content_type is None:
-                if content_key == 'text':
-                    fields[field] = value.text
-                elif content_key == 'blob':
-                    fields[field] = value.blob
-                elif content_key == 'integer':
-                    fields[field] = value.integer
-                elif content_key == 'float':
-                    fields[field] = value.float
-                elif content_key == 'boolean':
-                    fields[field] = value.boolean
-                elif content_key == 'list':
-                    from google.protobuf.json_format import MessageToDict
+    @classmethod
+    def _proto_get_content_from_node_proto(cls, value, field_name):
+        """
 
-                    fields[field] = MessageToDict(value.list)
-                elif content_key == 'set':
-                    from google.protobuf.json_format import MessageToDict
+        :param value: the proto node value
+        :param field_name: the name of the field
+        :return: the loaded field
+        """
+        content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
+        content_key = value.WhichOneof('content')
+        content_type = (
+            value.type if value.WhichOneof('docarray_type') is not None else None
+        )
 
-                    fields[field] = set(MessageToDict(value.set))
-                elif content_key == 'tuple':
-                    from google.protobuf.json_format import MessageToDict
+        return_field = None
 
-                    fields[field] = tuple(MessageToDict(value.tuple))
-                elif content_key == 'dict':
-                    from google.protobuf.json_format import MessageToDict
+        if content_type in content_type_dict:
+            return_field = content_type_dict[content_type].from_protobuf(
+                getattr(value, content_key)
+            )
+        elif content_key == 'document':
+            return_field = cls._get_field_type(field_name).from_protobuf(
+                value.document
+            )  # we get to the parent class
+        elif content_key == 'document_array':
+            from docarray import DocumentArray
 
-                    fields[field] = MessageToDict(value.dict)
-                else:
-                    raise ValueError(
-                        f'key {content_key} is not supported for' f' deserialization'
-                    )
+            return_field = DocumentArray.from_protobuf(
+                value.document_array
+            )  # we get to the parent class
+        elif content_key is None:
+            return_field = None
+        elif content_type is None:
+            if content_key == 'text':
+                return_field = value.text
+            elif content_key == 'blob':
+                return_field = value.blob
+            elif content_key == 'integer':
+                return_field = value.integer
+            elif content_key == 'float':
+                return_field = value.float
+            elif content_key == 'boolean':
+                return_field = value.boolean
+            elif content_key == 'list':
+                from google.protobuf.json_format import MessageToDict
 
+                return_field = MessageToDict(value.list)
+            elif content_key == 'set':
+                from google.protobuf.json_format import MessageToDict
+
+                return_field = set(MessageToDict(value.set))
+            elif content_key == 'tuple':
+                from google.protobuf.json_format import MessageToDict
+
+                return_field = tuple(MessageToDict(value.tuple))
+            elif content_key == 'dict':
+                from google.protobuf.json_format import MessageToDict
+
+                return_field = MessageToDict(value.dict)
             else:
                 raise ValueError(
-                    f'type {content_type}, with key {content_key} is not supported for'
-                    f' deserialization'
+                    f'key {content_key} is not supported for' f' deserialization'
                 )
 
-        return cls(**fields)
+        else:
+            raise ValueError(
+                f'type {content_type}, with key {content_key} is not supported for'
+                f' deserialization'
+            )
+
+        return return_field
 
     def to_protobuf(self) -> 'DocumentProto':
         """Convert Document into a Protobuf message.
