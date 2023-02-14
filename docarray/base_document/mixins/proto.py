@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Type, TypeVar
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -14,7 +14,30 @@ T = TypeVar('T', bound='ProtoMixin')
 class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a Document from a protobuf message
+
+        :param pb_msg: the proto message of the Document
+        :return: a Document initialize with the proto data
+        """
+
+        return cls.from_protobuf_with_schema_map(pb_msg)
+
+    @classmethod
+    def from_protobuf_with_schema_map(
+        cls: Type[T],
+        pb_msg: 'DocumentProto',
+        schema_map: Optional[Mapping[str, str]] = None,
+    ) -> T:
+        """create a Document from a protobuf message
+
+        :param pb_msg: the proto message of the Document
+        :param schema_map: map proto key to schema key
+        :return: a Document initialize with the proto data
+        """
+
+        schema_map = schema_map or {field: field for field in cls.__fields__.keys()}
+
+        content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
 
         fields: Dict[str, Any] = {}
 
