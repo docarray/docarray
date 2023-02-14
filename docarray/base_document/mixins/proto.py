@@ -70,8 +70,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
             value.type if value.WhichOneof('docarray_type') is not None else None
         )
 
-        return_field = None
-
         if content_type in content_type_dict:
             return_field = content_type_dict[content_type].from_protobuf(
                 getattr(value, content_key)
