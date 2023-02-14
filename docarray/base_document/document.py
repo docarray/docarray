@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, parse_obj_as
 from rich.console import Console
 from typing_inspect import get_origin
 import pickle
+import base64
 
 from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
@@ -264,3 +265,30 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             raise ValueError(
                 f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
             )
+
+    def to_base64(
+            self, protocol: str = 'pickle', compress: Optional[str] = None
+    ) -> str:
+        """Serialize a Document object into as base64 string
+
+        :param protocol: protocol to use
+        :param compress: compress method to use
+        :return: a base64 encoded string
+        """
+        return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
+
+    @classmethod
+    def from_base64(
+            cls: Type['T'],
+            data: str,
+            protocol: str = 'pickle',
+            compress: Optional[str] = None,
+    ) -> 'T':
+        """Build Document object from binary bytes
+
+        :param data: a base64 encoded string
+        :param protocol: protocol to use
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        return cls.from_bytes(base64.b64decode(data), protocol, compress)

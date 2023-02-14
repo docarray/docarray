@@ -26,6 +26,7 @@ import io
 import os
 import pickle
 import pathlib
+import base64
 
 from typing_inspect import is_union_type
 
@@ -580,6 +581,33 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
             if not _file_ctx:
                 return bf.getvalue()
+
+    @classmethod
+    def from_base64(
+            cls: Type['T'],
+            data: str,
+            protocol: str = 'pickle-array',
+            compress: Optional[str] = None,
+            _show_progress: bool = False,
+            *args,
+            **kwargs,
+    ) -> 'T':
+        return cls.load_binary(
+            base64.b64decode(data),
+            protocol=protocol,
+            compress=compress,
+            _show_progress=_show_progress,
+            *args,
+            **kwargs,
+        )
+
+    def to_base64(
+            self,
+            protocol: str = 'pickle-array',
+            compress: Optional[str] = None,
+            _show_progress: bool = False,
+    ) -> str:
+        return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
 
     @classmethod
     def from_json(
