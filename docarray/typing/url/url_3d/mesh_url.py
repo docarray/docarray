@@ -45,6 +45,7 @@ class Mesh3DUrl(Url3D):
             assert isinstance(tensors.vertices, NdArray)
             assert isinstance(tensors.faces, NdArray)
 
+
         :return: VerticesAndFaces object containing vertices and faces information.
         """
         from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
@@ -59,6 +60,7 @@ class Mesh3DUrl(Url3D):
     def display(self) -> None:
         """
         Plot mesh from url.
+        This loads the Trimesh instance of the 3D mesh, and then displays it.
         """
         from IPython.display import display
 

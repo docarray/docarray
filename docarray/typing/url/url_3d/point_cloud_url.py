@@ -38,7 +38,7 @@ class PointCloud3DUrl(Url3D):
 
 
             class MyDoc(BaseDocument):
-                point_cloud_url: PointCloud3DvUrl
+                point_cloud_url: PointCloud3DUrl
 
 
             doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
@@ -74,6 +74,24 @@ class PointCloud3DUrl(Url3D):
     def display(self, samples: int = 10000) -> None:
         """
         Plot point cloud from url.
+        First, it loads the point cloud into a :class:`PointsAndColors` object, and then
+        calls display on it. The following is therefore equivalent:
+
+        .. code-block:: python
+
+            import numpy as np
+            from docarray import BaseDocument
+
+            from docarray.documents import PointCloud3D
+
+            pc = PointCloud3D("toydata/tetrahedron.obj")
+
+            # option 1
+            pc.url.display()
+
+            # option 2 (equivalent)
+            pc.url.load().display()
+
         :param samples: number of points to sample from the mesh.
         """
         self.load(samples=samples).display()
