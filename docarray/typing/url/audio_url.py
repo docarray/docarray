@@ -5,6 +5,7 @@ import numpy as np
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -67,3 +68,32 @@ class AudioUrl(AnyUrl):
 
         bytes_ = AudioBytes(self.load_bytes())
         return bytes_.load()
+
+    def display(self):
+        """
+        Play the audio sound from url.
+        """
+        remote_url = True if self.startswith('http') else False
+
+        if is_notebook():
+            from IPython.display import Audio, display
+
+            if remote_url:
+                display(Audio(data=self))
+
+            else:
+                display(Audio(filename=self))
+        else:
+            from pydub import AudioSegment
+            from pydub.playback import play
+
+            if remote_url:
+                from io import BytesIO
+
+                import requests
+
+                res = requests.get(self)
+                sound = AudioSegment.from_file(BytesIO(res.content), "wav")
+            else:
+                sound = AudioSegment.from_file(self, format="wav")
+            play(sound)
