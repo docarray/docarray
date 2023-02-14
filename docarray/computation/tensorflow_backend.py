@@ -93,7 +93,8 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
     @classmethod
     def dtype(cls, tensor: 'TensorFlowTensor') -> tf.dtypes:
         """Get the data type of the tensor."""
-        return cls._get_tensor(tensor).dtype
+        d_type = cls._get_tensor(tensor).dtype
+        return d_type.name
 
     @classmethod
     def minmax_normalize(

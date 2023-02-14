@@ -50,10 +50,18 @@ def test_to_device():
 
 
 @pytest.mark.tensorflow
-@pytest.mark.parametrize('dtype', ['int64', 'float64', 'int8', 'double'])
-def test_dtype(dtype):
+@pytest.mark.parametrize(
+    'dtype,result_type',
+    [
+        ('int64', 'int64'),
+        ('float64', 'float64'),
+        ('int8', 'int8'),
+        ('double', 'float64'),
+    ],
+)
+def test_dtype(dtype, result_type):
     array = TensorFlowTensor(tf.constant([1, 2, 3], dtype=getattr(tf, dtype)))
-    assert TensorFlowCompBackend.dtype(array) == dtype
+    assert TensorFlowCompBackend.dtype(array) == result_type
 
 
 @pytest.mark.tensorflow
