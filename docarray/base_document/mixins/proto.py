@@ -113,15 +113,9 @@ class ProtoMixin(AbstractDocument, BaseNode):
             return_field = content_type_dict[content_type].from_protobuf(
                 getattr(value, content_key)
             )
-        elif content_key == 'document':
+        elif content_key in ['document', 'document_array']:
             return_field = cls._get_field_type(field_name).from_protobuf(
-                value.document
-            )  # we get to the parent class
-        elif content_key == 'document_array':
-            from docarray import DocumentArray
-
-            return_field = DocumentArray.from_protobuf(
-                value.document_array
+                getattr(value, content_key)
             )  # we get to the parent class
         elif content_key is None:
             return_field = None
