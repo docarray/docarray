@@ -35,15 +35,21 @@ class ProtoMixin(AbstractDocument, BaseNode):
         :return: a Document initialize with the proto data
         """
 
-        schema_map = schema_map or {field: field for field in cls.__fields__.keys()}
-
         fields: Dict[str, Any] = {}
 
         for field_name in pb_msg.data:
+
+            if schema_map and field_name not in schema_map.keys():
+                pass
+
+            final_name_mapped = (
+                field_name if schema_map is None else schema_map[field_name]
+            )
+
             value = pb_msg.data[field_name]
 
-            fields[field_name] = cls._proto_get_content_from_node_proto(
-                value, field_name
+            fields[final_name_mapped] = cls._proto_get_content_from_node_proto(
+                value, final_name_mapped
             )
 
         return cls(**fields)
