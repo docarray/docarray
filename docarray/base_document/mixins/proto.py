@@ -35,7 +35,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
         return cls(**fields)
 
     @classmethod
-    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name):
+    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name: str) -> Any:
         """
         load the proto data from a node proto
 
