@@ -4,7 +4,6 @@ import numpy as np
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -92,18 +91,13 @@ class ImageUrl(AnyUrl):
 
     def display(self) -> None:
         """
-        Display image data from url.
+        Display image data from url in notebook.
         """
         remote_url = True if self.startswith('http') else False
 
-        if is_notebook():
-            from IPython.display import Image, display
+        from IPython.display import Image, display
 
-            if remote_url:
-                display(Image(url=self))
-            else:
-                display(Image(filename=self))
+        if remote_url:
+            display(Image(url=self))
         else:
-            from PIL import Image
-
-            Image.fromarray(self.load()).show()
+            display(Image(filename=self))

@@ -112,6 +112,6 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
 
     def display(self) -> None:
         """
-        Display video data from tensor.
+        Display video data from tensor in notebook.
         """
         raise NotImplementedError

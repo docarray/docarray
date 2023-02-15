@@ -2,7 +2,6 @@ import io
 from abc import ABC
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_notebook
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
@@ -31,16 +30,13 @@ class AbstractImageTensor(AbstractTensor, ABC):
 
     def display(self) -> None:
         """
-        Display image data from tensor.
+        Display image data from tensor in notebook.
         """
         from PIL import Image
 
         np_array = self.get_comp_backend().to_numpy(self)
         img = Image.fromarray(np_array)
 
-        if is_notebook():
-            from IPython.display import display
+        from IPython.display import display
 
-            display(img)
-        else:
-            img.show()
+        display(img)
