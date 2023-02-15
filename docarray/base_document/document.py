@@ -6,16 +6,15 @@ from pydantic import BaseModel, Field, parse_obj_as
 from rich.console import Console
 from typing_inspect import get_origin
 
-from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
-from docarray.base_document.mixins import PlotMixin, ProtoMixin
+from docarray.base_document.mixins import ProtoMixin
 from docarray.typing import ID
 
 _console: Console = Console()
 
 
-class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
+class BaseDocument(BaseModel, ProtoMixin, BaseNode):
     """
     The base class for Document
     """
@@ -81,9 +80,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
 
                 doc1 = MyDocument(
-                    content='Core content of the document',
-                    title='Title',
-                    tags_=['python', 'AI']
+                    content='Core content of the document', title='Title', tags_=['python', 'AI']
                 )
                 doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
 
@@ -213,3 +210,20 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             elif dict1 is not None and dict2 is not None:
                 dict1.update(dict2)
                 setattr(self, field, dict1)
+
+    def summary(self) -> None:
+        """Print non-empty fields and nested structure of this Document object."""
+        from docarray.display.document_summary import DocumentSummary
+
+        DocumentSummary(doc=self).summary()
+
+    @classmethod
+    def schema_summary(cls) -> None:
+        """Print a summary of the Documents schema."""
+        from docarray.display.document_summary import DocumentSummary
+
+        DocumentSummary.schema_summary(cls)
+
+    def _ipython_display_(self):
+        """Displays the object in IPython as a summary"""
+        self.summary()
