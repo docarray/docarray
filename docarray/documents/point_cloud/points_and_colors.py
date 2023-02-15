@@ -5,7 +5,7 @@ import numpy as np
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_notebook, is_tf_available, is_torch_available
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
@@ -46,7 +46,8 @@ class PointsAndColors(BaseDocument):
 
     def display(self) -> None:
         """
-        Plot point cloud consisting of points in 3D space and optionally colors.
+        Plot point cloud consisting of points in 3D space and optionally colors in
+        notebook.
         """
         import trimesh
         from IPython.display import display
@@ -61,8 +62,5 @@ class PointsAndColors(BaseDocument):
         )
         pc = trimesh.points.PointCloud(vertices=self.points, colors=colors)
 
-        if is_notebook():
-            s = trimesh.Scene(geometry=pc)
-            display(s.show())
-        else:
-            display(pc.show())
+        s = trimesh.Scene(geometry=pc)
+        display(s.show())

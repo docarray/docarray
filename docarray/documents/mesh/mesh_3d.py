@@ -46,6 +46,7 @@ class Mesh3D(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyMesh3D(Mesh3D):
             name: Optional[Text]
@@ -65,6 +66,7 @@ class Mesh3D(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import Mesh3D, Text
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             mesh: Mesh3D
@@ -81,7 +83,7 @@ class Mesh3D(BaseDocument):
         mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
 
 
-    You can display your 3D mesh from either its url, or its tensors:
+    You can display your 3D mesh in a notebook from either its url, or its tensors:
 
     .. code-block:: python
 

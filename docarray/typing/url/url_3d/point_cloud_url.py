@@ -73,7 +73,7 @@ class PointCloud3DUrl(Url3D):
 
     def display(self, samples: int = 10000) -> None:
         """
-        Plot point cloud from url.
+        Plot point cloud in notebook from url.
         First, it loads the point cloud into a :class:`PointsAndColors` object, and then
         calls display on it. The following is therefore equivalent:
 
@@ -90,7 +90,7 @@ class PointCloud3DUrl(Url3D):
             pc.url.display()
 
             # option 2 (equivalent)
-            pc.url.load().display()
+            pc.url.load(samples=10000).display()
 
         :param samples: number of points to sample from the mesh.
         """
