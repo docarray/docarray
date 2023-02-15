@@ -59,8 +59,9 @@ class Mesh3DUrl(Url3D):
 
     def display(self) -> None:
         """
-        Plot mesh in notebook from url.
+        Plot mesh from url.
         This loads the Trimesh instance of the 3D mesh, and then displays it.
+        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         from IPython.display import display
 

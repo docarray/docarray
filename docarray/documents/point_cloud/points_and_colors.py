@@ -46,8 +46,8 @@ class PointsAndColors(BaseDocument):
 
     def display(self) -> None:
         """
-        Plot point cloud consisting of points in 3D space and optionally colors in
-        notebook.
+        Plot point cloud consisting of points in 3D space and optionally colors.
+        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         import trimesh
         from IPython.display import display

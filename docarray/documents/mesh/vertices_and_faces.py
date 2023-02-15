@@ -27,7 +27,8 @@ class VerticesAndFaces(BaseDocument):
 
     def display(self) -> None:
         """
-        Plot mesh consisting of vertices and faces in notebook.
+        Plot mesh consisting of vertices and faces.
+        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         import trimesh
         from IPython.display import display
