@@ -1,5 +1,5 @@
 import os
-from typing import List, Type, Optional
+from typing import List, Type, Optional, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
@@ -16,6 +16,8 @@ from docarray.utils.compress import _compress_bytes, _decompress_bytes
 from docarray.typing import ID
 
 _console: Console = Console()
+
+T = TypeVar('T', bound='ProtoMixin')
 
 
 class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
@@ -240,11 +242,11 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
     @classmethod
     def from_bytes(
-        cls: Type['T'],
+        cls: Type[T],
         data: bytes,
         protocol: str = 'pickle',
         compress: Optional[str] = None,
-    ) -> 'T':
+    ) -> T:
         """Build Document object from binary bytes
 
         :param data: binary bytes
@@ -267,7 +269,7 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
             )
 
     def to_base64(
-            self, protocol: str = 'pickle', compress: Optional[str] = None
+        self, protocol: str = 'pickle', compress: Optional[str] = None
     ) -> str:
         """Serialize a Document object into as base64 string
 
@@ -279,11 +281,11 @@ class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode)
 
     @classmethod
     def from_base64(
-            cls: Type['T'],
-            data: str,
-            protocol: str = 'pickle',
-            compress: Optional[str] = None,
-    ) -> 'T':
+        cls: Type[T],
+        data: str,
+        protocol: str = 'pickle',
+        compress: Optional[str] = None,
+    ) -> T:
         """Build Document object from binary bytes
 
         :param data: a base64 encoded string

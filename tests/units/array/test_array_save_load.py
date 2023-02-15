@@ -19,9 +19,7 @@ class MyDoc(BaseDocument):
     'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-def test_array_save_load_binary(
-        protocol, compress, tmp_path
-):
+def test_array_save_load_binary(protocol, compress, tmp_path):
     tmp_file = os.path.join(tmp_path, 'test')
 
     da = DocumentArray[MyDoc](
@@ -52,18 +50,22 @@ def test_array_save_load_binary(
     'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-def test_array_save_load_binary_streaming(
-        protocol, compress, tmp_path
-):
+def test_array_save_load_binary_streaming(protocol, compress, tmp_path):
     tmp_file = os.path.join(tmp_path, 'test')
 
     da = DocumentArray[MyDoc]()
 
     def _extend_da(num_docs=100):
         for _ in range(num_docs):
-            da.extend([
-                MyDoc(embedding=np.random.rand(3, 2), text='hello', image=Image(url='aux.png')),
-            ])
+            da.extend(
+                [
+                    MyDoc(
+                        embedding=np.random.rand(3, 2),
+                        text='hello',
+                        image=Image(url='aux.png'),
+                    ),
+                ]
+            )
 
     _extend_da()
 

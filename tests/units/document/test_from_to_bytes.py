@@ -39,4 +39,3 @@ def test_to_from_base64(protocol, compress):
     assert d2.text == 'hello'
     assert d2.embedding.tolist() == [1, 2, 3, 4, 5]
     assert d2.image.url == 'aux.png'
-

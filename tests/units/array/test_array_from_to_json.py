@@ -20,9 +20,7 @@ def test_from_to_json():
         ]
     )
     json_da = da.to_json()
-    da2 = DocumentArray[MyDoc].from_json(
-        json_da
-    )
+    da2 = DocumentArray[MyDoc].from_json(json_da)
     assert len(da2) == 2
     assert len(da) == len(da2)
     for d1, d2 in zip(da, da2):
