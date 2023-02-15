@@ -109,3 +109,9 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
 
             for packet in stream_video.encode(None):
                 container.mux(packet)
+
+    def display(self) -> None:
+        """
+        Display video data from tensor.
+        """
+        raise NotImplementedError

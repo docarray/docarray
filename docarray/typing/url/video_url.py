@@ -8,6 +8,7 @@ from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -130,3 +131,40 @@ class VideoUrl(AnyUrl):
         indices = parse_obj_as(NdArray, keyframe_indices)
 
         return VideoLoadResult(video=video, audio=audio, key_frame_indices=indices)
+
+    def display(self):
+        """
+        Play video from url.
+        """
+        remote_url = True if self.startswith('http') else False
+
+        if is_notebook():
+            from IPython.display import Video, display
+
+            if remote_url:
+                display(Video(data=self))
+            else:
+                display(Video(filename=self))
+        else:
+            import pyglet
+
+            player = pyglet.media.Player()
+            pyglet.media.StreamingSource()
+            media = pyglet.media.load(self, streaming=True)
+            player.queue(media)
+
+            width = player.source.video_format.width
+            height = player.source.video_format.height
+            title = self.split('/')[-1]
+            window = pyglet.window.Window(width, height, title)
+
+            player.play()
+
+            @window.event
+            def on_draw():
+                window.clear()
+
+                if player.source and player.source.video_format:
+                    player.get_texture().blit(0, 0)
+
+            pyglet.app.run()

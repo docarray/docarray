@@ -3,6 +3,7 @@ from abc import ABC
 from typing import BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_notebook
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
@@ -40,3 +41,35 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
             f.writeframes(self.to_bytes())
+
+    def display(self, rate=44100):
+        audio_np = self.get_comp_backend().to_numpy(self)
+        if is_notebook():
+            from IPython.display import Audio, display
+
+            display(Audio(audio_np, rate=rate))
+        else:
+            # b = self.load()
+            # res = requests.get(self)
+            # print(f"type(res.text) = {type(res.text)}")
+            # print(f"type(res.content) = {type(res.content)}")
+            # sound = AudioSegment.from_file(BytesIO(res.content), "wav")
+            # sound = AudioSegment.from_file(self, format="wav")
+            import os
+            import tempfile
+
+            # sound = AudioSegment.from_file(self, format="wav")
+            # raise NotImplementedError
+            # from io import BytesIO
+            # import requests
+            from pydub import AudioSegment
+            from pydub.playback import play
+
+            tmp = tempfile.NamedTemporaryFile(delete=False)
+            try:
+                self.save_to_wav_file(tmp)
+                sound = AudioSegment.from_file(tmp, "wav")
+                play(sound)
+            finally:
+                tmp.close()
+                os.unlink(tmp.name)
