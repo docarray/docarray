@@ -82,7 +82,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
             else:
                 raise ValueError(
-                    f'key {content_key} is not supported for' f' deserialization'
+                    f'key {content_key} is not supported for deserialization'
                 )
 
         else:
