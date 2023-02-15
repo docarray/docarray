@@ -138,8 +138,6 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     ):
 
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
-
-        self._data = list(docs) if docs is not None else []
         self.tensor_type = tensor_type
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
@@ -151,7 +149,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocumentArray"""
-        if not isinstance(doc, self.document_type):
+        if not issubclass(self.document_type, AnyDocument) and not isinstance(
+            doc, self.document_type
+        ):
             raise ValueError(f'{doc} is not a {self.document_type}')
         return doc
 
@@ -287,7 +287,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         as the document_type of this DocumentArray otherwise it will fail.
         :param doc: A Document
         """
-        self.append(self._validate_one_doc(doc))
+        self._data.append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -302,6 +302,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         """
         Inesert a Document to the DocumentArray. The Document must be from the same
         class as the document_type of this DocumentArray otherwise it will fail.
+        :param i: index to insert
         :param doc: A Document
         """
         self._data.insert(i, self._validate_one_doc(doc))
