@@ -137,6 +137,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data = list(docs) if docs is not None else []
+        self._stacked_data: DocumentArrayStacked = None
         self.tensor_type = tensor_type
 
     def __len__(self):
@@ -361,7 +362,17 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         """
         from docarray.array.array_stacked import DocumentArrayStacked
 
-        return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
+        da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(self)
+
+        for field_name, field in self.document_type.__fields__.items():
+            field_type = field.outer_type_
+            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
+                for doc in da_stacked:
+                    getattr(doc, field_name)._stacked_data = getattr(
+                        doc, field_name
+                    ).stack()
+
+        return da_stacked
 
     @classmethod
     def validate(
@@ -380,7 +391,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def traverse_flat(
         self: 'DocumentArray',
         access_path: str,
-    ) -> Union[List[Any]]:
+    ) -> List[Any]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
