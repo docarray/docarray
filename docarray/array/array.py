@@ -133,7 +133,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     def __init__(
         self,
-        docs: Optional[Iterable[BaseDocument]] = None,
+        docs: Optional[Iterable[T_doc]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
 
