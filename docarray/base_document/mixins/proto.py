@@ -45,7 +45,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
         """
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
         arg_to_container: Dict[str, Callable] = {
-            'list': lambda x: x,
+            'list': list,
             'set': set,
             'tuple': tuple,
             'dict': dict,
