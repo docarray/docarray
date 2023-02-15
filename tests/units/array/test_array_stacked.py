@@ -467,3 +467,35 @@ def test_torch_nan():
     # Make sure they share memory
     stacked_da.scalar[0] = 3.0
     assert da[0].scalar == 3.0
+
+
+def test_stack_nested_documentarray():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    class MMdoc(BaseDocument):
+        img: DocumentArray[Image]
+
+    batch = DocumentArray[MMdoc](
+        [
+            MMdoc(
+                img=DocumentArray[Image](
+                    [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+                )
+            )
+            for _ in range(10)
+        ]
+    )
+
+    batch = batch.stack()
+
+    for i in range(len(batch)):
+        assert (
+            batch[i].img._stacked_data._tensor_columns['tensor']
+            == torch.zeros(10, 3, 224, 224)
+        ).all()
+        assert (batch[i].img._stacked_data.tensor == torch.zeros(10, 3, 224, 224)).all()
+        assert (
+            batch[i].img._stacked_data._tensor_columns['tensor'].data_ptr()
+            == batch[i].img._stacked_data.tensor.data_ptr()
+        )
