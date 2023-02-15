@@ -50,7 +50,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
             a = A(url='hello', tensor=torch.zeros(3))
 
-            b = B.from_protobuf_with_schema_map(
+            b = B.from_protobuf_field_map(
                 a.to_protobuf(), field_map={'url': 'link', 'tensor': 'array'}
             )
 
