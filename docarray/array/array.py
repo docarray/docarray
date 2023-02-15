@@ -137,7 +137,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data = list(docs) if docs is not None else []
-        self._stacked_data: DocumentArrayStacked = None
+        self._stacked_data: Union[DocumentArrayStacked, None] = None
         self.tensor_type = tensor_type
 
     def __len__(self):
