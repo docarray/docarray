@@ -6,13 +6,13 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
-    Optional,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -78,9 +78,9 @@ class DocumentArrayStacked(AnyDocumentArray):
         self._tensor_columns: Dict[str, AbstractTensor] = {}
         self.tensor_type = tensor_type
 
-        self.from_document_array(docs)
+        self.from_iterable_document(docs)
 
-    def from_document_array(
+    def from_iterable_document(
         self: T, docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]]
     ):
         self._docs = (
@@ -477,7 +477,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             yield da_unstacked
         finally:
             self._docs = da_unstacked
-            self.from_document_array(da_unstacked)
+            self.from_iterable_document(da_unstacked)
 
     @classmethod
     def validate(
