@@ -369,7 +369,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         value: Union[T, Iterable[BaseDocument]],
         field: 'ModelField',
         config: 'BaseConfig',
-    ) -> T:
+    ) -> Union[T, DocumentArrayStacked]:
         from docarray.array.array_stacked import DocumentArrayStacked
 
         if isinstance(value, (cls, DocumentArrayStacked)):
