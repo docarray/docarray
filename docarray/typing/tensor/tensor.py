@@ -13,11 +13,10 @@ if tf_available:
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 
+AnyTensor = Union[NdArray]
 if torch_available and tf_available:
-    AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor]
+    AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor]  # type: ignore
 elif torch_available:
     AnyTensor = Union[NdArray, TorchTensor]  # type: ignore
 elif tf_available:
     AnyTensor = Union[NdArray, TensorFlowTensor]  # type: ignore
-else:
-    AnyTensor = Union[NdArray]  # type: ignore

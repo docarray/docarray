@@ -65,10 +65,13 @@ ignore_missing_imports = true
 module = "typing_inspect"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "IPython.display"
+ignore_missing_imports = true
+
 [tool.black]
 skip-string-normalization = true # equivalent to black -S
 exclude = 'docarray/proto/pb2/*'
-
 
 [tool.isort]
 skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']
