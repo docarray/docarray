@@ -1,4 +1,5 @@
 import os
+from io import BytesIO
 
 import numpy as np
 import pytest
@@ -128,6 +129,19 @@ def test_save_video_tensor_to_file(video_tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.mp4')
     video_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.parametrize(
+    'video_tensor',
+    [
+        parse_obj_as(VideoTorchTensor, torch.zeros(1, 224, 224, 3)),
+        parse_obj_as(VideoNdArray, np.zeros((1, 224, 224, 3))),
+    ],
+)
+def test_save_video_tensor_to_bytes(video_tensor, tmpdir):
+    b = BytesIO()
+    video_tensor.save(b)
+    isinstance(b, BytesIO)
 
 
 @pytest.mark.tensorflow

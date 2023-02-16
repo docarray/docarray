@@ -1,10 +1,13 @@
 import abc
-from typing import BinaryIO, Optional, Type, TypeVar, Union
+import warnings
+from io import BytesIO
+from typing import Optional, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
+from docarray.utils.misc import is_notebook
 
 T = TypeVar('T', bound='AbstractTensor')
 
@@ -24,7 +27,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
 
     def save(
         self: 'T',
-        file_path: Union[str, BinaryIO],
+        file_path: Union[str, BytesIO],
         audio_tensor: Optional[AudioTensor] = None,
         video_frame_rate: int = 24,
         video_codec: str = 'h264',
@@ -77,7 +80,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         np_tensor = self.get_comp_backend().to_numpy(array=self)
         video_tensor = np_tensor.astype('uint8')
 
-        with av.open(file_path, mode='w') as container:
+        with av.open(file_path, mode='w', format='mp4') as container:
             if video_tensor.ndim == 3:
                 video_tensor = np.expand_dims(video_tensor, axis=0)
 
@@ -110,8 +113,50 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
             for packet in stream_video.encode(None):
                 container.mux(packet)
 
-    def display(self) -> None:
+    def to_bytes(
+        self: 'T',
+        audio_tensor: Optional[AudioTensor] = None,
+        video_frame_rate: int = 24,
+        video_codec: str = 'h264',
+        audio_frame_rate: int = 48000,
+        audio_codec: str = 'aac',
+        audio_format: str = 'fltp',
+    ) -> bytes:
+        """
+        Convert video tensor to bytes.
+
+        :param audio_tensor: AudioTensor containing the video's soundtrack.
+        :param video_frame_rate: video frames per second.
+        :param video_codec: the name of a video decoder/encoder.
+        :param audio_frame_rate: audio frames per second.
+        :param audio_codec: the name of an audio decoder/encoder.
+        :param audio_format: the name of one of the audio formats supported by PyAV,
+            such as 'flt', 'fltp', 's16' or 's16p'.
+
+        :return: bytes
+        """
+        bytes = BytesIO()
+        self.save(
+            file_path=bytes,
+            audio_tensor=audio_tensor,
+            video_frame_rate=video_frame_rate,
+            video_codec=video_codec,
+            audio_frame_rate=audio_frame_rate,
+            audio_codec=audio_codec,
+            audio_format=audio_format,
+        )
+        return bytes.getvalue()
+
+    def display(self, audio: Optional[AudioTensor] = None) -> None:
         """
         Display video data from tensor in notebook.
+
+        :param audio: sound to play with video tensor
         """
-        raise NotImplementedError
+        if is_notebook():
+            from IPython.display import Video, display
+
+            b = self.to_bytes(audio_tensor=audio)
+            display(Video(data=b, embed=True, mimetype='video/mp4'))
+        else:
+            warnings.warn('Display of video is only possible in a notebook.')
