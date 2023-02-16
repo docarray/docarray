@@ -29,6 +29,30 @@ def batch():
     return batch.stack()
 
 
+@pytest.fixture()
+def nested_batch():
+    class Image(BaseDocument):
+        tensor: TensorFlowTensor[3, 224, 224]
+
+    class MMdoc(BaseDocument):
+        img: DocumentArray[Image]
+
+    import tensorflow as tf
+
+    batch = DocumentArray[MMdoc](
+        [
+            MMdoc(
+                img=DocumentArray[Image](
+                    [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
+                )
+            )
+            for _ in range(10)
+        ]
+    )
+
+    return batch.stack()
+
+
 @pytest.mark.tensorflow
 def test_len(batch):
     assert len(batch) == 10
@@ -110,6 +134,17 @@ def test_stack_mod_nested_document():
 
 
 @pytest.mark.tensorflow
+def test_stack_nested_documentarray(nested_batch):
+    for i in range(len(batch)):
+        assert tnp.allclose(
+            nested_batch[i].img._tensor_columns['tensor'].tensor,
+            tf.zeros((10, 3, 224, 224)),
+        )
+
+        assert tnp.allclose(nested_batch[i].img.tensor, tf.zeros((10, 3, 224, 224)))
+
+
+@pytest.mark.tensorflow
 def test_convert_to_da(batch):
     da = batch.unstack()
 
@@ -134,6 +169,15 @@ def test_unstack_nested_document():
 
     for doc in da:
         assert tnp.allclose(doc.img.tensor.tensor, tf.zeros((3, 224, 224)))
+
+
+@pytest.mark.tensorflow
+def test_unstack_nested_documentarray(nested_batch):
+    batch = nested_batch.unstack()
+    for i in range(len(batch)):
+        assert isinstance(batch[i].img, DocumentArray)
+        for doc in batch[i].img:
+            assert tnp.allclose(doc.img.tensor.tensor, tf.zeros((3, 224, 224)))
 
 
 @pytest.mark.tensorflow

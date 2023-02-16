@@ -463,6 +463,12 @@ class DocumentArrayStacked(AnyDocumentArray):
                 # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
                 # -when-the-original-tensor-is-deleted/167294 # noqa: E501
 
+        for field_name, field in self._docs.document_type.__fields__.items():
+            field_type = field.outer_type_
+            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
+                for doc in self._docs:
+                    setattr(doc, field_name, getattr(doc, field_name).unstack())
+
         for field in list(self._doc_columns.keys()):
             # list needed here otherwise we are modifying the dict while iterating
             del self._doc_columns[field]
