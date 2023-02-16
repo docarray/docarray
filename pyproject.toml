@@ -20,10 +20,11 @@ types-requests = ">=2.28.11.6"
 av = {version = ">=10.0.0", optional = true}
 fastapi = {version = ">=0.87.0", optional = true }
 rich = ">=13.1.0"
+lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 
 [tool.poetry.extras]
-common = ["protobuf"]
+common = ["protobuf", "lz4"]
 torch = ["torch"]
 image = ["pillow", "types-pillow"]
 video = ["av"]

@@ -1,16 +1,21 @@
 import os
-from typing import Type
+from typing import Type, Optional, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
 from rich.console import Console
+import pickle
+import base64
 
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
+from docarray.utils.compress import _compress_bytes, _decompress_bytes
 from docarray.base_document.mixins import ProtoMixin, UpdateMixin
 from docarray.typing import ID
 
 _console: Console = Console()
+
+T = TypeVar('T', bound='BaseDocument')
 
 
 class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
@@ -55,6 +60,87 @@ class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
         from docarray.display.document_summary import DocumentSummary
 
         DocumentSummary.schema_summary(cls)
+
+    def __bytes__(self) -> bytes:
+        return self.to_bytes()
+
+    def to_bytes(
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
+    ) -> bytes:
+        """Serialize itself into bytes.
+
+        For more Pythonic code, please use ``bytes(...)``.
+
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use
+        :return: the binary serialization in bytes
+        """
+        import pickle
+
+        if protocol == 'pickle':
+            bstr = pickle.dumps(self)
+        elif protocol == 'protobuf':
+            bstr = self.to_protobuf().SerializePartialToString()
+        else:
+            raise ValueError(
+                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+            )
+        return _compress_bytes(bstr, algorithm=compress)
+
+    @classmethod
+    def from_bytes(
+        cls: Type[T],
+        data: bytes,
+        protocol: str = 'protobuf',
+        compress: Optional[str] = None,
+    ) -> T:
+        """Build Document object from binary bytes
+
+        :param data: binary bytes
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        bstr = _decompress_bytes(data, algorithm=compress)
+        if protocol == 'pickle':
+            return pickle.loads(bstr)
+        elif protocol == 'protobuf':
+            from docarray.proto import DocumentProto
+
+            pb_msg = DocumentProto()
+            pb_msg.ParseFromString(bstr)
+            return cls.from_protobuf(pb_msg)
+        else:
+            raise ValueError(
+                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+            )
+
+    def to_base64(
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
+    ) -> str:
+        """Serialize a Document object into as base64 string
+
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a base64 encoded string
+        """
+        return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
+
+    @classmethod
+    def from_base64(
+        cls: Type[T],
+        data: str,
+        protocol: str = 'pickle',
+        compress: Optional[str] = None,
+    ) -> T:
+        """Build Document object from binary bytes
+
+        :param data: a base64 encoded string
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        return cls.from_bytes(base64.b64decode(data), protocol, compress)
 
     def _ipython_display_(self):
         """Displays the object in IPython as a summary"""
