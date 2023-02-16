@@ -2902,4 +2902,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7"
-content-hash = "a262967a4cb249cc91413896f5455edcc46568bc85867442f346493d0cd36d01"
+content-hash = "ed991f98941f534d3e94a67b44158508bdd8d42a6a7357d9726a4a948b573c24"
