@@ -3,7 +3,18 @@ import os
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Generic, Optional, Sequence, Type, TypeVar, Union
+from typing import (
+    Any,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import hnswlib
 import numpy as np
@@ -13,10 +24,12 @@ from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
 from docarray.storage.abstract_doc_store import (
     BaseDocumentStore,
+    BaseQueryBuilder,
     FindResultBatched,
     _Column,
 )
 from docarray.typing import AnyTensor
+from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
 from docarray.utils.protocols import IsDataclass
@@ -35,6 +48,15 @@ class HNSWConfig:
     work_dir: str = '.'
 
 
+class HnswQueryBuilder(BaseQueryBuilder):
+    def build(self, *args, **kwargs) -> Any:
+        supported_ops = ('find', 'filter')
+        for op, _ in self._queries:
+            if op not in supported_ops:
+                raise ValueError(f'Unsupported query operation: {op}')
+        return self._queries
+
+
 class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     _default_column_config = {
         np.ndarray: {
@@ -46,6 +68,8 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         },
         None: {},
     }
+
+    _query_builder_cls = HnswQueryBuilder
 
     def __init__(self, config: Optional[IsDataclass] = None):
         super().__init__(config)
@@ -144,6 +168,34 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self._send_docs_to_sqlite(docs)
         self._sqlite_conn.commit()
 
+    def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
+        if args or kwargs:
+            raise ValueError(
+                f'args and kwargs not supported for `execute_query` on {type(self)}'
+            )
+
+        ann_docs = DocumentArray[self._schema]([])
+        filter_conditions = []
+        doc_to_score = {}
+        for op, op_kwargs in query:
+            if op == 'find':
+                docs, scores = self.find(**op_kwargs)
+                ann_docs.extend(docs)
+                doc_to_score.update(zip(docs.id, scores))
+            elif op == 'filter':
+                filter_conditions.append(op_kwargs['filter_query'])
+
+        docs_filtered = ann_docs
+        for cond in filter_conditions:
+            docs_filtered = da_filter(docs_filtered, cond)
+
+        docs_and_scores = zip(
+            docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
+        )
+        docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
+        out_docs, out_scores = zip(*docs_sorted)
+        return FindResult(documents=out_docs, scores=out_scores)
+
     def find_batched(
         self,
         query: Union[AnyTensor, DocumentArray],
@@ -169,11 +221,51 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         ]
         return FindResultBatched(documents=result_das, scores=distances)
 
-    def find(self, *args, **kwargs):
-        batched_result = self.find_batched(*args, **kwargs)
-        return FindResult(
-            documents=batched_result.documents[0], scores=batched_result.scores[0]
+    def find(self, *args, **kwargs) -> FindResult:
+        docs, scores = self.find_batched(*args, **kwargs)
+        return FindResult(documents=docs[0], scores=scores[0])
+
+    def filter(
+        self,
+        *args,
+        **kwargs,
+    ) -> DocumentArray:
+
+        raise NotImplementedError(
+            f'{type(self)} does not support filter-only queries.'
+            f' To perform post-filtering on a query, use'
+            f' `build_query()` and `execute_query()`.'
         )
+
+    def filter_batched(
+        self,
+        filter_queries: Any,
+        limit: int = 10,
+        **kwargs,
+    ) -> List[DocumentArray]:
+        raise NotImplementedError(
+            f'{type(self)} does not support filter-only queries.'
+            f' To perform post-filtering on a query, use'
+            f' `build_query()` and `execute_query()`.'
+        )
+
+    def text_search(
+        self,
+        query: str,
+        embedding_field: str = 'embedding',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        raise NotImplementedError(f'{type(self)} does not support text search.')
+
+    def text_search_batched(
+        self,
+        queries: List[str],
+        embedding_field: str = 'embedding',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResultBatched:
+        raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
         # delete from the indices
@@ -186,6 +278,12 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
         self._delete_docs_from_sqlite(key)
         self._sqlite_conn.commit()
+
+    def __getitem__(self, key: Union[str, Sequence[str]]):
+        # delete from the indices
+        if isinstance(key, str):
+            key = [key]
+        return self._get_docs_from_sqlite(key)
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
@@ -207,12 +305,16 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self, doc_ids: Sequence[Union[str, int]]
     ) -> DocumentArray:
         ids = tuple(
-            self._to_universal_id(id_) if isinstance(id_, str) else id_
+            self._to_universal_id(id_) if isinstance(id_, str) else int(id_)
             for id_ in doc_ids
         )
+        for id_ in ids:
+            # I hope this protects from injection attacks
+            # properly binding with '?' doesn't work for some reason
+            assert isinstance(id_, int)
+        sql_id_list = '(' + ', '.join(str(id_) for id_ in ids) + ')'
         self._sqlite_cursor.execute(
-            'SELECT data FROM docs WHERE doc_id IN (%s)' % ','.join('?' * len(ids)),
-            ids,
+            'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
         return DocumentArray[self._schema](
