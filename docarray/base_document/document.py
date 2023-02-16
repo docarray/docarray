@@ -61,12 +61,17 @@ class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
 
         DocumentSummary.schema_summary(cls)
 
-    def to_bytes(self, protocol: str = 'pickle-array', compress: Optional[str] = None):
+    def __bytes__(self) -> bytes:
+        return self.to_bytes()
+
+    def to_bytes(
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
+    ) -> bytes:
         """Serialize itself into bytes.
 
         For more Pythonic code, please use ``bytes(...)``.
 
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :return: the binary serialization in bytes
         """
@@ -86,13 +91,13 @@ class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'pickle',
+        protocol: str = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
 
         :param data: binary bytes
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
         :param compress: compress method to use
         :return: a Document object
         """
@@ -111,11 +116,11 @@ class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
             )
 
     def to_base64(
-        self, protocol: str = 'pickle', compress: Optional[str] = None
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
     ) -> str:
         """Serialize a Document object into as base64 string
 
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
         :param compress: compress method to use
         :return: a base64 encoded string
         """
@@ -131,7 +136,7 @@ class BaseDocument(BaseModel, ProtoMixin, UpdateMixin, BaseNode):
         """Build Document object from binary bytes
 
         :param data: a base64 encoded string
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
         :param compress: compress method to use
         :return: a Document object
         """

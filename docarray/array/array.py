@@ -604,7 +604,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
         For more Pythonic code, please use ``bytes(...)``.
 
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param file_ctx: File or filename or serialized bytes where the data is stored.
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
@@ -654,7 +654,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     ) -> str:
         """Serialize itself into base64 encoded string.
 
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
@@ -710,7 +710,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         show_progress: bool,
     ):
         """Read a `DocumentArray` object from a binary file
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a `DocumentArray`
@@ -789,7 +789,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     ) -> Generator['BaseDocument', None, None]:
         """Yield `Document` objects from a binary file
 
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a generator of `Document` objects
@@ -841,7 +841,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
