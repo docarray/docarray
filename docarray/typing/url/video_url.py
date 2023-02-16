@@ -149,7 +149,7 @@ class VideoUrl(AnyUrl):
             else:
                 import os
 
-                from IPython.core.display import HTML
+                from IPython.display import HTML
 
                 path = os.path.relpath(self)
                 src = f'''
