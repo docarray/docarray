@@ -135,7 +135,7 @@ def test_stack_mod_nested_document():
 
 @pytest.mark.tensorflow
 def test_stack_nested_documentarray(nested_batch):
-    for i in range(len(batch)):
+    for i in range(len(nested_batch)):
         assert tnp.allclose(
             nested_batch[i].img._tensor_columns['tensor'].tensor,
             tf.zeros((10, 3, 224, 224)),
@@ -177,7 +177,7 @@ def test_unstack_nested_documentarray(nested_batch):
     for i in range(len(batch)):
         assert isinstance(batch[i].img, DocumentArray)
         for doc in batch[i].img:
-            assert tnp.allclose(doc.img.tensor.tensor, tf.zeros((3, 224, 224)))
+            assert tnp.allclose(doc.tensor, tf.zeros((3, 224, 224)))
 
 
 @pytest.mark.tensorflow
