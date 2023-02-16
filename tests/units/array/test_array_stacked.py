@@ -491,11 +491,10 @@ def test_stack_nested_documentarray():
 
     for i in range(len(batch)):
         assert (
-            batch[i].img._stacked_data._tensor_columns['tensor']
-            == torch.zeros(10, 3, 224, 224)
+            batch[i].img._tensor_columns['tensor'] == torch.zeros(10, 3, 224, 224)
         ).all()
-        assert (batch[i].img._stacked_data.tensor == torch.zeros(10, 3, 224, 224)).all()
+        assert (batch[i].img.tensor == torch.zeros(10, 3, 224, 224)).all()
         assert (
-            batch[i].img._stacked_data._tensor_columns['tensor'].data_ptr()
-            == batch[i].img._stacked_data.tensor.data_ptr()
+            batch[i].img._tensor_columns['tensor'].data_ptr()
+            == batch[i].img.tensor.data_ptr()
         )

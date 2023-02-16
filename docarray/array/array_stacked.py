@@ -6,13 +6,13 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
-    Optional,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
@@ -90,10 +90,22 @@ class DocumentArrayStacked(AnyDocumentArray):
                 docs, tensor_type=self.tensor_type
             )
         )
+        self._nested_stack(self._docs)
         self.tensor_type = self._docs.tensor_type
         self._doc_columns, self._tensor_columns = self._create_columns(
             self._docs, tensor_type=self.tensor_type
         )
+
+    def _nested_stack(self: T, docs: DocumentArray):
+        """Convert the nested level of DocumentArray into a DocumentArrayStacked
+
+        :param docs: the root DocumentArray to stack
+        """
+        for field_name, field in docs.document_type.__fields__.items():
+            field_type = field.outer_type_
+            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
+                for doc in docs:
+                    setattr(doc, field_name, getattr(doc, field_name).stack())
 
     @classmethod
     def _from_da_and_columns(
@@ -432,7 +444,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             tensor_columns=tens_columns_proto,
         )
 
-    def unstack(self: T) -> DocumentArray:
+    def unstack(self: T) -> DocumentArray:  # TODO check this
         """Convert DocumentArrayStacked into a DocumentArray.
 
         Note this destroys the arguments and returns a new DocumentArray
