@@ -49,6 +49,7 @@ def _delegate_to_query(method_name: str):
                 f' Use keyword arguments instead.'
             )
         self._queries.append((method_name, kwargs))
+        return self
 
     return inner
 
@@ -359,7 +360,8 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                 'The schema of the documents to be indexed is not compatible'
                 ' with the schema of the store.'
             )
-        return {
-            col_name: (self.get_value(doc, col_name) for doc in docs)
-            for col_name in self._columns
-        }
+
+        def _col_gen(col_name):
+            return (self.get_value(doc, col_name) for doc in docs)
+
+        return {col_name: _col_gen(col_name) for col_name in self._columns}
