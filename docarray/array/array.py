@@ -452,7 +452,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a Document from a protobuf message
+        :param pb_msg: The protobuf message from where to construct the DocumentArray
+        """
         return cls(
             cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
         )
@@ -498,7 +500,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         _show_progress: bool = False,
     ) -> None:
         if protocol in ('protobuf-array', 'pickle-array'):
-            compress_ctx = _get_compress_ctx(compress, mode='wb')
+            compress_ctx = _get_compress_ctx(compress)
         else:
             # delegate the compression to per-doc compression
             compress_ctx = None
@@ -587,6 +589,14 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         compress: Optional[str] = None,
         _show_progress: bool = False,
     ) -> T:
+        """Deserialize base64 strings into a DocumentArray.
+
+        :param data: Base64 string to deserialize
+        :param protocol: protocol that was used to serialize
+        :param compress: compress algorithm that was used to serialize
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: the deserialized DocumentArray
+        """
         return cls._load_binary_all(
             file_ctx=nullcontext(base64.b64decode(data)),
             protocol=protocol,
@@ -600,6 +610,13 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         compress: Optional[str] = None,
         _show_progress: bool = False,
     ) -> str:
+        """Serialize itself into base64 encoded string.
+
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: the binary serialization in bytes or None if _file_ctx is passed where to store
+        """
         with io.BytesIO() as bf:
             self._write_bytes(
                 bf=bf,
@@ -614,6 +631,11 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         cls: Type[T],
         file: Union[str, bytes, bytearray],
     ) -> T:
+        """Deserialize JSON strings or bytes into a DocumentArray.
+
+        :param file: JSON object from where to deserialize a DocumentArray
+        :return: the deserialized DocumentArray
+        """
         json_docs = json.loads(file)
         return cls([cls.document_type.parse_raw(v) for v in json_docs])
 

@@ -1,4 +1,4 @@
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, IO
 
 
 def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
@@ -49,35 +49,33 @@ def _decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
     return data
 
 
-def _get_compress_ctx(
-    algorithm: Optional[str] = None, mode: str = 'wb'
-) -> Optional[Callable]:
+def _get_compress_ctx(algorithm: Optional[str] = None) -> Optional[Callable]:
     if algorithm == 'lz4':
         import lz4.frame  # type: ignore
 
-        def _fun(x: str):
-            return lz4.frame.LZ4FrameFile(x, mode)
+        def _fun(x: IO[bytes]):
+            return lz4.frame.LZ4FrameFile(x, 'wb')
 
         compress_ctx = _fun
     elif algorithm == 'gzip':
         import gzip
 
-        def _fun(x: str):
-            return gzip.GzipFile(fileobj=x, mode=mode)
+        def _fun(x: IO[bytes]):
+            return gzip.GzipFile(fileobj=x, mode='wb')
 
         compress_ctx = _fun
     elif algorithm == 'bz2':
         import bz2
 
-        def _fun(x: str):
-            return bz2.BZ2File(filename=x, mode=mode)
+        def _fun(x: IO[bytes]):
+            return bz2.BZ2File(filename=x, mode='wb')
 
         compress_ctx = _fun
     elif algorithm == 'lzma':
         import lzma
 
-        def _fun(x: str):
-            return lzma.LZMAFile(filename=x, mode=mode)
+        def _fun(x: IO[bytes]):
+            return lzma.LZMAFile(filename=x, mode='wb')
 
         compress_ctx = _fun
     else:
