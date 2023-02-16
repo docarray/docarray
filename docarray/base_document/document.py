@@ -17,7 +17,7 @@ from docarray.typing import ID
 
 _console: Console = Console()
 
-T = TypeVar('T', bound='ProtoMixin')
+T = TypeVar('T', bound='BaseDocument')
 
 
 class BaseDocument(BaseModel, PlotMixin, ProtoMixin, AbstractDocument, BaseNode):
