@@ -75,13 +75,12 @@ class AudioUrl(AnyUrl):
         Play the audio sound from url in notebook.
         """
         if is_notebook():
-            remote_url = True if self.startswith('http') else False
-
             from IPython.display import Audio, display
+
+            remote_url = True if self.startswith('http') else False
 
             if remote_url:
                 display(Audio(data=self))
-
             else:
                 display(Audio(filename=self))
         else:

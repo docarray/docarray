@@ -36,7 +36,6 @@ class VideoBytes(bytes, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         value = bytes_validator(value)
         return cls(value)
 
@@ -69,10 +68,7 @@ class VideoBytes(bytes, AbstractType):
                 video_url: VideoUrl
 
 
-            doc = MyDoc(
-                video_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
-                "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
-            )
+            doc = MyDoc(video_url="toydata/mp_.mp4")
 
             video, audio, key_frame_indices = doc.video_url.load()
             assert isinstance(video, np.ndarray)

@@ -1,5 +1,4 @@
 import os
-from io import BytesIO
 
 import numpy as np
 import pytest
@@ -139,9 +138,8 @@ def test_save_video_tensor_to_file(video_tensor, tmpdir):
     ],
 )
 def test_save_video_tensor_to_bytes(video_tensor, tmpdir):
-    b = BytesIO()
-    video_tensor.save(b)
-    isinstance(b, BytesIO)
+    b = video_tensor.to_bytes()
+    isinstance(b, bytes)
 
 
 @pytest.mark.tensorflow

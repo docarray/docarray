@@ -80,7 +80,12 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         np_tensor = self.get_comp_backend().to_numpy(array=self)
         video_tensor = np_tensor.astype('uint8')
 
-        with av.open(file_path, mode='w', format='mp4') as container:
+        if isinstance(file_path, str):
+            format = file_path.split('.')[-1]
+        else:
+            format = 'mp4'
+
+        with av.open(file_path, mode='w', format=format) as container:
             if video_tensor.ndim == 3:
                 video_tensor = np.expand_dims(video_tensor, axis=0)
 

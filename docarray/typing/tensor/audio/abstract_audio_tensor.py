@@ -53,4 +53,4 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             audio_np = self.get_comp_backend().to_numpy(self)
             display(Audio(audio_np, rate=rate))
         else:
-            warnings.warn('Display of audio is only possible ina notebook.')
+            warnings.warn('Display of audio is only possible in a notebook.')
