@@ -23,7 +23,7 @@ rich = ">=13.1.0"
 lz4 = {version= ">=1.0.0", optional = true}
 
 [tool.poetry.extras]
-common = ["protobuf"]
+common = ["protobuf", "lz4"]
 torch = ["torch"]
 image = ["pillow", "types-pillow"]
 video = ["av"]

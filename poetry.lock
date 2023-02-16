@@ -2868,7 +2868,7 @@ docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker
 testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)"]
 
 [extras]
-common = ["protobuf"]
+common = ["protobuf", "lz4"]
 image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
 torch = ["torch"]
@@ -2878,4 +2878,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7"
-content-hash = "ed991f98941f534d3e94a67b44158508bdd8d42a6a7357d9726a4a948b573c24"
+content-hash = "61be149d3a33c2160f4ac881abe4cd2bda6ac0a17e424cd41fe69d59a14cd277"
