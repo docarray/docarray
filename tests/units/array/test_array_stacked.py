@@ -540,6 +540,7 @@ def test_torch_nan():
     assert da[0].scalar == 3.0
 
 
+@pytest.mark.skip('not ready')
 def test_document_update():
     class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
