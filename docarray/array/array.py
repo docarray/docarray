@@ -300,7 +300,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     def insert(self, i: int, doc: T_doc):
         """
-        Inesert a Document to the DocumentArray. The Document must be from the same
+        Insert a Document to the DocumentArray. The Document must be from the same
         class as the document_type of this DocumentArray otherwise it will fail.
         :param i: index to insert
         :param doc: A Document
