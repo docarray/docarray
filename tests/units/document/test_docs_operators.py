@@ -2,6 +2,7 @@ from docarray.documents.text import Text
 
 
 def test_text_document_operators():
+
     doc = Text(text='text', url='url.com')
 
     assert doc == 'text'

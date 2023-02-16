@@ -35,7 +35,7 @@ def test_from_json(doc_and_class):
     doc, Mmdoc = doc_and_class
     new_doc = Mmdoc.parse_raw(doc.json())
 
-    for field, field2 in zip(doc.dict().keys(), new_doc.dict().keys()):
+    for (field, field2) in zip(doc.dict().keys(), new_doc.dict().keys()):
         if field in ['torch_tensor', 'img']:
             assert (getattr(doc, field) == getattr(doc, field2)).all()
         else:
@@ -46,7 +46,7 @@ def test_to_dict_to_json(doc_and_class):
     doc, Mmdoc = doc_and_class
     new_doc = Mmdoc.parse_raw(orjson_dumps(doc.dict()))
 
-    for field, field2 in zip(doc.dict().keys(), new_doc.dict().keys()):
+    for (field, field2) in zip(doc.dict().keys(), new_doc.dict().keys()):
         if field in ['torch_tensor', 'img']:
             assert (getattr(doc, field) == getattr(doc, field2)).all()
         else:

@@ -10,6 +10,7 @@ from docarray.typing.tensor import NdArrayEmbedding
 
 @pytest.mark.proto
 def test_proto_tensor():
+
     tensor = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
 
     tensor._to_node_protobuf()

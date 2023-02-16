@@ -34,6 +34,7 @@ def test_image_url():
 
 @pytest.mark.proto
 def test_proto_image_url():
+
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)
 
     uri._to_node_protobuf()

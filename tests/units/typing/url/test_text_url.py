@@ -37,6 +37,7 @@ def test_load_to_bytes(url):
 
 @pytest.mark.proto
 def test_proto_text_url():
+
     uri = parse_obj_as(TextUrl, LOCAL_TXT)
 
     uri._to_node_protobuf()

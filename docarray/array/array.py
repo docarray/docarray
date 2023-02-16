@@ -197,6 +197,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         docs: Optional[Iterable[T_doc]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
+
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
         self.tensor_type = tensor_type
 
@@ -610,7 +611,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
 
-        with file_ctx or io.BytesIO() as bf:
+        with (file_ctx or io.BytesIO()) as bf:
             self._write_bytes(
                 bf=bf,
                 protocol=protocol,

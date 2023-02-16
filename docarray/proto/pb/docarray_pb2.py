@@ -22,6 +22,7 @@ DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'docarray_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
+
     DESCRIPTOR._options = None
     _DOCUMENTPROTO_DATAENTRY._options = None
     _DOCUMENTPROTO_DATAENTRY._serialized_options = b'8\001'

@@ -31,6 +31,7 @@ class AudioBytes(bytes, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+
         value = bytes_validator(value)
         return cls(value)
 

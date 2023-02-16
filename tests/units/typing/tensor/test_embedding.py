@@ -8,6 +8,7 @@ from docarray.typing import AnyEmbedding
 
 @pytest.mark.proto
 def test_proto_embedding():
+
     embedding = parse_obj_as(AnyEmbedding, np.zeros((3, 224, 224)))
 
     embedding._to_node_protobuf()

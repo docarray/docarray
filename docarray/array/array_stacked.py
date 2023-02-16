@@ -161,6 +161,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type[AbstractTensor]
     ) -> Tuple[Dict[str, 'DocumentArrayStacked'], Dict[str, AbstractTensor]]:
+
         if len(docs) == 0:
             return {}, {}
 

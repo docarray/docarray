@@ -32,6 +32,7 @@ class ProtoMixin(Iterable):
         fields: Dict[str, Any] = {}
 
         for field_name in pb_msg.data:
+
             if field_name not in cls.__fields__.keys():
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
@@ -77,6 +78,7 @@ class ProtoMixin(Iterable):
         elif content_key is None:
             return_field = None
         elif docarray_type is None:
+
             if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
                 return_field = getattr(value, content_key)
 
