@@ -15,3 +15,6 @@ class metaTorchAndEmbedding(torch_base, embedding_base):
 @_register_proto(proto_type_name='torch_embedding')
 class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
     alternative_type = TorchTensor
+
+    def new_empty(self, *args, **kwargs):
+        return self.__class__(TorchTensor.new_empty(self, *args, **kwargs))
