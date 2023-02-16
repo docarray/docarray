@@ -49,6 +49,11 @@ T = TypeVar('T', bound='DocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
+ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
+SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
+ALLOWED_PROTOCOLS = ARRAY_PROTOCOLS.union(SINGLE_PROTOCOLS)
+ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
+
 
 def _protocol_and_compress_from_file_path(
     file_path: Union[pathlib.Path, str],
@@ -67,8 +72,6 @@ def _protocol_and_compress_from_file_path(
     >>> _protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.gzip')
     (None, gzip)
     """
-    ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
-    ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
     protocol = default_protocol
     compress = default_compress
@@ -473,33 +476,33 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
     ) -> T:
         """Deserialize bytes into a DocumentArray.
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocumentArray
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(data),
             protocol=protocol,
             compress=compress,
-            _show_progress=_show_progress,
+            show_progress=show_progress,
         )
 
     def _write_bytes(
         self,
         bf: BinaryIO,
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
     ) -> None:
-        if protocol in ('protobuf-array', 'pickle-array'):
+        if protocol in ARRAY_PROTOCOLS:
             compress_ctx = _get_compress_ctx(compress)
         else:
             # delegate the compression to per-doc compression
@@ -520,12 +523,12 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 f.write(self.to_protobuf().SerializePartialToString())
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
-            elif protocol in ('pickle', 'protobuf'):
+            elif protocol in SINGLE_PROTOCOLS:
                 from rich import filesize
                 from docarray.utils.progress_bar import _get_progressbar
 
                 pbar, t = _get_progressbar(
-                    'Serializing', disable=not _show_progress, total=len(self)
+                    'Serializing', disable=not show_progress, total=len(self)
                 )
 
                 f.write(self._stream_header)
@@ -548,15 +551,15 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                         )
             else:
                 raise ValueError(
-                    f'protocol={protocol} is not supported. Can be only `protobuf`, `pickle`, `protobuf-array`, `pickle-array`.'
+                    f'protocol={protocol} is not supported. Can be only {ALLOWED_PROTOCOLS}.'
                 )
 
     def to_bytes(
         self,
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _file_ctx: Optional[BinaryIO] = None,
-        _show_progress: bool = False,
+        file_ctx: Optional[BinaryIO] = None,
+        show_progress: bool = False,
     ) -> Optional[bytes]:
         """Serialize itself into bytes.
 
@@ -564,17 +567,17 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
         :param protocol: protocol to use
         :param compress: compress algorithm to use
-        :param _file_ctx: File or filename or serialized bytes where the data is stored.
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the binary serialization in bytes or None if _file_ctx is passed where to store
+        :param file_ctx: File or filename or serialized bytes where the data is stored.
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
 
-        with (_file_ctx or io.BytesIO()) as bf:
+        with (file_ctx or io.BytesIO()) as bf:
             self._write_bytes(
                 bf=bf,
                 protocol=protocol,
                 compress=compress,
-                _show_progress=_show_progress,
+                show_progress=show_progress,
             )
             if isinstance(bf, io.BytesIO):
                 return bf.getvalue()
@@ -585,44 +588,44 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
     ) -> T:
         """Deserialize base64 strings into a DocumentArray.
 
         :param data: Base64 string to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocumentArray
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(base64.b64decode(data)),
             protocol=protocol,
             compress=compress,
-            _show_progress=_show_progress,
+            show_progress=show_progress,
         )
 
     def to_base64(
         self,
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
     ) -> str:
         """Serialize itself into base64 encoded string.
 
         :param protocol: protocol to use
         :param compress: compress algorithm to use
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the binary serialization in bytes or None if _file_ctx is passed where to store
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
         with io.BytesIO() as bf:
             self._write_bytes(
                 bf=bf,
                 compress=compress,
                 protocol=protocol,
-                _show_progress=_show_progress,
+                show_progress=show_progress,
             )
             return base64.b64encode(bf.getvalue()).decode('utf-8')
 
@@ -665,12 +668,12 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         file_ctx: Union[ContextManager[io.BufferedReader], ContextManager[bytes]],
         protocol: Optional[str],
         compress: Optional[str],
-        _show_progress: bool,
+        show_progress: bool,
     ):
         """Read a `DocumentArray` object from a binary file
         :param protocol: protocol to use
         :param compress: compress algorithm to use
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a `DocumentArray`
         """
         with file_ctx as fp:
@@ -704,7 +707,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             num_docs = int.from_bytes(d[1:9], 'big', signed=False)
 
             pbar, t = _get_progressbar(
-                'Deserializing', disable=not _show_progress, total=num_docs
+                'Deserializing', disable=not show_progress, total=num_docs
             )
 
             # this 9 is version + num_docs bytes used
@@ -724,7 +727,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                     start_pos = end_doc_pos
 
                     # variable length bytes doc
-                    load_protocol: str = protocol or 'pickle'
+                    load_protocol: str = protocol or 'protobuf'
                     doc = cls.document_type.from_bytes(
                         d[start_doc_pos:end_doc_pos],
                         protocol=load_protocol,
@@ -743,13 +746,13 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         file_ctx: ContextManager[io.BufferedReader],
         protocol: Optional[str] = None,
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
     ) -> Generator['BaseDocument', None, None]:
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use
         :param compress: compress algorithm to use
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a generator of `Document` objects
         """
 
@@ -765,7 +768,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
             pbar, t = _get_progressbar(
-                'Deserializing', disable=not _show_progress, total=num_docs
+                'Deserializing', disable=not show_progress, total=num_docs
             )
 
             with pbar:
@@ -777,7 +780,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                         f.read(4), 'big', signed=False
                     )
                     _total_size += len_current_doc_in_bytes
-                    load_protocol: str = protocol or 'pickle'
+                    load_protocol: str = protocol or 'protobuf'
                     yield BaseDocument.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
@@ -791,9 +794,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def load_binary(
         cls: Type[T],
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
-        _show_progress: bool = False,
+        show_progress: bool = False,
         streaming: bool = False,
     ) -> Union[T, Generator['BaseDocument', None, None]]:
         """Load array elements from a compressed binary file.
@@ -801,7 +804,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         :param file: File or filename or serialized bytes where the data is stored.
         :param protocol: protocol to use
         :param compress: compress algorithm to use
-        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
         :return: a DocumentArray object
@@ -831,24 +834,32 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 file_ctx,
                 protocol=load_protocol,
                 compress=load_compress,
-                _show_progress=_show_progress,
+                show_progress=show_progress,
             )
         else:
             return cls._load_binary_all(
-                file_ctx, load_protocol, load_compress, _show_progress
+                file_ctx, load_protocol, load_compress, show_progress
             )
 
     def save_binary(
         self,
         file: Union[str, pathlib.Path],
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
+        show_progress: bool = False,
     ) -> None:
         """Save DocumentArray into a binary file.
 
+        It will use the protocol to pick how to save the DocumentArray.
+        If used 'picke-array` and `protobuf-array` the DocumentArray will be stored
+        and compressed at complete level using `pickle` or `protobuf`.
+        When using `protobuf` or `pickle` as protocol each Document in DocumentArray
+        will be stored individually and this would make it available for streaming.
+
         :param file: File or filename to which the data is saved.
-        :param protocol: protocol to use
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
 
          .. note::
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
@@ -869,4 +880,9 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
             file_ctx = open(file, 'wb')
 
-        self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
+        self.to_bytes(
+            protocol=protocol,
+            compress=compress,
+            file_ctx=file_ctx,
+            show_progress=show_progress,
+        )

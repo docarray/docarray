@@ -19,7 +19,8 @@ class MyDoc(BaseDocument):
     'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-def test_array_save_load_binary(protocol, compress, tmp_path):
+@pytest.mark.parametrize('show_progress', [False, True])
+def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
     tmp_file = os.path.join(tmp_path, 'test')
 
     da = DocumentArray[MyDoc](
@@ -29,10 +30,12 @@ def test_array_save_load_binary(protocol, compress, tmp_path):
         ]
     )
 
-    da.save_binary(tmp_file, protocol=protocol, compress=compress)
+    da.save_binary(
+        tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
+    )
 
     da2 = DocumentArray[MyDoc].load_binary(
-        tmp_file, protocol=protocol, compress=compress
+        tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
     assert len(da2) == 2
@@ -50,7 +53,8 @@ def test_array_save_load_binary(protocol, compress, tmp_path):
     'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-def test_array_save_load_binary_streaming(protocol, compress, tmp_path):
+@pytest.mark.parametrize('show_progress', [False, True])
+def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_progress):
     tmp_file = os.path.join(tmp_path, 'test')
 
     da = DocumentArray[MyDoc]()
@@ -69,11 +73,13 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path):
 
     _extend_da()
 
-    da.save_binary(tmp_file, protocol=protocol, compress=compress)
+    da.save_binary(
+        tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
+    )
 
     da2 = DocumentArray[MyDoc]()
     da_generator = DocumentArray[MyDoc].load_binary(
-        tmp_file, protocol=protocol, compress=compress
+        tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
     for i, doc in enumerate(da_generator):
