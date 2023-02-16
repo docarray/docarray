@@ -538,3 +538,18 @@ def test_torch_nan():
     # Make sure they share memory
     stacked_da.scalar[0] = 3.0
     assert da[0].scalar == 3.0
+
+
+def test_document_update():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+
+    batch[0].tensor = torch.ones(3, 224, 224)
+
+    assert (batch.tensor[0] == torch.ones(3, 224, 224)).all()
