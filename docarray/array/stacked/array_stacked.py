@@ -101,6 +101,10 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
     def _add_ref_to_docs(self) -> None:
         for doc in self._docs:
+            if doc._da_ref is not None and doc._da_ref is not self:
+                raise ValueError(
+                    f'{doc} already belong to {doc._da_ref} and cannot be stack again'
+                )
             doc._da_ref = self
 
     @classmethod

@@ -575,3 +575,19 @@ def test_ref_inside_doc():
     batch.unstack()
     for doc in batch:
         assert not doc._is_inside_da_stack()
+
+
+def test_two_stack_forbiden():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+
+    da = DocumentArray[Image]([batch[0]])
+
+    with pytest.raises(ValueError):
+        da.stack()
