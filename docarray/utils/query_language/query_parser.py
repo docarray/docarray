@@ -43,7 +43,6 @@ def _parse_lookups(
 ) -> Optional[LookupTreeElem]:
     if isinstance(data, dict):
         for key, value in data.items():
-
             node: Optional[LookupTreeElem] = None
             if isinstance(root_node, LookupLeaf):
                 root = LookupNode()

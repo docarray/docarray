@@ -68,7 +68,6 @@ def test_image_shortcut_doc():
 @pytest.mark.slow
 @pytest.mark.internet
 def test_byte():
-
     img = Image(url=REMOTE_JPG)
     img.bytes = img.url.load_bytes()
 
@@ -76,7 +75,6 @@ def test_byte():
 @pytest.mark.slow
 @pytest.mark.internet
 def test_byte_from_tensor():
-
     img = Image(url=REMOTE_JPG)
     img.tensor = img.url.load()
     img.bytes = img.tensor.to_bytes()

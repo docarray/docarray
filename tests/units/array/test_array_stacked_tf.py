@@ -57,7 +57,6 @@ def test_iterator(batch):
 
 @pytest.mark.tensorflow
 def test_stack_setter(batch):
-
     batch.tensor = tf.ones((10, 3, 224, 224))
 
     assert tnp.allclose(batch.tensor, tf.ones((10, 3, 224, 224)))
@@ -80,7 +79,6 @@ def test_set_after_stacking(batch):
 
 @pytest.mark.tensorflow
 def test_stack_optional(batch):
-
     assert tnp.allclose(
         batch._tensor_columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
     )
