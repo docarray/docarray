@@ -143,7 +143,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         tensor_columns: Dict[str, AbstractTensor] = dict()
 
         for field_name, field in cls.document_type.__fields__.items():
-            type_ = field.outer_type_
+            type_ = cls.document_type._get_field_type(field)
 
             if is_tensor_union(type_):
                 type_ = tensor_type
