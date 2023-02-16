@@ -1,3 +1,4 @@
+import warnings
 from typing import TYPE_CHECKING, Any, NamedTuple, Type, TypeVar, Union
 
 import numpy as np
@@ -8,6 +9,7 @@ from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -135,11 +137,30 @@ class VideoUrl(AnyUrl):
         """
         Play video from url in notebook.
         """
-        remote_url = True if self.startswith('http') else False
+        if is_notebook():
+            remote_url = True if self.startswith('http') else False
 
-        from IPython.display import Video, display
+            from IPython.display import display
 
-        if remote_url:
-            display(Video(data=self))
+            if remote_url:
+                from IPython.core.display import Video
+
+                display(Video(data=self))
+            else:
+                import os
+
+                from IPython.core.display import HTML
+
+                path = os.path.relpath(self)
+                src = f'''
+                    <body>
+                    <video width="320" height="240" autoplay muted controls>
+                    <source src="{path}">
+                    Your browser does not support the video tag.
+                    </video>
+                    </body>
+                    '''
+                display(HTML(src))
+
         else:
-            display(Video(filename=self))
+            warnings.warn('Display of video is only possible in a notebook.')

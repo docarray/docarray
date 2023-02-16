@@ -1,8 +1,10 @@
+import warnings
 import wave
 from abc import ABC
 from typing import BinaryIO, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_notebook
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
@@ -45,7 +47,10 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         """
         Play audio data from tensor in notebook.
         """
-        audio_np = self.get_comp_backend().to_numpy(self)
-        from IPython.display import Audio, display
+        if is_notebook():
+            from IPython.display import Audio, display
 
-        display(Audio(audio_np, rate=rate))
+            audio_np = self.get_comp_backend().to_numpy(self)
+            display(Audio(audio_np, rate=rate))
+        else:
+            warnings.warn('Display of audio is only possible ina notebook.')

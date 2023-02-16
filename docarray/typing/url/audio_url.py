@@ -1,3 +1,4 @@
+import warnings
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
@@ -5,6 +6,7 @@ import numpy as np
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -72,12 +74,15 @@ class AudioUrl(AnyUrl):
         """
         Play the audio sound from url in notebook.
         """
-        remote_url = True if self.startswith('http') else False
+        if is_notebook():
+            remote_url = True if self.startswith('http') else False
 
-        from IPython.display import Audio, display
+            from IPython.display import Audio, display
 
-        if remote_url:
-            display(Audio(data=self))
+            if remote_url:
+                display(Audio(data=self))
 
+            else:
+                display(Audio(filename=self))
         else:
-            display(Audio(filename=self))
+            warnings.warn('Display of image is only possible in a notebook.')

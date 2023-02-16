@@ -1,9 +1,11 @@
+import warnings
 from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -93,11 +95,14 @@ class ImageUrl(AnyUrl):
         """
         Display image data from url in notebook.
         """
-        remote_url = True if self.startswith('http') else False
+        if is_notebook():
+            remote_url = True if self.startswith('http') else False
 
-        from IPython.display import Image, display
+            from IPython.display import Image, display
 
-        if remote_url:
-            display(Image(url=self))
+            if remote_url:
+                display(Image(url=self))
+            else:
+                display(Image(filename=self))
         else:
-            display(Image(filename=self))
+            warnings.warn('Display of image is only possible in a notebook.')
