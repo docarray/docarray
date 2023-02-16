@@ -1,17 +1,26 @@
-from typing import TYPE_CHECKING, Any, Callable, Dict, Type, TypeVar
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Type, TypeVar
 
-from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
 if TYPE_CHECKING:
+    from pydantic.fields import ModelField
+
     from docarray.proto import DocumentProto, NodeProto
 
 
 T = TypeVar('T', bound='ProtoMixin')
 
 
-class ProtoMixin(AbstractDocument, BaseNode):
+class ProtoMixin(Iterable):
+    __fields__: Dict[str, 'ModelField']
+
+    @classmethod
+    @abstractmethod
+    def _get_field_type(cls, field: str) -> Type['ProtoMixin']:
+        ...
+
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message
@@ -93,7 +102,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return return_field
 
-    def to_protobuf(self) -> 'DocumentProto':
+    def to_protobuf(self: T) -> 'DocumentProto':
         """Convert Document into a Protobuf message.
 
         :return: the protobuf message
