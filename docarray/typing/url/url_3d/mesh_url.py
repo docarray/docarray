@@ -1,4 +1,4 @@
-from typing import NamedTuple, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -7,12 +7,10 @@ from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.url.url_3d.url_3d import Url3D
 
+if TYPE_CHECKING:
+    from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
+
 T = TypeVar('T', bound='Mesh3DUrl')
-
-
-class Mesh3DLoadResult(NamedTuple):
-    vertices: NdArray
-    faces: NdArray
 
 
 @_register_proto(proto_type_name='mesh_url')
@@ -22,9 +20,9 @@ class Mesh3DUrl(Url3D):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load(self: T) -> Mesh3DLoadResult:
+    def load(self: T) -> 'VerticesAndFaces':
         """
-        Load the data from the url into a named tuple of two NdArrays containing
+        Load the data from the url into a VerticesAndFaces object containing
         vertices and faces information.
 
         EXAMPLE USAGE
@@ -34,7 +32,7 @@ class Mesh3DUrl(Url3D):
             from docarray import BaseDocument
             import numpy as np
 
-            from docarray.typing import Mesh3DUrl
+            from docarray.typing import Mesh3DUrl, NdArray
 
 
             class MyDoc(BaseDocument):
@@ -43,16 +41,29 @@ class Mesh3DUrl(Url3D):
 
             doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
 
-            vertices, faces = doc.mesh_url.load()
-            assert isinstance(vertices, np.ndarray)
-            assert isinstance(faces, np.ndarray)
+            tensors = doc.mesh_url.load()
+            assert isinstance(tensors.vertices, NdArray)
+            assert isinstance(tensors.faces, NdArray)
 
-        :return: named tuple of two NdArrays representing the mesh's vertices and faces
+
+        :return: VerticesAndFaces object containing vertices and faces information.
         """
+        from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 
         mesh = self._load_trimesh_instance(force='mesh')
 
         vertices = parse_obj_as(NdArray, mesh.vertices.view(np.ndarray))
         faces = parse_obj_as(NdArray, mesh.faces.view(np.ndarray))
 
-        return Mesh3DLoadResult(vertices=vertices, faces=faces)
+        return VerticesAndFaces(vertices=vertices, faces=faces)
+
+    def display(self) -> None:
+        """
+        Plot mesh from url.
+        This loads the Trimesh instance of the 3D mesh, and then displays it.
+        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
+        """
+        from IPython.display import display
+
+        mesh = self._load_trimesh_instance()
+        display(mesh.show())

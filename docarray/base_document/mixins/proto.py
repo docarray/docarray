@@ -1,91 +1,108 @@
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Type, TypeVar
 
-from docarray.base_document.abstract_document import AbstractDocument
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 
-
 if TYPE_CHECKING:
+    from pydantic.fields import ModelField
+
     from docarray.proto import DocumentProto, NodeProto
 
 
 T = TypeVar('T', bound='ProtoMixin')
 
 
-class ProtoMixin(AbstractDocument, BaseNode):
+class ProtoMixin(Iterable):
+    __fields__: Dict[str, 'ModelField']
+
+    @classmethod
+    @abstractmethod
+    def _get_field_type(cls, field: str) -> Type['ProtoMixin']:
+        ...
+
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a Document from a protobuf message
+
+        :param pb_msg: the proto message of the Document
+        :return: a Document initialize with the proto data
+        """
 
         fields: Dict[str, Any] = {}
 
-        for field in pb_msg.data:
-            value = pb_msg.data[field]
+        for field_name in pb_msg.data:
 
-            content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
+            if field_name not in cls.__fields__.keys():
+                continue  # optimization we don't even load the data if the key does not
+                # match any field in the cls or in the mapping
 
-            content_key = value.WhichOneof('content')
-            content_type = (
-                value.type if value.WhichOneof('docarray_type') is not None else None
+            fields[field_name] = cls._get_content_from_node_proto(
+                pb_msg.data[field_name], field_name
             )
 
-            if content_type in content_type_dict:
-                fields[field] = content_type_dict[content_type].from_protobuf(
-                    getattr(value, content_key)
+        return cls(**fields)
+
+    @classmethod
+    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name: str) -> Any:
+        """
+        load the proto data from a node proto
+
+        :param value: the proto node value
+        :param field_name: the name of the field
+        :return: the loaded field
+        """
+        content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
+        arg_to_container: Dict[str, Callable] = {
+            'list': list,
+            'set': set,
+            'tuple': tuple,
+            'dict': dict,
+        }
+
+        content_key = value.WhichOneof('content')
+        docarray_type = (
+            value.type if value.WhichOneof('docarray_type') is not None else None
+        )
+
+        return_field: Any
+
+        if docarray_type in content_type_dict:
+            return_field = content_type_dict[docarray_type].from_protobuf(
+                getattr(value, content_key)
+            )
+        elif content_key in ['document', 'document_array']:
+            return_field = cls._get_field_type(field_name).from_protobuf(
+                getattr(value, content_key)
+            )  # we get to the parent class
+        elif content_key is None:
+            return_field = None
+        elif docarray_type is None:
+
+            if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
+                return_field = getattr(value, content_key)
+
+            elif content_key in arg_to_container.keys():
+                from google.protobuf.json_format import MessageToDict
+
+                return_field = arg_to_container[content_key](
+                    MessageToDict(getattr(value, content_key))
                 )
-            elif content_key == 'document':
-                fields[field] = cls._get_field_type(field).from_protobuf(
-                    value.document
-                )  # we get to the parent class
-            elif content_key == 'document_array':
-                from docarray import DocumentArray
-
-                fields[field] = DocumentArray.from_protobuf(
-                    value.document_array
-                )  # we get to the parent class
-            elif content_key is None:
-                fields[field] = None
-            elif content_type is None:
-                if content_key == 'text':
-                    fields[field] = value.text
-                elif content_key == 'blob':
-                    fields[field] = value.blob
-                elif content_key == 'integer':
-                    fields[field] = value.integer
-                elif content_key == 'float':
-                    fields[field] = value.float
-                elif content_key == 'boolean':
-                    fields[field] = value.boolean
-                elif content_key == 'list':
-                    from google.protobuf.json_format import MessageToDict
-
-                    fields[field] = MessageToDict(value.list)
-                elif content_key == 'set':
-                    from google.protobuf.json_format import MessageToDict
-
-                    fields[field] = set(MessageToDict(value.set))
-                elif content_key == 'tuple':
-                    from google.protobuf.json_format import MessageToDict
-
-                    fields[field] = tuple(MessageToDict(value.tuple))
-                elif content_key == 'dict':
-                    from google.protobuf.json_format import MessageToDict
-
-                    fields[field] = MessageToDict(value.dict)
-                else:
-                    raise ValueError(
-                        f'key {content_key} is not supported for' f' deserialization'
-                    )
 
             else:
                 raise ValueError(
-                    f'type {content_type}, with key {content_key} is not supported for'
-                    f' deserialization'
+                    f'key {content_key} is not supported for deserialization'
                 )
 
-        return cls.construct(**fields)
+        else:
+            raise ValueError(
+                f'type {docarray_type}, with key {content_key} is not supported for'
+                f' deserialization'
+            )
 
-    def to_protobuf(self) -> 'DocumentProto':
+        return return_field
+
+    def to_protobuf(self: T) -> 'DocumentProto':
         """Convert Document into a Protobuf message.
 
         :return: the protobuf message

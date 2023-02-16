@@ -133,11 +133,27 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     def __init__(
         self,
-        docs: Optional[Iterable[BaseDocument]] = None,
+        docs: Optional[Iterable[T_doc]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
-        self._data = list(docs) if docs is not None else []
+
+        self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
         self.tensor_type = tensor_type
+
+    def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
+        """
+        Validate if an Iterable of Document are compatible with this DocumentArray
+        """
+        for doc in docs:
+            yield self._validate_one_doc(doc)
+
+    def _validate_one_doc(self, doc: T_doc) -> T_doc:
+        """Validate if a Document is compatible with this DocumentArray"""
+        if not issubclass(self.document_type, AnyDocument) and not isinstance(
+            doc, self.document_type
+        ):
+            raise ValueError(f'{doc} is not a {self.document_type}')
+        return doc
 
     def __len__(self):
         return len(self._data)
@@ -265,9 +281,32 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 self._data[i] = value[i_value]
                 i_value += 1
 
-    append = _delegate_meth_to_data('append')
-    extend = _delegate_meth_to_data('extend')
-    insert = _delegate_meth_to_data('insert')
+    def append(self, doc: T_doc):
+        """
+        Append a Document to the DocumentArray. The Document must be from the same class
+        as the document_type of this DocumentArray otherwise it will fail.
+        :param doc: A Document
+        """
+        self._data.append(self._validate_one_doc(doc))
+
+    def extend(self, docs: Iterable[T_doc]):
+        """
+        Extend a DocumentArray with an Iterable of Document. The Documents must be from
+        the same class as the document_type of this DocumentArray otherwise it will
+        fail.
+        :param docs: Iterable of Documents
+        """
+        self._data.extend(self._validate_docs(docs))
+
+    def insert(self, i: int, doc: T_doc):
+        """
+        Insert a Document to the DocumentArray. The Document must be from the same
+        class as the document_type of this DocumentArray otherwise it will fail.
+        :param i: index to insert
+        :param doc: A Document
+        """
+        self._data.insert(i, self._validate_one_doc(doc))
+
     pop = _delegate_meth_to_data('pop')
     remove = _delegate_meth_to_data('remove')
     reverse = _delegate_meth_to_data('reverse')

@@ -28,11 +28,11 @@ REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 def test_load(file_format, file_path):
     n_samples = 100
     url = parse_obj_as(PointCloud3DUrl, file_path)
-    point_cloud = url.load(samples=n_samples)
+    tensors = url.load(samples=n_samples)
 
-    assert isinstance(point_cloud, np.ndarray)
-    assert isinstance(point_cloud, NdArray)
-    assert point_cloud.shape == (n_samples, 3)
+    assert isinstance(tensors.points, np.ndarray)
+    assert isinstance(tensors.points, NdArray)
+    assert tensors.points.shape == (n_samples, 3)
 
 
 @pytest.mark.slow
@@ -49,11 +49,11 @@ def test_load(file_format, file_path):
 def test_load_with_multiple_geometries_true(file_format, file_path):
     n_samples = 100
     url = parse_obj_as(PointCloud3DUrl, file_path)
-    point_cloud = url.load(samples=n_samples, multiple_geometries=True)
+    tensors = url.load(samples=n_samples, multiple_geometries=True)
 
-    assert isinstance(point_cloud, np.ndarray)
-    assert len(point_cloud.shape) == 3
-    assert point_cloud.shape[1:] == (100, 3)
+    assert isinstance(tensors.points, np.ndarray)
+    assert len(tensors.points.shape) == 3
+    assert tensors.points.shape[1:] == (100, 3)
 
 
 def test_json_schema():
