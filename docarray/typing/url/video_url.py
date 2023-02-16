@@ -143,7 +143,7 @@ class VideoUrl(AnyUrl):
             from IPython.display import display
 
             if remote_url:
-                from IPython.core.display import Video
+                from IPython.display import Video
 
                 display(Video(data=self))
             else:
