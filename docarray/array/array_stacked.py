@@ -143,10 +143,10 @@ class DocumentArrayStacked(AnyDocumentArray):
         tensor_columns: Dict[str, AbstractTensor] = dict()
 
         for field_name, field in cls.document_type.__fields__.items():
-            type_ = cls.document_type._get_field_type(field)
+            field_type = field.outer_type_
 
-            if is_tensor_union(type_):
-                type_ = tensor_type
+            if is_tensor_union(field_type):
+                field_type = tensor_type
 
             if tf_available and isinstance(
                 getattr(docs[0], field_name), TensorFlowTensor
@@ -169,16 +169,16 @@ class DocumentArrayStacked(AnyDocumentArray):
                     x = tensor_columns[field_name][i].tensor
                     val.tensor = x
 
-            elif isinstance(type_, type):
-                if issubclass(type_, AbstractTensor):
+            elif isinstance(field_type, type):
+                if issubclass(field_type, AbstractTensor):
                     tensor = getattr(docs[0], field_name)
                     column_shape = (
                         (len(docs), *tensor.shape)
                         if tensor is not None
                         else (len(docs),)
                     )
-                    tensor_columns[field_name] = type_._docarray_from_native(
-                        type_.get_comp_backend().empty(
+                    tensor_columns[field_name] = field_type._docarray_from_native(
+                        field_type.get_comp_backend().empty(
                             column_shape,
                             dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
                             device=tensor.device if hasattr(tensor, 'device') else None,
@@ -208,10 +208,10 @@ class DocumentArrayStacked(AnyDocumentArray):
                             setattr(doc, field_name, tensor_columns[field_name][i])
                         del val
 
-                elif issubclass(type_, BaseDocument):
+                elif issubclass(field_type, BaseDocument):
                     doc_columns[field_name] = getattr(docs, field_name).stack()
 
-                elif issubclass(type_, DocumentArray):
+                elif issubclass(field_type, DocumentArray):
                     for doc in docs:
                         setattr(doc, field_name, getattr(doc, field_name).stack())
 
