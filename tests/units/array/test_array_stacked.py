@@ -554,3 +554,24 @@ def test_document_update():
     batch[0].tensor = torch.ones(3, 224, 224)
 
     assert (batch.tensor[0] == torch.ones(3, 224, 224)).all()
+
+
+def test_ref_inside_doc():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    for doc in batch:
+        assert not doc._is_inside_da_stack()
+
+    batch = batch.stack()
+
+    for doc in batch:
+        assert doc._is_inside_da_stack()
+
+    batch.unstack()
+    for doc in batch:
+        assert not doc._is_inside_da_stack()

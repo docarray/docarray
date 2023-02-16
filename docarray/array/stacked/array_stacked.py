@@ -97,6 +97,12 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             self._docs, tensor_type=self.tensor_type
         )
 
+        self._add_ref_to_docs()
+
+    def _add_ref_to_docs(self) -> None:
+        for doc in self._docs:
+            doc._da_ref = self
+
     @classmethod
     def _from_da_and_columns(
         cls: Type[T],
@@ -449,10 +455,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                 # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
                 # -when-the-original-tensor-is-deleted/167294 # noqa: E501
 
-        for field_name, _ in self._docs.document_type.__fields__.items():
-            field_type = self.document_type._get_field_type(field_name)
-            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
-                for doc in self._docs:
+            doc._da_ref = None
+
+            for field_name, _ in self._docs.document_type.__fields__.items():
+                field_type = self.document_type._get_field_type(field_name)
+                if isinstance(field_type, type) and issubclass(
+                    field_type, DocumentArray
+                ):
                     setattr(doc, field_name, getattr(doc, field_name).unstack())
 
         for field in list(self._doc_columns.keys()):

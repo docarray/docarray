@@ -1,14 +1,17 @@
 import os
-from typing import Type
+from typing import TYPE_CHECKING, Optional, Type
 
 import orjson
-from pydantic import BaseModel, Field, parse_obj_as
+from pydantic import BaseModel, Field, PrivateAttr, parse_obj_as
 from rich.console import Console
 
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
+
+if TYPE_CHECKING:
+    from docarray.array.array_stacked import DocumentArrayStacked
 
 _console: Console = Console()
 
@@ -20,6 +23,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
+    _da_ref: Optional['DocumentArrayStacked'] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -60,3 +64,9 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     def _ipython_display_(self):
         """Displays the object in IPython as a summary"""
         self.summary()
+
+    def _is_inside_da_stack(self) -> bool:
+        """
+        :return: return true if the Document is inside a DocumentArrayStack
+        """
+        return self._da_ref is not None
