@@ -16,6 +16,7 @@ _console: Console = Console()
 class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
     The base class for Documents
+    TODO add some documentation here this is the most important place
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
