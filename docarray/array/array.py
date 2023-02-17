@@ -473,8 +473,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         value: Union[T, Iterable[BaseDocument]],
         field: 'ModelField',
         config: 'BaseConfig',
-    ) -> T:
-        if isinstance(value, cls):
+    ):
+        from docarray.array.array_stacked import DocumentArrayStacked
+
+        if isinstance(value, (cls, DocumentArrayStacked)):
             return value
         elif isinstance(value, Iterable):
             return cls(value)
@@ -484,7 +486,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def traverse_flat(
         self: 'DocumentArray',
         access_path: str,
-    ) -> Union[List[Any]]:
+    ) -> List[Any]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 

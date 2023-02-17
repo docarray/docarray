@@ -22,6 +22,28 @@ def batch():
     return batch.stack()
 
 
+@pytest.fixture()
+def nested_batch():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    class MMdoc(BaseDocument):
+        img: DocumentArray[Image]
+
+    batch = DocumentArray[MMdoc](
+        [
+            MMdoc(
+                img=DocumentArray[Image](
+                    [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+                )
+            )
+            for _ in range(10)
+        ]
+    )
+
+    return batch.stack()
+
+
 def test_create_from_list_docs():
     list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
@@ -114,6 +136,19 @@ def test_stack_mod_nested_document():
     )
 
 
+def test_stack_nested_documentarray(nested_batch):
+    for i in range(len(nested_batch)):
+        assert (
+            nested_batch[i].img._tensor_columns['tensor']
+            == torch.zeros(10, 3, 224, 224)
+        ).all()
+        assert (nested_batch[i].img.tensor == torch.zeros(10, 3, 224, 224)).all()
+        assert (
+            nested_batch[i].img._tensor_columns['tensor'].data_ptr()
+            == nested_batch[i].img.tensor.data_ptr()
+        )
+
+
 def test_convert_to_da(batch):
     class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
@@ -146,6 +181,14 @@ def test_unstack_nested_document():
 
     for doc in da:
         assert (doc.img.tensor == torch.zeros(3, 224, 224)).all()
+
+
+def test_unstack_nested_documentarray(nested_batch):
+    batch = nested_batch.unstack()
+    for i in range(len(batch)):
+        assert isinstance(batch[i].img, DocumentArray)
+        for doc in batch[i].img:
+            assert (doc.tensor == torch.zeros(3, 224, 224)).all()
 
 
 @pytest.mark.proto
