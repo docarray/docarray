@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.array.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocumentArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -448,7 +448,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 ...
         """
 
-        from docarray.array.array_stacked import DocumentArrayStacked
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         try:
             da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(
@@ -465,7 +465,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
         """
-        from docarray.array.array_stacked import DocumentArrayStacked
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
 
@@ -476,7 +476,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         field: 'ModelField',
         config: 'BaseConfig',
     ):
-        from docarray.array.array_stacked import DocumentArrayStacked
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         if isinstance(value, (cls, DocumentArrayStacked)):
             return value
