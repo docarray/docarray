@@ -4,13 +4,16 @@ import json
 import os
 import pathlib
 import pickle
+from abc import abstractmethod
 from contextlib import nullcontext
 from typing import (
     TYPE_CHECKING,
     BinaryIO,
     ContextManager,
     Generator,
+    Iterable,
     Optional,
+    Sized,
     Tuple,
     Type,
     TypeVar,
@@ -78,7 +81,17 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray:
+class IOMixinArray(Iterable[BaseDocument], Sized):
+
+    document_type: Type[BaseDocument]
+
+    @abstractmethod
+    def __init__(
+        self,
+        docs: Optional[Iterable[BaseDocument]] = None,
+    ):
+        ...
+
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message

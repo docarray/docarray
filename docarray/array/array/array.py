@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.array.stacked.array_stacked import DocumentArrayStacked
+    from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -433,3 +434,10 @@ class DocumentArray(IOMixinArray, AnyDocumentArray, Generic[T_doc]):
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+        """create a Document from a protobuf message
+        :param pb_msg: The protobuf message from where to construct the DocumentArray
+        """
+        return super().from_protobuf(pb_msg)
