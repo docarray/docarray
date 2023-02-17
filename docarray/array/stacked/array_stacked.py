@@ -42,11 +42,12 @@ if tf_available:
 else:
     TensorFlowTensor = None  # type: ignore
 
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 T = TypeVar('T', bound='DocumentArrayStacked')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocumentArrayStacked(AnyDocumentArray):
+class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     """
     DocumentArrayStacked is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -70,7 +71,7 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     def __init__(
         self: T,
-        docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]] = None,
+        docs: Optional[Union[DocumentArray, Iterable[T_doc]]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._doc_columns: Dict[str, 'DocumentArrayStacked'] = {}
@@ -80,7 +81,7 @@ class DocumentArrayStacked(AnyDocumentArray):
         self.from_iterable_document(docs)
 
     def from_iterable_document(
-        self: T, docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]]
+        self: T, docs: Optional[Union[DocumentArray, Iterable[T_doc]]]
     ):
         self._docs = (
             docs
@@ -254,7 +255,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(self._docs, field, values)
 
     @overload
-    def __getitem__(self: T, item: int) -> BaseDocument:
+    def __getitem__(self: T, item: int) -> T_doc:
         ...
 
     @overload
@@ -276,9 +277,7 @@ class DocumentArrayStacked(AnyDocumentArray):
             setattr(doc, field, self._tensor_columns[field][item])
         return doc
 
-    def __setitem__(
-        self: T, key: Union[int, IndexIterType], value: Union[T, BaseDocument]
-    ):
+    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         # multiple docs case
         if isinstance(key, (slice, Iterable)):
             return self._set_data_and_columns(key, value)
@@ -476,7 +475,7 @@ class DocumentArrayStacked(AnyDocumentArray):
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, Iterable[BaseDocument]],
+        value: Union[T, Iterable[T_doc]],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
