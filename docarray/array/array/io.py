@@ -13,7 +13,6 @@ from typing import (
     Generator,
     Iterable,
     Optional,
-    Sized,
     Tuple,
     Type,
     TypeVar,
@@ -81,9 +80,13 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[BaseDocument], Sized):
+class IOMixinArray(Iterable[BaseDocument]):
 
     document_type: Type[BaseDocument]
+
+    @abstractmethod
+    def __len__(self):
+        ...
 
     @abstractmethod
     def __init__(
