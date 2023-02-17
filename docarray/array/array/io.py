@@ -1,4 +1,5 @@
 import base64
+import csv
 import io
 import json
 import os
@@ -6,6 +7,7 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
+from itertools import compress
 from typing import (
     TYPE_CHECKING,
     BinaryIO,
@@ -16,11 +18,19 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
-    Union,
+    Union, Dict, Any,
 )
 
 from docarray.base_document import BaseDocument
+
+import numpy as np
+from typing_inspect import is_union_type
+
+from docarray.array.abstract_array import AnyDocumentArray
+from docarray.base_document import AnyDocument, BaseDocument
+from docarray.typing import NdArray
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
+from docarray.utils.misc import is_torch_available
 
 if TYPE_CHECKING:
 
@@ -291,6 +301,62 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         return json.dumps([doc.json() for doc in self])
 
+    @classmethod
+    def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> T:
+        """
+        Load a DocumentArray from a csv file.
+
+        :param file_path: path to csv file to load DocumentArray from.
+        :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
+        :return: DocumentArray
+        """
+        from docarray import DocumentArray
+
+        doc_type = cls.document_type
+        if doc_type == AnyDocument:
+            raise TypeError(
+                "There is no document schema defined. "
+                "To load from csv, please specify the DocumentArray's document type."
+            )
+
+        da = DocumentArray[doc_type]()
+        with open(file_path, 'r', encoding=encoding) as fp:
+            lines = csv.DictReader(fp, dialect='excel')
+            fields = lines.fieldnames
+            valid = [_assert_schema(doc_type, field) for field in fields]
+            if not all(valid):
+                raise ValueError(
+                    f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
+                    f'document type ({doc_type.__name__}): {list(compress(fields, [not v for v in valid]))}'
+                )
+
+            for line in lines:
+                doc_dict = {}
+                for field, value in line.items():
+                    print(f"field, value = {field, value}")
+                    if value in ['', 'None']:
+                        value = None
+                    doc_dict.update(access_path_to_dict(access_path=field, value=value))
+                da.append(doc_type.parse_obj(doc_dict))
+
+        return da
+
+    def to_csv(self, file_path: str) -> None:
+        """
+        Save a DocumentArray to a csv file.
+
+        :param file_path: path to a csv file.
+        """
+        fields = self.document_type.__fields__
+        with open(file_path, 'w') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fields)
+            writer.writeheader()
+
+            for doc in self:
+                doc_dict = doc.dict()
+                writer.writerow(doc_dict)
+
+
     # Methods to load from/to files in different formats
     @property
     def _stream_header(self) -> bytes:
@@ -530,3 +596,28 @@ class IOMixinArray(Iterable[BaseDocument]):
             file_ctx=file_ctx,
             show_progress=show_progress,
         )
+
+
+
+def _assert_schema(doc: Type['BaseDocument'], field_name: str) -> bool:
+    field, _, remaining = field_name.partition('.')
+    if len(remaining) == 0:
+        return field_name in doc.__fields__.keys()
+    else:
+        valid_field = field in doc.__fields__.keys()
+        if not valid_field:
+            return False
+        else:
+            d = doc._get_field_type(field)
+            if not issubclass(d, BaseDocument):
+                return False
+            else:
+                return _assert_schema(d, remaining)
+
+
+def access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
+    fields = access_path.split('.')
+    for field in reversed(fields):
+        result = {field: value}
+        value = result
+    return result
