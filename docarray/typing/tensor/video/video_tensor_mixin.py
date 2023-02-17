@@ -9,7 +9,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.utils.misc import is_notebook
 
-T = TypeVar('T', bound='AbstractTensor')
+T = TypeVar('T', bound='VideoTensorMixin')
 
 
 class VideoTensorMixin(AbstractTensor, abc.ABC):
