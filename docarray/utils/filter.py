@@ -1,10 +1,8 @@
 import json
-
-from typing import Union, Dict, List
-
+from typing import Dict, List, Union
 
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.array.array import DocumentArray
+from docarray.array.array.array import DocumentArray
 
 
 def filter(
@@ -31,12 +29,21 @@ def filter(
 
 
         docs = DocumentArray[MyDocument](
-            [MyDocument(caption='A tiger in the jungle',
-            image=Image(url='tigerphoto.png'), price=100),
-            MyDocument(caption='A swimming turtle',
-            image=Image(url='turtlepic.png'), price=50),
-            MyDocument(caption='A couple birdwatching with binoculars',
-            image=Image(url='binocularsphoto.png'), price=30)]
+            [
+                MyDocument(
+                    caption='A tiger in the jungle',
+                    image=Image(url='tigerphoto.png'),
+                    price=100,
+                ),
+                MyDocument(
+                    caption='A swimming turtle', image=Image(url='turtlepic.png'), price=50
+                ),
+                MyDocument(
+                    caption='A couple birdwatching with binoculars',
+                    image=Image(url='binocularsphoto.png'),
+                    price=30,
+                ),
+            ]
         )
         query = {
             '$and': {

@@ -1,10 +1,10 @@
-from typing import List, NamedTuple, Optional, Type, Union
+from typing import List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.array.array import DocumentArray
-from docarray.array.array_stacked import DocumentArrayStacked
+from docarray.array.array.array import DocumentArray
+from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -284,4 +284,4 @@ def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
             f'but {field_type.__class__.__name__}'
         )
 
-    return field_type
+    return cast(Type[AnyTensor], field_type)
