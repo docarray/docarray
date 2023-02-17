@@ -302,5 +302,9 @@ def test_generic_type_var():
     def f(a: DocumentArray[T]) -> DocumentArray[T]:
         return a
 
+    def g(a: DocumentArray['BaseDocument']) -> DocumentArray['BaseDocument']:
+        return a
+
     a = DocumentArray()
     f(a)
+    g(a)
