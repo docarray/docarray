@@ -35,6 +35,8 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
     @classmethod
     def __class_getitem__(cls, item: Type[BaseDocument]):
+        if isinstance(item, TypeVar):
+            return super().__class_getitem__(item)
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
