@@ -1,13 +1,12 @@
-from typing import TYPE_CHECKING, Any, NamedTuple, Type, TypeVar, Union
+import warnings
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
-from pydantic.tools import parse_obj_as
 
+from docarray.typing.bytes.video_bytes import VideoLoadResult
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
-from docarray.typing.tensor.ndarray import NdArray
-from docarray.typing.tensor.video import VideoNdArray
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -16,12 +15,6 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='VideoUrl')
 
 VIDEO_FILE_FORMATS = ['mp4']
-
-
-class VideoLoadResult(NamedTuple):
-    video: VideoNdArray
-    audio: AudioNdArray
-    key_frame_indices: NdArray
 
 
 @_register_proto(proto_type_name='video_url')
@@ -104,29 +97,40 @@ class VideoUrl(AnyUrl):
             assert isinstance(key_frame_indices, NdArray)
 
         """
-        import av
+        from docarray.typing.bytes.video_bytes import VideoBytes
 
-        with av.open(self, **kwargs) as container:
-            audio_frames = []
-            video_frames = []
-            keyframe_indices = []
+        buffer = VideoBytes(self.load_bytes(**kwargs))
+        return buffer.load()
 
-            for frame in container.decode():
-                if type(frame) == av.audio.frame.AudioFrame:
-                    audio_frames.append(frame.to_ndarray())
-                elif type(frame) == av.video.frame.VideoFrame:
-                    video_frames.append(frame.to_ndarray(format='rgb24'))
+    def display(self):
+        """
+        Play video from url in notebook.
+        """
+        if is_notebook():
+            from IPython.display import display
 
-                    if frame.key_frame == 1:
-                        curr_index = len(video_frames)
-                        keyframe_indices.append(curr_index)
+            remote_url = True if self.startswith('http') else False
 
-        if len(audio_frames) == 0:
-            audio = parse_obj_as(AudioNdArray, np.array(audio_frames))
+            if remote_url:
+                from IPython.display import Video
+
+                b = self.load_bytes()
+                display(Video(data=b, embed=True, mimetype='video/mp4'))
+            else:
+                import os
+
+                from IPython.display import HTML
+
+                path = os.path.relpath(self)
+                src = f'''
+                    <body>
+                    <video width="320" height="240" autoplay muted controls>
+                    <source src="{path}">
+                    Your browser does not support the video tag.
+                    </video>
+                    </body>
+                    '''
+                display(HTML(src))
+
         else:
-            audio = parse_obj_as(AudioNdArray, np.stack(audio_frames))
-
-        video = parse_obj_as(VideoNdArray, np.stack(video_frames))
-        indices = parse_obj_as(NdArray, keyframe_indices)
-
-        return VideoLoadResult(video=video, audio=audio, key_frame_indices=indices)
+            warnings.warn('Display of video is only possible in a notebook.')
