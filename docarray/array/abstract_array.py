@@ -38,6 +38,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     def __class_getitem__(cls, item: Union[Type[BaseDocument], TypeVar, str]):
         if not isinstance(item, type):
             return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
+            # this do nothing that checking that item is valid type var or str
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
