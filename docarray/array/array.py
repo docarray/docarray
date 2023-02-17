@@ -1,40 +1,39 @@
+import base64
+import io
+import json
+import os
+import pathlib
+import pickle
 from contextlib import contextmanager, nullcontext
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
+    BinaryIO,
     Callable,
+    ContextManager,
+    Generator,
     Generic,
     Iterable,
     List,
     Optional,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
-    BinaryIO,
-    ContextManager,
-    Tuple,
-    Generator,
 )
 
 import numpy as np
-import json
-import io
-import os
-import pickle
-import pathlib
-import base64
-
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
-from docarray.utils.misc import is_torch_available
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
+from docarray.utils.misc import is_torch_available
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -268,7 +267,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 return self._set_by_mask(key_norm_, value_)
             elif isinstance(head, int):
                 key_norm__ = cast(Iterable[int], key_norm)
-                return self._set_by_indices(key_norm__, value)
+                value_ = cast(Sequence[BaseDocument], value)  # this is no strictly true
+                # set_by_mask requires value_ to have getitem which
+                # _normalize_index_item() ensures
+                return self._set_by_indices(key_norm__, value_)
             else:
                 raise TypeError(f'Invalid type {type(head)} for indexing')
 
@@ -566,6 +568,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 f.write(pickle.dumps(self))
             elif protocol in SINGLE_PROTOCOLS:
                 from rich import filesize
+
                 from docarray.utils.progress_bar import _get_progressbar
 
                 pbar, t = _get_progressbar(
@@ -741,6 +744,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         # Binary format for streaming case
         else:
             from rich import filesize
+
             from docarray.utils.progress_bar import _get_progressbar
 
             # 1 byte (uint8)
@@ -797,10 +801,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         :return: a generator of `Document` objects
         """
 
-        from docarray import BaseDocument
-
-        from docarray.utils.progress_bar import _get_progressbar
         from rich import filesize
+
+        from docarray import BaseDocument
+        from docarray.utils.progress_bar import _get_progressbar
 
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)

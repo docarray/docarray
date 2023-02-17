@@ -1,4 +1,4 @@
-from typing import List, NamedTuple, Optional, Type, Union
+from typing import List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -284,4 +284,4 @@ def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
             f'but {field_type.__class__.__name__}'
         )
 
-    return field_type
+    return cast(Type[AnyTensor], field_type)

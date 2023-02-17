@@ -1,7 +1,17 @@
 import base64
 import pickle
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+)
 
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
@@ -16,7 +26,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='IOMixin')
 
 
-class IOMixin:
+class IOMixin(Iterable[Tuple[str, Any]]):
     """
     IOMixin to define all the bytes/protobuf/json related part of BaseDocument
     """
