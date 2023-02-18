@@ -6,8 +6,20 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.documents import Image
-from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
+from docarray.documents import Image as AbstractImage
+from docarray.typing import (
+    AnyEmbedding,
+    AnyTensor,
+    ImageNdArray,
+    ImageTorchTensor,
+    NdArray,
+    NdArrayEmbedding,
+    TorchEmbedding,
+    TorchTensor,
+)
+
+NdImage = AbstractImage[ImageNdArray, NdArrayEmbedding]
+Image = AbstractImage[ImageTorchTensor, TorchEmbedding]
 
 
 @pytest.fixture()
@@ -388,7 +400,7 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[Image]([Image(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
+    da = DocumentArray[NdImage]([NdImage(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')

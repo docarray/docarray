@@ -4,7 +4,13 @@ from torch.utils.data import DataLoader
 
 from docarray import BaseDocument, DocumentArray
 from docarray.data import MultiModalDataset
-from docarray.documents import Image, Text
+from docarray.documents import Image as AbstractImage
+from docarray.documents import Text as AbstractText
+from docarray.typing.tensor.embedding import TorchEmbedding
+from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+
+Text = AbstractText[TorchEmbedding]
+Image = AbstractImage[ImageTorchTensor, TorchEmbedding]
 
 
 class PairTextImage(BaseDocument):
@@ -78,7 +84,7 @@ def test_primitives(captions_da: DocumentArray[PairTextImage]):
     assert all(t.endswith(' meow') for t in batch.text)
 
 
-def test_root_field(captions_da: DocumentArray[Text]):
+def test_root_field(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"": TextPreprocess()}
