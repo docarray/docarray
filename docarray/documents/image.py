@@ -1,6 +1,7 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic.generics import GenericModel
 
 from docarray.base_document import BaseDocument
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
@@ -9,6 +10,8 @@ from docarray.typing.tensor.image.image_tensor import ImageTensor
 from docarray.utils.misc import is_tf_available, is_torch_available
 
 T = TypeVar('T', bound='Image')
+ImageTensorT = TypeVar('ImageTensorT', bound=ImageTensor)
+EmbeddingT = TypeVar('EmbeddingT', bound=AnyEmbedding)
 
 torch_available = is_torch_available()
 if torch_available:
@@ -19,7 +22,7 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 
-class Image(BaseDocument):
+class Image(BaseDocument, GenericModel, Generic[ImageTensorT, EmbeddingT]):
     """
     Document for handling images.
     It can contain an ImageUrl (`Image.url`), an AnyTensor (`Image.tensor`),
@@ -47,6 +50,7 @@ class Image(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyImage(Image):
             second_embedding: Optional[AnyEmbedding]
@@ -66,6 +70,7 @@ class Image(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import Image, Text
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             image: Image
@@ -84,8 +89,8 @@ class Image(BaseDocument):
     """
 
     url: Optional[ImageUrl]
-    tensor: Optional[ImageTensor]
-    embedding: Optional[AnyEmbedding]
+    tensor: Optional[ImageTensorT]
+    embedding: Optional[EmbeddingT]
     bytes: Optional[ImageBytes]
 
     @classmethod
