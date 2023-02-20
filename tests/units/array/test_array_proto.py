@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.array.array_stacked import DocumentArrayStacked
+from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.documents import Image, Text
 from docarray.typing import NdArray
 

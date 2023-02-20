@@ -1,7 +1,9 @@
 import io
+import warnings
 from abc import ABC
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_notebook
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
@@ -27,3 +29,19 @@ class AbstractImageTensor(AbstractTensor, ABC):
             img_byte_arr = buffer.getvalue()
 
         return img_byte_arr
+
+    def display(self) -> None:
+        """
+        Display image data from tensor in notebook.
+        """
+        if is_notebook():
+            from PIL import Image
+
+            np_array = self.get_comp_backend().to_numpy(self)
+            img = Image.fromarray(np_array)
+
+            from IPython.display import display
+
+            display(img)
+        else:
+            warnings.warn('Display of image is only possible in a notebook.')
