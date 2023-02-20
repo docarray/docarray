@@ -31,7 +31,7 @@ def test_to_csv(tmpdir):
             MyDocNested(text='hello world', image=Image(), image2=Image()),
         ]
     )
-    tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
+    tmp_file = str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
@@ -43,7 +43,7 @@ def test_to_csv_(tmpdir):
             MyDoc(text='hello world'),
         ]
     )
-    tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
+    tmp_file = str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
