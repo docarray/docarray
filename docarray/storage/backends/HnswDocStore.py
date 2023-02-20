@@ -32,33 +32,6 @@ if torch_imported:
 
 
 class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
-    class QueryBuilder(BaseDocumentStore.QueryBuilder):
-        def build(self, *args, **kwargs) -> Any:
-            return self._queries
-
-    @dataclass
-    class DBConfig(BaseDocumentStore.DBConfig):
-        work_dir: str = '.'
-
-    @dataclass
-    class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
-        default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: {
-                np.ndarray: {
-                    'dim': 128,
-                    'space': 'l2',  # 'l2', 'ip', 'cosine'
-                    'max_elements': 1024,
-                    'ef_construction': 200,
-                    'M': 16,
-                    'allow_replace_deleted': True,  # TODO(johannes) handle below
-                },
-                None: {},
-            }
-        )
-        default_ef = 50
-        default_num_threads = 1
-        max_elements = None  # use the one above
-
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._work_dir = self._db_config.work_dir
@@ -90,33 +63,39 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         self._create_docs_table()
         self._sqlite_conn.commit()
 
-    @staticmethod
-    def _to_universal_id(doc_id: str) -> int:
-        # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
-        # hashing to 18 digits avoids overflow of sqlite INTEGER
-        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
+    ###############################################
+    # Inner classes for query builder and configs #
+    ###############################################
+    class QueryBuilder(BaseDocumentStore.QueryBuilder):
+        def build(self, *args, **kwargs) -> Any:
+            return self._queries
 
-    def _create_index_class(self, col: '_Column') -> hnswlib.Index:
-        """Create an instance of hnswlib.Index without initializing it."""
-        construct_params = dict(
-            (k, col.config[k]) for k in self._index_construct_params
+    @dataclass
+    class DBConfig(BaseDocumentStore.DBConfig):
+        work_dir: str = '.'
+
+    @dataclass
+    class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
+        default_column_config: Dict[Type, Dict[str, Any]] = field(
+            default_factory=lambda: {
+                np.ndarray: {
+                    'dim': 128,
+                    'space': 'l2',  # 'l2', 'ip', 'cosine'
+                    'max_elements': 1024,
+                    'ef_construction': 200,
+                    'M': 16,
+                    'allow_replace_deleted': True,  # TODO(johannes) handle below
+                },
+                None: {},
+            }
         )
-        if col.n_dim:
-            construct_params['dim'] = col.n_dim
-        return hnswlib.Index(**construct_params)
+        default_ef = 50
+        default_num_threads = 1
+        max_elements = None  # use the one above
 
-    def _create_index(self, col: '_Column') -> hnswlib.Index:
-        """Create a new HNSW index for a column, and initialize it."""
-        index = self._create_index_class(col)
-        init_params = dict((k, col.config[k]) for k in self._index_init_params)
-        index.init_index(**init_params)
-        return index
-
-    def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
-        """Load an existing HNSW index from disk."""
-        index = self._create_index_class(col)
-        index.load_index(self._hnsw_locations[col_name])
-        return index
+    ###############################################
+    # Implementation of abstract methods          #
+    ###############################################
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
@@ -128,16 +107,6 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             return None  # TODO(johannes): handle this
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
-
-    def _to_numpy(self, val: Any) -> Any:
-        if isinstance(val, np.ndarray):
-            return val
-        elif isinstance(val, (list, tuple)):
-            return np.array(val)
-        elif torch_imported and isinstance(val, torch.Tensor):
-            return val.numpy()
-        else:
-            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
@@ -277,6 +246,50 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
+
+    ###############################################
+    # Helpers                                     #
+    ###############################################
+
+    # general helpers
+    @staticmethod
+    def _to_universal_id(doc_id: str) -> int:
+        # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
+        # hashing to 18 digits avoids overflow of sqlite INTEGER
+        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
+
+    def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
+        """Load an existing HNSW index from disk."""
+        index = self._create_index_class(col)
+        index.load_index(self._hnsw_locations[col_name])
+        return index
+
+    def _to_numpy(self, val: Any) -> Any:
+        if isinstance(val, np.ndarray):
+            return val
+        elif isinstance(val, (list, tuple)):
+            return np.array(val)
+        elif torch_imported and isinstance(val, torch.Tensor):
+            return val.numpy()
+        else:
+            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
+
+    # HNSWLib helpers
+    def _create_index_class(self, col: '_Column') -> hnswlib.Index:
+        """Create an instance of hnswlib.Index without initializing it."""
+        construct_params = dict(
+            (k, col.config[k]) for k in self._index_construct_params
+        )
+        if col.n_dim:
+            construct_params['dim'] = col.n_dim
+        return hnswlib.Index(**construct_params)
+
+    def _create_index(self, col: '_Column') -> hnswlib.Index:
+        """Create a new HNSW index for a column, and initialize it."""
+        index = self._create_index_class(col)
+        init_params = dict((k, col.config[k]) for k in self._index_init_params)
+        index.init_index(**init_params)
+        return index
 
     # SQLite helpers
     def _create_docs_table(self):
