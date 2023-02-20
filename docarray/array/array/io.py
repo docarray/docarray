@@ -317,7 +317,7 @@ class IOMixinArray(Iterable[BaseDocument]):
                 'To load from csv, please specify the DocumentArray\'s document type.'
             )
 
-        da = DocumentArray[doc_type]()
+        da = DocumentArray[doc_type]()  # type: ignore
         with open(file_path, 'r', encoding=encoding) as fp:
             lines = csv.DictReader(fp, dialect='excel')
             fields = lines.fieldnames
@@ -332,13 +332,13 @@ class IOMixinArray(Iterable[BaseDocument]):
                 )
 
             for line in lines:
-                doc_dict = {}
+                doc_dict: Dict[Any, Any] = {}
                 for field, value in line.items():
-                    field2val = access_path_to_dict(
+                    field2val = _access_path_to_dict(
                         access_path=field,
                         value=value if value not in ['', 'None'] else None,
                     )
-                    update_nested_dicts(to_update=doc_dict, update_with=field2val)
+                    _update_nested_dicts(to_update=doc_dict, update_with=field2val)
 
                 da.append(doc_type.parse_obj(doc_dict))
 
@@ -356,7 +356,7 @@ class IOMixinArray(Iterable[BaseDocument]):
             writer.writeheader()
 
             for doc in self:
-                doc_dict = dict_to_access_paths(doc.dict())
+                doc_dict = _dict_to_access_paths(doc.dict())
                 writer.writerow(doc_dict)
 
     # Methods to load from/to files in different formats
@@ -600,10 +600,13 @@ class IOMixinArray(Iterable[BaseDocument]):
         )
 
 
-def is_access_path_valid(doc: Type['BaseDocument'], field_name: str) -> bool:
-    field, _, remaining = field_name.partition('.')
+def is_access_path_valid(doc: Type['BaseDocument'], access_path: str) -> bool:
+    """
+    Check if a given access path is a valid path for a given Document class.
+    """
+    field, _, remaining = access_path.partition('.')
     if len(remaining) == 0:
-        return field_name in doc.__fields__.keys()
+        return access_path in doc.__fields__.keys()
     else:
         valid_field = field in doc.__fields__.keys()
         if not valid_field:
@@ -616,7 +619,14 @@ def is_access_path_valid(doc: Type['BaseDocument'], field_name: str) -> bool:
                 return is_access_path_valid(d, remaining)
 
 
-def access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
+def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
+    """
+    Convert an access path and its value to a (potentially) nested dict.
+
+    EXAMPLE USAGE
+    .. code-block:: python
+        assert access_path_to_dict('image.url', 'some.url') == {'image': {'url': 'some.url'}}
+    """
     fields = access_path.split('.')
     for field in reversed(fields):
         result = {field: value}
@@ -624,11 +634,18 @@ def access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
     return result
 
 
-def dict_to_access_paths(d: dict) -> Dict[str, Any]:
+def _dict_to_access_paths(d: dict) -> Dict[str, Any]:
+    """
+    Convert a (nested) dict to a Dict[access_path, value].
+
+    EXAMPLE USAGE
+    .. code-block:: python
+        assert dict_to_access_paths({'image': {'url': 'some.url'}}) == {'image.url', 'some.url'}
+    """
     result = {}
     for k, v in d.items():
         if isinstance(v, dict):
-            v = dict_to_access_paths(v)
+            v = _dict_to_access_paths(v)
             for nested_k, nested_v in v.items():
                 new_key = '.'.join([k, nested_k])
                 result[new_key] = nested_v
@@ -637,7 +654,9 @@ def dict_to_access_paths(d: dict) -> Dict[str, Any]:
     return result
 
 
-def update_nested_dicts(to_update: Dict[Any, Any], update_with: Dict[Any, Any]) -> None:
+def _update_nested_dicts(
+    to_update: Dict[Any, Any], update_with: Dict[Any, Any]
+) -> None:
     """
     Update a dict with another one, while considering shared nested keys.
 
@@ -659,4 +678,4 @@ def update_nested_dicts(to_update: Dict[Any, Any], update_with: Dict[Any, Any]) 
         if k not in to_update.keys():
             to_update[k] = v
         else:
-            update_nested_dicts(to_update[k], update_with[k])
+            _update_nested_dicts(to_update[k], update_with[k])

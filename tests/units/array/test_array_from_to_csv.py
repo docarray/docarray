@@ -5,9 +5,9 @@ import pytest
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array.io import (
-    dict_to_access_paths,
+    _dict_to_access_paths,
+    _update_nested_dicts,
     is_access_path_valid,
-    update_nested_dicts,
 )
 from docarray.documents import Image
 from tests import TOYDATA_DIR
@@ -146,7 +146,7 @@ def test_dict_to_access_paths():
         'a0': {'b0': {'c0': 0}, 'b1': {'c0': 1}},
         'a1': {'b0': {'c0': 2, 'c1': 3}, 'b1': 4},
     }
-    casted = dict_to_access_paths(d)
+    casted = _dict_to_access_paths(d)
     assert casted == {
         'a0.b0.c0': 0,
         'a0.b1.c0': 1,
@@ -160,5 +160,5 @@ def test_update_nested_dict():
     d1 = {'text': 'hello', 'image': {'tensor': None}}
     d2 = {'image': {'url': 'some.png'}}
 
-    update_nested_dicts(d1, d2)
+    _update_nested_dicts(d1, d2)
     assert d1 == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
