@@ -13,39 +13,42 @@ from docarray.documents import Image
 from tests import TOYDATA_DIR
 
 
-class MyDoc(BaseDocument):
-    count: Optional[int]
-    text: str
+@pytest.fixture()
+def nested_doc_cls():
+    class MyDoc(BaseDocument):
+        count: Optional[int]
+        text: str
+
+    class MyDocNested(MyDoc):
+        image: Image
+        image2: Image
+
+    return MyDocNested
 
 
-class MyDocNested(MyDoc):
-    image: Image
-    image2: Image
-
-
-def test_to_from_csv(tmpdir):
-    da = DocumentArray[MyDocNested](
+def test_to_from_csv(tmpdir, nested_doc_cls):
+    da = DocumentArray[nested_doc_cls](
         [
-            MyDocNested(
+            nested_doc_cls(
                 count=0,
                 text='hello',
                 image=Image(url='aux.png'),
                 image2=Image(url='aux.png'),
             ),
-            MyDocNested(text='hello world', image=Image(), image2=Image()),
+            nested_doc_cls(text='hello world', image=Image(), image2=Image()),
         ]
     )
     tmp_file = str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
-    da_from = DocumentArray[MyDocNested].from_csv(tmp_file)
+    da_from = DocumentArray[nested_doc_cls].from_csv(tmp_file)
     for doc1, doc2 in zip(da, da_from):
         assert doc1 == doc2
 
 
-def test_from_csv_nested():
-    da = DocumentArray[MyDocNested].from_csv(
+def test_from_csv_nested(nested_doc_cls):
+    da = DocumentArray[nested_doc_cls].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
     )
     assert len(da) == 3
