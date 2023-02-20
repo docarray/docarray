@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docarray"
-version = '2023.01.18.alpha'
+version = '0.30.alpha3'
 description='The data structure for unstructured data'
 authors=['DocArray']
 license='Apache 2.0'
