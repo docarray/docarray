@@ -4,11 +4,7 @@ from typing import Any, Dict, Type
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.storage.abstract_doc_store import (
-    BaseDBConfig,
-    BaseDocumentStore,
-    BaseRuntimeConfig,
-)
+from docarray.storage.abstract_doc_store import BaseDocumentStore
 from docarray.typing import NdArray
 
 
@@ -21,13 +17,13 @@ class FakeQueryBuilder:
 
 
 @dataclass
-class DBConfig(BaseDBConfig):
+class DBConfig(BaseDocumentStore.DBConfig):
     work_dir: str = '.'
     other: int = 5
 
 
 @dataclass
-class RuntimeConfig(BaseRuntimeConfig):
+class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = field(
         default_factory=lambda: {
             str: {
@@ -44,9 +40,8 @@ def _identity(*x, **y):
 
 
 class DummyDocStore(BaseDocumentStore):
-    _query_builder_cls = FakeQueryBuilder
-    _db_config_cls = DBConfig
-    _runtime_config_cls = RuntimeConfig
+    DBConfig = DBConfig
+    RuntimeConfig = RuntimeConfig
 
     def python_type_to_db_type(self, x):
         return str

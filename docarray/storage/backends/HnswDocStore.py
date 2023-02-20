@@ -12,12 +12,10 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
 from docarray.storage.abstract_doc_store import (
-    BaseDBConfig,
     BaseDocumentStore,
-    BaseQueryBuilder,
-    BaseRuntimeConfig,
     FindResultBatched,
     _Column,
+    composable,
 )
 from docarray.typing import AnyTensor
 from docarray.utils.filter import filter as da_filter
@@ -33,44 +31,33 @@ if torch_imported:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
 
-@dataclass
-class DBConfig(BaseDBConfig):
-    work_dir: str = '.'
-
-
-@dataclass
-class RuntimeConfig(BaseRuntimeConfig):
-    default_column_config: Dict[Type, Dict[str, Any]] = field(
-        default_factory=lambda: {
-            np.ndarray: {
-                'dim': 128,
-                'space': 'l2',  # 'l2', 'ip', 'cosine'
-                'max_elements': 1024,
-                'ef_construction': 200,
-                'M': 16,
-                'allow_replace_deleted': True,  # TODO(johannes) handle below
-            },
-            None: {},
-        }
-    )
-    default_ef = 50
-    default_num_threads = 1
-    max_elements = None  # use the one above
-
-
-class HnswQueryBuilder(BaseQueryBuilder):
-    def build(self, *args, **kwargs) -> Any:
-        supported_ops = ('find', 'filter')
-        for op, _ in self._queries:
-            if op not in supported_ops:
-                raise ValueError(f'Unsupported query operation: {op}')
-        return self._queries
-
-
 class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
-    _query_builder_cls = HnswQueryBuilder
-    _db_config_cls = DBConfig
-    _runtime_config_cls = RuntimeConfig
+    class QueryBuilder(BaseDocumentStore.QueryBuilder):
+        def build(self, *args, **kwargs) -> Any:
+            return self._queries
+
+    @dataclass
+    class DBConfig(BaseDocumentStore.DBConfig):
+        work_dir: str = '.'
+
+    @dataclass
+    class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
+        default_column_config: Dict[Type, Dict[str, Any]] = field(
+            default_factory=lambda: {
+                np.ndarray: {
+                    'dim': 128,
+                    'space': 'l2',  # 'l2', 'ip', 'cosine'
+                    'max_elements': 1024,
+                    'ef_construction': 200,
+                    'M': 16,
+                    'allow_replace_deleted': True,  # TODO(johannes) handle below
+                },
+                None: {},
+            }
+        )
+        default_ef = 50
+        default_num_threads = 1
+        max_elements = None  # use the one above
 
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
@@ -222,10 +209,12 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         ]
         return FindResultBatched(documents=result_das, scores=distances)
 
+    @composable
     def find(self, *args, **kwargs) -> FindResult:
         docs, scores = self.find_batched(*args, **kwargs)
         return FindResult(documents=docs[0], scores=scores[0])
 
+    @composable
     def filter(
         self,
         *args,

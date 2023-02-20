@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
+from functools import wraps
 from typing import (
     Any,
+    Callable,
     Dict,
     Generator,
     Generic,
@@ -31,31 +33,8 @@ class FindResultBatched(NamedTuple):
     scores: np.ndarray
 
 
-@dataclass
-class BaseDBConfig(ABC):
-    ...
-
-
-@dataclass
-class BaseRuntimeConfig(ABC):
-    # default configurations for every column type
-    # a dictionary from a column type (DB specific) to a dictionary
-    # of default configurations for that type
-    # These configs are used if no configs are specified in the `Field(...)`
-    # of a field in the Document schema (`cls._schema`)
-    # Example: `default_column_config['VARCHAR'] = {'length': 255}`
-    default_column_config: Dict[Type, Dict[str, Any]]
-
-
-@dataclass
-class _Column:
-    docarray_type: Type
-    db_type: Any
-    n_dim: Optional[int]
-    config: Dict[str, Any]
-
-
-def _delegate_to_query(method_name: str):
+def _delegate_to_query(method_name: str, func: Callable):
+    @wraps(func)
     def inner(self, *args, **kwargs):
         if args:
             raise ValueError(
@@ -69,25 +48,35 @@ def _delegate_to_query(method_name: str):
     return inner
 
 
-class BaseQueryBuilder(ABC):
-    def __init__(self):
-        # list of tuples (method name, kwargs)
-        self._queries: List[Tuple[str, Dict]] = []
+def _raise_not_composable(name):
+    def _inner(*args, **kwargs):
+        raise NotImplementedError(
+            f'`{name}` is not usable through the query builder of this Document Store. '
+            f'But you can call `doc_store.{name}()` directly.'
+        )
 
-    find = _delegate_to_query('find')
-    find_batched = _delegate_to_query('find_batched')
-    filter = _delegate_to_query('filter')
-    filter_batched = _delegate_to_query('filter_batched')
-    text_search = _delegate_to_query('text_search')
-    text_search_batched = _delegate_to_query('text_search_batched')
+    return _inner
 
-    @abstractmethod
-    def build(self, *args, **kwargs) -> Any:
-        """Build the DB specific query object.
-        The DB specific implementation can leverage self._queries to do so.
-        The output of this should be able to be passed to execute_query().
-        """
-        ...
+
+@dataclass
+class _Column:
+    docarray_type: Type
+    db_type: Any
+    n_dim: Optional[int]
+    config: Dict[str, Any]
+
+
+class composable:
+    """Decorator that marks methods in a DocumentStore as composable,
+    i.e. they can be used in a query builder.
+    """
+
+    def __init__(self, fn):
+        self.fn = fn
+
+    def __set_name__(self, owner, name):
+        setattr(owner.QueryBuilder, name, _delegate_to_query(name, self.fn))
+        setattr(owner, name, self.fn)
 
 
 class BaseDocumentStore(ABC, Generic[TSchema]):
@@ -97,27 +86,65 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     # for subclasses this is filled automatically
     _schema: Optional[Type[BaseDocument]] = None
 
-    # register helper classes here
-    _query_builder_cls: Type[BaseQueryBuilder] = BaseQueryBuilder
-    _db_config_cls: Type  # should be dataclass
-    _runtime_config_cls: Type  # should be dataclass
-
     def __init__(self, db_config=None, **kwargs):
         if self._schema is None:
             raise ValueError(
                 'A DocumentStore must be typed with a Document type.'
                 'To do so, use the syntax: DocumentStore[DocumentType]'
             )
-        self._db_config = db_config if db_config else self._db_config_cls(**kwargs)
-        if not isinstance(self._db_config, self._db_config_cls):
-            raise ValueError(f'db_config must be of type {self._db_config_cls}')
-        self._runtime_config = self._runtime_config_cls()
+        self._db_config = db_config if db_config else self.DBConfig(**kwargs)
+        if not isinstance(self._db_config, self.DBConfig):
+            raise ValueError(f'db_config must be of type {self.DBConfig}')
+        self._runtime_config = self.RuntimeConfig()
         self._columns: Dict[str, _Column] = self._create_columns(self._schema)
+
+    ###############################################
+    # Inner classes for query builder and configs #
+    # Subclasses must subclass & implement these  #
+    ###############################################
+
+    class QueryBuilder(ABC):
+        def __init__(self):
+            # list of tuples (method name, kwargs)
+            # no need to populate this, it's done automatically
+            self._queries: List[Tuple[str, Dict]] = []
+
+        @abstractmethod
+        def build(self, *args, **kwargs) -> Any:
+            """Build the DB specific query object.
+            The DB specific implementation can leverage self._queries to do so.
+            The output of this should be able to be passed to execute_query().
+            """
+            ...
+
+        # no need to implement the methods below
+        # they are handled automatically by the `composable` decorator
+        find = _raise_not_composable('find')
+        filter = _raise_not_composable('filter')
+        text_search = _raise_not_composable('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('filter_batched')
+        text_search_batched = _raise_not_composable('text_search_batched')
+
+    @dataclass
+    class DBConfig(ABC):
+        ...
+
+    @dataclass
+    class RuntimeConfig(ABC):
+        # default configurations for every column type
+        # a dictionary from a column type (DB specific) to a dictionary
+        # of default configurations for that type
+        # These configs are used if no configs are specified in the `Field(...)`
+        # of a field in the Document schema (`cls._schema`)
+        # Example: `default_column_config['VARCHAR'] = {'length': 255}`
+        default_column_config: Dict[Type, Dict[str, Any]]
 
     #####################################
     # Abstract methods                  #
     # Subclasses must implement these   #
     #####################################
+
     @abstractmethod
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
@@ -268,10 +295,8 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         if runtime_config is None:
             self._runtime_config = replace(self._runtime_config, **kwargs)
         else:
-            if not isinstance(runtime_config, self._runtime_config_cls):
-                raise ValueError(
-                    f'runtime_config must be of type {self._runtime_config_cls}'
-                )
+            if not isinstance(runtime_config, self.RuntimeConfig):
+                raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
     ##################################################
@@ -292,13 +317,13 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
 
         return _DocumentStoreTyped
 
-    def build_query(self) -> BaseQueryBuilder:
+    def build_query(self) -> QueryBuilder:
         """
         Build a query for this DocumentStore.
 
         :return: a new `QueryBuilder` object for this DocumentStore
         """
-        return self._query_builder_cls()
+        return self.QueryBuilder()
 
     def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
         columns: Dict[str, _Column] = dict()
