@@ -9,6 +9,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 from docarray.base_document import BaseDocument
@@ -34,7 +35,10 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         return f'<{self.__class__.__name__} (length={len(self)})>'
 
     @classmethod
-    def __class_getitem__(cls, item: Type[BaseDocument]):
+    def __class_getitem__(cls, item: Union[Type[BaseDocument], TypeVar, str]):
+        if not isinstance(item, type):
+            return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
+            # this do nothing that checking that item is valid type var or str
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
@@ -48,7 +52,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
             global _DocumentArrayTyped
 
             class _DocumentArrayTyped(cls):  # type: ignore
-                document_type: Type[BaseDocument] = item
+                document_type: Type[BaseDocument] = cast(Type[BaseDocument], item)
 
             for field in _DocumentArrayTyped.document_type.__fields__.keys():
 

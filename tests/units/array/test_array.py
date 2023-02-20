@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, TypeVar, Union
 
 import numpy as np
 import pytest
@@ -294,3 +294,17 @@ def test_del_item(da):
         'hello 8',
         'hello 9',
     ]
+
+
+def test_generic_type_var():
+    T = TypeVar('T', bound=BaseDocument)
+
+    def f(a: DocumentArray[T]) -> DocumentArray[T]:
+        return a
+
+    def g(a: DocumentArray['BaseDocument']) -> DocumentArray['BaseDocument']:
+        return a
+
+    a = DocumentArray()
+    f(a)
+    g(a)
