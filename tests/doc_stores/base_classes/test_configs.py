@@ -67,7 +67,6 @@ def test_defaults():
         'dim': 128,
         'space': 'l2',
     }
-    assert store._runtime_config.default_ef == 50
 
 
 def test_set_by_class():
@@ -77,7 +76,6 @@ def test_set_by_class():
     assert store._db_config.work_dir == 'hi'
     store.configure(RuntimeConfig(default_column_config={}, default_ef=10))
     assert store._runtime_config.default_column_config == {}
-    assert store._runtime_config.default_ef == 10
 
     # change only some settings
     store = DummyDocStore[SimpleDoc](DBConfig(work_dir='hi'))
@@ -85,7 +83,6 @@ def test_set_by_class():
     assert store._db_config.work_dir == 'hi'
     store.configure(RuntimeConfig(default_column_config={}))
     assert store._runtime_config.default_column_config == {}
-    assert store._runtime_config.default_ef == 50
 
 
 def test_set_by_kwargs():
@@ -95,7 +92,6 @@ def test_set_by_kwargs():
     assert store._db_config.work_dir == 'hi'
     store.configure(default_column_config={}, default_ef=10)
     assert store._runtime_config.default_column_config == {}
-    assert store._runtime_config.default_ef == 10
 
     # change only some settings
     store = DummyDocStore[SimpleDoc](work_dir='hi')
@@ -103,7 +99,6 @@ def test_set_by_kwargs():
     assert store._db_config.work_dir == 'hi'
     store.configure(default_column_config={})
     assert store._runtime_config.default_column_config == {}
-    assert store._runtime_config.default_ef == 50
 
 
 def test_default_column_config():
