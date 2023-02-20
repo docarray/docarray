@@ -299,10 +299,10 @@ class IOMixinArray(Iterable[BaseDocument]):
     @classmethod
     def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> 'DocumentArray':
         """
-        Load a DocumentArray from a csv file following the schema defines in the
+        Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        The column names have to match the fields of the document type. For nested fields
-        dot-separated access paths are expected, such as `'image.url'`.
+        The column names have to match the fields of the document type.
+        For nested fields use dot-separated access paths, such as 'image.url'.
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
@@ -324,7 +324,7 @@ class IOMixinArray(Iterable[BaseDocument]):
             if fields is None:
                 raise TypeError("No field names are given.")
 
-            valid = [_assert_schema(doc_type, field) for field in fields]
+            valid = [is_access_path_valid(doc_type, field) for field in fields]
             if not all(valid):
                 raise ValueError(
                     f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
@@ -334,11 +334,11 @@ class IOMixinArray(Iterable[BaseDocument]):
             for line in lines:
                 doc_dict = {}
                 for field, value in line.items():
-                    x = access_path_to_dict(
+                    field2val = access_path_to_dict(
                         access_path=field,
                         value=value if value not in ['', 'None'] else None,
                     )
-                    doc_dict = merge_nested_dicts(d1=doc_dict, d2=x)
+                    update_nested_dicts(to_update=doc_dict, update_with=field2val)
 
                 da.append(doc_type.parse_obj(doc_dict))
 
@@ -600,7 +600,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         )
 
 
-def _assert_schema(doc: Type['BaseDocument'], field_name: str) -> bool:
+def is_access_path_valid(doc: Type['BaseDocument'], field_name: str) -> bool:
     field, _, remaining = field_name.partition('.')
     if len(remaining) == 0:
         return field_name in doc.__fields__.keys()
@@ -613,7 +613,7 @@ def _assert_schema(doc: Type['BaseDocument'], field_name: str) -> bool:
             if not issubclass(d, BaseDocument):
                 return False
             else:
-                return _assert_schema(d, remaining)
+                return is_access_path_valid(d, remaining)
 
 
 def access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
@@ -637,20 +637,26 @@ def dict_to_access_paths(d: dict) -> Dict[str, Any]:
     return result
 
 
-def merge_nested_dicts(d1: Dict[Any, Any], d2: Dict[Any, Any]) -> None:
+def update_nested_dicts(to_update: Dict[Any, Any], update_with: Dict[Any, Any]) -> None:
     """
-    Merge two dictionaries, while considering shared nested keys.
+    Update a dict with another one, while considering shared nested keys.
 
-    :param d1: first dict
-    :param d2: second dict
+    EXAMPLE USAGE:
+
+    .. code-block:: python
+
+        d1 = {'image': {'tensor': None}, 'title': 'hello'}
+        d2 = {'image': {'url': 'some.png'}}
+
+        update_nested_dicts(d1, d2)
+        assert d1 == {'image': {'tensor': None, 'url': 'some.png'}, 'title': 'hello'}
+
+    :param to_update: dict that should be updated
+    :param update_with: dict to update with
     :return: merged dict
     """
-    import copy
-
-    result = copy.deepcopy(d1)
-    for k, v in d2.items():
-        if k not in result.keys():
-            result[k] = v
+    for k, v in update_with.items():
+        if k not in to_update.keys():
+            to_update[k] = v
         else:
-            result[k] = merge_nested_dicts(d1[k], d2[k])
-    return result
+            update_nested_dicts(to_update[k], update_with[k])

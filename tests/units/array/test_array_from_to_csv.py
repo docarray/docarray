@@ -5,9 +5,9 @@ import pytest
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.array.io import (
-    _assert_schema,
     dict_to_access_paths,
-    merge_nested_dicts,
+    is_access_path_valid,
+    update_nested_dicts,
 )
 from docarray.documents import Image
 from tests import TOYDATA_DIR
@@ -134,11 +134,11 @@ def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
 
 
 def test_assert_schema(nested_doc):
-    assert _assert_schema(nested_doc.__class__, 'img')
-    assert _assert_schema(nested_doc.__class__, 'middle.img')
-    assert _assert_schema(nested_doc.__class__, 'middle.inner.img')
-    assert _assert_schema(nested_doc.__class__, 'middle')
-    assert not _assert_schema(nested_doc.__class__, 'inner')
+    assert is_access_path_valid(nested_doc.__class__, 'img')
+    assert is_access_path_valid(nested_doc.__class__, 'middle.img')
+    assert is_access_path_valid(nested_doc.__class__, 'middle.inner.img')
+    assert is_access_path_valid(nested_doc.__class__, 'middle')
+    assert not is_access_path_valid(nested_doc.__class__, 'inner')
 
 
 def test_dict_to_access_paths():
@@ -160,5 +160,5 @@ def test_update_nested_dict():
     d1 = {'text': 'hello', 'image': {'tensor': None}}
     d2 = {'image': {'url': 'some.png'}}
 
-    merged = merge_nested_dicts(d1, d2)
-    assert merged == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
+    update_nested_dicts(d1, d2)
+    assert d1 == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
