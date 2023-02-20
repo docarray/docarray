@@ -1,20 +1,9 @@
 import hashlib
 import os
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Dict, Generic, List, Sequence, Tuple, Type, TypeVar, Union
 
 import hnswlib
 import numpy as np
@@ -23,8 +12,10 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
 from docarray.storage.abstract_doc_store import (
+    BaseDBConfig,
     BaseDocumentStore,
     BaseQueryBuilder,
+    BaseRuntimeConfig,
     FindResultBatched,
     _Column,
 )
@@ -32,7 +23,6 @@ from docarray.typing import AnyTensor
 from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
-from docarray.utils.protocols import IsDataclass
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -44,8 +34,28 @@ if torch_imported:
 
 
 @dataclass
-class HNSWConfig:
+class DBConfig(BaseDBConfig):
     work_dir: str = '.'
+
+
+@dataclass
+class RuntimeConfig(BaseRuntimeConfig):
+    default_column_config: Dict[Type, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            np.ndarray: {
+                'dim': 128,
+                'space': 'l2',  # 'l2', 'ip', 'cosine'
+                'max_elements': 1024,
+                'ef_construction': 200,
+                'M': 16,
+                'allow_replace_deleted': True,  # TODO(johannes) handle below
+            },
+            None: {},
+        }
+    )
+    default_ef = 50
+    default_num_threads = 1
+    max_elements = None  # use the one above
 
 
 class HnswQueryBuilder(BaseQueryBuilder):
@@ -58,22 +68,13 @@ class HnswQueryBuilder(BaseQueryBuilder):
 
 
 class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
-    _default_column_config = {
-        np.ndarray: {
-            'dim': 128,
-            'space': 'l2',
-            'max_elements': 1024,
-            'ef_construction': 200,
-            'M': 16,
-        },
-        None: {},
-    }
-
     _query_builder_cls = HnswQueryBuilder
+    _db_config_cls = DBConfig
+    _runtime_config_cls = RuntimeConfig
 
-    def __init__(self, config: Optional[IsDataclass] = None):
-        super().__init__(config)
-        self._work_dir = config.work_dir
+    def __init__(self, db_config=None, **kwargs):
+        super().__init__(db_config=db_config, **kwargs)
+        self._work_dir = self._db_config.work_dir
         load_existing = os.path.exists(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 

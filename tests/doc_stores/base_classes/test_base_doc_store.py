@@ -1,9 +1,12 @@
+from dataclasses import dataclass, field
+from typing import Any, Dict, Type
+
 import numpy as np
 import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.storage.abstract_doc_store import BaseDocumentStore
+from docarray.storage.abstract_doc_store import BaseDocumentStore, BaseRuntimeConfig
 from docarray.typing import ID, NdArray
 
 
@@ -32,9 +35,22 @@ def _identity(*x, **y):
     return x, y
 
 
+@dataclass
+class DBConfig:
+    work_dir: str = '.'
+
+
+@dataclass
+class RuntimeConfig(BaseRuntimeConfig):
+    default_column_config: Dict[Type, Dict[str, Any]] = field(
+        default_factory=lambda: {str: {'hi': 'there'}, np.ndarray: {'you': 'good?'}}
+    )
+
+
 class DummyDocStore(BaseDocumentStore):
     _query_builder_cls = FakeQueryBuilder
-    _default_column_config = {str: {'hi': 'there'}, np.ndarray: {'you': 'good?'}}
+    _db_config_cls = DBConfig
+    _runtime_config_cls = RuntimeConfig
 
     def python_type_to_db_type(self, x):
         return str
@@ -64,14 +80,6 @@ def test_build_query():
     store = DummyDocStore[SimpleDoc]()
     q = store.build_query()
     assert isinstance(q, store._query_builder_cls)
-
-
-def test_default_column_config():
-    store = DummyDocStore[SimpleDoc]()
-    assert store._default_column_config == {
-        str: {'hi': 'there'},
-        np.ndarray: {'you': 'good?'},
-    }
 
 
 def test_create_columns():

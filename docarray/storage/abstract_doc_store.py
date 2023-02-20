@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import (
     Any,
     Dict,
@@ -22,7 +22,6 @@ from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult
-from docarray.utils.protocols import IsDataclass
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -30,6 +29,22 @@ TSchema = TypeVar('TSchema', bound=BaseDocument)
 class FindResultBatched(NamedTuple):
     documents: List[DocumentArray]
     scores: np.ndarray
+
+
+@dataclass
+class BaseDBConfig(ABC):
+    ...
+
+
+@dataclass
+class BaseRuntimeConfig(ABC):
+    # default configurations for every column type
+    # a dictionary from a column type (DB specific) to a dictionary
+    # of default configurations for that type
+    # These configs are used if no configs are specified in the `Field(...)`
+    # of a field in the Document schema (`cls._schema`)
+    # Example: `default_column_config['VARCHAR'] = {'length': 255}`
+    default_column_config: Dict[Type, Dict[str, Any]]
 
 
 @dataclass
@@ -82,25 +97,21 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     # for subclasses this is filled automatically
     _schema: Optional[Type[BaseDocument]] = None
 
-    # default configurations for every column type
-    # a dictionary from a column type (DB specific) to a dictionary
-    # of default configurations for that type
-    # These configs are used if no configs are specified in the `Field(...)`
-    # of a field in the Document schema (`cls._schema`)
-    # Example: `_default_column_config['VARCHAR'] = {'length': 255}`
-    _default_column_config: Dict[Any, Dict[str, Any]] = {}
-
-    # register your query builder here
+    # register helper classes here
     _query_builder_cls: Type[BaseQueryBuilder] = BaseQueryBuilder
+    _db_config_cls: Type  # should be dataclass
+    _runtime_config_cls: Type  # should be dataclass
 
-    def __init__(self, config: Optional[IsDataclass] = None):
+    def __init__(self, db_config=None, **kwargs):
         if self._schema is None:
             raise ValueError(
                 'A DocumentStore must be typed with a Document type.'
                 'To do so, use the syntax: DocumentStore[DocumentType]'
             )
-        self._config = config
-
+        self._db_config = db_config if db_config else self._db_config_cls(**kwargs)
+        if not isinstance(self._db_config, self._db_config_cls):
+            raise ValueError(f'db_config must be of type {self._db_config_cls}')
+        self._runtime_config = self._runtime_config_cls()
         self._columns: Dict[str, _Column] = self._create_columns(self._schema)
 
     #####################################
@@ -238,6 +249,31 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         # TODO(johannes) refine method signature
         ...
 
+    ####################################################
+    # Optional overrides                               #
+    # Subclasses may more may not need to change these #
+    ####################################################
+
+    def configure(self, runtime_config=None, **kwargs):
+        """
+        Configure the DocumentStore.
+        You can either pass a config object to `config` or pass individual config
+        parameters as keyword arguments.
+        If a configuration object is passed, it will replace the current configuration.
+        If keyword arguments are passed, they will update the current configuration.
+
+        :param runtime_config: the configuration to apply
+        :param kwargs: individual configuration parameters
+        """
+        if runtime_config is None:
+            self._runtime_config = replace(self._runtime_config, **kwargs)
+        else:
+            if not isinstance(runtime_config, self._runtime_config_cls):
+                raise ValueError(
+                    f'runtime_config must be of type {self._runtime_config_cls}'
+                )
+            self._runtime_config = runtime_config
+
     ##################################################
     # Behind-the-scenes magic                        #
     # Subclasses should not need to implement these  #
@@ -245,7 +281,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     def __class_getitem__(cls, item: Type[TSchema]):
         if not issubclass(item, BaseDocument):
             raise ValueError(
-                f'{cls.__name__}[item] item should be a Document not a {item} '
+                f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
 
         class _DocumentStoreTyped(cls):  # type: ignore
@@ -296,7 +332,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     def _create_single_column(self, field):
         type_ = field.type_
         db_type = self.python_type_to_db_type(type_)
-        config = self._default_column_config[db_type].copy()
+        config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
