@@ -152,3 +152,17 @@ def test_parametrized_operations():
     assert isinstance(t_result, torch.Tensor)
     assert isinstance(t_result, TorchTensor)
     assert isinstance(t_result, TorchTensor[128])
+
+
+def test_deepcopy():
+    from docarray import BaseDocument
+
+    class MMdoc(BaseDocument):
+        embedding: TorchEmbedding
+
+    doc = MMdoc(embedding=torch.randn(32))
+    doc_copy = doc.copy(deep=True)
+
+    assert id(doc) != id(doc_copy)
+    assert id(doc.embedding) != id(doc_copy.embedding)
+    assert (doc.embedding == doc_copy.embedding).all()
