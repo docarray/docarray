@@ -7,11 +7,14 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
+from functools import wraps
 from itertools import compress
 from typing import (
     TYPE_CHECKING,
     BinaryIO,
     ContextManager,
+    Dict,
     Generator,
     Iterable,
     Optional,
@@ -29,12 +32,14 @@ from typing_inspect import is_union_type
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 from docarray.utils.misc import is_torch_available
 
 if TYPE_CHECKING:
 
     from docarray.proto import DocumentArrayProto
+    from docarray.typing import TorchTensor
 
 T = TypeVar('T', bound='IOMixinArray')
 
@@ -356,7 +361,6 @@ class IOMixinArray(Iterable[BaseDocument]):
                 doc_dict = doc.dict()
                 writer.writerow(doc_dict)
 
-
     # Methods to load from/to files in different formats
     @property
     def _stream_header(self) -> bytes:
@@ -596,7 +600,6 @@ class IOMixinArray(Iterable[BaseDocument]):
             file_ctx=file_ctx,
             show_progress=show_progress,
         )
-
 
 
 def _assert_schema(doc: Type['BaseDocument'], field_name: str) -> bool:
