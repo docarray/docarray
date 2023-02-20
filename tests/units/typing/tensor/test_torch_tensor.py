@@ -163,6 +163,8 @@ def test_deepcopy():
     doc = MMdoc(embedding=torch.randn(32))
     doc_copy = doc.copy(deep=True)
 
-    assert id(doc) != id(doc_copy)
-    assert id(doc.embedding) != id(doc_copy.embedding)
+    assert doc.embedding.data_ptr() != doc_copy.embedding.data_ptr()
     assert (doc.embedding == doc_copy.embedding).all()
+
+    doc_copy.embedding = torch.randn(32)
+    assert not (doc.embedding == doc_copy.embedding).all()
