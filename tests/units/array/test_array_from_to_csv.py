@@ -44,18 +44,6 @@ def test_to_from_csv(tmpdir):
         assert doc1 == doc2
 
 
-def test_to_csv_(tmpdir):
-    da = DocumentArray[MyDoc](
-        [
-            MyDoc(count=0, text='hello'),
-            MyDoc(text='hello world'),
-        ]
-    )
-    tmp_file = str(tmpdir / 'tmp.csv')
-    da.to_csv(tmp_file)
-    assert os.path.isfile(tmp_file)
-
-
 def test_from_csv_nested():
     da = DocumentArray[MyDocNested].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
@@ -102,7 +90,21 @@ def nested_doc():
     return doc
 
 
-def test_fields_to_access_paths():
+def test_from_csv_without_schema_raise_exception():
+    with pytest.raises(TypeError, match='no document schema defined'):
+        DocumentArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
+
+
+def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
+    with pytest.raises(
+        ValueError, match='Fields provided in the csv file do not match the schema'
+    ):
+        DocumentArray[nested_doc.__class__].from_csv(
+            file_path=str(TOYDATA_DIR / 'docs.csv')
+        )
+
+
+def test_get_access_paths():
     class Painting(BaseDocument):
         title: str
         img: Image
@@ -119,26 +121,13 @@ def test_fields_to_access_paths():
     ]
 
 
-def test_from_csv_without_schema_raise_exception():
-    with pytest.raises(TypeError, match='no document schema defined'):
-        DocumentArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
-
-
-def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
-    with pytest.raises(
-        ValueError, match='Fields provided in the csv file do not match the schema'
-    ):
-        DocumentArray[nested_doc.__class__].from_csv(
-            file_path=str(TOYDATA_DIR / 'docs.csv')
-        )
-
-
-def test_assert_schema(nested_doc):
+def test_is_access_path_valid(nested_doc):
     assert is_access_path_valid(nested_doc.__class__, 'img')
     assert is_access_path_valid(nested_doc.__class__, 'middle.img')
     assert is_access_path_valid(nested_doc.__class__, 'middle.inner.img')
     assert is_access_path_valid(nested_doc.__class__, 'middle')
     assert not is_access_path_valid(nested_doc.__class__, 'inner')
+    assert not is_access_path_valid(nested_doc.__class__, 'some.other.path')
 
 
 def test_dict_to_access_paths():
