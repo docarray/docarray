@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Generic,
     Iterable,
     List,
     Optional,
@@ -68,7 +67,7 @@ def _is_np_int(item: Any) -> bool:
     return False  # this is unreachable, but mypy wants it
 
 
-class DocumentArray(IOMixinArray, AnyDocumentArray, Generic[T_doc]):
+class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
     """
      DocumentArray is a container of Documents.
 
