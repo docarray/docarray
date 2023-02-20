@@ -40,7 +40,12 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
         # HNSWLib setup
         self._index_construct_params = ('space', 'dim')
-        self._index_init_params = ('max_elements', 'ef_construction', 'M')
+        self._index_init_params = (
+            'max_elements',
+            'ef_construction',
+            'M',
+            'allow_replace_deleted',
+        )
 
         self._hnsw_locations = {
             col_name: os.path.join(self._work_dir, f'{col_name}.bin')
@@ -83,15 +88,14 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
                     'space': 'l2',  # 'l2', 'ip', 'cosine'
                     'max_elements': 1024,
                     'ef_construction': 200,
+                    'ef': 10,
                     'M': 16,
-                    'allow_replace_deleted': True,  # TODO(johannes) handle below
+                    'allow_replace_deleted': True,
+                    'num_threads': 1,
                 },
                 None: {},
             }
         )
-        default_ef = 50
-        default_num_threads = 1
-        max_elements = None  # use the one above
 
     ###############################################
     # Implementation of abstract methods          #
@@ -289,6 +293,8 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         index = self._create_index_class(col)
         init_params = dict((k, col.config[k]) for k in self._index_init_params)
         index.init_index(**init_params)
+        index.set_ef(col.config['ef'])
+        index.set_num_threads(col.config['num_threads'])
         return index
 
     # SQLite helpers
