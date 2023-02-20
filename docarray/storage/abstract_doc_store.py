@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from functools import wraps
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -77,6 +78,12 @@ class composable:
     def __set_name__(self, owner, name):
         setattr(owner.QueryBuilder, name, _delegate_to_query(name, self.fn))
         setattr(owner, name, self.fn)
+
+
+if TYPE_CHECKING:
+    # static type checkers do not like the solution above
+    def composable(fn):
+        return fn
 
 
 class BaseDocumentStore(ABC, Generic[TSchema]):
@@ -299,6 +306,49 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                 raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
+    ##########################################################
+    # Helper methods                                         #
+    # These might be useful in your subclass implementation  #
+    ##########################################################
+
+    @staticmethod
+    def _get_value_by_column(doc: BaseDocument, col_name: str) -> Any:
+        """Get the value of a column of a document.
+
+        :param doc: The Document to get the value from
+        :param col_name: The name of the column, e.g. 'text' or 'image__tensor'
+        :return: The value of the column of `doc`
+        """
+        if '__' in col_name:
+            fields = col_name.split('__')
+            leaf_doc: BaseDocument = doc
+            for f in fields[:-1]:
+                leaf_doc = getattr(leaf_doc, f)
+            return getattr(leaf_doc, fields[-1])
+        else:
+            return getattr(doc, col_name)
+
+    def _get_values_by_columns(
+        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
+    ) -> Dict[str, Generator[Any, None, None]]:
+        """
+        Get all data from a (sequence of) document(s), flattened out by column.
+        :param docs: The document(s) to get the data from
+        :return: A dictionary mapping column names to a generator of values
+        """
+        if isinstance(docs, BaseDocument):
+            docs = [docs]
+        if not self._is_schema_compatible(docs):
+            raise ValueError(
+                'The schema of the documents to be indexed is not compatible'
+                ' with the schema of the store.'
+            )
+
+        def _col_gen(col_name):
+            return (self._get_value_by_column(doc, col_name) for doc in docs)
+
+        return {col_name: _col_gen(col_name) for col_name in self._columns}
+
     ##################################################
     # Behind-the-scenes magic                        #
     # Subclasses should not need to implement these  #
@@ -397,32 +447,3 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                 if reference_col_db_types != input_col_db_types:
                     return False
             return True
-
-    @staticmethod
-    def get_value(doc: BaseDocument, col_name: str) -> Any:
-        """Get the value of a column of a document."""
-        if '__' in col_name:
-            fields = col_name.split('__')
-            leaf_doc: BaseDocument = doc
-            for f in fields[:-1]:
-                leaf_doc = getattr(leaf_doc, f)
-            return getattr(leaf_doc, fields[-1])
-        else:
-            return getattr(doc, col_name)
-
-    def get_data_by_columns(
-        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
-    ) -> Dict[str, Generator[Any, None, None]]:
-        """Get the payload of a document."""
-        if isinstance(docs, BaseDocument):
-            docs = [docs]
-        if not self._is_schema_compatible(docs):
-            raise ValueError(
-                'The schema of the documents to be indexed is not compatible'
-                ' with the schema of the store.'
-            )
-
-        def _col_gen(col_name):
-            return (self.get_value(doc, col_name) for doc in docs)
-
-        return {col_name: _col_gen(col_name) for col_name in self._columns}

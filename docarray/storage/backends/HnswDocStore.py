@@ -110,7 +110,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
     def index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
-        data_by_columns = self.get_data_by_columns(docs)
+        data_by_columns = self._get_values_by_columns(docs)
         hnsw_ids = tuple(self._to_universal_id(doc.id) for doc in docs)
 
         # indexing into HNSWLib and SQLite sequentially
@@ -163,7 +163,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     ) -> FindResultBatched:
         # the below should be done in the abstract class
         if isinstance(query, BaseDocument):
-            query_vec = self.get_value(query, embedding_field)
+            query_vec = self._get_value_by_column(query, embedding_field)
         else:
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)

@@ -220,22 +220,22 @@ def test_get_value():
     t = np.random.random((10,))
 
     doc = SimpleDoc(tens=t)
-    assert np.all(DummyDocStore.get_value(doc, 'tens') == t)
+    assert np.all(DummyDocStore._get_value_by_column(doc, 'tens') == t)
 
     doc = FlatDoc(tens_one=t, tens_two=np.random.random((50,)))
-    assert np.all(DummyDocStore.get_value(doc, 'tens_one') == t)
+    assert np.all(DummyDocStore._get_value_by_column(doc, 'tens_one') == t)
 
     doc = NestedDoc(d=SimpleDoc(tens=t))
-    assert np.all(DummyDocStore.get_value(doc, 'd__tens') == t)
+    assert np.all(DummyDocStore._get_value_by_column(doc, 'd__tens') == t)
 
     doc = DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=t)))
-    assert np.all(DummyDocStore.get_value(doc, 'd__d__tens') == t)
+    assert np.all(DummyDocStore._get_value_by_column(doc, 'd__d__tens') == t)
 
 
 def test_get_data_by_columns():
     store = DummyDocStore[SimpleDoc]()
     docs = [SimpleDoc(tens=np.random.random((10,))) for _ in range(10)]
-    data_by_columns = store.get_data_by_columns(docs)
+    data_by_columns = store._get_values_by_columns(docs)
     assert list(data_by_columns.keys()) == ['id', 'tens']
     assert list(data_by_columns['id']) == [doc.id for doc in docs]
     assert list(data_by_columns['tens']) == [doc.tens for doc in docs]
@@ -245,7 +245,7 @@ def test_get_data_by_columns():
         FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
         for _ in range(10)
     ]
-    data_by_columns = store.get_data_by_columns(docs)
+    data_by_columns = store._get_values_by_columns(docs)
     assert list(data_by_columns.keys()) == ['id', 'tens_one', 'tens_two']
     assert list(data_by_columns['id']) == [doc.id for doc in docs]
     assert list(data_by_columns['tens_one']) == [doc.tens_one for doc in docs]
@@ -253,7 +253,7 @@ def test_get_data_by_columns():
 
     store = DummyDocStore[NestedDoc]()
     docs = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,)))) for _ in range(10)]
-    data_by_columns = store.get_data_by_columns(docs)
+    data_by_columns = store._get_values_by_columns(docs)
     assert list(data_by_columns.keys()) == ['id', 'd__id', 'd__tens']
     assert list(data_by_columns['id']) == [doc.id for doc in docs]
     assert list(data_by_columns['d__id']) == [doc.d.id for doc in docs]
@@ -264,7 +264,7 @@ def test_get_data_by_columns():
         DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=np.random.random((10,)))))
         for _ in range(10)
     ]
-    data_by_columns = store.get_data_by_columns(docs)
+    data_by_columns = store._get_values_by_columns(docs)
     assert list(data_by_columns.keys()) == ['id', 'd__id', 'd__d__id', 'd__d__tens']
     assert list(data_by_columns['id']) == [doc.id for doc in docs]
     assert list(data_by_columns['d__id']) == [doc.d.id for doc in docs]
