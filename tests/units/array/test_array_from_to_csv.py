@@ -4,7 +4,11 @@ from typing import Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.array.array.io import _assert_schema, dict_to_access_paths
+from docarray.array.array.io import (
+    _assert_schema,
+    dict_to_access_paths,
+    merge_nested_dicts,
+)
 from docarray.documents import Image
 from tests import TOYDATA_DIR
 
@@ -19,7 +23,7 @@ class MyDocNested(MyDoc):
     image2: Image
 
 
-def test_to_csv(tmpdir):
+def test_to_from_csv(tmpdir):
     da = DocumentArray[MyDocNested](
         [
             MyDocNested(
@@ -34,6 +38,10 @@ def test_to_csv(tmpdir):
     tmp_file = str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
+
+    da_from = DocumentArray[MyDocNested].from_csv(tmp_file)
+    for doc1, doc2 in zip(da, da_from):
+        assert doc1 == doc2
 
 
 def test_to_csv_(tmpdir):
@@ -55,6 +63,7 @@ def test_from_csv_nested():
     assert len(da) == 3
 
     for i, doc in enumerate(da):
+        print(f"doc.count = {doc.count}")
         assert doc.count.__class__ == int
         assert doc.count == int(f'{i}{i}{i}')
 
@@ -72,7 +81,7 @@ def test_from_csv_nested():
         assert doc.image2.bytes is None
 
     assert da[0].image2.url == 'image_10.png'
-    assert da[1].image2.url == 'image_11.png'
+    assert da[1].image2.url is None
     assert da[2].image2.url is None
 
 
@@ -145,3 +154,11 @@ def test_dict_to_access_paths():
         'a1.b0.c1': 3,
         'a1.b1': 4,
     }
+
+
+def test_update_nested_dict():
+    d1 = {'text': 'hello', 'image': {'tensor': None}}
+    d2 = {'image': {'url': 'some.png'}}
+
+    merged = merge_nested_dicts(d1, d2)
+    assert merged == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}

@@ -334,12 +334,12 @@ class IOMixinArray(Iterable[BaseDocument]):
             for line in lines:
                 doc_dict = {}
                 for field, value in line.items():
-                    doc_dict.update(
-                        access_path_to_dict(
-                            access_path=field,
-                            value=value if value not in ['', 'None'] else None,
-                        )
+                    x = access_path_to_dict(
+                        access_path=field,
+                        value=value if value not in ['', 'None'] else None,
                     )
+                    doc_dict = merge_nested_dicts(d1=doc_dict, d2=x)
+
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
@@ -634,4 +634,23 @@ def dict_to_access_paths(d: dict) -> Dict[str, Any]:
                 result[new_key] = nested_v
         else:
             result[k] = v
+    return result
+
+
+def merge_nested_dicts(d1: Dict[Any, Any], d2: Dict[Any, Any]) -> None:
+    """
+    Merge two dictionaries, while considering shared nested keys.
+
+    :param d1: first dict
+    :param d2: second dict
+    :return: merged dict
+    """
+    import copy
+
+    result = copy.deepcopy(d1)
+    for k, v in d2.items():
+        if k not in result.keys():
+            result[k] = v
+        else:
+            result[k] = merge_nested_dicts(d1[k], d2[k])
     return result
