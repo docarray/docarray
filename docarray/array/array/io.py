@@ -299,7 +299,8 @@ class IOMixinArray(Iterable[BaseDocument]):
     @classmethod
     def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> 'DocumentArray':
         """
-        Load a DocumentArray from a csv file.
+        Load a DocumentArray from a csv file following the schema defines in the
+        :attr:`~docarray.DocumentArray.document_type` attribute.
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
@@ -310,8 +311,8 @@ class IOMixinArray(Iterable[BaseDocument]):
         doc_type: Type[BaseDocument] = cls.document_type
         if doc_type == AnyDocument:
             raise TypeError(
-                "There is no document schema defined. "
-                "To load from csv, please specify the DocumentArray's document type."
+                'There is no document schema defined. '
+                'To load from csv, please specify the DocumentArray\'s document type.'
             )
 
         da = DocumentArray[doc_type]()
@@ -331,9 +332,12 @@ class IOMixinArray(Iterable[BaseDocument]):
             for line in lines:
                 doc_dict = {}
                 for field, value in line.items():
-                    if value in ['', 'None']:
-                        value = None
-                    doc_dict.update(access_path_to_dict(access_path=field, value=value))
+                    doc_dict.update(
+                        access_path_to_dict(
+                            access_path=field,
+                            value=value if value not in ['', 'None'] else None,
+                        )
+                    )
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
