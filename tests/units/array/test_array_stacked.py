@@ -540,8 +540,7 @@ def test_torch_nan():
     assert da[0].scalar == 3.0
 
 
-@pytest.mark.skip('not ready')
-def test_document_update():
+def test_document_tensor_update():
     class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
@@ -554,6 +553,20 @@ def test_document_update():
     batch[0].tensor = torch.ones(3, 224, 224)
 
     assert (batch.tensor[0] == torch.ones(3, 224, 224)).all()
+
+
+def test_document_tensor_update_mismatch():
+    class Image(BaseDocument):
+        tensor: TorchTensor
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+
+    with pytest.raises(Exception):
+        batch[0].tensor = torch.ones(5, 224, 224)
 
 
 def test_ref_inside_doc():

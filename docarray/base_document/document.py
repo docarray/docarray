@@ -9,11 +9,14 @@ from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
+from docarray.utils._typing import is_tensor_union, is_type_tensor
 
 if TYPE_CHECKING:
     from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
 _console: Console = Console()
+
+object_setattr = object.__setattr__
 
 
 class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
@@ -70,3 +73,23 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :return: return true if the Document is inside a DocumentArrayStack
         """
         return self._da_ref is not None
+
+    def __setattr__(self, name, value):
+
+        if self._da_ref is not None:
+            if name in self.__fields__:
+                field_type = self._get_field_type(name)
+                if is_type_tensor(field_type) or is_tensor_union(field_type):
+                    ### here we want to enforce the inplace behavior
+                    old_value = getattr(self, name)
+                    super().__setattr__(name, value)
+                    # here cheat by calling setattr on the value but what we want to do is
+                    # to call validation the same way pydantic does,
+                    # but we actually don't want to set it
+                    new_value = getattr(self, name)
+                    old_value[:] = new_value  # we force to do inplace
+                    object.__setattr__(self, name, old_value)
+
+                    return  # needed here to stop func execution
+
+        super().__setattr__(name, value)
