@@ -7,11 +7,10 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
-from contextlib import contextmanager, nullcontext
-from functools import wraps
 from itertools import compress
 from typing import (
     TYPE_CHECKING,
+    Any,
     BinaryIO,
     ContextManager,
     Dict,
@@ -21,25 +20,15 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
-    Union, Dict, Any,
+    Union,
 )
 
-from docarray.base_document import BaseDocument
-
-import numpy as np
-from typing_inspect import is_union_type
-
-from docarray.array.abstract_array import AnyDocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
-from docarray.typing import NdArray
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
-from docarray.utils.misc import is_torch_available
 
 if TYPE_CHECKING:
 
     from docarray.proto import DocumentArrayProto
-    from docarray.typing import TorchTensor
 
 T = TypeVar('T', bound='IOMixinArray')
 
@@ -353,12 +342,13 @@ class IOMixinArray(Iterable[BaseDocument]):
         :param file_path: path to a csv file.
         """
         fields = self.document_type.__fields__
+
         with open(file_path, 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fields)
             writer.writeheader()
 
             for doc in self:
-                doc_dict = doc.dict()
+                doc_dict = dict_to_access_paths(doc.dict())
                 writer.writerow(doc_dict)
 
     # Methods to load from/to files in different formats
@@ -623,4 +613,17 @@ def access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
     for field in reversed(fields):
         result = {field: value}
         value = result
+    return result
+
+
+def dict_to_access_paths(d: dict) -> Dict[str, Any]:
+    result = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            v = dict_to_access_paths(v)
+            for nested_k, nested_v in v.items():
+                new_key = '.'.join([k, nested_k])
+                result[new_key] = nested_v
+        else:
+            result[k] = v
     return result

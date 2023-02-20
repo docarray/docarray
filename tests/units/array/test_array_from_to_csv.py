@@ -4,7 +4,7 @@ from typing import Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.array.array.io import _assert_schema
+from docarray.array.array.io import _assert_schema, dict_to_access_paths
 from docarray.documents import Image
 from tests import TOYDATA_DIR
 
@@ -23,12 +23,27 @@ def test_to_csv(tmpdir):
     da = DocumentArray[MyDocNested](
         [
             MyDocNested(
-                text='hello', image=Image(url='aux.png'), image2=Image(url='aux.png')
+                count=0,
+                text='hello',
+                image=Image(url='aux.png'),
+                image2=Image(url='aux.png'),
             ),
-            MyDocNested(text='hello world', image=Image(), image2=Image()),
+            MyDocNested(count=2, text='hello world', image=Image(), image2=Image()),
         ]
     )
-    tmp_file = str(tmpdir / 'tmp.csv')
+    tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
+    da.to_csv(tmp_file)
+    assert os.path.isfile(tmp_file)
+
+
+def test_to_csv_(tmpdir):
+    da = DocumentArray[MyDoc](
+        [
+            MyDoc(count=0, text='hello'),
+            MyDoc(count=2, text='hello world'),
+        ]
+    )
+    tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
@@ -96,3 +111,26 @@ def test_assert_schema(nested_doc):
     assert _assert_schema(nested_doc.__class__, 'middle.inner.img')
     assert _assert_schema(nested_doc.__class__, 'middle')
     assert not _assert_schema(nested_doc.__class__, 'inner')
+
+
+def test_dict_to_access_paths():
+    d = {
+        'a0': {'b0': {'c0': 0}, 'b1': {'c0': 1}},
+        'a1': {'b0': {'c0': 2, 'c1': 3}, 'b1': 4},
+    }
+    # d = {
+    #     'b0': {'c0': 2, 'c1': 3}, 'b1': 4,
+    # }
+    casted = dict_to_access_paths(d)
+    # assert casted == {
+    #     'b0.c0': 2,
+    #     'b0.c1': 3,
+    #     'b1': 4,
+    # }
+    assert casted == {
+        'a0.b0.c0': 0,
+        'a0.b1.c0': 1,
+        'a1.b0.c0': 2,
+        'a1.b0.c1': 3,
+        'a1.b1': 4,
+    }
