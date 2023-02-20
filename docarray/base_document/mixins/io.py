@@ -13,13 +13,13 @@ from typing import (
     TypeVar,
 )
 
+from pydantic.fields import ModelField
+
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils.compress import _compress_bytes, _decompress_bytes
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-
     from docarray.proto import DocumentProto, NodeProto
 
 

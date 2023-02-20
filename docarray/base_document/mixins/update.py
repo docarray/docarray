@@ -1,12 +1,10 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Type, TypeVar
+from typing import Dict, List, Type, TypeVar
 
+from pydantic.fields import ModelField
 from typing_inspect import get_origin
 
 T = TypeVar('T', bound='UpdateMixin')
-
-if TYPE_CHECKING:
-    from pydantic.fields import ModelField
 
 
 class UpdateMixin:
