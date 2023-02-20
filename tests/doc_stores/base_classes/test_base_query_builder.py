@@ -55,6 +55,18 @@ def test_collect_calls():
     assert collected_queries[2] == ('text_search', {'text': 'text', 'param': 'param'})
 
 
+def test_fluent_interface():
+    qb = DummyQueryBuilder()
+    qb.find(find='find', param='param').filter(
+        filter='filter', param='param'
+    ).text_search(text='text', param='param')
+
+    collected_queries = qb._queries
+    assert collected_queries[0] == ('find', {'find': 'find', 'param': 'param'})
+    assert collected_queries[1] == ('filter', {'filter': 'filter', 'param': 'param'})
+    assert collected_queries[2] == ('text_search', {'text': 'text', 'param': 'param'})
+
+
 def test_not_composable_raises():
     qb = DummyQueryBuilder()
     with pytest.raises(NotImplementedError):
