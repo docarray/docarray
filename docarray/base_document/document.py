@@ -11,7 +11,7 @@ from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 
 if TYPE_CHECKING:
-    from docarray.array.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
 _console: Console = Console()
 
