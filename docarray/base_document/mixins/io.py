@@ -7,11 +7,14 @@ from typing import (
     Callable,
     Dict,
     Iterable,
+    List,
     Optional,
     Tuple,
     Type,
     TypeVar,
 )
+
+from typing_inspect import is_union_type
 
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
@@ -291,3 +294,23 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :return: the nested item protobuf message
         """
         return NodeProto(document=self.to_protobuf())
+
+    @classmethod
+    def _get_access_paths(cls) -> List[str]:
+        """
+        Get dot-separated access paths of all fields, including nested ones.
+
+        :return: list of all access paths
+        """
+        from docarray import BaseDocument
+
+        paths = []
+        for field in cls.__fields__.keys():
+            field_type = cls._get_field_type(field)
+            if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
+                sub_paths = field_type._get_access_paths()
+                for path in sub_paths:
+                    paths.append(f'{field}.{path}')
+            else:
+                paths.append(field)
+        return paths

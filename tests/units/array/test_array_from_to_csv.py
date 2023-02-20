@@ -10,7 +10,7 @@ from tests import TOYDATA_DIR
 
 
 class MyDoc(BaseDocument):
-    count: int
+    count: Optional[int]
     text: str
 
 
@@ -28,7 +28,7 @@ def test_to_csv(tmpdir):
                 image=Image(url='aux.png'),
                 image2=Image(url='aux.png'),
             ),
-            MyDocNested(count=2, text='hello world', image=Image(), image2=Image()),
+            MyDocNested(text='hello world', image=Image(), image2=Image()),
         ]
     )
     tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
@@ -40,7 +40,7 @@ def test_to_csv_(tmpdir):
     da = DocumentArray[MyDoc](
         [
             MyDoc(count=0, text='hello'),
-            MyDoc(count=2, text='hello world'),
+            MyDoc(text='hello world'),
         ]
     )
     tmp_file = '/Users/charlottegerhaher/Desktop/jina-ai/docarray_v2/docarray/tests/toydata/tmp.csv'  # str(tmpdir / 'tmp.csv')
@@ -93,15 +93,34 @@ def nested_doc():
     return doc
 
 
+def test_fields_to_access_paths():
+    class Painting(BaseDocument):
+        title: str
+        img: Image
+
+    access_paths = Painting._get_access_paths()
+    assert access_paths == [
+        'id',
+        'title',
+        'img.id',
+        'img.url',
+        'img.tensor',
+        'img.embedding',
+        'img.bytes',
+    ]
+
+
 def test_from_csv_without_schema_raise_exception():
     with pytest.raises(TypeError, match='no document schema defined'):
         DocumentArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
 
 
 def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
-    with pytest.raises(ValueError, match=r'.*Outer.*embedding.*text.*image.*'):
+    with pytest.raises(
+        ValueError, match='Fields provided in the csv file do not match the schema'
+    ):
         DocumentArray[nested_doc.__class__].from_csv(
-            file_path=str(TOYDATA_DIR / 'docs_nested.csv')
+            file_path=str(TOYDATA_DIR / 'docs.csv')
         )
 
 
@@ -118,15 +137,7 @@ def test_dict_to_access_paths():
         'a0': {'b0': {'c0': 0}, 'b1': {'c0': 1}},
         'a1': {'b0': {'c0': 2, 'c1': 3}, 'b1': 4},
     }
-    # d = {
-    #     'b0': {'c0': 2, 'c1': 3}, 'b1': 4,
-    # }
     casted = dict_to_access_paths(d)
-    # assert casted == {
-    #     'b0.c0': 2,
-    #     'b0.c1': 3,
-    #     'b1': 4,
-    # }
     assert casted == {
         'a0.b0.c0': 0,
         'a0.b1.c0': 1,

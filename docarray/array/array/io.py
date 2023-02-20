@@ -28,6 +28,7 @@ from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
 
+    from docarray import DocumentArray
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
@@ -296,7 +297,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         return json.dumps([doc.json() for doc in self])
 
     @classmethod
-    def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> T:
+    def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> 'DocumentArray':
         """
         Load a DocumentArray from a csv file.
 
@@ -306,7 +307,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        doc_type = cls.document_type
+        doc_type: Type[BaseDocument] = cls.document_type
         if doc_type == AnyDocument:
             raise TypeError(
                 "There is no document schema defined. "
@@ -317,6 +318,9 @@ class IOMixinArray(Iterable[BaseDocument]):
         with open(file_path, 'r', encoding=encoding) as fp:
             lines = csv.DictReader(fp, dialect='excel')
             fields = lines.fieldnames
+            if fields is None:
+                raise TypeError("No field names are given.")
+
             valid = [_assert_schema(doc_type, field) for field in fields]
             if not all(valid):
                 raise ValueError(
@@ -327,7 +331,6 @@ class IOMixinArray(Iterable[BaseDocument]):
             for line in lines:
                 doc_dict = {}
                 for field, value in line.items():
-                    print(f"field, value = {field, value}")
                     if value in ['', 'None']:
                         value = None
                     doc_dict.update(access_path_to_dict(access_path=field, value=value))
@@ -338,10 +341,9 @@ class IOMixinArray(Iterable[BaseDocument]):
     def to_csv(self, file_path: str) -> None:
         """
         Save a DocumentArray to a csv file.
-
         :param file_path: path to a csv file.
         """
-        fields = self.document_type.__fields__
+        fields = self.document_type._get_access_paths()
 
         with open(file_path, 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fields)
