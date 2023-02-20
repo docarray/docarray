@@ -6,11 +6,12 @@ from docarray import BaseDocument, DocumentArray
 from docarray.data import MultiModalDataset
 from docarray.documents import Image as AbstractImage
 from docarray.documents import Text as AbstractText
-from docarray.typing.tensor.embedding import TorchEmbedding
+from docarray.typing.tensor import TorchTensor
+from docarray.typing.tensor.embedding import EmbeddingTensor
 from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
 
-Text = AbstractText[TorchEmbedding]
-Image = AbstractImage[ImageTorchTensor, TorchEmbedding]
+Text = AbstractText[EmbeddingTensor[TorchTensor]]
+Image = AbstractImage[ImageTorchTensor, EmbeddingTensor[TorchTensor]]
 
 
 class PairTextImage(BaseDocument):
