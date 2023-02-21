@@ -306,12 +306,12 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        Every access_path2val of the csv file will be mapped to one document in the array.
-        The column names (defined in the first access_path2val) have to match the field names
+        Every row of the csv file will be mapped to one document in the array.
+        The column names (defined in the first row) have to match the field names
         of the Document type.
-        For nested field_names use "__"-separated access paths, such as 'image__url'.
+        For nested fields use "__"-separated access paths, such as 'image__url'.
 
-        List-like field_names (including DocumentArray) are not supported
+        List-like fields (including field of type DocumentArray) are not supported.
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
@@ -333,7 +333,7 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         da = DocumentArray.__class_getitem__(doc_type)()
         with open(file_path, 'r', encoding=encoding) as fp:
-            rows: csv.DictReader = csv.DictReader(fp, dialect=dialect)
+            rows = csv.DictReader(fp, dialect=dialect)
             field_names: Optional[Sequence[Any]] = rows.fieldnames
 
             if field_names is None:
@@ -364,7 +364,11 @@ class IOMixinArray(Iterable[BaseDocument]):
     ) -> None:
         """
         Save a DocumentArray to a csv file.
-        The field names will be stored in the first row. The Documents information will be stored in one row each.
+        The field names will be stored in the first row. Each row corresponds to the
+        information of one Document.
+        Columns for nested fields will be named after the "__"-seperated access paths,
+        such as `"image__url"` for `image.url`.
+
         :param file_path: path to a csv file.
         :param dialect: defines separator and how to handle whitespaces etc.
             Can be a csv.Dialect instance or one string of:
