@@ -314,7 +314,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         if doc_type == AnyDocument:
             raise TypeError(
                 'There is no document schema defined. '
-                'To load from csv, please specify the DocumentArray\'s document type.'
+                'To load from csv, please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
             )
 
         da = DocumentArray[doc_type]()  # type: ignore
