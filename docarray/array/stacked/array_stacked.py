@@ -211,6 +211,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
                 elif issubclass(field_type, BaseDocument):
                     doc_columns[field_name] = getattr(docs, field_name).stack()
+                    for i, doc in enumerate(docs):
+                        setattr(doc, field_name, doc_columns[field_name][i])
 
                 elif issubclass(field_type, DocumentArray):
                     for doc in docs:
