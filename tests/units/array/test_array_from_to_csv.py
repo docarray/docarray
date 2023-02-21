@@ -54,7 +54,6 @@ def test_from_csv_nested(nested_doc_cls):
     assert len(da) == 3
 
     for i, doc in enumerate(da):
-        print(f"doc.count = {doc.count}")
         assert doc.count.__class__ == int
         assert doc.count == int(f'{i}{i}{i}')
 
@@ -116,21 +115,22 @@ def test_get_access_paths():
     assert access_paths == [
         'id',
         'title',
-        'img.id',
-        'img.url',
-        'img.tensor',
-        'img.embedding',
-        'img.bytes',
+        'img__id',
+        'img__url',
+        'img__tensor',
+        'img__embedding',
+        'img__bytes',
     ]
 
 
 def test_is_access_path_valid(nested_doc):
     assert is_access_path_valid(nested_doc.__class__, 'img')
-    assert is_access_path_valid(nested_doc.__class__, 'middle.img')
-    assert is_access_path_valid(nested_doc.__class__, 'middle.inner.img')
+    assert is_access_path_valid(nested_doc.__class__, 'middle__img')
+    assert is_access_path_valid(nested_doc.__class__, 'middle__inner__img')
     assert is_access_path_valid(nested_doc.__class__, 'middle')
     assert not is_access_path_valid(nested_doc.__class__, 'inner')
-    assert not is_access_path_valid(nested_doc.__class__, 'some.other.path')
+    assert not is_access_path_valid(nested_doc.__class__, 'some__other__path')
+    assert not is_access_path_valid(nested_doc.__class__, 'middle.inner')
 
 
 def test_dict_to_access_paths():
@@ -140,11 +140,11 @@ def test_dict_to_access_paths():
     }
     casted = _dict_to_access_paths(d)
     assert casted == {
-        'a0.b0.c0': 0,
-        'a0.b1.c0': 1,
-        'a1.b0.c0': 2,
-        'a1.b0.c1': 3,
-        'a1.b1': 4,
+        'a0__b0__c0': 0,
+        'a0__b1__c0': 1,
+        'a1__b0__c0': 2,
+        'a1__b0__c1': 3,
+        'a1__b1': 4,
     }
 
 

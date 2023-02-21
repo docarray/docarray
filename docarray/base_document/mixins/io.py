@@ -298,7 +298,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     @classmethod
     def _get_access_paths(cls) -> List[str]:
         """
-        Get dot-separated access paths of all fields, including nested ones.
+        Get "__"-separated access paths of all fields, including nested ones.
 
         :return: list of all access paths
         """
@@ -310,7 +310,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:
-                    paths.append(f'{field}.{path}')
+                    paths.append(f'{field}__{path}')
             else:
                 paths.append(field)
         return paths

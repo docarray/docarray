@@ -302,7 +302,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
         The column names have to match the fields of the document type.
-        For nested fields use dot-separated access paths, such as 'image.url'.
+        For nested fields use dot-separated access paths, such as 'image__url'.
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
@@ -604,7 +604,7 @@ def is_access_path_valid(doc: Type['BaseDocument'], access_path: str) -> bool:
     """
     Check if a given access path is a valid path for a given Document class.
     """
-    field, _, remaining = access_path.partition('.')
+    field, _, remaining = access_path.partition('__')
     if len(remaining) == 0:
         return access_path in doc.__fields__.keys()
     else:
@@ -625,9 +625,9 @@ def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
 
     EXAMPLE USAGE
     .. code-block:: python
-        assert access_path_to_dict('image.url', 'some.url') == {'image': {'url': 'some.url'}}
+        assert access_path_to_dict('image__url', 'img.png') == {'image': {'url': 'img.png'}}
     """
-    fields = access_path.split('.')
+    fields = access_path.split('__')
     for field in reversed(fields):
         result = {field: value}
         value = result
@@ -637,17 +637,18 @@ def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
 def _dict_to_access_paths(d: dict) -> Dict[str, Any]:
     """
     Convert a (nested) dict to a Dict[access_path, value].
+    Access paths are defines as a path of field(s) separated by "__".
 
     EXAMPLE USAGE
     .. code-block:: python
-        assert dict_to_access_paths({'image': {'url': 'some.url'}}) == {'image.url', 'some.url'}
+        assert dict_to_access_paths({'image': {'url': 'img.png'}}) == {'image__url', 'img.png'}
     """
     result = {}
     for k, v in d.items():
         if isinstance(v, dict):
             v = _dict_to_access_paths(v)
             for nested_k, nested_v in v.items():
-                new_key = '.'.join([k, nested_k])
+                new_key = '__'.join([k, nested_k])
                 result[new_key] = nested_v
         else:
             result[k] = v
