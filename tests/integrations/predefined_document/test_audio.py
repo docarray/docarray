@@ -113,7 +113,7 @@ def test_save_audio_tensorflow(file_url, tmpdir):
     )
     if file_url.split('.')[-1] not in ['wav', 'flac']:
         # lossy formats, we can only check the shape
-        assert audio.tensor.shape == audio_from_file.tensor.shape
+        assert audio.tensor.tensor.shape == audio_from_file.tensor.tensor.shape
     else:
         # lossless formats (wav, flac) can be loaded back exactly
         assert tnp.allclose(audio.tensor.tensor, audio_from_file.tensor.tensor)
@@ -165,10 +165,10 @@ def test_audio_shortcut_doc():
         audio3: Audio
 
     doc = MyDoc(
-        audio='http://myurl.wav',
+        audio='http://example.com/myurl.wav',
         audio2=np.zeros((10, 10, 3)),
         audio3=torch.zeros(10, 10, 3),
     )
-    assert doc.audio.url == 'http://myurl.wav'
+    assert doc.audio.url == 'http://example.com/myurl.wav'
     assert (doc.audio2.tensor == np.zeros((10, 10, 3))).all()
     assert (doc.audio3.tensor == torch.zeros(10, 10, 3)).all()
