@@ -271,10 +271,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             return self._get_from_data_and_columns(item_)
         # single doc case
         doc = self._docs[item]
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][item])
-        for field in self._tensor_columns.keys():
-            setattr(doc, field, self._tensor_columns[field][item])
         return doc
 
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
