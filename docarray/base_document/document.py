@@ -10,9 +10,17 @@ from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.utils._typing import is_tensor_union, is_type_tensor
+from docarray.utils.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf
+
+    from docarray.typing import TensorFlowTensor
 
 if TYPE_CHECKING:
     from docarray.array.stacked.array_stacked import DocumentArrayStacked
+
 
 _console: Console = Console()
 
@@ -79,7 +87,20 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if self._da_ref is not None:
             if name in self.__fields__:
                 field_type = self._get_field_type(name)
-                if is_type_tensor(field_type) or is_tensor_union(field_type):
+                if (
+                    issubclass(field_type, TensorFlowTensor)
+                    or isinstance(value, TensorFlowTensor)
+                    or isinstance(value, tf.Tensor)
+                ):
+                    raise RuntimeError(
+                        'Tensorflow tensor are immutable, Since this '
+                        'Document is stack you cannot change its '
+                        'tensor value. You should either unstack your '
+                        'DocumentArrayStacked or work at the '
+                        'DocumentArrayStack column level directly'
+                    )
+
+                elif is_type_tensor(field_type) or is_tensor_union(field_type):
                     ### here we want to enforce the inplace behavior
                     old_value = getattr(self, name)
                     super().__setattr__(name, value)
