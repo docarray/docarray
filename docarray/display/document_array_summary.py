@@ -38,7 +38,7 @@ class DocumentArraySummary:
 
                 if isinstance(val, AbstractTensor):
                     comp_be = val.get_comp_backend()
-                    if comp_be.isnan(val).all():
+                    if comp_be.to_numpy(comp_be.isnan(val)).all():
                         col_2 = f'None ({val.__class__.__name__})'
                     else:
                         col_2 = (
