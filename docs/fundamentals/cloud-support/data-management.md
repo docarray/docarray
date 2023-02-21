@@ -33,7 +33,7 @@ You can download a DocumentArray stored in the cloud using the {meth}`~docarray.
 ```python
 from docarray import DocumentArray
 
-my_da = DocumentArray('my_da')
+my_da = DocumentArray.pull('my_da', show_progress=True)
 ```
 
 ### List
