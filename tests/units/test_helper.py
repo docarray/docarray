@@ -13,16 +13,20 @@ from docarray.helper import (
 
 
 @pytest.fixture()
-def nested_doc_cls():
-    class MyDoc(BaseDocument):
-        count: Optional[int]
-        text: str
+def nested_doc():
+    class Inner(BaseDocument):
+        img: Optional[Image]
 
-    class MyDocNested(MyDoc):
-        image: Image
-        image2: Image
+    class Middle(BaseDocument):
+        img: Optional[Image]
+        inner: Optional[Inner]
 
-    return MyDocNested
+    class Outer(BaseDocument):
+        img: Optional[Image]
+        middle: Optional[Middle]
+
+    doc = Outer(img=Image(), middle=Middle(img=Image(), inner=Inner(img=Image())))
+    return doc
 
 
 def test_is_access_path_valid(nested_doc):
