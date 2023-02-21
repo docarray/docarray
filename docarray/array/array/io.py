@@ -16,6 +16,7 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    List,
     Optional,
     Tuple,
     Type,
@@ -32,7 +33,6 @@ if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
-
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
@@ -297,7 +297,12 @@ class IOMixinArray(Iterable[BaseDocument]):
         return json.dumps([doc.json() for doc in self])
 
     @classmethod
-    def from_csv(cls, file_path: str, encoding: str = 'utf-8') -> 'DocumentArray':
+    def from_csv(
+        cls,
+        file_path: str,
+        encoding: str = 'utf-8',
+        dialect: Union[str, csv.Dialect] = 'excel',
+    ) -> 'DocumentArray':
         """
         Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
@@ -306,21 +311,27 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
+        :param dialect: defines separator and how to handle whitespaces etc.
+            Can be a csv.Dialect instance or one string of:
+            'excel' (for comma seperated values),
+            'excel-tab' (for tab separated values),
+            'unix' (for csv file generated on UNIX systems).
         :return: DocumentArray
         """
         from docarray import DocumentArray
 
-        doc_type: Type[BaseDocument] = cls.document_type
+        doc_type = cls.document_type
         if doc_type == AnyDocument:
             raise TypeError(
                 'There is no document schema defined. '
                 'To load from csv, please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
             )
 
-        da = DocumentArray[doc_type]()  # type: ignore
+        da = DocumentArray.__class_getitem__(doc_type)()
         with open(file_path, 'r', encoding=encoding) as fp:
-            lines = csv.DictReader(fp, dialect='excel')
-            fields = lines.fieldnames
+            rows: csv.DictReader = csv.DictReader(fp, dialect=dialect)
+            fields: Optional[List[str]] = rows.fieldnames
+
             if fields is None:
                 raise TypeError("No field names are given.")
 
@@ -331,9 +342,9 @@ class IOMixinArray(Iterable[BaseDocument]):
                     f'document type ({doc_type.__name__}): {list(compress(fields, [not v for v in valid]))}'
                 )
 
-            for line in lines:
+            for row in rows:
                 doc_dict: Dict[Any, Any] = {}
-                for field, value in line.items():
+                for field, value in row.items():
                     field2val = _access_path_to_dict(
                         access_path=field,
                         value=value if value not in ['', 'None'] else None,
