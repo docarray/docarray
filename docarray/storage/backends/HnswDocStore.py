@@ -35,7 +35,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._work_dir = self._db_config.work_dir
-        load_existing = os.path.exists(self._work_dir)
+        load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
         # HNSWLib setup
@@ -175,7 +175,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         index = self._hnsw_indices[embedding_field]
         labels, distances = index.knn_query(query_vec_np, k=limit)
         result_das = [
-            self._get_docs_from_sqlite(
+            self._get_docs_sqlite_univ_id(
                 ids_per_query,
             )
             for ids_per_query in labels
@@ -246,7 +246,13 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         # delete from the indices
         if isinstance(key, str):
             key = [key]
-        return self._get_docs_from_sqlite(key)
+        out_docs = self._get_docs_sqlite_doc_id(key)
+        # TODO(johannes): this could be handled for all stores
+        if len(out_docs) == 0:
+            raise KeyError(f'No document with id {key} found')
+        if len(out_docs) == 1:
+            return out_docs[0]
+        return out_docs
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
@@ -310,25 +316,34 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
         )
 
-    def _get_docs_from_sqlite(
-        self, doc_ids: Sequence[Union[str, int]]
-    ) -> DocumentArray:
-        ids = tuple(
-            self._to_universal_id(id_) if isinstance(id_, str) else int(id_)
-            for id_ in doc_ids
-        )
-        for id_ in ids:
+    def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int]):
+        for id_ in univ_ids:
             # I hope this protects from injection attacks
             # properly binding with '?' doesn't work for some reason
             assert isinstance(id_, int)
-        sql_id_list = '(' + ', '.join(str(id_) for id_ in ids) + ')'
+        sql_id_list = '(' + ', '.join(str(id_) for id_ in univ_ids) + ')'
         self._sqlite_cursor.execute(
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
         return DocumentArray[self._schema](
-            (self._doc_from_bytes(row[0]) for row in rows)
+            [self._doc_from_bytes(row[0]) for row in rows]
         )
+
+    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray:
+        univ_ids = tuple(self._to_universal_id(id_) for id_ in doc_ids)
+        docs_unsorted = self._get_docs_sqlite_unsorted(univ_ids)
+        return DocumentArray[self._schema](
+            sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id))
+        )
+
+    def _get_docs_sqlite_univ_id(self, univ_ids: Sequence[int]) -> DocumentArray:
+        docs_unsorted = self._get_docs_sqlite_unsorted(univ_ids)
+
+        def _in_position(doc):
+            return univ_ids.index(self._to_universal_id(doc.id))
+
+        return DocumentArray[self._schema](sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
         ids = tuple(
