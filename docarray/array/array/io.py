@@ -301,7 +301,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        The column names have to match the fields of the document type.
+        The column names have to match the field names of the Document type.
         For nested fields use dot-separated access paths, such as 'image__url'.
 
         :param file_path: path to csv file to load DocumentArray from.
