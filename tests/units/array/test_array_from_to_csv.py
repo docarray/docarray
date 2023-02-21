@@ -4,11 +4,6 @@ from typing import Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.array.array.io import (
-    _dict_to_access_paths,
-    _update_nested_dicts,
-    is_access_path_valid,
-)
 from docarray.documents import Image
 from tests import TOYDATA_DIR
 
@@ -104,53 +99,3 @@ def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
         DocumentArray[nested_doc.__class__].from_csv(
             file_path=str(TOYDATA_DIR / 'docs.csv')
         )
-
-
-def test_get_access_paths():
-    class Painting(BaseDocument):
-        title: str
-        img: Image
-
-    access_paths = Painting._get_access_paths()
-    assert access_paths == [
-        'id',
-        'title',
-        'img__id',
-        'img__url',
-        'img__tensor',
-        'img__embedding',
-        'img__bytes',
-    ]
-
-
-def test_is_access_path_valid(nested_doc):
-    assert is_access_path_valid(nested_doc.__class__, 'img')
-    assert is_access_path_valid(nested_doc.__class__, 'middle__img')
-    assert is_access_path_valid(nested_doc.__class__, 'middle__inner__img')
-    assert is_access_path_valid(nested_doc.__class__, 'middle')
-    assert not is_access_path_valid(nested_doc.__class__, 'inner')
-    assert not is_access_path_valid(nested_doc.__class__, 'some__other__path')
-    assert not is_access_path_valid(nested_doc.__class__, 'middle.inner')
-
-
-def test_dict_to_access_paths():
-    d = {
-        'a0': {'b0': {'c0': 0}, 'b1': {'c0': 1}},
-        'a1': {'b0': {'c0': 2, 'c1': 3}, 'b1': 4},
-    }
-    casted = _dict_to_access_paths(d)
-    assert casted == {
-        'a0__b0__c0': 0,
-        'a0__b1__c0': 1,
-        'a1__b0__c0': 2,
-        'a1__b0__c1': 3,
-        'a1__b1': 4,
-    }
-
-
-def test_update_nested_dict():
-    d1 = {'text': 'hello', 'image': {'tensor': None}}
-    d2 = {'image': {'url': 'some.png'}}
-
-    _update_nested_dicts(d1, d2)
-    assert d1 == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
