@@ -24,6 +24,8 @@ if tf_available:
 LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),
     str(TOYDATA_DIR / 'olleh.wav'),
+    str(TOYDATA_DIR / 'hello.mp3'),
+    str(TOYDATA_DIR / 'hello.m4a'),
 ]
 
 

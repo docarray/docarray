@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AudioUrl')
 
-AUDIO_FILE_FORMATS = ['wav']
+AUDIO_FILE_FORMATS = ['wav', 'mp3', 'm4a']
 
 
 @_register_proto(proto_type_name='audio_url')
