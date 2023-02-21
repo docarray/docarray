@@ -1,9 +1,10 @@
 import warnings
+from io import BytesIO
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
+from pydub import AudioSegment
 
-from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils.misc import is_notebook
@@ -66,9 +67,14 @@ class AudioUrl(AnyUrl):
             assert isinstance(doc.audio_tensor, np.ndarray)
 
         """
+        bytes_ = self.load_bytes()
+        segment = AudioSegment.from_file(BytesIO(bytes_))
 
-        bytes_ = AudioBytes(self.load_bytes())
-        return bytes_.load()
+        samples = segment.get_array_of_samples()
+        samples = np.array(samples)
+
+        samples_norm = samples / 2 ** (segment.sample_width * 8 - 1)
+        return samples_norm
 
     def display(self):
         """
