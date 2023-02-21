@@ -176,8 +176,14 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def __getitem__(self, key: Union[str, Sequence[str]]):
+    def __getitem__(
+        self, key: Union[str, Sequence[str]]
+    ) -> Union[TSchema, Sequence[TSchema]]:
         """Get one or multiple Documents into the store, by `id`.
+        Document are returned in the same order as the ids.
+        If the same id is requested multiple times,
+        the document is returned multiple times.
+        If no document is found, a KeyError is raised.
 
         :param key: id or ids to get from the Document Store
         """
