@@ -43,7 +43,7 @@ def test_device():
     assert NumpyCompBackend.device(array) is None
 
 
-@pytest.mark.parametrize('dtype', [np.int64, np.float64, np.int, np.float])
+@pytest.mark.parametrize('dtype', [np.int64, np.float64, int, float])
 def test_dtype(dtype):
     array = np.array([1, 2, 3], dtype=dtype)
     assert NumpyCompBackend.dtype(array) == dtype

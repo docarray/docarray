@@ -78,7 +78,7 @@ def test_torchtensor_getitem(stack, da, index_dtype):
 
 
 @pytest.mark.parametrize('stack', [True, False])
-@pytest.mark.parametrize('index_dtype', [np.int, np.int_, np.int32, np.int64])
+@pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_getitem(stack, da, index_dtype):
     if stack:
         da = da.stack()
@@ -98,7 +98,7 @@ def test_nparray_getitem(stack, da, index_dtype):
         [False, True, True, True, True, False, True, False, False, False],
         (False, True, True, True, True, False, True, False, False, False),
         torch.tensor([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=torch.bool),
-        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=np.bool),
+        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=bool),
     ],
 )
 def test_boolmask_getitem(stack, da, index):
@@ -180,7 +180,7 @@ def test_torchtensor_setitem(stack_left, stack_right, da, da_to_set, index_dtype
 
 @pytest.mark.parametrize('stack_left', [True, False])
 @pytest.mark.parametrize('stack_right', [True, False])
-@pytest.mark.parametrize('index_dtype', [np.int, np.int_, np.int32, np.int64])
+@pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
     if stack_left:
         da = da.stack()
@@ -211,7 +211,7 @@ def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
         [False, True, True, True, True, False, True, False, False, False],
         (False, True, True, True, True, False, True, False, False, False),
         torch.tensor([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=torch.bool),
-        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=np.bool),
+        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=bool),
     ],
 )
 def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
