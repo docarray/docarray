@@ -3,7 +3,6 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
-from pydub import AudioSegment  # type: ignore
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -67,6 +66,8 @@ class AudioUrl(AnyUrl):
             assert isinstance(doc.audio_tensor, np.ndarray)
 
         """
+        from pydub import AudioSegment  # type: ignore
+
         bytes_ = self.load_bytes()
         segment = AudioSegment.from_file(BytesIO(bytes_))
 
