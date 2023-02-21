@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AudioUrl')
 
-AUDIO_FILE_FORMATS = ['wav', 'mp3', 'm4a']
+AUDIO_FILE_FORMATS = ['wav', 'mp3', 'm4a', 'flac', 'ogg', 'wma', 'aac']
 
 
 @_register_proto(proto_type_name='audio_url')
@@ -31,9 +31,14 @@ class AudioUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+        import os
+        from urllib.parse import urlparse
+
         url = super().validate(value, field, config)  # basic url validation
-        has_audio_extension = any(ext in url for ext in AUDIO_FILE_FORMATS)
-        if not has_audio_extension:
+        path = urlparse(url).path
+        ext = os.path.splitext(path)[1][1:].lower()
+
+        if ext not in AUDIO_FILE_FORMATS:
             raise ValueError(
                 f'Audio URL must have one of the following extensions:'
                 f'{AUDIO_FILE_FORMATS}'
@@ -71,8 +76,7 @@ class AudioUrl(AnyUrl):
         bytes_ = self.load_bytes()
         segment = AudioSegment.from_file(BytesIO(bytes_))
 
-        samples = segment.get_array_of_samples()
-        samples = np.array(samples)
+        samples = np.array(segment.get_array_of_samples())
 
         samples_norm = samples / 2 ** (segment.sample_width * 8 - 1)
         return samples_norm
