@@ -16,8 +16,8 @@ from typing import (
     Dict,
     Generator,
     Iterable,
-    List,
     Optional,
+    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -306,8 +306,12 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        The column names have to match the field names of the Document type.
-        For nested fields use dot-separated access paths, such as 'image__url'.
+        Every access_path2val of the csv file will be mapped to one document in the array.
+        The column names (defined in the first access_path2val) have to match the field names
+        of the Document type.
+        For nested field_names use "__"-separated access paths, such as 'image__url'.
+
+        List-like field_names (including DocumentArray) are not supported
 
         :param file_path: path to csv file to load DocumentArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
@@ -330,23 +334,23 @@ class IOMixinArray(Iterable[BaseDocument]):
         da = DocumentArray.__class_getitem__(doc_type)()
         with open(file_path, 'r', encoding=encoding) as fp:
             rows: csv.DictReader = csv.DictReader(fp, dialect=dialect)
-            fields: Optional[List[str]] = rows.fieldnames
+            field_names: Optional[Sequence[Any]] = rows.fieldnames
 
-            if fields is None:
+            if field_names is None:
                 raise TypeError("No field names are given.")
 
-            valid = [is_access_path_valid(doc_type, field) for field in fields]
+            valid = [is_access_path_valid(doc_type, field) for field in field_names]
             if not all(valid):
                 raise ValueError(
                     f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
-                    f'document type ({doc_type.__name__}): {list(compress(fields, [not v for v in valid]))}'
+                    f'document type ({doc_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
                 )
 
-            for row in rows:
+            for access_path2val in rows:
                 doc_dict: Dict[Any, Any] = {}
-                for field, value in row.items():
+                for access_path, value in access_path2val.items():
                     field2val = _access_path_to_dict(
-                        access_path=field,
+                        access_path=access_path,
                         value=value if value not in ['', 'None'] else None,
                     )
                     _update_nested_dicts(to_update=doc_dict, update_with=field2val)
@@ -355,15 +359,23 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         return da
 
-    def to_csv(self, file_path: str) -> None:
+    def to_csv(
+        self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
+    ) -> None:
         """
         Save a DocumentArray to a csv file.
+        The field names will be stored in the first row. The Documents information will be stored in one row each.
         :param file_path: path to a csv file.
+        :param dialect: defines separator and how to handle whitespaces etc.
+            Can be a csv.Dialect instance or one string of:
+            'excel' (for comma seperated values),
+            'excel-tab' (for tab separated values),
+            'unix' (for csv file generated on UNIX systems).
         """
         fields = self.document_type._get_access_paths()
 
         with open(file_path, 'w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=fields)
+            writer = csv.DictWriter(csv_file, fieldnames=fields, dialect=dialect)
             writer.writeheader()
 
             for doc in self:
@@ -613,7 +625,7 @@ class IOMixinArray(Iterable[BaseDocument]):
 
 def is_access_path_valid(doc: Type['BaseDocument'], access_path: str) -> bool:
     """
-    Check if a given access path is a valid path for a given Document class.
+    Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
     field, _, remaining = access_path.partition('__')
     if len(remaining) == 0:
@@ -632,7 +644,7 @@ def is_access_path_valid(doc: Type['BaseDocument'], access_path: str) -> bool:
 
 def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
     """
-    Convert an access path and its value to a (potentially) nested dict.
+    Convert an access path ("__"-separated) and its value to a (potentially) nested dict.
 
     EXAMPLE USAGE
     .. code-block:: python
@@ -648,7 +660,7 @@ def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
 def _dict_to_access_paths(d: dict) -> Dict[str, Any]:
     """
     Convert a (nested) dict to a Dict[access_path, value].
-    Access paths are defines as a path of field(s) separated by "__".
+    Access paths are defined as a path of field(s) separated by "__".
 
     EXAMPLE USAGE
     .. code-block:: python
