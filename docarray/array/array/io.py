@@ -361,7 +361,9 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
-            field_names: List[str] = [str(f) for f in rows.fieldnames]
+            field_names: List[str] = (
+                [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
+            )
 
             cls._check_for_valid_access_paths(field_names=field_names)
 
@@ -438,7 +440,7 @@ class IOMixinArray(Iterable[BaseDocument]):
     def access_path_dict_to_nested_dict(
         access_path2val: Dict[str, Any]
     ) -> Dict[Any, Any]:
-        nested_dict = {}
+        nested_dict: Dict[Any, Any] = {}
         for access_path, value in access_path2val.items():
             field2val = _access_path_to_dict(
                 access_path=access_path,

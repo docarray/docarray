@@ -62,6 +62,10 @@ module = "av"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
+module = "pandas"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = "trimesh"
 ignore_missing_imports = true
 
