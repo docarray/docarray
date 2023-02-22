@@ -1,4 +1,5 @@
 import base64
+import csv
 import io
 import json
 import os
@@ -6,28 +7,38 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
+from itertools import compress
 from typing import (
     TYPE_CHECKING,
+    Any,
     BinaryIO,
     ContextManager,
+    Dict,
     Generator,
     Iterable,
     Optional,
+    Sequence,
     Tuple,
     Type,
     TypeVar,
     Union,
 )
 
-from docarray.base_document import BaseDocument
+from docarray.base_document import AnyDocument, BaseDocument
+from docarray.helper import (
+    _access_path_to_dict,
+    _dict_to_access_paths,
+    _update_nested_dicts,
+    is_access_path_valid,
+)
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
 
+    from docarray import DocumentArray
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
-
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
@@ -290,6 +301,96 @@ class IOMixinArray(Iterable[BaseDocument]):
         :return: JSON serialization of DocumentArray
         """
         return json.dumps([doc.json() for doc in self])
+
+    @classmethod
+    def from_csv(
+        cls,
+        file_path: str,
+        encoding: str = 'utf-8',
+        dialect: Union[str, csv.Dialect] = 'excel',
+    ) -> 'DocumentArray':
+        """
+        Load a DocumentArray from a csv file following the schema defined in the
+        :attr:`~docarray.DocumentArray.document_type` attribute.
+        Every row of the csv file will be mapped to one document in the array.
+        The column names (defined in the first row) have to match the field names
+        of the Document type.
+        For nested fields use "__"-separated access paths, such as 'image__url'.
+
+        List-like fields (including field of type DocumentArray) are not supported.
+
+        :param file_path: path to csv file to load DocumentArray from.
+        :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
+        :param dialect: defines separator and how to handle whitespaces etc.
+            Can be a csv.Dialect instance or one string of:
+            'excel' (for comma seperated values),
+            'excel-tab' (for tab separated values),
+            'unix' (for csv file generated on UNIX systems).
+        :return: DocumentArray
+        """
+        from docarray import DocumentArray
+
+        doc_type = cls.document_type
+        if doc_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'To load from csv, please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
+
+        da = DocumentArray.__class_getitem__(doc_type)()
+        with open(file_path, 'r', encoding=encoding) as fp:
+            rows = csv.DictReader(fp, dialect=dialect)
+            field_names: Optional[Sequence[Any]] = rows.fieldnames
+
+            if field_names is None:
+                raise TypeError("No field names are given.")
+
+            valid = [is_access_path_valid(doc_type, field) for field in field_names]
+            if not all(valid):
+                raise ValueError(
+                    f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
+                    f'document type ({doc_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
+                )
+
+            for access_path2val in rows:
+                doc_dict: Dict[Any, Any] = {}
+                for access_path, value in access_path2val.items():
+                    field2val = _access_path_to_dict(
+                        access_path=access_path,
+                        value=value if value not in ['', 'None'] else None,
+                    )
+                    _update_nested_dicts(to_update=doc_dict, update_with=field2val)
+
+                da.append(doc_type.parse_obj(doc_dict))
+
+        return da
+
+    def to_csv(
+        self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
+    ) -> None:
+        """
+        Save a DocumentArray to a csv file.
+        The field names will be stored in the first row. Each row corresponds to the
+        information of one Document.
+        Columns for nested fields will be named after the "__"-seperated access paths,
+        such as `"image__url"` for `image.url`.
+
+        :param file_path: path to a csv file.
+        :param dialect: defines separator and how to handle whitespaces etc.
+            Can be a csv.Dialect instance or one string of:
+            'excel' (for comma seperated values),
+            'excel-tab' (for tab separated values),
+            'unix' (for csv file generated on UNIX systems).
+        """
+        fields = self.document_type._get_access_paths()
+
+        with open(file_path, 'w') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fields, dialect=dialect)
+            writer.writeheader()
+
+            for doc in self:
+                doc_dict = _dict_to_access_paths(doc.dict())
+                writer.writerow(doc_dict)
 
     # Methods to load from/to files in different formats
     @property
