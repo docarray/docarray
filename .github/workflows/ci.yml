@@ -185,6 +185,7 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install protobuf==3.19.0 # we check that we support 3.19
+          sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
