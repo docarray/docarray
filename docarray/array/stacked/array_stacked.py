@@ -448,11 +448,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for i, doc in enumerate(self._docs):
             for field in self._doc_columns.keys():
                 val_doc = self._doc_columns[field]
-                setattr(doc, field, val_doc[i])
+                object.__setattr__(doc, field, val_doc[i])
 
             for field in self._tensor_columns.keys():
                 val_tens = self._tensor_columns[field]
-                setattr(doc, field, val_tens[i])
+                object.__setattr__(doc, field, val_tens[i])
 
                 # NOTE: here we might need to copy the tensor
                 # see here
