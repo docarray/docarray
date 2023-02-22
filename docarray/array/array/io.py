@@ -16,13 +16,15 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    List,
     Optional,
-    Sequence,
     Tuple,
     Type,
     TypeVar,
     Union,
 )
+
+import pandas as pd
 
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
@@ -303,6 +305,28 @@ class IOMixinArray(Iterable[BaseDocument]):
         return json.dumps([doc.json() for doc in self])
 
     @classmethod
+    def _check_for_valid_document_type(cls) -> None:
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
+
+    @classmethod
+    def _check_for_valid_access_paths(cls, field_names: Optional[List[str]]) -> None:
+        if field_names is None or len(field_names) == 0:
+            raise TypeError("No field names are given.")
+
+        valid = [
+            is_access_path_valid(cls.document_type, field) for field in field_names
+        ]
+        if not all(valid):
+            raise ValueError(
+                f'Column names do not match the schema of the DocumentArray\'s document type '
+                f'({cls.document_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
+            )
+
+    @classmethod
     def from_csv(
         cls,
         file_path: str,
@@ -330,37 +354,21 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        doc_type = cls.document_type
-        if doc_type == AnyDocument:
-            raise TypeError(
-                'There is no document schema defined. '
-                'To load from csv, please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
-            )
+        cls._check_for_valid_document_type()
 
+        doc_type = cls.document_type
         da = DocumentArray.__class_getitem__(doc_type)()
+
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
-            field_names: Optional[Sequence[Any]] = rows.fieldnames
+            field_names: List[str] = [str(f) for f in rows.fieldnames]
 
-            if field_names is None:
-                raise TypeError("No field names are given.")
-
-            valid = [is_access_path_valid(doc_type, field) for field in field_names]
-            if not all(valid):
-                raise ValueError(
-                    f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
-                    f'document type ({doc_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
-                )
+            cls._check_for_valid_access_paths(field_names=field_names)
 
             for access_path2val in rows:
-                doc_dict: Dict[Any, Any] = {}
-                for access_path, value in access_path2val.items():
-                    field2val = _access_path_to_dict(
-                        access_path=access_path,
-                        value=value if value not in ['', 'None'] else None,
-                    )
-                    _update_nested_dicts(to_update=doc_dict, update_with=field2val)
-
+                doc_dict: Dict[Any, Any] = IOMixinArray.access_path_dict_to_nested_dict(
+                    access_path2val
+                )
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
@@ -391,6 +399,58 @@ class IOMixinArray(Iterable[BaseDocument]):
             for doc in self:
                 doc_dict = _dict_to_access_paths(doc.dict())
                 writer.writerow(doc_dict)
+
+    @classmethod
+    def from_pandas(cls, df: pd.DataFrame) -> 'DocumentArray':
+        from docarray import DocumentArray
+
+        cls._check_for_valid_document_type()
+
+        doc_type = cls.document_type
+        da = DocumentArray.__class_getitem__(doc_type)()
+        field_names = df.columns.tolist()
+
+        cls._check_for_valid_access_paths(field_names=field_names)
+
+        for row in df.itertuples():
+            access_path2val = row._asdict()
+            access_path2val.pop('Index', None)
+            doc_dict = IOMixinArray.access_path_dict_to_nested_dict(access_path2val)
+            da.append(doc_type.parse_obj(doc_dict))
+
+        return da
+
+    @staticmethod
+    def access_path_dict_to_nested_dict(
+        access_path2val: Dict[str, Any]
+    ) -> Dict[Any, Any]:
+        nested_dict = {}
+        for access_path, value in access_path2val.items():
+            field2val = _access_path_to_dict(
+                access_path=access_path,
+                value=value if value not in ['', 'None'] else None,
+            )
+            _update_nested_dicts(to_update=nested_dict, update_with=field2val)
+        return nested_dict
+
+    def to_pandas(self) -> pd.DataFrame:
+        """
+        Save a DocumentArray to a `pandas.DataFrame`.
+        The field names will be stored as column names. Each row of the dataframe corresponds
+        to the information of one Document.
+        Columns for nested fields will be named after the "__"-seperated access paths,
+        such as `"image__url"` for `image.url`.
+
+        :return: pandas.DataFrame
+        """
+        fields = self.document_type._get_access_paths()
+        df = pd.DataFrame(columns=fields)
+
+        for doc in self:
+            doc_dict = _dict_to_access_paths(doc.dict())
+            df = df.append(doc_dict, ignore_index=True)
+
+        return df
 
     # Methods to load from/to files in different formats
     @property
