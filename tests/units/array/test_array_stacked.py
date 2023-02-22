@@ -75,6 +75,9 @@ def test_stack_setter(batch):
 
     assert (batch.tensor == torch.ones(10, 3, 224, 224)).all()
 
+    for i, doc in enumerate(batch):
+        assert (doc.tensor == batch.tensor[i]).all()
+
 
 def test_stack_optional(batch):
     assert (batch._tensor_columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()

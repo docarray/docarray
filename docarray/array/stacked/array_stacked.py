@@ -253,6 +253,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         elif field in self._tensor_columns.keys() and not isinstance(values, List):
             values__ = cast(AbstractTensor, values)
             self._tensor_columns[field] = values__
+            for i, doc in enumerate(self):
+                setattr(doc, field, self._tensor_columns[field][i])
         else:
             setattr(self._docs, field, values)
 
