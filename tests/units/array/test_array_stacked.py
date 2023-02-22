@@ -70,10 +70,38 @@ def test_iterator(batch):
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
 
 
-def test_stack_setter(batch):
+def test_stack_setter():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch = batch.stack()
     batch.tensor = torch.ones(10, 3, 224, 224)
 
     assert (batch.tensor == torch.ones(10, 3, 224, 224)).all()
+
+    for i, doc in enumerate(batch):
+        assert (doc.tensor == batch.tensor[i]).all()
+
+
+def test_stack_setter_np():
+    class Image(BaseDocument):
+        tensor: NdArray[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+    batch.tensor = np.ones((10, 3, 224, 224))
+
+    assert (batch.tensor == np.ones((10, 3, 224, 224))).all()
+
+    for i, doc in enumerate(batch):
+        assert (doc.tensor == batch.tensor[i]).all()
 
 
 def test_stack_optional(batch):
