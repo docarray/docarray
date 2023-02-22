@@ -222,3 +222,23 @@ def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path
 
     with pytest.raises(KeyError):
         del store['not_a_real_id']
+
+
+def test_num_docs(ten_simple_docs, tmp_path):
+    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store.index(ten_simple_docs)
+
+    assert store.num_docs() == 10
+
+    del store[ten_simple_docs[0].id]
+    assert store.num_docs() == 9
+
+    del store[ten_simple_docs[3].id, ten_simple_docs[5].id]
+    assert store.num_docs() == 7
+
+    more_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(5)]
+    store.index(more_docs)
+    assert store.num_docs() == 12
+
+    del store[more_docs[2].id, ten_simple_docs[7].id]
+    assert store.num_docs() == 10
