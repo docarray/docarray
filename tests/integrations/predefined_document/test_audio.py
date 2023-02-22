@@ -53,10 +53,9 @@ def test_audio(file_url):
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url', LOCAL_NON_AUDIO_FILES)
 def test_non_audio(file_url):
-    try:
-        _ = Audio(url=file_url)
-    except ValueError:
-        pass
+    with pytest.raises(Exception):
+        audio = Audio(url=file_url)
+        _ = audio.url.load()
 
 
 @pytest.mark.slow
@@ -183,13 +182,10 @@ def test_audio_shortcut_doc():
         audio3: Audio
 
     doc = MyDoc(
-        audio='https://github.com/docarray/docarray/raw/feat-rewrite-v2/tests/toydata/hello.wav',
+        audio='http://myurl.wav',
         audio2=np.zeros((10, 10, 3)),
         audio3=torch.zeros(10, 10, 3),
     )
-    assert (
-        doc.audio.url
-        == 'https://github.com/docarray/docarray/raw/feat-rewrite-v2/tests/toydata/hello.wav'
-    )
+    assert doc.audio.url == 'http://myurl.wav'
     assert (doc.audio2.tensor == np.zeros((10, 10, 3))).all()
     assert (doc.audio3.tensor == torch.zeros(10, 10, 3)).all()
