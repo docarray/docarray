@@ -3,6 +3,7 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 import numpy as np
+from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -14,13 +15,11 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AudioUrl')
 
-AUDIO_FILE_FORMATS = ['wav', 'mp3', 'm4a', 'flac', 'ogg', 'wma', 'aac']
-
 
 @_register_proto(proto_type_name='audio_url')
 class AudioUrl(AnyUrl):
     """
-    URL to a .wav file.
+    URL to a audio file.
     Can be remote (web) URL, or a local file path.
     """
 
@@ -31,18 +30,16 @@ class AudioUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        import os
-        from urllib.parse import urlparse
+        from pydub import AudioSegment  # type: ignore
 
         url = super().validate(value, field, config)  # basic url validation
-        path = urlparse(url).path
-        ext = os.path.splitext(path)[1][1:].lower()
 
-        if ext not in AUDIO_FILE_FORMATS:
-            raise ValueError(
-                f'Audio URL must have one of the following extensions:'
-                f'{AUDIO_FILE_FORMATS}'
-            )
+        try:
+            bytes_ = parse_obj_as(AnyUrl, url).load_bytes()
+            _ = AudioSegment.from_file(BytesIO(bytes_))
+        except Exception as e:
+            raise ValueError(f'Could not decode audio file from URL: {url}') from e
+
         return cls(str(url), scheme=None)
 
     def load(self: T) -> np.ndarray:
