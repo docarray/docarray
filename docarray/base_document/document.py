@@ -87,7 +87,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if self._da_ref is not None:
             if name in self.__fields__:
                 field_type = self._get_field_type(name)
-                if (
+                if tf_available and (
                     issubclass(field_type, TensorFlowTensor)
                     or isinstance(value, TensorFlowTensor)
                     or isinstance(value, tf.Tensor)
