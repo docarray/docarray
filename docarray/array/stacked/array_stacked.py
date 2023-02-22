@@ -275,7 +275,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             # __unparametrizedcls__[len(self), X ,Y] ...
             self._tensor_columns[field] = values__
             for i, doc in enumerate(self):
-                setattr(doc, field, self._tensor_columns[field][i])
+                object.__setattr__(doc, field, self._tensor_columns[field][i])
         else:
             setattr(self._docs, field, values)
 

@@ -555,6 +555,25 @@ def test_document_tensor_update():
     assert (batch.tensor[0] == torch.ones(3, 224, 224)).all()
 
 
+@pytest.mark.skip('no working for now')
+def test_document_tensor_update_doc():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    class MMdoc(BaseDocument):
+        image: Image
+
+    batch = DocumentArray[MMdoc](
+        [MMdoc(image=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
+    )
+
+    batch = batch.stack()
+
+    batch[0].image = Image(tensor=torch.ones(3, 224, 224))
+
+    assert (batch.image[0].tensor == torch.ones(3, 224, 224)).all()
+
+
 def test_document_tensor_update_mismatch():
     class Image(BaseDocument):
         tensor: TorchTensor
