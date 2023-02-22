@@ -115,7 +115,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     def index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
         data_by_columns = self._get_values_by_columns(docs)
-        hnsw_ids = tuple(self._to_universal_id(doc.id) for doc in docs)
+        hnsw_ids = tuple(self._to_hasdhed_id(doc.id) for doc in docs)
 
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
@@ -175,7 +175,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         index = self._hnsw_indices[embedding_field]
         labels, distances = index.knn_query(query_vec_np, k=limit)
         result_das = [
-            self._get_docs_sqlite_univ_id(
+            self._get_docs_sqlite_hashed_id(
                 ids_per_query,
             )
             for ids_per_query in labels
@@ -235,7 +235,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         if isinstance(key, str):
             key = [key]
         for doc_id in key:
-            id_ = self._to_universal_id(doc_id)
+            id_ = self._to_hasdhed_id(doc_id)
             for col_name, index in self._hnsw_indices.items():
                 index.mark_deleted(id_)
 
@@ -263,7 +263,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
     # general helpers
     @staticmethod
-    def _to_universal_id(doc_id: str) -> int:
+    def _to_hasdhed_id(doc_id: str) -> int:
         # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
         # hashing to 18 digits avoids overflow of sqlite INTEGER
         return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
@@ -310,7 +310,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         )
 
     def _send_docs_to_sqlite(self, docs: Sequence[BaseDocument]):
-        ids = (self._to_universal_id(doc.id) for doc in docs)
+        ids = (self._to_hasdhed_id(doc.id) for doc in docs)
         self._sqlite_cursor.executemany(
             'INSERT INTO docs VALUES (?, ?)',
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
@@ -331,24 +331,23 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         )
 
     def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray:
-        univ_ids = tuple(self._to_universal_id(id_) for id_ in doc_ids)
-        docs_unsorted = self._get_docs_sqlite_unsorted(univ_ids)
+        hashed_ids = tuple(self._to_hasdhed_id(id_) for id_ in doc_ids)
+        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
         return DocumentArray[self._schema](
             sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id))
         )
 
-    def _get_docs_sqlite_univ_id(self, univ_ids: Sequence[int]) -> DocumentArray:
-        docs_unsorted = self._get_docs_sqlite_unsorted(univ_ids)
+    def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocumentArray:
+        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
 
         def _in_position(doc):
-            return univ_ids.index(self._to_universal_id(doc.id))
+            return hashed_ids.index(self._to_hasdhed_id(doc.id))
 
         return DocumentArray[self._schema](sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
         ids = tuple(
-            self._to_universal_id(id_) if isinstance(id_, str) else id_
-            for id_ in doc_ids
+            self._to_hasdhed_id(id_) if isinstance(id_, str) else id_ for id_ in doc_ids
         )
         self._sqlite_cursor.execute(
             'DELETE FROM docs WHERE doc_id IN (%s)' % ','.join('?' * len(ids)),
