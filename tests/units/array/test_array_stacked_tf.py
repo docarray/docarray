@@ -80,15 +80,7 @@ def test_iterator(batch):
 
 
 @pytest.mark.tensorflow
-def test_stack_setter(batch):
-
-    batch.tensor = tf.ones((10, 3, 224, 224))
-
-    assert tnp.allclose(batch.tensor, tf.ones((10, 3, 224, 224)))
-
-
-@pytest.mark.tensorflow
-def test_set_after_stacking(batch):
+def test_set_after_stacking():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
 
@@ -98,10 +90,9 @@ def test_set_after_stacking(batch):
 
     batch = batch.stack()
     batch.tensor = tf.ones((10, 3, 224, 224))
+    assert tnp.allclose(batch.tensor.tensor, tf.ones((10, 3, 224, 224)))
     for i, doc in enumerate(batch):
-        doc.tensor.tensor
-        batch.tensor.tensor[i]
-        # assert tnp.allclose(doc.tensor.tensor, batch.tensor.tensor[i])
+        assert tnp.allclose(doc.tensor.tensor, batch.tensor.tensor[i])
 
 
 @pytest.mark.tensorflow
