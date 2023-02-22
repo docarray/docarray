@@ -59,15 +59,15 @@ def multi_model_docs():
     'access_path,len_result',
     [
         ('mm_text', num_docs),  # List of 5 Text objs
-        ('mm_text.text', num_docs),  # List of 5 strings
+        ('mm_text__text', num_docs),  # List of 5 strings
         ('mm_da', num_docs * num_sub_docs),  # List of 5 * 2 SubDoc objs
-        ('mm_da.sub_text', num_docs * num_sub_docs),  # List of 5 * 2 Text objs
+        ('mm_da__sub_text', num_docs * num_sub_docs),  # List of 5 * 2 Text objs
         (
-            'mm_da.sub_da',
+            'mm_da.__sub_da',
             num_docs * num_sub_docs * num_sub_sub_docs,
         ),  # List of 5 * 2 * 3 SubSubDoc objs
         (
-            'mm_da.sub_da.sub_sub_text',
+            'mm_da__sub_da__sub_sub_text',
             num_docs * num_sub_docs * num_sub_sub_docs,
         ),  # List of 5 * 2 * 3 Text objs
     ],
