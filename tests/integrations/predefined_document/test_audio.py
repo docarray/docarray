@@ -29,6 +29,14 @@ LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.ogg'),
     str(TOYDATA_DIR / 'hello.wma'),
     str(TOYDATA_DIR / 'hello.aac'),
+    str(TOYDATA_DIR / 'hello'),
+]
+
+LOCAL_NON_AUDIO_FILES = [
+    str(TOYDATA_DIR / 'captions.csv'),
+    str(TOYDATA_DIR / 'cube.ply'),
+    str(TOYDATA_DIR / 'test.glb'),
+    str(TOYDATA_DIR / 'test.png'),
 ]
 
 
@@ -39,6 +47,16 @@ def test_audio(file_url):
     audio = Audio(url=file_url)
     audio.tensor = audio.url.load()
     assert isinstance(audio.tensor, np.ndarray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize('file_url', LOCAL_NON_AUDIO_FILES)
+def test_non_audio(file_url):
+    try:
+        _ = Audio(url=file_url)
+    except ValueError:
+        pass
 
 
 @pytest.mark.slow
