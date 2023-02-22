@@ -326,6 +326,34 @@ class IOMixinArray(Iterable[BaseDocument]):
                 f'({cls.document_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
             )
 
+    @staticmethod
+    def access_path_dict_to_nested_dict(
+        access_path2val: Dict[str, Any]
+    ) -> Dict[Any, Any]:
+        """
+        Convert a dict, where the keys are access paths ("__"-separated) to a nested dictionary.
+
+        EXAMPLE USAGE
+
+        .. code-block:: python
+
+            access_path2val = {'image__url': 'some.png'}
+            assert access_path_dict_to_nested_dict(access_path2val) == {
+                'image': {'url': 'some.png'}
+            }
+
+        :param access_path2val: dict with access_paths as keys
+        :return: nested dict where the access path keys are split into separate field names and nested keys
+        """
+        nested_dict: Dict[Any, Any] = {}
+        for access_path, value in access_path2val.items():
+            field2val = _access_path_to_dict(
+                access_path=access_path,
+                value=value if value not in ['', 'None'] else None,
+            )
+            _update_nested_dicts(to_update=nested_dict, update_with=field2val)
+        return nested_dict
+
     @classmethod
     def from_csv(
         cls,
@@ -435,19 +463,6 @@ class IOMixinArray(Iterable[BaseDocument]):
             da.append(doc_type.parse_obj(doc_dict))
 
         return da
-
-    @staticmethod
-    def access_path_dict_to_nested_dict(
-        access_path2val: Dict[str, Any]
-    ) -> Dict[Any, Any]:
-        nested_dict: Dict[Any, Any] = {}
-        for access_path, value in access_path2val.items():
-            field2val = _access_path_to_dict(
-                access_path=access_path,
-                value=value if value not in ['', 'None'] else None,
-            )
-            _update_nested_dicts(to_update=nested_dict, update_with=field2val)
-        return nested_dict
 
     def to_pandas(self) -> pd.DataFrame:
         """
