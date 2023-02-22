@@ -32,7 +32,7 @@ REMOTE_AUDIO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
 )
 def test_audio_url(file_url):
     uri = parse_obj_as(AudioUrl, file_url)
-    tensor = uri.load()
+    tensor, _ = uri.load()
     assert isinstance(tensor, np.ndarray)
 
 
@@ -48,7 +48,7 @@ def test_load_audio_url_to_audio_torch_tensor_field(file_url):
         tensor: Optional[AudioTorchTensor]
 
     doc = MyAudioDoc(audio_url=file_url)
-    doc.tensor = doc.audio_url.load()
+    doc.tensor, _ = doc.audio_url.load()
 
     assert isinstance(doc.tensor, torch.Tensor)
     assert isinstance(doc.tensor, AudioTorchTensor)
@@ -67,7 +67,7 @@ def test_load_audio_url_to_audio_tensorflow_tensor_field(file_url):
         tensor: Optional[AudioTensorFlowTensor]
 
     doc = MyAudioDoc(audio_url=file_url)
-    doc.tensor = doc.audio_url.load()
+    doc.tensor, _ = doc.audio_url.load()
 
     assert isinstance(doc.tensor, AudioTensorFlowTensor)
     assert isinstance(doc.tensor.tensor, tf.Tensor)
@@ -81,7 +81,7 @@ def test_load_audio_url_to_audio_tensorflow_tensor_field(file_url):
 )
 def test_load(file_url):
     url = parse_obj_as(AudioUrl, file_url)
-    tensor = url.load()
+    tensor, _ = url.load()
     assert isinstance(tensor, np.ndarray)
 
 

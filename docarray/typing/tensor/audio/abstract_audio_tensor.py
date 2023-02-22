@@ -43,6 +43,28 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setframerate(sample_rate)
             f.writeframes(self.to_bytes())
 
+    def save_to_audio_file(
+        self: 'T',
+        file_path: Union[str, BinaryIO],
+        format: str = 'wav',
+        frame_rate: int = 44100,
+        sample_width: int = 2,
+        *args,
+        **kwargs
+    ) -> None:
+        from pydub import AudioSegment  # type: ignore
+
+        comp_backend = self.get_comp_backend()
+        channels = 2 if comp_backend.n_dim(array=self) > 1 else 1  # type: ignore
+
+        segment = AudioSegment(
+            self.to_bytes(),
+            frame_rate=frame_rate,
+            sample_width=sample_width,
+            channels=channels,
+        )
+        segment.export(file_path, format=format, *args, **kwargs)
+
     def display(self, rate=44100):
         """
         Play audio data from tensor in notebook.

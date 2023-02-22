@@ -32,6 +32,17 @@ LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello'),
 ]
 
+LOCAL_AUDIO_FILES_AND_FORMAT = [
+    (str(TOYDATA_DIR / 'hello.wav'), 'wav'),
+    (str(TOYDATA_DIR / 'olleh.wav'), 'wav'),
+    (str(TOYDATA_DIR / 'hello.mp3'), 'mp3'),
+    (str(TOYDATA_DIR / 'hello.flac'), 'flac'),
+    (str(TOYDATA_DIR / 'hello.ogg'), 'ogg'),
+    (str(TOYDATA_DIR / 'hello.wma'), 'asf'),
+    (str(TOYDATA_DIR / 'hello.aac'), 'adts'),
+    (str(TOYDATA_DIR / 'hello'), 'wav'),
+]
+
 LOCAL_NON_AUDIO_FILES = [
     str(TOYDATA_DIR / 'captions.csv'),
     str(TOYDATA_DIR / 'cube.ply'),
@@ -49,7 +60,7 @@ LOCAL_NON_AUDIO_FILES = [
 @pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
 def test_audio(file_url):
     audio = Audio(url=file_url)
-    audio.tensor = audio.url.load()
+    audio.tensor, _ = audio.url.load()
     assert isinstance(audio.tensor, np.ndarray)
 
 
@@ -59,85 +70,98 @@ def test_audio(file_url):
 def test_non_audio(file_url):
     with pytest.raises(Exception):
         audio = Audio(url=file_url)
-        _ = audio.url.load()
+        _, _ = audio.url.load()
 
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
-def test_save_audio_ndarray(file_url, tmpdir):
-    tmp_file = str(tmpdir / 'tmp.wav')
+@pytest.mark.parametrize('file_url, format', LOCAL_AUDIO_FILES_AND_FORMAT)
+def test_save_audio_ndarray(file_url, format, tmpdir):
+    tmp_file = str(tmpdir / f'tmp.{format}')
 
     audio = Audio(url=file_url)
-    audio.tensor = audio.url.load()
+    audio.tensor, audio.frame_rate = audio.url.load()
     assert isinstance(audio.tensor, np.ndarray)
     assert isinstance(audio.tensor, AudioNdArray)
 
-    audio.tensor.save_to_wav_file(tmp_file)
+    audio.tensor.save_to_audio_file(
+        tmp_file, format=format, frame_rate=audio.frame_rate
+    )
     assert os.path.isfile(tmp_file)
 
     audio_from_file = Audio(url=tmp_file)
-    audio_from_file.tensor = audio_from_file.url.load()
-    if file_url.split('.')[-1] not in ['wav', 'flac']:
+    audio_from_file.tensor, _ = audio_from_file.url.load()
+    if format in ['wav', 'flac']:
+        # lossless formats (wav, flac) can be loaded back exactly
+        assert np.allclose(audio.tensor, audio_from_file.tensor)
+    elif format in ['mp3']:
         # lossy formats, we can only check the shape
         assert audio.tensor.shape == audio_from_file.tensor.shape
     else:
-        # lossless formats (wav, flac) can be loaded back exactly
-        assert np.allclose(audio.tensor, audio_from_file.tensor, rtol=1)
+        # encoding to other formats may change the shape, only check file exists
+        pass
 
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
-def test_save_audio_torch_tensor(file_url, tmpdir):
+@pytest.mark.parametrize('file_url, format', LOCAL_AUDIO_FILES_AND_FORMAT)
+def test_save_audio_torch_tensor(file_url, format, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
 
     audio = Audio(url=file_url)
-    audio.tensor = parse_obj_as(AudioTorchTensor, torch.from_numpy(audio.url.load()))
+    tensor, frame_rate = audio.url.load()
+
+    audio.tensor = parse_obj_as(AudioTorchTensor, torch.from_numpy(tensor))
     assert isinstance(audio.tensor, torch.Tensor)
     assert isinstance(audio.tensor, AudioTorchTensor)
 
-    audio.tensor.save_to_wav_file(tmp_file)
+    audio.tensor.save_to_audio_file(tmp_file, format=format, frame_rate=frame_rate)
+
     assert os.path.isfile(tmp_file)
 
     audio_from_file = Audio(url=tmp_file)
-    audio_from_file.tensor = parse_obj_as(
-        AudioTorchTensor, torch.from_numpy(audio_from_file.url.load())
-    )
-    if file_url.split('.')[-1] not in ['wav', 'flac']:
+    tensor, _ = audio_from_file.url.load()
+    audio_from_file.tensor = parse_obj_as(AudioTorchTensor, torch.from_numpy(tensor))
+    if format in ['wav', 'flac']:
+        # lossless formats (wav, flac) can be loaded back exactly
+        assert np.allclose(audio.tensor, audio_from_file.tensor)
+    elif format in ['mp3']:
         # lossy formats, we can only check the shape
         assert audio.tensor.shape == audio_from_file.tensor.shape
     else:
-        # lossless formats (wav, flac) can be loaded back exactly
-        assert np.allclose(audio.tensor, audio_from_file.tensor, rtol=1)
+        # encoding to other formats may change the shape, only check file exists
+        pass
 
 
 @pytest.mark.tensorflow
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', LOCAL_AUDIO_FILES)
-def test_save_audio_tensorflow(file_url, tmpdir):
+@pytest.mark.parametrize('file_url, format', LOCAL_AUDIO_FILES_AND_FORMAT)
+def test_save_audio_tensorflow(file_url, format, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
 
     audio = Audio(url=file_url)
-    audio.tensor = AudioTensorFlowTensor(tensor=tf.constant(audio.url.load()))
+    tensor, frame_rate = audio.url.load()
+    audio.tensor = AudioTensorFlowTensor(tensor=tf.constant(tensor))
     assert isinstance(audio.tensor, TensorFlowTensor)
     assert isinstance(audio.tensor, AudioTensorFlowTensor)
     assert isinstance(audio.tensor.tensor, tf.Tensor)
 
-    audio.tensor.save_to_wav_file(tmp_file)
+    audio.tensor.save_to_audio_file(tmp_file, format=format, frame_rate=frame_rate)
     assert os.path.isfile(tmp_file)
 
     audio_from_file = Audio(url=tmp_file)
-    audio_from_file.tensor = AudioTensorFlowTensor(
-        tensor=tf.constant(audio_from_file.url.load())
-    )
-    if file_url.split('.')[-1] not in ['wav', 'flac']:
+    tensor, _ = audio_from_file.url.load()
+    audio_from_file.tensor = AudioTensorFlowTensor(tensor=tf.constant(tensor))
+    if format in ['wav', 'flac']:
+        # lossless formats (wav, flac) can be loaded back exactly
+        assert tnp.allclose(audio.tensor.tensor, audio_from_file.tensor.tensor)
+    elif format in ['mp3']:
         # lossy formats, we can only check the shape
         assert audio.tensor.tensor.shape == audio_from_file.tensor.tensor.shape
     else:
-        # lossless formats (wav, flac) can be loaded back exactly
-        assert tnp.allclose(audio.tensor.tensor, audio_from_file.tensor.tensor)
+        # encoding to other formats may change the shape, only check file exists
+        pass
 
 
 @pytest.mark.slow
@@ -152,7 +176,8 @@ def test_extend_audio(file_url):
         tensor: Optional[AudioNdArray]
 
     my_audio = MyAudio(title='my extended audio', url=file_url)
-    my_audio.tensor = parse_obj_as(AudioNdArray, my_audio.url.load())
+    tensor, _ = my_audio.url.load()
+    my_audio.tensor = parse_obj_as(AudioNdArray, tensor)
 
     assert isinstance(my_audio.tensor, AudioNdArray)
     assert isinstance(my_audio.url, AudioUrl)

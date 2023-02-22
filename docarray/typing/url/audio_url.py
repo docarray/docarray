@@ -1,9 +1,9 @@
 import warnings
-from io import BytesIO
-from typing import TypeVar
+from typing import Tuple, TypeVar
 
 import numpy as np
 
+from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils.misc import is_notebook
@@ -18,7 +18,7 @@ class AudioUrl(AnyUrl):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load(self: T) -> np.ndarray:
+    def load(self: T) -> Tuple[np.ndarray, int]:
         """
         Load the data from the url into an AudioNdArray.
 
@@ -40,18 +40,12 @@ class AudioUrl(AnyUrl):
 
 
             doc = MyDoc(audio_url="toydata/hello.wav")
-            doc.audio_tensor = doc.audio_url.load()
+            doc.audio_tensor, doc.frame_rate = doc.audio_url.load()
             assert isinstance(doc.audio_tensor, np.ndarray)
 
         """
-        from pydub import AudioSegment  # type: ignore
-
-        bytes_ = self.load_bytes()
-        segment = AudioSegment.from_file(BytesIO(bytes_))
-        samples = np.array(segment.get_array_of_samples())
-
-        samples_norm = samples / 2 ** (segment.sample_width * 8 - 1)
-        return samples_norm
+        bytes_ = AudioBytes(self.load_bytes())
+        return bytes_.load()
 
     def display(self):
         """
