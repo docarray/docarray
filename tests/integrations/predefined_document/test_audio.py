@@ -37,6 +37,10 @@ LOCAL_NON_AUDIO_FILES = [
     str(TOYDATA_DIR / 'cube.ply'),
     str(TOYDATA_DIR / 'test.glb'),
     str(TOYDATA_DIR / 'test.png'),
+    'illegal',
+    'https://www.github.com',
+    'my/local/text/file.txt',
+    'my/local/text/file.png',
 ]
 
 
