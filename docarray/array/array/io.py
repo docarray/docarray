@@ -402,6 +402,20 @@ class IOMixinArray(Iterable[BaseDocument]):
 
     @classmethod
     def from_pandas(cls, df: pd.DataFrame) -> 'DocumentArray':
+        """
+        Load a DocumentArray from a `pandas.DataFrame` following the schema
+        defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
+        Every row of the dataframe will be mapped to one document in the array.
+        The column names of the dataframe have to match the field namesof the
+        Document type.
+        For nested fields use "__"-separated access paths as column names,
+        such as 'image__url'.
+
+        List-like fields (including field of type DocumentArray) are not supported.
+
+        :param df: pandas.DataFrame to extract Document's information from
+        :return: DocumentArray
+        """
         from docarray import DocumentArray
 
         cls._check_for_valid_document_type()
