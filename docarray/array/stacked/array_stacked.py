@@ -14,6 +14,8 @@ from typing import (
     overload,
 )
 
+from pydantic import parse_obj_as
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
@@ -251,7 +253,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             values_ = cast(T, values)
             self._doc_columns[field] = values_
         elif field in self._tensor_columns.keys() and not isinstance(values, List):
-            values__ = cast(AbstractTensor, values)
+            values__ = parse_obj_as(
+                self.document_type._get_field_type(field).__unparametrizedcls__, values
+            )
             self._tensor_columns[field] = values__
             for i, doc in enumerate(self):
                 setattr(doc, field, self._tensor_columns[field][i])
