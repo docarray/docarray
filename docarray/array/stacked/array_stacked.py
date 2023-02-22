@@ -14,7 +14,7 @@ from typing import (
     overload,
 )
 
-from pydantic import parse_obj_as
+from pydantic import BaseModel, parse_obj_as
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
@@ -100,12 +100,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         self._add_ref_to_docs()
 
     def _add_ref_to_docs(self) -> None:
-        for doc in self._docs:
+        for i, doc in enumerate(self._docs):
             if doc._da_ref is not None and doc._da_ref is not self:
                 raise ValueError(
                     f'{doc} already belong to {doc._da_ref} and cannot be stack again'
                 )
             doc._da_ref = self
+            doc._da_index = i
 
     @classmethod
     def _from_da_and_columns(
@@ -305,9 +306,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         # single doc case
         doc = self._docs[key]
         for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
+            object.__setattr__(doc, field, self._doc_columns[field][key])
+        for field in self._tensor_columns.keys():
+            BaseModel.__setattr__(doc, field, self._tensor_columns[field][key])
         return doc
 
     @overload
@@ -448,11 +449,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for i, doc in enumerate(self._docs):
             for field in self._doc_columns.keys():
                 val_doc = self._doc_columns[field]
-                object.__setattr__(doc, field, val_doc[i])
+                BaseModel.__setattr__(doc, field, val_doc[i])
 
             for field in self._tensor_columns.keys():
                 val_tens = self._tensor_columns[field]
-                object.__setattr__(doc, field, val_tens[i])
+                BaseModel.__setattr__(doc, field, val_tens[i])
 
                 # NOTE: here we might need to copy the tensor
                 # see here

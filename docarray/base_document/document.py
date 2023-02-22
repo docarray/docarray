@@ -35,6 +35,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
     _da_ref: Optional['DocumentArrayStacked'] = PrivateAttr(None)
+    _da_index: Optional[int] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -112,5 +113,11 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                     object.__setattr__(self, name, old_value)
 
                     return  # needed here to stop func execution
+
+                elif issubclass(field_type, BaseDocument):
+                    if not isinstance(value, field_type):
+                        raise ValueError(f'{value} is not a valid {field_type}')
+
+                    self._da_ref[self._da_index] = value
 
         super().__setattr__(name, value)
