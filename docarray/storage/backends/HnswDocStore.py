@@ -234,10 +234,13 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         # delete from the indices
         if isinstance(key, str):
             key = [key]
-        for doc_id in key:
-            id_ = self._to_hasdhed_id(doc_id)
-            for col_name, index in self._hnsw_indices.items():
-                index.mark_deleted(id_)
+        try:
+            for doc_id in key:
+                id_ = self._to_hasdhed_id(doc_id)
+                for col_name, index in self._hnsw_indices.items():
+                    index.mark_deleted(id_)
+        except RuntimeError:
+            raise KeyError(f'No document with id {key} found')
 
         self._delete_docs_from_sqlite(key)
         self._sqlite_conn.commit()

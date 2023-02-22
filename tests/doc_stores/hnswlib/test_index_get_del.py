@@ -159,3 +159,66 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
         assert d_out.id == id_
         assert d_out.d.id == d_in.d.id
         assert np.all(d_out.d.tens == d_in.d.tens)
+
+
+def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
+    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store.index(ten_simple_docs)
+
+    with pytest.raises(KeyError):
+        store['not_a_real_id']
+
+
+def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
+    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store.index(ten_simple_docs)
+    # delete once
+    assert store.num_docs() == 10
+    del store[ten_simple_docs[0].id]
+    assert store.num_docs() == 9
+    for i, d in enumerate(ten_simple_docs):
+        id_ = d.id
+        if i == 0:  # deleted
+            with pytest.raises(KeyError):
+                store[id_]
+        else:
+            assert store[id_].id == id_
+            assert np.all(store[id_].tens == d.tens)
+    # delete again
+    del store[ten_simple_docs[3].id]
+    assert store.num_docs() == 8
+    for i, d in enumerate(ten_simple_docs):
+        id_ = d.id
+        if i in (0, 3):  # deleted
+            with pytest.raises(KeyError):
+                store[id_]
+        else:
+            assert store[id_].id == id_
+            assert np.all(store[id_].tens == d.tens)
+
+
+def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
+    docs_to_del_idx = [0, 2, 4, 6, 8]
+
+    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store.index(ten_simple_docs)
+
+    assert store.num_docs() == 10
+    docs_to_del = [ten_simple_docs[i] for i in docs_to_del_idx]
+    ids_to_del = [d.id for d in docs_to_del]
+    del store[ids_to_del]
+    for i, doc in enumerate(ten_simple_docs):
+        if i in docs_to_del_idx:
+            with pytest.raises(KeyError):
+                store[doc.id]
+        else:
+            assert store[doc.id].id == doc.id
+            assert np.all(store[doc.id].tens == doc.tens)
+
+
+def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
+    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store.index(ten_simple_docs)
+
+    with pytest.raises(KeyError):
+        del store['not_a_real_id']
