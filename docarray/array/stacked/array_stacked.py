@@ -253,9 +253,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             values_ = cast(T, values)
             self._doc_columns[field] = values_
         elif field in self._tensor_columns.keys() and not isinstance(values, List):
-            values__ = parse_obj_as(
-                self.document_type._get_field_type(field).__unparametrizedcls__, values
+
+            type_ = cast(AbstractTensor, self.document_type._get_field_type(field))
+            shaped_type = (
+                type_.__unparametrizedcls__
+                if type_.__unparametrizedcls__ is not None
+                else type_
             )
+            values__ = parse_obj_as(shaped_type, values)  # type: ignore
+            # TODO: here we should validate that the shape is correct, maybe create a
+            # __unparametrizedcls__[len(self), X ,Y] ...
             self._tensor_columns[field] = values__
             for i, doc in enumerate(self):
                 setattr(doc, field, self._tensor_columns[field][i])
