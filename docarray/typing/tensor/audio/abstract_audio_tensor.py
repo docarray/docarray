@@ -35,6 +35,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param format: format for the audio file ('mp3', 'wav', 'raw', 'ogg' or other ffmpeg/avconv supported files)
         :param frame_rate: sampling frequency
         :param sample_width: sample width in bytes
+        :param pydub_args: dictionary of additional arguments for pydub.AudioSegment.export function
         """
         from pydub import AudioSegment  # type: ignore
 
