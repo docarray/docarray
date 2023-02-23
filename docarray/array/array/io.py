@@ -16,8 +16,8 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    List,
     Optional,
-    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -26,14 +26,14 @@ from typing import (
 
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
-    _access_path_to_dict,
+    _access_path_dict_to_nested_dict,
+    _all_access_paths_valid,
     _dict_to_access_paths,
-    _update_nested_dicts,
-    is_access_path_valid,
 )
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
+    import pandas as pd
 
     from docarray import DocumentArray
     from docarray.proto import DocumentArrayProto
@@ -330,37 +330,37 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        doc_type = cls.document_type
-        if doc_type == AnyDocument:
+        if cls.document_type == AnyDocument:
             raise TypeError(
                 'There is no document schema defined. '
-                'To load from csv, please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
             )
 
+        doc_type = cls.document_type
         da = DocumentArray.__class_getitem__(doc_type)()
+
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
-            field_names: Optional[Sequence[Any]] = rows.fieldnames
-
-            if field_names is None:
+            field_names: List[str] = (
+                [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
+            )
+            if field_names is None or len(field_names) == 0:
                 raise TypeError("No field names are given.")
 
-            valid = [is_access_path_valid(doc_type, field) for field in field_names]
-            if not all(valid):
+            valid_paths = _all_access_paths_valid(
+                doc_type=doc_type, access_paths=field_names
+            )
+            if not all(valid_paths):
                 raise ValueError(
-                    f'Fields provided in the csv file do not match the schema of the DocumentArray\'s '
-                    f'document type ({doc_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
+                    f'Column names do not match the schema of the DocumentArray\'s '
+                    f'document type ({cls.document_type.__name__}): '
+                    f'{list(compress(field_names, [not v for v in valid_paths]))}'
                 )
 
             for access_path2val in rows:
-                doc_dict: Dict[Any, Any] = {}
-                for access_path, value in access_path2val.items():
-                    field2val = _access_path_to_dict(
-                        access_path=access_path,
-                        value=value if value not in ['', 'None'] else None,
-                    )
-                    _update_nested_dicts(to_update=doc_dict, update_with=field2val)
-
+                doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(
+                    access_path2val
+                )
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
@@ -391,6 +391,101 @@ class IOMixinArray(Iterable[BaseDocument]):
             for doc in self:
                 doc_dict = _dict_to_access_paths(doc.dict())
                 writer.writerow(doc_dict)
+
+    @classmethod
+    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocumentArray':
+        """
+        Load a DocumentArray from a `pandas.DataFrame` following the schema
+        defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
+        Every row of the dataframe will be mapped to one Document in the array.
+        The column names of the dataframe have to match the field names of the
+        Document type.
+        For nested fields use "__"-separated access paths as column names,
+        such as 'image__url'.
+
+        List-like fields (including field of type DocumentArray) are not supported.
+
+        EXAMPLE USAGE:
+
+        .. code-block:: python
+
+            import pandas as pd
+
+            from docarray import BaseDocument, DocumentArray
+
+
+            class Person(BaseDocument):
+                name: str
+                follower: int
+
+
+            df = pd.DataFrame(
+                data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
+            )
+
+            da = DocumentArray[Person].from_pandas(df)
+
+            assert da.name == ['Maria', 'Jake']
+            assert da.follower == [12345, 54321]
+
+
+        :param df: pandas.DataFrame to extract Document's information from
+        :return: DocumentArray where each Document contains the information of one
+            corresponding row of the `pandas.DataFrame`.
+        """
+        from docarray import DocumentArray
+
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
+
+        doc_type = cls.document_type
+        da = DocumentArray.__class_getitem__(doc_type)()
+        field_names = df.columns.tolist()
+
+        if field_names is None or len(field_names) == 0:
+            raise TypeError("No field names are given.")
+
+        valid_paths = _all_access_paths_valid(
+            doc_type=doc_type, access_paths=field_names
+        )
+        if not all(valid_paths):
+            raise ValueError(
+                f'Column names do not match the schema of the DocumentArray\'s '
+                f'document type ({cls.document_type.__name__}): '
+                f'{list(compress(field_names, [not v for v in valid_paths]))}'
+            )
+
+        for row in df.itertuples():
+            access_path2val = row._asdict()
+            access_path2val.pop('Index', None)
+            doc_dict = _access_path_dict_to_nested_dict(access_path2val)
+            da.append(doc_type.parse_obj(doc_dict))
+
+        return da
+
+    def to_pandas(self) -> 'pd.DataFrame':
+        """
+        Save a DocumentArray to a `pandas.DataFrame`.
+        The field names will be stored as column names. Each row of the dataframe corresponds
+        to the information of one Document.
+        Columns for nested fields will be named after the "__"-seperated access paths,
+        such as `"image__url"` for `image.url`.
+
+        :return: pandas.DataFrame
+        """
+        import pandas as pd
+
+        fields = self.document_type._get_access_paths()
+        df = pd.DataFrame(columns=fields)
+
+        for doc in self:
+            doc_dict = _dict_to_access_paths(doc.dict())
+            df = df.append(doc_dict, ignore_index=True)
+
+        return df
 
     # Methods to load from/to files in different formats
     @property

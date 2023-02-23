@@ -128,29 +128,30 @@ def test_simple_filter(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_nested_filter(docs, dict_api):
+
     if dict_api:
         method = lambda query: filter(docs, query)  # noqa: E731
     else:
         method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
-    result = method({'dictionary.a': {'$eq': 0}})
+    result = method({'dictionary__a': {'$eq': 0}})
     assert len(result) == 2
     for res in result:
         assert res.dictionary['a'] == 0
 
-    result = method({'dictionary.c': {'$exists': True}})
+    result = method({'dictionary__c': {'$exists': True}})
     assert len(result) == 1
     assert result[0].dictionary['c'] == 2
 
-    result = method({'dictionary.d.e': {'$exists': True}})
+    result = method({'dictionary__d__e': {'$exists': True}})
     assert len(result) == 1
     assert result[0].dictionary['d'] == {'e': 3}
 
-    result = method({'dictionary.d.e': {'$eq': 3}})
+    result = method({'dictionary__d__e': {'$eq': 3}})
     assert len(result) == 1
     assert result[0].dictionary['d'] == {'e': 3}
 
-    result = method({'image.url': {'$eq': 'exampleimage.jpg'}})
+    result = method({'image__url': {'$eq': 'exampleimage.jpg'}})
     assert len(result) == 1
     assert result[0].image.url == 'exampleimage.jpg'
 
@@ -270,7 +271,7 @@ def test_from_docstring(dict_api):
 
     query = {
         '$and': {
-            'image.url': {'$regex': 'photo'},
+            'image__url': {'$regex': 'photo'},
             'price': {'$lte': 50},
         }
     }

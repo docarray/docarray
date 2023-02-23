@@ -93,9 +93,7 @@ def test_from_csv_without_schema_raise_exception():
 
 
 def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
-    with pytest.raises(
-        ValueError, match='Fields provided in the csv file do not match the schema'
-    ):
+    with pytest.raises(ValueError, match='Column names do not match the schema'):
         DocumentArray[nested_doc.__class__].from_csv(
             file_path=str(TOYDATA_DIR / 'docs.csv')
         )

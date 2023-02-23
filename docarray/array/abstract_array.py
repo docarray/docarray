@@ -133,13 +133,13 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
         access_path: str,
     ) -> Union[List[Any], 'AbstractTensor']:
         """
-        Return a List of the accessed objects when applying the access_path. If this
+        Return a List of the accessed objects when applying the `access_path`. If this
         results in a nested list or list of DocumentArrays, the list will be flattened
         on the first level. The access path is a string that consists of attribute
-        names, concatenated and dot-seperated. It describes the path from the first
-        level to an arbitrary one, e.g. 'doc_attr_x.sub_doc_attr_x.sub_sub_doc_attr_z'.
+        names, concatenated and "__"-separated. It describes the path from the first
+        level to an arbitrary one, e.g. 'content__image__url'.
 
-        :param access_path: a string that represents the access path.
+        :param access_path: a string that represents the access path ("__"-separated).
         :return: list of the accessed objects, flattened if nested.
 
         EXAMPLE USAGE
@@ -163,7 +163,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
 
             books = da.traverse_flat(access_path='content')  # list of 10 Text objs
 
-            authors = da.traverse_flat(access_path='author.name')  # list of 10 strings
+            authors = da.traverse_flat(access_path='author__name')  # list of 10 strings
 
         If the resulting list is a nested list, it will be flattened:
 
@@ -220,7 +220,7 @@ class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
     @staticmethod
     def _traverse(node: Any, access_path: str):
         if access_path:
-            curr_attr, _, path_attrs = access_path.partition('.')
+            curr_attr, _, path_attrs = access_path.partition('__')
 
             from docarray.array import DocumentArray
 
