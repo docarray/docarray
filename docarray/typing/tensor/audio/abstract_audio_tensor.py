@@ -1,6 +1,6 @@
 import warnings
 from abc import ABC
-from typing import BinaryIO, TypeVar, Union
+from typing import Any, BinaryIO, Dict, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import is_notebook
@@ -25,8 +25,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         format: str = 'wav',
         frame_rate: int = 44100,
         sample_width: int = 2,
-        *args,
-        **kwargs
+        pydub_args: Dict[str, Any] = {},
     ) -> None:
         """
         Save audio tensor to an audio file. Mono/stereo is preserved.
@@ -48,7 +47,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             sample_width=sample_width,
             channels=channels,
         )
-        segment.export(file_path, format=format, *args, **kwargs)
+        segment.export(file_path, format=format, **pydub_args)
 
     def display(self, rate=44100):
         """
