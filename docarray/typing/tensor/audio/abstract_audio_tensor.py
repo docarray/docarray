@@ -43,7 +43,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
             f.setframerate(sample_rate)
             f.writeframes(self.to_bytes())
 
-    def save_to_audio_file(
+    def save(
         self: 'T',
         file_path: Union[str, BinaryIO],
         format: str = 'wav',
@@ -52,6 +52,15 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         *args,
         **kwargs
     ) -> None:
+        """
+        Save audio tensor to an audio file. Mono/stereo is preserved.
+
+        :param file_path: path to an audio file. If file is a string, open the file by
+            that name, otherwise treat it as a file-like object.
+        :param format: format for the audio file ('mp3', 'wav', 'raw', 'ogg' or other ffmpeg/avconv supported files)
+        :param frame_rate: sampling frequency
+        :param sample_width: sample width in bytes
+        """
         from pydub import AudioSegment  # type: ignore
 
         comp_backend = self.get_comp_backend()
