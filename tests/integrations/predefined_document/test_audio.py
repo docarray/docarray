@@ -73,7 +73,8 @@ def test_non_audio(file_url):
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url, format', LOCAL_AUDIO_FILES_AND_FORMAT)
 def test_save_audio_ndarray(file_url, format, tmpdir):
-    tmp_file = str(tmpdir / f'tmp.{format}')
+    filename = os.path.basename(file_url)
+    tmp_file = str(tmpdir / filename)
 
     audio = Audio(url=file_url)
     audio.tensor, audio.frame_rate = audio.url.load()
