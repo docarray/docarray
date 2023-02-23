@@ -1,9 +1,6 @@
-import pytest
-
-from docarray import BaseDocument
-from docarray.typing import NdArray
+from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
-from docarray import DocumentArray
+from docarray.typing import NdArray
 
 
 class MyDoc(BaseDocument):

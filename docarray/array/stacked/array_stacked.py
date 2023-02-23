@@ -14,6 +14,8 @@ from typing import (
     overload,
 )
 
+from pydantic import parse_obj_as
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
@@ -211,6 +213,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
                 elif issubclass(field_type, BaseDocument):
                     doc_columns[field_name] = getattr(docs, field_name).stack()
+                    for i, doc in enumerate(docs):
+                        setattr(doc, field_name, doc_columns[field_name][i])
 
                 elif issubclass(field_type, DocumentArray):
                     for doc in docs:
@@ -249,8 +253,19 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             values_ = cast(T, values)
             self._doc_columns[field] = values_
         elif field in self._tensor_columns.keys() and not isinstance(values, List):
-            values__ = cast(AbstractTensor, values)
+
+            type_ = cast(AbstractTensor, self.document_type._get_field_type(field))
+            shaped_type = (
+                type_.__unparametrizedcls__
+                if type_.__unparametrizedcls__ is not None
+                else type_
+            )
+            values__ = parse_obj_as(shaped_type, values)  # type: ignore
+            # TODO: here we should validate that the shape is correct, maybe create a
+            # __unparametrizedcls__[len(self), X ,Y] ...
             self._tensor_columns[field] = values__
+            for i, doc in enumerate(self):
+                setattr(doc, field, self._tensor_columns[field][i])
         else:
             setattr(self._docs, field, values)
 
@@ -271,10 +286,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             return self._get_from_data_and_columns(item_)
         # single doc case
         doc = self._docs[item]
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][item])
-        for field in self._tensor_columns.keys():
-            setattr(doc, field, self._tensor_columns[field][item])
         return doc
 
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
