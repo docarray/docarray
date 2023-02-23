@@ -111,10 +111,16 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
-    def _index(self, docs: Union[TSchema, Sequence[TSchema]]):
+    def _index(self, column_data_dic, **kwargs):
+        # not needed, we implement `index` directly
+        ...
+
+    def index(self, docs: Union[TSchema, Sequence[TSchema]], **kwargs):
         """Index a document into the store"""
+        if kwargs:
+            raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
         data_by_columns = self._get_col_value_dict(docs)
-        hnsw_ids = tuple(self._to_hasdhed_id(doc.id) for doc in docs)
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs)
 
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
@@ -122,7 +128,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             data = data_by_columns[col_name]
             data_np = [self._to_numpy(arr) for arr in data]
             data_stacked = np.stack(data_np)
-            index.add_items(data_stacked, ids=hnsw_ids)
+            index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
         self._send_docs_to_sqlite(docs)
@@ -232,7 +238,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             key = [key]
         try:
             for doc_id in key:
-                id_ = self._to_hasdhed_id(doc_id)
+                id_ = self._to_hashed_id(doc_id)
                 for col_name, index in self._hnsw_indices.items():
                     index.mark_deleted(id_)
         except RuntimeError:
@@ -262,7 +268,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     # general helpers
     @staticmethod
-    def _to_hasdhed_id(doc_id: str) -> int:
+    def _to_hashed_id(doc_id: str) -> int:
         # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
         # hashing to 18 digits avoids overflow of sqlite INTEGER
         return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
@@ -309,7 +315,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
     def _send_docs_to_sqlite(self, docs: Sequence[BaseDocument]):
-        ids = (self._to_hasdhed_id(doc.id) for doc in docs)
+        ids = (self._to_hashed_id(doc.id) for doc in docs)
         self._sqlite_cursor.executemany(
             'INSERT INTO docs VALUES (?, ?)',
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
@@ -330,7 +336,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
     def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray:
-        hashed_ids = tuple(self._to_hasdhed_id(id_) for id_ in doc_ids)
+        hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
         return DocumentArray[self._schema](
             sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id))
@@ -340,13 +346,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
 
         def _in_position(doc):
-            return hashed_ids.index(self._to_hasdhed_id(doc.id))
+            return hashed_ids.index(self._to_hashed_id(doc.id))
 
         return DocumentArray[self._schema](sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
         ids = tuple(
-            self._to_hasdhed_id(id_) if isinstance(id_, str) else id_ for id_ in doc_ids
+            self._to_hashed_id(id_) if isinstance(id_, str) else id_ for id_ in doc_ids
         )
         self._sqlite_cursor.execute(
             'DELETE FROM docs WHERE doc_id IN (%s)' % ','.join('?' * len(ids)),

@@ -46,17 +46,17 @@ class DummyDocIndex(BaseDocumentIndex):
     def python_type_to_db_type(self, x):
         return str
 
-    index = _identity
+    _index = _identity
     num_docs = _identity
     __delitem__ = _identity
     __getitem__ = _identity
     execute_query = _identity
-    find = _identity
-    find_batched = _identity
-    filter = _identity
-    filter_batched = _identity
-    text_search = _identity
-    text_search_batched = _identity
+    _find = _identity
+    _find_batched = _identity
+    _filter = _identity
+    _filter_batched = _identity
+    _text_search = _identity
+    _text_search_batched = _identity
 
 
 def test_defaults():

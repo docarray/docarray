@@ -168,8 +168,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def _index(self, docs: Union[TSchema, Sequence[TSchema]]):
+    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]], **kwargs):
         """Index a document into the store"""
+        # column_to_data is a dictionary from column name to a generator
+        # that yields the data for that column.
+        # if you want to work directly on documents, you can implement index() instead
         ...
 
     @abstractmethod
@@ -312,11 +315,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
-    def index(self, docs: Union[TSchema, Sequence[TSchema]]):
+    def index(self, docs: Union[TSchema, Sequence[TSchema]], **kwargs):
         """Index a document into the store"""
         if not isinstance(docs, Sequence):
             docs = [docs]
-        self._index(docs)
+        self._index(docs, **kwargs)
 
     def find(
         self,
