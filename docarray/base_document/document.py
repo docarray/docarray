@@ -14,7 +14,7 @@ from docarray.utils.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
-    import tensorflow as tf
+    import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor
 
