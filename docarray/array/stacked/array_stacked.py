@@ -303,9 +303,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             self._set_data_and_columns(key, value)
         else:
             # single doc case
-            self._docs[key] = value
+            key_ = cast(int, key)
+            value_ = cast(T_doc, value)
+            self._docs[key_] = value_
             for field in chain(self._tensor_columns.keys(), self._doc_columns.keys()):
-                self._tensor_columns[field][key] = getattr(value, field)
+                self._tensor_columns[field][key_] = getattr(value_, field)
 
     @overload
     def __delitem__(self: T, key: int) -> None:
@@ -370,12 +372,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             self._docs[index_item] = value
             doc_cols_to_set, tens_cols_to_set = self._create_columns(
                 value, self.tensor_type
-            )
-        elif isinstance(value, BaseDocument):
-            self._docs[index_item] = value
-            doc_cols_to_set, tens_cols_to_set = self._create_columns(
-                DocumentArray.__class_getitem__(self.document_type)([value]),
-                self.tensor_type,
             )
         elif isinstance(value, DocumentArrayStacked):
             self._docs[index_item] = value._docs
