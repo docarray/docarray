@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Optional, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -25,7 +25,7 @@ class PointCloud3DUrl(Url3D):
         self: T,
         samples: int,
         multiple_geometries: bool = False,
-        trimesh_args: Dict[str, Any] = None,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'PointsAndColors':
         """
         Load the data from the url into an NdArray containing point cloud information.
@@ -61,6 +61,9 @@ class PointCloud3DUrl(Url3D):
         """
         from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 
+        if not trimesh_args:
+            trimesh_args = {}
+
         if multiple_geometries:
             # try to coerce everything into a scene
             scene = self._load_trimesh_instance(force='scene', **trimesh_args)
@@ -79,7 +82,7 @@ class PointCloud3DUrl(Url3D):
     def display(
         self,
         samples: int = 10000,
-        trimesh_args: Dict[str, Any] = None,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Plot point cloud from url.
@@ -107,4 +110,6 @@ class PointCloud3DUrl(Url3D):
         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
             or `trimesh.load_remote()`.
         """
+        if not trimesh_args:
+            trimesh_args = {}
         self.load(samples=samples, **trimesh_args).display()

@@ -42,7 +42,7 @@ class Url3D(AnyUrl, ABC):
     def _load_trimesh_instance(
         self: T,
         force: Optional[str] = None,
-        trimesh_args: Dict[str, Any] = None,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """
         Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
@@ -56,6 +56,9 @@ class Url3D(AnyUrl, ABC):
         import urllib.parse
 
         import trimesh
+
+        if not trimesh_args:
+            trimesh_args = {}
 
         scheme = urllib.parse.urlparse(self).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
