@@ -3,7 +3,7 @@ import os
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Generic, List, Sequence, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, Generic, List, Sequence, Tuple, Type, TypeVar, Union, Optional
 
 import hnswlib
 import numpy as np
@@ -72,8 +72,14 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     # Inner classes for query builder and configs #
     ###############################################
     class QueryBuilder(BaseDocumentStore.QueryBuilder):
+        def __init__(self, previous_query: Optional[Union[List[Tuple[str, Dict]], Tuple[str, Dict]]] = None, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # list of tuples (method name, kwargs)
+            # no need to populate this, it's done automatically
+            self._query: previous_query
+
         def build(self, *args, **kwargs) -> Any:
-            return self._queries
+            return self._query
 
     @dataclass
     class DBConfig(BaseDocumentStore.DBConfig):
@@ -158,12 +164,12 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         return FindResult(documents=out_docs, scores=out_scores)
 
     def find_batched(
-        self,
-        query: Union[AnyTensor, DocumentArray],
-        embedding_field: str = 'embedding',
-        metric: str = 'cosine_sim',
-        limit: int = 10,
-        **kwargs,
+            self,
+            query: Union[AnyTensor, DocumentArray],
+            embedding_field: str = 'embedding',
+            metric: str = 'cosine_sim',
+            limit: int = 10,
+            **kwargs,
     ) -> FindResultBatched:
         # the below should be done in the abstract class
         if isinstance(query, BaseDocument):
@@ -189,9 +195,9 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
     @composable
     def filter(
-        self,
-        *args,
-        **kwargs,
+            self,
+            *args,
+            **kwargs,
     ) -> DocumentArray:
 
         raise NotImplementedError(
@@ -201,10 +207,10 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         )
 
     def filter_batched(
-        self,
-        filter_queries: Any,
-        limit: int = 10,
-        **kwargs,
+            self,
+            filter_queries: Any,
+            limit: int = 10,
+            **kwargs,
     ) -> List[DocumentArray]:
         raise NotImplementedError(
             f'{type(self)} does not support filter-only queries.'
@@ -213,20 +219,20 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         )
 
     def text_search(
-        self,
-        query: str,
-        embedding_field: str = 'embedding',
-        limit: int = 10,
-        **kwargs,
+            self,
+            query: str,
+            embedding_field: str = 'embedding',
+            limit: int = 10,
+            **kwargs,
     ) -> FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def text_search_batched(
-        self,
-        queries: List[str],
-        embedding_field: str = 'embedding',
-        limit: int = 10,
-        **kwargs,
+            self,
+            queries: List[str],
+            embedding_field: str = 'embedding',
+            limit: int = 10,
+            **kwargs,
     ) -> FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
@@ -260,7 +266,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     def _to_universal_id(doc_id: str) -> int:
         # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
         # hashing to 18 digits avoids overflow of sqlite INTEGER
-        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
+        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10 ** 18
 
     def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
@@ -311,7 +317,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         )
 
     def _get_docs_from_sqlite(
-        self, doc_ids: Sequence[Union[str, int]]
+            self, doc_ids: Sequence[Union[str, int]]
     ) -> DocumentArray:
         ids = tuple(
             self._to_universal_id(id_) if isinstance(id_, str) else int(id_)

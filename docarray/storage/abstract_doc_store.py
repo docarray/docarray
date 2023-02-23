@@ -43,8 +43,14 @@ def _delegate_to_query(method_name: str, func: Callable):
                 f'{type(self)}.`{method_name}`.'
                 f' Use keyword arguments instead.'
             )
-        self._queries.append((method_name, kwargs))
-        return self
+        query = self._query
+        if query is None:
+            query = (method_name, kwargs)
+        elif isinstance(query, List):
+            query.append((method_name, kwargs))
+        else:
+            query = [query] + [(method_name, kwargs)]
+        return self.__type__.__new__(query)
 
     return inner
 
@@ -111,10 +117,6 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
     ###############################################
 
     class QueryBuilder(ABC):
-        def __init__(self):
-            # list of tuples (method name, kwargs)
-            # no need to populate this, it's done automatically
-            self._queries: List[Tuple[str, Dict]] = []
 
         @abstractmethod
         def build(self, *args, **kwargs) -> Any:
@@ -124,14 +126,23 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
             """
             ...
 
-        # no need to implement the methods below
-        # they are handled automatically by the `composable` decorator
-        find = _raise_not_composable('find')
-        filter = _raise_not_composable('filter')
-        text_search = _raise_not_composable('text_search')
-        find_batched = _raise_not_composable('find_batched')
-        filter_batched = _raise_not_composable('filter_batched')
-        text_search_batched = _raise_not_composable('text_search_batched')
+        def find(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('find')()
+
+        def filter(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('filter')()
+
+        def text_search(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('text_search')()
+
+         def find_batched(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('find_batched')()
+
+        def filter_batched(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('filter_batched')()
+
+        def text_search_batched(self, *args, **kwargs) -> 'QueryBuilder':
+            _raise_not_composable('text_search_batched')()
 
     @dataclass
     class DBConfig(ABC):

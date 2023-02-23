@@ -4,6 +4,11 @@ from docarray.storage.abstract_doc_store import BaseDocumentStore, composable
 
 
 class DummyQueryBuilder(BaseDocumentStore.QueryBuilder):
+    def __init__(self):
+        # list of tuples (method name, kwargs)
+        # no need to populate this, it's done automatically
+        self._queries = []
+
     def build(self):
         return self._queries
 
