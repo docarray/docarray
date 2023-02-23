@@ -63,7 +63,7 @@ def multi_model_docs():
         ('mm_da', num_docs * num_sub_docs),  # List of 5 * 2 SubDoc objs
         ('mm_da__sub_text', num_docs * num_sub_docs),  # List of 5 * 2 Text objs
         (
-            'mm_da.__sub_da',
+            'mm_da__sub_da',
             num_docs * num_sub_docs * num_sub_sub_docs,
         ),  # List of 5 * 2 * 3 SubSubDoc objs
         (

@@ -68,6 +68,8 @@ def filter(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocumentArray[docs.document_type](d for d in docs if parser.evaluate(d))
+        return DocumentArray.__class_getitem__(docs.document_type)(
+            d for d in docs if parser.evaluate(d)
+        )
     else:
         return docs

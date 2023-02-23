@@ -85,7 +85,7 @@ def lookup(key: str, val: Any, doc: Any) -> bool:
 
     The above will return True if doc.text == 'hello' else False. And
 
-        >>> lookup('text_exact', '{tags__name}', doc)
+        >>> lookup('text.exact', '{tags__name}', doc)
 
     will return True if doc.text == doc.tags.name else False
 
