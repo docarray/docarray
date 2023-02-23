@@ -3,7 +3,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.storage.backends.HnswDocStore import HnswDocumentStore
+from docarray.storage.backends.HnswDocStore import HnswDocumentIndex
 from docarray.typing import NdArray
 
 
@@ -44,7 +44,7 @@ def ten_nested_docs():
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     if use_docarray:
         ten_simple_docs = DocumentArray[SimpleDoc](ten_simple_docs)
 
@@ -56,7 +56,7 @@ def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
-    store = HnswDocumentStore[FlatDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[FlatDoc](work_dir=str(tmp_path))
     if use_docarray:
         ten_flat_docs = DocumentArray[FlatDoc](ten_flat_docs)
 
@@ -68,7 +68,7 @@ def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_nested_schema(ten_nested_docs, tmp_path, use_docarray):
-    store = HnswDocumentStore[NestedDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
     if use_docarray:
         ten_nested_docs = DocumentArray[NestedDoc](ten_nested_docs)
 
@@ -84,7 +84,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
     nested_path = tmp_path / 'nested'
 
     # simple
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(simple_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(simple_path))
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -94,7 +94,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
         assert np.all(store[id_].tens == d.tens)
 
     # flat
-    store = HnswDocumentStore[FlatDoc](work_dir=str(flat_path))
+    store = HnswDocumentIndex[FlatDoc](work_dir=str(flat_path))
     store.index(ten_flat_docs)
 
     assert store.num_docs() == 10
@@ -105,7 +105,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
         assert np.all(store[id_].tens_two == d.tens_two)
 
     # nested
-    store = HnswDocumentStore[NestedDoc](work_dir=str(nested_path))
+    store = HnswDocumentIndex[NestedDoc](work_dir=str(nested_path))
     store.index(ten_nested_docs)
 
     assert store.num_docs() == 10
@@ -123,7 +123,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
     docs_to_get_idx = [0, 2, 4, 6, 8]
 
     # simple
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(simple_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(simple_path))
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -135,7 +135,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
         assert np.all(d_out.tens == d_in.tens)
 
     # flat
-    store = HnswDocumentStore[FlatDoc](work_dir=str(flat_path))
+    store = HnswDocumentIndex[FlatDoc](work_dir=str(flat_path))
     store.index(ten_flat_docs)
 
     assert store.num_docs() == 10
@@ -148,7 +148,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
         assert np.all(d_out.tens_two == d_in.tens_two)
 
     # nested
-    store = HnswDocumentStore[NestedDoc](work_dir=str(nested_path))
+    store = HnswDocumentIndex[NestedDoc](work_dir=str(nested_path))
     store.index(ten_nested_docs)
 
     assert store.num_docs() == 10
@@ -162,7 +162,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
 
 
 def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     store.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
@@ -170,7 +170,7 @@ def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path
 
 
 def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     store.index(ten_simple_docs)
     # delete once
     assert store.num_docs() == 10
@@ -200,7 +200,7 @@ def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
 def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -217,7 +217,7 @@ def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
 
 
 def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     store.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
@@ -225,7 +225,7 @@ def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path
 
 
 def test_num_docs(ten_simple_docs, tmp_path):
-    store = HnswDocumentStore[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10

@@ -1,9 +1,9 @@
 import pytest
 
-from docarray.storage.abstract_doc_store import BaseDocumentStore, composable
+from docarray.storage.abstract_doc_store import BaseDocumentIndex, composable
 
 
-class DummyQueryBuilder(BaseDocumentStore.QueryBuilder):
+class DummyQueryBuilder(BaseDocumentIndex.QueryBuilder):
     def build(self):
         return self._queries
 
@@ -12,7 +12,7 @@ def _identity(*x, **y):
     return x, y
 
 
-class DummyDocStore(BaseDocumentStore):
+class DummyDocIndex(BaseDocumentIndex):
     _query_builder_cls = DummyQueryBuilder
     _db_config_cls = None
     _runtime_config_cls = None

@@ -25,6 +25,10 @@ from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult
+from docarray.utils.misc import torch_imported
+
+if torch_imported:
+    import torch
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -76,7 +80,13 @@ class composable:
         self.fn = fn
 
     def __set_name__(self, owner, name):
-        setattr(owner.QueryBuilder, name, _delegate_to_query(name, self.fn))
+        if name.startswith('_') and not name.startswith('__'):
+            public_name = name[1:]
+        else:
+            public_name = name
+        setattr(
+            owner.QueryBuilder, public_name, _delegate_to_query(public_name, self.fn)
+        )
         setattr(owner, name, self.fn)
 
 
@@ -86,7 +96,7 @@ if TYPE_CHECKING:
         return fn
 
 
-class BaseDocumentStore(ABC, Generic[TSchema]):
+class BaseDocumentIndex(ABC, Generic[TSchema]):
     """Abstract class for all Document Stores"""
 
     # the BaseDocument that defines the schema of the store
@@ -158,7 +168,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def index(self, docs: Union[TSchema, Sequence[TSchema]]):
+    def _index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
         ...
 
@@ -204,87 +214,79 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def find(
+    def _find(
         self,
-        query: Union[AnyTensor, BaseDocument],
-        embedding_field: str = 'embedding',
-        metric: str = 'cosine_sim',
-        limit: int = 10,
+        query: np.ndarray,
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResult:
         """Find documents in the store"""
-        # TODO(johannes) refine method signature
         ...
 
     @abstractmethod
-    def find_batched(
+    def _find_batched(
         self,
-        query: Union[AnyTensor, DocumentArray],
-        embedding_field: str = 'embedding',
-        metric: str = 'cosine_sim',
-        limit: int = 10,
+        query: np.ndarray,
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResultBatched:
         """Find documents in the store"""
-        # TODO(johannes) refine method signature
         ...
 
     @abstractmethod
-    def filter(
+    def _filter(
         self,
         filter_query: Any,
-        limit: int = 10,
+        limit: int,
         **kwargs,
     ) -> DocumentArray:
         """Find documents in the store based on a filter query
 
         :param filter_query: the DB specific filter query to execute
         """
-        # TODO(johannes) refine method signature
         ...
 
     @abstractmethod
-    def filter_batched(
+    def _filter_batched(
         self,
         filter_queries: Any,
-        limit: int = 10,
+        limit: int,
         **kwargs,
     ) -> List[DocumentArray]:
         """Find documents in the store based on multiple filter queries
 
         :param filter_queries: the DB specific filter queries to execute
         """
-        # TODO(johannes) refine method signature
         ...
 
     @abstractmethod
-    def text_search(
+    def _text_search(
         self,
         query: str,
-        embedding_field: str = 'embedding',
-        limit: int = 10,
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResult:
         """Find documents in the store based on a text search query
 
         :param query: The text to search for
         """
-        # TODO(johannes) refine method signature
         ...
 
     @abstractmethod
-    def text_search_batched(
+    def _text_search_batched(
         self,
-        queries: List[str],
-        embedding_field: str = 'embedding',
-        limit: int = 10,
+        queries: Sequence[str],
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResultBatched:
         """Find documents in the store based on a text search query
 
         :param query: The text to search for
         """
-        # TODO(johannes) refine method signature
         ...
 
     ####################################################
@@ -310,29 +312,137 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                 raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
+    def index(self, docs: Union[TSchema, Sequence[TSchema]]):
+        """Index a document into the store"""
+        if not isinstance(docs, Sequence):
+            docs = [docs]
+        self._index(docs)
+
+    def find(
+        self,
+        query: Union[AnyTensor, BaseDocument],
+        search_field: str = 'embedding',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        """Find documents in the store"""
+        if isinstance(query, BaseDocument):
+            query_vec = self._get_values_by_column([query], search_field)[0]
+        else:
+            query_vec = query
+        query_vec_np = self._to_numpy(query_vec)
+        return self._find(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+
+    def find_batched(
+        self,
+        queries: Union[AnyTensor, DocumentArray],
+        search_field: str = 'embedding',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResultBatched:
+        """Find documents in the store"""
+        if isinstance(queries, Sequence):
+            query_vec_list = self._get_values_by_column(queries, search_field)
+            query_vec_np = np.stack(
+                self._to_numpy(query_vec) for query_vec in query_vec_list
+            )
+        else:
+            query_vec_np = self._to_numpy(queries)
+
+        return self._find_batched(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+
+    def filter(
+        self,
+        filter_query: Any,
+        limit: int = 10,
+        **kwargs,
+    ) -> DocumentArray:
+        """Find documents in the store based on a filter query
+
+        :param filter_query: the DB specific filter query to execute
+        """
+        return self._filter(filter_query, limit=limit, **kwargs)
+
+    def filter_batched(
+        self,
+        filter_queries: Any,
+        limit: int = 10,
+        **kwargs,
+    ) -> List[DocumentArray]:
+        """Find documents in the store based on multiple filter queries
+
+        :param filter_queries: the DB specific filter queries to execute
+        """
+        return self._filter_batched(filter_queries, limit=limit, **kwargs)
+
+    def text_search(
+        self,
+        query: Union[str, BaseDocument],
+        search_field: str = 'text',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        """Find documents in the store based on a text search query
+
+        :param query: The text to search for
+        """
+        if isinstance(query, BaseDocument):
+            query_text = self._get_values_by_column([query], search_field)[0]
+        else:
+            query_text = query
+        return self._text_search(
+            query_text, search_field=search_field, limit=limit, **kwargs
+        )
+
+    def text_search_batched(
+        self,
+        queries: Union[Sequence[str], Sequence[BaseDocument]],
+        search_field: str = 'embedding',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResultBatched:
+        """Find documents in the store based on a text search query
+
+        :param query: The text to search for
+        """
+        if isinstance(queries, Sequence):
+            query_texts = self._get_values_by_column(queries, search_field)
+        else:
+            query_texts = queries
+        return self._text_search_batched(
+            query_texts, search_field=search_field, limit=limit, **kwargs
+        )
+
     ##########################################################
     # Helper methods                                         #
     # These might be useful in your subclass implementation  #
     ##########################################################
 
     @staticmethod
-    def _get_value_by_column(doc: BaseDocument, col_name: str) -> Any:
+    def _get_values_by_column(docs: Sequence[BaseDocument], col_name: str) -> List[Any]:
         """Get the value of a column of a document.
 
-        :param doc: The Document to get the value from
+        :param docs: The DocumentArray to get the values from
         :param col_name: The name of the column, e.g. 'text' or 'image__tensor'
         :return: The value of the column of `doc`
         """
-        if '__' in col_name:
-            fields = col_name.split('__')
-            leaf_doc: BaseDocument = doc
-            for f in fields[:-1]:
-                leaf_doc = getattr(leaf_doc, f)
-            return getattr(leaf_doc, fields[-1])
-        else:
-            return getattr(doc, col_name)
+        leaf_vals = []
+        for doc in docs:
+            if '__' in col_name:
+                fields = col_name.split('__')
+                leaf_doc: BaseDocument = doc
+                for f in fields[:-1]:
+                    leaf_doc = getattr(leaf_doc, f)
+                leaf_vals.append(getattr(leaf_doc, fields[-1]))
+            else:
+                leaf_vals.append(getattr(doc, col_name))
+        return leaf_vals
 
-    def _get_values_by_columns(
+    def _get_col_value_dict(
         self, docs: Union[BaseDocument, Sequence[BaseDocument]]
     ) -> Dict[str, Generator[Any, None, None]]:
         """
@@ -349,7 +459,7 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
             )
 
         def _col_gen(col_name):
-            return (self._get_value_by_column(doc, col_name) for doc in docs)
+            return (self._get_values_by_column([doc], col_name)[0] for doc in docs)
 
         return {col_name: _col_gen(col_name) for col_name in self._columns}
 
@@ -451,3 +561,13 @@ class BaseDocumentStore(ABC, Generic[TSchema]):
                 if reference_col_db_types != input_col_db_types:
                     return False
             return True
+
+    def _to_numpy(self, val: Any) -> Any:
+        if isinstance(val, np.ndarray):
+            return val
+        elif isinstance(val, (list, tuple)):
+            return np.array(val)
+        elif torch_imported and isinstance(val, torch.Tensor):
+            return val.numpy()
+        else:
+            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')

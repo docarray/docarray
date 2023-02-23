@@ -4,7 +4,7 @@ from typing import Any, Dict, Type
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.storage.abstract_doc_store import BaseDocumentStore
+from docarray.storage.abstract_doc_store import BaseDocumentIndex
 from docarray.typing import NdArray
 
 
@@ -17,13 +17,13 @@ class FakeQueryBuilder:
 
 
 @dataclass
-class DBConfig(BaseDocumentStore.DBConfig):
+class DBConfig(BaseDocumentIndex.DBConfig):
     work_dir: str = '.'
     other: int = 5
 
 
 @dataclass
-class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
+class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = field(
         default_factory=lambda: {
             str: {
@@ -39,7 +39,7 @@ def _identity(*x, **y):
     return x, y
 
 
-class DummyDocStore(BaseDocumentStore):
+class DummyDocIndex(BaseDocumentIndex):
     DBConfig = DBConfig
     RuntimeConfig = RuntimeConfig
 
@@ -60,7 +60,7 @@ class DummyDocStore(BaseDocumentStore):
 
 
 def test_defaults():
-    store = DummyDocStore[SimpleDoc]()
+    store = DummyDocIndex[SimpleDoc]()
     assert store._db_config.other == 5
     assert store._db_config.work_dir == '.'
     assert store._runtime_config.default_column_config[str] == {
@@ -71,14 +71,14 @@ def test_defaults():
 
 def test_set_by_class():
     # change all settings
-    store = DummyDocStore[SimpleDoc](DBConfig(work_dir='hi', other=10))
+    store = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi', other=10))
     assert store._db_config.other == 10
     assert store._db_config.work_dir == 'hi'
     store.configure(RuntimeConfig(default_column_config={}, default_ef=10))
     assert store._runtime_config.default_column_config == {}
 
     # change only some settings
-    store = DummyDocStore[SimpleDoc](DBConfig(work_dir='hi'))
+    store = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi'))
     assert store._db_config.other == 5
     assert store._db_config.work_dir == 'hi'
     store.configure(RuntimeConfig(default_column_config={}))
@@ -87,14 +87,14 @@ def test_set_by_class():
 
 def test_set_by_kwargs():
     # change all settings
-    store = DummyDocStore[SimpleDoc](work_dir='hi', other=10)
+    store = DummyDocIndex[SimpleDoc](work_dir='hi', other=10)
     assert store._db_config.other == 10
     assert store._db_config.work_dir == 'hi'
     store.configure(default_column_config={}, default_ef=10)
     assert store._runtime_config.default_column_config == {}
 
     # change only some settings
-    store = DummyDocStore[SimpleDoc](work_dir='hi')
+    store = DummyDocIndex[SimpleDoc](work_dir='hi')
     assert store._db_config.other == 5
     assert store._db_config.work_dir == 'hi'
     store.configure(default_column_config={})
@@ -102,7 +102,7 @@ def test_set_by_kwargs():
 
 
 def test_default_column_config():
-    store = DummyDocStore[SimpleDoc]()
+    store = DummyDocIndex[SimpleDoc]()
     assert store._runtime_config.default_column_config == {
         str: {
             'dim': 128,

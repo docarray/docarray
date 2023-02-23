@@ -12,12 +12,11 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
 from docarray.storage.abstract_doc_store import (
-    BaseDocumentStore,
+    BaseDocumentIndex,
     FindResultBatched,
     _Column,
     composable,
 )
-from docarray.typing import AnyTensor
 from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
 from docarray.utils.misc import is_np_int, torch_imported
@@ -31,7 +30,7 @@ if torch_imported:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
 
-class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
+class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._work_dir = self._db_config.work_dir
@@ -71,16 +70,16 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     ###############################################
     # Inner classes for query builder and configs #
     ###############################################
-    class QueryBuilder(BaseDocumentStore.QueryBuilder):
+    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def build(self, *args, **kwargs) -> Any:
             return self._queries
 
     @dataclass
-    class DBConfig(BaseDocumentStore.DBConfig):
+    class DBConfig(BaseDocumentIndex.DBConfig):
         work_dir: str = '.'
 
     @dataclass
-    class RuntimeConfig(BaseDocumentStore.RuntimeConfig):
+    class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
@@ -112,9 +111,9 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
-    def index(self, docs: Union[TSchema, Sequence[TSchema]]):
+    def _index(self, docs: Union[TSchema, Sequence[TSchema]]):
         """Index a document into the store"""
-        data_by_columns = self._get_values_by_columns(docs)
+        data_by_columns = self._get_col_value_dict(docs)
         hnsw_ids = tuple(self._to_hasdhed_id(doc.id) for doc in docs)
 
         # indexing into HNSWLib and SQLite sequentially
@@ -157,23 +156,17 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         out_docs, out_scores = zip(*docs_sorted)
         return FindResult(documents=out_docs, scores=out_scores)
 
-    def find_batched(
+    def _find_batched(
         self,
-        query: Union[AnyTensor, DocumentArray],
-        embedding_field: str = 'embedding',
-        metric: str = 'cosine_sim',
-        limit: int = 10,
+        query: np.ndarray,
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResultBatched:
-        # the below should be done in the abstract class
-        if isinstance(query, BaseDocument):
-            query_vec = self._get_value_by_column(query, embedding_field)
-        else:
-            query_vec = query
-        query_vec_np = self._to_numpy(query_vec)
-
-        index = self._hnsw_indices[embedding_field]
-        labels, distances = index.knn_query(query_vec_np, k=limit)
+        if kwargs:
+            raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
+        index = self._hnsw_indices[search_field]
+        labels, distances = index.knn_query(query, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
@@ -183,12 +176,15 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         return FindResultBatched(documents=result_das, scores=distances)
 
     @composable
-    def find(self, *args, **kwargs) -> FindResult:
-        docs, scores = self.find_batched(*args, **kwargs)
+    def _find(
+        self, query: np.ndarray, search_field: str, limit: int, **kwargs
+    ) -> FindResult:
+        query_batched = np.expand_dims(query, axis=0)
+        docs, scores = self._find_batched(query_batched, search_field, limit, **kwargs)
         return FindResult(documents=docs[0], scores=scores[0])
 
     @composable
-    def filter(
+    def _filter(
         self,
         *args,
         **kwargs,
@@ -200,7 +196,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             f' `build_query()` and `execute_query()`.'
         )
 
-    def filter_batched(
+    def _filter_batched(
         self,
         filter_queries: Any,
         limit: int = 10,
@@ -212,7 +208,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
             f' `build_query()` and `execute_query()`.'
         )
 
-    def text_search(
+    def _text_search(
         self,
         query: str,
         embedding_field: str = 'embedding',
@@ -221,7 +217,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
     ) -> FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
-    def text_search_batched(
+    def _text_search_batched(
         self,
         queries: List[str],
         embedding_field: str = 'embedding',
