@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -288,17 +289,23 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         doc = self._docs[item]
         return doc
 
+    @overload
+    def __setitem__(self: T, key: int, value: T_doc):
+        ...
+
+    @overload
+    def __setitem__(self: T, key: IndexIterType, value: T):
+        ...
+
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         # multiple docs case
         if isinstance(key, (slice, Iterable)):
-            return self._set_data_and_columns(key, value)
-        # single doc case
-        doc = self._docs[key]
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
-        return doc
+            self._set_data_and_columns(key, value)
+        else:
+            # single doc case
+            self._docs[key] = value
+            for field in chain(self._tensor_columns.keys(), self._doc_columns.keys()):
+                self._tensor_columns[field][key] = getattr(value, field)
 
     @overload
     def __delitem__(self: T, key: int) -> None:
