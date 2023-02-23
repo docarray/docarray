@@ -43,11 +43,13 @@ LOCAL_AUDIO_FILES_AND_FORMAT = [
     (str(TOYDATA_DIR / 'hello'), 'wav'),
 ]
 
-LOCAL_NON_AUDIO_FILES = [
+NON_AUDIO_FILES = [
     str(TOYDATA_DIR / 'captions.csv'),
     str(TOYDATA_DIR / 'cube.ply'),
     str(TOYDATA_DIR / 'test.glb'),
     str(TOYDATA_DIR / 'test.png'),
+    'illegal',
+    'https://www.github.com',
 ]
 
 
@@ -62,7 +64,7 @@ def test_audio(file_url):
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', LOCAL_NON_AUDIO_FILES)
+@pytest.mark.parametrize('file_url', NON_AUDIO_FILES)
 def test_non_audio(file_url):
     with pytest.raises(Exception):
         audio = Audio(url=file_url)
