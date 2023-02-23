@@ -20,7 +20,7 @@ from docarray.storage.abstract_doc_store import (
 from docarray.typing import AnyTensor
 from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
-from docarray.utils.misc import torch_imported
+from docarray.utils.misc import is_np_int, torch_imported
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -176,7 +176,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         labels, distances = index.knn_query(query_vec_np, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
-                ids_per_query,
+                ids_per_query.tolist(),
             )
             for ids_per_query in labels
         ]
@@ -323,7 +323,7 @@ class HnswDocumentStore(BaseDocumentStore, Generic[TSchema]):
         for id_ in univ_ids:
             # I hope this protects from injection attacks
             # properly binding with '?' doesn't work for some reason
-            assert isinstance(id_, int)
+            assert isinstance(id_, int) or is_np_int(id_)
         sql_id_list = '(' + ', '.join(str(id_) for id_ in univ_ids) + ')'
         self._sqlite_cursor.execute(
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
