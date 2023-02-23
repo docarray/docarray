@@ -47,7 +47,7 @@ def filter(
         )
         query = {
             '$and': {
-                'image.url': {'$regex': 'photo'},
+                'image__url': {'$regex': 'photo'},
                 'price': {'$lte': 50},
             }
         }
@@ -68,6 +68,6 @@ def filter(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocumentArray(d for d in docs if parser.evaluate(d))
+        return DocumentArray[docs.document_type](d for d in docs if parser.evaluate(d))
     else:
         return docs
