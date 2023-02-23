@@ -436,7 +436,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         Load a DocumentArray from a `pandas.DataFrame` following the schema
         defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
         Every row of the dataframe will be mapped to one Document in the array.
-        The column names of the dataframe have to match the field namesof the
+        The column names of the dataframe have to match the field names of the
         Document type.
         For nested fields use "__"-separated access paths as column names,
         such as 'image__url'.
