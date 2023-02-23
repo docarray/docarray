@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -20,7 +20,7 @@ class Mesh3DUrl(Url3D):
     Can be remote (web) URL, or a local file path.
     """
 
-    def load(self: T) -> 'VerticesAndFaces':
+    def load(self: T, trimesh_args: Dict[str, Any] = None) -> 'VerticesAndFaces':
         """
         Load the data from the url into a VerticesAndFaces object containing
         vertices and faces information.
@@ -45,25 +45,29 @@ class Mesh3DUrl(Url3D):
             assert isinstance(tensors.vertices, NdArray)
             assert isinstance(tensors.faces, NdArray)
 
-
+        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+            or `trimesh.load_remote()`.
         :return: VerticesAndFaces object containing vertices and faces information.
         """
         from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 
-        mesh = self._load_trimesh_instance(force='mesh')
+        mesh = self._load_trimesh_instance(force='mesh', **trimesh_args)
 
         vertices = parse_obj_as(NdArray, mesh.vertices.view(np.ndarray))
         faces = parse_obj_as(NdArray, mesh.faces.view(np.ndarray))
 
         return VerticesAndFaces(vertices=vertices, faces=faces)
 
-    def display(self) -> None:
+    def display(self, trimesh_args: Dict[str, Any] = None) -> None:
         """
         Plot mesh from url.
         This loads the Trimesh instance of the 3D mesh, and then displays it.
         To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
+
+        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+            or `trimesh.load_remote()`.
         """
         from IPython.display import display
 
-        mesh = self._load_trimesh_instance()
+        mesh = self._load_trimesh_instance(**trimesh_args)
         display(mesh.show())
