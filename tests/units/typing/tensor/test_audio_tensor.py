@@ -110,7 +110,7 @@ def test_proto_tensor_tensorflow():
 def test_save_audio_tensor_to_wav_file(cls_tensor, tensor, tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
     audio_tensor = parse_obj_as(cls_tensor, tensor)
-    audio_tensor.save_to_wav_file(tmp_file)
+    audio_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
 
 
@@ -118,5 +118,5 @@ def test_save_audio_tensor_to_wav_file(cls_tensor, tensor, tmpdir):
 def test_save_audio_tensorflow_tensor_to_wav_file(tmpdir):
     tmp_file = str(tmpdir / 'tmp.wav')
     audio_tensor = parse_obj_as(AudioTensorFlowTensor, tf.zeros((1000, 2)))
-    audio_tensor.save_to_wav_file(tmp_file)
+    audio_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
