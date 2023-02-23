@@ -327,7 +327,7 @@ class IOMixinArray(Iterable[BaseDocument]):
             )
 
     @staticmethod
-    def access_path_dict_to_nested_dict(
+    def _access_path_dict_to_nested_dict(
         access_path2val: Dict[str, Any]
     ) -> Dict[Any, Any]:
         """
@@ -396,9 +396,9 @@ class IOMixinArray(Iterable[BaseDocument]):
             cls._check_for_valid_access_paths(field_names=field_names)
 
             for access_path2val in rows:
-                doc_dict: Dict[Any, Any] = IOMixinArray.access_path_dict_to_nested_dict(
-                    access_path2val
-                )
+                doc_dict: Dict[
+                    Any, Any
+                ] = IOMixinArray._access_path_dict_to_nested_dict(access_path2val)
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
@@ -459,7 +459,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         for row in df.itertuples():
             access_path2val = row._asdict()
             access_path2val.pop('Index', None)
-            doc_dict = IOMixinArray.access_path_dict_to_nested_dict(access_path2val)
+            doc_dict = IOMixinArray._access_path_dict_to_nested_dict(access_path2val)
             da.append(doc_type.parse_obj(doc_dict))
 
         return da
