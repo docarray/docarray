@@ -109,15 +109,25 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                     # to call validation the same way pydantic does,
                     # but we actually don't want to set it
                     new_value = getattr(self, name)
-                    old_value[:] = new_value  # we force to do inplace
+                    try:
+                        old_value[:] = new_value  # we force to do inplace
+                    except Exception as e:
+                        object.__setattr__(self, name, old_value)
+                        raise e  # if something is not right when putting in
+                        # the da stacked we revert the change
+
                     object.__setattr__(self, name, old_value)
 
                     return  # needed here to stop func execution
 
                 elif issubclass(field_type, BaseDocument):
-                    if not isinstance(value, field_type):
-                        raise ValueError(f'{value} is not a valid {field_type}')
-
-                    self._da_ref[self._da_index] = value
+                    old_value = getattr(self, name)
+                    super().__setattr__(name, value)
+                    try:
+                        self._da_ref._doc_columns[name][self._da_index] = value
+                    except Exception as e:  # if something is not right when putting in
+                        # the da stacked we revert the change
+                        object.__setattr__(self, name, old_value)
+                        raise e
 
         super().__setattr__(name, value)
