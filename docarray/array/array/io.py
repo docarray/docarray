@@ -28,10 +28,9 @@ import pandas as pd
 
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
-    _access_path_to_dict,
+    _access_path_dict_to_nested_dict,
+    _all_access_paths_valid,
     _dict_to_access_paths,
-    _update_nested_dicts,
-    is_access_path_valid,
 )
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 
@@ -305,56 +304,6 @@ class IOMixinArray(Iterable[BaseDocument]):
         return json.dumps([doc.json() for doc in self])
 
     @classmethod
-    def _check_for_valid_document_type(cls) -> None:
-        if cls.document_type == AnyDocument:
-            raise TypeError(
-                'There is no document schema defined. '
-                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
-            )
-
-    @classmethod
-    def _check_for_valid_access_paths(cls, field_names: Optional[List[str]]) -> None:
-        if field_names is None or len(field_names) == 0:
-            raise TypeError("No field names are given.")
-
-        valid = [
-            is_access_path_valid(cls.document_type, field) for field in field_names
-        ]
-        if not all(valid):
-            raise ValueError(
-                f'Column names do not match the schema of the DocumentArray\'s document type '
-                f'({cls.document_type.__name__}): {list(compress(field_names, [not v for v in valid]))}'
-            )
-
-    @staticmethod
-    def _access_path_dict_to_nested_dict(
-        access_path2val: Dict[str, Any]
-    ) -> Dict[Any, Any]:
-        """
-        Convert a dict, where the keys are access paths ("__"-separated) to a nested dictionary.
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            access_path2val = {'image__url': 'some.png'}
-            assert access_path_dict_to_nested_dict(access_path2val) == {
-                'image': {'url': 'some.png'}
-            }
-
-        :param access_path2val: dict with access_paths as keys
-        :return: nested dict where the access path keys are split into separate field names and nested keys
-        """
-        nested_dict: Dict[Any, Any] = {}
-        for access_path, value in access_path2val.items():
-            field2val = _access_path_to_dict(
-                access_path=access_path,
-                value=value if value not in ['', 'None'] else None,
-            )
-            _update_nested_dicts(to_update=nested_dict, update_with=field2val)
-        return nested_dict
-
-    @classmethod
     def from_csv(
         cls,
         file_path: str,
@@ -382,7 +331,11 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        cls._check_for_valid_document_type()
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
 
         doc_type = cls.document_type
         da = DocumentArray.__class_getitem__(doc_type)()
@@ -392,13 +345,23 @@ class IOMixinArray(Iterable[BaseDocument]):
             field_names: List[str] = (
                 [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
             )
+            if field_names is None or len(field_names) == 0:
+                raise TypeError("No field names are given.")
 
-            cls._check_for_valid_access_paths(field_names=field_names)
+            valid_paths = _all_access_paths_valid(
+                doc_type=doc_type, access_paths=field_names
+            )
+            if not all(valid_paths):
+                raise ValueError(
+                    f'Column names do not match the schema of the DocumentArray\'s '
+                    f'document type ({cls.document_type.__name__}): '
+                    f'{list(compress(field_names, [not v for v in valid_paths]))}'
+                )
 
             for access_path2val in rows:
-                doc_dict: Dict[
-                    Any, Any
-                ] = IOMixinArray._access_path_dict_to_nested_dict(access_path2val)
+                doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(
+                    access_path2val
+                )
                 da.append(doc_type.parse_obj(doc_dict))
 
         return da
@@ -448,18 +411,33 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        cls._check_for_valid_document_type()
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
 
         doc_type = cls.document_type
         da = DocumentArray.__class_getitem__(doc_type)()
         field_names = df.columns.tolist()
 
-        cls._check_for_valid_access_paths(field_names=field_names)
+        if field_names is None or len(field_names) == 0:
+            raise TypeError("No field names are given.")
+
+        valid_paths = _all_access_paths_valid(
+            doc_type=doc_type, access_paths=field_names
+        )
+        if not all(valid_paths):
+            raise ValueError(
+                f'Column names do not match the schema of the DocumentArray\'s '
+                f'document type ({cls.document_type.__name__}): '
+                f'{list(compress(field_names, [not v for v in valid_paths]))}'
+            )
 
         for row in df.itertuples():
             access_path2val = row._asdict()
             access_path2val.pop('Index', None)
-            doc_dict = IOMixinArray._access_path_dict_to_nested_dict(access_path2val)
+            doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             da.append(doc_type.parse_obj(doc_dict))
 
         return da
