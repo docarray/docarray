@@ -40,7 +40,7 @@ class Audio(BaseDocument):
         audio = Audio(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
         )
-        audio.tensor = audio.url.load()
+        audio.tensor, audio.frame_rate = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
 
@@ -51,6 +51,7 @@ class Audio(BaseDocument):
         from docarray.documents import Audio, Text
         from typing import Optional
 
+
         # extend it
         class MyAudio(Audio):
             name: Optional[Text]
@@ -59,7 +60,7 @@ class Audio(BaseDocument):
         audio = MyAudio(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
         )
-        audio.tensor = audio.url.load()
+        audio.tensor, audio.frame_rate = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
         audio.name = Text(text='my first audio')
@@ -71,6 +72,7 @@ class Audio(BaseDocument):
 
         from docarray import BaseDocument
         from docarray.documents import Audio, Text
+
 
         # compose it
         class MultiModalDoc(Document):
@@ -84,13 +86,13 @@ class Audio(BaseDocument):
             ),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.audio.tensor = mmdoc.audio.url.load()
+        mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.url.load()
 
         # equivalent to
 
         mmdoc.audio.bytes = mmdoc.audio.url.load_bytes()
 
-        mmdoc.audio.tensor = mmdoc.audio.bytes.load()
+        mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes.load()
 
     """
 
@@ -98,6 +100,7 @@ class Audio(BaseDocument):
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
     bytes: Optional[AudioBytes]
+    frame_rate: Optional[int]
 
     @classmethod
     def validate(
