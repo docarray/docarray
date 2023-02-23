@@ -407,7 +407,8 @@ class IOMixinArray(Iterable[BaseDocument]):
         List-like fields (including field of type DocumentArray) are not supported.
 
         :param df: pandas.DataFrame to extract Document's information from
-        :return: DocumentArray
+        :return: DocumentArray where each Document contains the information of one
+            corresponding row of the `pandas.DataFrame`.
         """
         from docarray import DocumentArray
 
