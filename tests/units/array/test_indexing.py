@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import DocumentArray
-from docarray.documents import Text
+from docarray.documents import Image, Text
 from docarray.typing import TorchTensor
 
 
@@ -248,3 +248,13 @@ def test_setitiem_update_column():
     assert da[0].text == 'hello'
     assert (da[0].embedding == torch.zeros((4,))).all()
     assert (da.embedding[0] == torch.zeros((4,))).all()
+
+
+@pytest.mark.parametrize('stack', [True, False])
+def test_setitem_fail(da, stack):
+    if stack:
+        da.stack()
+    id_ = da[0].id
+    with pytest.raises(ValueError):
+        da[0] = Image()
+    assert da[0].id == id_

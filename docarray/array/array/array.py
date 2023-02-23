@@ -200,6 +200,10 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
 
         if isinstance(key_norm, int):
             value_int = cast(BaseDocument, value)
+            if self.document_type != AnyDocument and not isinstance(
+                value, self.document_type
+            ):
+                raise ValueError(f'{value} is not a {self.document_type}')
             self._data[key_norm] = value_int
         elif isinstance(key_norm, slice):
             value_slice = cast(T, value)

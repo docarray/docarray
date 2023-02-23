@@ -315,6 +315,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         else:
             # single doc case
             key_ = cast(int, key)
+            if self.document_type != AnyDocument and not isinstance(
+                value, self.document_type
+            ):
+                raise ValueError(f'{value} is not a {self.document_type}')
+
             value_ = cast(T_doc, value)
             self._docs[key_] = value_
             for field in chain(self._tensor_columns.keys(), self._doc_columns.keys()):
