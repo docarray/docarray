@@ -235,7 +235,7 @@ def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
             assert torch.all(d.embedding == torch.ones((4,)) * i)
 
 
-def test_setitiem_update_column():
+def test_setitem_update_column():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * (i + 1) for i in range(10)]
     da = DocumentArray[Text](
@@ -248,3 +248,7 @@ def test_setitiem_update_column():
     assert da[0].text == 'hello'
     assert (da[0].embedding == torch.zeros((4,))).all()
     assert (da.embedding[0] == torch.zeros((4,))).all()
+
+    assert da._docs[0].text == 'hello'
+    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()
+    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()
