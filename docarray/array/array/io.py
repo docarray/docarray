@@ -24,8 +24,6 @@ from typing import (
     Union,
 )
 
-import pandas as pd
-
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
@@ -35,6 +33,7 @@ from docarray.helper import (
 from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
+    import pandas as pd
 
     from docarray import DocumentArray
     from docarray.proto import DocumentArrayProto
@@ -394,7 +393,7 @@ class IOMixinArray(Iterable[BaseDocument]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_pandas(cls, df: pd.DataFrame) -> 'DocumentArray':
+    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocumentArray':
         """
         Load a DocumentArray from a `pandas.DataFrame` following the schema
         defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
@@ -405,6 +404,30 @@ class IOMixinArray(Iterable[BaseDocument]):
         such as 'image__url'.
 
         List-like fields (including field of type DocumentArray) are not supported.
+
+        EXAMPLE USAGE:
+
+        .. code-block:: python
+
+            import pandas as pd
+
+            from docarray import BaseDocument, DocumentArray
+
+
+            class Person(BaseDocument):
+                name: str
+                follower: int
+
+
+            df = pd.DataFrame(
+                data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
+            )
+
+            da = DocumentArray[Person].from_pandas(df)
+
+            assert da.name == ['Maria', 'Jake']
+            assert da.follower == [12345, 54321]
+
 
         :param df: pandas.DataFrame to extract Document's information from
         :return: DocumentArray where each Document contains the information of one
@@ -443,7 +466,7 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         return da
 
-    def to_pandas(self) -> pd.DataFrame:
+    def to_pandas(self) -> 'pd.DataFrame':
         """
         Save a DocumentArray to a `pandas.DataFrame`.
         The field names will be stored as column names. Each row of the dataframe corresponds
@@ -453,6 +476,8 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         :return: pandas.DataFrame
         """
+        import pandas as pd
+
         fields = self.document_type._get_access_paths()
         df = pd.DataFrame(columns=fields)
 

@@ -22,7 +22,7 @@ fastapi = {version = ">=0.87.0", optional = true }
 rich = ">=13.1.0"
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
-pandas = ">=1.1.0"
+pandas = {version = ">=1.1.0", optional = true }
 
 [tool.poetry.extras]
 common = ["protobuf", "lz4"]
@@ -32,6 +32,7 @@ video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
 web = ["fastapi"]
+pandas = ["pandas"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6.1"

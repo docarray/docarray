@@ -1600,7 +1600,7 @@ name = "pandas"
 version = "1.1.0"
 description = "Powerful data structures for data analysis, time series, and statistics"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6.1"
 files = [
     {file = "pandas-1.1.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:47a03bfef80d6812c91ed6fae43f04f2fa80a4e1b82b35aa4d9002e39529e0b8"},
@@ -2918,6 +2918,7 @@ audio = ["pydub"]
 common = ["protobuf", "lz4"]
 image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
+pandas = ["pandas"]
 torch = ["torch"]
 video = ["av"]
 web = ["fastapi"]
@@ -2925,4 +2926,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7"
-content-hash = "6fe8c279b96273f979a28ba8bc751d6d8ce9ca660abe4c29bd925f0ee5e63155"
+content-hash = "67801ca83a5851b8b381dc2c74a9210efd52ec76cc26b4bef3b5ba2792e18b5d"

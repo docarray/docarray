@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Type
 
 if TYPE_CHECKING:
     from docarray import BaseDocument
@@ -26,7 +26,7 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
 
 
 def _all_access_paths_valid(
-    doc_type: Type['BaseDocument'], access_paths: Optional[List[str]]
+    doc_type: Type['BaseDocument'], access_paths: List[str]
 ) -> List[bool]:
     """
     Check if all access paths ("__"-separated) are valid for a given Document class.
