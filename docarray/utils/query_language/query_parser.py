@@ -1,12 +1,11 @@
-from typing import Dict, Any, Optional, Union, List
+from typing import Any, Dict, List, Optional, Union
 
 from docarray.utils.query_language.lookup import (
-    Q,
-    LookupNode,
     LookupLeaf,
+    LookupNode,
     LookupTreeElem,
+    Q,
 )
-
 
 LOGICAL_OPERATORS: Dict[str, Union[str, bool]] = {
     '$and': 'and',
@@ -80,7 +79,7 @@ def _parse_lookups(
                             node = LookupNode(op=LOGICAL_OPERATORS[op])
                         node = _parse_lookups(val, root_node=node)
                     elif op in SUPPORTED_OPERATORS:
-                        node = Q(**{f'{key}__{SUPPORTED_OPERATORS[op]}': val})
+                        node = Q(**{f'{key}.{SUPPORTED_OPERATORS[op]}': val})
                     else:
                         raise ValueError(
                             f'The operator {op} is not supported yet, '
