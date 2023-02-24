@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Optional, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -22,7 +22,11 @@ class PointCloud3DUrl(Url3D):
     """
 
     def load(
-        self: T, samples: int, multiple_geometries: bool = False
+        self: T,
+        samples: int,
+        multiple_geometries: bool = False,
+        skip_materials: bool = True,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'PointsAndColors':
         """
         Load the data from the url into an NdArray containing point cloud information.
@@ -51,27 +55,38 @@ class PointCloud3DUrl(Url3D):
         :param samples: number of points to sample from the mesh
         :param multiple_geometries: if False, store point cloud in 2D np.ndarray.
             If True, store point clouds from multiple geometries in 3D np.ndarray.
+        :param skip_materials: Skip materials if True, else load.
+        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+            or `trimesh.load_remote()`.
 
         :return: np.ndarray representing the point cloud
         """
         from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 
+        if not trimesh_args:
+            trimesh_args = {}
+
         if multiple_geometries:
             # try to coerce everything into a scene
-            scene = self._load_trimesh_instance(force='scene')
+            scene = self._load_trimesh_instance(
+                force='scene', skip_materials=skip_materials, **trimesh_args
+            )
             point_cloud = np.stack(
                 [np.array(geo.sample(samples)) for geo in scene.geometry.values()],
                 axis=0,
             )
         else:
             # combine a scene into a single mesh
-            mesh = self._load_trimesh_instance(force='mesh')
+            mesh = self._load_trimesh_instance(force='mesh', **trimesh_args)
             point_cloud = np.array(mesh.sample(samples))
 
         points = parse_obj_as(NdArray, point_cloud)
         return PointsAndColors(points=points, colors=None)
 
-    def display(self, samples: int = 10000) -> None:
+    def display(
+        self,
+        samples: int = 10000,
+    ) -> None:
         """
         Plot point cloud from url.
         To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
@@ -96,4 +111,4 @@ class PointCloud3DUrl(Url3D):
 
         :param samples: number of points to sample from the mesh.
         """
-        self.load(samples=samples).display()
+        self.load(samples=samples, skip_materials=False).display()

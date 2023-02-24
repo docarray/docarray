@@ -34,7 +34,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
             audio_tensor=np.random.rand(1000, 2),
         )
 
-        doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
+        doc_1.audio_tensor.save(file_path='path/to/file_1.wav')
         doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
         # from url
@@ -44,7 +44,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         )
 
         doc_2.audio_tensor = doc_2.url.load()
-        doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
+        doc_2.audio_tensor.save(file_path='path/to/file_2.wav')
         doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
 
     """

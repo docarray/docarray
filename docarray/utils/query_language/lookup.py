@@ -27,22 +27,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 import re
-from typing import List, Union, Any, Sequence, Callable, Tuple, Optional, Iterator
-
 from functools import partial
+from typing import Any, Callable, Iterator, List, Optional, Sequence, Tuple, Union
 
 PLACEHOLDER_PATTERN = re.compile(r'\{\s*([a-zA-Z0-9_]*)\s*}')
 
 
-def point_get(_dict: Any, key: str) -> Any:
-    """Returns value for a specified "dot separated key"
+def dunder_get(_dict: Any, key: str) -> Any:
+    """Returns value for a specified "dunder separated key"
 
-    A "dot separated key" is just a fieldname that may or may not contain
-    ".") for referencing nested keys in a dict or object. eg::
+    A "dunder separated key" is just a fieldname that may or may not contain "__"
+    for referencing nested keys in a dict or object. eg::
      >>> data = {'a': {'b': 1}}
-     >>> dunder_get(data, 'a.b')
+     >>> dunder_get(data, 'a__b')
 
-    key 'b' can be referrenced as 'a.b'
+    key 'b' can be referrenced as 'a__b'
 
     :param _dict: (dict, list, struct or object) which we want to index into
     :param key: (str) that represents a first level or nested key in the dict
@@ -55,7 +54,7 @@ def point_get(_dict: Any, key: str) -> Any:
 
     part1: Union[str, int]
     try:
-        part1, part2 = key.split('.', 1)
+        part1, part2 = key.split('__', 1)
     except ValueError:
         part1, part2 = key, ''
 
@@ -73,7 +72,7 @@ def point_get(_dict: Any, key: str) -> Any:
     else:
         result = getattr(_dict, part1)
 
-    return point_get(result, part2) if part2 else result
+    return dunder_get(result, part2) if part2 else result
 
 
 def lookup(key: str, val: Any, doc: Any) -> bool:
@@ -82,19 +81,19 @@ def lookup(key: str, val: Any, doc: Any) -> bool:
     The lookup types are derived from the `key` and then used to check
     if the lookup holds true for the document::
 
-        >>> lookup('text__exact', 'hello', doc)
+        >>> lookup('text.exact', 'hello', doc)
 
     The above will return True if doc.text == 'hello' else False. And
 
-        >>> lookup('text_exact', '{tags__name}', doc)
+        >>> lookup('text.exact', '{tags__name}', doc)
 
-    will return True if doc.text == doc.tags['name'] else False
+    will return True if doc.text == doc.tags.name else False
 
     :param key: the field name to find
     :param val: object to match the value in the document against
     :param doc: the document to match
     """
-    get_key, last = dunder_partition(key)
+    get_key, last = point_partition(key)
 
     if isinstance(val, str) and val.startswith('{'):
         r = PLACEHOLDER_PATTERN.findall(val)
@@ -105,8 +104,8 @@ def lookup(key: str, val: Any, doc: Any) -> bool:
 
     field_exists = True
     try:
-        if '.' in get_key:
-            value = point_get(doc, get_key)
+        if '__' in get_key:
+            value = dunder_get(doc, get_key)
         else:
             value = getattr(doc, get_key)
     except (AttributeError, KeyError):
@@ -201,8 +200,8 @@ class LookupNode(LookupTreeElem):
 
     Typically it's any object composed of two ``Q`` objects eg::
 
-        >>> Q(language__neq='Ruby') | Q(framework__startswith='S')
-        >>> ~Q(language__exact='PHP')
+        >>> Q(language.neq='Ruby') | Q(framework.startswith='S')
+        >>> ~Q(language.exact='PHP')
 
     """
 
@@ -218,7 +217,7 @@ class LookupNode(LookupTreeElem):
     def evaluate(self, doc: Any) -> bool:
         """Evaluates the expression represented by the object for the document
 
-        :param doc : the document to match
+        :param doc: the document to match
         :return: returns true if lookup passed
         """
         results = map(lambda x: x.evaluate(doc), self.children)
@@ -246,7 +245,7 @@ class LookupLeaf(LookupTreeElem):
     def evaluate(self, doc: Any) -> bool:
         """Evaluates the expression represented by the object for the document
 
-        :param doc : the document to match
+        :param doc: the document to match
         :return: returns true if lookup passed
         """
         result = all(lookup(k, v, doc) for k, v in self.lookups.items())
@@ -277,14 +276,14 @@ class LookupyError(Exception):
 ## utility functions
 
 
-def dunder_partition(key: str) -> Tuple[str, Optional[str]]:
-    """Splits a dunderkey into 2 parts
+def point_partition(key: str) -> Tuple[str, Optional[str]]:
+    """Splits a dot-separated key into 2 parts.
     The first part is everything before the final double underscore
     The second part is after the final double underscore
-        >>> dunder_partition('a__b__c')
-        >>> ('a__b', 'c')
+        >>> point_partition('a.b.c')
+        >>> ('a.b', 'c')
     """
-    parts = key.rsplit('__', 1)
+    parts = key.rsplit('.', 1)
     return (parts[0], parts[1]) if len(parts) > 1 else (parts[0], None)
 
 
