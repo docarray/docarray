@@ -35,7 +35,7 @@ web = ["fastapi"]
 pandas = ["pandas"]
 
 [tool.poetry.dev-dependencies]
-pytest = ">=6.1"
+pytest = ">=7.0"
 pre-commit = ">=2.20.0"
 jupyterlab = ">=3.5.0"
 mypy = ">=1"
