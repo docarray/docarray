@@ -292,21 +292,24 @@ def test_find_union():
     assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
 
 
-def test_find_nested():
+@pytest.mark.parametrize('stack', [False, True])
+def test_find_nested(stack):
     class InnerDoc(BaseDocument):
         title: str
-        embedding: NdArray
+        embedding: TorchTensor
 
     class MyDoc(BaseDocument):
         inner: InnerDoc
 
-    query = MyDoc(inner=InnerDoc(title='query', embedding=np.random.randn((10))))
+    query = MyDoc(inner=InnerDoc(title='query', embedding=torch.rand(2)))
     index = DocumentArray[MyDoc](
         [
-            MyDoc(inner=InnerDoc(title=f'doc {i}', embedding=np.random.randn((10))))
+            MyDoc(inner=InnerDoc(title=f'doc {i}', embedding=torch.rand(2)))
             for i in range(10)
         ]
     )
+    if stack:
+        index = index.stack()
 
     top_k, scores = find(
         index,
