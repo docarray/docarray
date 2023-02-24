@@ -532,3 +532,41 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    def stacked_field(self) -> Iterable[str]:
+        """
+        :return: return the field name of this document array stacked which are stack
+        into a column
+        """
+        return chain(self._doc_columns.keys(), self._tensor_columns.keys())
+
+    def __update_columns__(self, field_name: str, da_index: int, value: Any) -> Any:
+        """This function allow to update a column value in place
+        :param field_name: the name of the column to update
+        :param da_index: the index of the column to update
+        :param value: the value to update the column with
+        :return: return the updated view of the column with the value data
+        """
+        if field_name in self._doc_columns:
+            self._doc_columns[field_name][da_index] = value
+            return self._doc_columns[field_name][da_index]
+        elif field_name in self._tensor_columns:
+            field_type = self.document_type._get_field_type(field_name)
+            if tf_available and (
+                issubclass(field_type, TensorFlowTensor)
+                or isinstance(value, TensorFlowTensor)
+                or isinstance(value, tf.Tensor)
+            ):
+                raise RuntimeError(
+                    'Tensorflow tensor are immutable, Since this '
+                    'Document is stack you cannot change its '
+                    'tensor value. You should either unstack your '
+                    'DocumentArrayStacked or work at the '
+                    'DocumentArrayStack column level directly'
+                )
+            else:
+                self._tensor_columns[field_name][da_index] = value
+
+            return self._tensor_columns[field_name][da_index]
+        else:
+            raise KeyError(f'{field_name} is not a stack field')
