@@ -101,13 +101,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         self._add_ref_to_docs()
 
     def _add_ref_to_docs(self) -> None:
+        """Add a ref to self to the document"""
+        from docarray.base_document.document import _DaRef
+
         for i, doc in enumerate(self._docs):
-            if doc._da_ref is not None and doc._da_ref is not self:
+            if doc._da_ref is not None and doc._da_ref.ref is not self:
                 raise ValueError(
                     f'{doc} already belong to {doc._da_ref} and cannot be stack again'
                 )
-            doc._da_ref = self
-            doc._da_index = i
+
+            doc._da_ref = _DaRef(self, i)
 
     @classmethod
     def _from_da_and_columns(

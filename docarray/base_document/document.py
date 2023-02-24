@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Type
 
 import orjson
@@ -19,6 +20,12 @@ _console: Console = Console()
 object_setattr = object.__setattr__
 
 
+@dataclass
+class _DaRef:
+    ref: 'DocumentArrayStacked'
+    index: int
+
+
 class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
     The base class for Documents
@@ -26,8 +33,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
-    _da_ref: Optional['DocumentArrayStacked'] = PrivateAttr(None)
-    _da_index: Optional[int] = PrivateAttr(None)
+    _da_ref: Optional[_DaRef] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -77,8 +83,8 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     def __setattr__(self, name, value):
 
-        if self._da_ref is not None and self._da_index is not None:
-            if name in self._da_ref.stacked_field():
+        if self._da_ref is not None:
+            if name in self._da_ref.ref.stacked_field():
                 old_value = getattr(self, name)
                 super().__setattr__(name, value)
                 # here cheat by calling setattr on the value but what we want to do is
@@ -86,7 +92,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 # but we actually don't want to set it
                 new_value = getattr(self, name)
                 try:
-                    self._da_ref.__update_columns__(name, self._da_index, value)
+                    self._da_ref.ref.__update_columns__(name, self._da_ref.index, value)
                 except Exception as e:
                     object.__setattr__(self, name, old_value)
                     raise e  # if something is not right when putting in
