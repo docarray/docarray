@@ -2,7 +2,7 @@ import os
 import urllib
 import urllib.parse
 import urllib.request
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
@@ -59,9 +59,9 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         url = super().validate(value, field, config)  # basic url validation
 
         if is_relative:
-            return cast(cls, os.path.relpath(url))
+            return cls(os.path.relpath(str(url)), scheme=None)
         else:
-            return url
+            return cls(str(url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
