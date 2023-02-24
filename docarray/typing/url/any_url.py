@@ -48,9 +48,9 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         import os
 
         try:
-            if not value.startswith('http') and not os.path.isabs(value):
+            if not value.startswith('http') and not os.path.isabs(value):  # type: ignore
                 is_relative = True
-                value = os.path.abspath(value)
+                value = os.path.abspath(value)  # type: ignore
             else:
                 is_relative = False
         except TypeError:
