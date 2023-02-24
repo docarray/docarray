@@ -111,23 +111,27 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                     new_value = getattr(self, name)
                     try:
                         old_value[:] = new_value  # we force to do inplace
+                        new_value = old_value
                     except Exception as e:
                         object.__setattr__(self, name, old_value)
                         raise e  # if something is not right when putting in
                         # the da stacked we revert the change
 
-                    object.__setattr__(self, name, old_value)
+                    object.__setattr__(self, name, new_value)
 
                     return  # needed here to stop func execution
 
                 elif issubclass(field_type, BaseDocument):
                     old_value = getattr(self, name)
                     super().__setattr__(name, value)
+                    new_value = getattr(self, name)
                     try:
-                        self._da_ref._doc_columns[name][self._da_index] = value
+                        self._da_ref._doc_columns[name][self._da_index] = new_value
                     except Exception as e:  # if something is not right when putting in
                         # the da stacked we revert the change
                         object.__setattr__(self, name, old_value)
                         raise e
+
+                    object.__setattr__(self, name, new_value)
 
         super().__setattr__(name, value)
