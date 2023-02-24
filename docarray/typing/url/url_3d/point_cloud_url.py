@@ -25,6 +25,7 @@ class PointCloud3DUrl(Url3D):
         self: T,
         samples: int,
         multiple_geometries: bool = False,
+        skip_materials: bool = True,
         trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'PointsAndColors':
         """
@@ -54,6 +55,7 @@ class PointCloud3DUrl(Url3D):
         :param samples: number of points to sample from the mesh
         :param multiple_geometries: if False, store point cloud in 2D np.ndarray.
             If True, store point clouds from multiple geometries in 3D np.ndarray.
+        :param skip_materials: Skip materials if True, else load.
         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
             or `trimesh.load_remote()`.
 
@@ -66,7 +68,9 @@ class PointCloud3DUrl(Url3D):
 
         if multiple_geometries:
             # try to coerce everything into a scene
-            scene = self._load_trimesh_instance(force='scene', **trimesh_args)
+            scene = self._load_trimesh_instance(
+                force='scene', skip_materials=skip_materials, **trimesh_args
+            )
             point_cloud = np.stack(
                 [np.array(geo.sample(samples)) for geo in scene.geometry.values()],
                 axis=0,
@@ -82,7 +86,6 @@ class PointCloud3DUrl(Url3D):
     def display(
         self,
         samples: int = 10000,
-        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         Plot point cloud from url.
@@ -107,9 +110,5 @@ class PointCloud3DUrl(Url3D):
             pc.url.load(samples=10000).display()
 
         :param samples: number of points to sample from the mesh.
-        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
-            or `trimesh.load_remote()`.
         """
-        if not trimesh_args:
-            trimesh_args = {}
-        self.load(samples=samples, **trimesh_args).display()
+        self.load(samples=samples, skip_materials=False).display()

@@ -21,7 +21,9 @@ class Mesh3DUrl(Url3D):
     """
 
     def load(
-        self: T, trimesh_args: Optional[Dict[str, Any]] = None
+        self: T,
+        skip_materials: bool = True,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'VerticesAndFaces':
         """
         Load the data from the url into a VerticesAndFaces object containing
@@ -47,6 +49,7 @@ class Mesh3DUrl(Url3D):
             assert isinstance(tensors.vertices, NdArray)
             assert isinstance(tensors.faces, NdArray)
 
+        :param skip_materials: Skip materials if True, else skip.
         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
             or `trimesh.load_remote()`.
         :return: VerticesAndFaces object containing vertices and faces information.
@@ -55,25 +58,22 @@ class Mesh3DUrl(Url3D):
 
         if not trimesh_args:
             trimesh_args = {}
-        mesh = self._load_trimesh_instance(force='mesh', **trimesh_args)
+        mesh = self._load_trimesh_instance(
+            force='mesh', skip_materials=skip_materials, **trimesh_args
+        )
 
         vertices = parse_obj_as(NdArray, mesh.vertices.view(np.ndarray))
         faces = parse_obj_as(NdArray, mesh.faces.view(np.ndarray))
 
         return VerticesAndFaces(vertices=vertices, faces=faces)
 
-    def display(self, trimesh_args: Optional[Dict[str, Any]] = None) -> None:
+    def display(self) -> None:
         """
         Plot mesh from url.
         This loads the Trimesh instance of the 3D mesh, and then displays it.
         To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
-
-        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
-            or `trimesh.load_remote()`.
         """
         from IPython.display import display
 
-        if not trimesh_args:
-            trimesh_args = {}
-        mesh = self._load_trimesh_instance(**trimesh_args)
+        mesh = self._load_trimesh_instance(skip_materials=False)
         display(mesh.show())

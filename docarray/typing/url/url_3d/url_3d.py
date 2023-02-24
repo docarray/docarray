@@ -42,6 +42,7 @@ class Url3D(AnyUrl, ABC):
     def _load_trimesh_instance(
         self: T,
         force: Optional[str] = None,
+        skip_materials: bool = True,
         trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """
@@ -49,6 +50,7 @@ class Url3D(AnyUrl, ABC):
 
         :param force: str or None. For 'mesh' try to coerce scenes into a single mesh.
             For 'scene' try to coerce everything into a scene.
+        :param skip_materials: Skip materials if True, else skip.
         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
             or `trimesh.load_remote()`.
         :return: trimesh.Mesh or trimesh.Scene object
@@ -63,6 +65,6 @@ class Url3D(AnyUrl, ABC):
         scheme = urllib.parse.urlparse(self).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
-        mesh = loader(self, force=force, **trimesh_args)
+        mesh = loader(self, force=force, skip_materials=skip_materials, **trimesh_args)
 
         return mesh
