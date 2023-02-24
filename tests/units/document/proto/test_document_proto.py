@@ -169,7 +169,7 @@ def test_list_set_dict_tuple_field():
         np.int64,
         float,
         np.float16,
-        np.float128,
+        np.longfloat,
         np.double,
     ],
 )
