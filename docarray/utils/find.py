@@ -248,20 +248,19 @@ def _extract_embeddings(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
+    emb: AnyTensor
     if isinstance(data, DocumentArray):
-        emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)]
-        emb = embedding_type._docarray_stack(emb)
+        emb_list = [x for x in AnyDocumentArray._traverse(data, embedding_field)]
+        emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, DocumentArrayStacked):
         emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     elif isinstance(data, BaseDocument):
         emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     else:  # treat data as tensor
-        emb = data
+        emb = cast(AnyTensor, data)
 
     if len(emb.shape) == 1:
-        # all currently supported frameworks provide `.reshape()`. Onc this is not true
-        # anymore, we need to add a `.reshape()` method to the computational backend
-        emb = emb.reshape(1, -1)
+        emb = emb.get_comp_backend().reshape(array=emb, shape=(1, -1))
     return emb
 
 
