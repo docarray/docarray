@@ -292,6 +292,33 @@ def test_find_union():
     assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
 
 
+def test_find_nested():
+    class InnerDoc(BaseDocument):
+        title: str
+        embedding: NdArray
+
+    class MyDoc(BaseDocument):
+        inner: InnerDoc
+
+    query = MyDoc(inner=InnerDoc(title='query', embedding=np.random.randn((10))))
+    index = DocumentArray[MyDoc](
+        [
+            MyDoc(inner=InnerDoc(title=f'doc {i}', embedding=np.random.randn((10))))
+            for i in range(10)
+        ]
+    )
+
+    top_k, scores = find(
+        index,
+        query,
+        embedding_field='inner__embedding',
+        limit=7,
+    )
+    assert len(top_k) == 7
+    assert len(scores) == 7
+    assert (torch.stack(sorted(scores, reverse=True)) == scores).all()
+
+
 def test_find_nested_union_optional():
     class MyDoc(BaseDocument):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]
