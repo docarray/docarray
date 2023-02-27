@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
@@ -73,4 +73,9 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        return self._storage_view is not None
+        from docarray.array.stacked.storage import StorageView
+
+        return isinstance(self.__dict__, StorageView)
+
+    def __getattr__(self, item) -> Any:
+        return self.__dict__[item]

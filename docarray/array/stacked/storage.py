@@ -108,11 +108,12 @@ class Storage:
         )
 
 
-class StorageView(MutableMapping[str, Any]):
+class StorageView(dict, MutableMapping[str, Any]):
     index: int
     storage: Storage
 
     def __init__(self, index: int, storage: Storage):
+        super().__init__()
         self.index = index
         self.storage = storage
 
