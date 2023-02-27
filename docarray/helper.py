@@ -115,7 +115,7 @@ def _update_nested_dicts(
 
 
 def _get_field_type_by_access_path(
-    doc_type: Type[BaseDocument], access_path: str
+    doc_type: Type['BaseDocument'], access_path: str
 ) -> Any:
     """
     Get field type by "__"-separated access path.
