@@ -16,8 +16,10 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    Iterator,
     List,
     Optional,
+    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -91,13 +93,9 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[BaseDocument]):
+class IOMixinArray(Sequence[BaseDocument]):
 
     document_type: Type[BaseDocument]
-
-    @abstractmethod
-    def __len__(self):
-        ...
 
     @abstractmethod
     def __init__(
@@ -177,35 +175,48 @@ class IOMixinArray(Iterable[BaseDocument]):
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
             elif protocol in SINGLE_PROTOCOLS:
-                from rich import filesize
-
-                from docarray.utils.progress_bar import _get_progressbar
-
-                pbar, t = _get_progressbar(
-                    'Serializing', disable=not show_progress, total=len(self)
+                f.write(
+                    b''.join(
+                        self.to_byte_stream(
+                            protocol=protocol, show_progress=show_progress
+                        )
+                    )
                 )
-
-                f.write(self._stream_header)
-
-                with pbar:
-                    _total_size = 0
-                    pbar.start_task(t)
-                    for doc in self:
-                        doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
-                        len_doc_as_bytes = len(doc_bytes).to_bytes(
-                            4, 'big', signed=False
-                        )
-                        all_bytes = len_doc_as_bytes + doc_bytes
-                        f.write(all_bytes)
-                        _total_size += len(all_bytes)
-                        pbar.update(
-                            t,
-                            advance=1,
-                            total_size=str(filesize.decimal(_total_size)),
-                        )
             else:
                 raise ValueError(
                     f'protocol={protocol} is not supported. Can be only {ALLOWED_PROTOCOLS}.'
+                )
+
+    def to_byte_stream(
+        self,
+        protocol: str = 'protobuf',
+        show_progress: bool = False,
+    ) -> Iterator[bytes]:
+        from rich import filesize
+
+        from docarray.utils.progress_bar import _get_progressbar
+
+        pbar, t = _get_progressbar(
+            'Serializing', disable=not show_progress, total=len(self)
+        )
+
+        yield self._stream_header
+
+        with pbar:
+            _total_size = 0
+            pbar.start_task(t)
+            for doc in self:
+                doc_bytes = doc.to_bytes(protocol=protocol)
+                len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
+                all_bytes = len_doc_as_bytes + doc_bytes
+
+                yield all_bytes
+
+                _total_size += len(all_bytes)
+                pbar.update(
+                    t,
+                    advance=1,
+                    total_size=str(filesize.decimal(_total_size)),
                 )
 
     def to_bytes(
