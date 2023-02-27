@@ -1,5 +1,7 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Optional, Protocol, Sequence, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Type
+
+from typing_extensions import Protocol
 
 from docarray.array.array.io import BinaryIOLike
 

@@ -337,8 +337,8 @@ class PushPullJAC(PushPullLike):
 
             from contextlib import nullcontext
 
-            da = DocumentArray[cls.document_type](
-                cls._load_binary_stream(  # type: ignore
+            da = DocumentArray[cls.document_type](  # type: ignore
+                cls._load_binary_stream(
                     nullcontext(_source),  # type: ignore
                     protocol='protobuf',
                     compress='gzip',
