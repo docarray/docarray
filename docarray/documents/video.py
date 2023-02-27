@@ -8,11 +8,17 @@ from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
-from docarray.utils.misc import is_torch_available
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
     import torch
+
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
 
 T = TypeVar('T', bound='Video')
 
@@ -106,7 +112,9 @@ class Video(BaseDocument):
         if isinstance(value, str):
             value = cls(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
-            torch_available and isinstance(value, torch.Tensor)
+            torch_available
+            and isinstance(value, torch.Tensor)
+            or (tf_available and isinstance(value, tf.Tensor))
         ):
             value = cls(tensor=value)
 

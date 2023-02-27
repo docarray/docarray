@@ -74,7 +74,7 @@ class Text(BaseDocument):
         )
         mmdoc.text_doc.text = mmdoc.text_doc.url.load()
 
-        #or
+        # or
 
         mmdoc.text_doc.bytes = mmdoc.text_doc.url.load_bytes()
 
@@ -87,13 +87,13 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents Text
+        from docarray.documents import Text
 
         doc = Text(text='This is the main text', url='exampleurl.com')
         doc2 = Text(text='This is the main text', url='exampleurl.com')
 
-        doc == 'This is the main text' # True
-        doc == doc2 # False, their ids are not equivalent
+        doc == 'This is the main text'  # True
+        doc == doc2  # False, their ids are not equivalent
     """
 
     text: Optional[str] = None
@@ -126,7 +126,7 @@ class Text(BaseDocument):
         """
         This method makes `Text` behave the same as an `str`.
 
-            .. code-block:: python
+        .. code-block:: python
 
             from docarray.documents import Text
 

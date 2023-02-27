@@ -14,7 +14,14 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
+from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf
+
+    from docarray.typing.tensor.video import VideoTensorFlowTensor
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
 REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
@@ -78,6 +85,25 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
 
     assert isinstance(doc.tensor, torch.Tensor)
     assert isinstance(doc.tensor, VideoTorchTensor)
+
+
+@pytest.mark.tensorflow
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'file_url',
+    [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
+)
+def test_load_video_url_to_video_tensorflow_tensor_field(file_url):
+    class MyVideoDoc(BaseDocument):
+        video_url: VideoUrl
+        tensor: Optional[VideoTensorFlowTensor]
+
+    doc = MyVideoDoc(video_url=file_url)
+    doc.tensor = doc.video_url.load().video
+
+    assert isinstance(doc.tensor, VideoTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
 
 
 def test_json_schema():

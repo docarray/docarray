@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray.base_document.document import BaseDocument
 from docarray.documents import Mesh3D
 from tests import TOYDATA_DIR
 
@@ -17,10 +17,10 @@ def test_mesh(file_url):
 
     mesh = Mesh3D(url=file_url)
 
-    mesh.vertices, mesh.faces = mesh.url.load()
+    mesh.tensors = mesh.url.load()
 
-    assert isinstance(mesh.vertices, np.ndarray)
-    assert isinstance(mesh.faces, np.ndarray)
+    assert isinstance(mesh.tensors.vertices, np.ndarray)
+    assert isinstance(mesh.tensors.faces, np.ndarray)
 
 
 def test_str_init():

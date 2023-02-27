@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import pytest
@@ -164,12 +164,12 @@ def test_list_set_dict_tuple_field():
         np.uint,
         np.uint8,
         np.uint64,
-        np.int,
+        int,
         np.int8,
         np.int64,
-        np.float,
+        float,
         np.float16,
-        np.float128,
+        np.longfloat,
         np.double,
     ],
 )

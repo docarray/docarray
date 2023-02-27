@@ -1,45 +1,56 @@
 from contextlib import contextmanager
+from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
     List,
-    Mapping,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
-    Optional,
 )
 
+from pydantic import parse_obj_as
+
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.array.array import DocumentArray
+from docarray.array.array.array import DocumentArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentArrayStackedProto
-    from docarray.typing import TorchTensor
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-try:
+torch_available = is_torch_available()
+if torch_available:
     from docarray.typing import TorchTensor
-except ImportError:
+else:
     TorchTensor = None  # type: ignore
 
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+else:
+    TensorFlowTensor = None  # type: ignore
+
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 T = TypeVar('T', bound='DocumentArrayStacked')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocumentArrayStacked(AnyDocumentArray):
+class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     """
     DocumentArrayStacked is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -63,17 +74,17 @@ class DocumentArrayStacked(AnyDocumentArray):
 
     def __init__(
         self: T,
-        docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]] = None,
+        docs: Optional[Union[DocumentArray, Iterable[T_doc]]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._doc_columns: Dict[str, 'DocumentArrayStacked'] = {}
         self._tensor_columns: Dict[str, AbstractTensor] = {}
         self.tensor_type = tensor_type
 
-        self.from_document_array(docs)
+        self.from_iterable_document(docs)
 
-    def from_document_array(
-        self: T, docs: Optional[Union[DocumentArray, Iterable[BaseDocument]]]
+    def from_iterable_document(
+        self: T, docs: Optional[Union[DocumentArray, Iterable[T_doc]]]
     ):
         self._docs = (
             docs
@@ -125,31 +136,6 @@ class DocumentArrayStacked(AnyDocumentArray):
         return self
 
     @classmethod
-    def _get_columns_schema(
-        cls: Type[T],
-        tensor_type: Type[AbstractTensor],
-    ) -> Mapping[str, Union[Type[AbstractTensor], Type[BaseDocument]]]:
-        """
-        Return the list of fields that are tensors and the list of fields that are
-        documents
-        :param tensor_type: the default tensor type fallback in case of union of tensor
-        :return: a tuple of two lists, the first one is the list of fields that are
-        tensors, the second one is the list of fields that are documents
-        """
-
-        column_schema: Dict[str, Union[Type[AbstractTensor], Type[BaseDocument]]] = {}
-
-        for field_name, field in cls.document_type.__fields__.items():
-            field_type = field.outer_type_
-            if is_tensor_union(field_type):
-                column_schema[field_name] = tensor_type
-            elif isinstance(field_type, type):
-                if issubclass(field_type, (BaseDocument, AbstractTensor)):
-                    column_schema[field_name] = field_type
-
-        return column_schema
-
-    @classmethod
     def _create_columns(
         cls: Type[T], docs: DocumentArray, tensor_type: Type[AbstractTensor]
     ) -> Tuple[Dict[str, 'DocumentArrayStacked'], Dict[str, AbstractTensor]]:
@@ -157,47 +143,83 @@ class DocumentArrayStacked(AnyDocumentArray):
         if len(docs) == 0:
             return {}, {}
 
-        column_schema = cls._get_columns_schema(tensor_type)
-
         doc_columns: Dict[str, DocumentArrayStacked] = dict()
         tensor_columns: Dict[str, AbstractTensor] = dict()
 
-        for field, type_ in column_schema.items():
-            if issubclass(type_, AbstractTensor):
-                tensor = getattr(docs[0], field)
-                column_shape = (
-                    (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
-                )
-                tensor_columns[field] = type_._docarray_from_native(
-                    type_.get_comp_backend().empty(
-                        column_shape,
-                        dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
-                        device=tensor.device if hasattr(tensor, 'device') else None,
-                    )
-                )
+        for field_name, field in cls.document_type.__fields__.items():
+            field_type = field.outer_type_
 
+            if is_tensor_union(field_type):
+                field_type = tensor_type
+
+            if tf_available and isinstance(
+                getattr(docs[0], field_name), TensorFlowTensor
+            ):
+                # tf.Tensor does not allow item assignment, therefore the optimized way
+                # of initializing an empty array and assigning values to it iteratively
+                # does not work here, therefore handle separately.
+                tf_stack = []
                 for i, doc in enumerate(docs):
-                    val = getattr(doc, field)
+                    val = getattr(doc, field_name)
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
+                    tf_stack.append(val.tensor)
+                    del val.tensor
 
-                    cast(AbstractTensor, tensor_columns[field])[i] = val
+                stacked: tf.Tensor = tf.stack(tf_stack)
+                tensor_columns[field_name] = TensorFlowTensor(stacked)
+                for i, doc in enumerate(docs):
+                    val = getattr(doc, field_name)
+                    x = tensor_columns[field_name][i].tensor
+                    val.tensor = x
 
-                    # If the stacked tensor is rank 1, the individual tensors are
-                    # rank 0 (scalar)
-                    # This is problematic because indexing a rank 1 tensor in numpy
-                    # returns a value instead of a tensor
-                    # We thus chose to convert the individual rank 0 tensors to rank 1
-                    # This does mean that stacking rank 0 tensors will transform them
-                    # to rank 1
-                    if tensor_columns[field].ndim == 1:
-                        setattr(doc, field, tensor_columns[field][i : i + 1])
-                    else:
-                        setattr(doc, field, tensor_columns[field][i])
-                    del val
+            elif isinstance(field_type, type):
+                if issubclass(field_type, AbstractTensor):
+                    tensor = getattr(docs[0], field_name)
+                    column_shape = (
+                        (len(docs), *tensor.shape)
+                        if tensor is not None
+                        else (len(docs),)
+                    )
+                    tensor_columns[field_name] = field_type._docarray_from_native(
+                        field_type.get_comp_backend().empty(
+                            column_shape,
+                            dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
+                            device=tensor.device if hasattr(tensor, 'device') else None,
+                        )
+                    )
 
-            elif issubclass(type_, BaseDocument):
-                doc_columns[field] = getattr(docs, field).stack()
+                    for i, doc in enumerate(docs):
+                        val = getattr(doc, field_name)
+                        if val is None:
+                            val = tensor_type.get_comp_backend().none_value()
+
+                        cast(AbstractTensor, tensor_columns[field_name])[i] = val
+
+                        # If the stacked tensor is rank 1, the individual tensors are
+                        # rank 0 (scalar)
+                        # This is problematic because indexing a rank 1 tensor in numpy
+                        # returns a value instead of a tensor
+                        # We thus chose to convert the individual rank 0 tensors to rank 1
+                        # This does mean that stacking rank 0 tensors will transform them
+                        # to rank 1
+                        tensor = tensor_columns[field_name]
+                        if tensor.get_comp_backend().n_dim(tensor) == 1:
+                            setattr(
+                                doc, field_name, tensor_columns[field_name][i : i + 1]
+                            )
+                        else:
+                            setattr(doc, field_name, tensor_columns[field_name][i])
+                        del val
+
+                elif issubclass(field_type, BaseDocument):
+                    doc_columns[field_name] = getattr(docs, field_name).stack()
+                    for i, doc in enumerate(docs):
+                        setattr(doc, field_name, doc_columns[field_name][i])
+
+                elif issubclass(field_type, DocumentArray):
+                    for doc in docs:
+                        setattr(doc, field_name, getattr(doc, field_name).stack())
 
         return doc_columns, tensor_columns
 
@@ -232,13 +254,24 @@ class DocumentArrayStacked(AnyDocumentArray):
             values_ = cast(T, values)
             self._doc_columns[field] = values_
         elif field in self._tensor_columns.keys() and not isinstance(values, List):
-            values__ = cast(AbstractTensor, values)
+
+            type_ = cast(AbstractTensor, self.document_type._get_field_type(field))
+            shaped_type = (
+                type_.__unparametrizedcls__
+                if type_.__unparametrizedcls__ is not None
+                else type_
+            )
+            values__ = parse_obj_as(shaped_type, values)  # type: ignore
+            # TODO: here we should validate that the shape is correct, maybe create a
+            # __unparametrizedcls__[len(self), X ,Y] ...
             self._tensor_columns[field] = values__
+            for i, doc in enumerate(self):
+                setattr(doc, field, self._tensor_columns[field][i])
         else:
             setattr(self._docs, field, values)
 
     @overload
-    def __getitem__(self: T, item: int) -> BaseDocument:
+    def __getitem__(self: T, item: int) -> T_doc:
         ...
 
     @overload
@@ -254,25 +287,27 @@ class DocumentArrayStacked(AnyDocumentArray):
             return self._get_from_data_and_columns(item_)
         # single doc case
         doc = self._docs[item]
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][item])
-        for field in self._tensor_columns.keys():
-            setattr(doc, field, self._tensor_columns[field][item])
         return doc
 
-    def __setitem__(
-        self: T, key: Union[int, IndexIterType], value: Union[T, BaseDocument]
-    ):
+    @overload
+    def __setitem__(self: T, key: int, value: T_doc):
+        ...
+
+    @overload
+    def __setitem__(self: T, key: IndexIterType, value: T):
+        ...
+
+    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         # multiple docs case
         if isinstance(key, (slice, Iterable)):
-            return self._set_data_and_columns(key, value)
-        # single doc case
-        doc = self._docs[key]
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
-        for field in self._doc_columns.keys():
-            setattr(doc, field, self._doc_columns[field][key])
-        return doc
+            self._set_data_and_columns(key, value)
+        else:
+            # single doc case
+            key_ = cast(int, key)
+            value_ = cast(T_doc, value)
+            self._docs[key_] = value_
+            for field in chain(self._tensor_columns.keys(), self._doc_columns.keys()):
+                self._tensor_columns[field][key_] = getattr(value_, field)
 
     @overload
     def __delitem__(self: T, key: int) -> None:
@@ -337,12 +372,6 @@ class DocumentArrayStacked(AnyDocumentArray):
             self._docs[index_item] = value
             doc_cols_to_set, tens_cols_to_set = self._create_columns(
                 value, self.tensor_type
-            )
-        elif isinstance(value, BaseDocument):
-            self._docs[index_item] = value
-            doc_cols_to_set, tens_cols_to_set = self._create_columns(
-                DocumentArray.__class_getitem__(self.document_type)([value]),
-                self.tensor_type,
             )
         elif isinstance(value, DocumentArrayStacked):
             self._docs[index_item] = value._docs
@@ -423,6 +452,12 @@ class DocumentArrayStacked(AnyDocumentArray):
                 # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
                 # -when-the-original-tensor-is-deleted/167294 # noqa: E501
 
+        for field_name, _ in self._docs.document_type.__fields__.items():
+            field_type = self.document_type._get_field_type(field_name)
+            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
+                for doc in self._docs:
+                    setattr(doc, field_name, getattr(doc, field_name).unstack())
+
         for field in list(self._doc_columns.keys()):
             # list needed here otherwise we are modifying the dict while iterating
             del self._doc_columns[field]
@@ -449,12 +484,12 @@ class DocumentArrayStacked(AnyDocumentArray):
             yield da_unstacked
         finally:
             self._docs = da_unstacked
-            self.from_document_array(da_unstacked)
+            self.from_iterable_document(da_unstacked)
 
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, Iterable[BaseDocument]],
+        value: Union[T, Iterable[T_doc]],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:

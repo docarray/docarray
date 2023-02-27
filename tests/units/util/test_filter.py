@@ -1,7 +1,8 @@
-import pytest
 import json
+from typing import Any, Dict, List, Optional
 
-from typing import Optional, List, Dict, Any
+import pytest
+
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image, Text
 from docarray.utils.filter import filter
@@ -59,9 +60,9 @@ def test_empty_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_simple_filter(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     result = method({'text': {'$eq': 'Text of Document 1'}})
     assert len(result) == 1
@@ -127,29 +128,30 @@ def test_simple_filter(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_nested_filter(docs, dict_api):
-    if dict_api:
-        method = lambda query: filter(docs, query)
-    else:
-        method = lambda query: filter(docs, json.dumps(query))
 
-    result = method({'dictionary.a': {'$eq': 0}})
+    if dict_api:
+        method = lambda query: filter(docs, query)  # noqa: E731
+    else:
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
+
+    result = method({'dictionary__a': {'$eq': 0}})
     assert len(result) == 2
     for res in result:
         assert res.dictionary['a'] == 0
 
-    result = method({'dictionary.c': {'$exists': True}})
+    result = method({'dictionary__c': {'$exists': True}})
     assert len(result) == 1
     assert result[0].dictionary['c'] == 2
 
-    result = method({'dictionary.d.e': {'$exists': True}})
+    result = method({'dictionary__d__e': {'$exists': True}})
     assert len(result) == 1
     assert result[0].dictionary['d'] == {'e': 3}
 
-    result = method({'dictionary.d.e': {'$eq': 3}})
+    result = method({'dictionary__d__e': {'$eq': 3}})
     assert len(result) == 1
     assert result[0].dictionary['d'] == {'e': 3}
 
-    result = method({'image.url': {'$eq': 'exampleimage.jpg'}})
+    result = method({'image__url': {'$eq': 'exampleimage.jpg'}})
     assert len(result) == 1
     assert result[0].image.url == 'exampleimage.jpg'
 
@@ -157,9 +159,9 @@ def test_nested_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_array_simple_filters(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     # SIZE DOES NOT SEEM TO WORK
     result = method({'sub_docs': {'$size': 2}})
@@ -179,9 +181,9 @@ def test_placehold_filter(dict_api):
     )
 
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     # DOES NOT SEEM TO WORK
     result = method({'text': {'$eq': '{text_doc}'}})
@@ -194,9 +196,9 @@ def test_placehold_filter(dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_logic_filter(docs, dict_api):
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
     result = method(
         {
             '$or': {
@@ -269,15 +271,15 @@ def test_from_docstring(dict_api):
 
     query = {
         '$and': {
-            'image.url': {'$regex': 'photo'},
+            'image__url': {'$regex': 'photo'},
             'price': {'$lte': 50},
         }
     }
 
     if dict_api:
-        method = lambda query: filter(docs, query)
+        method = lambda query: filter(docs, query)  # noqa: E731
     else:
-        method = lambda query: filter(docs, json.dumps(query))
+        method = lambda query: filter(docs, json.dumps(query))  # noqa: E731
 
     results = method(query)
     assert len(results) == 1

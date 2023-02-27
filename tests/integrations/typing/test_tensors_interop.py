@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 
 from docarray.typing import (
@@ -7,6 +8,13 @@ from docarray.typing import (
     NdArrayEmbedding,
     TorchEmbedding,
 )
+from docarray.utils.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf
+
+    from docarray.typing import AudioTensorFlowTensor, TensorFlowEmbedding
 
 
 def test_torch_tensors_interop():
@@ -16,6 +24,16 @@ def test_torch_tensors_interop():
     t_result = t1 + t2
     assert isinstance(t_result, AudioTorchTensor)
     assert isinstance(t_result, torch.Tensor)
+    assert t_result.shape == (128,)
+
+
+@pytest.mark.tensorflow
+def test_tensorflow_tensors_interop():
+    t1 = AudioTensorFlowTensor(tf.random.normal((128,)))
+    t2 = TensorFlowEmbedding(tf.random.normal((128,)))
+
+    t_result = t1.tensor + t2.tensor
+    assert isinstance(t_result, tf.Tensor)
     assert t_result.shape == (128,)
 
 

@@ -6,7 +6,7 @@ from rich.tree import Tree
 from typing_extensions import TYPE_CHECKING
 from typing_inspect import is_optional_type, is_union_type
 
-from docarray.base_document.abstract_document import AbstractDocument
+from docarray.base_document.document import BaseDocument
 from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -16,11 +16,11 @@ if TYPE_CHECKING:
 
 
 class DocumentSummary:
-    table_width: int = 80
+    table_min_width: int = 40
 
     def __init__(
         self,
-        doc: Optional['AbstractDocument'] = None,
+        doc: Optional['BaseDocument'] = None,
     ):
         self.doc = doc
 
@@ -32,7 +32,7 @@ class DocumentSummary:
         rich.print(t)
 
     @staticmethod
-    def schema_summary(cls: Type['AbstractDocument']) -> None:
+    def schema_summary(cls: Type['BaseDocument']) -> None:
         """Print a summary of the Documents schema."""
         from rich.console import Console
         from rich.panel import Panel
@@ -49,9 +49,7 @@ class DocumentSummary:
         console.print(panel)
 
     @staticmethod
-    def _get_schema(
-        cls: Type['AbstractDocument'], doc_name: Optional[str] = None
-    ) -> Tree:
+    def _get_schema(cls: Type['BaseDocument'], doc_name: Optional[str] = None) -> Tree:
         """Get Documents schema as a rich.tree.Tree object."""
         import re
 
@@ -116,7 +114,7 @@ class DocumentSummary:
         table = Table(
             'Attribute',
             'Value',
-            width=self.table_width,
+            min_width=self.table_min_width,
             box=box.ROUNDED,
             highlight=True,
         )

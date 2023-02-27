@@ -3,13 +3,18 @@ from typing import Any, Optional, Type, TypeVar, Union
 import numpy as np
 
 from docarray.base_document import BaseDocument
-from docarray.typing import AnyEmbedding, AnyTensor, PointCloud3DUrl
+from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_torch_available
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
     import torch
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
 
 T = TypeVar('T', bound='PointCloud3D')
 
@@ -23,8 +28,9 @@ class PointCloud3D(BaseDocument):
     representation, the point cloud is a fixed size ndarray (shape=(n_samples, 3)) and
     hence easier for deep learning algorithms to handle.
 
-    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`), an
-    AnyTensor (`PointCloud3D.tensor`), and an AnyEmbedding (`PointCloud3D.embedding`).
+    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`),
+    a PointsAndColors object (`PointCloud3D.tensors`), and an AnyEmbedding
+    (`PointCloud3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -36,9 +42,9 @@ class PointCloud3D(BaseDocument):
 
         # use it directly
         pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensor = pc.url.load(samples=100)
+        pc.tensors = pc.url.load(samples=100)
         model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensor)
+        pc.embedding = model(pc.tensors.points)
 
     You can extend this Document:
 
@@ -54,10 +60,10 @@ class PointCloud3D(BaseDocument):
 
 
         pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensor = pc.url.load(samples=100)
+        pc.tensors = pc.url.load(samples=100)
         model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensor)
-        pc.second_embedding = model(pc.tensor)
+        pc.embedding = model(pc.tensors.points)
+        pc.second_embedding = model(pc.tensors.colors)
 
 
     You can use this Document for composition:
@@ -79,16 +85,32 @@ class PointCloud3D(BaseDocument):
             ),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.point_cloud.tensor = mmdoc.point_cloud.url.load(samples=100)
+        mmdoc.point_cloud.tensors = mmdoc.point_cloud.url.load(samples=100)
 
         # or
 
         mmdoc.point_cloud.bytes = mmdoc.point_cloud.url.load_bytes()
 
+
+    You can display your point cloud from either its url, or its tensors:
+
+    .. code-block:: python
+
+        from docarray.documents import PointCloud3D
+
+        # display from url
+        pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+        pc.url.display()
+
+        # display from tensors
+        pc.tensors = pc.url.load(samples=10000)
+        model = MyEmbeddingModel()
+        pc.embedding = model(pc.tensors.points)
+
     """
 
     url: Optional[PointCloud3DUrl]
-    tensor: Optional[AnyTensor]
+    tensors: Optional[PointsAndColors]
     embedding: Optional[AnyEmbedding]
     bytes: Optional[bytes]
 
@@ -100,8 +122,10 @@ class PointCloud3D(BaseDocument):
         if isinstance(value, str):
             value = cls(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
-            torch_available and isinstance(value, torch.Tensor)
+            torch_available
+            and isinstance(value, torch.Tensor)
+            or (tf_available and isinstance(value, tf.Tensor))
         ):
-            value = cls(tensor=value)
+            value = cls(tensors=PointsAndColors(points=value))
 
         return super().validate(value)

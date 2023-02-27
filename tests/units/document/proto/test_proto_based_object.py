@@ -1,9 +1,11 @@
 import numpy as np
+import pytest
 
 from docarray.proto import DocumentProto, NodeProto
 from docarray.typing import NdArray
 
 
+@pytest.mark.proto
 def test_ndarray():
 
     original_ndarray = np.zeros((3, 224, 224))
@@ -15,6 +17,7 @@ def test_ndarray():
     assert (tensor == original_ndarray).all()
 
 
+@pytest.mark.proto
 def test_document_proto_set():
 
     data = {}
