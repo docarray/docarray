@@ -1,25 +1,18 @@
 import json
 import os
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    List,
-    NoReturn,
-    Optional,
-    Sequence,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 import hubble
-import requests
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
 from docarray.array.array.pushpull import PushPullLike, __cache_path__
+from docarray.array.array.pushpull.helpers import (
+    _BufferedCachingRequestReader,
+    get_version_info,
+    raise_req_error,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     import io
@@ -65,85 +58,6 @@ def _get_raw_summary(self: 'DocumentArray') -> List[Dict[str, Any]]:
     ]
 
     return items
-
-
-def _get_full_version() -> Dict:
-    """
-    Get the version of libraries used in Jina and environment variables.
-
-    :return: Version information and environment variables
-    """
-    import platform
-    from uuid import getnode
-
-    import google.protobuf
-    from google.protobuf.internal import api_implementation
-
-    from docarray import __version__
-
-    return {
-        'docarray': __version__,
-        'protobuf': google.protobuf.__version__,
-        'proto-backend': api_implementation.Type(),
-        'python': platform.python_version(),
-        'platform': platform.system(),
-        'platform-release': platform.release(),
-        'platform-version': platform.version(),
-        'architecture': platform.machine(),
-        'processor': platform.processor(),
-        'uid': getnode(),
-    }
-
-
-## Parallels
-def ibatch(iterable: Sequence, batch_size: int = 32) -> Iterable:
-    """Get an iterator of batched items from Sequence."""
-    seq_len = len(iterable)
-    for offset in range(0, seq_len, batch_size):
-        yield iterable[offset : min(offset + batch_size, seq_len)]
-
-
-## Parallels
-
-
-class _BufferedCachingRequestReader:
-    """A buffered reader for requests.Response that writes to a cache file while reading."""
-
-    def __init__(self, r: requests.Response, cache_path: Optional[Path] = None):
-        self._data = r.iter_content(chunk_size=1024 * 1024)
-        self._chunk: bytes = b''
-        self._seek = 0
-        self._chunk_len = 0
-
-        self._cache = open(cache_path, 'wb') if cache_path else None
-
-    def read(self, size: int) -> bytes:
-        if self._seek + size > self._chunk_len:
-            _bytes = self._chunk[self._seek : self._chunk_len]
-            size -= self._chunk_len - self._seek
-
-            self._chunk = next(self._data)
-            self._seek = 0
-            self._chunk_len = len(self._chunk)
-            if self._cache:
-                self._cache.write(self._chunk)
-
-            _bytes += self._chunk[self._seek : self._seek + size]
-            self._seek += size
-            return _bytes
-        else:
-            _bytes = self._chunk[self._seek : self._seek + size]
-            self._seek += size
-            return _bytes
-
-    def __del__(self):
-        if self._cache:
-            self._cache.close()
-
-
-def _raise_req_error(resp: requests.Response) -> NoReturn:
-    resp.raise_for_status()
-    raise ValueError(f'Unexpected response status: {resp.status_code}')
 
 
 class PushPullJAC(PushPullLike):
@@ -246,7 +160,7 @@ class PushPullJAC(PushPullLike):
                     {
                         'summary': _get_raw_summary(da),
                         'branding': branding,
-                        'version': _get_full_version(),
+                        'version': get_version_info(),
                     },
                     sort_keys=True,
                 ),
@@ -286,7 +200,7 @@ class PushPullJAC(PushPullLike):
         else:
             if response.status_code >= 400 and 'readableMessage' in response.json():
                 response.reason = response.json()['readableMessage']
-            _raise_req_error(response)
+            raise_req_error(response)
 
     @staticmethod
     @hubble.login_required
@@ -304,14 +218,6 @@ class PushPullJAC(PushPullLike):
         :return: a :class:`DocumentArray` object
         """
         import requests
-
-        from docarray.base_document import AnyDocument
-
-        if cls.document_type == AnyDocument:
-            raise TypeError(
-                'There is no document schema defined. '
-                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
-            )
 
         headers = {}
 
@@ -332,6 +238,8 @@ class PushPullJAC(PushPullLike):
             url,
             stream=True,
         ) as r:
+            from contextlib import nullcontext
+
             from docarray import DocumentArray
 
             r.raise_for_status()
@@ -350,7 +258,6 @@ class PushPullJAC(PushPullLike):
                         print(f'Loading from local cache {cache_file}')
                     _source = open(cache_file, 'rb')
                     r.close()
-            from contextlib import nullcontext
 
             da = DocumentArray[cls.document_type](  # type: ignore
                 cls._load_binary_stream(

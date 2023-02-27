@@ -134,6 +134,14 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
         """
+        from docarray.base_document import AnyDocument
+
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
+
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull(
             cls, name, show_progress, local_cache
