@@ -21,6 +21,7 @@ from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.io import IOMixinArray
+from docarray.array.array.pushpull import PushPullMixin
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.utils.misc import is_torch_available
@@ -67,7 +68,7 @@ def _is_np_int(item: Any) -> bool:
     return False  # this is unreachable, but mypy wants it
 
 
-class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
+class DocumentArray(PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]):
     """
      DocumentArray is a container of Documents.
 
