@@ -40,18 +40,40 @@ class PushPullLike(Protocol):
         ...
 
 
-if True:
-    from docarray.array.array.pushpull.jinaai import PushPullJAC
-
-
 class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _max_bytes = 4 * 2**30
-    __backends__: Dict[str, PushPullLike] = {'jinaai': PushPullJAC}
+    __backends__: Dict[str, PushPullLike] = {}
 
     @classmethod
-    def list(cls, protocol: str, show_table: bool = False) -> List[str]:
+    def get_backend(cls, protocol: str) -> PushPullLike:
+        """
+        Register a new backend for push/pull.
+
+        :param protocol: the protocol to use, e.g. 'jinaai', 'file', 's3'
+        :param backend: the backend to use
+        """
+        if protocol in cls.__backends__:
+            return cls.__backends__[protocol]
+
+        if protocol == 'jinaai':
+            from docarray.array.array.pushpull.jinaai import PushPullJAC
+
+            cls.__backends__[protocol] = PushPullJAC
+        elif protocol == 'file':
+            raise NotImplementedError('file protocol not implemented yet')
+            # from docarray.array.array.pushpull.file import PushPullFile
+        elif protocol == 's3':
+            raise NotImplementedError('s3 protocol not implemented yet')
+            # from docarray.array.array.pushpull.s3 import PushPullS3
+        else:
+            raise NotImplementedError(f'protocol {protocol} not supported')
+
+        return cls.__backends__[protocol]
+
+    @staticmethod
+    def list(protocol: str, show_table: bool = False) -> List[str]:
         """
         List all the artifacts in the cloud.
 
@@ -59,10 +81,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param show_table: whether to show the table of artifacts
         :return: a list of artifact names
         """
-        if protocol in cls.__backends__:
-            return cls.__backends__[protocol].list(show_table)
-        else:
-            raise NotImplementedError(f'protocol {protocol} not supported')
+        return PushPullMixin.get_backend(protocol).list(show_table)
 
     @classmethod
     def delete(cls, url: str):
@@ -72,10 +91,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param url: the url of the artifact to delete
         """
         protocol, name = url.split('://', 2)
-        if protocol in cls.__backends__:
-            return cls.__backends__[protocol].delete(name)
-        else:
-            raise NotImplementedError(f'protocol {protocol} not supported')
+        return PushPullMixin.get_backend(protocol).delete(name)
 
     def push(
         self,
@@ -100,12 +116,9 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
         protocol, name = url.split('://', 2)
-        if protocol in PushPullMixin.__backends__:
-            return PushPullMixin.__backends__[protocol].push(
-                self, name, public, show_progress, branding
-            )
-        else:
-            raise NotImplementedError(f'protocol {protocol} not supported')
+        return PushPullMixin.get_backend(protocol).push(
+            self, name, public, show_progress, branding
+        )
 
     @classmethod
     def pull(
@@ -122,9 +135,6 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :return: a :class:`DocumentArray` object
         """
         protocol, name = url.split('://', 2)
-        if protocol in PushPullMixin.__backends__:
-            return PushPullMixin.__backends__[protocol].pull(
-                cls, name, show_progress, local_cache
-            )
-        else:
-            raise NotImplementedError(f'protocol {protocol} not supported')
+        return PushPullMixin.get_backend(protocol).pull(
+            cls, name, show_progress, local_cache
+        )
