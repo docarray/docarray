@@ -225,7 +225,7 @@ def _extract_embedding_single(
     :return: the embeddings
     """
     if isinstance(data, BaseDocument):
-        emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
+        emb = next(AnyDocumentArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -253,10 +253,8 @@ def _extract_embeddings(
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, DocumentArrayStacked):
         emb = next(AnyDocumentArray._traverse(data, embedding_field))
-        # emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     elif isinstance(data, BaseDocument):
         emb = next(AnyDocumentArray._traverse(data, embedding_field))
-        # emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 
@@ -293,6 +291,9 @@ def _get_field_type_by_access_path(
 ) -> Any:
     """
     Get field type by "__"-separated access path.
+    :param doc_type: type of document
+    :param access_path: "__"-separated access path
+    :return: field type of accessed attribute. If access path is invalid, return None.
     """
     from docarray import BaseDocument
 
