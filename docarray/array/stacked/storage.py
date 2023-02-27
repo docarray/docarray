@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, List, Sequence, Type, cast
+from itertools import chain
+from typing import TYPE_CHECKING, Any, Dict, List, Sequence, Type, cast
 
 from docarray.array.array.array import DocumentArray
 from docarray.base_document import BaseDocument
@@ -39,6 +40,7 @@ class Storage:
 
         self.tensor_storage = dict()
         self.document_storage = dict()
+        self.da_storage = dict()
         self.any_storage = dict()
 
         docs = (
@@ -97,3 +99,25 @@ class Storage:
                     self.da_storage[field_name].append(getattr(doc, field_name).stack())
             else:
                 self.any_storage[field_name] = getattr(docs, field_name)
+
+
+class StorageView:
+    index: int
+    storage: Storage
+
+    def __init__(self, index: int, storage: Storage):
+        self.index = index
+        self.storage = storage
+
+    def data(self) -> Dict[str, Any]:
+        data: Dict[str, Any] = dict()
+
+        for field_name, column in chain(
+            self.storage.tensor_storage.items(),
+            self.storage.da_storage.items(),
+            self.storage.document_storage.items(),
+            self.storage.any_storage.items(),
+        ):
+            data[field_name] = column[self.index]
+
+        return data

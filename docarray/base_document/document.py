@@ -1,14 +1,17 @@
 import os
-from typing import Type
+from typing import TYPE_CHECKING, Optional, Type
 
 import orjson
-from pydantic import BaseModel, Field, parse_obj_as
+from pydantic import BaseModel, Field, PrivateAttr, parse_obj_as
 from rich.console import Console
 
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
+
+if TYPE_CHECKING:
+    from docarray.array.stacked.storage import Storage
 
 _console: Console = Console()
 
@@ -19,6 +22,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
+    _view_storage: Optional['Storage'] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -37,7 +41,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
         return cls.__fields__[field].outer_type_
 
-    def __str__(self):
+    def __str__(self) -> str:
         with _console.capture() as capture:
             _console.print(self)
 
@@ -56,6 +60,9 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         DocumentSummary.schema_summary(cls)
 
-    def _ipython_display_(self):
+    def _ipython_display_(self) -> None:
         """Displays the object in IPython as a summary"""
         self.summary()
+
+    def is_view(self) -> bool:
+        return self._view_storage is not None
