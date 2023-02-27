@@ -568,7 +568,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
         columns: Dict[str, _Column] = dict()
-        for field_name, field in schema.__fields__.items():
+        for field_name, field_ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
             if is_union_type(t_):
                 raise ValueError(
@@ -589,7 +589,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     },
                 )
             else:
-                columns[field_name] = self._create_single_column(field, t_)
+                columns[field_name] = self._create_single_column(field_, t_)
         return columns
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _Column:
