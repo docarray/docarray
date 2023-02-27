@@ -11,7 +11,7 @@ from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.storage import Storage
+    from docarray.array.stacked.storage import StorageView
 
 _console: Console = Console()
 
@@ -22,7 +22,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
-    _view_storage: Optional['Storage'] = PrivateAttr(None)
+    _storage_view: Optional['StorageView'] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -65,4 +65,4 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        return self._view_storage is not None
+        return self._storage_view is not None
