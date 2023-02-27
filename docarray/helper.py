@@ -10,10 +10,7 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
     """
 
     field_type = _get_field_type_by_access_path(doc_type, access_path)
-    if field_type is None:
-        return False
-    else:
-        return True
+    return field_type is not None
 
 
 def _all_access_paths_valid(
