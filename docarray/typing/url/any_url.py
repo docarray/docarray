@@ -60,7 +60,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         url = super().validate(abs_path, field, config)  # basic url validation
 
         if input_is_relative_path:
-            return cls(value, scheme=None)
+            return cls(str(value), scheme=None)
         else:
             return cls(str(url), scheme=None)
 
