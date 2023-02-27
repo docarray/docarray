@@ -47,15 +47,16 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     ) -> T:
         import os
 
-        try:
-            if not value.startswith('http') and not os.path.isabs(value):  # type: ignore
-                input_is_relative_path = True
-                abs_path = os.path.abspath(value)  # type: ignore
-            else:
-                input_is_relative_path = False
-                abs_path = value
-        except TypeError:
+        if (
+            isinstance(value, str)
+            and not value.startswith('http')
+            and not os.path.isabs(value)
+        ):
+            input_is_relative_path = True
+            abs_path = os.path.abspath(value)
+        else:
             input_is_relative_path = False
+            abs_path = value
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
