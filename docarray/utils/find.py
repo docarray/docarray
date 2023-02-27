@@ -1,4 +1,4 @@
-from typing import List, NamedTuple, Optional, Type, Union, cast
+from typing import Any, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -6,7 +6,6 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.base_document import BaseDocument
-from docarray.helper import _get_field_type
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -253,9 +252,11 @@ def _extract_embeddings(
         emb_list = [x for x in AnyDocumentArray._traverse(data, embedding_field)]
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, DocumentArrayStacked):
-        emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
+        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+        # emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     elif isinstance(data, BaseDocument):
-        emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
+        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+        # emb = [x for x in AnyDocumentArray._traverse(data, embedding_field)][0]
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 
@@ -269,16 +270,14 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
     (schema) of the DocumentArray.
 
     :param da: the DocumentArray
-    :param access_path: the attribute name
+    :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """
-    field_type = _get_field_type(da.document_type, access_path)
+    field_type = _get_field_type_by_access_path(da.document_type, access_path)
 
     if is_union_type(field_type):
         # determine type based on the fist element
-        field_type = type(
-            [x for x in AnyDocumentArray._traverse(da[0], access_path)][0]
-        )
+        field_type = type(next(AnyDocumentArray._traverse(da[0], access_path)))
 
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(
@@ -287,3 +286,27 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
         )
 
     return cast(Type[AnyTensor], field_type)
+
+
+def _get_field_type_by_access_path(
+    doc_type: Type[BaseDocument], access_path: str
+) -> Any:
+    """
+    Get field type by "__"-separated access path.
+    """
+    from docarray import BaseDocument
+
+    field, _, remaining = access_path.partition('__')
+    field_valid = field in doc_type.__fields__.keys()
+
+    if field_valid:
+        if len(remaining) == 0:
+            return doc_type._get_field_type(field)
+        else:
+            d = doc_type._get_field_type(field)
+            if issubclass(d, DocumentArray):
+                return _get_field_type_by_access_path(d.document_type, remaining)
+            elif issubclass(d, BaseDocument):
+                return _get_field_type_by_access_path(d, remaining)
+    else:
+        return None

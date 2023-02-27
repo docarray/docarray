@@ -8,21 +8,13 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
     """
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
-    from docarray import BaseDocument
+    from docarray.utils.find import _get_field_type_by_access_path
 
-    field, _, remaining = access_path.partition('__')
-    if len(remaining) == 0:
-        return access_path in doc_type.__fields__.keys()
+    field_type = _get_field_type_by_access_path(doc_type, access_path)
+    if field_type is None:
+        return False
     else:
-        valid_field = field in doc_type.__fields__.keys()
-        if not valid_field:
-            return False
-        else:
-            d = doc_type._get_field_type(field)
-            if not issubclass(d, BaseDocument):
-                return False
-            else:
-                return _is_access_path_valid(d, remaining)
+        return True
 
 
 def _all_access_paths_valid(
@@ -121,21 +113,3 @@ def _update_nested_dicts(
             to_update[k] = v
         else:
             _update_nested_dicts(to_update[k], update_with[k])
-
-
-def _get_field_type(doc_type, access_path):
-    from docarray import BaseDocument
-
-    field, _, remaining = access_path.partition('__')
-    if len(remaining) == 0:
-        return doc_type._get_field_type(field)
-    else:
-        valid_field = field in doc_type.__fields__.keys()
-        if not valid_field:
-            return None
-        else:
-            d = doc_type._get_field_type(field)
-            if not issubclass(d, BaseDocument):
-                return None
-            else:
-                return _get_field_type(d, remaining)
