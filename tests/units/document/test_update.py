@@ -1,12 +1,14 @@
+from typing import Dict, List, Optional, Set
+
 import pytest
-from typing import Optional, List, Dict, Set
+
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 
 
 class InnerDoc(BaseDocument):
     integer: int
-    l: List
+    inner_list: List
 
 
 class MMDoc(BaseDocument):
@@ -33,7 +35,7 @@ def doc1():
             [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'a'},
-        inner_doc=InnerDoc(integer=2, l=['c', 'd']),
+        inner_doc=InnerDoc(integer=2, inner_list=['c', 'd']),
         test_dict={'a': 0, 'b': 2, 'd': 4, 'z': 3},
     )
 
@@ -51,7 +53,7 @@ def doc2(doc1):
             [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'b'},
-        inner_doc=InnerDoc(integer=3, l=['a', 'b']),
+        inner_doc=InnerDoc(integer=3, inner_list=['a', 'b']),
         test_dict={'a': 10, 'b': 10, 'c': 3, 'z': None},
     )
 
@@ -68,7 +70,7 @@ def test_update_complex(doc1, doc2):
     assert len(doc1.matches_with_same_id) == 1
     assert len(doc1.matches_with_same_id[0].matches) == 2
     assert doc1.inner_doc.integer == 3
-    assert doc1.inner_doc.l == ['c', 'd', 'a', 'b']
+    assert doc1.inner_doc.inner_list == ['c', 'd', 'a', 'b']
     assert doc1.test_dict == {'a': 10, 'b': 10, 'c': 3, 'd': 4, 'z': None}
 
 

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
 
@@ -40,23 +40,31 @@ class Url3D(AnyUrl, ABC):
         return cls(str(url), scheme=None)
 
     def _load_trimesh_instance(
-        self: T, force: Optional[str] = None
+        self: T,
+        force: Optional[str] = None,
+        skip_materials: bool = True,
+        trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """
         Load the data from the url into a trimesh.Mesh or trimesh.Scene object.
 
-        :param url: url to load data from
         :param force: str or None. For 'mesh' try to coerce scenes into a single mesh.
             For 'scene' try to coerce everything into a scene.
+        :param skip_materials: Skip materials if True, else skip.
+        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+            or `trimesh.load_remote()`.
         :return: trimesh.Mesh or trimesh.Scene object
         """
         import urllib.parse
 
         import trimesh
 
+        if not trimesh_args:
+            trimesh_args = {}
+
         scheme = urllib.parse.urlparse(self).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
-        mesh = loader(self, force=force)
+        mesh = loader(self, force=force, skip_materials=skip_materials, **trimesh_args)
 
         return mesh

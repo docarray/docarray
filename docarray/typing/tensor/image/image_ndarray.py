@@ -20,14 +20,11 @@ class ImageNdArray(AbstractImageTensor, NdArray):
 
         from typing import Optional
 
-        from pydantic import parse_obj_as
-
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import ImageNdArray, ImageUrl
-        import numpy as np
 
 
-        class MyImageDoc(Document):
+        class MyImageDoc(BaseDocument):
             title: str
             tensor: Optional[ImageNdArray]
             url: Optional[ImageUrl]
@@ -37,7 +34,8 @@ class ImageNdArray(AbstractImageTensor, NdArray):
         # from url
         doc = MyImageDoc(
             title='my_second_audio_doc',
-            url='https://an.image.png',
+            url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
+            "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg",
         )
 
         doc.tensor = doc.url.load()

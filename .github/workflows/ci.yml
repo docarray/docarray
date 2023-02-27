@@ -54,11 +54,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.7
-      - name: Prepare enviroment
+      - name: Prepare environment
         run: |
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --without dev
+          poetry run pip install tensorflow==2.11.0
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocumentArray, BaseDocument'
 
@@ -111,11 +112,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-
+          sudo apt-get install --no-install-recommends ffmpeg
+          
       - name: Test
         id: test
         run: |
-          poetry run pytest ${{ matrix.test-path }}
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
         timeout-minutes: 30
 #        env:
 #          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -155,11 +157,12 @@ jobs:
           python -m pip install poetry
           rm poetry.lock
           poetry install --all-extras
+          sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
         run: |
-          poetry run pytest ${{ matrix.test-path }}
+          poetry run pytest -m "not tensorflow" ${{ matrix.test-path }}
         timeout-minutes: 30
 
 
@@ -181,18 +184,48 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          pip install protobuf==3.19.0 # we check that we support 3.19 
+          poetry run pip install protobuf==3.19.0 # we check that we support 3.19
+          sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
         run: |
-          poetry run pytest -k 'proto' tests
+          poetry run pytest -m 'proto' tests
+        timeout-minutes: 30
+
+
+  docarray-test-tensorflow:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install protobuf==3.19.0
+          poetry run pip install tensorflow==2.11.0
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'tensorflow' tests
         timeout-minutes: 30
 
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test, check-mypy]
+    needs: [docarray-test, docarray-test-proto3, docarray-test-tensorflow,  import-test, check-black, check-mypy, lint-ruff]
     if: always()
     runs-on: ubuntu-latest
     steps:

@@ -32,6 +32,7 @@ def test_image_url():
     assert isinstance(tensor, np.ndarray)
 
 
+@pytest.mark.proto
 def test_proto_image_url():
 
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)

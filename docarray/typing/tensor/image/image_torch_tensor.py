@@ -22,14 +22,11 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
         from typing import Optional
 
-        import torch
-        from pydantic import parse_obj_as
-
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import ImageTorchTensor, ImageUrl
 
 
-        class MyImageDoc(Document):
+        class MyImageDoc(BaseDocument):
             title: str
             tensor: Optional[ImageTorchTensor]
             url: Optional[ImageUrl]
@@ -38,7 +35,8 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
         doc = MyImageDoc(
             title='my_second_image_doc',
-            url='https://www.kozco.com/tech/piano2.wav',
+            url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
+            "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg",
         )
 
         doc.tensor = doc.url.load()

@@ -78,7 +78,7 @@ def test_torchtensor_getitem(stack, da, index_dtype):
 
 
 @pytest.mark.parametrize('stack', [True, False])
-@pytest.mark.parametrize('index_dtype', [np.int, np.int_, np.int32, np.int64])
+@pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_getitem(stack, da, index_dtype):
     if stack:
         da = da.stack()
@@ -98,7 +98,7 @@ def test_nparray_getitem(stack, da, index_dtype):
         [False, True, True, True, True, False, True, False, False, False],
         (False, True, True, True, True, False, True, False, False, False),
         torch.tensor([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=torch.bool),
-        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=np.bool),
+        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=bool),
     ],
 )
 def test_boolmask_getitem(stack, da, index):
@@ -180,7 +180,7 @@ def test_torchtensor_setitem(stack_left, stack_right, da, da_to_set, index_dtype
 
 @pytest.mark.parametrize('stack_left', [True, False])
 @pytest.mark.parametrize('stack_right', [True, False])
-@pytest.mark.parametrize('index_dtype', [np.int, np.int_, np.int32, np.int64])
+@pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
     if stack_left:
         da = da.stack()
@@ -211,7 +211,7 @@ def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
         [False, True, True, True, True, False, True, False, False, False],
         (False, True, True, True, True, False, True, False, False, False),
         torch.tensor([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=torch.bool),
-        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=np.bool),
+        np.array([0, 1, 1, 1, 1, 0, 1, 0, 0, 0], dtype=bool),
     ],
 )
 def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
@@ -233,3 +233,22 @@ def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
         else:
             assert d.text == f'hello {i}'
             assert torch.all(d.embedding == torch.ones((4,)) * i)
+
+
+def test_setitem_update_column():
+    texts = [f'hello {i}' for i in range(10)]
+    tensors = [torch.ones((4,)) * (i + 1) for i in range(10)]
+    da = DocumentArray[Text](
+        [Text(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
+        tensor_type=TorchTensor,
+    ).stack()
+
+    da[0] = Text(text='hello', embedding=torch.zeros((4,)))
+
+    assert da[0].text == 'hello'
+    assert (da[0].embedding == torch.zeros((4,))).all()
+    assert (da.embedding[0] == torch.zeros((4,))).all()
+
+    assert da._docs[0].text == 'hello'
+    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()
+    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()

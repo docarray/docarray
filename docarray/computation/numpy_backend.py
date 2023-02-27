@@ -1,9 +1,10 @@
 import warnings
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 
 from docarray.computation import AbstractComputationalBackend
+from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
 
 
 def _expand_if_single_axis(*matrices: np.ndarray) -> List[np.ndarray]:
@@ -29,76 +30,40 @@ def _expand_if_scalar(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
+def identity(array: np.ndarray) -> np.ndarray:
+    return array
+
+
+class NumpyCompBackend(AbstractNumpyBasedBackend):
     """
     Computational backend for Numpy.
     """
 
-    @staticmethod
-    def stack(
-        tensors: Union[List['np.ndarray'], Tuple['np.ndarray']], dim: int = 0
-    ) -> 'np.ndarray':
-        return np.stack(tensors, axis=dim)
+    _module = np
+    _cast_output = identity
+    _get_tensor = identity
 
-    @staticmethod
-    def to_device(tensor: 'np.ndarray', device: str) -> 'np.ndarray':
+    @classmethod
+    def to_device(cls, tensor: 'np.ndarray', device: str) -> 'np.ndarray':
         """Move the tensor to the specified device."""
         raise NotImplementedError('Numpy does not support devices (GPU).')
 
-    @staticmethod
-    def device(tensor: 'np.ndarray') -> Optional[str]:
+    @classmethod
+    def device(cls, tensor: 'np.ndarray') -> Optional[str]:
         """Return device on which the tensor is allocated."""
         return None
 
-    @staticmethod
-    def n_dim(array: 'np.ndarray') -> int:
-        return array.ndim
-
-    @staticmethod
-    def squeeze(tensor: 'np.ndarray') -> 'np.ndarray':
-        """
-        Returns a tensor with all the dimensions of tensor of size 1 removed.
-        """
-        return tensor.squeeze()
-
-    @staticmethod
-    def to_numpy(array: 'np.ndarray') -> 'np.ndarray':
+    @classmethod
+    def to_numpy(cls, array: 'np.ndarray') -> 'np.ndarray':
         return array
 
-    @staticmethod
-    def empty(
-        shape: Tuple[int, ...],
-        dtype: Optional[Any] = None,
-        device: Optional[Any] = None,
-    ) -> 'np.ndarray':
-        if device is not None:
-            raise NotImplementedError('Numpy does not support devices (GPU).')
-        return np.empty(shape, dtype=dtype)
-
-    @staticmethod
-    def none_value() -> Any:
+    @classmethod
+    def none_value(cls) -> Any:
         """Provide a compatible value that represents None in numpy."""
         return None
 
-    @staticmethod
-    def shape(array: 'np.ndarray') -> Tuple[int, ...]:
-        """Get shape of array"""
-        return array.shape
-
-    @staticmethod
-    def reshape(array: 'np.ndarray', shape: Tuple[int, ...]) -> 'np.ndarray':
-        """
-        Gives a new shape to array without changing its data.
-
-        :param array: array to be reshaped
-        :param shape: the new shape
-        :return: a array with the same data and number of elements as array
-            but with the specified shape.
-        """
-        return array.reshape(shape)
-
-    @staticmethod
-    def detach(tensor: 'np.ndarray') -> 'np.ndarray':
+    @classmethod
+    def detach(cls, tensor: 'np.ndarray') -> 'np.ndarray':
         """
         Returns the tensor detached from its current graph.
 
@@ -107,18 +72,14 @@ class NumpyCompBackend(AbstractComputationalBackend[np.ndarray]):
         """
         return tensor
 
-    @staticmethod
-    def dtype(tensor: 'np.ndarray') -> np.dtype:
+    @classmethod
+    def dtype(cls, tensor: 'np.ndarray') -> np.dtype:
         """Get the data type of the tensor."""
         return tensor.dtype
 
-    @staticmethod
-    def isnan(tensor: 'np.ndarray') -> 'np.ndarray':
-        """Check element-wise for nan and return result as a boolean array"""
-        return np.isnan(tensor)
-
-    @staticmethod
+    @classmethod
     def minmax_normalize(
+        cls,
         tensor: 'np.ndarray',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,

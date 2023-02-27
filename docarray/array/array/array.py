@@ -1,10 +1,10 @@
+import io
 from contextlib import contextmanager
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Generic,
     Iterable,
     List,
     Optional,
@@ -20,6 +20,7 @@ import numpy as np
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.array.io import IOMixinArray
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.utils.misc import is_np_int, is_torch_available
@@ -28,11 +29,10 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.array.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocumentArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
-
 
 T = TypeVar('T', bound='DocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
@@ -56,7 +56,18 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
-class DocumentArray(AnyDocumentArray, Generic[T_doc]):
+def _is_np_int(item: Any) -> bool:
+    dtype = getattr(item, 'dtype', None)
+    ndim = getattr(item, 'ndim', None)
+    if dtype is not None and ndim is not None:
+        try:
+            return ndim == 0 and np.issubdtype(dtype, np.integer)
+        except TypeError:
+            return False
+    return False  # this is unreachable, but mypy wants it
+
+
+class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
     """
      DocumentArray is a container of Documents.
 
@@ -122,11 +133,27 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
 
     def __init__(
         self,
-        docs: Optional[Iterable[BaseDocument]] = None,
+        docs: Optional[Iterable[T_doc]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
-        self._data = list(docs) if docs is not None else []
+
+        self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
         self.tensor_type = tensor_type
+
+    def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
+        """
+        Validate if an Iterable of Document are compatible with this DocumentArray
+        """
+        for doc in docs:
+            yield self._validate_one_doc(doc)
+
+    def _validate_one_doc(self, doc: T_doc) -> T_doc:
+        """Validate if a Document is compatible with this DocumentArray"""
+        if not issubclass(self.document_type, AnyDocument) and not isinstance(
+            doc, self.document_type
+        ):
+            raise ValueError(f'{doc} is not a {self.document_type}')
+        return doc
 
     def __len__(self):
         return len(self._data)
@@ -160,7 +187,15 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         else:
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
-    def __setitem__(self: T, key: IndexIterType, value: Union[T, BaseDocument]):
+    @overload
+    def __setitem__(self: T, key: IndexIterType, value: T):
+        ...
+
+    @overload
+    def __setitem__(self: T, key: int, value: T_doc):
+        ...
+
+    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         key_norm = self._normalize_index_item(key)
 
         if isinstance(key_norm, int):
@@ -180,12 +215,36 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 return self._set_by_mask(key_norm_, value_)
             elif isinstance(head, int):
                 key_norm__ = cast(Iterable[int], key_norm)
-                return self._set_by_indices(key_norm__, value)
+                value_ = cast(Sequence[BaseDocument], value)  # this is no strictly true
+                # set_by_mask requires value_ to have getitem which
+                # _normalize_index_item() ensures
+                return self._set_by_indices(key_norm__, value_)
             else:
                 raise TypeError(f'Invalid type {type(head)} for indexing')
 
     def __iter__(self):
         return iter(self._data)
+
+    @overload
+    def __delitem__(self: T, key: int) -> None:
+        ...
+
+    @overload
+    def __delitem__(self: T, key: IndexIterType) -> None:
+        ...
+
+    def __delitem__(self, key) -> None:
+        key = self._normalize_index_item(key)
+
+        if key is None:
+            return
+
+        del self._data[key]
+
+    def __bytes__(self) -> bytes:
+        with io.BytesIO() as bf:
+            self._write_bytes(bf=bf)
+            return bf.getvalue()
 
     @staticmethod
     def _normalize_index_item(
@@ -254,9 +313,32 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 self._data[i] = value[i_value]
                 i_value += 1
 
-    append = _delegate_meth_to_data('append')
-    extend = _delegate_meth_to_data('extend')
-    insert = _delegate_meth_to_data('insert')
+    def append(self, doc: T_doc):
+        """
+        Append a Document to the DocumentArray. The Document must be from the same class
+        as the document_type of this DocumentArray otherwise it will fail.
+        :param doc: A Document
+        """
+        self._data.append(self._validate_one_doc(doc))
+
+    def extend(self, docs: Iterable[T_doc]):
+        """
+        Extend a DocumentArray with an Iterable of Document. The Documents must be from
+        the same class as the document_type of this DocumentArray otherwise it will
+        fail.
+        :param docs: Iterable of Documents
+        """
+        self._data.extend(self._validate_docs(docs))
+
+    def insert(self, i: int, doc: T_doc):
+        """
+        Insert a Document to the DocumentArray. The Document must be from the same
+        class as the document_type of this DocumentArray otherwise it will fail.
+        :param i: index to insert
+        :param doc: A Document
+        """
+        self._data.insert(i, self._validate_one_doc(doc))
+
     pop = _delegate_meth_to_data('pop')
     remove = _delegate_meth_to_data('remove')
     reverse = _delegate_meth_to_data('reverse')
@@ -303,23 +385,6 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         for doc, value in zip(self, values):
             setattr(doc, field, value)
 
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
-        """create a Document from a protobuf message"""
-        return cls(
-            cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
-        )
-
-    def to_protobuf(self) -> 'DocumentArrayProto':
-        """Convert DocumentArray into a Protobuf message"""
-        from docarray.proto import DocumentArrayProto
-
-        da_proto = DocumentArrayProto()
-        for doc in self:
-            da_proto.docs.append(doc.to_protobuf())
-
-        return da_proto
-
     @contextmanager
     def stacked_mode(self):
         """
@@ -331,7 +396,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
                 ...
         """
 
-        from docarray.array.array_stacked import DocumentArrayStacked
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         try:
             da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(
@@ -348,7 +413,7 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
         """
-        from docarray.array.array_stacked import DocumentArrayStacked
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
 
@@ -358,8 +423,10 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
         value: Union[T, Iterable[BaseDocument]],
         field: 'ModelField',
         config: 'BaseConfig',
-    ) -> T:
-        if isinstance(value, cls):
+    ):
+        from docarray.array.stacked.array_stacked import DocumentArrayStacked
+
+        if isinstance(value, (cls, DocumentArrayStacked)):
             return value
         elif isinstance(value, Iterable):
             return cls(value)
@@ -369,24 +436,15 @@ class DocumentArray(AnyDocumentArray, Generic[T_doc]):
     def traverse_flat(
         self: 'DocumentArray',
         access_path: str,
-    ) -> Union[List[Any]]:
+    ) -> List[Any]:
         nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
         flattened = AnyDocumentArray._flatten_one_level(nodes)
 
         return flattened
 
-    @overload
-    def __delitem__(self: T, key: int) -> None:
-        ...
-
-    @overload
-    def __delitem__(self: T, key: IndexIterType) -> None:
-        ...
-
-    def __delitem__(self, key) -> None:
-        key = self._normalize_index_item(key)
-
-        if key is None:
-            return
-
-        del self._data[key]
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+        """create a Document from a protobuf message
+        :param pb_msg: The protobuf message from where to construct the DocumentArray
+        """
+        return super().from_protobuf(pb_msg)

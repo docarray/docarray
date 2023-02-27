@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, TypeVar, Union
 
 import numpy as np
 import pytest
@@ -6,6 +6,11 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.typing import NdArray, TorchTensor
+from docarray.utils.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
+    from docarray.typing import TensorFlowTensor
 
 
 @pytest.fixture()
@@ -208,12 +213,15 @@ def test_get_bulk_attributes_union_type():
         assert text == f'hello{i}'
 
 
+@pytest.mark.tensorflow
 def test_get_bulk_attributes_union_type_nested():
     class MyDoc(BaseDocument):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]
-        embedding2: Optional[Union[TorchTensor, NdArray]]
+        embedding2: Optional[Union[TorchTensor, NdArray, TensorFlowTensor]]
         embedding3: Optional[Optional[TorchTensor]]
-        embedding4: Union[Optional[Union[TorchTensor, NdArray]], TorchTensor]
+        embedding4: Union[
+            Optional[Union[TorchTensor, NdArray, TensorFlowTensor]], TorchTensor
+        ]
 
     da = DocumentArray[MyDoc](
         [
@@ -286,3 +294,17 @@ def test_del_item(da):
         'hello 8',
         'hello 9',
     ]
+
+
+def test_generic_type_var():
+    T = TypeVar('T', bound=BaseDocument)
+
+    def f(a: DocumentArray[T]) -> DocumentArray[T]:
+        return a
+
+    def g(a: DocumentArray['BaseDocument']) -> DocumentArray['BaseDocument']:
+        return a
+
+    a = DocumentArray()
+    f(a)
+    g(a)

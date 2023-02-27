@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docarray"
-version = '2023.01.18.alpha'
+version = '0.30.0a3'
 description='The data structure for unstructured data'
 authors=['DocArray']
 license='Apache 2.0'
@@ -21,25 +21,30 @@ av = {version = ">=10.0.0", optional = true}
 fastapi = {version = ">=0.87.0", optional = true }
 rich = ">=13.1.0"
 hnswlib = {version = ">=0.6.2", optional = true }
+lz4 = {version= ">=1.0.0", optional = true}
+pydub = {version = "^0.25.1", optional = true }
+pandas = {version = ">=1.1.0", optional = true }
 
 [tool.poetry.extras]
-common = ["protobuf"]
+common = ["protobuf", "lz4"]
 torch = ["torch"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
+audio = ["pydub"]
 mesh = ["trimesh"]
 web = ["fastapi"]
 hnswlib = ["hnswlib"]
+pandas = ["pandas"]
 
 [tool.poetry.dev-dependencies]
-pytest = ">=6.1"
+pytest = ">=7.0"
 pre-commit = ">=2.20.0"
 jupyterlab = ">=3.5.0"
-mypy = ">=0.990"
+mypy = ">=1"
 types-protobuf = ">=3.20.4"
 black = ">=22.10.0"
 isort = ">=5.10.1"
-ruff = ">=0.0.165"
+ruff = ">=0.0.243"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = ">=0.19.0"
@@ -60,6 +65,10 @@ module = "av"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
+module = "pandas"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = "trimesh"
 ignore_missing_imports = true
 
@@ -71,21 +80,27 @@ ignore_missing_imports = true
 module = "typing_inspect"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "IPython.display"
+ignore_missing_imports = true
+
 [tool.black]
 skip-string-normalization = true # equivalent to black -S
 exclude = 'docarray/proto/pb2/*'
-
 
 [tool.isort]
 skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']
 
 [tool.ruff]
 exclude = ['docarray/proto/pb2/*', 'docarray/proto/pb/*', 'docs/*']
-
+ignore = [
+    "E501",  # line too long, handled by black
+]
 [tool.pytest.ini_options]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "internet: marks tests as requiring internet (deselect with '-m \"not internet\"')",
     "asyncio: marks that run async tests",
-    "proto: mark tests that run with proto"
+    "proto: mark tests that run with proto",
+    "tensorflow: marks test using tensorflow and proto 3"
 ]

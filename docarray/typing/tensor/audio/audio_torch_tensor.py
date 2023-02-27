@@ -17,13 +17,12 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         from typing import Optional
 
         import torch
-        from pydantic import parse_obj_as
 
-        from docarray import Document
+        from docarray import BaseDocument
         from docarray.typing import AudioTorchTensor, AudioUrl
 
 
-        class MyAudioDoc(Document):
+        class MyAudioDoc(BaseDocument):
             title: str
             audio_tensor: Optional[AudioTorchTensor]
             url: Optional[AudioUrl]
@@ -35,7 +34,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
             audio_tensor=torch.randn(size=(1000, 2)),
         )
 
-        doc_1.audio_tensor.save_to_wav_file(file_path='path/to/file_1.wav')
+        doc_1.audio_tensor.save(file_path='path/to/file_1.wav')
         doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
         doc_2 = MyAudioDoc(
@@ -44,7 +43,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         )
 
         doc_2.audio_tensor = doc_2.url.load()
-        doc_2.audio_tensor.save_to_wav_file(file_path='path/to/file_2.wav')
+        doc_2.audio_tensor.save(file_path='path/to/file_2.wav')
         doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
     """
 

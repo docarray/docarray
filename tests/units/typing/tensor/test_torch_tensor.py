@@ -6,6 +6,7 @@ from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import TorchEmbedding, TorchTensor
 
 
+@pytest.mark.proto
 def test_proto_tensor():
 
     tensor = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
@@ -35,19 +36,23 @@ def test_unwrap():
     assert (ndarray == torch.zeros(3, 224, 224)).all()
 
 
-def test_parametrized():
+def test_parametrized_correct_axis_shape():
     # correct shape, single axis
     tensor = parse_obj_as(TorchTensor[128], torch.zeros(128))
     assert isinstance(tensor, TorchTensor)
     assert isinstance(tensor, torch.Tensor)
     assert tensor.shape == (128,)
 
+
+def test_correct_shape_multiple_axis():
     # correct shape, multiple axis
     tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(3, 224, 224))
     assert isinstance(tensor, TorchTensor)
     assert isinstance(tensor, torch.Tensor)
     assert tensor.shape == (3, 224, 224)
 
+
+def test_wrong_but_reshapable():
     # wrong but reshapable shape
     tensor = parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 3, 224))
     assert isinstance(tensor, TorchTensor)
@@ -58,12 +63,16 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
+
+def test_inependent_variable_dim():
     # test independent variable dimensions
     tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 224, 224))
     assert isinstance(tensor, TorchTensor)
     assert isinstance(tensor, torch.Tensor)
     assert tensor.shape == (3, 224, 224)
 
+
+def test_param():
     tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 60, 128))
     assert isinstance(tensor, TorchTensor)
     assert isinstance(tensor, torch.Tensor)
@@ -75,6 +84,8 @@ def test_parametrized():
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(100, 1))
 
+
+def test_dependent_variable_dim():
     # test dependent variable dimensions
     tensor = parse_obj_as(TorchTensor[3, 'x', 'x'], torch.zeros(3, 224, 224))
     assert isinstance(tensor, TorchTensor)
@@ -151,3 +162,19 @@ def test_parametrized_operations():
     assert isinstance(t_result, torch.Tensor)
     assert isinstance(t_result, TorchTensor)
     assert isinstance(t_result, TorchTensor[128])
+
+
+def test_deepcopy():
+    from docarray import BaseDocument
+
+    class MMdoc(BaseDocument):
+        embedding: TorchEmbedding
+
+    doc = MMdoc(embedding=torch.randn(32))
+    doc_copy = doc.copy(deep=True)
+
+    assert doc.embedding.data_ptr() != doc_copy.embedding.data_ptr()
+    assert (doc.embedding == doc_copy.embedding).all()
+
+    doc_copy.embedding = torch.randn(32)
+    assert not (doc.embedding == doc_copy.embedding).all()

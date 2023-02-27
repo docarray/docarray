@@ -10,7 +10,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
-    import numpy as np
     from docarray.proto import NdArrayProto
     from docarray.computation.torch_backend import TorchCompBackend
 
@@ -123,7 +122,7 @@ class TorchTensor(
         Convert torchTensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        return self.numpy()  ## might need to  check device later
+        return self.numpy()  ## might need to check device later
 
     def unwrap(self) -> torch.Tensor:
         """

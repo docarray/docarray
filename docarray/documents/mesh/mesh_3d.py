@@ -1,7 +1,9 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
 from docarray.base_document import BaseDocument
-from docarray.typing import AnyEmbedding, AnyTensor, Mesh3DUrl
+from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
+from docarray.typing.tensor.embedding import AnyEmbedding
+from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
 
 T = TypeVar('T', bound='Mesh3D')
 
@@ -17,9 +19,10 @@ class Mesh3D(BaseDocument):
     tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a
     vertex in the tensor of vertices.
 
-    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), an AnyTensor of
-    vertices (`Mesh3D.vertices`), an AnyTensor of faces (`Mesh3D.faces`) and an
-    AnyEmbedding (`Mesh3D.embedding`).
+    The Mesh3D Document can contain an Mesh3DUrl (`Mesh3D.url`), a VerticesAndFaces
+    object containing an AnyTensor of vertices (`Mesh3D.tensors.vertices) and an
+    AnyTensor of faces (`Mesh3D.tensors.faces), and an AnyEmbedding
+    (`Mesh3D.embedding`).
 
     EXAMPLE USAGE:
 
@@ -31,9 +34,9 @@ class Mesh3D(BaseDocument):
 
         # use it directly
         mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        mesh.vertices, mesh.faces = mesh.url.load()
+        mesh.tensors = mesh.url.load()
         model = MyEmbeddingModel()
-        mesh.embedding = model(mesh.vertices)
+        mesh.embedding = model(mesh.tensors.vertices)
 
     You can extend this Document:
 
@@ -43,13 +46,14 @@ class Mesh3D(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyMesh3D(Mesh3D):
             name: Optional[Text]
 
 
         mesh = MyMesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        mesh.vertices, mesh.faces = mesh.url.load()
+        mesh.tensors = mesh.url.load()
         model = MyEmbeddingModel()
         mesh.embedding = model(mesh.vertices)
         mesh.name = 'my first mesh'
@@ -62,6 +66,7 @@ class Mesh3D(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import Mesh3D, Text
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             mesh: Mesh3D
@@ -72,16 +77,32 @@ class Mesh3D(BaseDocument):
             mesh=Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'),
             text=Text(text='hello world, how are you doing?'),
         )
-        mmdoc.mesh.vertices, mmdoc.mesh.faces = mmdoc.mesh.url.load()
+        mmdoc.mesh.tensors = mmdoc.mesh.url.load()
 
         # or
         mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
 
+
+    You can display your 3D mesh in a notebook from either its url, or its tensors:
+
+    .. code-block:: python
+
+        from docarray.documents import Mesh3D
+
+        # display from url
+        mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+        mesh.url.display()
+
+        # display from tensors
+        mesh.tensors = mesh.url.load()
+        model = MyEmbeddingModel()
+        mesh.embedding = model(mesh.tensors.vertices)
+
+
     """
 
     url: Optional[Mesh3DUrl]
-    vertices: Optional[AnyTensor]
-    faces: Optional[AnyTensor]
+    tensors: Optional[VerticesAndFaces]
     embedding: Optional[AnyEmbedding]
     bytes: Optional[bytes]
 
