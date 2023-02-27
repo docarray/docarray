@@ -233,7 +233,9 @@ class IOMixinArray(Sequence[BaseDocument], BinaryIOLike):
                 f.write(
                     b''.join(
                         self.to_binary_stream(
-                            protocol=protocol, show_progress=show_progress
+                            protocol=protocol,
+                            compress=compress,
+                            show_progress=show_progress,
                         )
                     )
                 )
