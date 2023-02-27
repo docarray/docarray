@@ -71,7 +71,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self.tensor_type = tensor_type
-
         self._storage = Storage(
             docs, document_type=self.document_type, tensor_type=self.tensor_type
         )
