@@ -252,9 +252,7 @@ def _extract_embeddings(
     if isinstance(data, DocumentArray):
         emb_list = list(AnyDocumentArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
-    elif isinstance(data, DocumentArrayStacked):
-        emb = next(AnyDocumentArray._traverse(data, embedding_field))
-    elif isinstance(data, BaseDocument):
+    elif isinstance(data, (DocumentArrayStacked, BaseDocument)):
         emb = next(AnyDocumentArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
