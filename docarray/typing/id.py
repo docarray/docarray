@@ -50,7 +50,7 @@ class ID(str, AbstractType):
         return NodeProto(text=self, type=self._proto_type_name)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
         """
         read ndarray from a proto msg
         :param pb_msg:

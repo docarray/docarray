@@ -169,7 +169,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return_field: Any
 
         if docarray_type in content_type_dict:
-            return_field = content_type_dict[docarray_type].from_protobuf(
+            return_field = content_type_dict[docarray_type].doc_from_protobuf(
                 getattr(value, content_key)
             )
         elif content_key in ['document', 'document_array']:

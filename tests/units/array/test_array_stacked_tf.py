@@ -26,7 +26,7 @@ def batch():
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    return batch.stack()
+    return batch.doc_stack()
 
 
 @pytest.fixture()
@@ -50,7 +50,7 @@ def nested_batch():
         ]
     )
 
-    return batch.stack()
+    return batch.doc_stack()
 
 
 @pytest.mark.tensorflow
@@ -88,7 +88,7 @@ def test_set_after_stacking():
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    batch = batch.stack()
+    batch = batch.doc_stack()
     batch.tensor = tf.ones((10, 3, 224, 224))
     assert tnp.allclose(batch.tensor.tensor, tf.ones((10, 3, 224, 224)))
     for i, doc in enumerate(batch):
@@ -116,7 +116,7 @@ def test_stack_mod_nested_document():
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
 
-    batch = batch.stack()
+    batch = batch.doc_stack()
 
     assert tnp.allclose(
         batch._doc_columns['img']._tensor_columns['tensor'].tensor,
@@ -159,7 +159,7 @@ def test_unstack_nested_document():
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
 
-    batch = batch.stack()
+    batch = batch.doc_stack()
     da = batch.unstack()
 
     for doc in da:
@@ -184,7 +184,7 @@ def test_stack_call():
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    da = da.stack()
+    da = da.doc_stack()
 
     assert len(da) == 10
 
@@ -200,7 +200,7 @@ def test_context_manager():
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    with da.stacked_mode() as da:
+    with da.doc_stacked_mode() as da:
         assert len(da) == 10
 
         assert da.tensor.tensor.shape == ((10, 3, 224, 224))
@@ -226,7 +226,7 @@ def test_stack_union():
 
     # union fields aren't actually stacked
     # just checking that there is no error
-    batch.stack()
+    batch.doc_stack()
 
 
 @pytest.mark.tensorflow
@@ -239,7 +239,7 @@ def test_any_tensor_with_tf():
     da = DocumentArray[Image](
         [Image(tensor=tensor) for _ in range(10)],
         tensor_type=TensorFlowTensor,
-    ).stack()
+    ).doc_stack()
 
     for i in range(len(da)):
         assert tnp.allclose(da[i].tensor.tensor, tensor)
@@ -261,7 +261,7 @@ def test_any_tensor_with_optional():
     da = DocumentArray[TopDoc](
         [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
         tensor_type=TensorFlowTensor,
-    ).stack()
+    ).doc_stack()
 
     for i in range(len(da)):
         assert tnp.allclose(da.img[i].tensor.tensor, tensor)
@@ -279,7 +279,7 @@ def test_get_from_slice_stacked():
 
     da = DocumentArray[Doc](
         [Doc(text=f'hello{i}', tensor=tf.zeros((3, 224, 224))) for i in range(10)]
-    ).stack()
+    ).doc_stack()
 
     da_sliced = da[0:10:2]
     assert isinstance(da_sliced, DocumentArrayStacked)
@@ -295,7 +295,7 @@ def test_stack_none():
 
     da = DocumentArray[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
-    ).stack()
+    ).doc_stack()
 
     assert 'tensor' in da._tensor_columns.keys()
 
@@ -310,6 +310,6 @@ def test_keep_dtype_tf():
     )
     assert da[0].tensor.tensor.dtype == tf.int32
 
-    da = da.stack()
+    da = da.doc_stack()
     assert da[0].tensor.tensor.dtype == tf.int32
     assert da.tensor.tensor.dtype == tf.int32

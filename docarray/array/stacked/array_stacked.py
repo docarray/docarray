@@ -391,7 +391,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         return len(self._docs)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
         """create a Document from a protobuf message"""
 
         docs: DocumentArray = DocumentArray(

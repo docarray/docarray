@@ -31,7 +31,7 @@ class AbstractType(BaseNode):
 
     @classmethod
     @abstractmethod
-    def from_protobuf(cls: Type[T], pb_msg: T) -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: T) -> T:
         ...
 
     @abstractmethod

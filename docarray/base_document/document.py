@@ -43,14 +43,14 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         return capture.get().strip()
 
-    def summary(self) -> None:
+    def doc_summary(self) -> None:
         """Print non-empty fields and nested structure of this Document object."""
         from docarray.display.document_summary import DocumentSummary
 
         DocumentSummary(doc=self).summary()
 
     @classmethod
-    def schema_summary(cls) -> None:
+    def doc_schema_summary(cls) -> None:
         """Print a summary of the Documents schema."""
         from docarray.display.document_summary import DocumentSummary
 

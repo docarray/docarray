@@ -305,7 +305,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
                 self._data[i] = value[i_value]
                 i_value += 1
 
-    def append(self, doc: T_doc):
+    def doc_append(self, doc: T_doc):
         """
         Append a Document to the DocumentArray. The Document must be from the same class
         as the document_type of this DocumentArray otherwise it will fail.
@@ -313,7 +313,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         """
         self._data.append(self._validate_one_doc(doc))
 
-    def extend(self, docs: Iterable[T_doc]):
+    def doc_extend(self, docs: Iterable[T_doc]):
         """
         Extend a DocumentArray with an Iterable of Document. The Documents must be from
         the same class as the document_type of this DocumentArray otherwise it will
@@ -322,7 +322,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         """
         self._data.extend(self._validate_docs(docs))
 
-    def insert(self, i: int, doc: T_doc):
+    def doc_insert(self, i: int, doc: T_doc):
         """
         Insert a Document to the DocumentArray. The Document must be from the same
         class as the document_type of this DocumentArray otherwise it will fail.
@@ -378,7 +378,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
             setattr(doc, field, value)
 
     @contextmanager
-    def stacked_mode(self):
+    def doc_stacked_mode(self):
         """
         Context manager to convert DocumentArray to a DocumentArrayStacked and unstack
         it when exiting the context manager.
@@ -400,7 +400,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
                 da_stacked
             )
 
-    def stack(self) -> 'DocumentArrayStacked':
+    def doc_stack(self) -> 'DocumentArrayStacked':
         """
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
@@ -435,8 +435,8 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         return flattened
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocumentArray
         """
-        return super().from_protobuf(pb_msg)
+        return super().doc_from_protobuf(pb_msg)

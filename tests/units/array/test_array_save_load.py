@@ -61,7 +61,7 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_pro
 
     def _extend_da(num_docs=100):
         for _ in range(num_docs):
-            da.extend(
+            da.doc_extend(
                 [
                     MyDoc(
                         embedding=np.random.rand(3, 2),
@@ -86,6 +86,6 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_pro
         assert doc.id == da[i].id
         assert doc.text == da[i].text
         assert doc.image.url == da[i].image.url
-        da2.append(doc)
+        da2.doc_append(doc)
 
     assert len(da2) == 100

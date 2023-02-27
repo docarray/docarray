@@ -100,7 +100,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         return url
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
         """
         read url from a proto msg
         :param pb_msg:

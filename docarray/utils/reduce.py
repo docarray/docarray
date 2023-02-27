@@ -28,7 +28,7 @@ def reduce(
         if doc.id in left_id_map:
             left[left_id_map[doc.id]].update(doc)
         else:
-            left.append(doc)
+            left.doc_append(doc)
 
     return left
 

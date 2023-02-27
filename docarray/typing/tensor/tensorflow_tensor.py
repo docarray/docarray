@@ -242,7 +242,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         return nd_proto
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
         Read ndarray from a proto msg.
         :param pb_msg:

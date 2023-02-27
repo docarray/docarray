@@ -107,7 +107,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         ...
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocumentArray
         """
@@ -437,7 +437,7 @@ class IOMixinArray(Iterable[BaseDocument]):
             dap = DocumentArrayProto()
             dap.ParseFromString(d)
 
-            return cls.from_protobuf(dap)
+            return cls.doc_from_protobuf(dap)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
 

@@ -32,7 +32,7 @@ def test_append():
 
     da = DocumentArray[Text]([])
 
-    da.append(Text(text='hello', id='1'))
+    da.doc_append(Text(text='hello', id='1'))
 
     assert len(da) == 1
     assert da[0].id == '1'
@@ -44,7 +44,7 @@ def test_extend():
 
     da = DocumentArray[Text]([Text(text='hello', id=str(i)) for i in range(10)])
 
-    da.extend([Text(text='hello', id=str(10 + i)) for i in range(10)])
+    da.doc_extend([Text(text='hello', id=str(10 + i)) for i in range(10)])
 
     assert len(da) == 20
     for da, i in zip(da, range(20)):

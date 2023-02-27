@@ -130,7 +130,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             )
         else:
             batch_da = DocumentArray(batch, tensor_type=TorchTensor)
-        return batch_da.stack()
+        return batch_da.doc_stack()
 
     @classmethod
     def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['MultiModalDataset']:
@@ -161,7 +161,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             return
 
         # Document
-        DocumentArray[item]().stack()  # type: ignore
+        DocumentArray[item]().doc_stack()  # type: ignore
         for field_type in item.__annotations__.values():
             if is_union_type(field_type):
                 for union_type in field_type.__args__:

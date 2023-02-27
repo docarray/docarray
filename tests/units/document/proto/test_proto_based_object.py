@@ -12,7 +12,7 @@ def test_ndarray():
 
     custom_ndarray = NdArray._docarray_from_native(original_ndarray)
 
-    tensor = NdArray.from_protobuf(custom_ndarray.to_protobuf())
+    tensor = NdArray.doc_from_protobuf(custom_ndarray.to_protobuf())
 
     assert (tensor == original_ndarray).all()
 

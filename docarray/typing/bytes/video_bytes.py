@@ -40,7 +40,7 @@ class VideoBytes(bytes, AbstractType):
         return cls(value)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T) -> T:
+    def doc_from_protobuf(cls: Type[T], pb_msg: T) -> T:
         return parse_obj_as(cls, pb_msg)
 
     def _to_node_protobuf(self: T) -> 'NodeProto':

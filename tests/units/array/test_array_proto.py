@@ -17,7 +17,7 @@ def test_simple_proto():
         [CustomDoc(text='hello', tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    new_da = DocumentArray[CustomDoc].from_protobuf(da.to_protobuf())
+    new_da = DocumentArray[CustomDoc].doc_from_protobuf(da.to_protobuf())
 
     for doc1, doc2 in zip(da, new_da):
         assert doc1.text == doc2.text
@@ -39,7 +39,7 @@ def test_nested_proto():
         ]
     )
 
-    DocumentArray[CustomDocument].from_protobuf(da.to_protobuf())
+    DocumentArray[CustomDocument].doc_from_protobuf(da.to_protobuf())
 
 
 @pytest.mark.proto
@@ -57,7 +57,7 @@ def test_nested_proto_any_doc():
         ]
     )
 
-    DocumentArray.from_protobuf(da.to_protobuf())
+    DocumentArray.doc_from_protobuf(da.to_protobuf())
 
 
 @pytest.mark.proto
@@ -67,8 +67,8 @@ def test_stacked_proto():
 
     da = DocumentArray[CustomDocument](
         [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
-    ).stack()
+    ).doc_stack()
 
-    da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())
+    da2 = DocumentArrayStacked.doc_from_protobuf(da.to_protobuf())
 
     assert isinstance(da2, DocumentArrayStacked)

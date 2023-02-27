@@ -175,7 +175,7 @@ class TorchTensor(
         return cls._docarray_from_native(torch.from_numpy(value))
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
+    def doc_from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
         read ndarray from a proto msg
         :param pb_msg:

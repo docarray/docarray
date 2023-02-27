@@ -23,7 +23,7 @@ def test_proto_tensor():
     proto = tensor.to_protobuf()
     assert isinstance(proto, NdArrayProto)
 
-    from_proto = TensorFlowTensor.from_protobuf(proto)
+    from_proto = TensorFlowTensor.doc_from_protobuf(proto)
     assert isinstance(from_proto, TensorFlowTensor)
     assert tnp.allclose(tensor.tensor, from_proto.tensor)
 
