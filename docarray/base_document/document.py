@@ -1,8 +1,8 @@
 import os
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Type, TypeVar
 
 import orjson
-from pydantic import BaseModel, Field, PrivateAttr, parse_obj_as
+from pydantic import BaseModel, Field, parse_obj_as
 from rich.console import Console
 
 from docarray.base_document.base_node import BaseNode
@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 
 _console: Console = Console()
 
+T = TypeVar('T', bound='BaseDocument')
+
 
 class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
@@ -22,7 +24,6 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
-    _storage_view: Optional['StorageView'] = PrivateAttr(None)
 
     class Config:
         json_loads = orjson.loads
@@ -30,6 +31,13 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         json_encoders = {dict: orjson_dumps}
 
         validate_assignment = True
+
+    @classmethod
+    def from_view(cls: Type[T], storage_view: 'StorageView') -> T:
+        doc = cls.__new__(cls)
+        object.__setattr__(doc, '__dict__', storage_view)
+        doc._init_private_attributes()
+        return doc
 
     @classmethod
     def _get_field_type(cls, field: str) -> Type:

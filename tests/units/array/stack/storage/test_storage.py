@@ -29,8 +29,14 @@ def test_storage_view():
 
     view = StorageView(0, storage)
 
-    data = view.data()
+    assert view['id'] == '0'
+    assert (view['tensor'] == np.zeros(10)).all()
+    assert view['name'] == 'hello'
 
-    assert data['id'] == '0'
-    assert (data['tensor'] == np.zeros(10)).all()
-    assert data['name'] == 'hello'
+    view['id'] = 1
+    view['tensor'] = np.ones(10)
+    view['name'] = 'byebye'
+
+    assert storage.any_storage['id'][0] == 1
+    assert (storage.tensor_storage['tensor'][0] == np.ones(10)).all()
+    assert storage.any_storage['name'][0] == 'byebye'

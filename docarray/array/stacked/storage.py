@@ -1,5 +1,5 @@
-from itertools import chain
-from typing import TYPE_CHECKING, Any, Dict, List, Sequence, Type, cast
+from collections import ChainMap
+from typing import TYPE_CHECKING, Any, Dict, List, MutableMapping, Sequence, Type, cast
 
 from docarray.array.array.array import DocumentArray
 from docarray.base_document import BaseDocument
@@ -100,8 +100,15 @@ class Storage:
             else:
                 self.any_storage[field_name] = getattr(docs, field_name)
 
+        self.columns = ChainMap(
+            self.tensor_storage,
+            self.document_storage,
+            self.da_storage,
+            self.any_storage,
+        )
 
-class StorageView:
+
+class StorageView(MutableMapping[str, Any]):
     index: int
     storage: Storage
 
@@ -109,15 +116,17 @@ class StorageView:
         self.index = index
         self.storage = storage
 
-    def data(self) -> Dict[str, Any]:
-        data: Dict[str, Any] = dict()
+    def __getitem__(self, name: str) -> Any:
+        return self.storage.columns[name][self.index]
 
-        for field_name, column in chain(
-            self.storage.tensor_storage.items(),
-            self.storage.da_storage.items(),
-            self.storage.document_storage.items(),
-            self.storage.any_storage.items(),
-        ):
-            data[field_name] = column[self.index]
+    def __setitem__(self, name, value) -> None:
+        self.storage.columns[name][self.index] = value
 
-        return data
+    def __delitem__(self, key):
+        raise RuntimeError('Cannot delete an item from a StorageView')
+
+    def __iter__(self):
+        return self.storage.columns.keys()
+
+    def __len__(self):
+        return len(self.storage.columns)
