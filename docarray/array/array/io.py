@@ -19,13 +19,14 @@ from typing import (
     Iterator,
     List,
     Optional,
-    Protocol,
     Sequence,
     Tuple,
     Type,
     TypeVar,
     Union,
 )
+
+from typing_extensions import Protocol
 
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
