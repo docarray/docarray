@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
 
 from pydantic import create_model, create_model_from_typeddict
 from pydantic.config import BaseConfig
@@ -9,22 +9,20 @@ from docarray import BaseDocument
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
 
-    Document = TypeVar('Document', bound='BaseDocument')
-
 
 def create_doc(
     __model_name: str,
     *,
     __config__: Optional[Type[BaseConfig]] = None,
     __base__: Union[
-        None, Type['Document'], Tuple[Type['Document'], ...]
+        None, Type['BaseDocument'], Tuple[Type['BaseDocument'], ...]
     ] = BaseDocument,
     __module__: str = __name__,
-    __validators__: Dict[str, 'AnyClassMethod'] = None,
-    __cls_kwargs__: Dict[str, Any] = None,
+    __validators__: Dict[str, 'AnyClassMethod'] = None,  # type: ignore
+    __cls_kwargs__: Dict[str, Any] = None,  # type: ignore
     __slots__: Optional[Tuple[str, ...]] = None,
     **field_definitions: Any,
-) -> Type['BaseDocument']:
+):
     """
     Dynamically create a subclass of BaseDocument. This is a wrapper around pydantic's create_model.
     :param __model_name: name of the created model
@@ -38,8 +36,8 @@ def create_doc(
         in the format `<name>=(<type>, <default default>)` or `<name>=<default value>`
     """
 
-    if not issubclass(__base__, BaseDocument):
-        raise ValueError(f'{__base__} is not a BaseDocument or its subclass')
+    if not issubclass(__base__, BaseDocument):  # type: ignore
+        raise ValueError(f'{type(__base__)} is not a BaseDocument or its subclass')
 
     doc = create_model(
         __model_name,
@@ -58,7 +56,7 @@ def create_doc(
 def create_from_typeddict(
     typeddict_cls: Type['TypedDict'],  # type: ignore
     **kwargs: Any,
-) -> Type[BaseDocument]:
+):
     """
     Create a subclass of BaseDocument based on the fields of a `TypedDict`. This is a wrapper around pydantic's create_model_from_typeddict.
     """
