@@ -167,15 +167,22 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     @abstractmethod
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        """Map python type to database type."""
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type,
+            or None if ``python_type`` is not supported.
+        """
         ...
 
     @abstractmethod
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]], **kwargs):
         """Index a document into the store"""
-        # column_to_data is a dictionary from column name to a generator
+        # `column_to_data` is a dictionary from column name to a generator
         # that yields the data for that column.
-        # if you want to work directly on documents, you can implement index() instead
+        # If you want to work directly on documents, you can implement index() instead
+        # If you implement index(), _index() only needs a dummy implementation.
         ...
 
     @abstractmethod
@@ -227,7 +234,15 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the store"""
+        """Find documents in the store
+
+        :param query: query vector for KNN/ANN search. Has single axis.
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
+        """
+        # NOTE: in standard implementations,
+        # `search_field` is equal to the column name to search on
         ...
 
     @abstractmethod
@@ -238,7 +253,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the store"""
+        """Find documents in the store
+
+        :param query: query vectors for KNN/ANN search.
+            Has shape (batch_size, vector_dim)
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
+        """
         ...
 
     @abstractmethod
@@ -251,6 +273,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Find documents in the store based on a filter query
 
         :param filter_query: the DB specific filter query to execute
+        :param limit: maximum number of documents to return
+        :return: a DocumentArray containing the documents that match the filter query
         """
         ...
 
@@ -261,9 +285,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int,
         **kwargs,
     ) -> List[DocumentArray]:
-        """Find documents in the store based on multiple filter queries
+        """Find documents in the store based on multiple filter queries.
+        Each query is considered individually, and results are returned per query.
 
         :param filter_queries: the DB specific filter queries to execute
+        :param limit: maximum number of documents to return per query
+        :return: List of DocumentArrays containing the documents
+            that match the filter queries
         """
         ...
 
@@ -278,7 +306,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Find documents in the store based on a text search query
 
         :param query: The text to search for
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
         """
+        # NOTE: in standard implementations,
+        # `search_field` is equal to the column name to search on
         ...
 
     @abstractmethod
@@ -291,8 +324,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     ) -> FindResultBatched:
         """Find documents in the store based on a text search query
 
-        :param query: The text to search for
+        :param queries: The texts to search for
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
         """
+        # NOTE: in standard implementations,
+        # `search_field` is equal to the column name to search on
         ...
 
     ####################################################
@@ -319,7 +357,10 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             self._runtime_config = runtime_config
 
     def index(self, docs: Union[TSchema, Sequence[TSchema]], **kwargs):
-        """Index a document into the store"""
+        """Index Documents into the store.
+
+        :param docs: Documents to index
+        """
         if not isinstance(docs, Sequence):
             docs = [docs]
         self._index(docs, **kwargs)
@@ -331,7 +372,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the store"""
+        """Find documents in the store using nearest neighbor search.
+
+        :param query: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.)
+            with a single axis, or a Document
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
+        """
         if isinstance(query, BaseDocument):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
@@ -348,7 +399,18 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the store"""
+        """Find documents in the store using nearest neighbor search.
+
+        :param queries: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
+            or a DocumentArray.
+            If a tensor-like is passed, it should have shape (batch_size, vector_dim)
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
+        """
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
@@ -370,6 +432,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Find documents in the store based on a filter query
 
         :param filter_query: the DB specific filter query to execute
+        :param limit: maximum number of documents to return
+        :return: a DocumentArray containing the documents that match the filter query
         """
         return self._filter(filter_query, limit=limit, **kwargs)
 
@@ -379,9 +443,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> List[DocumentArray]:
-        """Find documents in the store based on multiple filter queries
+        """Find documents in the store based on multiple filter queries.
 
-        :param filter_queries: the DB specific filter queries to execute
+        :param filter_queries: the DB specific filter query to execute
+        :param limit: maximum number of documents to return
+        :return: a DocumentArray containing the documents that match the filter query
         """
         return self._filter_batched(filter_queries, limit=limit, **kwargs)
 
@@ -392,9 +458,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the store based on a text search query
+        """Find documents in the store based on a text search query.
 
         :param query: The text to search for
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
         """
         if isinstance(query, BaseDocument):
             query_text = self._get_values_by_column([query], search_field)[0]
@@ -411,9 +480,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the store based on a text search query
+        """Find documents in the store based on a text search query.
 
-        :param query: The text to search for
+        :param queries: The texts to search for
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
         """
         if isinstance(queries, Sequence):
             query_texts = self._get_values_by_column(queries, search_field)
