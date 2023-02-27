@@ -19,6 +19,7 @@ from typing import (
     Iterator,
     List,
     Optional,
+    Protocol,
     Sequence,
     Tuple,
     Type,
@@ -93,7 +94,60 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Sequence[BaseDocument]):
+class BinaryIOLike(Protocol):
+    def from_bytes(
+        cls: Any,
+        data: bytes,
+        protocol: str,
+        compress: Optional[str],
+        show_progress: bool,
+    ) -> Any:
+        ...
+
+    def to_bytes(
+        self,
+        protocol: str,
+        compress: Optional[str],
+        file_ctx: Optional[BinaryIO],
+        show_progress: bool,
+    ) -> Optional[bytes]:
+        ...
+
+    document_type: Type[BaseDocument]
+
+    @property
+    def _stream_header(self) -> bytes:
+        ...
+
+    def _write_bytes(
+        self,
+        bf: BinaryIO,
+        protocol: str,
+        compress: Optional[str],
+        show_progress: bool,
+    ) -> None:
+        ...
+
+    def to_binary_stream(
+        self,
+        protocol,
+        compress: Optional[str],
+        show_progress: bool,
+    ) -> Iterator[bytes]:
+        ...
+
+    @classmethod
+    def _load_binary_stream(
+        cls: Type,
+        file_ctx: ContextManager[io.BufferedReader],
+        protocol: str,
+        compress: Optional[str],
+        show_progress: bool,
+    ) -> Iterator['BaseDocument']:
+        ...
+
+
+class IOMixinArray(Sequence[BaseDocument], BinaryIOLike):
 
     document_type: Type[BaseDocument]
 
@@ -177,7 +231,7 @@ class IOMixinArray(Sequence[BaseDocument]):
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
-                        self.to_byte_stream(
+                        self.to_binary_stream(
                             protocol=protocol, show_progress=show_progress
                         )
                     )
@@ -187,9 +241,10 @@ class IOMixinArray(Sequence[BaseDocument]):
                     f'protocol={protocol} is not supported. Can be only {ALLOWED_PROTOCOLS}.'
                 )
 
-    def to_byte_stream(
+    def to_binary_stream(
         self,
         protocol: str = 'protobuf',
+        compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> Iterator[bytes]:
         from rich import filesize
@@ -206,7 +261,7 @@ class IOMixinArray(Sequence[BaseDocument]):
             _total_size = 0
             pbar.start_task(t)
             for doc in self:
-                doc_bytes = doc.to_bytes(protocol=protocol)
+                doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
                 len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
                 all_bytes = len_doc_as_bytes + doc_bytes
 
@@ -595,7 +650,7 @@ class IOMixinArray(Sequence[BaseDocument]):
     def _load_binary_stream(
         cls: Type[T],
         file_ctx: ContextManager[io.BufferedReader],
-        protocol: Optional[str] = None,
+        protocol: str = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> Generator['BaseDocument', None, None]:
@@ -609,7 +664,6 @@ class IOMixinArray(Sequence[BaseDocument]):
 
         from rich import filesize
 
-        from docarray import BaseDocument
         from docarray.utils.progress_bar import _get_progressbar
 
         with file_ctx as f:
@@ -631,8 +685,8 @@ class IOMixinArray(Sequence[BaseDocument]):
                         f.read(4), 'big', signed=False
                     )
                     _total_size += len_current_doc_in_bytes
-                    load_protocol: str = protocol or 'protobuf'
-                    yield BaseDocument.from_bytes(
+                    load_protocol: str = protocol
+                    yield cls.document_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
                         compress=compress,
