@@ -6,6 +6,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.base_document import BaseDocument
+from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -192,8 +193,8 @@ def find_batched(
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    index_embeddings = _extraxt_embeddings(index, embedding_field, embedding_type)
-    query_embeddings = _extraxt_embeddings(query, embedding_field, embedding_type)
+    index_embeddings = _extract_embeddings(index, embedding_field, embedding_type)
+    query_embeddings = _extract_embeddings(query, embedding_field, embedding_type)
 
     # compute distances and return top results
     metric_fn = getattr(comp_backend.Metrics, metric)
@@ -225,7 +226,7 @@ def _extract_embedding_single(
     :return: the embeddings
     """
     if isinstance(data, BaseDocument):
-        emb = getattr(data, embedding_field)
+        emb = next(AnyDocumentArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -235,7 +236,7 @@ def _extract_embedding_single(
     return emb
 
 
-def _extraxt_embeddings(
+def _extract_embeddings(
     data: Union[AnyDocumentArray, BaseDocument, AnyTensor],
     embedding_field: str,
     embedding_type: Type,
@@ -247,40 +248,41 @@ def _extraxt_embeddings(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-
+    emb: AnyTensor
     if isinstance(data, DocumentArray):
-        emb = getattr(data, embedding_field)
-        emb = embedding_type._docarray_stack(emb)
-    elif isinstance(data, DocumentArrayStacked):
-        emb = getattr(data, embedding_field)
-    elif isinstance(data, BaseDocument):
-        emb = getattr(data, embedding_field)
+        emb_list = list(AnyDocumentArray._traverse(data, embedding_field))
+        emb = embedding_type._docarray_stack(emb_list)
+    elif isinstance(data, (DocumentArrayStacked, BaseDocument)):
+        emb = next(AnyDocumentArray._traverse(data, embedding_field))
     else:  # treat data as tensor
-        emb = data
+        emb = cast(AnyTensor, data)
 
     if len(emb.shape) == 1:
-        # all currently supported frameworks provide `.reshape()`. Onc this is not true
-        # anymore, we need to add a `.reshape()` method to the computational backend
-        emb = emb.reshape(1, -1)
+        emb = emb.get_comp_backend().reshape(array=emb, shape=(1, -1))
     return emb
 
 
-def _da_attr_type(da: AnyDocumentArray, attr: str) -> Type[AnyTensor]:
+def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 
     :param da: the DocumentArray
-    :param attr: the attribute name
+    :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """
-    field_type = da.document_type._get_field_type(attr)
+    field_type: Optional[Type] = _get_field_type_by_access_path(
+        da.document_type, access_path
+    )
+    if field_type is None:
+        raise ValueError(f"Access path is not valid: {access_path}")
+
     if is_union_type(field_type):
         # determine type based on the fist element
-        field_type = type(getattr(da[0], attr))
+        field_type = type(next(AnyDocumentArray._traverse(da[0], access_path)))
 
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(
-            f'attribute {attr} is not a tensor-like type, '
+            f'attribute {access_path} is not a tensor-like type, '
             f'but {field_type.__class__.__name__}'
         )
 
