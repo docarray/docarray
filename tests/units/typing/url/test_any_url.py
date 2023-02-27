@@ -21,10 +21,17 @@ def test_dump_json():
     orjson_dumps(url)
 
 
-def test_relative_path():
+@pytest.mark.parametrize(
+    'relative_path',
+    [
+        'data/05978.jpg',
+        '../../data/05978.jpg',
+    ],
+)
+def test_relative_path(relative_path):
     # see issue: https://github.com/docarray/docarray/issues/978
-    url = parse_obj_as(AnyUrl, 'data/05978.jpg')
-    assert url == 'data/05978.jpg'
+    url = parse_obj_as(AnyUrl, relative_path)
+    assert url == relative_path
 
 
 def test_operators():
