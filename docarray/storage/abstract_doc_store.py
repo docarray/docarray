@@ -500,12 +500,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         for field_name, field in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
             if is_union_type(t_):
-                # TODO(johannes): this restriction has to
-                # go othws we can't even index built in docs
                 raise ValueError(
-                    'Indexing field of Union type is not'
-                    f'supported. Instead of using type'
-                    f'{t_} use a single specific type.'
+                    'Union types are not supported in the schema of a DocumentIndex.'
+                    f' Instead of using type {t_} use a single specific type.'
                 )
             elif issubclass(t_, AnyDocumentArray):
                 raise ValueError(
