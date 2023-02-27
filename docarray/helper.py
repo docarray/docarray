@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Type
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDocument
 
 
 def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> bool:
@@ -123,7 +123,7 @@ def _get_field_type_by_access_path(
     :param access_path: "__"-separated access path
     :return: field type of accessed attribute. If access path is invalid, return None.
     """
-    from docarray import BaseDocument
+    from docarray import BaseDocument, DocumentArray
 
     field, _, remaining = access_path.partition('__')
     field_valid = field in doc_type.__fields__.keys()

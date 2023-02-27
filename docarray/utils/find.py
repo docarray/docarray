@@ -250,7 +250,7 @@ def _extract_embeddings(
     """
     emb: AnyTensor
     if isinstance(data, DocumentArray):
-        emb_list = [x for x in AnyDocumentArray._traverse(data, embedding_field)]
+        emb_list = list(AnyDocumentArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, DocumentArrayStacked):
         emb = next(AnyDocumentArray._traverse(data, embedding_field))
