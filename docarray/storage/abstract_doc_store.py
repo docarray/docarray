@@ -330,7 +330,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     ####################################################
     # Optional overrides                               #
-    # Subclasses may more may not need to change these #
+    # Subclasses may or may not need to change these #
     ####################################################
 
     def configure(self, runtime_config=None, **kwargs):
