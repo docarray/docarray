@@ -1,21 +1,16 @@
 from contextlib import contextmanager
-from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Iterable,
     List,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
     Union,
     cast,
     overload,
 )
-
-from pydantic import parse_obj_as
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
@@ -81,42 +76,12 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             docs, document_type=self.document_type, tensor_type=self.tensor_type
         )
 
-    @classmethod
-    def _from_da_and_columns(
-        cls: Type[T],
-        docs: DocumentArray,
-        doc_columns: Dict[str, 'DocumentArrayStacked'],
-        tensor_columns: Dict[str, AbstractTensor],
-    ) -> T:
-        """Create a DocumentArrayStacked from a DocumentArray
-        and an associated dict of columns"""
-        # below __class_getitem__ is called explicitly instead
-        # of doing DocumentArrayStacked[docs.document_type]
-        # because mypy has issues with class[...] notation at runtime.
-        # see bug here: https://github.com/python/mypy/issues/13026
-        # as of 2023-01-05 it should be fixed on mypy master, though, see
-        # here: https://github.com/python/typeshed/issues/4819#issuecomment-1354506442
-
-        da_stacked: T = DocumentArray.__class_getitem__(cls.document_type)([]).stack()
-        da_stacked._doc_columns = doc_columns
-        da_stacked._tensor_columns = tensor_columns
-        da_stacked._docs = docs
-        return da_stacked
-
     def to(self: T, device: str) -> T:
         """Move all tensors of this DocumentArrayStacked to the given device
 
         :param device: the device to move the data to
         """
-        for field in self._tensor_columns.keys():
-            col_tens: AbstractTensor = self._tensor_columns[field]
-            self._tensor_columns[field] = col_tens.__class__._docarray_from_native(
-                col_tens.get_comp_backend().to_device(col_tens, device)
-            )
-        for field in self._doc_columns.keys():
-            col_doc: 'DocumentArrayStacked' = self._doc_columns[field]
-            col_doc.to(device)
-        return self
+        raise NotImplementedError
 
     def _get_array_attribute(
         self: T,
@@ -128,12 +93,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        if field in self._doc_columns.keys():
-            return self._doc_columns[field]
-        elif field in self._tensor_columns.keys():
-            return self._tensor_columns[field]
-        else:
-            return getattr(self._docs, field)
+        raise NotImplementedError
 
     def _set_array_attribute(
         self: T,
@@ -145,25 +105,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         :param field: name of the fields to extract
         :values: the values to set at the DocumentArray level
         """
-        if field in self._doc_columns.keys() and not isinstance(values, List):
-            values_ = cast(T, values)
-            self._doc_columns[field] = values_
-        elif field in self._tensor_columns.keys() and not isinstance(values, List):
-
-            type_ = cast(AbstractTensor, self.document_type._get_field_type(field))
-            shaped_type = (
-                type_.__unparametrizedcls__
-                if type_.__unparametrizedcls__ is not None
-                else type_
-            )
-            values__ = parse_obj_as(shaped_type, values)  # type: ignore
-            # TODO: here we should validate that the shape is correct, maybe create a
-            # __unparametrizedcls__[len(self), X ,Y] ...
-            self._tensor_columns[field] = values__
-            for i, doc in enumerate(self):
-                setattr(doc, field, self._tensor_columns[field][i])
-        else:
-            setattr(self._docs, field, values)
+        raise NotImplementedError
 
     @overload
     def __getitem__(self: T, item: int) -> T_doc:
@@ -194,15 +136,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         # multiple docs case
-        if isinstance(key, (slice, Iterable)):
-            self._set_data_and_columns(key, value)
-        else:
-            # single doc case
-            key_ = cast(int, key)
-            value_ = cast(T_doc, value)
-            self._docs[key_] = value_
-            for field in chain(self._tensor_columns.keys(), self._doc_columns.keys()):
-                self._tensor_columns[field][key_] = getattr(value_, field)
+        raise NotImplementedError
 
     @overload
     def __delitem__(self: T, key: int) -> None:
@@ -221,66 +155,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             f' before doing the deletion'
         )
 
-    def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
-        """Delegates the access to the data and the columns,
-        and combines into a stacked da.
-
-        :param item: the item used as index. Needs to be a valid index for both
-            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
-        :return: a DocumentArrayStacked, indexed according to `item`
-        """
-        if isinstance(item, tuple):
-            item = list(item)
-        # get documents
-        docs_indexed = self._docs[item]
-        # get doc columns
-        doc_columns_indexed = {k: col[item] for k, col in self._doc_columns.items()}
-        doc_columns_indexed_ = cast(
-            Dict[str, 'DocumentArrayStacked'], doc_columns_indexed
-        )
-        # get tensor columns
-        tensor_columns_indexed = {
-            k: col[item] for k, col in self._tensor_columns.items()
-        }
-        return self._from_da_and_columns(
-            docs_indexed, doc_columns_indexed_, tensor_columns_indexed
-        )
-
-    def _set_data_and_columns(
-        self: T,
-        index_item: Union[Tuple, Iterable, slice],
-        value: Union[T, BaseDocument],
-    ):
-        """Delegates the setting to the data and the columns.
-
-        :param index_item: the key used as index. Needs to be a valid index for both
-            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
-        :value: the value to set at the `key` location
-        """
-        if isinstance(index_item, tuple):
-            index_item = list(index_item)
-
-        # set data and prepare columns
-        doc_cols_to_set: Dict[str, DocumentArrayStacked]
-        tens_cols_to_set: Dict[str, AbstractTensor]
-        if isinstance(value, DocumentArray):
-            self._docs[index_item] = value
-            doc_cols_to_set, tens_cols_to_set = self._create_columns(
-                value, self.tensor_type
-            )
-        elif isinstance(value, DocumentArrayStacked):
-            self._docs[index_item] = value._docs
-            doc_cols_to_set = value._doc_columns
-            tens_cols_to_set = value._tensor_columns
-        else:
-            raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
-
-        # set columns
-        for col_key in self._doc_columns.keys():
-            self._doc_columns[col_key][index_item] = doc_cols_to_set[col_key]
-        for col_key in self._tensor_columns.keys():
-            self._tensor_columns[col_key][index_item] = tens_cols_to_set[col_key]
-
     def __iter__(self):
         for i in range(len(self)):
             yield self[i]
@@ -292,77 +166,18 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
         """create a Document from a protobuf message"""
 
-        docs: DocumentArray = DocumentArray(
-            cls.document_type.from_protobuf(doc_proto)
-            for doc_proto in pb_msg.list_.docs
-        )
-        da: T = cls(DocumentArray([]))
-
-        da._docs = docs
-        da._doc_columns = pb_msg.doc_columns
-        da._tensor_columns = pb_msg.tensor_columns
-        return da
+        raise NotImplementedError
 
     def to_protobuf(self) -> 'DocumentArrayStackedProto':
         """Convert DocumentArray into a Protobuf message"""
-        from docarray.proto import (
-            DocumentArrayProto,
-            DocumentArrayStackedProto,
-            NdArrayProto,
-        )
-
-        da_proto = DocumentArrayProto()
-        for doc in self:
-            da_proto.docs.append(doc.to_protobuf())
-
-        doc_columns_proto: Dict[str, DocumentArrayStackedProto] = dict()
-        tens_columns_proto: Dict[str, NdArrayProto] = dict()
-        for field, col_doc in self._doc_columns.items():
-            doc_columns_proto[field] = col_doc.to_protobuf()
-        for field, col_tens in self._tensor_columns.items():
-            tens_columns_proto[field] = col_tens.to_protobuf()
-
-        return DocumentArrayStackedProto(
-            list_=da_proto,
-            doc_columns=doc_columns_proto,
-            tensor_columns=tens_columns_proto,
-        )
+        raise NotImplementedError
 
     def unstack(self: T) -> DocumentArray:
         """Convert DocumentArrayStacked into a DocumentArray.
 
         Note this destroys the arguments and returns a new DocumentArray
         """
-        for i, doc in enumerate(self._docs):
-            for field in self._doc_columns.keys():
-                val_doc = self._doc_columns[field]
-                setattr(doc, field, val_doc[i])
-
-            for field in self._tensor_columns.keys():
-                val_tens = self._tensor_columns[field]
-                setattr(doc, field, val_tens[i])
-
-                # NOTE: here we might need to copy the tensor
-                # see here
-                # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor
-                # -when-the-original-tensor-is-deleted/167294 # noqa: E501
-
-        for field_name, _ in self._docs.document_type.__fields__.items():
-            field_type = self.document_type._get_field_type(field_name)
-            if isinstance(field_type, type) and issubclass(field_type, DocumentArray):
-                for doc in self._docs:
-                    setattr(doc, field_name, getattr(doc, field_name).unstack())
-
-        for field in list(self._doc_columns.keys()):
-            # list needed here otherwise we are modifying the dict while iterating
-            del self._doc_columns[field]
-
-        for field in list(self._tensor_columns.keys()):
-            # list needed here otherwise we are modifying the dict while iterating
-            del self._tensor_columns[field]
-
-        da_list = self._docs
-        return da_list
+        raise NotImplementedError
 
     @contextmanager
     def unstacked_mode(self):
@@ -374,12 +189,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             with da.unstacked_mode():
                 ...
         """
-        try:
-            da_unstacked = DocumentArrayStacked.unstack(self)
-            yield da_unstacked
-        finally:
-            self._docs = da_unstacked
-            self.from_iterable_document(da_unstacked)
+        raise NotImplementedError
 
     @classmethod
     def validate(
@@ -399,12 +209,4 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         self: 'AnyDocumentArray',
         access_path: str,
     ) -> Union[List[Any], 'TorchTensor', 'NdArray']:
-        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten_one_level(nodes)
-
-        cls_to_check = (NdArray, TorchTensor) if TorchTensor is not None else (NdArray,)
-
-        if len(flattened) == 1 and isinstance(flattened[0], cls_to_check):
-            return flattened[0]
-        else:
-            return flattened
+        raise NotImplementedError

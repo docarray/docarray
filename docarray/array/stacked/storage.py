@@ -32,7 +32,6 @@ class Storage:
         docs: Sequence[BaseDocument],
         document_type: Type[BaseDocument],
         tensor_type: Type[AbstractTensor],
-        copy=False,
     ):
 
         self.document_type = document_type
