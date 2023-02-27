@@ -50,7 +50,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         DocumentSummary(doc=self).summary()
 
     @classmethod
-    def doc_schema_summary(cls) -> None:
+    def schema_summary(cls) -> None:
         """Print a summary of the Documents schema."""
         from docarray.display.document_summary import DocumentSummary
 
