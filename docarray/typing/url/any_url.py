@@ -47,6 +47,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     ) -> T:
         import os
 
+        abs_path: Union[T, np.ndarray, Any]
         if (
             isinstance(value, str)
             and not value.startswith('http')
