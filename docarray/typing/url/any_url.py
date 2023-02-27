@@ -49,17 +49,18 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         try:
             if not value.startswith('http') and not os.path.isabs(value):  # type: ignore
-                is_relative = True
-                value = os.path.abspath(value)  # type: ignore
+                input_is_relative_path = True
+                abs_path = os.path.abspath(value)  # type: ignore
             else:
-                is_relative = False
+                input_is_relative_path = False
+                abs_path = value
         except TypeError:
-            is_relative = False
+            input_is_relative_path = False
 
-        url = super().validate(value, field, config)  # basic url validation
+        url = super().validate(abs_path, field, config)  # basic url validation
 
-        if is_relative:
-            return cls(os.path.relpath(str(url)), scheme=None)
+        if input_is_relative_path:
+            return cls(value, scheme=None)
         else:
             return cls(str(url), scheme=None)
 
