@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type
 
 if TYPE_CHECKING:
     from docarray import BaseDocument
@@ -113,7 +113,7 @@ def _update_nested_dicts(
 
 def _get_field_type_by_access_path(
     doc_type: Type['BaseDocument'], access_path: str
-) -> Any:
+) -> Optional[Type]:
     """
     Get field type by "__"-separated access path.
     :param doc_type: type of document
@@ -134,5 +134,7 @@ def _get_field_type_by_access_path(
                 return _get_field_type_by_access_path(d.document_type, remaining)
             elif issubclass(d, BaseDocument):
                 return _get_field_type_by_access_path(d, remaining)
+            else:
+                return None
     else:
         return None

@@ -270,7 +270,11 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
     :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """
-    field_type = _get_field_type_by_access_path(da.document_type, access_path)
+    field_type: Optional[Type] = _get_field_type_by_access_path(
+        da.document_type, access_path
+    )
+    if field_type is None:
+        raise ValueError(f"Access path is not valid: {access_path}")
 
     if is_union_type(field_type):
         # determine type based on the fist element
