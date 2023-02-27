@@ -13,7 +13,7 @@ from typing import (
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
-from docarray.array.stacked.storage import Storage, StorageView
+from docarray.array.stacked.columnstorage import ColumnStorage, ColumnStorageView
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -62,7 +62,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     """
 
     document_type: Type[BaseDocument] = AnyDocument
-    _storage: Storage
+    _storage: ColumnStorage
 
     def __init__(
         self: T,
@@ -70,7 +70,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self.tensor_type = tensor_type
-        self._storage = Storage(
+        self._storage = ColumnStorage(
             docs, document_type=self.document_type, tensor_type=self.tensor_type
         )
 
@@ -121,7 +121,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         #     item_ = cast(Iterable, item)
         #     return self._get_from_data_and_columns(item_)
         # single doc case
-        doc = self.document_type.from_view(StorageView(item, self._storage))
+        doc = self.document_type.from_view(ColumnStorageView(item, self._storage))
         return doc
 
     @overload

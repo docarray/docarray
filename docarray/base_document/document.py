@@ -11,7 +11,7 @@ from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.storage import StorageView
+    from docarray.array.stacked.columnstorage import ColumnStorageView
 
 _console: Console = Console()
 
@@ -33,7 +33,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         validate_assignment = True
 
     @classmethod
-    def from_view(cls: Type[T], storage_view: 'StorageView') -> T:
+    def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
         doc = cls.__new__(cls)
         object.__setattr__(doc, '__dict__', storage_view)
         doc._init_private_attributes()
@@ -73,9 +73,9 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        from docarray.array.stacked.storage import StorageView
+        from docarray.array.stacked.columnstorage import ColumnStorageView
 
-        return isinstance(self.__dict__, StorageView)
+        return isinstance(self.__dict__, ColumnStorageView)
 
     def __getattr__(self, item) -> Any:
         return self.__dict__[item]

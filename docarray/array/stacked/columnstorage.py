@@ -19,7 +19,7 @@ else:
     TensorFlowTensor = None  # type: ignore
 
 
-class Storage:
+class ColumnStorage:
 
     document_type: Type[BaseDocument]
 
@@ -111,11 +111,11 @@ class Storage:
         return len(self.any_storage['id'])
 
 
-class StorageView(dict, MutableMapping[str, Any]):
+class ColumnStorageView(dict, MutableMapping[str, Any]):
     index: int
-    storage: Storage
+    storage: ColumnStorage
 
-    def __init__(self, index: int, storage: Storage):
+    def __init__(self, index: int, storage: ColumnStorage):
         super().__init__()
         self.index = index
         self.storage = storage
