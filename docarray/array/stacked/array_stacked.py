@@ -8,13 +8,12 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    cast,
     overload,
 )
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
-from docarray.array.stacked.storage import Storage
+from docarray.array.stacked.storage import Storage, StorageView
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -118,11 +117,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
-        if isinstance(item, (slice, Iterable)):
-            item_ = cast(Iterable, item)
-            return self._get_from_data_and_columns(item_)
+        # if isinstance(item, (slice, Iterable)):
+        #     item_ = cast(Iterable, item)
+        #     return self._get_from_data_and_columns(item_)
         # single doc case
-        doc = self._docs[item]
+        doc = self.document_type.from_view(StorageView(item, self._storage))
         return doc
 
     @overload
@@ -159,7 +158,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             yield self[i]
 
     def __len__(self):
-        return len(self._docs)
+        return len(self._storage)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:

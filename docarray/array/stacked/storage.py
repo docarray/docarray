@@ -107,6 +107,9 @@ class Storage:
             self.any_storage,
         )
 
+    def __len__(self) -> int:
+        return len(self.any_storage['id'])
+
 
 class StorageView(dict, MutableMapping[str, Any]):
     index: int

@@ -16,3 +16,18 @@ def test_da_init():
 
     assert (da._storage.tensor_storage['tensor'] == np.zeros((4, 10))).all()
     assert da._storage.any_storage['name'] == ['hello' for _ in range(4)]
+
+
+def test_da_iter():
+    class MyDoc(BaseDocument):
+        tensor: AnyTensor
+        name: str
+
+    docs = [MyDoc(tensor=i * np.zeros((10, 10)), name=f'hello{i}') for i in range(4)]
+
+    da = DocumentArrayStacked[MyDoc](docs, tensor_type=NdArray)
+
+    for i, doc in enumerate(da):
+        assert isinstance(doc, MyDoc)
+        assert (doc.tensor == i * np.zeros((10, 10))).all()
+        assert doc.name == f'hello{i}'
