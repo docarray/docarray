@@ -63,16 +63,15 @@ def _get_raw_summary(self: 'DocumentArray') -> List[Dict[str, Any]]:
 class PushPullJAC(PushPullLike):
     """Class to push and pull DocumentArray to and from Jina AI Cloud."""
 
-    _max_bytes = 4 * 2**30
-
     @staticmethod
     @hubble.login_required
-    def list(show_table: bool = False) -> List[str]:
+    def list(namespace: str, show_table: bool = False) -> List[str]:
         """List all available arrays in the cloud.
 
         :param show_table: if true, show the table of the arrays.
         :returns: List of available DocumentArray's names.
         """
+        # TODO: Use the namespace
         from rich import print
 
         result = []
@@ -116,6 +115,7 @@ class PushPullJAC(PushPullLike):
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
         """
+        # TODO: Add namespace?
         HubbleClient(jsonify=True).delete_artifact(name=name)
 
     @staticmethod

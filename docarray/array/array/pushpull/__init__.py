@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class PushPullLike(Protocol):
     @staticmethod
-    def list(show_table: bool) -> List[str]:
+    def list(namespace: str, show_table: bool) -> List[str]:
         ...
 
     @staticmethod
@@ -43,7 +43,6 @@ class PushPullLike(Protocol):
 class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
-    _max_bytes = 4 * 2**30
     __backends__: Dict[str, PushPullLike] = {}
 
     @classmethod
@@ -73,7 +72,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         return cls.__backends__[protocol]
 
     @staticmethod
-    def list(protocol: str, show_table: bool = False) -> List[str]:
+    def list(url: str, show_table: bool = False) -> List[str]:
         """
         List all the artifacts in the cloud.
 
@@ -81,7 +80,11 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param show_table: whether to show the table of artifacts
         :return: a list of artifact names
         """
-        return PushPullMixin.get_backend(protocol).list(show_table)
+        protocol, namespace = url.split('://', 2)
+        # TODO: Move this to its own validation function
+        if '/' in namespace:
+            raise ValueError('Namespace cannot contain a slash')
+        return PushPullMixin.get_backend(protocol).list(namespace, show_table)
 
     @classmethod
     def delete(cls, url: str):
