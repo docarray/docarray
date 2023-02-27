@@ -1,6 +1,5 @@
 import json
 import os
-import os.path
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -12,6 +11,7 @@ from typing import (
     Optional,
     Sequence,
     Type,
+    Union,
 )
 
 import hubble
@@ -19,11 +19,11 @@ import requests
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
-from docarray.array.array.pushpull import PushPullLike
-
-__cache_path__ = Path.home() / '.cache' / 'docarray-v2'
+from docarray.array.array.pushpull import PushPullLike, __cache_path__
 
 if TYPE_CHECKING:  # pragma: no cover
+    import io
+
     from docarray import DocumentArray
 
 
@@ -106,29 +106,39 @@ def ibatch(iterable: Sequence, batch_size: int = 32) -> Iterable:
 ## Parallels
 
 
-class _LazyOneWayReader:
-    def __init__(self, r: requests.Response):
+class _BufferedCachingRequestReader:
+    """A buffered reader for requests.Response that writes to a cache file while reading."""
+
+    def __init__(self, r: requests.Response, cache_path: Optional[Path] = None):
         self._data = r.iter_content(chunk_size=1024 * 1024)
-        self.chunk: bytes = b''
-        self.seek = 0
-        self.chunk_len = 0
+        self._chunk: bytes = b''
+        self._seek = 0
+        self._chunk_len = 0
+
+        self._cache = open(cache_path, 'wb') if cache_path else None
 
     def read(self, size: int) -> bytes:
-        if self.seek + size > self.chunk_len:
-            _bytes = self.chunk[self.seek : self.chunk_len]
-            size -= self.chunk_len - self.seek
+        if self._seek + size > self._chunk_len:
+            _bytes = self._chunk[self._seek : self._chunk_len]
+            size -= self._chunk_len - self._seek
 
-            self.chunk = next(self._data)
-            self.seek = 0
-            self.chunk_len = len(self.chunk)
+            self._chunk = next(self._data)
+            self._seek = 0
+            self._chunk_len = len(self._chunk)
+            if self._cache:
+                self._cache.write(self._chunk)
 
-            _bytes += self.chunk[self.seek : self.seek + size]
-            self.seek += size
+            _bytes += self._chunk[self._seek : self._seek + size]
+            self._seek += size
             return _bytes
         else:
-            _bytes = self.chunk[self.seek : self.seek + size]
-            self.seek += size
+            _bytes = self._chunk[self._seek : self._seek + size]
+            self._seek += size
             return _bytes
+
+    def __del__(self):
+        if self._cache:
+            self._cache.close()
 
 
 def _raise_req_error(resp: requests.Response) -> NoReturn:
@@ -325,16 +335,21 @@ class PushPullJAC(PushPullLike):
             from docarray import DocumentArray
 
             r.raise_for_status()
+            save_name = name.replace('/', '_')
 
-            _source = _LazyOneWayReader(r)
+            tmp_cache_file = Path(f'/tmp/{save_name}.da')
+            _source: Union[
+                _BufferedCachingRequestReader, io.BufferedReader
+            ] = _BufferedCachingRequestReader(r, tmp_cache_file)
 
-            # _da_len = int(r.headers['Content-length'])
-            # cache_file = f'{__cache_path__}/{name.replace("/", "_")}.da'
-            # if local_cache and os.path.exists(cache_file):
-            # _cache_len = os.path.getsize(cache_file)
-            # if _cache_len == _da_len:
-            # _source = cache_file
-
+            cache_file = __cache_path__ / f'{save_name}.da'
+            if local_cache and cache_file.exists():
+                _cache_len = cache_file.stat().st_size
+                if _cache_len == int(r.headers['Content-length']):
+                    if show_progress:
+                        print(f'Loading from local cache {cache_file}')
+                    _source = open(cache_file, 'rb')
+                    r.close()
             from contextlib import nullcontext
 
             da = DocumentArray[cls.document_type](  # type: ignore
@@ -346,9 +361,11 @@ class PushPullJAC(PushPullLike):
                 )
             )
 
-            # if isinstance(_source, LazyRequestReader) and local_cache:
-            # Path(__cache_path__).mkdir(parents=True, exist_ok=True)
-            # with open(cache_file, 'wb') as fp:
-            # fp.write(_source.content)
+            if local_cache:
+                if isinstance(_source, _BufferedCachingRequestReader):
+                    Path(__cache_path__).mkdir(parents=True, exist_ok=True)
+                    tmp_cache_file.rename(cache_file)
+                else:
+                    _source.close()
 
         return da
