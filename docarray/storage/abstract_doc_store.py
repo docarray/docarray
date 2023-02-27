@@ -107,7 +107,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 'A DocumentStore must be typed with a Document type.'
                 'To do so, use the syntax: DocumentStore[DocumentType]'
             )
-        self._db_config = db_config if db_config else self.DBConfig(**kwargs)
+        self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
             raise ValueError(f'db_config must be of type {self.DBConfig}')
         self._runtime_config = self.RuntimeConfig()
