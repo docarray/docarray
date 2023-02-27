@@ -1,4 +1,4 @@
-from typing import Any, List, NamedTuple, Optional, Type, Union, cast
+from typing import List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -6,6 +6,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.base_document import BaseDocument
+from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -284,30 +285,3 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
         )
 
     return cast(Type[AnyTensor], field_type)
-
-
-def _get_field_type_by_access_path(
-    doc_type: Type[BaseDocument], access_path: str
-) -> Any:
-    """
-    Get field type by "__"-separated access path.
-    :param doc_type: type of document
-    :param access_path: "__"-separated access path
-    :return: field type of accessed attribute. If access path is invalid, return None.
-    """
-    from docarray import BaseDocument
-
-    field, _, remaining = access_path.partition('__')
-    field_valid = field in doc_type.__fields__.keys()
-
-    if field_valid:
-        if len(remaining) == 0:
-            return doc_type._get_field_type(field)
-        else:
-            d = doc_type._get_field_type(field)
-            if issubclass(d, DocumentArray):
-                return _get_field_type_by_access_path(d.document_type, remaining)
-            elif issubclass(d, BaseDocument):
-                return _get_field_type_by_access_path(d, remaining)
-    else:
-        return None

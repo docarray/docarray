@@ -1,14 +1,13 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Type
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument
+    from docarray import BaseDocument, DocumentArray
 
 
 def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> bool:
     """
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
-    from docarray.utils.find import _get_field_type_by_access_path
 
     field_type = _get_field_type_by_access_path(doc_type, access_path)
     if field_type is None:
@@ -113,3 +112,30 @@ def _update_nested_dicts(
             to_update[k] = v
         else:
             _update_nested_dicts(to_update[k], update_with[k])
+
+
+def _get_field_type_by_access_path(
+    doc_type: Type[BaseDocument], access_path: str
+) -> Any:
+    """
+    Get field type by "__"-separated access path.
+    :param doc_type: type of document
+    :param access_path: "__"-separated access path
+    :return: field type of accessed attribute. If access path is invalid, return None.
+    """
+    from docarray import BaseDocument
+
+    field, _, remaining = access_path.partition('__')
+    field_valid = field in doc_type.__fields__.keys()
+
+    if field_valid:
+        if len(remaining) == 0:
+            return doc_type._get_field_type(field)
+        else:
+            d = doc_type._get_field_type(field)
+            if issubclass(d, DocumentArray):
+                return _get_field_type_by_access_path(d.document_type, remaining)
+            elif issubclass(d, BaseDocument):
+                return _get_field_type_by_access_path(d, remaining)
+    else:
+        return None
