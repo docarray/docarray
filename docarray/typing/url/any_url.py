@@ -2,8 +2,9 @@ import os
 import urllib
 import urllib.parse
 import urllib.request
-from typing import TYPE_CHECKING, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
+import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
@@ -11,6 +12,8 @@ from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
 
 if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
     from pydantic.networks import Parts
 
     from docarray.proto import NodeProto
@@ -34,6 +37,34 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(text=str(self), type=self._proto_type_name)
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        import os
+
+        abs_path: Union[T, np.ndarray, Any]
+        if (
+            isinstance(value, str)
+            and not value.startswith('http')
+            and not os.path.isabs(value)
+        ):
+            input_is_relative_path = True
+            abs_path = os.path.abspath(value)
+        else:
+            input_is_relative_path = False
+            abs_path = value
+
+        url = super().validate(abs_path, field, config)  # basic url validation
+
+        if input_is_relative_path:
+            return cls(str(value), scheme=None)
+        else:
+            return cls(str(url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
