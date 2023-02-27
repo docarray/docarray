@@ -27,6 +27,9 @@ from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
 
+if TYPE_CHECKING:
+    from pydantic.fields import ModelField
+
 if torch_imported:
     import torch
 
@@ -495,7 +498,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
         columns: Dict[str, _Column] = dict()
         for field_name, field in schema.__fields__.items():
-            t_ = field.type_
+            t_ = schema._get_field_type(field_name)
             if is_union_type(t_):
                 # TODO(johannes): this restriction has to
                 # go othws we can't even index built in docs
@@ -518,11 +521,10 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     },
                 )
             else:
-                columns[field_name] = self._create_single_column(field)
+                columns[field_name] = self._create_single_column(field, t_)
         return columns
 
-    def _create_single_column(self, field):
-        type_ = field.type_
+    def _create_single_column(self, field: 'ModelField', type_: Type) -> _Column:
         db_type = self.python_type_to_db_type(type_)
         config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
