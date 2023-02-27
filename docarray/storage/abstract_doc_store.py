@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -16,6 +16,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -93,12 +94,6 @@ class composable:
         setattr(owner, name, self.fn)
 
 
-if TYPE_CHECKING:
-    # static type checkers do not like the solution above
-    def composable(fn):
-        return fn
-
-
 class BaseDocumentIndex(ABC, Generic[TSchema]):
     """Abstract class for all Document Stores"""
 
@@ -158,7 +153,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         # These configs are used if no configs are specified in the `Field(...)`
         # of a field in the Document schema (`cls._schema`)
         # Example: `default_column_config['VARCHAR'] = {'length': 255}`
-        default_column_config: Dict[Type, Dict[str, Any]]
+        default_column_config: Dict[Type, Dict[str, Any]] = field(default_factory=dict)
 
     #####################################
     # Abstract methods                  #
@@ -356,14 +351,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
-    def index(self, docs: Union[TSchema, Sequence[TSchema]], **kwargs):
+    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
         """Index Documents into the store.
 
         :param docs: Documents to index
         """
-        if not isinstance(docs, Sequence):
-            docs = [docs]
-        self._index(docs, **kwargs)
+        data_by_columns = self._get_col_value_dict(docs)
+        self._index(data_by_columns, **kwargs)
 
     def find(
         self,
@@ -414,7 +408,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
-                self._to_numpy(query_vec) for query_vec in query_vec_list
+                tuple(self._to_numpy(query_vec) for query_vec in query_vec_list)
             )
         else:
             query_vec_np = self._to_numpy(queries)
@@ -487,10 +481,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        if isinstance(queries, Sequence):
-            query_texts = self._get_values_by_column(queries, search_field)
+        if isinstance(queries[0], BaseDocument):
+            query_docs: Sequence[BaseDocument] = cast(Sequence[BaseDocument], queries)
+            query_texts: Sequence[str] = self._get_values_by_column(
+                query_docs, search_field
+            )
         else:
-            query_texts = queries
+            query_texts = cast(Sequence[str], queries)
         return self._text_search_batched(
             query_texts, search_field=search_field, limit=limit, **kwargs
         )
@@ -529,15 +526,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: A dictionary mapping column names to a generator of values
         """
         if isinstance(docs, BaseDocument):
-            docs = [docs]
-        if not self._is_schema_compatible(docs):
+            docs_seq: Sequence[BaseDocument] = [docs]
+        else:
+            docs_seq = docs
+        if not self._is_schema_compatible(docs_seq):
             raise ValueError(
                 'The schema of the documents to be indexed is not compatible'
                 ' with the schema of the store.'
             )
 
-        def _col_gen(col_name):
-            return (self._get_values_by_column([doc], col_name)[0] for doc in docs)
+        def _col_gen(col_name: str):
+            return (self._get_values_by_column([doc], col_name)[0] for doc in docs_seq)
 
         return {col_name: _col_gen(col_name) for col_name in self._columns}
 
@@ -565,7 +564,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         :return: a new `QueryBuilder` object for this DocumentStore
         """
-        return self.QueryBuilder()
+        return self.QueryBuilder()  # type: ignore
 
     def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
         columns: Dict[str, _Column] = dict()

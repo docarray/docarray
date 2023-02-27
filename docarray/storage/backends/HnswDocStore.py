@@ -3,7 +3,19 @@ import os
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Generic, List, Sequence, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import hnswlib
 import numpy as np
@@ -15,13 +27,22 @@ from docarray.storage.abstract_doc_store import (
     BaseDocumentIndex,
     FindResultBatched,
     _Column,
-    composable,
 )
 from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
 from docarray.utils.misc import is_np_int, torch_imported
 
+if TYPE_CHECKING:
+
+    def composable(fn):  # type: ignore
+        return fn
+
+else:
+    # static type checkers do not like callable objects as decorators
+    from docarray.storage.abstract_doc_store import composable
+
 TSchema = TypeVar('TSchema', bound=BaseDocument)
+T = TypeVar('T', bound='HnswDocumentIndex')
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
 if torch_imported:
@@ -92,7 +113,8 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                     'allow_replace_deleted': True,
                     'num_threads': 1,
                 },
-                None: {},
+                # `None` is not a Type, but we allow it here anyway
+                None: {},  # type: ignore
             }
         )
 
@@ -115,12 +137,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         # not needed, we implement `index` directly
         ...
 
-    def index(self, docs: Union[TSchema, Sequence[TSchema]], **kwargs):
+    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
         """Index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
-        data_by_columns = self._get_col_value_dict(docs)
-        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs)
+        doc_seq = docs if isinstance(docs, Sequence) else [docs]
+        data_by_columns = self._get_col_value_dict(doc_seq)
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in doc_seq)
 
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
@@ -131,7 +154,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
-        self._send_docs_to_sqlite(docs)
+        self._send_docs_to_sqlite(doc_seq)
         self._sqlite_conn.commit()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
@@ -140,20 +163,25 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        ann_docs = DocumentArray[self._schema]([])
+        ann_docs = DocumentArray.__class_getitem__(
+            cast(Type[BaseDocument], self._schema)
+        )([])
         filter_conditions = []
-        doc_to_score = {}
+        doc_to_score: Dict[BaseDocument, Any] = {}
         for op, op_kwargs in query:
             if op == 'find':
                 docs, scores = self.find(**op_kwargs)
                 ann_docs.extend(docs)
-                doc_to_score.update(zip(docs.id, scores))
+                doc_to_score.update(zip(docs.__getattribute__('id'), scores))
             elif op == 'filter':
                 filter_conditions.append(op_kwargs['filter_query'])
 
         docs_filtered = ann_docs
         for cond in filter_conditions:
-            docs_filtered = da_filter(docs_filtered, cond)
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs_filtered = da_cls(da_filter(docs_filtered, cond))
 
         docs_and_scores = zip(
             docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
@@ -205,7 +233,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _filter_batched(
         self,
         filter_queries: Any,
-        limit: int = 10,
+        limit: int,
         **kwargs,
     ) -> List[DocumentArray]:
         raise NotImplementedError(
@@ -217,17 +245,17 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _text_search(
         self,
         query: str,
-        embedding_field: str = 'embedding',
-        limit: int = 10,
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _text_search_batched(
         self,
-        queries: List[str],
-        embedding_field: str = 'embedding',
-        limit: int = 10,
+        queries: Sequence[str],
+        search_field: str,
+        limit: int,
         **kwargs,
     ) -> FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
@@ -331,16 +359,14 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
-        return DocumentArray[self._schema](
-            [self._doc_from_bytes(row[0]) for row in rows]
-        )
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return da_cls([self._doc_from_bytes(row[0]) for row in rows])
 
     def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray:
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
-        return DocumentArray[self._schema](
-            sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id))
-        )
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return da_cls(sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id)))
 
     def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocumentArray:
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
@@ -348,7 +374,8 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         def _in_position(doc):
             return hashed_ids.index(self._to_hashed_id(doc.id))
 
-        return DocumentArray[self._schema](sorted(docs_unsorted, key=_in_position))
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return da_cls(sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
         ids = tuple(
@@ -368,4 +395,5 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return doc.to_protobuf().SerializeToString()
 
     def _doc_from_bytes(self, data: bytes) -> BaseDocument:
-        return self._schema.from_protobuf(DocumentProto.FromString(data))
+        schema_cls = cast(Type[BaseDocument], self._schema)
+        return schema_cls.from_protobuf(DocumentProto.FromString(data))

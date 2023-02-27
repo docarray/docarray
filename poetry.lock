@@ -325,7 +325,7 @@ name = "hnswlib"
 version = "0.7.0"
 description = "hnswlib"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [package.dependencies]
@@ -1684,6 +1684,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [extras]
 common = ["protobuf"]
+hnswlib = ["hnswlib"]
 image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
 torch = ["torch"]
@@ -1693,7 +1694,7 @@ web = ["fastapi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7"
-content-hash = "8607c6935a978649a45cf33d71a6c34294f66f346cc1bac713e37ca382dee671"
+content-hash = "b93a00f3648453be19ccc456b883fd07eb183278e6fc3ca4667bee6100fb1e2a"
 
 [metadata.files]
 anyio = [
