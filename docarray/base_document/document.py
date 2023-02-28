@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field, parse_obj_as
@@ -77,5 +77,8 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         return isinstance(self.__dict__, ColumnStorageView)
 
-    # def __getattr__(self, item) -> Any:
-    #     return self.__dict__[item]
+    def __getattr__(self, item) -> Any:
+        if item in self.__fields__.keys():
+            return self.__dict__[item]
+        else:
+            return super().__getattr__(item)
