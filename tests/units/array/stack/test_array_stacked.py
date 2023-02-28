@@ -538,3 +538,14 @@ def test_torch_nan():
     # Make sure they share memory
     stacked_da.scalar[0] = 3.0
     assert da[0].scalar == 3.0
+
+
+def test_from_storage():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArrayStacked[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    DocumentArrayStacked[Image].from_columns_storage(batch._storage)

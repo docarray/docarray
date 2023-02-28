@@ -75,6 +75,18 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         )
 
     @classmethod
+    def from_columns_storage(cls: Type[T], storage: ColumnStorage) -> T:
+        """
+        Create a DocumentArrayStack directly from a storage object
+        :param storage: the underlying storage.
+        :return: a DocumentArrayStack
+        """
+        da = cls.__new__(cls)
+        da.tensor_type = storage.tensor_type
+        da._storage = storage
+        return da
+
+    @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, Iterable[T_doc]],
