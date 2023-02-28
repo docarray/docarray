@@ -9,20 +9,20 @@ from docarray import BaseDocument
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
 
-    Document = TypeVar('Document', bound=BaseDocument)
+    T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
 def create_doc(
     __model_name: str,
     *,
     __config__: Optional[Type[BaseConfig]] = None,
-    __base__: Type['Document'] = BaseDocument,  # type: ignore
+    __base__: Type['T_doc'] = BaseDocument,  # type: ignore
     __module__: str = __name__,
     __validators__: Dict[str, 'AnyClassMethod'] = None,  # type: ignore
     __cls_kwargs__: Dict[str, Any] = None,  # type: ignore
     __slots__: Optional[Tuple[str, ...]] = None,
     **field_definitions: Any,
-) -> Type['Document']:
+) -> Type['T_doc']:
     """
     Dynamically create a subclass of BaseDocument. This is a wrapper around pydantic's create_model.
     :param __model_name: name of the created model
