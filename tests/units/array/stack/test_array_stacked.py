@@ -154,14 +154,14 @@ def test_stack_mod_nested_document():
     batch = batch.stack()
 
     assert (
-        batch._doc_columns['img']._tensor_columns['tensor']
+        batch._storage.doc_columns['img']._storage.tensor_columns['tensor']
         == torch.zeros(10, 3, 224, 224)
     ).all()
 
     assert (batch.img.tensor == torch.zeros(10, 3, 224, 224)).all()
 
     assert (
-        batch._doc_columns['img']._tensor_columns['tensor'].data_ptr()
+        batch._storage.doc_columns['img']._storage.tensor_columns['tensor'].data_ptr()
         == batch.img.tensor.data_ptr()
     )
 
@@ -169,12 +169,12 @@ def test_stack_mod_nested_document():
 def test_stack_nested_documentarray(nested_batch):
     for i in range(len(nested_batch)):
         assert (
-            nested_batch[i].img._tensor_columns['tensor']
+            nested_batch[i].img._storage.tensor_columns['tensor']
             == torch.zeros(10, 3, 224, 224)
         ).all()
         assert (nested_batch[i].img.tensor == torch.zeros(10, 3, 224, 224)).all()
         assert (
-            nested_batch[i].img._tensor_columns['tensor'].data_ptr()
+            nested_batch[i].img._storage.tensor_columns['tensor'].data_ptr()
             == nested_batch[i].img.tensor.data_ptr()
         )
 
@@ -307,8 +307,8 @@ def test_any_tensor_with_torch(tensor_type, tensor):
     for i in range(len(da)):
         assert (da[i].tensor == tensor).all()
 
-    assert 'tensor' in da._tensor_columns.keys()
-    assert isinstance(da._tensor_columns['tensor'], tensor_type)
+    assert 'tensor' in da._storage.tensor_columns.keys()
+    assert isinstance(da._storage.tensor_columns['tensor'], tensor_type)
 
 
 def test_any_tensor_with_optional():
@@ -328,8 +328,8 @@ def test_any_tensor_with_optional():
     for i in range(len(da)):
         assert (da.img[i].tensor == tensor).all()
 
-    assert 'tensor' in da.img._tensor_columns.keys()
-    assert isinstance(da.img._tensor_columns['tensor'], TorchTensor)
+    assert 'tensor' in da.img._storage.tensor_columns.keys()
+    assert isinstance(da.img._storage.tensor_columns['tensor'], TorchTensor)
 
 
 def test_dict_stack():
@@ -374,7 +374,7 @@ def test_stack_embedding():
         [MyDoc(embedding=np.zeros(10)) for _ in range(10)]
     ).stack()
 
-    assert 'embedding' in da._tensor_columns.keys()
+    assert 'embedding' in da._storage.tensor_columns.keys()
     assert (da.embedding == np.zeros((10, 10))).all()
 
 
@@ -387,7 +387,7 @@ def test_stack_none(tensor_backend):
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=tensor_backend
     ).stack()
 
-    assert 'tensor' in da._tensor_columns.keys()
+    assert 'tensor' in da._storage.tensor_columns.keys()
 
 
 def test_to_device():
