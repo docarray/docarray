@@ -1,11 +1,11 @@
 from rich.progress import (
-    Progress,
     BarColumn,
-    SpinnerColumn,
     MofNCompleteColumn,
+    Progress,
+    SpinnerColumn,
+    Text,
     TextColumn,
     TimeRemainingColumn,
-    Text,
 )
 
 
@@ -45,7 +45,7 @@ def _get_pbar(disable):
     )
 
 
-def _get_progressbar(description, disable, total):
+def _get_progressbar(description: str, disable: bool, total: int):
     progress = _get_pbar(disable)
     task = progress.add_task(description, total=total, start=False, total_size=0)
     return progress, task
