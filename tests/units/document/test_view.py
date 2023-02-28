@@ -12,7 +12,7 @@ def test_document_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = ColumnStorage(docs, MyDoc, NdArray)
+    storage = ColumnStorage.from_docs(docs, MyDoc, NdArray)
 
     doc = MyDoc.from_view(ColumnStorageView(0, storage))
     assert doc.is_view()

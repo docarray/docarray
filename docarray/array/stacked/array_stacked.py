@@ -70,7 +70,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self.tensor_type = tensor_type
-        self._storage = ColumnStorage(
+        self._storage = ColumnStorage.from_docs(
             docs, document_type=self.document_type, tensor_type=self.tensor_type
         )
 
@@ -119,41 +119,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def __getitem__(self: T, item: IndexIterType) -> T:
         ...
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
         # if isinstance(item, (slice, Iterable)):
-        #     item_ = cast(Iterable, item)
-        #     return self._get_from_data_and_columns(item_)
-        # single doc case
+        #     item_ = cast(Iterable, item) #
+        #     return self.__class__.from_columns_storage()
+        # # single doc case
         doc = self.document_type.from_view(ColumnStorageView(item, self._storage))
         return doc
-
-    # def _get_from_data_and_columns(self: T, item: Union[Tuple, Iterable]) -> T:
-    #     """Delegates the access to the data and the columns,
-    #     and combines into a stacked da.
-    #
-    #     :param item: the item used as index. Needs to be a valid index for both
-    #         DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
-    #     :return: a DocumentArrayStacked, indexed according to `item`
-    #     """
-    #     if isinstance(item, tuple):
-    #         item = list(item)
-    #     # get documents
-    #     docs_indexed = self._docs[item]
-    #     # get doc columns
-    #     doc_columns_indexed = {k: col[item] for k, col in self._doc_columns.items()}
-    #     doc_columns_indexed_ = cast(
-    #         Dict[str, 'DocumentArrayStacked'], doc_columns_indexed
-    #     )
-    #     # get tensor columns
-    #     tensor_columns_indexed = {
-    #         k: col[item] for k, col in self._tensor_columns.items()
-    #     }
-    #     return self._from_da_and_columns(
-    #         docs_indexed, doc_columns_indexed_, tensor_columns_indexed
-    #     )
 
     def _get_array_attribute(
         self: T,
