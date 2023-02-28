@@ -1,4 +1,3 @@
-import uuid
 from contextlib import nullcontext
 from types import LambdaType
 from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, TypeVar, Union
@@ -36,7 +35,7 @@ def apply(
     :return: DocumentArray with applied modifications
     """
     da_new = da.__class_getitem__(item=da.document_type)()
-    for i, doc in enumerate(_map(da, func, num_worker, show_progress, pool)):
+    for i, doc in enumerate(_map(da, func, num_worker, pool, show_progress)):
         da_new.append(doc)
     return da_new
 
@@ -67,9 +66,9 @@ def _map(
     from rich.progress import track
 
     if _is_lambda_or_partial_or_local_function(func):
-        print(f"func = {func}")
-        func = _globalize_function(func)
-        print(f"func = {func}")
+        raise ValueError(
+            f'Multiprocessing does not allow functions that are local, lambda or partial: {func}'
+        )
 
     ctx_p: Union[nullcontext, 'Pool']
     if pool:
@@ -86,20 +85,9 @@ def _map(
             yield x
 
 
-def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]):
+def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
     return (
         (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
         or not hasattr(func, '__qualname__')
         or ('<locals>' in func.__qualname__)
     )
-
-
-def _globalize_function(func):
-    import sys
-
-    def result(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    result.__name__ = result.__qualname__ = uuid.uuid4().hex
-    setattr(sys.modules[result.__module__], result.__name__, result)
-    return result
