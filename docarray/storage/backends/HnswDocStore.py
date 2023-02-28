@@ -54,6 +54,7 @@ if torch_imported:
 class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
+        self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
         self._work_dir = self._db_config.work_dir
         load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
