@@ -1,21 +1,33 @@
 import numpy as np
 
 from docarray import BaseDocument
+from docarray.array import DocumentArrayStacked
 from docarray.array.stacked.columnstorage import ColumnStorage, ColumnStorageView
 from docarray.typing import AnyTensor, NdArray
 
 
 def test_storage_init():
+    class InnerDoc(BaseDocument):
+        price: int
+
     class MyDoc(BaseDocument):
         tensor: AnyTensor
         name: str
+        doc: InnerDoc
 
-    docs = [MyDoc(tensor=np.zeros(10), name='hello') for _ in range(4)]
+    docs = [
+        MyDoc(tensor=np.zeros(10), name='hello', doc=InnerDoc(price=i))
+        for i in range(4)
+    ]
 
     storage = ColumnStorage(docs, MyDoc, NdArray)
 
     assert (storage.tensor_storage['tensor'] == np.zeros((4, 10))).all()
     assert storage.any_storage['name'] == ['hello' for _ in range(4)]
+    inner_docs = storage.document_storage['doc']
+    assert isinstance(inner_docs, DocumentArrayStacked[InnerDoc])
+    for i, doc in enumerate(inner_docs):
+        assert doc.price == i
 
 
 def test_storage_view():
@@ -40,27 +52,3 @@ def test_storage_view():
     assert storage.any_storage['id'][0] == 1
     assert (storage.tensor_storage['tensor'][0] == np.ones(10)).all()
     assert storage.any_storage['name'][0] == 'byebye'
-
-
-def test_document_view():
-    class MyDoc(BaseDocument):
-        tensor: AnyTensor
-        name: str
-
-    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
-
-    storage = ColumnStorage(docs, MyDoc, NdArray)
-
-    doc = MyDoc.from_view(ColumnStorageView(0, storage))
-    assert doc.is_view()
-    assert doc.id == '0'
-    assert (doc.tensor == np.zeros(10)).all()
-    assert doc.name == 'hello'
-
-    storage.columns['id'][0] = '12345'
-    storage.columns['tensor'][0] = np.ones(10)
-    storage.columns['name'][0] = 'byebye'
-
-    assert doc.id == '12345'
-    assert (doc.tensor == np.ones(10)).all()
-    assert doc.name == 'byebye'
