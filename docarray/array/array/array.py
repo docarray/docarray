@@ -313,7 +313,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
                 self._data[i] = value[i_value]
                 i_value += 1
 
-    def doc_append(self, doc: T_doc):
+    def append(self, doc: T_doc):
         """
         Append a Document to the DocumentArray. The Document must be from the same class
         as the document_type of this DocumentArray otherwise it will fail.
@@ -321,7 +321,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         """
         self._data.append(self._validate_one_doc(doc))
 
-    def doc_extend(self, docs: Iterable[T_doc]):
+    def extend(self, docs: Iterable[T_doc]):
         """
         Extend a DocumentArray with an Iterable of Document. The Documents must be from
         the same class as the document_type of this DocumentArray otherwise it will
@@ -330,7 +330,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         """
         self._data.extend(self._validate_docs(docs))
 
-    def doc_insert(self, i: int, doc: T_doc):
+    def insert(self, i: int, doc: T_doc):
         """
         Insert a Document to the DocumentArray. The Document must be from the same
         class as the document_type of this DocumentArray otherwise it will fail.
