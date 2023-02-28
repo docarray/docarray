@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Type
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Sequence, Type
 
 from typing_extensions import Protocol
 
@@ -24,6 +24,16 @@ class PushPullLike(Protocol):
     def push(
         da: BinaryIOLike,
         url: str,
+        public: bool,
+        show_progress: bool,
+        branding: Optional[Dict],
+    ) -> Dict:
+        ...
+
+    @staticmethod
+    def push_stream(
+        docs: Iterator['BaseDocument'],
+        url: str,
         public: bool = True,
         show_progress: bool = False,
         branding: Optional[Dict] = None,
@@ -34,9 +44,18 @@ class PushPullLike(Protocol):
     def pull(
         cls: Type['BinaryIOLike'],
         name: str,
-        show_progress: bool = False,
-        local_cache: bool = True,
+        show_progress: bool,
+        local_cache: bool,
     ) -> 'DocumentArray':
+        ...
+
+    @staticmethod
+    def pull_stream(
+        cls: Type['BinaryIOLike'],
+        name: str,
+        show_progress: bool,
+        local_cache: bool,
+    ) -> Iterator['BaseDocument']:
         ...
 
 
@@ -64,8 +83,9 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
             raise NotImplementedError('file protocol not implemented yet')
             # from docarray.array.array.pushpull.file import PushPullFile
         elif protocol == 's3':
-            raise NotImplementedError('s3 protocol not implemented yet')
-            # from docarray.array.array.pushpull.s3 import PushPullS3
+            from docarray.array.array.pushpull.s3 import PushPullS3
+
+            cls.__backends__[protocol] = PushPullS3
         else:
             raise NotImplementedError(f'protocol {protocol} not supported')
 
@@ -124,12 +144,29 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         )
 
     @classmethod
+    def push_stream(
+        cls,
+        docs: Iterator['BaseDocument'],
+        url: str,
+        public: bool = True,
+        show_progress: bool = False,
+        branding: Optional[Dict] = None,
+    ) -> Dict:
+        """
+        Push a stream of documents to Jina AI Cloud which can be later retrieved via :meth:`.pull_stream`
+        """
+        protocol, name = url.split('://', 2)
+        return PushPullMixin.get_backend(protocol).push_stream(
+            docs, url, public, show_progress, branding
+        )
+
+    @classmethod
     def pull(
         cls,
         url: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ):
+    ) -> 'DocumentArray':
         """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
@@ -147,5 +184,28 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
 
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull(
+            cls, name, show_progress, local_cache
+        )
+
+    @classmethod
+    def pull_stream(
+        cls,
+        url: str,
+        show_progress: bool = False,
+        local_cache: bool = True,
+    ) -> Iterator['BaseDocument']:
+        """
+        Stream documents from remote to an iterator
+        """
+        from docarray.base_document import AnyDocument
+
+        if cls.document_type == AnyDocument:
+            raise TypeError(
+                'There is no document schema defined. '
+                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+            )
+
+        protocol, name = url.split('://', 2)
+        return PushPullMixin.get_backend(protocol).pull_stream(
             cls, name, show_progress, local_cache
         )

@@ -1,7 +1,7 @@
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Type, Union
 
 import hubble
 from hubble import Client as HubbleClient
@@ -17,7 +17,7 @@ from docarray.array.array.pushpull.helpers import (
 if TYPE_CHECKING:  # pragma: no cover
     import io
 
-    from docarray import DocumentArray
+    from docarray import BaseDocument, DocumentArray
 
 
 def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
@@ -142,6 +142,7 @@ class PushPullJAC(PushPullLike):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
+        # TODO: Cache when we send?
         import requests
         import urllib3
 
@@ -201,6 +202,19 @@ class PushPullJAC(PushPullLike):
             if response.status_code >= 400 and 'readableMessage' in response.json():
                 response.reason = response.json()['readableMessage']
             raise_req_error(response)
+
+    @staticmethod
+    @hubble.login_required
+    def push_stream(
+        docs: Iterator['BaseDocument'],
+        name: str,
+        public: bool = True,
+        show_progress: bool = False,
+        branding: Optional[Dict] = None,
+    ) -> Dict:
+        # TODO: How do we deal with the stream header and summary
+        # if we dont have a document array to start with?
+        raise NotImplementedError('push_stream is not implemented for JAC yet')
 
     @staticmethod
     @hubble.login_required
@@ -276,3 +290,22 @@ class PushPullJAC(PushPullLike):
                     _source.close()
 
         return da
+
+    @staticmethod
+    @hubble.login_required
+    def pull_stream(
+        cls: Type['DocumentArray'],
+        name: str,
+        show_progress: bool = False,
+        local_cache: bool = False,
+    ):
+        """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
+
+        :param name: the upload name set during :meth:`.push`
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local folder
+        :return: a :class:`DocumentArray` object
+        """
+        # TODO: How do we deal with not having a length in stream header?
+        # Are we forced to duplicate code here?
+        raise NotImplementedError('pull_stream is not implemented for JAC yet')
