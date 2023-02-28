@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, TypeVar
 
 from pydantic import create_model, create_model_from_typeddict
 from pydantic.config import BaseConfig
@@ -9,20 +9,20 @@ from docarray import BaseDocument
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
 
+    Document = TypeVar('Document', bound=BaseDocument)
+
 
 def create_doc(
     __model_name: str,
     *,
     __config__: Optional[Type[BaseConfig]] = None,
-    __base__: Union[
-        None, Type['BaseDocument'], Tuple[Type['BaseDocument'], ...]
-    ] = BaseDocument,
+    __base__: Type['Document'] = BaseDocument,  # type: ignore
     __module__: str = __name__,
     __validators__: Dict[str, 'AnyClassMethod'] = None,  # type: ignore
     __cls_kwargs__: Dict[str, Any] = None,  # type: ignore
     __slots__: Optional[Tuple[str, ...]] = None,
     **field_definitions: Any,
-):
+) -> Type['Document']:
     """
     Dynamically create a subclass of BaseDocument. This is a wrapper around pydantic's create_model.
     :param __model_name: name of the created model
@@ -56,7 +56,7 @@ def create_doc(
 
     """
 
-    if not issubclass(__base__, BaseDocument):  # type: ignore
+    if not issubclass(__base__, BaseDocument):
         raise ValueError(f'{type(__base__)} is not a BaseDocument or its subclass')
 
     doc = create_model(
