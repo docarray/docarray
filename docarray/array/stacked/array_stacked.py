@@ -5,9 +5,11 @@ from typing import (
     Iterable,
     List,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 
@@ -157,20 +159,69 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         ...
 
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
-        # multiple docs case
-        raise NotImplementedError
+        # single doc case
+        if not isinstance(key, (slice, Iterable)):
+            key_ = cast(int, key)
+            doc = cast(T_doc, value)
+            if not isinstance(doc, self.document_type):
+                raise ValueError(f'{doc} is not a {self.document_type}')
+
+            for field, value in doc.dict().items():
+                self._storage.columns[field][key_] = value  # todo we might want to
+                # define a safety mechanism in someone put a wrong value
+
+        else:
+            # multiple docs case
+            self._set_data_and_columns(key, value)
+
+    def _set_data_and_columns(
+        self: T,
+        index_item: Union[Tuple, Iterable, slice],
+        value: Union[T, DocumentArray[T_doc]],
+    ) -> None:
+        """Delegates the setting to the data and the columns.
+
+        :param index_item: the key used as index. Needs to be a valid index for both
+            DocumentArray (data) and column types (torch/tensorflow/numpy tensors)
+        :value: the value to set at the `key` location
+        """
+        if isinstance(index_item, tuple):
+            index_item = list(index_item)
+
+        # set data and prepare columns
+        processed_value: T
+        if isinstance(value, DocumentArray):
+            if not issubclass(value.document_type, self.document_type):
+                raise TypeError(
+                    f'{value} schema : {value.document_type} is not compatible with '
+                    f'this DocumentArrayStacked schema : {self.document_type}'
+                )
+            processed_value = value.stack()  # we need to copy data here
+
+        elif isinstance(value, DocumentArrayStacked):
+            if not issubclass(value.document_type, self.document_type):
+                raise TypeError(
+                    f'{value} schema : {value.document_type} is not compatible with '
+                    f'this DocumentArrayStacked schema : {self.document_type}'
+                )
+            processed_value = value
+        else:
+            raise TypeError(f'Can not set a DocumentArrayStacked with {type(value)}')
+
+        for field, col in self._storage.columns.items():
+            col[index_item] = processed_value._storage.columns[field]
 
     def _set_array_attribute(
         self: T,
         field: str,
         values: Union[List, T, AbstractTensor],
-    ):
+    ) -> None:
         """Set all Documents in this DocumentArray using the passed values
 
         :param field: name of the fields to extract
         :values: the values to set at the DocumentArray level
         """
-        raise NotImplementedError
+        self._storage.columns[field] = values  # TODO we need validation here
 
     ####################
     # Deleting data   #
