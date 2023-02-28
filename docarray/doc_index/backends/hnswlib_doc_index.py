@@ -22,12 +22,12 @@ import numpy as np
 
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
-from docarray.proto import DocumentProto
-from docarray.storage.abstract_doc_index import (
+from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
     FindResultBatched,
     _Column,
 )
+from docarray.proto import DocumentProto
 from docarray.utils.filter import filter as da_filter
 from docarray.utils.find import FindResult
 from docarray.utils.misc import is_np_int, torch_imported
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 else:
     # static type checkers do not like callable objects as decorators
-    from docarray.storage.abstract_doc_index import composable
+    from docarray.doc_index.abstract_doc_index import composable
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='HnswDocumentIndex')

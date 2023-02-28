@@ -4,7 +4,7 @@ from typing import Any, Dict, Type
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.storage.abstract_doc_index import BaseDocumentIndex
+from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
 from docarray.typing import NdArray
 
 
