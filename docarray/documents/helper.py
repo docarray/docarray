@@ -34,6 +34,26 @@ def create_doc(
     :param __slots__: Deprecated, `__slots__` should not be passed to `create_model`
     :param field_definitions: fields of the model (or extra fields if a base is supplied)
         in the format `<name>=(<type>, <default default>)` or `<name>=<default value>`
+    :return: the new Document class
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray.documents import Audio
+        from docarray.documents.helper import create_doc
+        from docarray.typing.tensor.audio import AudioNdArray
+
+        MyAudio = create_doc(
+            'MyAudio',
+            __base__=Audio,
+            title=(str, ...),
+            tensor=(AudioNdArray, ...),
+        )
+
+        assert issubclass(MyAudio, BaseDocument)
+        assert issubclass(MyAudio, Audio)
+
     """
 
     if not issubclass(__base__, BaseDocument):  # type: ignore
@@ -59,6 +79,32 @@ def create_from_typeddict(
 ):
     """
     Create a subclass of BaseDocument based on the fields of a `TypedDict`. This is a wrapper around pydantic's create_model_from_typeddict.
+    :param typeddict_cls: TypedDict class to use for the new Document class
+    :param kwargs: extra arguments to pass to `create_model_from_typeddict`
+    :return: the new Document class
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from typing_extensions import TypedDict
+
+        from docarray import BaseDocument
+        from docarray.documents import Audio
+        from docarray.documents.helper import create_from_typeddict
+        from docarray.typing.tensor.audio import AudioNdArray
+
+
+        class MyAudio(TypedDict):
+            title: str
+            tensor: AudioNdArray
+
+
+        Doc = create_from_typeddict(MyAudio, __base__=Audio)
+
+        assert issubclass(Doc, BaseDocument)
+        assert issubclass(Doc, Audio)
+
     """
 
     if '__base__' in kwargs:
