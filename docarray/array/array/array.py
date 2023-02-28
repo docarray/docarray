@@ -415,7 +415,9 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         """
         from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
-        return DocumentArrayStacked.__class_getitem__(self.document_type)(self)
+        return DocumentArrayStacked.__class_getitem__(self.document_type)(
+            self, tensor_type=self.tensor_type
+        )
 
     @classmethod
     def validate(
