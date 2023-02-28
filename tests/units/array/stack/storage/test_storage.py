@@ -22,9 +22,9 @@ def test_storage_init():
 
     storage = ColumnStorage(docs, MyDoc, NdArray)
 
-    assert (storage.tensor_storage['tensor'] == np.zeros((4, 10))).all()
-    assert storage.any_storage['name'] == ['hello' for _ in range(4)]
-    inner_docs = storage.document_storage['doc']
+    assert (storage.tensor_columns['tensor'] == np.zeros((4, 10))).all()
+    assert storage.any_columns['name'] == ['hello' for _ in range(4)]
+    inner_docs = storage.doc_columns['doc']
     assert isinstance(inner_docs, DocumentArrayStacked[InnerDoc])
     for i, doc in enumerate(inner_docs):
         assert doc.price == i
@@ -49,6 +49,6 @@ def test_storage_view():
     view['tensor'] = np.ones(10)
     view['name'] = 'byebye'
 
-    assert storage.any_storage['id'][0] == 1
-    assert (storage.tensor_storage['tensor'][0] == np.ones(10)).all()
-    assert storage.any_storage['name'][0] == 'byebye'
+    assert storage.any_columns['id'][0] == 1
+    assert (storage.tensor_columns['tensor'][0] == np.ones(10)).all()
+    assert storage.any_columns['name'][0] == 'byebye'

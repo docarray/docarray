@@ -23,10 +23,10 @@ class ColumnStorage:
 
     document_type: Type[BaseDocument]
 
-    tensor_storage: Dict[str, AbstractTensor]
-    document_storage: Dict[str, 'DocumentArrayStacked']
-    da_storage: Dict[str, List['DocumentArrayStacked']]
-    any_storage: Dict[str, List]
+    tensor_columns: Dict[str, AbstractTensor]
+    doc_columns: Dict[str, 'DocumentArrayStacked']
+    da_columns: Dict[str, List['DocumentArrayStacked']]
+    any_columns: Dict[str, List]
 
     def __init__(
         self,
@@ -38,10 +38,10 @@ class ColumnStorage:
         self.document_type = document_type
         self.tensor_type = tensor_type
 
-        self.tensor_storage = dict()
-        self.document_storage = dict()
-        self.da_storage = dict()
-        self.any_storage = dict()
+        self.tensor_columns = dict()
+        self.doc_columns = dict()
+        self.da_columns = dict()
+        self.any_columns = dict()
 
         docs = (
             docs
@@ -67,7 +67,7 @@ class ColumnStorage:
                     tf_stack.append(val.tensor)
 
                 stacked: tf.Tensor = tf.stack(tf_stack)
-                self.tensor_storage[field_name] = TensorFlowTensor(stacked)
+                self.tensor_columns[field_name] = TensorFlowTensor(stacked)
 
             elif issubclass(field_type, AbstractTensor):
 
@@ -75,7 +75,7 @@ class ColumnStorage:
                 column_shape = (
                     (len(docs), *tensor.shape) if tensor is not None else (len(docs),)
                 )
-                self.tensor_storage[field_name] = field_type._docarray_from_native(
+                self.tensor_columns[field_name] = field_type._docarray_from_native(
                     field_type.get_comp_backend().empty(
                         column_shape,
                         dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
@@ -88,27 +88,27 @@ class ColumnStorage:
                     if val is None:
                         val = tensor_type.get_comp_backend().none_value()
 
-                    cast(AbstractTensor, self.tensor_storage[field_name])[i] = val
+                    cast(AbstractTensor, self.tensor_columns[field_name])[i] = val
 
             elif issubclass(field_type, BaseDocument):
-                self.document_storage[field_name] = getattr(docs, field_name).stack()
+                self.doc_columns[field_name] = getattr(docs, field_name).stack()
 
             elif issubclass(field_type, DocumentArray):
-                self.da_storage[field_name] = list()
+                self.da_columns[field_name] = list()
                 for doc in docs:
-                    self.da_storage[field_name].append(getattr(doc, field_name).stack())
+                    self.da_columns[field_name].append(getattr(doc, field_name).stack())
             else:
-                self.any_storage[field_name] = getattr(docs, field_name)
+                self.any_columns[field_name] = getattr(docs, field_name)
 
         self.columns = ChainMap(
-            self.tensor_storage,
-            self.document_storage,
-            self.da_storage,
-            self.any_storage,
+            self.tensor_columns,
+            self.doc_columns,
+            self.da_columns,
+            self.any_columns,
         )
 
     def __len__(self) -> int:
-        return len(self.any_storage['id'])
+        return len(self.any_columns['id'])
 
 
 class ColumnStorageView(dict, MutableMapping[str, Any]):
