@@ -119,11 +119,13 @@ def test_stack_numpy():
 
     batch = batch.stack()
 
-    assert (batch._tensor_columns['tensor'] == np.zeros((10, 3, 224, 224))).all()
+    assert (
+        batch._storage.tensor_columns['tensor'] == np.zeros((10, 3, 224, 224))
+    ).all()
     assert (batch.tensor == np.zeros((10, 3, 224, 224))).all()
-    assert batch.tensor.ctypes.data == batch._tensor_columns['tensor'].ctypes.data
-
-    batch.unstack()
+    assert (
+        batch.tensor.ctypes.data == batch._storage.tensor_columns['tensor'].ctypes.data
+    )
 
 
 def test_stack(batch):
