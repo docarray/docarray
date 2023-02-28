@@ -123,10 +123,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
-        # if isinstance(item, (slice, Iterable)):
-        #     item_ = cast(Iterable, item) #
-        #     return self.__class__.from_columns_storage()
-        # # single doc case
+        if isinstance(item, (slice, Iterable)):
+            return self.__class__.from_columns_storage(self._storage[item])
+        # single doc case
         doc = self.document_type.from_view(ColumnStorageView(item, self._storage))
         return doc
 

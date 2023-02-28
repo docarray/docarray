@@ -151,8 +151,20 @@ class ColumnStorage:
     def __len__(self) -> int:
         return len(self.any_columns['id'])
 
-    def __getitem__(self, item: IndexIterType) -> Dict[str, Sequence]:
-        return {key: col[item] for key, col in self.columns.items()}
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        tensor_columns = {key: col[item] for key, col in self.tensor_columns.items()}
+        doc_columns = {key: col[item] for key, col in self.doc_columns.items()}
+        da_columns = {key: col[item] for key, col in self.da_columns.items()}
+        any_columns = {key: col[item] for key, col in self.any_columns.items()}
+
+        return ColumnStorage(
+            tensor_columns,
+            doc_columns,
+            da_columns,
+            any_columns,
+            self.document_type,
+            self.tensor_type,
+        )
 
 
 class ColumnStorageView(dict, MutableMapping[str, Any]):
