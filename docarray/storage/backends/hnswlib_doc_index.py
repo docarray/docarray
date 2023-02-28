@@ -23,7 +23,7 @@ import numpy as np
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.proto import DocumentProto
-from docarray.storage.abstract_doc_store import (
+from docarray.storage.abstract_doc_index import (
     BaseDocumentIndex,
     FindResultBatched,
     _Column,
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 else:
     # static type checkers do not like callable objects as decorators
-    from docarray.storage.abstract_doc_store import composable
+    from docarray.storage.abstract_doc_index import composable
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='HnswDocumentIndex')

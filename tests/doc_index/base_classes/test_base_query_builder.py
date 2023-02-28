@@ -1,6 +1,6 @@
 import pytest
 
-from docarray.storage.abstract_doc_store import BaseDocumentIndex, composable
+from docarray.storage.abstract_doc_index import BaseDocumentIndex, composable
 
 
 class DummyQueryBuilder(BaseDocumentIndex.QueryBuilder):

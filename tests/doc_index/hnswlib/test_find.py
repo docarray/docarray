@@ -3,7 +3,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.storage.backends.HnswDocStore import HnswDocumentIndex
+from docarray.storage.backends.hnswlib_doc_index import HnswDocumentIndex
 from docarray.typing import NdArray
 
 

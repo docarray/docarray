@@ -6,7 +6,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.storage.abstract_doc_store import BaseDocumentIndex
+from docarray.storage.abstract_doc_index import BaseDocumentIndex
 from docarray.typing import ID, NdArray
 
 
