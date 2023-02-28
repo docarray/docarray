@@ -139,7 +139,10 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        raise NotImplementedError
+        if field in self._storage.columns.keys():
+            return self._storage.columns[field]
+        else:
+            raise ValueError(f'{field} does not exist in {self}')
 
     ####################################
     # Updating data : Setitem related  #
