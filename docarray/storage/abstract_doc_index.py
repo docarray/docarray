@@ -545,6 +545,10 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     # Subclasses should not need to implement these  #
     ##################################################
     def __class_getitem__(cls, item: Type[TSchema]):
+        if not isinstance(item, type):
+            # do nothing
+            # enables use in static contexts with type vars, e.g. as type annotation
+            return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
