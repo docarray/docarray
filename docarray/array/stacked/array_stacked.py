@@ -13,7 +13,7 @@ from typing import (
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
-from docarray.array.stacked.columnstorage import ColumnStorage, ColumnStorageView
+from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

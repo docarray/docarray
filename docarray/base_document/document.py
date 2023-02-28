@@ -11,7 +11,7 @@ from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.columnstorage import ColumnStorageView
+    from docarray.array.stacked.column_storage import ColumnStorageView
 
 _console: Console = Console()
 
@@ -73,7 +73,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        from docarray.array.stacked.columnstorage import ColumnStorageView
+        from docarray.array.stacked.column_storage import ColumnStorageView
 
         return isinstance(self.__dict__, ColumnStorageView)
 

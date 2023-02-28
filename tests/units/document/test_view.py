@@ -1,7 +1,7 @@
 import numpy as np
 
 from docarray import BaseDocument
-from docarray.array.stacked.columnstorage import ColumnStorage, ColumnStorageView
+from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.typing import AnyTensor, NdArray
 
 
