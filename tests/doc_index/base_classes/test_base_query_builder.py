@@ -2,6 +2,8 @@ import pytest
 
 from docarray.doc_index.abstract_doc_index import BaseDocumentIndex, composable
 
+pytestmark = pytest.mark.doc_index
+
 
 class DummyQueryBuilder(BaseDocumentIndex.QueryBuilder):
     def build(self):

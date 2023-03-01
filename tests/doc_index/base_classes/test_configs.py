@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, Type
 
+import pytest
 from pydantic import Field
 
 from docarray import BaseDocument
 from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
 from docarray.typing import NdArray
+
+pytestmark = pytest.mark.doc_index
 
 
 class SimpleDoc(BaseDocument):

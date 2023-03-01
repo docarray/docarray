@@ -9,6 +9,8 @@ from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
 from docarray.typing import ID, NdArray
 
+pytestmark = pytest.mark.doc_index
+
 
 class SimpleDoc(BaseDocument):
     tens: NdArray[10] = Field(dim=1000)

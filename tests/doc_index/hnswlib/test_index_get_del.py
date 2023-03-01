@@ -6,6 +6,8 @@ from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.backends.hnswlib_doc_index import HnswDocumentIndex
 from docarray.typing import NdArray
 
+pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
+
 
 class SimpleDoc(BaseDocument):
     tens: NdArray[10] = Field(dim=1000)
