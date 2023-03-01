@@ -48,8 +48,8 @@ class DummyDocIndex(BaseDocumentIndex):
 
     _index = _identity
     num_docs = _identity
-    __delitem__ = _identity
-    __getitem__ = _identity
+    _del_items = _identity
+    _get_items = _identity
     execute_query = _identity
     _find = _identity
     _find_batched = _identity

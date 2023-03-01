@@ -253,32 +253,24 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
-    def __delitem__(self, key: Union[str, Sequence[str]]):
+    def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
-        if isinstance(key, str):
-            key = [key]
         try:
-            for doc_id in key:
+            for doc_id in doc_ids:
                 id_ = self._to_hashed_id(doc_id)
                 for col_name, index in self._hnsw_indices.items():
                     index.mark_deleted(id_)
         except RuntimeError:
-            raise KeyError(f'No document with id {key} found')
+            raise KeyError(f'No document with id {doc_ids} found')
 
-        self._delete_docs_from_sqlite(key)
+        self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
 
-    def __getitem__(self, key: Union[str, Sequence[str]]):
-        # delete from the indices
-        if isinstance(key, str):
-            key = [key]
-        out_docs = self._get_docs_sqlite_doc_id(key)
-        # TODO(johannes): this could be handled for all stores
+    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+        out_docs = self._get_docs_sqlite_doc_id(doc_ids)
         if len(out_docs) == 0:
-            raise KeyError(f'No document with id {key} found')
-        if len(out_docs) == 1:
-            return out_docs[0]
-        return out_docs
+            raise KeyError(f'No document with id {doc_ids} found')
+        return out_docs  # type: ignore
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
@@ -355,7 +347,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
         return da_cls([self._doc_from_bytes(row[0]) for row in rows])
 
-    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray:
+    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray[TSchema]:
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))

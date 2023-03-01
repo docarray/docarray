@@ -76,7 +76,7 @@ class _Column:
 
 
 class composable:
-    """Decorator that marks methods in a DocumentStore as composable,
+    """Decorator that marks methods in a DocumentIndex as composable,
     i.e. they can be used in a query builder.
     """
 
@@ -104,8 +104,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         if self._schema is None:
             raise ValueError(
-                'A DocumentStore must be typed with a Document type.'
-                'To do so, use the syntax: DocumentStore[DocumentType]'
+                'A DocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
         self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
@@ -186,22 +186,20 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def __delitem__(self, key: Union[str, Sequence[str]]):
-        """Delete one or multiple Documents from the store, by `id`.
-        If no document is found, a KeyError is raised.
+    def _del_items(self, doc_ids: Sequence[str]):
+        """Delete Documents from the index.
 
-        :param key: id or ids to delete from the Document Store
+        :param doc_ids: ids to delete from the Document Store
         """
         ...
 
     @abstractmethod
-    def __getitem__(
-        self, key: Union[str, Sequence[str]]
-    ) -> Union[TSchema, Sequence[TSchema]]:
-        """Get one or multiple Documents into the store, by `id`.
+    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+        """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param key: id or ids to get from the Document Store
+        :param doc_ids: ids to get from the Document Index
+        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
         """
         ...
 
@@ -228,7 +226,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         search_field: str,
         limit: int,
     ) -> FindResult:
-        """Find documents in the store
+        """Find documents in the index
 
         :param query: query vector for KNN/ANN search. Has single axis.
         :param search_field: name of the field to search on
@@ -246,7 +244,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         search_field: str,
         limit: int,
     ) -> FindResultBatched:
-        """Find documents in the store
+        """Find documents in the index
 
         :param query: query vectors for KNN/ANN search.
             Has shape (batch_size, vector_dim)
@@ -262,7 +260,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> DocumentArray:
-        """Find documents in the store based on a filter query
+        """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
@@ -276,7 +274,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         filter_queries: Any,
         limit: int,
     ) -> List[DocumentArray]:
-        """Find documents in the store based on multiple filter queries.
+        """Find documents in the index based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
 
         :param filter_queries: the DB specific filter queries to execute
@@ -293,7 +291,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         search_field: str,
         limit: int,
     ) -> FindResult:
-        """Find documents in the store based on a text search query
+        """Find documents in the index based on a text search query
 
         :param query: The text to search for
         :param search_field: name of the field to search on
@@ -311,7 +309,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         search_field: str,
         limit: int,
     ) -> FindResultBatched:
-        """Find documents in the store based on a text search query
+        """Find documents in the index based on a text search query
 
         :param queries: The texts to search for
         :param search_field: name of the field to search on
@@ -327,9 +325,45 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     # Subclasses may or may not need to change these #
     ####################################################
 
+    def __getitem__(
+        self, key: Union[str, Sequence[str]]
+    ) -> Union[TSchema, DocumentArray[TSchema]]:
+        """Get one or multiple Documents into the index, by `id`.
+        If no document is found, a KeyError is raised.
+
+        :param key: id or ids to get from the Document Index
+        """
+        # normalize input
+        if isinstance(key, str):
+            return_singleton = True
+            key = [key]
+        else:
+            return_singleton = False
+        # retrieve data
+        doc_sequence = self._get_items(key)
+        # cast output
+        if isinstance(doc_sequence, DocumentArray):
+            out_da: DocumentArray[TSchema] = doc_sequence
+        else:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            out_da = da_cls(doc_sequence)
+        return out_da[0] if return_singleton else out_da  # type: ignore
+
+    def __delitem__(self, key: Union[str, Sequence[str]]):
+        """Delete one or multiple Documents from the index, by `id`.
+        If no document is found, a KeyError is raised.
+
+        :param key: id or ids to delete from the Document Index
+        """
+        if isinstance(key, str):
+            key = [key]
+        self._del_items(key)
+
     def configure(self, runtime_config=None, **kwargs):
         """
-        Configure the DocumentStore.
+        Configure the DocumentIndex.
         You can either pass a config object to `config` or pass individual config
         parameters as keyword arguments.
         If a configuration object is passed, it will replace the current configuration.
@@ -346,7 +380,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             self._runtime_config = runtime_config
 
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index Documents into the store.
+        """Index Documents into the index.
 
         :param docs: Documents to index
         """
@@ -360,7 +394,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the store using nearest neighbor search.
+        """Find documents in the index using nearest neighbor search.
 
         :param query: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.)
@@ -387,7 +421,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the store using nearest neighbor search.
+        """Find documents in the index using nearest neighbor search.
 
         :param queries: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
@@ -417,7 +451,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> DocumentArray:
-        """Find documents in the store based on a filter query
+        """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
@@ -431,7 +465,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> List[DocumentArray]:
-        """Find documents in the store based on multiple filter queries.
+        """Find documents in the index based on multiple filter queries.
 
         :param filter_queries: the DB specific filter query to execute
         :param limit: maximum number of documents to return
@@ -446,7 +480,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the store based on a text search query.
+        """Find documents in the index based on a text search query.
 
         :param query: The text to search for
         :param search_field: name of the field to search on
@@ -468,7 +502,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the store based on a text search query.
+        """Find documents in the index based on a text search query.
 
         :param queries: The texts to search for
         :param search_field: name of the field to search on
@@ -526,7 +560,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if not self._is_schema_compatible(docs_seq):
             raise ValueError(
                 'The schema of the documents to be indexed is not compatible'
-                ' with the schema of the store.'
+                ' with the schema of the index.'
             )
 
         def _col_gen(col_name: str):
@@ -558,9 +592,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def build_query(self) -> QueryBuilder:
         """
-        Build a query for this DocumentStore.
+        Build a query for this DocumentIndex.
 
-        :return: a new `QueryBuilder` object for this DocumentStore
+        :return: a new `QueryBuilder` object for this DocumentIndex
         """
         return self.QueryBuilder()  # type: ignore
 
