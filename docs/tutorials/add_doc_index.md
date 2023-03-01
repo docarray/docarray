@@ -112,11 +112,80 @@ class _Column:
 
 - `docarray_type` is the type of the column in DocArray, e.g. `NdArray` or `str`
 - `db_type` is the type of the column in the Document Index, e.g. `np.ndarray` or `str`. You can customize the mapping from `docarray_type` to `db_type`, as we will see later.
-- `n_dim` is the dimensionality of the column, e.g. `100` for a 100-dimensional vector. For columns that are not vectors, this is `None`.
 - `config` is a dictionary of configurations for the column. For example, for the `other_tensor` column above, this would contain the `space` and `dim` configurations.
+- `n_dim` is the dimensionality of the column, e.g. `100` for a 100-dimensional vector. See further guidance on this below.
 
 Again, these are automatically populated for you, so you can just use them in your implementation.
 
+### Properly handle `n_dim`
+
+`_Column.n_dim` is automatically obtained from type parametrizations of the form `NdArray[100]`;
+if there isn't such a parametrization, `n_dim` of the columns will be `None`.
+
+You should also provide another way of defining the dimensionality of your columns, specifically by exposing a parameter in `Field(...)` (see example schema at the top).
+
+This leads to four possible scenarios:
+
+**Scenario 1: Only `n_dim` is defined**
+
+Imagine the user defines a schema like the following:
+
+```python
+class MyDoc(BaseDocument):
+    tensor: NdArray[100]
+
+
+index = MyDocumentIndex[MyDoc]()
+```
+
+In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config == {}`.
+The `tensor` column in your backend should be configured to have dimensionality 100.
+
+**Scenario 2: Only `Field(...)` is defined**
+
+Imagine the user defines a schema like the following:
+
+```python
+class MyDoc(BaseDocument):
+    tensor: NdArray = Field(dim=50)
+
+
+index = MyDocumentIndex[MyDoc]()
+```
+
+In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config['dim'] == 50`.
+The `tensor` column in your backend should be configured to have dimensionality 50.
+
+**Scenario 3: Both `n_dim` and `Field(...)` are defined**
+
+Imagine the user defines a schema like the following:
+
+```python
+class MyDoc(BaseDocument):
+    tensor: NdArray[100] = Field(dim=50)
+
+
+index = MyDocumentIndex[MyDoc]()
+```
+
+In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config['dim'] == 50`.
+The `tensor` column in your backend should be configured to have dimensionality 100, as **`n_dim` takes precedence over `Field(...)`**.
+
+**Scenario 4: Neither `n_dim` nor `Field(...)` are defined**
+
+Imagine the user defines a schema like the following:
+
+```python
+class MyDoc(BaseDocument):
+    tensor: NdArray
+
+
+index = MyDocumentIndex[MyDoc]()
+```
+
+In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config == {}`.
+If your backend can handle tensor/embedding columns without defined dimensionality, you should leverage that mechanism.
+Otherwise, raise an Exception.
 
 ## Declare default configurations
 
