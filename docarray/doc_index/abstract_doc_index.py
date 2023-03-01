@@ -582,13 +582,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
 
-        class _DocumentStoreTyped(cls):  # type: ignore
+        class _DocumentIndexTyped(cls):  # type: ignore
             _schema: Type[TSchema] = item
 
-        _DocumentStoreTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
-        _DocumentStoreTyped.__qualname__ = f'{cls.__qualname__}[{item.__name__}]'
+        _DocumentIndexTyped.__name__ = f'{cls.__name__}[{item.__name__}]'
+        _DocumentIndexTyped.__qualname__ = f'{cls.__qualname__}[{item.__name__}]'
 
-        return _DocumentStoreTyped
+        return _DocumentIndexTyped
 
     def build_query(self) -> QueryBuilder:
         """
