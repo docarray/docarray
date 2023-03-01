@@ -270,7 +270,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         out_docs = self._get_docs_sqlite_doc_id(doc_ids)
         if len(out_docs) == 0:
             raise KeyError(f'No document with id {doc_ids} found')
-        return out_docs  # type: ignore
+        return out_docs
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
