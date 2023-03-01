@@ -130,7 +130,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 return np.ndarray
 
         if python_type == docarray.typing.ID:
-            return None  # TODO(johannes): handle this
+            return None
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -196,10 +196,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResultBatched:
-        if kwargs:
-            raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(query, k=limit)
         result_das = [
@@ -211,18 +208,16 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return FindResultBatched(documents=result_das, scores=distances)
 
     @composable
-    def _find(
-        self, query: np.ndarray, search_field: str, limit: int, **kwargs
-    ) -> FindResult:
+    def _find(self, query: np.ndarray, search_field: str, limit: int) -> FindResult:
         query_batched = np.expand_dims(query, axis=0)
-        docs, scores = self._find_batched(query_batched, search_field, limit, **kwargs)
+        docs, scores = self._find_batched(query_batched, search_field, limit)
         return FindResult(documents=docs[0], scores=scores[0])
 
     @composable
     def _filter(
         self,
-        *args,
-        **kwargs,
+        filter_query: Any,
+        limit: int,
     ) -> DocumentArray:
 
         raise NotImplementedError(
@@ -235,7 +230,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-        **kwargs,
     ) -> List[DocumentArray]:
         raise NotImplementedError(
             f'{type(self)} does not support filter-only queries.'
@@ -248,7 +242,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
@@ -257,7 +250,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         queries: Sequence[str],
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 

@@ -172,7 +172,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]], **kwargs):
+    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         """Index a document into the store"""
         # `column_to_data` is a dictionary from column name to a generator
         # that yields the data for that column.
@@ -227,7 +227,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResult:
         """Find documents in the store
 
@@ -246,7 +245,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResultBatched:
         """Find documents in the store
 
@@ -263,7 +261,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-        **kwargs,
     ) -> DocumentArray:
         """Find documents in the store based on a filter query
 
@@ -278,7 +275,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-        **kwargs,
     ) -> List[DocumentArray]:
         """Find documents in the store based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
@@ -296,7 +292,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResult:
         """Find documents in the store based on a text search query
 
@@ -315,7 +310,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         queries: Sequence[str],
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResultBatched:
         """Find documents in the store based on a text search query
 
@@ -357,7 +351,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param docs: Documents to index
         """
         data_by_columns = self._get_col_value_dict(docs)
-        self._index(data_by_columns, **kwargs)
+        self._index(data_by_columns, **kwargs)  # type: ignore
 
     def find(
         self,
@@ -383,7 +377,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
         return self._find(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs
+            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
         )
 
     def find_batched(
@@ -414,7 +408,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_vec_np = self._to_numpy(queries)
 
         return self._find_batched(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs
+            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
         )
 
     def filter(
@@ -429,7 +423,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter(filter_query, limit=limit, **kwargs)
+        return self._filter(filter_query, limit=limit, **kwargs)  # type: ignore
 
     def filter_batched(
         self,
@@ -443,7 +437,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter_batched(filter_queries, limit=limit, **kwargs)
+        return self._filter_batched(filter_queries, limit=limit, **kwargs)  # type: ignore
 
     def text_search(
         self,
@@ -464,7 +458,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_text = query
         return self._text_search(
-            query_text, search_field=search_field, limit=limit, **kwargs
+            query_text, search_field=search_field, limit=limit, **kwargs  # type: ignore
         )
 
     def text_search_batched(
@@ -489,7 +483,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_texts = cast(Sequence[str], queries)
         return self._text_search_batched(
-            query_texts, search_field=search_field, limit=limit, **kwargs
+            query_texts, search_field=search_field, limit=limit, **kwargs  # type: ignore
         )
 
     ##########################################################
