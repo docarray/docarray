@@ -86,7 +86,7 @@ The `_runtime_config` is a dataclass that contains all "dynamic" configurations 
 Users can pass these configurations to the `.configure()` method of your Document Index, and `self._runtime_config` will be populated
 for you, so that you can use it in your implementation.
 
-You can declare allowed fields and default values for your `_db_config`, but you will see that later.
+You can declare allowed fields and default values for your `_runtime_config `, but you will see that later.
 
 ### The `_columns`
 
