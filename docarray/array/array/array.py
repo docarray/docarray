@@ -148,7 +148,7 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         return len(self._data)
 
     @overload
-    def __getitem__(self: T, item: int) -> BaseDocument:
+    def __getitem__(self: T, item: int) -> T_doc:
         ...
 
     @overload
