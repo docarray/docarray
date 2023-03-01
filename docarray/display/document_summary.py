@@ -103,8 +103,11 @@ class DocumentSummary:
         self, console: 'Console', options: 'ConsoleOptions'
     ) -> 'RenderResult':
         kls = self.doc.__class__.__name__
-        id_abbrv = getattr(self.doc, 'id')[:7]
-        yield f':page_facing_up: [b]{kls} [/b]: [cyan]{id_abbrv} ...[cyan]'
+        if self.doc.id is not None:
+            id_abbrv = getattr(self.doc, 'id')[:7]
+            yield f':page_facing_up: [b]{kls} [/b]: [cyan]{id_abbrv} ...[cyan]'
+        else:
+            yield f':page_facing_up: [b]{kls} [/b]'
 
         from rich import box, text
         from rich.table import Table
