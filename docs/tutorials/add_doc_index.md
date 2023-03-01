@@ -1,6 +1,6 @@
 # Add a new Document Index
 
-In DocArray there exists the concept of _Document Index_, a class that takes `Document`s, persists them,
+In DocArray there exists the concept of _Document Index_, a class that takes `Document`s, optionally persists them,
 and makes them searchable.
 
 There are different Document Indexes leveraging different backends, such as Weaviate, Qdrant, HNSWLit etc.
