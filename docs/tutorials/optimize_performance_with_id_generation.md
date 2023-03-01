@@ -25,21 +25,5 @@ class MyDoc2(BaseDocument):
 doc = MyDoc2(id=None, title='bye')
 ```
 
-If you do rely on the ID, there is another option to speed up the process. You could use an alternative library to create the ID. 
-By default `os.urandom(16).hex()` is being used. You could use e.g. [fastuuid](https://github.com/thedrow/fastuuid)
-
-
-```python
-import fastuuid
-
-
-class MyDocFastuuid(BaseDocument):
-    id: ID = ID(fastuuid.fastuuid.uuid4())
-    title: str
-
-
-doc = MyDocFastuuid(title='bye')
-```
-
 Benchmark:
 ![benchmark_id_generation.png](benchmark_id_generation.png)
