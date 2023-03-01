@@ -242,7 +242,7 @@ In general, the following is true:
 - For every method that you need to implement, there is a public variant (e.g. `index`) and a private variant (e.g. `_index`)
 - You should usually implement the private variant, which is called by the already implemented public variant. This should make your life easier, because some preprocessing and data normalization will already be done for you.
 - You can, however, also implement the public variant directly, if you want to do something special.
-  - **Caution**: While this is a perfectly fine thing to do, it might create more maintainance work for you in the future, because the public variant defined in the `BaseDocumentIndex` might change in the future, and you will have to update your implementation accordingly.
+  - **Caution**: While this is a perfectly fine thing to do, it might create more maintenance work for you in the future, because the public variant defined in the `BaseDocumentIndex` might change in the future, and you will have to update your implementation accordingly.
 
 Further:
 - You don't absolutely have to implement everything. If a feature (e.g. `text_search`) is not supported by your backend, just raise a `NotImplementedError` in the corresponding method.
