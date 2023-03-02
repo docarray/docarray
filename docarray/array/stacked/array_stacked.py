@@ -1,7 +1,9 @@
+from collections import ChainMap
 from contextlib import contextmanager
 from typing import (
     TYPE_CHECKING,
     Any,
+    Dict,
     Iterable,
     List,
     Sequence,
@@ -279,12 +281,49 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         """Convert DocumentArray into a Protobuf message"""
         raise NotImplementedError
 
-    def unstack(self: T) -> DocumentArray:
+    def unstack(self: T) -> DocumentArray[T_doc]:
         """Convert DocumentArrayStacked into a DocumentArray.
 
         Note this destroys the arguments and returns a new DocumentArray
         """
-        raise NotImplementedError
+
+        unstacked_doc_column: Dict[str, DocumentArray] = dict()
+        unstacked_da_column: Dict[str, List[DocumentArray]] = dict()
+        unstacked_tensor_column: Dict[str, List[AbstractTensor]] = dict()
+        unstacked_any_column = self._storage.any_columns
+
+        for field, doc_col in self._storage.doc_columns.items():
+            unstacked_doc_column[field] = doc_col.unstack()
+
+        for field, da_col in self._storage.da_columns.items():
+            unstacked_da_column[field] = [da.unstack() for da in da_col]
+
+        for field, tensor_col in self._storage.tensor_columns.items():
+            unstacked_tensor_column[field] = list()
+            for tensor in tensor_col:
+                tensor_copy = tensor.get_comp_backend().copy(tensor)
+                unstacked_tensor_column[field].append(tensor_copy)
+
+            # del self._storage.tensor_columns[field]
+            # todo fix this should be uncommented
+
+        unstacked_column = ChainMap(
+            unstacked_any_column,
+            unstacked_tensor_column,
+            unstacked_da_column,
+            unstacked_doc_column,
+        )
+
+        docs = []
+
+        for i in range(len(self)):
+
+            data = {field: col[i] for field, col in unstacked_column.items()}
+            docs.append(self.document_type.construct(**data))
+
+        return DocumentArray[self.document_type].construct(
+            docs, tensor_type=self.tensor_type
+        )
 
     @contextmanager
     def unstacked_mode(self):

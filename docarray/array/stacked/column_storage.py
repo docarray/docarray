@@ -153,7 +153,7 @@ class ColumnStorage:
         )
 
     def __len__(self) -> int:
-        return len(self.any_columns['id'])
+        return len(self.any_columns['id'])  # TODO what if ID are None ?
 
     def __getitem__(self: T, item: IndexIterType) -> T:
         tensor_columns = {key: col[item] for key, col in self.tensor_columns.items()}

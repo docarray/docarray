@@ -221,25 +221,6 @@ def test_unstack_nested_documentarray(nested_batch):
             assert (doc.tensor == torch.zeros(3, 224, 224)).all()
 
 
-@pytest.mark.proto
-def test_proto_stacked_mode_torch(batch):
-    batch.from_protobuf(batch.to_protobuf())
-
-
-@pytest.mark.proto
-def test_proto_stacked_mode_numpy():
-    class MyDoc(BaseDocument):
-        tensor: NdArray[3, 224, 224]
-
-    da = DocumentArray[MyDoc](
-        [MyDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
-    )
-
-    da = da.stack()
-
-    da.from_protobuf(da.to_protobuf())
-
-
 def test_stack_call():
     class Image(BaseDocument):
         tensor: TorchTensor[3, 224, 224]

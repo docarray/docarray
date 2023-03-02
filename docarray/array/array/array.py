@@ -136,9 +136,26 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
         docs: Optional[Iterable[T_doc]] = None,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
-
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
         self.tensor_type = tensor_type
+
+    @classmethod
+    def construct(
+        cls: Type[T],
+        docs: Sequence[T_doc],
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ) -> T:
+        """
+        Create a DocumentArray without validation any data. The data must come from a
+        trusted sources
+        :param docs: a Sequence (list) of Document with the same schema
+        :param tensor_type: Class used to wrap the tensors of the Documents when stacked
+        :return:
+        """
+        da = cls.__new__(cls)
+        da._data = docs
+        da.tensor_type = tensor_type
+        return da
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """

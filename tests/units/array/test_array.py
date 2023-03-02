@@ -308,3 +308,14 @@ def test_generic_type_var():
     a = DocumentArray()
     f(a)
     g(a)
+
+
+def test_construct():
+    class Text(BaseDocument):
+        text: str
+
+    docs = [Text(text=f'hello {i}') for i in range(10)]
+
+    da = DocumentArray[Text].construct(docs)
+
+    assert da._data is docs
