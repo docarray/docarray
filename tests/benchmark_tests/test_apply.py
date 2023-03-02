@@ -1,33 +1,38 @@
-from multiprocessing import cpu_count
 from time import time
 
+import numpy as np
 import pytest
 
 from docarray import BaseDocument, DocumentArray
+from docarray.typing import NdArray
 from docarray.utils.apply import apply
 
 
-class MyDoc(BaseDocument):
-    title: str
+class MyMatrix(BaseDocument):
+    matrix: NdArray
 
 
-def title_da(doc: MyDoc) -> MyDoc:
-    return MyDoc(title=doc.title)
+def sqrt(doc: MyMatrix) -> MyMatrix:
+    # some cpu intensive function
+    for i in range(3000):
+        sqrt = np.sqrt(doc.matrix)
+    return MyMatrix(matrix=sqrt)
 
 
 @pytest.mark.benchmark
 def test_apply_benchmark():
-    if cpu_count() > 1:
-        n_docs = 1_000_000
-
-        da_1 = DocumentArray[MyDoc]([MyDoc(title=f'{i}') for i in range(n_docs)])
+    def workload(num_workers: int) -> float:
+        n_docs = 5
+        rng = np.random.RandomState(0)
+        matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
+        da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
         start_time = time()
-        apply(da=da_1, func=title_da, num_worker=1)
-        duration_1_cpu = time() - start_time
+        apply(da=da, func=sqrt, num_worker=num_workers)
+        return time() - start_time
 
-        da_2 = DocumentArray[MyDoc]([MyDoc(title=f'{i}') for i in range(n_docs)])
-        start_time = time()
-        apply(da=da_2, func=title_da, num_worker=2)
-        duration_2_cpu = time() - start_time
+    time_1_cpu = workload(num_workers=1)
+    print(f"time_1_cpu = {time_1_cpu}")
+    time_2_cpu = workload(num_workers=2)
+    print(f"time_2_cpu = {time_2_cpu}")
 
-        assert duration_2_cpu < duration_1_cpu
+    assert time_2_cpu < time_1_cpu
