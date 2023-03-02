@@ -8,12 +8,12 @@ from docarray import BaseDocument
 from docarray.array.abstract_array import AnyDocumentArray
 
 T = TypeVar('T', bound=AnyDocumentArray)
-T_Doc = TypeVar('T_Doc', bound=BaseDocument)
+T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
 def apply(
     da: T,
-    func: Callable[[T_Doc], T_Doc],
+    func: Callable[[T_doc], T_doc],
     backend: str = 'thread',
     num_worker: Optional[int] = None,
     pool: Optional[Union[Pool, ThreadPool]] = None,
@@ -77,12 +77,12 @@ def apply(
 
 def _map(
     da: T,
-    func: Callable[[T_Doc], T_Doc],
+    func: Callable[[T_doc], T_doc],
     backend: str = 'thread',
     num_worker: Optional[int] = None,
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
-) -> Generator[T_Doc, None, None]:
+) -> Generator[T_doc, None, None]:
     """
     Return an iterator that applies `func` to every Document in `da` in parallel,
     yielding the results.
