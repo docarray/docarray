@@ -26,7 +26,7 @@ def test_batch(shuffle, stack, batch_size, n_batches):
     if stack:
         da = da.stack()
 
-    batches = list(da.batch(batch_size=batch_size, shuffle=shuffle))
+    batches = list(da._batch(batch_size=batch_size, shuffle=shuffle))
     assert len(batches) == n_batches
 
     for i, batch in enumerate(batches):

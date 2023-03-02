@@ -6,7 +6,7 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 from docarray.typing import NdArray
-from docarray.utils.apply import apply
+from docarray.utils.apply import apply, apply_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 pytestmark = pytest.mark.benchmark
@@ -34,17 +34,14 @@ def test_apply_multiprocessing_benchmark():
         return time() - start_time
 
     time_1_cpu = time_multiprocessing(num_workers=1)
-    print(f"time_1_cpu = {time_1_cpu}")
     time_2_cpu = time_multiprocessing(num_workers=2)
-    print(f"time_2_cpu = {time_2_cpu}")
 
     assert time_2_cpu < time_1_cpu
 
 
 def io_intensive(img: Image) -> Image:
     # some io intensive function: load and set image url
-    t = img.url.load()
-    img.tensor = t
+    img.tensor = img.url.load()
     return img
 
 
@@ -59,8 +56,35 @@ def test_apply_multithreading_benchmark():
         return time() - start_time
 
     time_1_thread = time_multithreading(num_workers=1)
-    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading(num_workers=2)
-    print(f"time_2_thread = {time_2_thread}")
+
+    assert time_2_thread < time_1_thread
+
+
+def io_intensive_batch(da: DocumentArray[Image]) -> DocumentArray[Image]:
+    # some io intensive function: load and set image url
+    for doc in da:
+        doc.tensor = doc.url.load()
+    return da
+
+
+def test_apply_batch_multithreading_benchmark():
+    def time_multithreading_batch(num_workers: int) -> float:
+        n_docs = 100
+        da = DocumentArray[Image](
+            [Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
+        )
+        start_time = time()
+        apply_batch(
+            da=da,
+            func=io_intensive_batch,
+            backend='thread',
+            num_worker=num_workers,
+            batch_size=10,
+        )
+        return time() - start_time
+
+    time_1_thread = time_multithreading_batch(num_workers=1)
+    time_2_thread = time_multithreading_batch(num_workers=2)
 
     assert time_2_thread < time_1_thread

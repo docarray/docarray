@@ -4,6 +4,8 @@ from multiprocessing.pool import Pool, ThreadPool
 from types import LambdaType
 from typing import Any, Callable, Generator, Optional, TypeVar, Union
 
+from rich.progress import track
+
 from docarray import BaseDocument
 from docarray.array.abstract_array import AnyDocumentArray
 
@@ -18,10 +20,10 @@ def apply(
     num_worker: Optional[int] = None,
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
-) -> T:
+) -> None:
     """
-    Apply `func` to every Document of the given DocumentArray while multithreading or
-    multiprocessing, return itself after modification.
+    Apply `func` to every Document of the given DocumentArray in-place while multithreading
+    or multiprocessing.
 
     EXAMPLE USAGE
 
@@ -38,7 +40,7 @@ def apply(
 
 
         da = DocumentArray[Image]([Image(url='path/to/img.png') for _ in range(100)])
-        da = apply(
+        apply(
             da, load_url_to_tensor, backend='thread'
         )  # threading is usually a good option for IO-bound tasks such as loading an image from url
 
@@ -68,11 +70,9 @@ def apply(
         be responsible for closing the pool.
     :param show_progress: show a progress bar. Defaults to False.
 
-    :return: DocumentArray with applied modifications
     """
     for i, doc in enumerate(_map(da, func, backend, num_worker, pool, show_progress)):
         da[i] = doc
-    return da
 
 
 def _map(
@@ -115,7 +115,6 @@ def _map(
 
     :yield: Documents returned from `func`
     """
-    from rich.progress import track
 
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
@@ -145,10 +144,9 @@ def apply_batch(
     shuffle: bool = False,
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
-) -> T:
+) -> None:
     """
-    Batches itself into mini-batches, applies `func` to every mini-batch, and return
-    itself after the modifications.
+    Batches itself into mini-batches, applies `func` to every mini-batch in-place.
 
     EXAMPLE USAGE
 
@@ -168,7 +166,7 @@ def apply_batch(
 
 
         da = DocumentArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-        da = apply_batch(da, upper_case_name, batch_size=10)
+        apply_batch(da, upper_case_name, batch_size=10)
         print(da.name[:3])
 
     .. code-block:: text
@@ -200,8 +198,6 @@ def apply_batch(
     :param pool: use an existing/external process or thread pool. If given, you will
         be responsible for closing the pool.
     :param show_progress: show a progress bar. Defaults to False.
-
-    :return DocumentArray after modifications
     """
     for i, batch in enumerate(
         _map_batch(
@@ -210,7 +206,6 @@ def apply_batch(
     ):
         indices = [i for i in range(i * batch_size, (i + 1) * batch_size)]
         da[indices] = batch
-    return da
 
 
 def _map_batch(
@@ -256,14 +251,12 @@ def _map_batch(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
 
-    :yield: anything return from ``func``
+    :yield: DocumentArrays returned from `func`
     """
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
             f'Multiprocessing does not allow functions that are local, lambda or partial: {func}'
         )
-
-    from rich.progress import track
 
     ctx_p: Union[nullcontext, Union[Pool, ThreadPool]]
     if pool:
@@ -274,7 +267,7 @@ def _map_batch(
         ctx_p = p
 
     with ctx_p:
-        imap = p.imap(func, da.batch(batch_size=batch_size, shuffle=shuffle))
+        imap = p.imap(func, da._batch(batch_size=batch_size, shuffle=shuffle))
         for x in track(
             imap, total=ceil(len(da) / batch_size), disable=not show_progress
         ):

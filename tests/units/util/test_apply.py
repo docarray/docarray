@@ -7,6 +7,8 @@ from docarray.documents import Image
 from docarray.utils.apply import _map_batch, apply, apply_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
+N_DOCS = 2
+
 
 def load_from_doc(d: Image) -> Image:
     if d.url is not None:
@@ -16,9 +18,7 @@ def load_from_doc(d: Image) -> Image:
 
 @pytest.fixture()
 def da():
-    da = DocumentArray[Image](
-        [Image(url=url) for url in IMAGE_PATHS.values() for _ in range(2)]
-    )
+    da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(N_DOCS)])
     return da
 
 
@@ -27,10 +27,10 @@ def test_apply(da, backend):
     for tensor in da.tensor:
         assert tensor is None
 
-    da_applied = apply(da=da, func=load_from_doc, backend=backend)
+    apply(da=da, func=load_from_doc, backend=backend)
 
-    assert len(da) == len(da_applied)
-    for tensor in da_applied.tensor:
+    assert len(da) == N_DOCS
+    for tensor in da.tensor:
         assert tensor is not None
 
 
@@ -49,13 +49,13 @@ def test_apply_multiprocessing_local_func_raise_exception(da):
 
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_check_order(backend):
-    da = DocumentArray[Image]([Image(id=i) for i in range(2)])
+    da = DocumentArray[Image]([Image(id=i) for i in range(N_DOCS)])
 
-    da_applied = apply(da=da, func=load_from_doc, backend=backend)
+    apply(da=da, func=load_from_doc, backend=backend)
 
-    assert len(da) == len(da_applied)
-    for id_1, id_2 in zip(da, da_applied):
-        assert id_1 == id_2
+    assert len(da) == N_DOCS
+    for i, id_1 in enumerate(da.id):
+        assert id_1 == str(i)
 
 
 def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
@@ -69,11 +69,9 @@ def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
 def test_apply_batch_multithreading(n_docs, batch_size, backend):
 
     da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
-    da_applied = apply_batch(
-        da=da, func=load_from_da, batch_size=batch_size, backend=backend
-    )
+    apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
 
-    for doc in da_applied:
+    for doc in da:
         assert isinstance(doc, Image)
 
 
