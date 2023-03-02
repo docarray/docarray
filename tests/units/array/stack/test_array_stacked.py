@@ -130,9 +130,11 @@ def test_stack_numpy():
 
 
 def test_stack(batch):
-    assert (batch._tensor_columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
+    assert (
+        batch._storage.tensor_columns['tensor'] == torch.zeros(10, 3, 224, 224)
+    ).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
-    assert batch._tensor_columns['tensor'].data_ptr() == batch.tensor.data_ptr()
+    assert batch._storage.tensor_columns['tensor'].data_ptr() == batch.tensor.data_ptr()
 
     for doc, tensor in zip(batch, batch.tensor):
         assert doc.tensor.data_ptr() == tensor.data_ptr()
@@ -235,28 +237,6 @@ def test_stack_call():
     assert len(da) == 10
 
     assert da.tensor.shape == (10, 3, 224, 224)
-
-
-def test_context_manager():
-    class Image(BaseDocument):
-        tensor: TorchTensor[3, 224, 224]
-
-    da = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
-    )
-
-    with da.stacked_mode() as da:
-        assert len(da) == 10
-
-        assert da.tensor.shape == (10, 3, 224, 224)
-
-        da.tensor = torch.ones(10, 3, 224, 224)
-
-    tensor = da.tensor
-
-    assert isinstance(tensor, list)
-    for doc in da:
-        assert (doc.tensor == torch.ones(3, 224, 224)).all()
 
 
 def test_stack_union():

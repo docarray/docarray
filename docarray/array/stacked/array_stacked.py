@@ -238,7 +238,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         :values: the values to set at the DocumentArray level
         """
 
-        if len(values) != len(self._storage.doc_columns[field]):
+        if len(values) != len(self._storage):
             raise ValueError(
                 f'{values} has not the right length, expected '
                 f'{len(self._storage.doc_columns[field])} , got {len(values)}'
@@ -251,7 +251,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             # TODO shape check should be handle by the tensor validation
 
             values = parse_obj_as(validation_class, values)
-            self._storage.tensor_columns = values
+            self._storage.tensor_columns[field] = values
 
         elif field in self._storage.doc_columns.keys():
 

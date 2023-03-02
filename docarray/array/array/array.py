@@ -1,5 +1,4 @@
 import io
-from contextlib import contextmanager
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -401,29 +400,6 @@ class DocumentArray(IOMixinArray, AnyDocumentArray[T_doc]):
 
         for doc, value in zip(self, values):
             setattr(doc, field, value)
-
-    @contextmanager
-    def stacked_mode(self):
-        """
-        Context manager to convert DocumentArray to a DocumentArrayStacked and unstack
-        it when exiting the context manager.
-        EXAMPLE USAGE
-        .. code-block:: python
-            with da.stacked_mode():
-                ...
-        """
-
-        from docarray.array.stacked.array_stacked import DocumentArrayStacked
-
-        try:
-            da_stacked = DocumentArrayStacked.__class_getitem__(self.document_type)(
-                self,
-            )
-            yield da_stacked
-        finally:
-            self = DocumentArrayStacked.__class_getitem__(self.document_type).unstack(
-                da_stacked
-            )
 
     def stack(self) -> 'DocumentArrayStacked':
         """
