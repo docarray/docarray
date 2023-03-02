@@ -281,7 +281,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         """
         DocumentArraySummary(self).summary()
 
-    def batch(
+    def _batch(
         self: T,
         batch_size: int,
         shuffle: bool = False,
@@ -291,8 +291,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         Creates a `Generator` that yields `DocumentArray` of size `batch_size`.
         Note, that the last batch might be smaller than `batch_size`.
 
-        :param batch_size: Size of each generated batch (except the last one, which might
-            be smaller).
+        :param batch_size: Size of each generated batch.
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: if set, show a progress bar when batching documents.
         :yield: a Generator of `DocumentArray`, each in the length of `batch_size`
