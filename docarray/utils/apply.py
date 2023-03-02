@@ -20,13 +20,13 @@ def apply(
     show_progress: bool = False,
 ) -> T:
     """
-    Apply `func` to every Document of the given DocumentArray while multiprocessing,
-    return itself after modification.
+    Apply `func` to every Document of the given DocumentArray while multithreading or
+    multiprocessing, return itself after modification.
 
     :param da: DocumentArray to apply function to
-    :param func: a function that takes ab:class:`BaseDocument` as input and outputs
+    :param func: a function that takes a :class:`BaseDocument` as input and outputs
         a :class:`BaseDocument`.
-    :param backend: `thread` for multi-threading and `process` for multi-processing.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
         On the other hand, if `func` is CPU-bound, then you may use `process`.
@@ -67,9 +67,8 @@ def _map(
 
     :param da: DocumentArray to apply function to
     :param func: a function that takes a :class:`BaseDocument` as input and outputs
-        a :class:`BaseDocument`. You can either modify elements in-place or return
-        new Documents (depending on `backend`).
-    :param backend: `thread` for multi-threading and `process` for multi-processing.
+        a :class:`BaseDocument`.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
         On the other hand, if `func` is CPU-bound, then you may use `process`.

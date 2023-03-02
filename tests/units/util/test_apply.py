@@ -59,8 +59,9 @@ def test_check_order(backend):
 
 
 def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
-    da_new = da.__class_getitem__(da.document_type)([Image() for _ in da])
-    return da_new
+    for doc in da:
+        doc.tensor = doc.url.load()
+    return da
 
 
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 7)])
