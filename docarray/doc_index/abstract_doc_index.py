@@ -349,7 +349,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 cast(Type[BaseDocument], self._schema)
             )
             out_da = da_cls(doc_sequence)
-        return out_da[0] if return_singleton else out_da  # type: ignore
+        return out_da[0] if return_singleton else out_da
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
         """Delete one or multiple Documents from the index, by `id`.
