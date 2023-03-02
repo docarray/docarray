@@ -241,7 +241,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         if len(values) != len(self._storage):
             raise ValueError(
                 f'{values} has not the right length, expected '
-                f'{len(self._storage.doc_columns[field])} , got {len(values)}'
+                f'{len(self._storage)} , got {len(values)}'
             )
         if field in self._storage.tensor_columns.keys():
             validation_class = (

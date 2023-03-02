@@ -546,6 +546,9 @@ def test_validate_from_da():
 def test_validation_column_tensor(batch):
     batch.tensor = torch.zeros(10, 3, 224, 244)
     assert isinstance(batch.tensor, TorchTensor)
+
+
+def test_validation_column_tensor_fail(batch):
     with pytest.raises(ValueError):
         batch.tensor = ['hello'] * 10
 
