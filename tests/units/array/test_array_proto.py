@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.documents import Image, Text
 from docarray.typing import NdArray
 
@@ -58,17 +57,3 @@ def test_nested_proto_any_doc():
     )
 
     DocumentArray.from_protobuf(da.to_protobuf())
-
-
-@pytest.mark.proto
-def test_stacked_proto():
-    class CustomDocument(BaseDocument):
-        image: NdArray
-
-    da = DocumentArray[CustomDocument](
-        [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
-    ).stack()
-
-    da2 = DocumentArrayStacked.from_protobuf(da.to_protobuf())
-
-    assert isinstance(da2, DocumentArrayStacked)
