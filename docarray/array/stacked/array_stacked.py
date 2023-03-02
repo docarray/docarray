@@ -237,26 +237,23 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         :param field: name of the fields to extract
         :values: the values to set at the DocumentArray level
         """
-        if field in self._storage.tensor_columns.keys():
 
-            if len(values) != len(self._storage.tensor_columns[field]):
-                raise ValueError(
-                    f'{values} has not the right shape, expected {len(self._storage.tensor_columns[field])} , got {len(values)}'
-                )  # TODO this should be handle by the tensor validation
+        if len(values) != len(self._storage.doc_columns[field]):
+            raise ValueError(
+                f'{values} has not the right length, expected '
+                f'{len(self._storage.doc_columns[field])} , got {len(values)}'
+            )
+        if field in self._storage.tensor_columns.keys():
             validation_class = (
                 self._storage.tensor_columns[field].__unparametrizedcls__
                 or self._storage.tensor_columns[field].__class__
             )
+            # TODO shape check should be handle by the tensor validation
 
             values = parse_obj_as(validation_class, values)
             self._storage.tensor_columns = values
 
         elif field in self._storage.doc_columns.keys():
-            if len(values) != len(self._storage.doc_columns[field]):
-                raise ValueError(
-                    f'{values} has not the right length, expected '
-                    f'{len(self._storage.doc_columns[field])} , got {len(values)}'
-                )
 
             values = parse_obj_as(
                 DocumentArrayStacked[self._storage.doc_columns[field].document_type],
@@ -264,6 +261,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             )
 
             self._storage.doc_columns[field] = values
+
+        elif field in self._storage.da_columns.keys():
+            self._storage.da_columns[field] = values
+        elif field in self._storage.any_columns.keys():
+            self._storage.any_columns[field] = values
+        else:
+            raise KeyError(f'{field} is not a valid field for this DocumentArray')
 
     ####################
     # Deleting data   #
