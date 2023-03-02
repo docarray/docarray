@@ -34,7 +34,9 @@ def test_apply_multiprocessing_benchmark():
         return time() - start_time
 
     time_1_cpu = time_multiprocessing(num_workers=1)
+    print(f"time_1_cpu = {time_1_cpu}")
     time_2_cpu = time_multiprocessing(num_workers=2)
+    print(f"time_2_cpu = {time_2_cpu}")
 
     assert time_2_cpu < time_1_cpu
 
@@ -57,6 +59,8 @@ def test_apply_multithreading_benchmark():
         return time() - start_time
 
     time_1_thread = time_multithreading(num_workers=1)
+    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading(num_workers=2)
+    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
