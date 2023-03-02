@@ -24,7 +24,7 @@ from docarray.array.array.io import IOMixinArray
 from docarray.array.array.pushpull import PushPullMixin
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
-from docarray.utils.misc import is_torch_available
+from docarray.utils.misc import is_np_int, is_torch_available
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -55,17 +55,6 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
         return getattr(self._data, meth_name)(*args, **kwargs)
 
     return _delegate_meth
-
-
-def _is_np_int(item: Any) -> bool:
-    dtype = getattr(item, 'dtype', None)
-    ndim = getattr(item, 'ndim', None)
-    if dtype is not None and ndim is not None:
-        try:
-            return ndim == 0 and np.issubdtype(dtype, np.integer)
-        except TypeError:
-            return False
-    return False  # this is unreachable, but mypy wants it
 
 
 class DocumentArray(PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]):
@@ -160,7 +149,7 @@ class DocumentArray(PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]):
         return len(self._data)
 
     @overload
-    def __getitem__(self: T, item: int) -> BaseDocument:
+    def __getitem__(self: T, item: int) -> T_doc:
         ...
 
     @overload
@@ -256,7 +245,7 @@ class DocumentArray(PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]):
             return item
 
         # numpy index types
-        if _is_np_int(item):
+        if is_np_int(item):
             return item.item()
 
         index_has_getitem = hasattr(item, '__getitem__')
