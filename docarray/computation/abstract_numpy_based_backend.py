@@ -83,4 +83,4 @@ class AbstractNumpyBasedBackend(AbstractComputationalBackend[T], ABC):
     @classmethod
     def copy(cls, tensor: 'T') -> 'T':
         """return a copy/clone of the tensor"""
-        return tensor.copy()
+        return cls._cast_output(cls._module.array(cls._get_tensor(tensor), copy=True))
