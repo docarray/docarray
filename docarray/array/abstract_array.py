@@ -1,16 +1,22 @@
+import random
 from abc import abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Generator,
     Generic,
+    Iterable,
     List,
     Sequence,
     Type,
     TypeVar,
     Union,
     cast,
+    overload,
 )
+
+import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.display.document_array_summary import DocumentArraySummary
@@ -24,6 +30,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
+IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
@@ -78,6 +85,18 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             cls.__typed_da__[cls][item] = _DocumentArrayTyped
 
         return cls.__typed_da__[cls][item]
+
+    @overload
+    def __getitem__(self: T, item: int) -> T_doc:
+        ...
+
+    @overload
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        ...
+
+    @abstractmethod
+    def __getitem__(self, item):
+        ...
 
     @abstractmethod
     def _get_array_attribute(
@@ -249,3 +268,40 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         Document type.
         """
         DocumentArraySummary(self).summary()
+
+    def batch(
+        self: T,
+        batch_size: int,
+        shuffle: bool = False,
+        show_progress: bool = False,
+    ) -> Generator[T, None, None]:
+        """
+        Creates a `Generator` that yields `DocumentArray` of size `batch_size`.
+        Note, that the last batch might be smaller than `batch_size`.
+
+        :param batch_size: Size of each generated batch (except the last one, which might
+            be smaller).
+        :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+        :param show_progress: if set, show a progress bar when batching documents.
+        :yield: a Generator of `DocumentArray`, each in the length of `batch_size`
+        """
+        from rich.progress import track
+
+        if not (isinstance(batch_size, int) and batch_size > 0):
+            raise ValueError(
+                f'`batch_size` should be a positive integer, received: {batch_size}'
+            )
+
+        N = len(self)
+        indices = list(range(N))
+        n_batches = int(np.ceil(N / batch_size))
+
+        if shuffle:
+            random.shuffle(indices)
+
+        for i in track(
+            range(n_batches),
+            description='Batching documents',
+            disable=not show_progress,
+        ):
+            yield self[indices[i * batch_size : (i + 1) * batch_size]]
