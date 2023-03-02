@@ -20,34 +20,36 @@ def da():
     return da
 
 
-def test_apply(da):
+@pytest.mark.parametrize('backend', ['thread', 'process'])
+def test_apply(da, backend):
     for tensor in da.tensor:
         assert tensor is None
 
-    da_applied = apply(da=da, func=foo)
+    da_applied = apply(da=da, func=foo, backend=backend)
 
     assert len(da) == len(da_applied)
     for tensor in da_applied.tensor:
         assert tensor is not None
 
 
-def test_apply_lambda_func_raise_exception(da):
+def test_apply_multiprocessing_lambda_func_raise_exception(da):
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        apply(da=da, func=lambda x: x)
+        apply(da=da, func=lambda x: x, backend='process')
 
 
-def test_apply_local_func_raise_exception(da):
+def test_apply_multiprocessing_local_func_raise_exception(da):
     def local_func(x):
         return x
 
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        apply(da=da, func=local_func)
+        apply(da=da, func=local_func, backend='process')
 
 
-def test_check_order():
+@pytest.mark.parametrize('backend', ['thread', 'process'])
+def test_check_order(backend):
     da = DocumentArray[Image]([Image(id=i) for i in range(2)])
 
-    da_applied = apply(da=da, func=foo)
+    da_applied = apply(da=da, func=foo, backend=backend)
 
     assert len(da) == len(da_applied)
     for id_1, id_2 in zip(da, da_applied):
