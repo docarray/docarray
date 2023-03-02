@@ -10,11 +10,12 @@ if TYPE_CHECKING:
 
 
 T = TypeVar('T', bound=AnyDocumentArray)
+T_Doc = TypeVar('T_Doc', bound=BaseDocument)
 
 
 def apply(
     da: T,
-    func: Callable[[BaseDocument], BaseDocument],
+    func: Callable[[T_Doc], T_Doc],
     num_worker: Optional[int] = None,
     pool: Optional['Pool'] = None,
     show_progress: bool = False,
@@ -42,11 +43,11 @@ def apply(
 
 def _map(
     da: T,
-    func: Callable[[BaseDocument], BaseDocument],
+    func: Callable[[T_Doc], T_Doc],
     num_worker: Optional[int] = None,
     pool: Optional['Pool'] = None,
     show_progress: bool = False,
-) -> Generator['BaseDocument', None, None]:
+) -> Generator[T_Doc, None, None]:
     """
     Return an iterator that applies `func` to every Document in `da` in parallel,
     yielding the results.
@@ -81,7 +82,8 @@ def _map(
         ctx_p = p
 
     with ctx_p:
-        for x in track(p.imap(func, da), total=len(da), disable=not show_progress):
+        imap = p.imap(func, da)
+        for x in track(imap, total=len(da), disable=not show_progress):
             yield x
 
 
