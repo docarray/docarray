@@ -84,7 +84,7 @@ class _ParametrizedMeta(type):
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
 
     __parametrized_meta__: type = _ParametrizedMeta
-    __unparametrizedcls__: Optional[type] = None
+    __unparametrizedcls__: Optional[Type['AbstractTensor']] = None
     __docarray_target_shape__: Optional[Tuple[int, ...]] = None
     _proto_type_name: str
 

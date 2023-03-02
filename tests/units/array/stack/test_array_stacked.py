@@ -3,6 +3,7 @@ from typing import Dict, Optional, Union
 import numpy as np
 import pytest
 import torch
+from pydantic import parse_obj_as
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
@@ -547,3 +548,64 @@ def test_from_storage():
     )
 
     DocumentArrayStacked[Image].from_columns_storage(batch._storage)
+
+
+def test_validate_from_da():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    da = parse_obj_as(DocumentArrayStacked[Image], batch)
+
+    assert isinstance(da, DocumentArrayStacked[Image])
+
+
+def test_validation_column_tensor(batch):
+    batch.tensor = torch.zeros(10, 3, 224, 244)
+    assert isinstance(batch.tensor, TorchTensor)
+    with pytest.raises(ValueError):
+        batch.tensor = ['hello'] * 10
+
+    with pytest.raises(ValueError):
+        batch.tensor = torch.zeros(11, 3, 224, 244)
+
+
+@pytest.fixture()
+def batch_nested_doc():
+    class Inner(BaseDocument):
+        hello: str
+
+    class Doc(BaseDocument):
+        inner: Inner
+
+    batch = DocumentArrayStacked[Doc](
+        [Doc(inner=Inner(hello='hello')) for _ in range(10)]
+    )
+    return batch, Doc, Inner
+
+
+def test_validation_column_doc(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+
+    batch.inner = DocumentArray[Inner]([Inner(hello='hello') for _ in range(10)])
+    assert isinstance(batch.inner, DocumentArrayStacked[Inner])
+
+
+def test_validation_list_doc(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+
+    batch.inner = [Inner(hello='hello') for _ in range(10)]
+    assert isinstance(batch.inner, DocumentArrayStacked[Inner])
+
+
+def test_validation_col_doc_fail(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+
+    with pytest.raises(ValueError):
+        batch.inner = ['hello'] * 10
+
+    with pytest.raises(ValueError):
+        batch.inner = DocumentArray[Inner]([Inner(hello='hello') for _ in range(11)])

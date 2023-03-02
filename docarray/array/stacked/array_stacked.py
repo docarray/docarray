@@ -15,6 +15,8 @@ from typing import (
     overload,
 )
 
+from pydantic import BaseConfig, parse_obj_as
+
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
@@ -24,7 +26,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentArrayStackedProto
@@ -99,8 +100,10 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
+        elif isinstance(value, DocumentArray[cls.document_type]):
+            return value.stack()
         elif isinstance(value, Iterable):
-            return cls(DocumentArray(value))
+            return cls(value)
         else:
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
@@ -227,14 +230,40 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, AbstractTensor],
+        values: Union[List, T, DocumentArray, AbstractTensor],
     ) -> None:
         """Set all Documents in this DocumentArray using the passed values
 
         :param field: name of the fields to extract
         :values: the values to set at the DocumentArray level
         """
-        self._storage.columns[field] = values  # TODO we need validation here
+        if field in self._storage.tensor_columns.keys():
+
+            if len(values) != len(self._storage.tensor_columns[field]):
+                raise ValueError(
+                    f'{values} has not the right shape, expected {len(self._storage.tensor_columns[field])} , got {len(values)}'
+                )  # TODO this should be handle by the tensor validation
+            validation_class = (
+                self._storage.tensor_columns[field].__unparametrizedcls__
+                or self._storage.tensor_columns[field].__class__
+            )
+
+            values = parse_obj_as(validation_class, values)
+            self._storage.tensor_columns = values
+
+        elif field in self._storage.doc_columns.keys():
+            if len(values) != len(self._storage.doc_columns[field]):
+                raise ValueError(
+                    f'{values} has not the right length, expected '
+                    f'{len(self._storage.doc_columns[field])} , got {len(values)}'
+                )
+
+            values = parse_obj_as(
+                DocumentArrayStacked[self._storage.doc_columns[field].document_type],
+                values,
+            )
+
+            self._storage.doc_columns[field] = values
 
     ####################
     # Deleting data   #
