@@ -11,6 +11,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
 
 
+class ConcurrentPushException(Exception):
+    """Exception raised when a concurrent push is detected."""
+
+    pass
+
+
 class PushPullLike(Protocol):
     @staticmethod
     def list(namespace: str, show_table: bool) -> List[str]:
@@ -193,7 +199,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         cls,
         url: str,
         show_progress: bool = False,
-        local_cache: bool = True,
+        local_cache: bool = False,
     ) -> Iterator['BaseDocument']:
         """
         Stream documents from remote to an iterator

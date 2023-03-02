@@ -3,7 +3,7 @@ from typing import Dict, Iterator, List, Optional, Type
 
 from typing_extensions import TYPE_CHECKING
 
-from docarray.array.array.pushpull import __cache_path__
+from docarray.array.array.pushpull import ConcurrentPushException, __cache_path__
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 
 if TYPE_CHECKING:
@@ -81,13 +81,16 @@ class PushPullFile:
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
-        path = PushPullFile._abs_filepath(name).with_suffix('.da')
+        path = PushPullFile._abs_filepath(name).with_suffix('.da.tmp')
+        if path.exists():
+            raise ConcurrentPushException(f'File {path} already exists.')
         with open(path, 'wb') as f:
             while True:
                 try:
                     f.write(next(source))
                 except StopIteration:
                     break
+        path.rename(path.with_suffix(''))
         return {}
 
     @staticmethod
@@ -98,12 +101,8 @@ class PushPullFile:
         local_cache: bool,
     ) -> 'DocumentArray':
         return cls(
-            _from_binary_stream(
-                cls.document_type,
-                open(name + '.da', 'rb'),
-                protocol='protobuf',
-                compress='gzip',
-                show_progress=show_progress,
+            PushPullFile.pull_stream(
+                cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
 
