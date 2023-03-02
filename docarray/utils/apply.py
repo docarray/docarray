@@ -23,6 +23,28 @@ def apply(
     Apply `func` to every Document of the given DocumentArray while multithreading or
     multiprocessing, return itself after modification.
 
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import DocumentArray
+        from docarray.documents import Image
+        from docarray.utils.apply import apply
+
+
+        def load_url_to_tensor(img: Image) -> Image:
+            img.tensor = img.url.load()
+            return img
+
+
+        da = DocumentArray[Image]([Image(url='path/to/img.png') for _ in range(100)])
+        da = apply(
+            da, load_url_to_tensor, backend='thread'
+        )  # threading is usually a good option for IO-bound tasks such as loading an image from url
+
+        for doc in da:
+            assert doc.tensor is not None
+
     :param da: DocumentArray to apply function to
     :param func: a function that takes a :class:`BaseDocument` as input and outputs
         a :class:`BaseDocument`.
