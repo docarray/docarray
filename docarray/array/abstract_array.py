@@ -95,7 +95,19 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     @abstractmethod
-    def __getitem__(self, item):
+    def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
+        ...
+
+    @overload
+    def __setitem__(self: T, key: int, value: T_doc):
+        ...
+
+    @overload
+    def __setitem__(self: T, key: IndexIterType, value: T):
+        ...
+
+    @abstractmethod
+    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
         ...
 
     @abstractmethod
