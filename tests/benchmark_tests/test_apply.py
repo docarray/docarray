@@ -15,8 +15,8 @@ class MyMatrix(BaseDocument):
 def sqrt(doc: MyMatrix) -> MyMatrix:
     # some cpu intensive function
     for i in range(3000):
-        sqrt = np.sqrt(doc.matrix)
-    return MyMatrix(matrix=sqrt)
+        sqrt_matrix = np.sqrt(doc.matrix)
+    return MyMatrix(matrix=sqrt_matrix)
 
 
 @pytest.mark.benchmark
@@ -31,8 +31,6 @@ def test_apply_benchmark():
         return time() - start_time
 
     time_1_cpu = workload(num_workers=1)
-    print(f"time_1_cpu = {time_1_cpu}")
     time_2_cpu = workload(num_workers=2)
-    print(f"time_2_cpu = {time_2_cpu}")
 
     assert time_2_cpu < time_1_cpu
