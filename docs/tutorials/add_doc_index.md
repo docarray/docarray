@@ -3,9 +3,9 @@
 In DocArray there exists the concept of _Document Index_, a class that takes `Document`s, optionally persists them,
 and makes them searchable.
 
-There are different Document Indexes leveraging different backends, such as Weaviate, Qdrant, HNSWLit etc.
+There are different Document Indexes leveraging different backends, such as Weaviate, Qdrant, HNSWLib etc.
 
-This Document shows how to add a new Document Index to DocArray.
+This document shows how to add a new Document Index to DocArray.
 
 That process can be broken down into a number of basic steps:
 
@@ -14,7 +14,16 @@ That process can be broken down into a number of basic steps:
 3. Implement abstract methods for indexing, searching, and deleting
 4. Implement a Query Builder for your Document Index
 
+In general, the steps above can be followed in roughly that order.
+
+However, a Document Index implementation is usually very interconnected, so you will probably have to jump between these steps a bit,
+both in your implementation and in the guide below.
+
 For an end-to-end example of this process, you can check out the [existing HNSWLib Document Index implementation](https://github.com/docarray/docarray/pull/1124).
+
+**Caution**: The HNSWLib Document Index implementation can be used as a reference, but it is special in some key ways.
+For example, HNSWLib can only index vectors, so it uses SQLite to store the rest of the Documents alongside it.
+This is _not_ how you should store Documents in your implementation! You can find guidance on how you _should_ do it below.
 
 ## Create a new Document Index class
 
@@ -44,7 +53,27 @@ def __init__(self, db_config=None, **kwargs):
 
 Make sure that you call the `super().__init__` method, which will do some basic initialization for you.
 
-Overall, the following attributes will be set up automatically and be available to you (more info in the dedicated sections below):
+### Set up your backend
+
+Your backend (database or similar) should represent Documents in the following way:
+- Every field of a Document is a column in the database
+- Column types follow a default that you define, based on the type hint of the associated field, but can also be configures by the user
+- Every row in your database thus represents a Document
+- **Nesting:** The most common way to handle nested Document (and the one where the `AbstractDocumentIndex` will hold your hand the most), is to flatten out nested Documents. But if your backend natively supports nesting representations, then feel free to leverage those!
+
+**Caution**: Don't take too much inspiration from the HNSWLib Document Index implementation on this point, as it is a bit of a special case.
+
+
+Also, you should check if the Document Index is being set up "fresh", meaning no data was previously persisted.
+Then you should create a new database table (or the equivalent concept in you backend) for the Documents.
+Otherwise, the Document Index should connect to the existing database and table.
+You can determine this based on `self._db_config` (see below).
+
+**Note:** If you are integrating a database, your Document Index should always assume that there is already a database running that it can connect to.
+It should _not_ spawn a new database instance.
+
+To help you with all of this, `super().__init__` inject a few helpful attributes for you (more info in the dedicated sections below):
+
 - `self._schema`
 - `self._db_config`
 - `self._runtime_config`
@@ -256,12 +285,31 @@ Overall, you're asked to implement the methods that appear after the `Abstract m
 comment in the `BaseDocumentIndex` class.
 The details of each method should become clear from the docstrings and type hints.
 
-### The `python_type_to_db_type` method
+### The `python_type_to_db_type()` method
 
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
 It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
 The `BaseDocumentIndex` class uses this information to create and populate the `_Columns` in `self._columns`.
+
+### The `_index()` method
+
+When indexing Documents, your implementation should behave in the following way:
+
+- Every field in the Document is mapped to a column in the database
+- This includes the `id` field, which is mapped to the primary key of the database (if your backend has such a concept)
+- The configuration of that column can be found in `self._columns[field_name].config`
+- In DocArray v1, we used to store a serialized representation of every Document. This is not needed anymore, as every row in your DB table should fully represent a single indexed Document.
+
+To handle nested Documents, the public `index()` method already flattens every incoming Document for you.
+This means that `_index()` already receives a flattened representation of the data, and you don't need to worry about that.
+
+Concretely, the `_index()` method takes as input a dictionary of column names to column data, flattened out.
+
+**Note:** It has been brought to my attention that passing a row-wise representation instead of a column-wise representation might be more natural for some (most) backends. This will be addressed shortly.
+
+**If your backend has native nesting capabilities:** You can also ignore most of the above, and implement the public `index()` method directly.
+That way you have full control over whether the input data gets flattened or not.
 
 ## Implement a Query Builder for your Document Index
 
