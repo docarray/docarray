@@ -1,10 +1,12 @@
 import uuid
+import warnings
 from dataclasses import dataclass, field
 from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
     Generic,
+    Iterable,
     List,
     Mapping,
     Optional,
@@ -16,9 +18,9 @@ from typing import (
     cast,
 )
 
-import hnswlib
 import numpy as np
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import parallel_bulk
 
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
@@ -53,12 +55,11 @@ if torch_imported:
 
 class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
-
-        if db_config.index_name is None:
-            id = uuid.uuid4().hex
-            db_config.index_name = 'index__' + id
-
         super().__init__(db_config=db_config, **kwargs)
+        if self._db_config.index_name is None:
+            id = uuid.uuid4().hex
+            self._db_config.index_name = 'index__' + id
+
         self._db_config = cast(ElasticDocumentIndex.DBConfig, self._db_config)
 
         self._client = Elasticsearch(
@@ -92,7 +93,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 index=self._db_config.index_name, mappings=mappings
             )
 
-        self._client.indices.refresh(index=self._config.index_name)
+        self._refresh(self._db_config.index_name)
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -115,7 +116,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             default_factory=lambda: {
                 np.ndarray: {
                     'type': 'dense_vector',
-                    'dim': 128,
+                    'dims': 128,
                     'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
                     'm': 16,
                     'ef_construction': 100,
@@ -133,7 +134,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         """Map python type to database type."""
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
-                return list
+                return np.ndarray
 
         if python_type == docarray.typing.ID:
             return None  # TODO(johannes): handle this
@@ -141,10 +142,16 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
     def _index(self, column_data_dic, **kwargs):
+        # not needed, we implement `index` directly
         ...
 
-    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index a document into the store"""
+    def num_docs(self) -> int:
+        return self._client.count(index=self._db_config.index_name)['count']
+
+    def _del_items(self, doc_ids: Sequence[str]):
+        ...
+
+    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
         ...
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
@@ -203,18 +210,62 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     # Optional overrides                               #
     ####################################################
 
+    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
+        """Index a document into the store"""
+        if kwargs:
+            raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
+        doc_seq = docs if isinstance(docs, Sequence) else [docs]
+        requests = []
+
+        for doc in doc_seq:
+            request = {
+                '_index': self._db_config.index_name,
+                '_id': doc.id,
+                'blob': doc.to_base64(),
+            }
+            for col_name, col in self._columns.items():
+                if not col.config:
+                    continue
+                request[col_name] = doc[col_name].tolist()
+            requests.append(request)
+
+        self._send_requests(request)
+        self._refresh(self._db_config.index_name)
+
     ###############################################
     # Helpers                                     #
     ###############################################
 
     # general helpers
-    @staticmethod
 
     # ElasticSearch helpers
-    def _create_index(self, col: '_Column') -> hnswlib.Index:
+    def _create_index(self, col: '_Column') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
         index = dict((k, col.config[k]) for k in self._index_init_params)
         if col.n_dim:
             index['dims'] = col.n_dim
         index['index_options'] = dict((k, col.config[k]) for k in self._index_options)
         return index
+
+    def _send_requests(self, request: Iterable[Dict[str, Any]], **kwargs) -> List[Dict]:
+        """Send bulk request to Elastic and gather the successful info"""
+
+        # TODO chunk_size
+
+        accumulated_info = []
+        for success, info in parallel_bulk(
+            self._client,
+            request,
+            raise_on_error=False,
+            raise_on_exception=False,
+            **kwargs,
+        ):
+            if not success:
+                warnings.warn(str(info))
+            else:
+                accumulated_info.append(info)
+
+        return accumulated_info
+
+    def _refresh(self, index_name: str):
+        self._client.indices.refresh(index=index_name)
