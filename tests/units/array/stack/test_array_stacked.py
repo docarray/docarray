@@ -400,6 +400,21 @@ def test_to_device():
     assert da.tensor.device == torch.device('meta')
 
 
+def test_to_device_with_nested_da():
+    class Video(BaseDocument):
+        images: DocumentArray[Image]
+
+    da_image = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
+    )
+
+    da = DocumentArray[Video]([Video(images=da_image)])
+    da = da.stack()
+    assert da.images[0].tensor.device == torch.device('cpu')
+    da.to('meta')
+    assert da.images[0].tensor.device == torch.device('meta')
+
+
 def test_to_device_nested():
     class MyDoc(BaseDocument):
         tensor: TorchTensor
