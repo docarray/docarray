@@ -107,7 +107,18 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
         :param device: the device to move the data to
         """
-        raise NotImplementedError
+        for field, col_tens in self._storage.tensor_columns.items():
+            self._storage.tensor_columns[field] = col_tens.get_comp_backend().to_device(
+                col_tens, device
+            )
+
+        for field, col_doc in self._storage.doc_columns.items():
+            self._storage.doc_columns[field] = col_doc.to(device)
+        for _, col_da in self._storage.da_columns.items():
+            for da in col_da:
+                da.to(device)
+
+        return self
 
     ################################################
     # Accessing data : Indexing / Getitem related  #
