@@ -3,7 +3,7 @@
 ### `BaseDocument`'s id
 
 DocArray's `BaseDocument` has an optional `id` field, which defaults to `ID(os.urandom(16).hex())`. This takes quite some time.
-If you don't rely on the id anywhere, you can instead set the default to None:
+If you don't rely on the id anywhere, you can instead set the default to None. This increases the performance by a factor of approximately 1.4.
 
 ```python
 from docarray import BaseDocument
@@ -15,7 +15,7 @@ class MyDoc(BaseDocument):
     title: str
 ```
 
-Since the `BaseDocument.id` is optional, you could also set the value to None, but this turns out to be a bit less efficient than the option above:
+Since the `BaseDocument.id` is optional, you could also set the value to None, but this turns out to be a bit less efficient than the option above, and increases the performance by a factor of approximately 1.2.
 
 ```python
 class MyDoc2(BaseDocument):
@@ -24,6 +24,3 @@ class MyDoc2(BaseDocument):
 
 doc = MyDoc2(id=None, title='bye')
 ```
-
-Benchmark:
-![benchmark_id_generation.png](benchmark_id_generation.png)
