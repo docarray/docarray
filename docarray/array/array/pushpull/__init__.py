@@ -17,12 +17,12 @@ class PushPullLike(Protocol):
         ...
 
     @staticmethod
-    def delete(name: str) -> None:
+    def delete(name: str, missing_ok: bool) -> bool:
         ...
 
     @staticmethod
     def push(
-        da: BinaryIOLike,
+        da: 'DocumentArray',
         url: str,
         public: bool,
         show_progress: bool,
@@ -42,7 +42,7 @@ class PushPullLike(Protocol):
 
     @staticmethod
     def pull(
-        cls: Type['BinaryIOLike'],
+        cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -51,7 +51,7 @@ class PushPullLike(Protocol):
 
     @staticmethod
     def pull_stream(
-        cls: Type['BinaryIOLike'],
+        cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -80,8 +80,9 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
 
             cls.__backends__[protocol] = PushPullJAC
         elif protocol == 'file':
-            raise NotImplementedError('file protocol not implemented yet')
-            # from docarray.array.array.pushpull.file import PushPullFile
+            from docarray.array.array.pushpull.file import PushPullFile
+
+            cls.__backends__[protocol] = PushPullFile
         elif protocol == 's3':
             from docarray.array.array.pushpull.s3 import PushPullS3
 
@@ -92,7 +93,9 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         return cls.__backends__[protocol]
 
     @staticmethod
-    def list(url: str, show_table: bool = False) -> List[str]:
+    def list(
+        url: str = f'file://{__cache_path__}', show_table: bool = False
+    ) -> List[str]:
         """
         List all the artifacts in the cloud.
 
@@ -101,20 +104,18 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :return: a list of artifact names
         """
         protocol, namespace = url.split('://', 2)
-        # TODO: Move this to its own validation function
-        if '/' in namespace:
-            raise ValueError('Namespace cannot contain a slash')
         return PushPullMixin.get_backend(protocol).list(namespace, show_table)
 
     @classmethod
-    def delete(cls, url: str):
+    def delete(cls, url: str, missing_ok: bool = False):
         """
         Delete the artifact in the cloud.
 
         :param url: the url of the artifact to delete
+        :param missing_ok: whether to ignore if the artifact does not exist
         """
         protocol, name = url.split('://', 2)
-        return PushPullMixin.get_backend(protocol).delete(name)
+        return PushPullMixin.get_backend(protocol).delete(name, missing_ok=missing_ok)
 
     def push(
         self,
@@ -157,7 +158,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         """
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).push_stream(
-            docs, url, public, show_progress, branding
+            docs, name, public, show_progress, branding
         )
 
     @classmethod

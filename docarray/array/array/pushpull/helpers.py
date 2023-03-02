@@ -1,15 +1,23 @@
 # It is usually a bad idea to have a helper file because it means we don't know where to put the code (or haven't put much thought into it).
 # With that said, rules are meant to be broken, we will live with this for now.
-from typing import Dict, Iterable, Iterator, NoReturn, Optional, Sequence
+from typing import (
+    BinaryIO,
+    Dict,
+    Iterable,
+    Iterator,
+    NoReturn,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
-from typing_extensions import TYPE_CHECKING
+from typing_extensions import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     import requests
-
-    from docarray import BaseDocument
 
 
 def get_version_info() -> Dict:
@@ -100,41 +108,75 @@ def raise_req_error(resp: 'requests.Response') -> NoReturn:
     raise ValueError(f'Unexpected response status: {resp.status_code}')
 
 
-def docs_to_binary_stream(
-    docs: Iterator['BaseDocument'],
+T_Elem = TypeVar('T_Elem')
+
+
+class Streamable(Protocol):
+    """A protocol for streamable objects."""
+
+    def to_bytes(self, protocol: str, compress: Optional[str]) -> bytes:
+        ...
+
+    @classmethod
+    def from_bytes(
+        cls: Type[T_Elem], bytes: bytes, protocol: str, compress: Optional[str]
+    ) -> 'T_Elem':
+        ...
+
+
+def _to_binary_stream(
+    iterator: Iterator['Streamable'],
     protocol: str = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
-    total: Optional[int] = None,
 ) -> Iterator[bytes]:
-    from rich import filesize
+    # TODO: Get a progress bar with no total
+    # We dont know the total in the streaming scenario
+    if show_progress:
+        print("Whoops no progress bar for streaming yet")
+        print("Here is a cookie instead 🍪")
+        # pbar, t = _get_progressbar(
+        #'Serializing', disable=not show_progress, total=total
+        # )
 
-    from docarray.utils.progress_bar import _get_progressbar
+    for item in iterator:
+        item_bytes = item.to_bytes(protocol=protocol, compress=compress)
+        len_item_as_bytes = len(item_bytes).to_bytes(4, 'big', signed=False)
+        all_bytes = len_item_as_bytes + item_bytes
+        yield all_bytes
 
-    if total is not None:
-        pbar, t = _get_progressbar(
-            'Serializing', disable=not show_progress, total=total
-        )
+    # TODO: Yield some information in the postamble
+    yield int(0).to_bytes(4, 'big', signed=False)
 
-    # Stream header
-    if total:
-        yield b'x01' + total.to_bytes(8, 'big', signed=False)
-    else:
-        yield b'x01' + int(0).to_bytes(8, 'big', signed=False)
 
-    with pbar:
-        _total_size = 0
-        pbar.start_task(t)
-        for doc in docs:
-            doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
-            len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
-            all_bytes = len_doc_as_bytes + doc_bytes
+T = TypeVar('T', bound=Streamable)
 
-            yield all_bytes
 
-            _total_size += len(all_bytes)
-            pbar.update(
-                t,
-                advance=1,
-                total_size=str(filesize.decimal(_total_size)),
-            )
+def _from_binary_stream(
+    cls: Type[T],
+    stream: BinaryIO,
+    protocol: str = 'protobuf',
+    compress: Optional[str] = None,
+    show_progress: bool = False,
+) -> Iterator['T']:
+    # TODO: Get a progress bar with no total
+    # We dont know the total in the streaming scenario
+    if show_progress:
+        print("Whoops no progress bar for streaming yet")
+        print("Here is a cookie instead 🍪")
+        # pbar, t = _get_progressbar(
+        #'Serializing', disable=not show_progress, total=total
+        # )
+    while True:
+        len_bytes = stream.read(4)
+        if len(len_bytes) < 4:
+            raise ValueError('Unexpected end of stream')
+        len_item = int.from_bytes(len_bytes, 'big', signed=False)
+        if len_item == 0:
+            break
+        item_bytes = stream.read(len_item)
+        if len(item_bytes) < len_item:
+            raise ValueError('Unexpected end of stream')
+        item = cls.from_bytes(item_bytes, protocol=protocol, compress=compress)
+        yield item
+    stream.close()
