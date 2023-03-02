@@ -1,9 +1,14 @@
+import multiprocessing as mp
 from pathlib import Path
 
 import pytest
 
 from docarray import DocumentArray
-from docarray.array.array.pushpull.file import PushPullFile, __cache_path__
+from docarray.array.array.pushpull.file import (
+    ConcurrentPushException,
+    PushPullFile,
+    __cache_path__,
+)
 from docarray.documents import Text
 from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
 
@@ -81,7 +86,7 @@ def test_pushpull_stream_correct(capsys, tmp_path: Path):
     assert len(captured.err) == 0
 
 
-def test_pushpull_stream_vs_full(tmp_path: Path):
+def test_pull_stream_vs_pull_full(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
     namespace_dir = tmp_path
     DocumentArray[Text].push_stream(
@@ -173,8 +178,82 @@ def test_list_and_delete(capsys, tmp_path: Path):
     ), 'Deleting a non-existent DA should return False'
 
 
-@pytest.mark.skip('TODO: Implement concurrent push lock')
-def test_concurrent_push():
+def test_concurrent_push_pull(tmp_path: Path):
     # Push to DA that is being pulled should not mess up the pull
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    namespace_dir = tmp_path
+
+    DocumentArray[Text].push_stream(
+        gen_text_docs(DA_LEN),
+        f'file://{namespace_dir}/da0',
+        show_progress=False,
+    )
+
+    global _task
+
+    def _task(choice: str):
+        if choice == 'push':
+            DocumentArray[Text].push_stream(
+                gen_text_docs(DA_LEN),
+                f'file://{namespace_dir}/da0',
+                show_progress=False,
+            )
+        elif choice == 'pull':
+            pull_len = sum(
+                1
+                for _ in DocumentArray[Text].pull_stream(f'file://{namespace_dir}/da0')
+            )
+            assert pull_len == DA_LEN
+        else:
+            raise ValueError(f'Unknown choice {choice}')
+
+    with mp.get_context('fork').Pool(3) as p:
+        p.map(_task, ['pull', 'push', 'pull'])
+
+
+def test_concurrent_push(tmp_path: Path):
     # Double push should fail the second push
-    pass
+    import time
+
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    namespace_dir = tmp_path
+
+    DocumentArray[Text].push_stream(
+        gen_text_docs(DA_LEN),
+        f'file://{namespace_dir}/da0',
+        show_progress=False,
+    )
+
+    def _slowdown_iterator(iterator):
+        for i, e in enumerate(iterator):
+            yield e
+            if i % (DA_LEN // 100) == 0:
+                time.sleep(0.01)
+
+    global _push
+
+    def _push(choice: str):
+        if choice == 'slow':
+            DocumentArray[Text].push_stream(
+                _slowdown_iterator(gen_text_docs(DA_LEN)),
+                f'file://{namespace_dir}/da0',
+                show_progress=False,
+            )
+            return True
+        elif choice == 'cold_start':
+            try:
+                time.sleep(0.1)
+                DocumentArray[Text].push_stream(
+                    gen_text_docs(DA_LEN),
+                    f'file://{namespace_dir}/da0',
+                    show_progress=False,
+                )
+                return True
+            except ConcurrentPushException:
+                return False
+        else:
+            raise ValueError(f'Unknown choice {choice}')
+
+    with mp.get_context('fork').Pool(3) as p:
+        results = p.map(_push, ['cold_start', 'slow', 'cold_start'])
+    assert results == [False, True, False]
