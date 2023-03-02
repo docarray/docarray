@@ -65,6 +65,9 @@ def _map(
     Return an iterator that applies `func` to every Document in `da` in parallel,
     yielding the results.
 
+    .. seealso::
+        - To return :class:`DocumentArray`, please use :meth:`.apply`.
+
     :param da: DocumentArray to apply function to
     :param func: a function that takes a :class:`BaseDocument` as input and outputs
         a :class:`BaseDocument`.
@@ -121,35 +124,41 @@ def apply_batch(
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
 ) -> T:
-    """Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.
+    """
+    Batches itself into mini-batches, applies `func` to every mini-batch, and return
+    itself after the modifications.
 
     EXAMPLE USAGE
 
     .. code-block:: python
 
-        from docarray import Document, DocumentArray
+        from docarray import BaseDocument, DocumentArray
+        from docarray.utils.apply import apply_batch
 
-        da = DocumentArray([Document(text='The cake is a lie') for _ in range(100)])
+
+        class MyDoc(BaseDocument):
+            name: str
 
 
-        def func(doc):
-            da.texts = [t.upper() for t in da.texts]
+        def upper_case_name(da: DocumentArray[MyDoc]) -> DocumentArray[MyDoc]:
+            da.name = [n.upper() for n in da.name]
             return da
 
 
-        da.apply_batch(func, batch_size=10)
-        print(da.texts[:3])
+        da = DocumentArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+        da = apply_batch(da, upper_case_name, batch_size=10)
+        print(da.name[:3])
 
     .. code-block:: text
 
-        ['THE CAKE IS A LIE', 'THE CAKE IS A LIE', 'THE CAKE IS A LIE']
+        ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
 
     :param da: DocumentArray to apply function to
-    :param func: a function that takes a :class:`BaseDocument` as input and outputs
-        a :class:`BaseDocument`.
+    :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
+        an :class:`AnyDocumentArray`.
     :param batch_size: size of each generated batch (except the last batch, which might
         be smaller).
-    :param backend: `thread` for multi-threading and `process` for multi-processing.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
         On the other hand, if `func` is CPU-bound, then you may use `process`.
@@ -192,34 +201,41 @@ def _map_batch(
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
 ) -> Generator[T, None, None]:
-    """Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.
-    Each element in the returned iterator is :class:`DocumentArray`.
+    """
+    Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
+    yielding the results.
+    Each element in the returned iterator is an :class:`AnyDocumentArray`.
 
     .. seealso::
-        - To process single element, please use :meth:`.map`;
         - To return :class:`DocumentArray`, please use :meth:`.apply_batch`.
 
-    :param batch_size: Size of each generated batch (except the last one, which might be smaller).
+    :param batch_size: Size of each generated batch (except the last one, which might
+        be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-    :param func: a function that takes :class:`DocumentArray` as input and outputs anything. You can either modify elements
-        in-place (only with `thread` backend) or work later on return elements.
-    :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your
-        ``func`` is IO-bound then perhaps `thread` is good enough. If your ``func`` is CPU-bound then you may use `process`.
-        In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
-        in-place, regardless of IO/CPU-bound, you should always use `thread` backend.
+    :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
+        an :class:`AnyDocumentArray` of the same Document type as the input.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
+        Defaults to `thread`.
+        In general, if `func` is IO-bound then `thread` is a good choice.
+        On the other hand, if `func` is CPU-bound, then you may use `process`.
+        In practice, you should try yourselves to figure out the best value.
+        However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
+        you should always use `thread` backend.
 
         .. warning::
-            When using `process` backend, you should not expect ``func`` modify elements in-place. This is because
-            the multiprocessing backing pass the variable via pickle and work in another process. The passed object
-            and the original object do **not** share the same memory.
+            When using `process` backend, your `func` should not modify elements in-place.
+            This is because the multiprocessing backend passes the variable via pickle
+            and works in another process.
+            The passed object and the original object do **not** share the same memory.
 
-    :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+    :param num_worker: the number of parallel workers. If not given, then the number of CPUs
+        in the system will be used.
     :param show_progress: show a progress bar
-    :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.
+    :param pool: use an existing/external pool. If given, `backend` is ignored and you will
+        be responsible for closing the pool.
 
     :yield: anything return from ``func``
     """
-
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
             f'Multiprocessing does not allow functions that are local, lambda or partial: {func}'
@@ -244,6 +260,9 @@ def _map_batch(
 
 
 def _get_pool(backend, num_worker) -> Union[Pool, ThreadPool]:
+    """
+    Get Pool instance for multiprocessing or ThreadPool instance for multithreading.
+    """
     if backend == 'thread':
         return ThreadPool(processes=num_worker)
     elif backend == 'process':
@@ -255,6 +274,9 @@ def _get_pool(backend, num_worker) -> Union[Pool, ThreadPool]:
 
 
 def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
+    """
+    Return True if `func` is lambda, local or partial function, else False.
+    """
     return (
         (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
         or not hasattr(func, '__qualname__')
