@@ -270,18 +270,10 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             raise KeyError(f'{field} is not a valid field for this DocumentArray')
 
     ####################
-    # Deleting data   #
+    # Deleting data    #
     ####################
 
-    @overload
-    def __delitem__(self: T, key: int) -> None:
-        ...
-
-    @overload
-    def __delitem__(self: T, key: IndexIterType) -> None:
-        ...
-
-    def __delitem__(self, key) -> None:
+    def __delitem__(self, key: Union[int, IndexIterType]) -> None:
         raise NotImplementedError(
             f'{self.__class__.__name__} does not implement '
             f'__del_item__. You are trying to delete an element'
@@ -301,7 +293,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         return len(self._storage)
 
     ####################
-    # IO related #
+    # IO related       #
     ####################
 
     @classmethod
