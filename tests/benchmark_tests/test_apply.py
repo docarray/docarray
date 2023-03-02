@@ -1,3 +1,4 @@
+import os
 from time import time
 
 import numpy as np
@@ -20,23 +21,59 @@ def cpu_intensive(doc: MyMatrix) -> MyMatrix:
     # some cpu intensive function
     for i in range(3000):
         sqrt_matrix = np.sqrt(doc.matrix)
-    return MyMatrix(matrix=sqrt_matrix)
+    doc.matrix = sqrt_matrix
+    return doc
 
 
 def test_apply_multiprocessing_benchmark():
-    def time_multiprocessing(num_workers: int) -> float:
-        n_docs = 5
-        rng = np.random.RandomState(0)
-        matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
-        da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
-        start_time = time()
-        apply(da=da, func=cpu_intensive, backend='process', num_worker=num_workers)
-        return time() - start_time
+    if os.cpu_count() > 1:
 
-    time_1_cpu = time_multiprocessing(num_workers=1)
-    time_2_cpu = time_multiprocessing(num_workers=2)
+        def time_multiprocessing(num_workers: int) -> float:
+            n_docs = 5
+            rng = np.random.RandomState(0)
+            matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
+            da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
+            start_time = time()
+            apply(da=da, func=cpu_intensive, backend='process', num_worker=num_workers)
+            return time() - start_time
 
-    assert time_2_cpu < time_1_cpu
+        time_1_cpu = time_multiprocessing(num_workers=1)
+        time_2_cpu = time_multiprocessing(num_workers=2)
+
+        assert time_2_cpu < time_1_cpu
+
+
+def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
+    # some cpu intensive function
+    for doc in da:
+        for i in range(3000):
+            sqrt_matrix = np.sqrt(doc.matrix)
+        doc.matrix = sqrt_matrix
+    return da
+
+
+def test_apply_batch_multiprocessing_benchmark():
+    if os.cpu_count() > 1:
+
+        def time_multiprocessing(num_workers: int) -> float:
+            n_docs = 5
+            rng = np.random.RandomState(0)
+            matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
+            da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
+            start_time = time()
+            apply_batch(
+                da=da,
+                func=cpu_intensive_batch,
+                batch_size=8,
+                backend='process',
+                num_worker=num_workers,
+            )
+            return time() - start_time
+
+        time_1_cpu = time_multiprocessing(num_workers=1)
+        time_2_cpu = time_multiprocessing(num_workers=2)
+
+        assert time_2_cpu < time_1_cpu
 
 
 def io_intensive(img: Image) -> Image:
