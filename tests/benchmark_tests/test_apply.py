@@ -53,10 +53,11 @@ def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
 
 
 def test_apply_batch_multiprocessing_benchmark():
+    print(f"os.cpu_count() = {os.cpu_count()}")
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
-            n_docs = 5
+            n_docs = 16
             rng = np.random.RandomState(0)
             matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
             da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
