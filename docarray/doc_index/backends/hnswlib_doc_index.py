@@ -9,6 +9,7 @@ from typing import (
     Dict,
     Generic,
     List,
+    Optional,
     Sequence,
     Tuple,
     Type,
@@ -270,7 +271,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         out_docs = self._get_docs_sqlite_doc_id(doc_ids)
         if len(out_docs) == 0:
             raise KeyError(f'No document with id {doc_ids} found')
-        return out_docs  # type: ignore
+        return out_docs
 
     def num_docs(self) -> int:
         return self._get_num_docs_sqlite()
@@ -281,9 +282,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     # general helpers
     @staticmethod
-    def _to_hashed_id(doc_id: str) -> int:
+    def _to_hashed_id(doc_id: Optional[str]) -> int:
         # https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
         # hashing to 18 digits avoids overflow of sqlite INTEGER
+        if doc_id is None:
+            raise ValueError(
+                'The Document id is None. To use DocumentIndex it needs to be set.'
+            )
         return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
 
     def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
