@@ -250,7 +250,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test, docarray-test-proto3, docarray-test-tensorflow,  import-test, check-black, check-mypy, lint-ruff]
+    needs: [docarray-test, docarray-test-proto3, docarray-test-tensorflow, docarray-test-benchmarks, import-test, check-black, check-mypy, lint-ruff]
     if: always()
     runs-on: ubuntu-latest
     steps:
