@@ -1,7 +1,6 @@
 import abc
 from typing import (
     Any,
-    Generic,
     Iterable,
     MutableSequence,
     Optional,
@@ -33,7 +32,7 @@ def _is_np_int(item: Any) -> bool:
     return False  # this is unreachable, but mypy wants it
 
 
-class IndexingSequenceMixin(Generic[T_item]):
+class IndexingSequenceMixin(Iterable[T_item]):
     """
     This mixin allow to extend a list into an object that can be indexed
     a la mnumpy/pytorch.
@@ -60,6 +59,10 @@ class IndexingSequenceMixin(Generic[T_item]):
         self,
         docs: Optional[Iterable[T_item]] = None,
     ):
+        ...
+
+    @abc.abstractmethod
+    def __len__(self) -> int:
         ...
 
     @staticmethod
