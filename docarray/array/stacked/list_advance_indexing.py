@@ -1,26 +1,8 @@
-from functools import wraps
-from typing import Callable, MutableSequence, TypeVar
+from typing import MutableSequence, TypeVar
 
 from docarray.array.array.sequence_indexing_mixin import IndexingSequenceMixin
 
 T_item = TypeVar('T_item')
-
-
-def _delegate_meth_to_data(meth_name: str) -> Callable:
-    """
-    create a function that mimic a function call to the data attribute of the
-    ListAdvanceIndex
-
-    :param meth_name: name of the method
-    :return: a method that mimic the meth_name
-    """
-    func = getattr(list, meth_name)
-
-    @wraps(func)
-    def _delegate_meth(self, *args, **kwargs):
-        return getattr(self._data, meth_name)(*args, **kwargs)
-
-    return _delegate_meth
 
 
 class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
@@ -48,8 +30,5 @@ class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
     def __init__(self, data: MutableSequence[T_item]):
         self._data = data
 
-    pop = _delegate_meth_to_data('pop')
-    remove = _delegate_meth_to_data('remove')
-    reverse = _delegate_meth_to_data('reverse')
-    sort = _delegate_meth_to_data('sort')
-    __len__ = _delegate_meth_to_data('__len__')
+    def __len__(self) -> int:
+        return len(self._data)

@@ -249,6 +249,6 @@ def test_setitem_update_column():
     assert (da[0].embedding == torch.zeros((4,))).all()
     assert (da.embedding[0] == torch.zeros((4,))).all()
 
-    assert da._docs[0].text == 'hello'
-    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()
-    assert (da._tensor_columns['embedding'][0] == torch.zeros((4,))).all()
+    assert da._storage.any_columns['text'][0] == 'hello'
+    assert (da._storage.tensor_columns['embedding'][0] == torch.zeros((4,))).all()
+    assert (da._storage.tensor_columns['embedding'][0] == torch.zeros((4,))).all()

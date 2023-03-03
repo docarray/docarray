@@ -110,7 +110,7 @@ class IndexingSequenceMixin(Generic[T]):
 
     def _get_from_mask(self: T, item: Iterable[bool]) -> T:
         return self.__class__(
-            (doc for doc, mask_value in zip(self, item) if mask_value)
+            [doc for doc, mask_value in zip(self, item) if mask_value]
         )
 
     def _set_by_mask(self: T, item: Iterable[bool], value: Sequence[T_item]):
