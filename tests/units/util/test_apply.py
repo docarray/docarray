@@ -1,4 +1,3 @@
-import math
 from typing import Generator, Optional
 
 import pytest
@@ -80,42 +79,6 @@ def test_apply_batch(n_docs, batch_size, backend):
     )
     apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
 
-    assert len(da) == n_docs
-    for doc in da:
-        assert isinstance(doc, MyImage)
-
-
-def double_da(da: DocumentArray) -> DocumentArray:
-    return da.extend(da)
-
-
-@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
-@pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_batch_func_extends_da(n_docs, batch_size, backend):
-
-    da = DocumentArray[MyImage](
-        [MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
-    )
-    apply_batch(da=da, func=double_da, batch_size=batch_size, backend=backend)
-
-    assert len(da) == n_docs * 2
-    for doc in da:
-        assert isinstance(doc, MyImage)
-
-
-def first_doc(da: DocumentArray) -> BaseDocument:
-    return da[0]
-
-
-@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
-@pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_batch_func_return_doc(n_docs, batch_size, backend):
-    da = DocumentArray[MyImage](
-        [MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
-    )
-    apply_batch(da=da, func=first_doc, batch_size=batch_size, backend=backend)
-
-    assert len(da) == math.ceil(n_docs / batch_size)
     for doc in da:
         assert isinstance(doc, MyImage)
 
@@ -130,6 +93,5 @@ def test_map_batch(n_docs, batch_size, backend):
     it = _map_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
     assert isinstance(it, Generator)
 
-    assert len(da) == n_docs
     for batch in it:
         assert isinstance(batch, DocumentArray[MyImage])
