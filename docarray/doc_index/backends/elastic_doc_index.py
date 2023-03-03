@@ -70,12 +70,13 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
         # ElasticSearh index setup
-        self._index_init_params = ('dims', 'similarity', 'type')
+        self._index_init_params = ('dims', 'similarity', 'type', 'index')
         self._index_options = (
             'm',
             'ef_construction',
         )
 
+        # TODO check if index should be stored in self._hnsw_indices
         self._hnsw_indices = {}
         for col_name, col in self._columns.items():
             if not col.config:
@@ -88,7 +89,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         if self._client.indices.exists(index=self._db_config.index_name):
             self._client.indices.put_mapping(
-                index=self._db_config.index_name, put_mapping=mappings['properties']
+                index=self._db_config.index_name, properties=mappings['properties']
             )
         else:
             self._client.indices.create(
@@ -118,6 +119,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             default_factory=lambda: {
                 np.ndarray: {
                     'type': 'dense_vector',
+                    'index': True,
                     'dims': 128,
                     'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
                     'm': 16,
@@ -282,6 +284,9 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         if col.n_dim:
             index['dims'] = col.n_dim
         index['index_options'] = dict((k, col.config[k]) for k in self._index_options)
+        index['index_options'][
+            'type'
+        ] = 'hnsw'  # TODO dict key 'type' is confilct with property's 'type'
         return index
 
     def _send_requests(self, request: Iterable[Dict[str, Any]], **kwargs) -> List[Dict]:
