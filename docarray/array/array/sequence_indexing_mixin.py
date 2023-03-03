@@ -152,7 +152,8 @@ class IndexingSequenceMixin(Iterable[T_item]):
         else:
             head = item[0]  # type: ignore
             if isinstance(head, bool):
-                return self._del_from_mask(item)
+                item_ = cast(Iterable[bool], item)
+                return self._del_from_mask(item_)
             elif isinstance(head, int):
                 return self._del_from_indices(item)
             else:
