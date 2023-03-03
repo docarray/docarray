@@ -85,7 +85,7 @@ message DocumentArrayProto {
 }
 
 message ListOfDocumentArrayProto {
-  repeated DocumentArrayProto document_array = 1;
+  repeated DocumentArrayProto data = 1;
 }
 
 message ListOfAnyProto {
