@@ -79,6 +79,7 @@ def test_apply_batch(n_docs, batch_size, backend):
     )
     apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
 
+    assert len(da) == n_docs
     for doc in da:
         assert isinstance(doc, MyImage)
 
