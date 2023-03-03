@@ -85,50 +85,50 @@ def test_build_query():
 def test_create_columns():
     # Simple doc
     store = DummyDocIndex[SimpleDoc]()
-    assert list(store._columns.keys()) == ['id', 'tens']
+    assert list(store._column_infos.keys()) == ['id', 'tens']
 
-    assert store._columns['id'].docarray_type == ID
-    assert store._columns['id'].db_type == str
-    assert store._columns['id'].n_dim is None
-    assert store._columns['id'].config == {'hi': 'there'}
+    assert store._column_infos['id'].docarray_type == ID
+    assert store._column_infos['id'].db_type == str
+    assert store._column_infos['id'].n_dim is None
+    assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._columns['tens'].docarray_type, NdArray)
-    assert store._columns['tens'].db_type == str
-    assert store._columns['tens'].n_dim == 10
-    assert store._columns['tens'].config == {'dim': 1000, 'hi': 'there'}
+    assert issubclass(store._column_infos['tens'].docarray_type, NdArray)
+    assert store._column_infos['tens'].db_type == str
+    assert store._column_infos['tens'].n_dim == 10
+    assert store._column_infos['tens'].config == {'dim': 1000, 'hi': 'there'}
 
     # Flat doc
     store = DummyDocIndex[FlatDoc]()
-    assert list(store._columns.keys()) == ['id', 'tens_one', 'tens_two']
+    assert list(store._column_infos.keys()) == ['id', 'tens_one', 'tens_two']
 
-    assert store._columns['id'].docarray_type == ID
-    assert store._columns['id'].db_type == str
-    assert store._columns['id'].n_dim is None
-    assert store._columns['id'].config == {'hi': 'there'}
+    assert store._column_infos['id'].docarray_type == ID
+    assert store._column_infos['id'].db_type == str
+    assert store._column_infos['id'].n_dim is None
+    assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._columns['tens_one'].docarray_type, NdArray)
-    assert store._columns['tens_one'].db_type == str
-    assert store._columns['tens_one'].n_dim is None
-    assert store._columns['tens_one'].config == {'dim': 10, 'hi': 'there'}
+    assert issubclass(store._column_infos['tens_one'].docarray_type, NdArray)
+    assert store._column_infos['tens_one'].db_type == str
+    assert store._column_infos['tens_one'].n_dim is None
+    assert store._column_infos['tens_one'].config == {'dim': 10, 'hi': 'there'}
 
-    assert issubclass(store._columns['tens_two'].docarray_type, NdArray)
-    assert store._columns['tens_two'].db_type == str
-    assert store._columns['tens_two'].n_dim is None
-    assert store._columns['tens_two'].config == {'dim': 50, 'hi': 'there'}
+    assert issubclass(store._column_infos['tens_two'].docarray_type, NdArray)
+    assert store._column_infos['tens_two'].db_type == str
+    assert store._column_infos['tens_two'].n_dim is None
+    assert store._column_infos['tens_two'].config == {'dim': 50, 'hi': 'there'}
 
     # Nested doc
     store = DummyDocIndex[NestedDoc]()
-    assert list(store._columns.keys()) == ['id', 'd__id', 'd__tens']
+    assert list(store._column_infos.keys()) == ['id', 'd__id', 'd__tens']
 
-    assert store._columns['id'].docarray_type == ID
-    assert store._columns['id'].db_type == str
-    assert store._columns['id'].n_dim is None
-    assert store._columns['id'].config == {'hi': 'there'}
+    assert store._column_infos['id'].docarray_type == ID
+    assert store._column_infos['id'].db_type == str
+    assert store._column_infos['id'].n_dim is None
+    assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._columns['d__tens'].docarray_type, NdArray)
-    assert store._columns['d__tens'].db_type == str
-    assert store._columns['d__tens'].n_dim == 10
-    assert store._columns['d__tens'].config == {'dim': 1000, 'hi': 'there'}
+    assert issubclass(store._column_infos['d__tens'].docarray_type, NdArray)
+    assert store._column_infos['d__tens'].db_type == str
+    assert store._column_infos['d__tens'].n_dim == 10
+    assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
 
 
 def test_is_schema_compatible():
