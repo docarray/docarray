@@ -86,6 +86,25 @@ def test_apply_batch(n_docs, batch_size, backend):
         assert doc.tensor is not None
 
 
+def double_da(da: DocumentArray) -> DocumentArray:
+    da.extend(da)
+    return da
+
+
+@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
+@pytest.mark.parametrize('backend', ['thread', 'process'])
+def test_apply_batch_func_extends_da(n_docs, batch_size, backend):
+
+    da = DocumentArray[MyImage](
+        [MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
+    )
+    apply_batch(da=da, func=double_da, batch_size=batch_size, backend=backend)
+
+    assert len(da) == n_docs * 2
+    for doc in da:
+        assert isinstance(doc, MyImage)
+
+
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_batch(n_docs, batch_size, backend):
