@@ -46,6 +46,8 @@ else:
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentIndex')
 
+MAX_ES_RETURNED_DOCS = 10000
+
 ELASTIC_PY_VEC_TYPES = [list, tuple, np.ndarray]
 if torch_imported:
     import torch
@@ -123,6 +125,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 },
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
+                # TODO: add support for other types
             }
         )
 
@@ -149,10 +152,41 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return self._client.count(index=self._db_config.index_name)['count']
 
     def _del_items(self, doc_ids: Sequence[str]):
-        ...
+        # TODO: check if this works when id doesn't exist
+        requests = []
+        for _id in doc_ids:
+            requests.append(
+                {'_op_type': 'delete', '_index': self._db_config.index_name, '_id': _id}
+            )
+
+        self._send_requests(requests)
+        self._refresh(self._db_config.index_name)
 
     def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
-        ...
+        accumulated_docs = []
+        accumulated_docs_id_not_found = []
+
+        for pos in range(0, len(doc_ids), self.MAX_ES_RETURNED_DOCS):
+
+            es_docs = self._client.mget(
+                index=self._config.index_name,
+                ids=doc_ids[pos : pos + self.MAX_ES_RETURNED_DOCS],
+            )['docs']
+
+            for doc in es_docs:
+                if doc['found']:
+                    accumulated_docs.append(
+                        BaseDocument.from_base64(doc['_source']['blob'])
+                    )
+                else:
+                    accumulated_docs_id_not_found.append(doc['_id'])
+
+        if accumulated_docs_id_not_found:
+            raise Warning(f'No document with id {accumulated_docs_id_not_found} found')
+
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+
+        return da_cls(accumulated_docs)
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         ...
@@ -221,16 +255,19 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request = {
                 '_index': self._db_config.index_name,
                 '_id': doc.id,
-                'blob': doc.to_base64(),
+                'blob': doc.to_base64(),  # TODO deceide if we want to store the blob
             }
+            # TODO change here when more types are supported
             for col_name, col in self._columns.items():
                 if not col.config:
                     continue
                 request[col_name] = doc[col_name].tolist()
             requests.append(request)
 
-        self._send_requests(request)
-        self._refresh(self._db_config.index_name)
+        self._send_requests(requests)
+        self._refresh(
+            self._db_config.index_name
+        )  # TODO add runtime config for efficient refresh
 
     ###############################################
     # Helpers                                     #
