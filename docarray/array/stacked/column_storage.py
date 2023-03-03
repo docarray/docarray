@@ -4,7 +4,6 @@ from typing import (
     Any,
     Dict,
     Iterable,
-    List,
     MutableMapping,
     Sequence,
     Type,
@@ -14,6 +13,7 @@ from typing import (
 )
 
 from docarray.array.array.array import DocumentArray
+from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
 from docarray.base_document import BaseDocument
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
@@ -42,15 +42,15 @@ class ColumnStorage:
 
     tensor_columns: Dict[str, AbstractTensor]
     doc_columns: Dict[str, 'DocumentArrayStacked']
-    da_columns: Dict[str, List['DocumentArrayStacked']]
-    any_columns: Dict[str, List]
+    da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']]
+    any_columns: Dict[str, ListAdvanceIndex]
 
     def __init__(
         self,
         tensor_columns: Dict[str, AbstractTensor],
         doc_columns: Dict[str, 'DocumentArrayStacked'],
-        da_columns: Dict[str, List['DocumentArrayStacked']],
-        any_columns: Dict[str, List],
+        da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']],
+        any_columns: Dict[str, ListAdvanceIndex],
         document_type: Type[BaseDocument],
         tensor_type: Type[AbstractTensor],
     ):
@@ -79,8 +79,8 @@ class ColumnStorage:
 
         tensor_columns: Dict[str, AbstractTensor] = dict()
         doc_columns: Dict[str, 'DocumentArrayStacked'] = dict()
-        da_columns: Dict[str, List['DocumentArrayStacked']] = dict()
-        any_columns: Dict[str, List] = dict()
+        da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']] = dict()
+        any_columns: Dict[str, ListAdvanceIndex] = dict()
 
         docs = (
             docs
@@ -135,13 +135,16 @@ class ColumnStorage:
                     doc_columns[field_name] = getattr(docs, field_name).stack()
 
                 elif issubclass(field_type, DocumentArray):
-                    da_columns[field_name] = list()
+                    docs = list()
                     for doc in docs:
-                        da_columns[field_name].append(getattr(doc, field_name).stack())
+                        docs.append(getattr(doc, field_name).stack())
+                    da_columns[field_name] = ListAdvanceIndex(docs)
                 else:
-                    any_columns[field_name] = getattr(docs, field_name)
+                    any_columns[field_name] = ListAdvanceIndex(
+                        getattr(docs, field_name)
+                    )
             else:
-                any_columns[field_name] = getattr(docs, field_name)
+                any_columns[field_name] = ListAdvanceIndex(getattr(docs, field_name))
 
         return cls(
             tensor_columns,
