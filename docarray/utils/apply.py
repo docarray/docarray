@@ -212,8 +212,8 @@ def apply_batch(
         )
     ):
         if i == 0:
-            # get the difference in length of input and output da
-            diff = max(len(batch) - batch_size, 0)
+            if isinstance(batch, AnyDocumentArray):
+                diff = max(len(batch) - batch_size, 0)
 
         start = i * (batch_size + diff)
         stop = (i + 1) * (batch_size + i)
