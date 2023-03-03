@@ -205,12 +205,15 @@ def apply_batch(
         be responsible for closing the pool.
     :param show_progress: show a progress bar. Defaults to False.
     """
+    diff = 0
     for i, batch in enumerate(
         _map_batch(
             da, func, batch_size, backend, num_worker, shuffle, pool, show_progress
         )
     ):
-        start = i * (batch_size + abs(len(batch) - batch_size))
+        if i == 0:
+            diff = max(len(batch) - batch_size, 0)
+        start = i * (batch_size + diff)
         stop = (i + 1) * batch_size
         if isinstance(batch, BaseDocument):
             da[start:stop] = da.__class_getitem__(da.document_type)([batch])
