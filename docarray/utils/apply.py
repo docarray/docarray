@@ -212,7 +212,7 @@ def apply_batch(
     ):
         indices = [i for i in range(i * batch_size, (i + 1) * batch_size)]
         if isinstance(batch, BaseDocument):
-            da[indices] = da.__class_getitem__(da.document_type)(batch)
+            da[indices] = da.__class_getitem__(da.document_type)([batch])
         else:
             da[indices] = batch
 
@@ -226,7 +226,7 @@ def _map_batch(
     shuffle: bool = False,
     pool: Optional[Union[Pool, ThreadPool]] = None,
     show_progress: bool = False,
-) -> Generator[T, None, None]:
+) -> Generator[Union[T, T_doc], None, None]:
     """
     Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
     yielding the results.
