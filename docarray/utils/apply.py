@@ -141,7 +141,7 @@ def _map(
 
 def apply_batch(
     da: T,
-    func: Callable[[T], Union[T, T_doc]],
+    func: Union[Callable[[T], T], Callable[[T], T_doc]],
     batch_size: int,
     backend: str = 'thread',
     num_worker: Optional[int] = None,
