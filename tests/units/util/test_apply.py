@@ -82,6 +82,8 @@ def test_apply_batch(n_docs, batch_size, backend):
     assert len(da) == n_docs
     for doc in da:
         assert isinstance(doc, MyImage)
+        assert doc.url is not None
+        assert doc.tensor is not None
 
 
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
