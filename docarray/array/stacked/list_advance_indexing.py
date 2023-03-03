@@ -32,3 +32,7 @@ class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
 
     def __len__(self) -> int:
         return len(self._data)
+
+    @property
+    def data(self):
+        return self._data

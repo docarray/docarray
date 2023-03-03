@@ -6,6 +6,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    MutableSequence,
     Sequence,
     Tuple,
     Type,
@@ -150,14 +151,18 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
+    ) -> Union[MutableSequence, 'DocumentArrayStacked', AbstractTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        if field in self._storage.columns.keys():
+        if field in self._storage.any_columns.keys():
+            return self._storage.any_columns[field].data
+        elif field in self._storage.da_columns.keys():
+            return self._storage.da_columns[field].data
+        elif field in self._storage.columns.keys():
             return self._storage.columns[field]
         else:
             raise ValueError(f'{field} does not exist in {self}')
