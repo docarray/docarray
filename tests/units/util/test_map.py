@@ -5,7 +5,7 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 from docarray.typing import ImageUrl, NdArray
-from docarray.utils.map import map, map_batch
+from docarray.utils.map import map_batch, map_docs
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 N_DOCS = 2
@@ -28,7 +28,7 @@ def test_map(da, backend):
     for tensor in da.tensor:
         assert tensor is None
 
-    docs = list(map(da=da, func=load_from_doc, backend=backend))
+    docs = list(map_docs(da=da, func=load_from_doc, backend=backend))
 
     assert len(docs) == N_DOCS
     for doc in docs:
@@ -37,7 +37,7 @@ def test_map(da, backend):
 
 def test_map_multiprocessing_lambda_func_raise_exception(da):
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        list(map(da=da, func=lambda x: x, backend='process'))
+        list(map_docs(da=da, func=lambda x: x, backend='process'))
 
 
 def test_map_multiprocessing_local_func_raise_exception(da):
@@ -45,14 +45,14 @@ def test_map_multiprocessing_local_func_raise_exception(da):
         return x
 
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        list(map(da=da, func=local_func, backend='process'))
+        list(map_docs(da=da, func=local_func, backend='process'))
 
 
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_check_order(backend):
     da = DocumentArray[Image]([Image(id=i) for i in range(N_DOCS)])
 
-    docs = list(map(da=da, func=load_from_doc, backend=backend))
+    docs = list(map_docs(da=da, func=load_from_doc, backend=backend))
 
     assert len(docs) == N_DOCS
     for i, doc in enumerate(docs):

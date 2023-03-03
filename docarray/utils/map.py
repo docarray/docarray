@@ -13,7 +13,7 @@ T = TypeVar('T', bound=AnyDocumentArray)
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-def map(
+def map_docs(
     da: T,
     func: Callable[[T_doc], T_doc],
     backend: str = 'thread',

@@ -7,7 +7,7 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 from docarray.typing import NdArray
-from docarray.utils.map import map, map_batch
+from docarray.utils.map import map_batch, map_docs
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 pytestmark = [pytest.mark.benchmark, pytest.mark.slow]
@@ -25,7 +25,7 @@ def cpu_intensive(doc: MyMatrix) -> MyMatrix:
     return doc
 
 
-def test_map_multiprocessing():
+def test_map_docs_multiprocessing():
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
@@ -35,16 +35,14 @@ def test_map_multiprocessing():
             da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(
-                map(
+                map_docs(
                     da=da, func=cpu_intensive, backend='process', num_worker=num_workers
                 )
             )
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
-        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
-        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -58,7 +56,7 @@ def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
     return da
 
 
-def test_map_batch_multiprocessing():
+def test_map_docs_batch_multiprocessing():
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
@@ -79,9 +77,7 @@ def test_map_batch_multiprocessing():
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
-        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
-        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -92,20 +88,20 @@ def io_intensive(img: Image) -> Image:
     return img
 
 
-def test_map_multithreading():
+def test_map_docs_multithreading():
     def time_multithreading(num_workers: int) -> float:
         n_docs = 100
         da = DocumentArray[Image](
             [Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
         )
         start_time = time()
-        list(map(da=da, func=io_intensive, backend='thread', num_worker=num_workers))
+        list(
+            map_docs(da=da, func=io_intensive, backend='thread', num_worker=num_workers)
+        )
         return time() - start_time
 
     time_1_thread = time_multithreading(num_workers=1)
-    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading(num_workers=2)
-    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
 
@@ -117,7 +113,7 @@ def io_intensive_batch(da: DocumentArray[Image]) -> DocumentArray[Image]:
     return da
 
 
-def test_map_batch_multithreading():
+def test_map_docs_batch_multithreading():
     def time_multithreading_batch(num_workers: int) -> float:
         n_docs = 100
         da = DocumentArray[Image](
@@ -136,8 +132,6 @@ def test_map_batch_multithreading():
         return time() - start_time
 
     time_1_thread = time_multithreading_batch(num_workers=1)
-    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading_batch(num_workers=2)
-    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
