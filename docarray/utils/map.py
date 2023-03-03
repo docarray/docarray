@@ -72,7 +72,7 @@ def map_docs(
             yield x
 
 
-def map_batch(
+def map_docs_batch(
     da: T,
     func: Callable[[T], Union[T, T_doc]],
     batch_size: int,

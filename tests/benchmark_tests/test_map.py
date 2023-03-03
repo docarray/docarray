@@ -7,7 +7,7 @@ import pytest
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
 from docarray.typing import NdArray
-from docarray.utils.map import map_batch, map_docs
+from docarray.utils.map import map_docs, map_docs_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 pytestmark = [pytest.mark.benchmark, pytest.mark.slow]
@@ -66,7 +66,7 @@ def test_map_docs_batch_multiprocessing():
             da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(
-                map_batch(
+                map_docs_batch(
                     da=da,
                     func=cpu_intensive_batch,
                     batch_size=8,
@@ -121,7 +121,7 @@ def test_map_docs_batch_multithreading():
         )
         start_time = time()
         list(
-            map_batch(
+            map_docs_batch(
                 da=da,
                 func=io_intensive_batch,
                 backend='thread',
