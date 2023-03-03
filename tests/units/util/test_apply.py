@@ -1,9 +1,10 @@
-from typing import Generator
+from typing import Generator, Optional
 
 import pytest
 
-from docarray import DocumentArray
+from docarray import BaseDocument, DocumentArray
 from docarray.documents import Image
+from docarray.typing import ImageUrl, NdArray
 from docarray.utils.apply import _map_batch, apply, apply_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
@@ -58,28 +59,36 @@ def test_check_order(backend):
         assert id_1 == str(i)
 
 
-def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
+def load_from_da(da: DocumentArray) -> DocumentArray:
     for doc in da:
         doc.tensor = doc.url.load()
     return da
+
+
+class MyImage(BaseDocument):
+    tensor: Optional[NdArray]
+    url: ImageUrl
 
 
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_batch(n_docs, batch_size, backend):
 
-    da = DocumentArray([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
+    da = DocumentArray[MyImage](
+        [MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
+    )
     apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
 
     for doc in da:
-        assert isinstance(doc, Image)
+        assert isinstance(doc, MyImage)
 
 
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_batch(n_docs, batch_size, backend):
+    from docarray.documents import Image
 
-    da = DocumentArray([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
+    da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     it = _map_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
     assert isinstance(it, Generator)
 
