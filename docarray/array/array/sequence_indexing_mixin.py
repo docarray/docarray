@@ -132,13 +132,31 @@ class IndexingSequenceMixin(Iterable[T_item]):
                 self._data[i] = value[i_value]
                 i_value += 1
 
+    def _del_from_mask(self: T, item: Iterable[bool]) -> None:
+        idx_to_delete = [i for i, val in enumerate(item) if val]
+        self._del_from_indices(idx_to_delete)
+
+    def _del_from_indices(self: T, item: Iterable[int]) -> None:
+        for ix in sorted(item, reverse=True):
+            # reversed in needed here otherwise some the indice are not up to date after
+            # each delete
+            del self._data[ix]
+
     def __delitem__(self, key: Union[int, IndexIterType]) -> None:
-        key = self._normalize_index_item(key)
+        item = self._normalize_index_item(key)
 
-        if key is None:
+        if item is None:
             return
-
-        del self._data[key]
+        elif isinstance(item, (int, slice)):
+            del self._data[item]
+        else:
+            head = item[0]  # type: ignore
+            if isinstance(head, bool):
+                return self._del_from_mask(item)
+            elif isinstance(head, int):
+                return self._del_from_indices(item)
+            else:
+                raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
     def __getitem__(self: T, item: int) -> T:
