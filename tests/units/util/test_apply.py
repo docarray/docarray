@@ -71,6 +71,7 @@ class MyImage(BaseDocument):
     url: ImageUrl
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_batch(n_docs, batch_size, backend):
@@ -92,6 +93,7 @@ def append_one_doc(da: DocumentArray) -> DocumentArray:
     return da
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_batch_func_extends_da(n_docs, batch_size, backend):
@@ -110,6 +112,7 @@ def first_doc(da: DocumentArray) -> BaseDocument:
     return da[0]
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_batch_func_return_doc(n_docs, batch_size, backend):
@@ -123,6 +126,7 @@ def test_apply_batch_func_return_doc(n_docs, batch_size, backend):
         assert isinstance(doc, MyImage)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_batch(n_docs, batch_size, backend):

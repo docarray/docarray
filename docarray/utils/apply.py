@@ -210,11 +210,12 @@ def apply_batch(
             da, func, batch_size, backend, num_worker, shuffle, pool, show_progress
         )
     ):
-        indices = [i for i in range(i * batch_size, (i + 1) * batch_size)]
+        start = i * batch_size
+        stop = (i + 1) * batch_size
         if isinstance(batch, BaseDocument):
-            da[indices] = da.__class_getitem__(da.document_type)([batch])
+            da[start:stop] = da.__class_getitem__(da.document_type)([batch])
         else:
-            da[indices] = batch
+            da[start:stop] = batch
 
 
 def _map_batch(
