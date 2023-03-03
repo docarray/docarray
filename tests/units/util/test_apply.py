@@ -68,7 +68,7 @@ def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_batch(n_docs, batch_size, backend):
 
-    da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
+    da = DocumentArray([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
 
     for doc in da:
