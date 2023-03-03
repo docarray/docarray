@@ -108,7 +108,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
             results.append(self._data[ix])
         return self.__class__(results)
 
-    def _set_by_indices(self: T, item: Iterable[int], value: Iterable[T]):
+    def _set_by_indices(self: T, item: Iterable[int], value: Iterable[T_item]):
         # here we cannot use _get_offset_to_doc() because we need to change the doc
         # that a given offset points to, not just retrieve it.
         # Future optimization idea: _data could be List[DocContainer], where
