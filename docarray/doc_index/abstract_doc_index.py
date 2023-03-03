@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Generator,
     Generic,
+    Iterable,
     List,
     NamedTuple,
     Optional,
@@ -545,11 +546,25 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 leaf_vals.append(getattr(doc, col_name))
         return leaf_vals
 
+    @staticmethod
+    def _transpose_col_value_dict(
+        col_value_dict: Dict[str, Iterable[Any]]
+    ) -> Generator[Dict[str, Any], None, None]:
+        """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
+        Since a generator is returned, this process comes at negligible cost.
+
+        :param docs: The DocumentArray to get the values from
+        :return: The `docs` flattened out as rows. Each row is a dictionary mapping from column name to value
+        """
+        return (dict(zip(col_value_dict, row)) for row in zip(*col_value_dict.values()))
+
     def _get_col_value_dict(
         self, docs: Union[BaseDocument, Sequence[BaseDocument]]
     ) -> Dict[str, Generator[Any, None, None]]:
         """
         Get all data from a (sequence of) document(s), flattened out by column.
+        This can be seen as the transposed representation of `_get_rows()`.
+
         :param docs: The document(s) to get the data from
         :return: A dictionary mapping column names to a generator of values
         """

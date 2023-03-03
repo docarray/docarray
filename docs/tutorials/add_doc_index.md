@@ -305,8 +305,8 @@ To handle nested Documents, the public `index()` method already flattens every i
 This means that `_index()` already receives a flattened representation of the data, and you don't need to worry about that.
 
 Concretely, the `_index()` method takes as input a dictionary of column names to column data, flattened out.
-
-**Note:** It has been brought to my attention that passing a row-wise representation instead of a column-wise representation might be more natural for some (most) backends. This will be addressed shortly.
+**Note:** If you (or your backend) prefer to do bulk indexing on row-wise data, then you can use the `self._transpose_col_value_dict()`
+helper method. Inside of `_index()` you can use this to transform `column_to_data` into a row-wise view of the data.
 
 **If your backend has native nesting capabilities:** You can also ignore most of the above, and implement the public `index()` method directly.
 That way you have full control over whether the input data gets flattened or not.

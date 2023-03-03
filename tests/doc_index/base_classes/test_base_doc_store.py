@@ -276,3 +276,51 @@ def test_get_data_by_columns():
     assert list(data_by_columns['d__id']) == [doc.d.id for doc in docs]
     assert list(data_by_columns['d__d__id']) == [doc.d.d.id for doc in docs]
     assert list(data_by_columns['d__d__tens']) == [doc.d.d.tens for doc in docs]
+
+
+def test_transpose_data_by_columns():
+    store = DummyDocIndex[SimpleDoc]()
+    docs = [SimpleDoc(tens=np.random.random((10,))) for _ in range(10)]
+    data_by_columns = store._get_col_value_dict(docs)
+    data_by_rows = list(store._transpose_col_value_dict(data_by_columns))
+    assert len(data_by_rows) == len(docs)
+    for doc, row in zip(docs, data_by_rows):
+        assert doc.id == row['id']
+        assert np.all(doc.tens == row['tens'])
+
+    store = DummyDocIndex[FlatDoc]()
+    docs = [
+        FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
+        for _ in range(10)
+    ]
+    data_by_columns = store._get_col_value_dict(docs)
+    data_by_rows = list(store._transpose_col_value_dict(data_by_columns))
+    assert len(data_by_rows) == len(docs)
+    for doc, row in zip(docs, data_by_rows):
+        assert doc.id == row['id']
+        assert np.all(doc.tens_one == row['tens_one'])
+        assert np.all(doc.tens_two == row['tens_two'])
+
+    store = DummyDocIndex[NestedDoc]()
+    docs = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,)))) for _ in range(10)]
+    data_by_columns = store._get_col_value_dict(docs)
+    data_by_rows = list(store._transpose_col_value_dict(data_by_columns))
+    assert len(data_by_rows) == len(docs)
+    for doc, row in zip(docs, data_by_rows):
+        assert doc.id == row['id']
+        assert doc.d.id == row['d__id']
+        assert np.all(doc.d.tens == row['d__tens'])
+
+    store = DummyDocIndex[DeepNestedDoc]()
+    docs = [
+        DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=np.random.random((10,)))))
+        for _ in range(10)
+    ]
+    data_by_columns = store._get_col_value_dict(docs)
+    data_by_rows = list(store._transpose_col_value_dict(data_by_columns))
+    assert len(data_by_rows) == len(docs)
+    for doc, row in zip(docs, data_by_rows):
+        assert doc.id == row['id']
+        assert doc.d.id == row['d__id']
+        assert doc.d.d.id == row['d__d__id']
+        assert np.all(doc.d.d.tens == row['d__d__tens'])
