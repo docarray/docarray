@@ -1,9 +1,22 @@
 import numpy as np
 import pytest
+import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
+
+
+@pytest.fixture()
+def batch():
+    class Image(BaseDocument):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    return batch.stack()
 
 
 @pytest.mark.proto
