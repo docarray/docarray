@@ -38,9 +38,7 @@ def test_apply_multiprocessing():
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
-        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
-        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -55,7 +53,6 @@ def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
 
 
 def test_apply_batch_multiprocessing():
-    print(f"os.cpu_count() = {os.cpu_count()}")
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
@@ -74,9 +71,7 @@ def test_apply_batch_multiprocessing():
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
-        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
-        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -98,9 +93,7 @@ def test_apply_multithreading():
         return time() - start_time
 
     time_1_thread = time_multithreading(num_workers=1)
-    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading(num_workers=2)
-    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
 
@@ -129,8 +122,6 @@ def test_apply_batch_multithreading():
         return time() - start_time
 
     time_1_thread = time_multithreading_batch(num_workers=1)
-    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading_batch(num_workers=2)
-    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
