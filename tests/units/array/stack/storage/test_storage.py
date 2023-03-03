@@ -23,11 +23,12 @@ def test_storage_init():
     storage = ColumnStorage.from_docs(docs, MyDoc, NdArray)
 
     assert (storage.tensor_columns['tensor'] == np.zeros((4, 10))).all()
-    assert storage.any_columns['name'] == ['hello' for _ in range(4)]
+    for name in storage.any_columns['name']:
+        assert name == 'hello'
     inner_docs = storage.doc_columns['doc']
     assert isinstance(inner_docs, DocumentArrayStacked[InnerDoc])
-    # for i, doc in enumerate(inner_docs):
-    #     assert doc.price == i
+    for i, doc in enumerate(inner_docs):
+        assert doc.price == i
 
 
 def test_storage_view():
