@@ -1,5 +1,4 @@
 from collections import ChainMap
-from contextlib import contextmanager
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -399,18 +398,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         return DocumentArray[self.document_type].construct(
             docs, tensor_type=self.tensor_type
         )
-
-    @contextmanager
-    def unstacked_mode(self):
-        """
-        Context manager to put the DocumentArrayStacked in unstacked mode and stack it
-        when exiting the context manager.
-        EXAMPLE USAGE
-        .. code-block:: python
-            with da.unstacked_mode():
-                ...
-        """
-        raise NotImplementedError
 
     def traverse_flat(
         self,
