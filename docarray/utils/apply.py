@@ -141,7 +141,7 @@ def _map(
 
 def apply_batch(
     da: T,
-    func: Callable[[T], T],
+    func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -179,7 +179,7 @@ def apply_batch(
 
     :param da: DocumentArray to apply function to
     :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
-        an :class:`AnyDocumentArray`.
+        an :class:`AnyDocumentArray` or a :class:`BaseDocument`.
     :param batch_size: size of each generated batch (except the last batch, which might
         be smaller).
     :param backend: `thread` for multithreading and `process` for multiprocessing.
@@ -211,12 +211,15 @@ def apply_batch(
         )
     ):
         indices = [i for i in range(i * batch_size, (i + 1) * batch_size)]
-        da[indices] = batch
+        if isinstance(batch, BaseDocument):
+            da[indices] = da.__class_getitem__(da.document_type)(batch)
+        else:
+            da[indices] = batch
 
 
 def _map_batch(
     da: T,
-    func: Callable[[T], T],
+    func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -236,7 +239,7 @@ def _map_batch(
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
     :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
-        an :class:`AnyDocumentArray` of the same Document type as the input.
+        an :class:`AnyDocumentArray` or a :class:`BaseDocument`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
