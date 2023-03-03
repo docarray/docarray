@@ -1,13 +1,13 @@
 from contextlib import nullcontext
 from math import ceil
 from multiprocessing.pool import Pool, ThreadPool
-from types import LambdaType
-from typing import Any, Callable, Generator, Optional, TypeVar, Union
+from typing import Callable, Generator, Optional, TypeVar, Union
 
 from rich.progress import track
 
 from docarray import BaseDocument
 from docarray.array.abstract_array import AnyDocumentArray
+from docarray.helper import _is_lambda_or_partial_or_local_function
 
 T = TypeVar('T', bound=AnyDocumentArray)
 T_doc = TypeVar('T_doc', bound=BaseDocument)
@@ -57,6 +57,8 @@ def apply(
         In practice, you should try yourselves to figure out the best value.
         However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
         you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
 
         .. warning::
             When using `process` backend, your `func` should not modify elements in-place.
@@ -88,7 +90,7 @@ def _map(
     yielding the results.
 
     .. seealso::
-        - To return :class:`DocumentArray`, please use :meth:`.apply`.
+        - To return :class:`DocumentArray`, please use :func:`apply`.
 
     :param da: DocumentArray to apply function to
     :param func: a function that takes a :class:`BaseDocument` as input and outputs
@@ -100,6 +102,8 @@ def _map(
         In practice, you should try yourselves to figure out the best value.
         However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
         you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
 
         .. warning::
             When using `process` backend, your `func` should not modify elements in-place.
@@ -121,15 +125,15 @@ def _map(
             f'Multiprocessing does not allow functions that are local, lambda or partial: {func}'
         )
 
-    ctx_p: Union[nullcontext, Union[Pool, ThreadPool]]
+    context_pool: Union[nullcontext, Union[Pool, ThreadPool]]
     if pool:
         p = pool
-        ctx_p = nullcontext()
+        context_pool = nullcontext()
     else:
         p = _get_pool(backend, num_worker)
-        ctx_p = p
+        context_pool = p
 
-    with ctx_p:
+    with context_pool:
         imap = p.imap(func, da)
         for x in track(imap, total=len(da), disable=not show_progress):
             yield x
@@ -185,6 +189,8 @@ def apply_batch(
         In practice, you should try yourselves to figure out the best value.
         However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
         you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
 
         .. warning::
             When using `process` backend, your `func` should not modify elements in-place.
@@ -224,7 +230,7 @@ def _map_batch(
     Each element in the returned iterator is an :class:`AnyDocumentArray`.
 
     .. seealso::
-        - To return :class:`DocumentArray`, please use :meth:`.apply_batch`.
+        - To return :class:`DocumentArray`, please use :func:`apply_batch`.
 
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
@@ -238,6 +244,8 @@ def _map_batch(
         In practice, you should try yourselves to figure out the best value.
         However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
         you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
 
         .. warning::
             When using `process` backend, your `func` should not modify elements in-place.
@@ -258,15 +266,15 @@ def _map_batch(
             f'Multiprocessing does not allow functions that are local, lambda or partial: {func}'
         )
 
-    ctx_p: Union[nullcontext, Union[Pool, ThreadPool]]
+    context_pool: Union[nullcontext, Union[Pool, ThreadPool]]
     if pool:
         p = pool
-        ctx_p = nullcontext()
+        context_pool = nullcontext()
     else:
         p = _get_pool(backend, num_worker)
-        ctx_p = p
+        context_pool = p
 
-    with ctx_p:
+    with context_pool:
         imap = p.imap(func, da._batch(batch_size=batch_size, shuffle=shuffle))
         for x in track(
             imap, total=ceil(len(da) / batch_size), disable=not show_progress
@@ -286,14 +294,3 @@ def _get_pool(backend, num_worker) -> Union[Pool, ThreadPool]:
         raise ValueError(
             f'`backend` must be either `process` or `thread`, receiving {backend}'
         )
-
-
-def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
-    """
-    Return True if `func` is lambda, local or partial function, else False.
-    """
-    return (
-        (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
-        or not hasattr(func, '__qualname__')
-        or ('<locals>' in func.__qualname__)
-    )
