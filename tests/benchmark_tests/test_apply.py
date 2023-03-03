@@ -10,7 +10,7 @@ from docarray.typing import NdArray
 from docarray.utils.apply import apply, apply_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
-pytestmark = pytest.mark.benchmark
+pytestmark = [pytest.mark.benchmark, pytest.mark.slow]
 
 
 class MyMatrix(BaseDocument):
@@ -25,7 +25,7 @@ def cpu_intensive(doc: MyMatrix) -> MyMatrix:
     return doc
 
 
-def test_apply_multiprocessing_benchmark():
+def test_apply_multiprocessing():
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
@@ -38,7 +38,9 @@ def test_apply_multiprocessing_benchmark():
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
+        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
+        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -52,7 +54,7 @@ def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
     return da
 
 
-def test_apply_batch_multiprocessing_benchmark():
+def test_apply_batch_multiprocessing():
     print(f"os.cpu_count() = {os.cpu_count()}")
     if os.cpu_count() > 1:
 
@@ -72,7 +74,9 @@ def test_apply_batch_multiprocessing_benchmark():
             return time() - start_time
 
         time_1_cpu = time_multiprocessing(num_workers=1)
+        print(f"time_1_cpu = {time_1_cpu}")
         time_2_cpu = time_multiprocessing(num_workers=2)
+        print(f"time_2_cpu = {time_2_cpu}")
 
         assert time_2_cpu < time_1_cpu
 
@@ -83,7 +87,7 @@ def io_intensive(img: Image) -> Image:
     return img
 
 
-def test_apply_multithreading_benchmark():
+def test_apply_multithreading():
     def time_multithreading(num_workers: int) -> float:
         n_docs = 100
         da = DocumentArray[Image](
@@ -94,7 +98,9 @@ def test_apply_multithreading_benchmark():
         return time() - start_time
 
     time_1_thread = time_multithreading(num_workers=1)
+    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading(num_workers=2)
+    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread
 
@@ -106,7 +112,7 @@ def io_intensive_batch(da: DocumentArray[Image]) -> DocumentArray[Image]:
     return da
 
 
-def test_apply_batch_multithreading_benchmark():
+def test_apply_batch_multithreading():
     def time_multithreading_batch(num_workers: int) -> float:
         n_docs = 100
         da = DocumentArray[Image](
@@ -123,6 +129,8 @@ def test_apply_batch_multithreading_benchmark():
         return time() - start_time
 
     time_1_thread = time_multithreading_batch(num_workers=1)
+    print(f"time_1_thread = {time_1_thread}")
     time_2_thread = time_multithreading_batch(num_workers=2)
+    print(f"time_2_thread = {time_2_thread}")
 
     assert time_2_thread < time_1_thread

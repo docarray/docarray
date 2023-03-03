@@ -64,9 +64,9 @@ def load_from_da(da: DocumentArray[Image]) -> DocumentArray[Image]:
     return da
 
 
-@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 7)])
+@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_batch_multithreading(n_docs, batch_size, backend):
+def test_apply_batch(n_docs, batch_size, backend):
 
     da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     apply_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
@@ -75,7 +75,7 @@ def test_apply_batch_multithreading(n_docs, batch_size, backend):
         assert isinstance(doc, Image)
 
 
-@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 7)])
+@pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_batch(n_docs, batch_size, backend):
 
