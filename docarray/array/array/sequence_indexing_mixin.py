@@ -62,6 +62,7 @@ class IndexingSequenceMixin(Generic[T_item]):
     ):
         ...
 
+    @staticmethod
     def _normalize_index_item(
         item: Any,
     ) -> Union[int, slice, Iterable[int], Iterable[bool], None]:
