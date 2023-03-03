@@ -310,7 +310,44 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
     def to_protobuf(self) -> 'DocumentArrayStackedProto':
         """Convert DocumentArray into a Protobuf message"""
-        raise NotImplementedError
+        from docarray.proto import (
+            DocumentArrayProto,
+            DocumentArrayStackedProto,
+            ListOfAnyProto,
+            ListOfDocumentArrayProto,
+            NdArrayProto,
+        )
+
+        da_proto = DocumentArrayProto()
+        for doc in self:
+            da_proto.docs.append(doc.to_protobuf())
+
+        doc_columns_proto: Dict[str, DocumentArrayStackedProto] = dict()
+        tensor_columns_proto: Dict[str, NdArrayProto] = dict()
+        da_columns_proto: Dict[str, ListOfDocumentArrayProto] = dict()
+        any_columns_proto: Dict[str, ListOfAnyProto] = dict()
+
+        for field, col_doc in self._storage.doc_columns.items():
+            doc_columns_proto[field] = col_doc.to_protobuf()
+        for field, col_tens in self._storage.tensor_columns.items():
+            tensor_columns_proto[field] = col_tens.to_protobuf()
+        for field, col_da in self._storage.da_columns.items():
+            list_proto = ListOfDocumentArrayProto()
+            for da in col_da:
+                list_proto.append(da.to_protobuf())
+            da_columns_proto[field] = list_proto
+        for field, col_any in self._storage.any_columns.items():
+            list_proto = ListOfAnyProto()
+            for data in col_any:
+                list_proto.append(data.to_protobuf())
+            any_columns_proto[field] = list_proto
+
+        return DocumentArrayStackedProto(
+            doc_columns=doc_columns_proto,
+            tensor_columns=tensor_columns_proto,
+            da_column=da_columns_proto,
+            any_columns=any_columns_proto,
+        )
 
     def unstack(self: T) -> DocumentArray[T_doc]:
         """Convert DocumentArrayStacked into a DocumentArray.

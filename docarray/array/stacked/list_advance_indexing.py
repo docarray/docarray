@@ -1,11 +1,11 @@
-from typing import MutableSequence, TypeVar
+from typing import Iterator, MutableSequence, TypeVar
 
 from docarray.array.array.sequence_indexing_mixin import IndexingSequenceMixin
 
 T_item = TypeVar('T_item')
 
 
-class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
+class ListAdvanceIndex(IndexingSequenceMixin[T_item], Iterator[T_item]):
     """
     A list wrapper that implement custom indexing
 
@@ -36,3 +36,7 @@ class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
     @property
     def data(self):
         return self._data
+
+    def __iter__(self) -> Iterator[T_item]:
+        for data in self._data:
+            yield data
