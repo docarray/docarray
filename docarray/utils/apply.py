@@ -220,10 +220,10 @@ def apply_batch(
         start = i * (batch_size + diff)
         stop = (i + 1) * batch_size + (i * diff)
 
-        if isinstance(batch, BaseDocument):
-            da[start:stop] = [batch]
-        else:
+        if isinstance(batch, da.__class__):
             da[start:stop] = batch
+        else:
+            da[start:stop] = da.__class_getitem__(da.document_type)([batch])
 
 
 def _map_batch(
