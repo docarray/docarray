@@ -364,7 +364,15 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         raise NotImplementedError
 
     def traverse_flat(
-        self: 'AnyDocumentArray',
+        self,
         access_path: str,
     ) -> Union[List[Any], 'TorchTensor', 'NdArray']:
-        raise NotImplementedError
+        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocumentArray._flatten_one_level(nodes)
+
+        cls_to_check = (NdArray, TorchTensor) if TorchTensor is not None else (NdArray,)
+
+        if len(flattened) == 1 and isinstance(flattened[0], cls_to_check):
+            return flattened[0]
+        else:
+            return flattened
