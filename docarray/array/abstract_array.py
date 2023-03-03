@@ -26,7 +26,7 @@ T = TypeVar('T', bound='AnyDocumentArray')
 T_doc = TypeVar('T_doc', bound=BaseDocument)
 
 
-class AnyDocumentArray(Sequence[BaseDocument], Generic[T_doc], AbstractType):
+class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
     tensor_type: Type['AbstractTensor'] = NdArray
     __typed_da__: Dict[Type['AnyDocumentArray'], Dict[Type[BaseDocument], Type]] = {}
