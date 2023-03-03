@@ -213,12 +213,15 @@ def apply_batch(
     ):
         if i == 0:
             if isinstance(batch, AnyDocumentArray):
-                diff = max(len(batch) - batch_size, 0)
+                diff = len(batch) - batch_size
+            else:
+                diff = 1 - batch_size
 
         start = i * (batch_size + diff)
-        stop = (i + 1) * (batch_size + i)
+        stop = (i + 1) * batch_size + (i * diff)
+
         if isinstance(batch, BaseDocument):
-            da[start:stop] = da.__class_getitem__(da.document_type)([batch])
+            da[start:stop] = [batch]
         else:
             da[start:stop] = batch
 
