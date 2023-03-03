@@ -21,6 +21,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.base_document import AnyDocument, BaseDocument
+from docarray.base_document.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import is_tf_available, is_torch_available
@@ -345,13 +346,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
             for data in col_any:
-                list_proto.data.append(data.to_protobuf())
+                list_proto.data.append(_type_to_protobuf(data))
             any_columns_proto[field] = list_proto
 
         return DocumentArrayStackedProto(
             doc_columns=doc_columns_proto,
             tensor_columns=tensor_columns_proto,
-            da_column=da_columns_proto,
+            da_columns=da_columns_proto,
             any_columns=any_columns_proto,
         )
 
