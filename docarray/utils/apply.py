@@ -212,9 +212,11 @@ def apply_batch(
         )
     ):
         if i == 0:
+            # get the difference in length of input and output da
             diff = max(len(batch) - batch_size, 0)
+
         start = i * (batch_size + diff)
-        stop = (i + 1) * batch_size
+        stop = (i + 1) * (batch_size + i)
         if isinstance(batch, BaseDocument):
             da[start:stop] = da.__class_getitem__(da.document_type)([batch])
         else:
