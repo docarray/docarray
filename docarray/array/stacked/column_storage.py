@@ -15,6 +15,7 @@ from typing import (
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
 from docarray.base_document import BaseDocument
+from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union
 from docarray.utils.misc import is_tf_available
@@ -52,7 +53,7 @@ class ColumnStorage:
         da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']],
         any_columns: Dict[str, ListAdvanceIndex],
         document_type: Type[BaseDocument],
-        tensor_type: Type[AbstractTensor],
+        tensor_type: Type[AbstractTensor] = NdArray,
     ):
         self.tensor_columns = tensor_columns
         self.doc_columns = doc_columns

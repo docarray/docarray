@@ -305,8 +305,15 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayStackedProto') -> T:
         """create a Document from a protobuf message"""
+        storage = ColumnStorage(
+            pb_msg.tensor_columns,
+            pb_msg.doc_columns,
+            pb_msg.da_columns,
+            pb_msg.any_columns,
+            document_type=cls.document_type,
+        )
 
-        raise NotImplementedError
+        return cls.from_columns_storage(storage)
 
     def to_protobuf(self) -> 'DocumentArrayStackedProto':
         """Convert DocumentArray into a Protobuf message"""
@@ -334,12 +341,12 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for field, col_da in self._storage.da_columns.items():
             list_proto = ListOfDocumentArrayProto()
             for da in col_da:
-                list_proto.append(da.to_protobuf())
+                list_proto.data.append(da.to_protobuf())
             da_columns_proto[field] = list_proto
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
             for data in col_any:
-                list_proto.append(data.to_protobuf())
+                list_proto.data.append(data.to_protobuf())
             any_columns_proto[field] = list_proto
 
         return DocumentArrayStackedProto(
