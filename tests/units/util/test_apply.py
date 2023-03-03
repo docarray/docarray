@@ -79,9 +79,9 @@ def test_apply_batch(n_docs, batch_size, backend):
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_batch(n_docs, batch_size, backend):
 
-    da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
+    da = DocumentArray([Image(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     it = _map_batch(da=da, func=load_from_da, batch_size=batch_size, backend=backend)
     assert isinstance(it, Generator)
 
     for batch in it:
-        assert isinstance(batch, DocumentArray[Image])
+        assert isinstance(batch, DocumentArray)
