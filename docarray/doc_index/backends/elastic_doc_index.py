@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Generator,
     Generic,
     Iterable,
     List,
@@ -27,7 +28,7 @@ from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
     FindResultBatched,
-    _Column,
+    _ColumnInfo,
 )
 from docarray.utils.find import FindResult
 from docarray.utils.misc import torch_imported
@@ -78,7 +79,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # TODO check if index should be stored in self._hnsw_indices
         self._hnsw_indices = {}
-        for col_name, col in self._columns.items():
+        for col_name, col in self._column_infos.items():
             if not col.config:
                 continue  # do not create column index if no config is given
             self._hnsw_indices[col_name] = self._create_index(col)
@@ -146,9 +147,29 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
-    def _index(self, column_data_dic, **kwargs):
-        # not needed, we implement `index` directly
-        ...
+    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+
+        data = self._transpose_col_value_dict(column_to_data)
+        requests = []
+
+        for row in data:
+            request = {
+                '_index': self._db_config.index_name,
+                '_id': row['id'],
+                # 'blob': row.to_base64(),  # TODO deceide if we want to store the blob
+            }
+            # TODO change here when more types are supported
+            for col_name, col in self._column_infos.items():
+                if not col.config:
+                    continue
+                request[col_name] = row[col_name].tolist()
+            requests.append(request)
+
+        self._send_requests(requests)
+
+        self._refresh(
+            self._db_config.index_name
+        )  # TODO add runtime config for efficient refresh
 
     def num_docs(self) -> int:
         return self._client.count(index=self._db_config.index_name)['count']
@@ -246,31 +267,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     # Optional overrides                               #
     ####################################################
 
-    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index a document into the store"""
-        if kwargs:
-            raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
-        doc_seq = docs if isinstance(docs, Sequence) else [docs]
-        requests = []
-
-        for doc in doc_seq:
-            request = {
-                '_index': self._db_config.index_name,
-                '_id': doc.id,
-                'blob': doc.to_base64(),  # TODO deceide if we want to store the blob
-            }
-            # TODO change here when more types are supported
-            for col_name, col in self._columns.items():
-                if not col.config:
-                    continue
-                request[col_name] = doc[col_name].tolist()
-            requests.append(request)
-
-        self._send_requests(requests)
-        self._refresh(
-            self._db_config.index_name
-        )  # TODO add runtime config for efficient refresh
-
     ###############################################
     # Helpers                                     #
     ###############################################
@@ -278,7 +274,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     # general helpers
 
     # ElasticSearch helpers
-    def _create_index(self, col: '_Column') -> Dict[str, Any]:
+    def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
         index = dict((k, col.config[k]) for k in self._index_init_params)
         if col.n_dim:
