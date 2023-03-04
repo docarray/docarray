@@ -200,18 +200,19 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 if row['found']:
                     doc_dict = row['_source']
                     doc_dict['id'] = row['_id']
-                    schema_cls = cast(Type[BaseDocument], self._schema)
-                    accumulated_docs.append(schema_cls(**doc_dict))
+                    accumulated_docs.append(doc_dict)
                 else:
                     accumulated_docs_id_not_found.append(row['_id'])
+
         # TODO decide the warning or error here
         if accumulated_docs_id_not_found:
             warnings.warn(
                 f'No document with id {accumulated_docs_id_not_found} found', Warning
             )
 
+        doc_list = self._convert_to_doc_list(accumulated_docs)
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-        return da_cls(accumulated_docs)
+        return da_cls(doc_list)
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         ...
@@ -229,7 +230,31 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, search_field: str, limit: int, **kwargs
     ) -> FindResult:
-        ...
+        knn_query = {
+            'field': search_field,
+            'query_vector': query,
+            'k': limit,
+            'num_candidates': 10000
+            if 'num_candidates' not in kwargs
+            else kwargs['num_candidates'],
+        }
+
+        resp = self._client.search(
+            index=self._db_config.index_name,
+            knn=knn_query,
+        )
+
+        docs = []
+        scores = []
+        for result in resp['hits']['hits']:
+            doc_dict = result['_source']
+            doc_dict['id'] = result['_id']
+            docs.append(doc_dict)
+            scores.append(result['_score'])
+
+        doc_list = self._convert_to_doc_list(docs)
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return FindResult(documents=da_cls(doc_list), scores=np.array(scores))
 
     @composable
     def _filter(
@@ -286,6 +311,16 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             'type'
         ] = 'hnsw'  # TODO dict key 'type' is confilct with property's 'type'
         return index
+
+    def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
+        """Convert a list of docs to a list of Document objects."""
+        schema_cls = cast(Type[BaseDocument], self._schema)
+        doc_list = []
+
+        for doc_dict in docs:
+            doc_list.append(schema_cls(**doc_dict))
+
+        return doc_list
 
     def _send_requests(self, request: Iterable[Dict[str, Any]], **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
