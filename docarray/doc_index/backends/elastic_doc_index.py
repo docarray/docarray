@@ -189,26 +189,28 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 
-        for pos in range(0, len(doc_ids), self.MAX_ES_RETURNED_DOCS):
+        for pos in range(0, len(doc_ids), MAX_ES_RETURNED_DOCS):
 
-            es_docs = self._client.mget(
-                index=self._config.index_name,
-                ids=doc_ids[pos : pos + self.MAX_ES_RETURNED_DOCS],
+            es_rows = self._client.mget(
+                index=self._db_config.index_name,
+                ids=doc_ids[pos : pos + MAX_ES_RETURNED_DOCS],
             )['docs']
 
-            for doc in es_docs:
-                if doc['found']:
-                    accumulated_docs.append(
-                        BaseDocument.from_base64(doc['_source']['blob'])
-                    )
+            for row in es_rows:
+                if row['found']:
+                    doc_dict = row['_source']
+                    doc_dict['id'] = row['_id']
+                    schema_cls = cast(Type[BaseDocument], self._schema)
+                    accumulated_docs.append(schema_cls(**doc_dict))
                 else:
-                    accumulated_docs_id_not_found.append(doc['_id'])
-
+                    accumulated_docs_id_not_found.append(row['_id'])
+        # TODO decide the warning or error here
         if accumulated_docs_id_not_found:
-            raise Warning(f'No document with id {accumulated_docs_id_not_found} found')
+            warnings.warn(
+                f'No document with id {accumulated_docs_id_not_found} found', Warning
+            )
 
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-
         return da_cls(accumulated_docs)
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
