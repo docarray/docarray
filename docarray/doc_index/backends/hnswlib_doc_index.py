@@ -26,7 +26,7 @@ from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
     FindResultBatched,
-    _Column,
+    _ColumnInfo,
 )
 from docarray.proto import DocumentProto
 from docarray.utils.filter import filter as da_filter
@@ -71,11 +71,11 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         self._hnsw_locations = {
             col_name: os.path.join(self._work_dir, f'{col_name}.bin')
-            for col_name, col in self._columns.items()
+            for col_name, col in self._column_infos.items()
             if col.config
         }
         self._hnsw_indices = {}
-        for col_name, col in self._columns.items():
+        for col_name, col in self._column_infos.items():
             if not col.config:
                 continue  # do not create column index if no config is given
             if load_existing:
@@ -291,7 +291,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
         return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
 
-    def _load_index(self, col_name: str, col: '_Column') -> hnswlib.Index:
+    def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
         index.load_index(self._hnsw_locations[col_name])
@@ -308,7 +308,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     # HNSWLib helpers
-    def _create_index_class(self, col: '_Column') -> hnswlib.Index:
+    def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:
         """Create an instance of hnswlib.Index without initializing it."""
         construct_params = dict(
             (k, col.config[k]) for k in self._index_construct_params
@@ -317,7 +317,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             construct_params['dim'] = col.n_dim
         return hnswlib.Index(**construct_params)
 
-    def _create_index(self, col: '_Column') -> hnswlib.Index:
+    def _create_index(self, col: '_ColumnInfo') -> hnswlib.Index:
         """Create a new HNSW index for a column, and initialize it."""
         index = self._create_index_class(col)
         init_params = dict((k, col.config[k]) for k in self._index_init_params)

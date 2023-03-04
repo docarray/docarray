@@ -77,7 +77,7 @@ To help you with all of this, `super().__init__` inject a few helpful attributes
 - `self._schema`
 - `self._db_config`
 - `self._runtime_config`
-- `self._columns`
+- `self._column_infos`
 
 ### The `_schema`
 
@@ -117,22 +117,22 @@ for you, so that you can use it in your implementation.
 
 You can declare allowed fields and default values for your `_runtime_config `, but you will see that later.
 
-### The `_columns`
+### The `_column_infos`
 
-`self._columns` is a dictionary that contains information about all columns in your Document Index instance.
+`self._column_infos` is a dictionary that contains information about all columns in your Document Index instance.
 
 This information is automatically extracted from `self._schema`, and populated for you.
 
-Concretely, `self._columns: Dict[str, _Column]` maps from a column name to a `_Column` dataclass.
+Concretely, `self._column_infos: Dict[str, _ColumnInfo]` maps from a column name to a `_ColumnInfo` dataclass.
 
 For the `MyDoc` schema above, the column names would be `tensor`, `other_tensor`, `description`, `id`, `inner__embedding`, and `inner__id`.
-These are the key of `self._columns`.
+These are the key of `self._column_infos`.
 
-The values of `self._columns` are `_Column` dataclasses, which have the following form:
+The values of `self._column_infos` are `_ColumnInfo` dataclasses, which have the following form:
 
 ```python
 @dataclass
-class _Column:
+class _ColumnInfo:
     docarray_type: Type
     db_type: Any
     n_dim: Optional[int]
@@ -148,7 +148,7 @@ Again, these are automatically populated for you, so you can just use them in yo
 
 ### Properly handle `n_dim`
 
-`_Column.n_dim` is automatically obtained from type parametrizations of the form `NdArray[100]`;
+`_ColumnInfo.n_dim` is automatically obtained from type parametrizations of the form `NdArray[100]`;
 if there isn't such a parametrization, `n_dim` of the columns will be `None`.
 
 You should also provide another way of defining the dimensionality of your columns, specifically by exposing a parameter in `Field(...)` (see example schema at the top).
@@ -167,7 +167,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config == {}`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim == 100` and `self._column_infos['tensor'].config == {}`.
 The `tensor` column in your backend should be configured to have dimensionality 100.
 
 **Scenario 2: Only `Field(...)` is defined**
@@ -182,7 +182,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config['dim'] == 50`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim is None` and `self._column_infos['tensor'].config['dim'] == 50`.
 The `tensor` column in your backend should be configured to have dimensionality 50.
 
 **Scenario 3: Both `n_dim` and `Field(...)` are defined**
@@ -197,7 +197,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config['dim'] == 50`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim == 100` and `self._column_infos['tensor'].config['dim'] == 50`.
 The `tensor` column in your backend should be configured to have dimensionality 100, as **`n_dim` takes precedence over `Field(...)`**.
 
 **Scenario 4: Neither `n_dim` nor `Field(...)` are defined**
@@ -212,7 +212,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config == {}`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim is None` and `self._column_infos['tensor'].config == {}`.
 If your backend can handle tensor/embedding columns without defined dimensionality, you should leverage that mechanism.
 Otherwise, raise an Exception.
 
@@ -253,9 +253,9 @@ in specific methods (`index`, `find`, etc.), where they will act as local overri
 
 **Important**: Every `RuntimeConfig` needs to contain a `default_column_config` field.
 This is a dictionary that, for each possible column type in your database, defines a default configuration for that column type.
-This will automatically be passed to a `_Column` whenever a user does not manually specify a configuration for that column.
+This will automatically be passed to a `_ColumnInfo` whenever a user does not manually specify a configuration for that column.
 
-For example, in the `MyDoc` schema above, the `tensor` `_Column` would have a default configuration specified for `np.ndarray` columns.
+For example, in the `MyDoc` schema above, the `tensor` `_ColumnInfo` would have a default configuration specified for `np.ndarray` columns.
 
 What is actually contained in these type-dependant configurations is up to you (and database specific).
 For example, for `np.ndarray` columns you could define the configurations `index_type` and `metric_type`,
@@ -290,7 +290,7 @@ The details of each method should become clear from the docstrings and type hint
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
 It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
-The `BaseDocumentIndex` class uses this information to create and populate the `_Columns` in `self._columns`.
+The `BaseDocumentIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
 
 ### The `_index()` method
 
@@ -298,15 +298,15 @@ When indexing Documents, your implementation should behave in the following way:
 
 - Every field in the Document is mapped to a column in the database
 - This includes the `id` field, which is mapped to the primary key of the database (if your backend has such a concept)
-- The configuration of that column can be found in `self._columns[field_name].config`
+- The configuration of that column can be found in `self._column_infos[field_name].config`
 - In DocArray v1, we used to store a serialized representation of every Document. This is not needed anymore, as every row in your DB table should fully represent a single indexed Document.
 
 To handle nested Documents, the public `index()` method already flattens every incoming Document for you.
 This means that `_index()` already receives a flattened representation of the data, and you don't need to worry about that.
 
 Concretely, the `_index()` method takes as input a dictionary of column names to column data, flattened out.
-
-**Note:** It has been brought to my attention that passing a row-wise representation instead of a column-wise representation might be more natural for some (most) backends. This will be addressed shortly.
+**Note:** If you (or your backend) prefer to do bulk indexing on row-wise data, then you can use the `self._transpose_col_value_dict()`
+helper method. Inside of `_index()` you can use this to transform `column_to_data` into a row-wise view of the data.
 
 **If your backend has native nesting capabilities:** You can also ignore most of the above, and implement the public `index()` method directly.
 That way you have full control over whether the input data gets flattened or not.
