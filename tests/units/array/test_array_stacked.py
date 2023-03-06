@@ -6,7 +6,7 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
@@ -45,14 +45,14 @@ def nested_batch():
 
 
 def test_create_from_list_docs():
-    list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
-    da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
+    list_ = [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da_stacked = DocumentArrayStacked[ImageDoc](docs=list_, tensor_type=TorchTensor)
     assert len(da_stacked) == 10
     assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
 
 
 def test_create_from_None():
-    da_stacked = DocumentArrayStacked[Image]()
+    da_stacked = DocumentArrayStacked[ImageDoc]()
     assert len(da_stacked) == 0
 
 
@@ -389,8 +389,8 @@ def test_stack_none(tensor_backend):
 
 
 def test_to_device():
-    da = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
     )
     da = da.stack()
     assert da.tensor.device == torch.device('cpu')
@@ -401,10 +401,10 @@ def test_to_device():
 def test_to_device_nested():
     class MyDoc(BaseDocument):
         tensor: TorchTensor
-        docs: Image
+        docs: ImageDoc
 
     da = DocumentArray[MyDoc](
-        [MyDoc(tensor=torch.zeros(3, 5), docs=Image(tensor=torch.zeros(3, 5)))],
+        [MyDoc(tensor=torch.zeros(3, 5), docs=ImageDoc(tensor=torch.zeros(3, 5)))],
         tensor_type=TorchTensor,
     )
     da = da.stack()
@@ -416,7 +416,9 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[Image]([Image(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=np.zeros((3, 5)))], tensor_type=NdArray
+    )
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')

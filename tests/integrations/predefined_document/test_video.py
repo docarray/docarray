@@ -4,7 +4,7 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDocument
-from docarray.documents import Video
+from docarray.documents import VideoDoc
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
@@ -23,7 +23,7 @@ REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/t
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url', [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE])
 def test_video(file_url):
-    vid = Video(url=file_url)
+    vid = VideoDoc(url=file_url)
     vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
 
     assert isinstance(vid.tensor, VideoNdArray)
@@ -32,26 +32,26 @@ def test_video(file_url):
 
 
 def test_video_np():
-    video = parse_obj_as(Video, np.zeros((10, 10, 3)))
+    video = parse_obj_as(VideoDoc, np.zeros((10, 10, 3)))
     assert (video.tensor == np.zeros((10, 10, 3))).all()
 
 
 def test_video_torch():
-    video = parse_obj_as(Video, torch.zeros(10, 10, 3))
+    video = parse_obj_as(VideoDoc, torch.zeros(10, 10, 3))
     assert (video.tensor == torch.zeros(10, 10, 3)).all()
 
 
 @pytest.mark.tensorflow
 def test_video_tensorflow():
-    video = parse_obj_as(Video, tf.zeros((10, 10, 3)))
+    video = parse_obj_as(VideoDoc, tf.zeros((10, 10, 3)))
     assert tnp.allclose(video.tensor.tensor, tf.zeros((10, 10, 3)))
 
 
 def test_video_shortcut_doc():
     class MyDoc(BaseDocument):
-        video: Video
-        video2: Video
-        video3: Video
+        video: VideoDoc
+        video2: VideoDoc
+        video3: VideoDoc
 
     doc = MyDoc(
         video='http://myurl.mp4',
