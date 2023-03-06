@@ -3,7 +3,7 @@ from typing import Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
     _access_path_to_dict,
@@ -16,21 +16,21 @@ from docarray.helper import (
 @pytest.fixture()
 def nested_doc():
     class Inner(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
 
     class Middle(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         inner: Optional[Inner]
 
     class Outer(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         middle: Optional[Middle]
         da: DocumentArray[Inner]
 
     doc = Outer(
-        img=Image(),
-        middle=Middle(img=Image(), inner=Inner(img=Image())),
-        da=DocumentArray[Inner]([Inner(img=Image(url='test.png'))]),
+        img=ImageDoc(),
+        middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc())),
+        da=DocumentArray[Inner]([Inner(img=ImageDoc(url='test.png'))]),
     )
     return doc
 
@@ -52,7 +52,7 @@ def test_is_access_path_not_valid(nested_doc):
 def test_get_access_paths():
     class Painting(BaseDocument):
         title: str
-        img: Image
+        img: ImageDoc
 
     access_paths = Painting._get_access_paths()
     assert access_paths == [
