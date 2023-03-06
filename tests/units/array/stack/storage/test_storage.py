@@ -2,8 +2,8 @@ import numpy as np
 
 from docarray import BaseDocument
 from docarray.array import DocumentArrayStacked
-from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
-from docarray.typing import AnyTensor, NdArray
+from docarray.array.stacked.column_storage import ColumnStorageView
+from docarray.typing import AnyTensor
 
 
 def test_storage_init():
@@ -20,7 +20,7 @@ def test_storage_init():
         for i in range(4)
     ]
 
-    storage = ColumnStorage.from_docs(docs, MyDoc, NdArray)
+    storage = DocumentArrayStacked[MyDoc](docs)._storage
 
     assert (storage.tensor_columns['tensor'] == np.zeros((4, 10))).all()
     for name in storage.any_columns['name']:
@@ -38,7 +38,7 @@ def test_storage_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = ColumnStorage.from_docs(docs, MyDoc, NdArray)
+    storage = DocumentArrayStacked[MyDoc](docs)._storage
 
     view = ColumnStorageView(0, storage)
 

@@ -1,8 +1,9 @@
 import numpy as np
 
 from docarray import BaseDocument
-from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
-from docarray.typing import AnyTensor, NdArray
+from docarray.array import DocumentArrayStacked
+from docarray.array.stacked.column_storage import ColumnStorageView
+from docarray.typing import AnyTensor
 
 
 def test_document_view():
@@ -12,7 +13,7 @@ def test_document_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = ColumnStorage.from_docs(docs, MyDoc, NdArray)
+    storage = DocumentArrayStacked[MyDoc](docs)._storage
 
     doc = MyDoc.from_view(ColumnStorageView(0, storage))
     assert doc.is_view()

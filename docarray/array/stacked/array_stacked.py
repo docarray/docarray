@@ -20,10 +20,12 @@ from pydantic import BaseConfig, parse_obj_as
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
+from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.base_document.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._typing import is_tensor_union
 from docarray.utils.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
@@ -39,6 +41,8 @@ else:
 
 tf_available = is_tf_available()
 if tf_available:
+    import tensorflow as tf
+
     from docarray.typing import TensorFlowTensor  # noqa: F401
 else:
     TensorFlowTensor = None  # type: ignore
@@ -88,8 +92,85 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self.tensor_type = tensor_type
-        self._storage = ColumnStorage.from_docs(
-            docs, document_type=self.document_type, tensor_type=self.tensor_type
+
+        tensor_columns: Dict[str, AbstractTensor] = dict()
+        doc_columns: Dict[str, 'DocumentArrayStacked'] = dict()
+        da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']] = dict()
+        any_columns: Dict[str, ListAdvanceIndex] = dict()
+
+        docs = (
+            docs
+            if isinstance(docs, DocumentArray)
+            else DocumentArray.__class_getitem__(self.document_type)(docs)
+        )
+
+        for field_name, field in self.document_type.__fields__.items():
+            field_type = self.document_type._get_field_type(field_name)
+
+            if is_tensor_union(field_type):
+                field_type = tensor_type
+            if isinstance(field_type, type):
+                if tf_available and issubclass(field_type, TensorFlowTensor):
+                    # tf.Tensor does not allow item assignment, therefore the
+                    # optimized way
+                    # of initializing an empty array and assigning values to it
+                    # iteratively
+                    # does not work here, therefore handle separately.
+                    tf_stack = []
+                    for i, doc in enumerate(docs):
+                        val = getattr(doc, field_name)
+                        if val is None:
+                            val = tensor_type.get_comp_backend().none_value()
+                        tf_stack.append(val.tensor)
+
+                    stacked: tf.Tensor = tf.stack(tf_stack)
+                    tensor_columns[field_name] = TensorFlowTensor(stacked)
+
+                elif issubclass(field_type, AbstractTensor):
+
+                    tensor = getattr(docs[0], field_name)
+                    column_shape = (
+                        (len(docs), *tensor.shape)
+                        if tensor is not None
+                        else (len(docs),)
+                    )
+                    tensor_columns[field_name] = field_type._docarray_from_native(
+                        field_type.get_comp_backend().empty(
+                            column_shape,
+                            dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
+                            device=tensor.device if hasattr(tensor, 'device') else None,
+                        )
+                    )
+
+                    for i, doc in enumerate(docs):
+                        val = getattr(doc, field_name)
+                        if val is None:
+                            val = tensor_type.get_comp_backend().none_value()
+
+                        cast(AbstractTensor, tensor_columns[field_name])[i] = val
+
+                elif issubclass(field_type, BaseDocument):
+                    doc_columns[field_name] = getattr(docs, field_name).stack()
+
+                elif issubclass(field_type, DocumentArray):
+                    docs = list()
+                    for doc in docs:
+                        docs.append(getattr(doc, field_name).stack())
+                    da_columns[field_name] = ListAdvanceIndex(docs)
+                else:
+                    any_columns[field_name] = ListAdvanceIndex(
+                        getattr(docs, field_name)
+                    )
+            else:
+                any_columns[field_name] = ListAdvanceIndex(getattr(docs, field_name))
+
+        self._storage = ColumnStorage(
+            tensor_columns,
+            doc_columns,
+            da_columns,
+            any_columns,
+            self.document_type,
+            tensor_type,
         )
 
     @classmethod
