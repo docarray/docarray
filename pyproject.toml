@@ -86,7 +86,7 @@ ignore_missing_imports = true
 
 [tool.black]
 skip-string-normalization = true # equivalent to black -S
-exclude = 'docarray/proto/pb2/*'
+exclude = 'docarray/proto/pb*/*'
 
 [tool.isort]
 skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']
