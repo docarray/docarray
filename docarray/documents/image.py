@@ -64,7 +64,7 @@ class ImageDoc(BaseDocument):
     .. code-block:: python
 
         from docarray import BaseDocument
-        from docarray.documents import ImageDoc, Text
+        from docarray.documents import ImageDoc, TextDoc
 
         # compose it
         class MultiModalDoc(BaseDocument):

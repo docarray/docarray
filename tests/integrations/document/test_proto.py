@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import (
     AnyEmbedding,
     AnyTensor,
@@ -32,10 +32,10 @@ if tf_available:
 def test_multi_modal_doc_proto():
     class MyMultiModalDoc(BaseDocument):
         image: ImageDoc
-        text: Text
+        text: TextDoc
 
     doc = MyMultiModalDoc(
-        image=ImageDoc(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
+        image=ImageDoc(tensor=np.zeros((3, 224, 224))), text=TextDoc(text='hello')
     )
 
     MyMultiModalDoc.from_protobuf(doc.to_protobuf())

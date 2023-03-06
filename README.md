@@ -62,17 +62,17 @@ doc.embedding = clip_image_encoder(
 
 ```python
 from docarray import BaseDocument
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
 class MultiModalDocument(BaseDocument):
     image_doc: ImageDoc
-    text_doc: Text
+    text_doc: TextDoc
 
 
 doc = MultiModalDocument(
-    image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
+    image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=TextDoc(text='hi!')
 )
 ```
 
@@ -234,14 +234,14 @@ So now let's see what the same code looks like with DocArray:
 
 ```python
 from docarray import DocumentArray, BaseDocument
-from docarray.documents import ImageDoc, Text, Audio
+from docarray.documents import ImageDoc, TextDoc, Audio
 from docarray.typing import TorchTensor
 
 import torch
 
 
 class Podcast(BaseDocument):
-    text: Text
+    text: TextDoc
     image: ImageDoc
     audio: Audio
 
@@ -410,20 +410,20 @@ store it there, and thus make it searchable:
 # NOTE: DocumentStores are not yet implemented in version 2
 from docarray import DocumentArray, BaseDocument
 from docarray.stores import DocumentStore
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
 class MyDoc(BaseDocument):
     image: ImageDoc
-    text: Text
+    text: TextDoc
     description: str
 
 
 def _random_my_doc():
     return MyDoc(
         image=ImageDoc(embedding=np.random.random((256,))),
-        text=Text(embedding=np.random.random((128,))),
+        text=TextDoc(embedding=np.random.random((128,))),
         description='this is a random document',
     )
 

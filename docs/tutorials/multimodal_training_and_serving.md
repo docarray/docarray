@@ -90,7 +90,7 @@ from docarray.typing import TorchTensor, ImageUrl
 Let's first create a Document for our Text modality. It will contain a number of `Tokens`, which we also define:
 
 ```python
-from docarray.documents import Text as BaseText
+from docarray.documents import TextDoc as BaseText
 
 
 class Tokens(BaseDocument):

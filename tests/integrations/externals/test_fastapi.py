@@ -5,7 +5,7 @@ from httpx import AsyncClient
 
 from docarray import BaseDocument
 from docarray.base_document import DocumentResponse
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
@@ -13,11 +13,11 @@ from docarray.typing import NdArray
 async def test_fast_api():
     class Mmdoc(BaseDocument):
         img: ImageDoc
-        text: Text
+        text: TextDoc
         title: str
 
     input_doc = Mmdoc(
-        img=ImageDoc(tensor=np.zeros((3, 224, 224))), text=Text(), title='hello'
+        img=ImageDoc(tensor=np.zeros((3, 224, 224))), text=TextDoc(), title='hello'
     )
 
     app = FastAPI()

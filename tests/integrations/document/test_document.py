@@ -6,21 +6,21 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 
 
 def test_multi_modal_doc():
     class MyMultiModalDoc(BaseDocument):
         image: ImageDoc
-        text: Text
+        text: TextDoc
 
     doc = MyMultiModalDoc(
-        image=ImageDoc(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
+        image=ImageDoc(tensor=np.zeros((3, 224, 224))), text=TextDoc(text='hello')
     )
 
     assert isinstance(doc.image, BaseDocument)
     assert isinstance(doc.image, ImageDoc)
-    assert isinstance(doc.text, Text)
+    assert isinstance(doc.text, TextDoc)
 
     assert doc.text.text == 'hello'
     assert (doc.image.tensor == np.zeros((3, 224, 224))).all()

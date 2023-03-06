@@ -3,7 +3,7 @@ import pytest
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
@@ -27,13 +27,14 @@ def test_simple_proto():
 @pytest.mark.proto
 def test_nested_proto():
     class CustomDocument(BaseDocument):
-        text: Text
+        text: TextDoc
         image: ImageDoc
 
     da = DocumentArray[CustomDocument](
         [
             CustomDocument(
-                text=Text(text='hello'), image=ImageDoc(tensor=np.zeros((3, 224, 224)))
+                text=TextDoc(text='hello'),
+                image=ImageDoc(tensor=np.zeros((3, 224, 224))),
             )
             for _ in range(10)
         ]
@@ -45,13 +46,14 @@ def test_nested_proto():
 @pytest.mark.proto
 def test_nested_proto_any_doc():
     class CustomDocument(BaseDocument):
-        text: Text
+        text: TextDoc
         image: ImageDoc
 
     da = DocumentArray[CustomDocument](
         [
             CustomDocument(
-                text=Text(text='hello'), image=ImageDoc(tensor=np.zeros((3, 224, 224)))
+                text=TextDoc(text='hello'),
+                image=ImageDoc(tensor=np.zeros((3, 224, 224))),
             )
             for _ in range(10)
         ]

@@ -4,44 +4,44 @@ from typing import Any, Dict, List, Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import ImageDoc, Text
+from docarray.documents import ImageDoc, TextDoc
 from docarray.utils.filter import filter
 
 
 class MMDoc(BaseDocument):
-    text_doc: Text
+    text_doc: TextDoc
     text: str = ''
     image: Optional[ImageDoc] = None
     price: int = 0
     optional_num: Optional[int] = None
     boolean: bool = False
     categories: Optional[List[str]] = None
-    sub_docs: Optional[List[Text]] = None
+    sub_docs: Optional[List[TextDoc]] = None
     dictionary: Optional[Dict[str, Any]] = None
 
 
 @pytest.fixture
 def docs():
     mmdoc1 = MMDoc(
-        text_doc=Text(text='Text Doc of Document 1'),
+        text_doc=TextDoc(text='Text Doc of Document 1'),
         text='Text of Document 1',
-        sub_docs=[Text(text='subtext1'), Text(text='subtext2')],
+        sub_docs=[TextDoc(text='subtext1'), TextDoc(text='subtext2')],
         dictionary={},
     )
     mmdoc2 = MMDoc(
-        text_doc=Text(text='Text Doc of Document 2'),
+        text_doc=TextDoc(text='Text Doc of Document 2'),
         text='Text of Document 2',
         image=ImageDoc(url='exampleimage.jpg'),
         price=3,
         dictionary={'a': 0, 'b': 1, 'c': 2, 'd': {'e': 3}},
     )
     mmdoc3 = MMDoc(
-        text_doc=Text(text='Text Doc of Document 3'),
+        text_doc=TextDoc(text='Text Doc of Document 3'),
         text='Text of Document 3',
         price=1000,
         boolean=True,
         categories=['cat1', 'cat2'],
-        sub_docs=[Text(text='subtext1'), Text(text='subtext2')],
+        sub_docs=[TextDoc(text='subtext1'), TextDoc(text='subtext2')],
         optional_num=30,
         dictionary={'a': 0, 'b': 1},
     )
@@ -175,8 +175,8 @@ def test_array_simple_filters(docs, dict_api):
 def test_placehold_filter(dict_api):
     docs = DocumentArray[MMDoc](
         [
-            MMDoc(text='A', text_doc=Text(text='A')),
-            MMDoc(text='A', text_doc=Text(text='B')),
+            MMDoc(text='A', text_doc=TextDoc(text='A')),
+            MMDoc(text='A', text_doc=TextDoc(text='B')),
         ]
     )
 
@@ -247,7 +247,7 @@ def test_logic_filter(docs, dict_api):
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_from_docstring(dict_api):
     class MyDocument(BaseDocument):
-        caption: Text
+        caption: TextDoc
         image: ImageDoc
         price: int
 
