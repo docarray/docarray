@@ -38,6 +38,17 @@ T = TypeVar('T', bound='ColumnStorage')
 
 
 class ColumnStorage:
+    """
+    ColumnStorage is a container to store the columns of the
+    :class:`~docarray.array.stacked.DocumentArrayStacked`.
+
+    :param tensor_columns: a Dict of AbstractTensor
+    :param doc_columns: a Dict of :class:`~docarray.array.stacked.DocumentArrayStacked`
+    :param da_columns: a Dict of List of :class:`~docarray.array.stacked.DocumentArrayStacked`
+    :param any_columns: a Dict of List
+    :param document_type: document_type
+    :param tensor_type: Class used to wrap the stacked tensors
+    """
 
     document_type: Type[BaseDocument]
 
