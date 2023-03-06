@@ -8,6 +8,7 @@ from typing import (
     Generic,
     List,
     Optional,
+    Sized,
     Tuple,
     Type,
     TypeVar,
@@ -81,7 +82,7 @@ class _ParametrizedMeta(type):
         return super().__instancecheck__(instance)
 
 
-class AbstractTensor(Generic[TTensor, T], AbstractType, ABC):
+class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
     __parametrized_meta__: type = _ParametrizedMeta
     __unparametrizedcls__: Optional[Type['AbstractTensor']] = None
