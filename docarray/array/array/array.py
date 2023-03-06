@@ -139,7 +139,7 @@ class DocumentArray(
         :return:
         """
         da = cls.__new__(cls)
-        da._data = docs
+        da._data = docs if isinstance(docs, list) else list(docs)
         da.tensor_type = tensor_type
         return da
 
