@@ -6,22 +6,20 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Audio, Image, Text
-from docarray.documents.helper import create_doc, create_from_typeddict
-from docarray.typing.tensor.audio import AudioNdArray
+from docarray.documents import ImageDoc, Text
 
 
 def test_multi_modal_doc():
     class MyMultiModalDoc(BaseDocument):
-        image: Image
+        image: ImageDoc
         text: Text
 
     doc = MyMultiModalDoc(
-        image=Image(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
+        image=ImageDoc(tensor=np.zeros((3, 224, 224))), text=Text(text='hello')
     )
 
     assert isinstance(doc.image, BaseDocument)
-    assert isinstance(doc.image, Image)
+    assert isinstance(doc.image, ImageDoc)
     assert isinstance(doc.text, Text)
 
     assert doc.text.text == 'hello'
@@ -31,11 +29,11 @@ def test_multi_modal_doc():
 def test_nested_chunks_document():
     class ChunksDocument(BaseDocument):
         text: str
-        images: DocumentArray[Image]
+        images: DocumentArray[ImageDoc]
 
     doc = ChunksDocument(
         text='hello',
-        images=DocumentArray[Image]([Image() for _ in range(10)]),
+        images=DocumentArray[ImageDoc]([ImageDoc() for _ in range(10)]),
     )
 
     assert isinstance(doc.images, DocumentArray)

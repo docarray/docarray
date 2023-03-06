@@ -48,9 +48,9 @@ print(doc.embedding.shape)
 ### Use pre-defined `Document`s for common use cases:
 
 ```python
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 
-doc = Image(
+doc = ImageDoc(
     url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
 )
 doc.tensor = doc.url.load()  # load image tensor from URL
@@ -62,17 +62,17 @@ doc.embedding = clip_image_encoder(
 
 ```python
 from docarray import BaseDocument
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, Text
 import numpy as np
 
 
 class MultiModalDocument(BaseDocument):
-    image_doc: Image
+    image_doc: ImageDoc
     text_doc: Text
 
 
 doc = MultiModalDocument(
-    image_doc=Image(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
+    image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
 )
 ```
 
@@ -127,11 +127,11 @@ print(da.tensor.shape)
 - Integrate seamlessly with **FastAPI** and **Jina**
 
 ```python
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from httpx import AsyncClient
 import numpy as np
 
-doc = Image(tensor=np.zeros((3, 224, 224)))
+doc = ImageDoc(tensor=np.zeros((3, 224, 224)))
 
 # JSON over HTTP
 async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -151,17 +151,17 @@ Image.from_protobuf(doc.to_protobuf())
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
 from docarray import DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.stores import DocumentStore
 import numpy as np
 
-da = DocumentArray([Image(embedding=np.zeros((128,))) for _ in range(1000)])
-store = DocumentStore[Image](
+da = DocumentArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
+store = DocumentStore[ImageDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
 store.insert(da)  # insert the DocumentArray into the DocumentStore
 # find the 10 most similar images based on the 'embedding' field
-match = store.find(Image(embedding=np.zeros((128,))), field='embedding', top_k=10)
+match = store.find(ImageDoc(embedding=np.zeros((128,))), field='embedding', top_k=10)
 ```
 
 If you want to get a deeper understanding of DocArray v2, it is best to do so on the basis of your
@@ -234,7 +234,7 @@ So now let's see what the same code looks like with DocArray:
 
 ```python
 from docarray import DocumentArray, BaseDocument
-from docarray.documents import Image, Text, Audio
+from docarray.documents import ImageDoc, Text, Audio
 from docarray.typing import TorchTensor
 
 import torch
@@ -242,7 +242,7 @@ import torch
 
 class Podcast(BaseDocument):
     text: Text
-    image: Image
+    image: ImageDoc
     audio: Audio
 
 
@@ -331,13 +331,13 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray import BaseDocument
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 from docarray.base_document import DocumentResponse
 
 
 class InputDoc(BaseDocument):
-    img: Image
+    img: ImageDoc
 
 
 class OutputDoc(BaseDocument):
@@ -345,7 +345,7 @@ class OutputDoc(BaseDocument):
     embedding_bert: NdArray
 
 
-input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
+input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
 
 app = FastAPI()
 
@@ -410,19 +410,19 @@ store it there, and thus make it searchable:
 # NOTE: DocumentStores are not yet implemented in version 2
 from docarray import DocumentArray, BaseDocument
 from docarray.stores import DocumentStore
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, Text
 import numpy as np
 
 
 class MyDoc(BaseDocument):
-    image: Image
+    image: ImageDoc
     text: Text
     description: str
 
 
 def _random_my_doc():
     return MyDoc(
-        image=Image(embedding=np.random.random((256,))),
+        image=ImageDoc(embedding=np.random.random((256,))),
         text=Text(embedding=np.random.random((128,))),
         description='this is a random document',
     )
@@ -436,10 +436,12 @@ store.insert(da)  # insert the DocumentArray into the DocumentStore
 
 # find the 10 most similar images based on the image embedding field
 match = store.find(
-    Image(embedding=np.zeros((256,))), field='image__embedding', top_k=10
+    ImageDoc(embedding=np.zeros((256,))), field='image__embedding', top_k=10
 )
 # find the 10 most similar images based on the image embedding field
-match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', top_k=10)
+match = store.find(
+    ImageDoc(embedding=np.zeros((128,))), field='text__embedding', top_k=10
+)
 ```
 
 ## Install the alpha

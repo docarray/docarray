@@ -4,17 +4,17 @@ from torch.utils.data import DataLoader
 
 from docarray import BaseDocument, DocumentArray
 from docarray.data import MultiModalDataset
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, Text
 
 
 class PairTextImage(BaseDocument):
     text: Text
-    image: Image
+    image: ImageDoc
 
 
 class ImagePreprocess:
-    def __call__(self, image: Image) -> None:
-        assert isinstance(image, Image)
+    def __call__(self, image: ImageDoc) -> None:
+        assert isinstance(image, ImageDoc)
         image.tensor = torch.randn(3, 32, 32)
 
 
@@ -40,7 +40,7 @@ def captions_da() -> DocumentArray[PairTextImage]:
         da = DocumentArray[PairTextImage](
             PairTextImage(
                 text=Text(text=i[1]),
-                image=Image(url=f"tests/toydata/image-data/{i[0]}"),
+                image=ImageDoc(url=f"tests/toydata/image-data/{i[0]}"),
             )
             for i in map(lambda x: x.strip().split(","), f.readlines())
         )

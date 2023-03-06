@@ -4,14 +4,14 @@ from typing import Any, Dict, List, Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, Text
 from docarray.utils.filter import filter
 
 
 class MMDoc(BaseDocument):
     text_doc: Text
     text: str = ''
-    image: Optional[Image] = None
+    image: Optional[ImageDoc] = None
     price: int = 0
     optional_num: Optional[int] = None
     boolean: bool = False
@@ -31,7 +31,7 @@ def docs():
     mmdoc2 = MMDoc(
         text_doc=Text(text='Text Doc of Document 2'),
         text='Text of Document 2',
-        image=Image(url='exampleimage.jpg'),
+        image=ImageDoc(url='exampleimage.jpg'),
         price=3,
         dictionary={'a': 0, 'b': 1, 'c': 2, 'd': {'e': 3}},
     )
@@ -248,22 +248,24 @@ def test_logic_filter(docs, dict_api):
 def test_from_docstring(dict_api):
     class MyDocument(BaseDocument):
         caption: Text
-        image: Image
+        image: ImageDoc
         price: int
 
     docs = DocumentArray[MyDocument](
         [
             MyDocument(
                 caption='A tiger in the jungle',
-                image=Image(url='tigerphoto.png'),
+                image=ImageDoc(url='tigerphoto.png'),
                 price=100,
             ),
             MyDocument(
-                caption='A swimming turtle', image=Image(url='turtlepic.png'), price=50
+                caption='A swimming turtle',
+                image=ImageDoc(url='turtlepic.png'),
+                price=50,
             ),
             MyDocument(
                 caption='A couple birdwatching with binoculars',
-                image=Image(url='binocularsphoto.png'),
+                image=ImageDoc(url='binocularsphoto.png'),
                 price=30,
             ),
         ]

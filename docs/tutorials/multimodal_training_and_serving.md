@@ -109,7 +109,7 @@ hint and even enforce the desired shape of any tensor!
 To represent our image data, we use the `Image` Document that is included in DocArray:
 
 ```python
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 ```
 
 Under the hood, an `Image` looks something like this (with the only main difference that it can take tensors from any

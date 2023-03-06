@@ -1,19 +1,21 @@
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
 class MyDoc(BaseDocument):
     embedding: NdArray
     text: str
-    image: Image
+    image: ImageDoc
 
 
 def test_from_to_json():
     da = DocumentArray[MyDoc](
         [
-            MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png')),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=Image()),
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
     json_da = da.to_json()
