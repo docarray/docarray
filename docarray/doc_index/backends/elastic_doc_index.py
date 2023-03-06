@@ -77,16 +77,11 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             'ef_construction',
         )
 
-        # TODO check if index should be stored in self._hnsw_indices
-        self._hnsw_indices = {}
+        mappings = {'dynamic': 'true', '_source': {'enabled': 'true'}, 'properties': {}}
         for col_name, col in self._column_infos.items():
             if not col.config:
                 continue  # do not create column index if no config is given
-            self._hnsw_indices[col_name] = self._create_index(col)
-
-        mappings = {'dynamic': 'true', '_source': {'enabled': 'true'}, 'properties': {}}
-        for col_name, index in self._hnsw_indices.items():
-            mappings['properties'][col_name] = index
+            mappings['properties'][col_name] = self._create_index(col)
 
         if self._client.indices.exists(index=self._db_config.index_name):
             self._client.indices.put_mapping(
@@ -156,16 +151,18 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request = {
                 '_index': self._db_config.index_name,
                 '_id': row['id'],
-                # 'blob': row.to_base64(),  # TODO deceide if we want to store the blob
+                # '_blob': row.to_base64(),  # TODO blob is stored for nested doc
             }
             # TODO change here when more types are supported
             for col_name, col in self._column_infos.items():
                 if not col.config:
                     continue
-                request[col_name] = row[col_name].tolist()
+                request[col_name] = row[col_name]
             requests.append(request)
 
-        self._send_requests(requests)
+        _, warning_info = self._send_requests(requests)
+        for info in warning_info:
+            warnings.warn(str(info))
 
         self._refresh(
             self._db_config.index_name
@@ -175,14 +172,19 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return self._client.count(index=self._db_config.index_name)['count']
 
     def _del_items(self, doc_ids: Sequence[str]):
-        # TODO: check if this works when id doesn't exist
         requests = []
         for _id in doc_ids:
             requests.append(
                 {'_op_type': 'delete', '_index': self._db_config.index_name, '_id': _id}
             )
 
-        self._send_requests(requests)
+        _, warning_info = self._send_requests(requests)
+
+        # raise warning if some ids are not found
+        if warning_info:
+            ids = [info['delete']['_id'] for info in warning_info]
+            warnings.warn(f'No document with id {ids} found')
+
         self._refresh(self._db_config.index_name)
 
     def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
@@ -204,26 +206,15 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 else:
                     accumulated_docs_id_not_found.append(row['_id'])
 
-        # TODO decide the warning or error here
+        # raise warning if some ids are not found
         if accumulated_docs_id_not_found:
-            warnings.warn(
-                f'No document with id {accumulated_docs_id_not_found} found', Warning
-            )
+            warnings.warn(f'No document with id {accumulated_docs_id_not_found} found')
 
         doc_list = self._convert_to_doc_list(accumulated_docs)
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
         return da_cls(doc_list)
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
-        ...
-
-    def _find_batched(
-        self,
-        query: np.ndarray,
-        search_field: str,
-        limit: int,
-        **kwargs,
-    ) -> FindResultBatched:
         ...
 
     @composable
@@ -256,49 +247,107 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
         return FindResult(documents=da_cls(doc_list), scores=np.array(scores))
 
+    def _find_batched(
+        self,
+        queries: np.ndarray,
+        search_field: str,
+        limit: int,
+    ) -> FindResultBatched:
+        result_das = []
+        result_scores = []
+
+        for query in queries:
+            documents, scores = self._find(query, search_field, limit)
+            result_das.append(documents)
+            result_scores.append(scores)
+
+        result_scores = np.array(result_scores)
+        return FindResultBatched(documents=result_das, scores=result_scores)
+
     @composable
     def _filter(
         self,
-        *args,
-        **kwargs,
+        filter_query: Any,
+        limit: int,
     ) -> DocumentArray:
-        ...
+        resp = self._client.search(
+            index=self._db_config.index_name,
+            query=filter_query,
+            size=limit,
+        )
+
+        docs = []
+        for result in resp['hits']['hits'][:limit]:
+            doc_dict = result['_source']
+            doc_dict['id'] = result['_id']
+            docs.append(doc_dict)
+
+        doc_list = self._convert_to_doc_list(docs)
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return da_cls(doc_list)
 
     def _filter_batched(
         self,
         filter_queries: Any,
         limit: int,
-        **kwargs,
     ) -> List[DocumentArray]:
-        ...
+        result_das = []
+        for query in filter_queries:
+            result_das.append(self._filter(query, limit))
+        return result_das
 
     def _text_search(
         self,
         query: str,
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResult:
-        ...
+        query = {
+            "bool": {
+                "must": [
+                    {"match": {search_field: query}},
+                ],
+            }
+        }
+
+        resp = self._client.search(
+            index=self._db_config.index_name,
+            query=query,
+            size=limit,
+        )
+
+        docs = []
+        scores = []
+        for result in resp['hits']['hits']:
+            doc_dict = result['_source']
+            doc_dict['id'] = result['_id']
+            docs.append(doc_dict)
+            scores.append(result['_score'])
+
+        doc_list = self._convert_to_doc_list(docs)
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return FindResult(documents=da_cls(doc_list), scores=np.array(scores))
 
     def _text_search_batched(
         self,
         queries: Sequence[str],
         search_field: str,
         limit: int,
-        **kwargs,
     ) -> FindResultBatched:
-        ...
+        result_das = []
+        result_scores = []
 
-    ####################################################
-    # Optional overrides                               #
-    ####################################################
+        for query in queries:
+            documents, scores = self._text_search(query, search_field, limit)
+            result_das.append(documents)
+            result_scores.append(scores)
+
+        result_scores = np.array(result_scores)
+        return FindResultBatched(documents=result_das, scores=result_scores)
 
     ###############################################
     # Helpers                                     #
     ###############################################
-
-    # general helpers
 
     # ElasticSearch helpers
     def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
@@ -309,7 +358,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         index['index_options'] = dict((k, col.config[k]) for k in self._index_options)
         index['index_options'][
             'type'
-        ] = 'hnsw'  # TODO dict key 'type' is confilct with property's 'type'
+        ] = 'hnsw'  # dict key 'type' is confilct with the 'type' of index
         return index
 
     def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
@@ -328,6 +377,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         # TODO chunk_size
 
         accumulated_info = []
+        warning_info = []
         for success, info in parallel_bulk(
             self._client,
             request,
@@ -336,11 +386,11 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             **kwargs,
         ):
             if not success:
-                warnings.warn(str(info))
+                warning_info.append(info)
             else:
                 accumulated_info.append(info)
 
-        return accumulated_info
+        return accumulated_info, warning_info
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
