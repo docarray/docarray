@@ -330,7 +330,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def _set_array_attribute(
         self: T,
         field: str,
-        values: Union[List, T, DocumentArray, AbstractTensor],
+        values: Union[
+            Sequence[DocumentArray[T_doc]],
+            Sequence[Any],
+            T,
+            DocumentArray,
+            AbstractTensor,
+        ],
     ) -> None:
         """Set all Documents in this DocumentArray using the passed values
 
@@ -364,10 +370,13 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             self._storage.doc_columns[field] = values_
 
         elif field in self._storage.da_columns.keys():
-            # if not isinstance(values, )
-            self._storage.da_columns[field] = values
+            values_ = cast(Sequence[DocumentArray[T_doc]], values)
+            # TODO here we should actually check if this is correct
+            self._storage.da_columns[field] = values_
         elif field in self._storage.any_columns.keys():
-            self._storage.any_columns[field] = values
+            # TODO here we should actually check if this is correct
+            values_ = cast(Sequence, values)
+            self._storage.any_columns[field] = values_
         else:
             raise KeyError(f'{field} is not a valid field for this DocumentArray')
 
