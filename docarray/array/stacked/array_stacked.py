@@ -311,7 +311,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                     f'{value} schema : {value.document_type} is not compatible with '
                     f'this DocumentArrayStacked schema : {self.document_type}'
                 )
-            processed_value = value.stack()  # we need to copy data here
+            processed_value = cast(T, value.stack())  # we need to copy data here
 
         elif isinstance(value, DocumentArrayStacked):
             if not issubclass(value.document_type, self.document_type):
@@ -356,7 +356,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         elif field in self._storage.doc_columns.keys():
 
             values = parse_obj_as(
-                DocumentArrayStacked[self._storage.doc_columns[field].document_type],
+                DocumentArrayStacked.__class_getitem__(
+                    self._storage.doc_columns[field].document_type
+                ),
                 values,
             )
 
