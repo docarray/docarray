@@ -488,7 +488,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             data = {field: col[i] for field, col in unstacked_column.items()}
             docs.append(self.document_type.construct(**data))
 
-        return DocumentArray[self.document_type].construct(
+        return DocumentArray.__class_getitem__(self.document_type).construct(
             docs, tensor_type=self.tensor_type
         )
 
