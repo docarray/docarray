@@ -355,16 +355,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
         elif field in self._storage.doc_columns.keys():
 
-            values = parse_obj_as(
+            values_ = parse_obj_as(
                 DocumentArrayStacked.__class_getitem__(
                     self._storage.doc_columns[field].document_type
                 ),
                 values,
             )
-
-            self._storage.doc_columns[field] = values
+            self._storage.doc_columns[field] = values_
 
         elif field in self._storage.da_columns.keys():
+            # if not isinstance(values, )
             self._storage.da_columns[field] = values
         elif field in self._storage.any_columns.keys():
             self._storage.any_columns[field] = values

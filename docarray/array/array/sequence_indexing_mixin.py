@@ -8,6 +8,7 @@ from typing import (
     TypeVar,
     Union,
     cast,
+    no_type_check,
     overload,
 )
 
@@ -189,36 +190,27 @@ class IndexingSequenceMixin(Iterable[T_item]):
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
-    def __setitem__(self: T, key: IndexIterType, value: T):
+    def __setitem__(self: T, key: IndexIterType, value: Sequence[T_item]):
         ...
 
     @overload
-    def __setitem__(self: T, key: int, value: T):
+    def __setitem__(self: T, key: int, value: T_item):
         ...
 
-    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_item]):
+    @no_type_check
+    def __setitem__(self: T, key, value):
         key_norm = self._normalize_index_item(key)
 
         if isinstance(key_norm, int):
-            value_int = cast(T_item, value)
-            self._data[key_norm] = value_int
+            self._data[key_norm] = value
         elif isinstance(key_norm, slice):
-            value_slice = cast(T, value)
-            self._data[key_norm] = value_slice
+            self._data[key_norm] = value
         else:
             # _normalize_index_item() guarantees the line below is correct
-            head = key_norm[0]  # type: ignore
+            head = key_norm[0]
             if isinstance(head, bool):
-                key_norm_ = cast(Iterable[bool], key_norm)
-                value_ = cast(Sequence[T_item], value)  # this is no strictly true
-                # set_by_mask requires value_ to have getitem which
-                # _normalize_index_item() ensures
-                return self._set_by_mask(key_norm_, value_)
+                return self._set_by_mask(key_norm, value)
             elif isinstance(head, int):
-                key_norm__ = cast(Iterable[int], key_norm)
-                value_ = cast(Sequence[T_item], value)  # this is no strictly true
-                # set_by_mask requires value_ to have getitem which
-                # _normalize_index_item() ensures
-                return self._set_by_indices(key_norm__, value_)
+                return self._set_by_indices(key_norm, value)
             else:
                 raise TypeError(f'Invalid type {type(head)} for indexing')
