@@ -11,7 +11,6 @@ from typing import (
 )
 
 from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
-from docarray.base_document import BaseDocument
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -33,16 +32,8 @@ class ColumnStorage:
     :param doc_columns: a Dict of :class:`~docarray.array.stacked.DocumentArrayStacked`
     :param da_columns: a Dict of List of :class:`~docarray.array.stacked.DocumentArrayStacked`
     :param any_columns: a Dict of List
-    :param document_type: document_type
     :param tensor_type: Class used to wrap the stacked tensors
     """
-
-    document_type: Type[BaseDocument]
-
-    tensor_columns: Dict[str, AbstractTensor]
-    doc_columns: Dict[str, 'DocumentArrayStacked']
-    da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']]
-    any_columns: Dict[str, ListAdvanceIndex]
 
     def __init__(
         self,
@@ -50,7 +41,6 @@ class ColumnStorage:
         doc_columns: Dict[str, 'DocumentArrayStacked'],
         da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']],
         any_columns: Dict[str, ListAdvanceIndex],
-        document_type: Type[BaseDocument],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):
         self.tensor_columns = tensor_columns
@@ -58,7 +48,6 @@ class ColumnStorage:
         self.da_columns = da_columns
         self.any_columns = any_columns
 
-        self.document_type = document_type
         self.tensor_type = tensor_type
 
         self.columns = ChainMap(
@@ -84,7 +73,6 @@ class ColumnStorage:
             doc_columns,
             da_columns,
             any_columns,
-            self.document_type,
             self.tensor_type,
         )
 

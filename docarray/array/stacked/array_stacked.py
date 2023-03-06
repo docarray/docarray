@@ -169,7 +169,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             doc_columns,
             da_columns,
             any_columns,
-            self.document_type,
             tensor_type,
         )
 
@@ -403,7 +402,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             pb_msg.doc_columns,
             pb_msg.da_columns,
             pb_msg.any_columns,
-            document_type=cls.document_type,
         )
 
         return cls.from_columns_storage(storage)
