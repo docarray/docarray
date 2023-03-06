@@ -491,7 +491,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
             unstacked_tensor_column,
             unstacked_da_column,
             unstacked_doc_column,
-        )
+        )  # type: ignore
 
         docs = []
 

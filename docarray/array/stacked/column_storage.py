@@ -55,7 +55,7 @@ class ColumnStorage:
             self.doc_columns,
             self.da_columns,
             self.any_columns,
-        )
+        )  # type: ignore
 
     def __len__(self) -> int:
         return len(self.any_columns['id'])  # TODO what if ID are None ?
