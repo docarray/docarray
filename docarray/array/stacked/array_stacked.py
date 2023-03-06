@@ -41,7 +41,7 @@ else:
 
 tf_available = is_tf_available()
 if tf_available:
-    import tensorflow as tf # type: ignore
+    import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor  # noqa: F401
 else:
@@ -153,10 +153,10 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                     doc_columns[field_name] = getattr(docs, field_name).stack()
 
                 elif issubclass(field_type, DocumentArray):
-                    docs = list()
+                    docs_list = list()
                     for doc in docs:
-                        docs.append(getattr(doc, field_name).stack())
-                    da_columns[field_name] = ListAdvanceIndex(docs)
+                        docs_list.append(getattr(doc, field_name).stack())
+                    da_columns[field_name] = ListAdvanceIndex(docs_list)
                 else:
                     any_columns[field_name] = ListAdvanceIndex(
                         getattr(docs, field_name)
