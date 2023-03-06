@@ -58,7 +58,6 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 class DocumentArray(
     IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
 ):
-
     """
      DocumentArray is a container of Documents.
 
