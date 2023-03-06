@@ -292,3 +292,6 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         :return: a tf.Tensor
         """
         return self.tensor
+
+    def __len__(self) -> int:
+        return len(self.tensor)
