@@ -297,4 +297,4 @@ class DocumentArray(
         ...
 
     def __getitem__(self, item):
-        super().__getitem__(item)
+        return super().__getitem__(item)
