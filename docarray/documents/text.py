@@ -4,14 +4,14 @@ from docarray.base_document import BaseDocument
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
-T = TypeVar('T', bound='Text')
+T = TypeVar('T', bound='TextDoc')
 
 
-class Text(BaseDocument):
+class TextDoc(BaseDocument):
     """
     Document for handling text.
-    It can contain a TextUrl (`Text.url`), a str (`Text.text`),
-    and an AnyEmbedding (`Text.embedding`).
+    It can contain a TextUrl (`TextDoc.url`), a str (`TextDoc.text`),
+    and an AnyEmbedding (`TextDoc.embedding`).
 
     EXAMPLE USAGE:
 
@@ -19,7 +19,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Text
+        from docarray.documents import TextDoc
 
         # use it directly
         txt_doc = Text(url='http://www.jina.ai/')
@@ -31,7 +31,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Text
+        from docarray.documents import TextDoc
 
         txt_doc = Text('hello world')
 
@@ -39,7 +39,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Text
+        from docarray.documents import TextDoc
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
@@ -60,7 +60,7 @@ class Text(BaseDocument):
     .. code-block:: python
 
         from docarray import BaseDocument
-        from docarray.documents import Image, Text
+        from docarray.documents import ImageDoc, TextDoc
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -87,7 +87,7 @@ class Text(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Text
+        from docarray.documents import TextDoc
 
         doc = Text(text='This is the main text', url='exampleurl.com')
         doc2 = Text(text='This is the main text', url='exampleurl.com')

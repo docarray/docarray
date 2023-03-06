@@ -3,7 +3,7 @@ from typing import Generator, Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.typing import ImageUrl, NdArray
 from docarray.utils.map import map_docs, map_docs_batch
 from tests.units.typing.test_bytes import IMAGE_PATHS
@@ -11,7 +11,7 @@ from tests.units.typing.test_bytes import IMAGE_PATHS
 N_DOCS = 2
 
 
-def load_from_doc(d: Image) -> Image:
+def load_from_doc(d: ImageDoc) -> ImageDoc:
     if d.url is not None:
         d.tensor = d.url.load()
     return d
@@ -19,7 +19,9 @@ def load_from_doc(d: Image) -> Image:
 
 @pytest.fixture()
 def da():
-    da = DocumentArray[Image]([Image(url=IMAGE_PATHS['png']) for _ in range(N_DOCS)])
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(url=IMAGE_PATHS['png']) for _ in range(N_DOCS)]
+    )
     return da
 
 
@@ -50,7 +52,7 @@ def test_map_multiprocessing_local_func_raise_exception(da):
 
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_check_order(backend):
-    da = DocumentArray[Image]([Image(id=i) for i in range(N_DOCS)])
+    da = DocumentArray[ImageDoc]([ImageDoc(id=i) for i in range(N_DOCS)])
 
     docs = list(map_docs(da=da, func=load_from_doc, backend=backend))
 

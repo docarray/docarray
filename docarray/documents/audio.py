@@ -18,15 +18,15 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 
-T = TypeVar('T', bound='Audio')
+T = TypeVar('T', bound='AudioDoc')
 
 
-class Audio(BaseDocument):
+class AudioDoc(BaseDocument):
     """
     Document for handling audios.
 
-    The Audio Document can contain an AudioUrl (`Audio.url`), an AudioTensor
-    (`Audio.tensor`), and an AnyEmbedding (`Audio.embedding`).
+    The Audio Document can contain an AudioUrl (`AudioDoc.url`), an AudioTensor
+    (`AudioDoc.tensor`), and an AnyEmbedding (`AudioDoc.embedding`).
 
     EXAMPLE USAGE:
 
@@ -34,7 +34,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Audio
+        from docarray.documents import AudioDoc
 
         # use it directly
         audio = Audio(
@@ -48,7 +48,7 @@ class Audio(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Audio, Text
+        from docarray.documents import AudioDoc, TextDoc
         from typing import Optional
 
 
@@ -71,7 +71,7 @@ class Audio(BaseDocument):
     .. code-block:: python
 
         from docarray import BaseDocument
-        from docarray.documents import Audio, Text
+        from docarray.documents import AudioDoc, TextDoc
 
 
         # compose it

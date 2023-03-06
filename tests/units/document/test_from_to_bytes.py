@@ -1,20 +1,20 @@
 import pytest
 
 from docarray import BaseDocument
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.documents import Image
 
 
 class MyDoc(BaseDocument):
     embedding: NdArray
     text: str
-    image: Image
+    image: ImageDoc
 
 
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_bytes(protocol, compress):
-    d = MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png'))
+    d = MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png'))
 
     assert d.text == 'hello'
     assert d.embedding.tolist() == [1, 2, 3, 4, 5]
@@ -29,7 +29,7 @@ def test_to_from_bytes(protocol, compress):
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_base64(protocol, compress):
-    d = MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png'))
+    d = MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png'))
 
     assert d.text == 'hello'
     assert d.embedding.tolist() == [1, 2, 3, 4, 5]

@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Set
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.utils.reduce import reduce, reduce_all
 
 
@@ -16,7 +16,7 @@ class MMDoc(BaseDocument):
     text: str = ''
     price: int = 0
     categories: Optional[List[str]] = None
-    image: Optional[Image] = None
+    image: Optional[ImageDoc] = None
     matches: Optional[DocumentArray] = None
     matches_with_same_id: Optional[DocumentArray] = None
     opt_int: Optional[int] = None
