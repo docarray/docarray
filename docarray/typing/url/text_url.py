@@ -33,9 +33,9 @@ class TextUrl(AnyUrl):
         ext = os.path.splitext(path)[1][1:].lower()
 
         # pass test if extension is valid or no extension
-        has_text_extension = ext in TEXT_FILE_FORMATS or ext == ''
+        has_valid_text_extension = ext in TEXT_FILE_FORMATS or ext == ''
 
-        if not has_text_extension:
+        if not has_valid_text_extension:
             raise ValueError('Text URL must have a valid extension')
         return cls(str(url), scheme=None)
 
