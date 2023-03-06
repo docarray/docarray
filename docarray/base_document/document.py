@@ -81,4 +81,4 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if item in self.__fields__.keys():
             return self.__dict__[item]
         else:
-            return super().__getattr__(item)
+            return super().__getattribute__(item)  # TODO Why isn't this failing ?
