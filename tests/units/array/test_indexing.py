@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import DocumentArray
-from docarray.documents import Text
+from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 
 
@@ -11,8 +11,8 @@ from docarray.typing import TorchTensor
 def da():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * i for i in range(10)]
-    return DocumentArray[Text](
-        [Text(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
+    return DocumentArray[TextDoc](
+        [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
         tensor_type=TorchTensor,
     )
 
@@ -21,8 +21,8 @@ def da():
 def da_to_set():
     texts = [f'hello {2*i}' for i in range(5)]
     tensors = [torch.ones((4,)) * i * 2 for i in range(5)]
-    return DocumentArray[Text](
-        [Text(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
+    return DocumentArray[TextDoc](
+        [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
         tensor_type=TorchTensor,
     )
 
@@ -238,12 +238,12 @@ def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
 def test_setitem_update_column():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * (i + 1) for i in range(10)]
-    da = DocumentArray[Text](
-        [Text(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
+    da = DocumentArray[TextDoc](
+        [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
         tensor_type=TorchTensor,
     ).stack()
 
-    da[0] = Text(text='hello', embedding=torch.zeros((4,)))
+    da[0] = TextDoc(text='hello', embedding=torch.zeros((4,)))
 
     assert da[0].text == 'hello'
     assert (da[0].embedding == torch.zeros((4,))).all()

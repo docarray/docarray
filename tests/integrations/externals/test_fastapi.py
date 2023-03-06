@@ -5,19 +5,19 @@ from httpx import AsyncClient
 
 from docarray import BaseDocument
 from docarray.base_document import DocumentResponse
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
 @pytest.mark.asyncio
 async def test_fast_api():
     class Mmdoc(BaseDocument):
-        img: Image
-        text: Text
+        img: ImageDoc
+        text: TextDoc
         title: str
 
     input_doc = Mmdoc(
-        img=Image(tensor=np.zeros((3, 224, 224))), text=Text(), title='hello'
+        img=ImageDoc(tensor=np.zeros((3, 224, 224))), text=TextDoc(), title='hello'
     )
 
     app = FastAPI()
@@ -39,13 +39,13 @@ async def test_fast_api():
 @pytest.mark.asyncio
 async def test_image():
     class InputDoc(BaseDocument):
-        img: Image
+        img: ImageDoc
 
     class OutputDoc(BaseDocument):
         embedding_clip: NdArray
         embedding_bert: NdArray
 
-    input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
+    input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
 
     app = FastAPI()
 

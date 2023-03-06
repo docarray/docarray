@@ -7,17 +7,17 @@ from pydantic import parse_obj_as
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array import DocumentArrayStacked
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
 @pytest.fixture()
 def batch():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
     return batch.stack()
@@ -25,17 +25,17 @@ def batch():
 
 @pytest.fixture()
 def nested_batch():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     class MMdoc(BaseDocument):
-        img: DocumentArray[Image]
+        img: DocumentArray[ImageDoc]
 
     batch = DocumentArray[MMdoc](
         [
             MMdoc(
-                img=DocumentArray[Image](
-                    [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+                img=DocumentArray[ImageDoc](
+                    [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
                 )
             )
             for _ in range(10)
@@ -46,10 +46,15 @@ def nested_batch():
 
 
 def test_create_from_list_docs():
-    list_ = [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
-    da_stacked = DocumentArrayStacked[Image](docs=list_, tensor_type=TorchTensor)
+    list_ = [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da_stacked = DocumentArrayStacked[ImageDoc](docs=list_, tensor_type=TorchTensor)
     assert len(da_stacked) == 10
     assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
+
+
+def test_create_from_None():
+    da_stacked = DocumentArrayStacked[ImageDoc]()
+    assert len(da_stacked) == 0
 
 
 def test_len(batch):
@@ -67,11 +72,11 @@ def test_iterator(batch):
 
 
 def test_stack_setter():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -84,11 +89,11 @@ def test_stack_setter():
 
 
 def test_stack_setter_np():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: NdArray[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -108,11 +113,11 @@ def test_stack_optional(batch):
 
 
 def test_stack_numpy():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: NdArray[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -141,14 +146,14 @@ def test_stack(batch):
 
 
 def test_stack_mod_nested_document():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     class MMdoc(BaseDocument):
-        img: Image
+        img: ImageDoc
 
     batch = DocumentArray[MMdoc](
-        [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
+        [MMdoc(img=ImageDoc(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -180,11 +185,11 @@ def test_stack_nested_documentarray(nested_batch):
 
 
 def test_convert_to_da(batch):
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -195,14 +200,14 @@ def test_convert_to_da(batch):
 
 
 def test_unstack_nested_document():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
     class MMdoc(BaseDocument):
-        img: Image
+        img: ImageDoc
 
     batch = DocumentArray[MMdoc](
-        [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
+        [MMdoc(img=ImageDoc(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
     batch = batch.stack()
@@ -222,11 +227,11 @@ def test_unstack_nested_documentarray(nested_batch):
 
 
 def test_stack_call():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    da = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
     da = da.stack()
@@ -237,11 +242,11 @@ def test_stack_call():
 
 
 def test_stack_union():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: Union[NdArray[3, 224, 224], TorchTensor[3, 224, 224]]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
     batch[3].tensor = np.zeros((3, 224, 224))
 
@@ -255,11 +260,11 @@ def test_stack_union():
     [(TorchTensor, torch.zeros(3, 224, 224)), (NdArray, np.zeros((3, 224, 224)))],
 )
 def test_any_tensor_with_torch(tensor_type, tensor):
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: AnyTensor
 
-    da = DocumentArray[Image](
-        [Image(tensor=tensor) for _ in range(10)],
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=tensor) for _ in range(10)],
         tensor_type=tensor_type,
     ).stack()
 
@@ -273,14 +278,14 @@ def test_any_tensor_with_torch(tensor_type, tensor):
 def test_any_tensor_with_optional():
     tensor = torch.zeros(3, 224, 224)
 
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: Optional[AnyTensor]
 
     class TopDoc(BaseDocument):
-        img: Image
+        img: ImageDoc
 
     da = DocumentArray[TopDoc](
-        [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
+        [TopDoc(img=ImageDoc(tensor=tensor)) for _ in range(10)],
         tensor_type=TorchTensor,
     ).stack()
 
@@ -350,8 +355,8 @@ def test_stack_none(tensor_backend):
 
 
 def test_to_device():
-    da = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
     )
     da = da.stack()
     assert da.tensor.device == torch.device('cpu')
@@ -361,10 +366,10 @@ def test_to_device():
 
 def test_to_device_with_nested_da():
     class Video(BaseDocument):
-        images: DocumentArray[Image]
+        images: DocumentArray[ImageDoc]
 
-    da_image = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
+    da_image = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
     )
 
     da = DocumentArray[Video]([Video(images=da_image)])
@@ -377,10 +382,10 @@ def test_to_device_with_nested_da():
 def test_to_device_nested():
     class MyDoc(BaseDocument):
         tensor: TorchTensor
-        docs: Image
+        docs: ImageDoc
 
     da = DocumentArray[MyDoc](
-        [MyDoc(tensor=torch.zeros(3, 5), docs=Image(tensor=torch.zeros(3, 5)))],
+        [MyDoc(tensor=torch.zeros(3, 5), docs=ImageDoc(tensor=torch.zeros(3, 5)))],
         tensor_type=TorchTensor,
     )
     da = da.stack()
@@ -392,7 +397,9 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[Image]([Image(tensor=np.zeros((3, 5)))], tensor_type=NdArray)
+    da = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=np.zeros((3, 5)))], tensor_type=NdArray
+    )
     da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')
@@ -509,27 +516,27 @@ def test_torch_nan():
 
 
 def test_from_storage():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArrayStacked[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    batch = DocumentArrayStacked[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    DocumentArrayStacked[Image].from_columns_storage(batch._storage)
+    DocumentArrayStacked[ImageDoc].from_columns_storage(batch._storage)
 
 
 def test_validate_from_da():
-    class Image(BaseDocument):
+    class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    batch = DocumentArray[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    da = parse_obj_as(DocumentArrayStacked[Image], batch)
+    da = parse_obj_as(DocumentArrayStacked[ImageDoc], batch)
 
-    assert isinstance(da, DocumentArrayStacked[Image])
+    assert isinstance(da, DocumentArrayStacked[ImageDoc])
 
 
 def test_validation_column_tensor(batch):

@@ -90,7 +90,7 @@ from docarray.typing import TorchTensor, ImageUrl
 Let's first create a Document for our Text modality. It will contain a number of `Tokens`, which we also define:
 
 ```python
-from docarray.documents import Text as BaseText
+from docarray.documents import TextDoc as BaseText
 
 
 class Tokens(BaseDocument):
@@ -109,7 +109,7 @@ hint and even enforce the desired shape of any tensor!
 To represent our image data, we use the `Image` Document that is included in DocArray:
 
 ```python
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 ```
 
 Under the hood, an `Image` looks something like this (with the only main difference that it can take tensors from any

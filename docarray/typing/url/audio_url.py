@@ -26,7 +26,7 @@ class AudioUrl(AnyUrl):
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
+        value: Union[T, str, Any],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:

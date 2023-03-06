@@ -1,15 +1,14 @@
 import pytest
 
-from docarray import BaseDocument
+from docarray import BaseDocument, DocumentArray
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.documents import Image
-from docarray import DocumentArray
 
 
 class MyDoc(BaseDocument):
     embedding: NdArray
     text: str
-    image: Image
+    image: ImageDoc
 
 
 @pytest.mark.parametrize(
@@ -20,8 +19,10 @@ class MyDoc(BaseDocument):
 def test_from_to_bytes(protocol, compress, show_progress):
     da = DocumentArray[MyDoc](
         [
-            MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png')),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=Image()),
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
     bytes_da = da.to_bytes(
@@ -48,8 +49,10 @@ def test_from_to_bytes(protocol, compress, show_progress):
 def test_from_to_base64(protocol, compress, show_progress):
     da = DocumentArray[MyDoc](
         [
-            MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png')),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=Image()),
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
     bytes_da = da.to_base64(

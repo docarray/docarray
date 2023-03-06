@@ -1,8 +1,8 @@
 import os
-from typing import TYPE_CHECKING, Any, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
 
 import orjson
-from pydantic import BaseModel, Field, parse_obj_as
+from pydantic import BaseModel, Field
 from rich.console import Console
 
 from docarray.base_document.base_node import BaseNode
@@ -23,7 +23,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     The base class for Documents
     """
 
-    id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
+    id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
 
     class Config:
         json_loads = orjson.loads

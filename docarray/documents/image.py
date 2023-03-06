@@ -8,7 +8,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
 from docarray.utils.misc import is_tf_available, is_torch_available
 
-T = TypeVar('T', bound='Image')
+T = TypeVar('T', bound='ImageDoc')
 
 torch_available = is_torch_available()
 if torch_available:
@@ -19,7 +19,7 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 
-class Image(BaseDocument):
+class ImageDoc(BaseDocument):
     """
     Document for handling images.
     It can contain an ImageUrl (`Image.url`), an AnyTensor (`Image.tensor`),
@@ -31,10 +31,10 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Image
+        from docarray.documents import ImageDoc
 
         # use it directly
-        image = Image(url='http://www.jina.ai/image.jpg')
+        image = ImageDoc(url='http://www.jina.ai/image.jpg')
         image.tensor = image.url.load()
         model = MyEmbeddingModel()
         image.embedding = model(image.tensor)
@@ -43,12 +43,12 @@ class Image(BaseDocument):
 
     .. code-block:: python
 
-        from docarray.documents import Image
+        from docarray.documents import ImageDoc
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
         # extend it
-        class MyImage(Image):
+        class MyImage(ImageDoc):
             second_embedding: Optional[AnyEmbedding]
 
 
@@ -64,7 +64,7 @@ class Image(BaseDocument):
     .. code-block:: python
 
         from docarray import BaseDocument
-        from docarray.documents import Image, Text
+        from docarray.documents import ImageDoc, TextDoc
 
         # compose it
         class MultiModalDoc(BaseDocument):

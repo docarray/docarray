@@ -20,6 +20,7 @@ types-requests = ">=2.28.11.6"
 av = {version = ">=10.0.0", optional = true}
 fastapi = {version = ">=0.87.0", optional = true }
 rich = ">=13.1.0"
+hnswlib = {version = ">=0.6.2", optional = true }
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 pandas = {version = ">=1.1.0", optional = true }
@@ -32,6 +33,7 @@ video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
 web = ["fastapi"]
+hnswlib = ["hnswlib"]
 pandas = ["pandas"]
 
 [tool.poetry.dev-dependencies]
@@ -71,6 +73,10 @@ module = "trimesh"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
+module = "hnswlib"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = "typing_inspect"
 ignore_missing_imports = true
 
@@ -96,5 +102,7 @@ markers = [
     "internet: marks tests as requiring internet (deselect with '-m \"not internet\"')",
     "asyncio: marks that run async tests",
     "proto: mark tests that run with proto",
-    "tensorflow: marks test using tensorflow and proto 3"
+    "tensorflow: marks test using tensorflow and proto 3",
+    "doc_index: marks test using a document index",
+    "benchmark: marks slow benchmarking tests",
 ]
