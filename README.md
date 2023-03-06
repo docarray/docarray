@@ -234,7 +234,7 @@ So now let's see what the same code looks like with DocArray:
 
 ```python
 from docarray import DocumentArray, BaseDocument
-from docarray.documents import ImageDoc, TextDoc, Audio
+from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
 
 import torch
@@ -243,7 +243,7 @@ import torch
 class Podcast(BaseDocument):
     text: TextDoc
     image: ImageDoc
-    audio: Audio
+    audio: AudioDoc
 
 
 class PairPodcast(BaseDocument):

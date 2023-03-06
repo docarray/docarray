@@ -3,7 +3,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 import numpy as np
 
 from docarray.base_document import BaseDocument
-from docarray.documents import Audio
+from docarray.documents import AudioDoc
 from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
@@ -98,7 +98,7 @@ class Video(BaseDocument):
     """
 
     url: Optional[VideoUrl]
-    audio: Optional[Audio] = Audio()
+    audio: Optional[AudioDoc] = AudioDoc()
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
