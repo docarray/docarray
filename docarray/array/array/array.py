@@ -11,13 +11,17 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    overload,
 )
 
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.io import IOMixinArray
-from docarray.array.array.sequence_indexing_mixin import IndexingSequenceMixin
+from docarray.array.array.sequence_indexing_mixin import (
+    IndexingSequenceMixin,
+    IndexIterType,
+)
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 
@@ -283,3 +287,14 @@ class DocumentArray(
         :param pb_msg: The protobuf message from where to construct the DocumentArray
         """
         return super().from_protobuf(pb_msg)
+
+    @overload
+    def __getitem__(self, item: int) -> T_doc:
+        ...
+
+    @overload
+    def __getitem__(self: T, item: IndexIterType) -> T:
+        ...
+
+    def __getitem__(self, item):
+        super().__getitem__(item)
