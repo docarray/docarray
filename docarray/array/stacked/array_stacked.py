@@ -5,13 +5,13 @@ from typing import (
     Dict,
     Iterable,
     List,
-    MutableSequence,
     Sequence,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
+    no_type_check,
     overload,
 )
 
@@ -247,7 +247,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def _get_array_attribute(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, 'DocumentArrayStacked', AbstractTensor]:
+    ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -275,18 +275,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def __setitem__(self: T, key: IndexIterType, value: T):
         ...
 
-    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
+    @no_type_check
+    def __setitem__(self: T, key, value):
         # single doc case
         if not isinstance(key, (slice, Iterable)):
-            key_ = cast(int, key)
-            doc = cast(T_doc, value)
-            if not isinstance(doc, self.document_type):
-                raise ValueError(f'{doc} is not a {self.document_type}')
+            if not isinstance(value, self.document_type):
+                raise ValueError(f'{value} is not a {self.document_type}')
 
-            for field, value in doc.dict().items():
-                self._storage.columns[field][key_] = value  # todo we might want to
+            for field, value in value.dict().items():
+                self._storage.columns[field][key] = value  # todo we might want to
                 # define a safety mechanism in someone put a wrong value
-
         else:
             # multiple docs case
             self._set_data_and_columns(key, value)
@@ -487,7 +485,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         docs = []
 
         for i in range(len(self)):
-
             data = {field: col[i] for field, col in unstacked_column.items()}
             docs.append(self.document_type.construct(**data))
 
