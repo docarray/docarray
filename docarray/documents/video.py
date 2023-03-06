@@ -20,16 +20,16 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 
-T = TypeVar('T', bound='Video')
+T = TypeVar('T', bound='VideoDoc')
 
 
-class Video(BaseDocument):
+class VideoDoc(BaseDocument):
     """
     Document for handling video.
-    The Video Document can contain a VideoUrl (`Video.url`), an Audio Document
-    (`Video.audio`), a VideoTensor (`Video.tensor`), an AnyTensor representing
-    the indices of the video's key frames (`Video.key_frame_indices`) and an
-    AnyEmbedding (`Video.embedding`).
+    The Video Document can contain a VideoUrl (`VideoDoc.url`), an Audio Document
+    (`VideoDoc.audio`), a VideoTensor (`VideoDoc.tensor`), an AnyTensor representing
+    the indices of the video's key frames (`VideoDoc.key_frame_indices`) and an
+    AnyEmbedding (`VideoDoc.embedding`).
 
     EXAMPLE USAGE:
 
@@ -53,7 +53,7 @@ class Video(BaseDocument):
 
         from typing import Optional
 
-        from docarray.documents import Text, Video
+        from docarray.documents import TextDoc, VideoDoc
 
 
         # extend it
@@ -74,7 +74,7 @@ class Video(BaseDocument):
     .. code-block:: python
 
         from docarray import BaseDocument
-        from docarray.documents import Text, Video
+        from docarray.documents import TextDoc, VideoDoc
 
 
         # compose it
