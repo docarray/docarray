@@ -54,13 +54,25 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     computation that require batches of data (ex: matrix multiplication, distance
     calculation, deep learning forward pass)
 
-    A DocumentArrayStacked is similar to {class}`~docarray.array.DocumentArray`
-    but the field of the Document that are {class}`~docarray.typing.AnyTensor` are
-    stacked into a batches of AnyTensor. Like {class}`~docarray.array.DocumentArray`
-    you can be precise a Document schema by using the `DocumentArray[MyDocument]`
-    syntax where MyDocument is a Document class (i.e. schema).
-    This creates a DocumentArray that can only contains Documents of
-    the type 'MyDocument'.
+    A DocumentArrayStacked has a similar interface as
+    {class}`~docarray.array.DocumentArray` but the underlying implementation is
+    different. a `DocumentArrayStack` is a column base data structure. Each field
+    of the schema of the DocumentArrayStack
+    (the :attr:`~docarray.array.stacked.DocumentArrayStacked.document_type` which is a
+    `BaseDocument`) will be stored in a column. If the field is a tensor field it will
+    be stored in a tensor column (a Pytorch/Numpy/TF batch). (If you the tensor field
+    is `AnyTensor` or Union[TorchTensor, NdArray] the
+    :attr:`~docarray.array.stacked.DocumentArrayStacked.tensor_type` will be used for
+    creating the tensor column). If the field is a `BasedDocument` as well
+    (nested document) then the column will be another DocumentArrayStack that follow the
+    schema of the nested Document. If the field is a `DocumentArray` or
+    `DocumentArrayStacked` then the column will be a list of `DocumentArrayStacked`.
+    For any other type the column is just a Python List.
+
+    `Document`s inside the `DocumentArrayStack` are just row view. The `Document`s  does
+     not hold any data anymore but only reference to the columns. The behavior of
+     this Document "view" is similar to the behavior of `view = batch[i]` in
+     Numpy/Pytorch.
 
     :param docs: a DocumentArray
     :param tensor_type: Class used to wrap the stacked tensors
