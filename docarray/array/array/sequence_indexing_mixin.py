@@ -160,7 +160,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
                 raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
-    def __getitem__(self: T, item: int) -> T:
+    def __getitem__(self: T, item: int) -> T_item:
         ...
 
     @overload

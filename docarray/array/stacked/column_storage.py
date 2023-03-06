@@ -68,7 +68,7 @@ class ColumnStorage:
         da_columns = {key: col[item] for key, col in self.da_columns.items()}
         any_columns = {key: col[item] for key, col in self.any_columns.items()}
 
-        return ColumnStorage(
+        return self.__class__(
             tensor_columns,
             doc_columns,
             da_columns,
