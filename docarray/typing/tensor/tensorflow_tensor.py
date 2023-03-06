@@ -195,15 +195,17 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         """
         if isinstance(value, TensorFlowTensor):
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized
-                value.__class__ = cls.__unparametrizedcls__
+                value.__class__ = cls.__unparametrizedcls__  # type: ignore
             else:
                 value.__class__ = cls
             return cast(T, value)
         else:
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized
-                cls_param = cls.__unparametrizedcls__
+                cls_param_ = cls.__unparametrizedcls__
+                cls_param = cast(Type[T], cls_param_)
             else:
                 cls_param = cls
+
             return cls_param(tensor=value)
 
     @staticmethod
