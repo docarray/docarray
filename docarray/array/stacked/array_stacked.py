@@ -193,10 +193,12 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
-        elif isinstance(value, DocumentArray[cls.document_type]):
-            return value.stack()
-        elif isinstance(value, Iterable):
+        elif isinstance(value, DocumentArray.__class_getitem__(cls.document_type)):
+            return cast(T, value.stack())
+        elif isinstance(value, Sequence):
             return cls(value)
+        elif isinstance(value, Iterable):
+            return cls(list(value))
         else:
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
@@ -230,14 +232,16 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def __getitem__(self: T, item: IndexIterType) -> T:
         ...
 
-    def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
+    def __getitem__(self: T, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
         if isinstance(item, (slice, Iterable)):
             return self.__class__.from_columns_storage(self._storage[item])
         # single doc case
-        doc = self.document_type.from_view(ColumnStorageView(item, self._storage))
+        doc = cast(
+            T_doc, self.document_type.from_view(ColumnStorageView(item, self._storage))
+        )
         return doc
 
     def _get_array_attribute(
