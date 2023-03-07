@@ -241,13 +241,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     @abstractmethod
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         search_field: str,
         limit: int,
     ) -> FindResultBatched:
         """Find documents in the index
 
-        :param query: query vectors for KNN/ANN search.
+        :param queries: query vectors for KNN/ANN search.
             Has shape (batch_size, vector_dim)
         :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
@@ -350,7 +350,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 cast(Type[BaseDocument], self._schema)
             )
             out_da = da_cls(doc_sequence)
-        return out_da[0] if return_singleton else out_da
+
+        if return_singleton:
+            if len(out_da) == 0:
+                raise KeyError(f'No document with id {key[0]} found')
+            return out_da[0]
+
+        return out_da
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
         """Delete one or multiple Documents from the index, by `id`.
