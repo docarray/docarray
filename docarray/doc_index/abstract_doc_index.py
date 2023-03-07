@@ -707,7 +707,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _convert_dict_to_doc(
         self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
     ) -> BaseDocument:
-        """Convert a dict to a Document object."""
+        """
+        Convert a dict to a Document object.
+
+        :param doc_dict: A dict that contains all the flattened fields of a Document, the field names are the keys and follow the pattern {field_name} or {field_name}__{nested_name}
+        :param schema: The schema of the Document object
+        :return: A Document object
+        """
 
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
@@ -731,4 +737,4 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     ) -> List[BaseDocument]:
         """Convert a list of docs in dict type to a list of Document objects."""
 
-        return [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in docs]
+        return [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in docs]  # type: ignore
