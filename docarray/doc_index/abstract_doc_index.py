@@ -731,9 +731,4 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     ) -> List[BaseDocument]:
         """Convert a list of docs in dict type to a list of Document objects."""
 
-        doc_list = []
-        for doc_dict in docs:
-            doc = self._convert_dict_to_doc(doc_dict, self._schema)  # type: ignore
-            doc_list.append(doc)
-
-        return doc_list
+        return [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in docs]
