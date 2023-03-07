@@ -197,7 +197,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     @abstractmethod
     def _get_items(
         self, doc_ids: Sequence[str]
-    ) -> Union[Sequence[TSchema], Sequence[Dict]]:
+    ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
@@ -352,8 +352,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if isinstance(doc_sequence, DocumentArray):
             out_da: DocumentArray[TSchema] = doc_sequence
         else:
-            if isinstance(doc_sequence[0], Dict):
-                doc_sequence = self._convert_to_doc_list(doc_sequence)
+            if type(doc_sequence) is Sequence[Dict]:
+                doc_sequence = self._convert_to_doc_list(doc_sequence)  # type: ignore
 
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
@@ -726,12 +726,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         schema_cls = cast(Type[BaseDocument], schema)
         return schema_cls(**doc_dict)
 
-    def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
+    def _convert_to_doc_list(
+        self, docs: Sequence[Dict[str, Any]]
+    ) -> List[BaseDocument]:
         """Convert a list of docs in dict type to a list of Document objects."""
 
         doc_list = []
         for doc_dict in docs:
-            doc = self._convert_dict_to_doc(doc_dict, self._schema)
+            doc = self._convert_dict_to_doc(doc_dict, self._schema)  # type: ignore
             doc_list.append(doc)
 
         return doc_list
