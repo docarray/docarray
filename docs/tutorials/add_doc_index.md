@@ -3,9 +3,9 @@
 In DocArray there exists the concept of _Document Index_, a class that takes `Document`s, optionally persists them,
 and makes them searchable.
 
-There are different Document Indexes leveraging different backends, such as Weaviate, Qdrant, HNSWLit etc.
+There are different Document Indexes leveraging different backends, such as Weaviate, Qdrant, HNSWLib etc.
 
-This Document shows how to add a new Document Index to DocArray.
+This document shows how to add a new Document Index to DocArray.
 
 That process can be broken down into a number of basic steps:
 
@@ -14,7 +14,16 @@ That process can be broken down into a number of basic steps:
 3. Implement abstract methods for indexing, searching, and deleting
 4. Implement a Query Builder for your Document Index
 
+In general, the steps above can be followed in roughly that order.
+
+However, a Document Index implementation is usually very interconnected, so you will probably have to jump between these steps a bit,
+both in your implementation and in the guide below.
+
 For an end-to-end example of this process, you can check out the [existing HNSWLib Document Index implementation](https://github.com/docarray/docarray/pull/1124).
+
+**Caution**: The HNSWLib Document Index implementation can be used as a reference, but it is special in some key ways.
+For example, HNSWLib can only index vectors, so it uses SQLite to store the rest of the Documents alongside it.
+This is _not_ how you should store Documents in your implementation! You can find guidance on how you _should_ do it below.
 
 ## Create a new Document Index class
 
@@ -44,11 +53,31 @@ def __init__(self, db_config=None, **kwargs):
 
 Make sure that you call the `super().__init__` method, which will do some basic initialization for you.
 
-Overall, the following attributes will be set up automatically and be available to you (more info in the dedicated sections below):
+### Set up your backend
+
+Your backend (database or similar) should represent Documents in the following way:
+- Every field of a Document is a column in the database
+- Column types follow a default that you define, based on the type hint of the associated field, but can also be configures by the user
+- Every row in your database thus represents a Document
+- **Nesting:** The most common way to handle nested Document (and the one where the `AbstractDocumentIndex` will hold your hand the most), is to flatten out nested Documents. But if your backend natively supports nesting representations, then feel free to leverage those!
+
+**Caution**: Don't take too much inspiration from the HNSWLib Document Index implementation on this point, as it is a bit of a special case.
+
+
+Also, you should check if the Document Index is being set up "fresh", meaning no data was previously persisted.
+Then you should create a new database table (or the equivalent concept in you backend) for the Documents.
+Otherwise, the Document Index should connect to the existing database and table.
+You can determine this based on `self._db_config` (see below).
+
+**Note:** If you are integrating a database, your Document Index should always assume that there is already a database running that it can connect to.
+It should _not_ spawn a new database instance.
+
+To help you with all of this, `super().__init__` inject a few helpful attributes for you (more info in the dedicated sections below):
+
 - `self._schema`
 - `self._db_config`
 - `self._runtime_config`
-- `self._columns`
+- `self._column_infos`
 
 ### The `_schema`
 
@@ -88,22 +117,22 @@ for you, so that you can use it in your implementation.
 
 You can declare allowed fields and default values for your `_runtime_config `, but you will see that later.
 
-### The `_columns`
+### The `_column_infos`
 
-`self._columns` is a dictionary that contains information about all columns in your Document Index instance.
+`self._column_infos` is a dictionary that contains information about all columns in your Document Index instance.
 
 This information is automatically extracted from `self._schema`, and populated for you.
 
-Concretely, `self._columns: Dict[str, _Column]` maps from a column name to a `_Column` dataclass.
+Concretely, `self._column_infos: Dict[str, _ColumnInfo]` maps from a column name to a `_ColumnInfo` dataclass.
 
 For the `MyDoc` schema above, the column names would be `tensor`, `other_tensor`, `description`, `id`, `inner__embedding`, and `inner__id`.
-These are the key of `self._columns`.
+These are the key of `self._column_infos`.
 
-The values of `self._columns` are `_Column` dataclasses, which have the following form:
+The values of `self._column_infos` are `_ColumnInfo` dataclasses, which have the following form:
 
 ```python
 @dataclass
-class _Column:
+class _ColumnInfo:
     docarray_type: Type
     db_type: Any
     n_dim: Optional[int]
@@ -119,7 +148,7 @@ Again, these are automatically populated for you, so you can just use them in yo
 
 ### Properly handle `n_dim`
 
-`_Column.n_dim` is automatically obtained from type parametrizations of the form `NdArray[100]`;
+`_ColumnInfo.n_dim` is automatically obtained from type parametrizations of the form `NdArray[100]`;
 if there isn't such a parametrization, `n_dim` of the columns will be `None`.
 
 You should also provide another way of defining the dimensionality of your columns, specifically by exposing a parameter in `Field(...)` (see example schema at the top).
@@ -138,7 +167,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config == {}`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim == 100` and `self._column_infos['tensor'].config == {}`.
 The `tensor` column in your backend should be configured to have dimensionality 100.
 
 **Scenario 2: Only `Field(...)` is defined**
@@ -153,7 +182,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config['dim'] == 50`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim is None` and `self._column_infos['tensor'].config['dim'] == 50`.
 The `tensor` column in your backend should be configured to have dimensionality 50.
 
 **Scenario 3: Both `n_dim` and `Field(...)` are defined**
@@ -168,7 +197,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim == 100` and `self._columns['tensor'].config['dim'] == 50`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim == 100` and `self._column_infos['tensor'].config['dim'] == 50`.
 The `tensor` column in your backend should be configured to have dimensionality 100, as **`n_dim` takes precedence over `Field(...)`**.
 
 **Scenario 4: Neither `n_dim` nor `Field(...)` are defined**
@@ -183,7 +212,7 @@ class MyDoc(BaseDocument):
 index = MyDocumentIndex[MyDoc]()
 ```
 
-In that case, the following will be true: `self._columns['tensor'].n_dim is None` and `self._columns['tensor'].config == {}`.
+In that case, the following will be true: `self._column_infos['tensor'].n_dim is None` and `self._column_infos['tensor'].config == {}`.
 If your backend can handle tensor/embedding columns without defined dimensionality, you should leverage that mechanism.
 Otherwise, raise an Exception.
 
@@ -224,9 +253,9 @@ in specific methods (`index`, `find`, etc.), where they will act as local overri
 
 **Important**: Every `RuntimeConfig` needs to contain a `default_column_config` field.
 This is a dictionary that, for each possible column type in your database, defines a default configuration for that column type.
-This will automatically be passed to a `_Column` whenever a user does not manually specify a configuration for that column.
+This will automatically be passed to a `_ColumnInfo` whenever a user does not manually specify a configuration for that column.
 
-For example, in the `MyDoc` schema above, the `tensor` `_Column` would have a default configuration specified for `np.ndarray` columns.
+For example, in the `MyDoc` schema above, the `tensor` `_ColumnInfo` would have a default configuration specified for `np.ndarray` columns.
 
 What is actually contained in these type-dependant configurations is up to you (and database specific).
 For example, for `np.ndarray` columns you could define the configurations `index_type` and `metric_type`,
@@ -256,12 +285,31 @@ Overall, you're asked to implement the methods that appear after the `Abstract m
 comment in the `BaseDocumentIndex` class.
 The details of each method should become clear from the docstrings and type hints.
 
-### The `python_type_to_db_type` method
+### The `python_type_to_db_type()` method
 
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
 It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
-The `BaseDocumentIndex` class uses this information to create and populate the `_Columns` in `self._columns`.
+The `BaseDocumentIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
+
+### The `_index()` method
+
+When indexing Documents, your implementation should behave in the following way:
+
+- Every field in the Document is mapped to a column in the database
+- This includes the `id` field, which is mapped to the primary key of the database (if your backend has such a concept)
+- The configuration of that column can be found in `self._column_infos[field_name].config`
+- In DocArray v1, we used to store a serialized representation of every Document. This is not needed anymore, as every row in your DB table should fully represent a single indexed Document.
+
+To handle nested Documents, the public `index()` method already flattens every incoming Document for you.
+This means that `_index()` already receives a flattened representation of the data, and you don't need to worry about that.
+
+Concretely, the `_index()` method takes as input a dictionary of column names to column data, flattened out.
+**Note:** If you (or your backend) prefer to do bulk indexing on row-wise data, then you can use the `self._transpose_col_value_dict()`
+helper method. Inside of `_index()` you can use this to transform `column_to_data` into a row-wise view of the data.
+
+**If your backend has native nesting capabilities:** You can also ignore most of the above, and implement the public `index()` method directly.
+That way you have full control over whether the input data gets flattened or not.
 
 ## Implement a Query Builder for your Document Index
 

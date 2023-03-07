@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type
+from types import LambdaType
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Type
 
 if TYPE_CHECKING:
     from docarray import BaseDocument
@@ -138,3 +139,14 @@ def _get_field_type_by_access_path(
                 return None
     else:
         return None
+
+
+def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
+    """
+    Return True if `func` is lambda, local or partial function, else False.
+    """
+    return (
+        (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
+        or not hasattr(func, '__qualname__')
+        or ('<locals>' in func.__qualname__)
+    )

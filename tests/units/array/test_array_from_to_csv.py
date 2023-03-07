@@ -4,7 +4,7 @@ from typing import Optional
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 from tests import TOYDATA_DIR
 
 
@@ -15,8 +15,8 @@ def nested_doc_cls():
         text: str
 
     class MyDocNested(MyDoc):
-        image: Image
-        image2: Image
+        image: ImageDoc
+        image2: ImageDoc
 
     return MyDocNested
 
@@ -27,10 +27,10 @@ def test_to_from_csv(tmpdir, nested_doc_cls):
             nested_doc_cls(
                 count=0,
                 text='hello',
-                image=Image(url='aux.png'),
-                image2=Image(url='aux.png'),
+                image=ImageDoc(url='aux.png'),
+                image2=ImageDoc(url='aux.png'),
             ),
-            nested_doc_cls(text='hello world', image=Image(), image2=Image()),
+            nested_doc_cls(text='hello world', image=ImageDoc(), image2=ImageDoc()),
         ]
     )
     tmp_file = str(tmpdir / 'tmp.csv')
@@ -55,12 +55,12 @@ def test_from_csv_nested(nested_doc_cls):
         assert doc.text.__class__ == str
         assert doc.text == f'hello {i}'
 
-        assert doc.image.__class__ == Image
+        assert doc.image.__class__ == ImageDoc
         assert doc.image.tensor is None
         assert doc.image.embedding is None
         assert doc.image.bytes is None
 
-        assert doc.image2.__class__ == Image
+        assert doc.image2.__class__ == ImageDoc
         assert doc.image2.tensor is None
         assert doc.image2.embedding is None
         assert doc.image2.bytes is None
@@ -73,17 +73,19 @@ def test_from_csv_nested(nested_doc_cls):
 @pytest.fixture()
 def nested_doc():
     class Inner(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
 
     class Middle(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         inner: Optional[Inner]
 
     class Outer(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         middle: Optional[Middle]
 
-    doc = Outer(img=Image(), middle=Middle(img=Image(), inner=Inner(img=Image())))
+    doc = Outer(
+        img=ImageDoc(), middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc()))
+    )
     return doc
 
 

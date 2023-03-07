@@ -178,11 +178,11 @@ class DocumentArray(PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]):
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
-    def __setitem__(self: T, key: IndexIterType, value: T):
+    def __setitem__(self: T, key: int, value: T_doc):
         ...
 
     @overload
-    def __setitem__(self: T, key: int, value: T_doc):
+    def __setitem__(self: T, key: IndexIterType, value: T):
         ...
 
     def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):

@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 
 from docarray import BaseDocument, DocumentArray
-from docarray.documents import Image
+from docarray.documents import ImageDoc
 
 
 @pytest.fixture()
@@ -14,7 +14,7 @@ def nested_doc_cls():
         text: str
 
     class MyDocNested(MyDoc):
-        image: Image
+        image: ImageDoc
 
     return MyDocNested
 
@@ -25,9 +25,9 @@ def test_to_from_pandas_df(nested_doc_cls):
             nested_doc_cls(
                 count=0,
                 text='hello',
-                image=Image(url='aux.png'),
+                image=ImageDoc(url='aux.png'),
             ),
-            nested_doc_cls(text='hello world', image=Image()),
+            nested_doc_cls(text='hello world', image=ImageDoc()),
         ]
     )
     df = da.to_pandas()
@@ -55,17 +55,19 @@ def test_to_from_pandas_df(nested_doc_cls):
 @pytest.fixture()
 def nested_doc():
     class Inner(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
 
     class Middle(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         inner: Optional[Inner]
 
     class Outer(BaseDocument):
-        img: Optional[Image]
+        img: Optional[ImageDoc]
         middle: Optional[Middle]
 
-    doc = Outer(img=Image(), middle=Middle(img=Image(), inner=Inner(img=Image())))
+    doc = Outer(
+        img=ImageDoc(), middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc()))
+    )
     return doc
 
 

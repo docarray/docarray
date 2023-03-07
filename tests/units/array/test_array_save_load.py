@@ -1,17 +1,17 @@
-import pytest
 import os
-import numpy as np
 
-from docarray import BaseDocument
+import numpy as np
+import pytest
+
+from docarray import BaseDocument, DocumentArray
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.documents import Image
-from docarray import DocumentArray
 
 
 class MyDoc(BaseDocument):
     embedding: NdArray
     text: str
-    image: Image
+    image: ImageDoc
 
 
 @pytest.mark.slow
@@ -25,8 +25,10 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
 
     da = DocumentArray[MyDoc](
         [
-            MyDoc(embedding=[1, 2, 3, 4, 5], text='hello', image=Image(url='aux.png')),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=Image()),
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
 
@@ -66,7 +68,7 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_pro
                     MyDoc(
                         embedding=np.random.rand(3, 2),
                         text='hello',
-                        image=Image(url='aux.png'),
+                        image=ImageDoc(url='aux.png'),
                     ),
                 ]
             )

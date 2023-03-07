@@ -5,7 +5,7 @@ import torch
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
-from docarray.documents import Text
+from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 
 num_docs = 5
@@ -16,29 +16,29 @@ num_sub_sub_docs = 3
 @pytest.fixture
 def multi_model_docs():
     class SubSubDoc(BaseDocument):
-        sub_sub_text: Text
+        sub_sub_text: TextDoc
         sub_sub_tensor: TorchTensor[2]
 
     class SubDoc(BaseDocument):
-        sub_text: Text
+        sub_text: TextDoc
         sub_da: DocumentArray[SubSubDoc]
 
     class MultiModalDoc(BaseDocument):
-        mm_text: Text
+        mm_text: TextDoc
         mm_tensor: Optional[TorchTensor[3, 2, 2]]
         mm_da: DocumentArray[SubDoc]
 
     docs = DocumentArray[MultiModalDoc](
         [
             MultiModalDoc(
-                mm_text=Text(text=f'hello{i}'),
+                mm_text=TextDoc(text=f'hello{i}'),
                 mm_da=[
                     SubDoc(
-                        sub_text=Text(text=f'sub_{i}_1'),
+                        sub_text=TextDoc(text=f'sub_{i}_1'),
                         sub_da=DocumentArray[SubSubDoc](
                             [
                                 SubSubDoc(
-                                    sub_sub_text=Text(text='subsub'),
+                                    sub_sub_text=TextDoc(text='subsub'),
                                     sub_sub_tensor=torch.zeros(2),
                                 )
                                 for _ in range(num_sub_sub_docs)
