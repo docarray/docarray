@@ -76,6 +76,7 @@ def test_json_schema():
     schema_json_of(TextUrl)
 
 
+@pytest.mark.internet
 def test_dump_json():
     url = parse_obj_as(TextUrl, REMOTE_TEXT_FILE)
     orjson_dumps(url)
