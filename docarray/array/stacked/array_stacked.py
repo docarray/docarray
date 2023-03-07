@@ -476,14 +476,14 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for field, da_col in self._storage.da_columns.items():
             unstacked_da_column[field] = [da.unstack() for da in da_col]
 
-        for field, tensor_col in self._storage.tensor_columns.items():
+        for field, tensor_col in list(self._storage.tensor_columns.items()):
+            # list is needed here otherwise we cannot delete the column
             unstacked_tensor_column[field] = list()
             for tensor in tensor_col:
                 tensor_copy = tensor.get_comp_backend().copy(tensor)
                 unstacked_tensor_column[field].append(tensor_copy)
 
-            # del self._storage.tensor_columns[field]
-            # todo fix this should be uncommented
+            del self._storage.tensor_columns[field]
 
         unstacked_column = ChainMap(
             unstacked_any_column,
@@ -497,6 +497,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for i in range(len(self)):
             data = {field: col[i] for field, col in unstacked_column.items()}
             docs.append(self.document_type.construct(**data))
+
+        del self._storage
 
         return DocumentArray.__class_getitem__(self.document_type).construct(
             docs, tensor_type=self.tensor_type
