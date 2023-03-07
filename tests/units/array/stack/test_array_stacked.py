@@ -453,13 +453,13 @@ def test_np_scalar():
     stacked_da = da.stack()
     assert type(stacked_da.scalar) == NdArray
 
-    assert all(type(doc.scalar) == NdArray for doc in da)
-    assert all(doc.scalar.ndim == 1 for doc in da)
-    assert all(doc.scalar == 2.0 for doc in da)
+    assert all(type(doc.scalar) == NdArray for doc in stacked_da)
+    assert all(doc.scalar.ndim == 1 for doc in stacked_da)
+    assert all(doc.scalar == 2.0 for doc in stacked_da)
 
     # Make sure they share memory
     stacked_da.scalar[0] = 3.0
-    assert da[0].scalar == 3.0
+    assert stacked_da[0].scalar == 3.0
 
 
 def test_torch_scalar():
@@ -474,9 +474,12 @@ def test_torch_scalar():
     stacked_da = da.stack()
     assert type(stacked_da.scalar) == TorchTensor
 
-    assert all(type(doc.scalar) == TorchTensor for doc in da)
-    assert all(doc.scalar.ndim == 1 for doc in da)  # TODO failing here
-    assert all(doc.scalar == 2.0 for doc in da)
+    assert all(type(doc.scalar) == TorchTensor for doc in stacked_da)
+    assert all(doc.scalar.ndim == 1 for doc in stacked_da)  # TODO failing here
+    assert all(doc.scalar == 2.0 for doc in stacked_da)
+
+    stacked_da.scalar[0] = 3.0
+    assert stacked_da[0].scalar == 3.0
 
 
 def test_np_nan():
@@ -489,10 +492,13 @@ def test_np_nan():
     stacked_da = da.stack()
     assert type(stacked_da.scalar) == NdArray
 
-    assert all(type(doc.scalar) == NdArray for doc in da)  # TODO fail here
+    assert all(type(doc.scalar) == NdArray for doc in stacked_da)  # TODO fail here
     # Stacking them turns them into np.nan
-    assert all(doc.scalar.ndim == 1 for doc in da)
-    assert all(doc.scalar != doc.scalar for doc in da)  # Test for nan
+    assert all(doc.scalar.ndim == 1 for doc in stacked_da)
+    assert all(doc.scalar != doc.scalar for doc in stacked_da)  # Test for nan
+
+    stacked_da.scalar[0] = 3.0
+    assert stacked_da[0].scalar == 3.0
 
 
 def test_torch_nan():
@@ -505,14 +511,14 @@ def test_torch_nan():
     stacked_da = da.stack()
     assert type(stacked_da.scalar) == TorchTensor
 
-    assert all(type(doc.scalar) == TorchTensor for doc in da)
+    assert all(type(doc.scalar) == TorchTensor for doc in stacked_da)
     # Stacking them turns them into torch.nan
-    assert all(doc.scalar.ndim == 1 for doc in da)
-    assert all(doc.scalar != doc.scalar for doc in da)  # Test for nan
+    assert all(doc.scalar.ndim == 1 for doc in stacked_da)
+    assert all(doc.scalar != doc.scalar for doc in stacked_da)  # Test for nan
 
     # Make sure they share memory
     stacked_da.scalar[0] = 3.0
-    assert da[0].scalar == 3.0
+    assert stacked_da[0].scalar == 3.0
 
 
 def test_from_storage():

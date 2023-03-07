@@ -87,6 +87,14 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
         self.storage = storage
 
     def __getitem__(self, name: str) -> Any:
+        if name in self.storage.tensor_columns.keys():
+            tensor = self.storage.tensor_columns[name]
+            if tensor.get_comp_backend().n_dim(tensor) == 1:
+                # to ensure consistensy between numpy and pytorch
+                # we wrap the scalr in a tensor of ndim = 1
+                # otherwise numpy pass by value whereas torch by reference
+                return self.storage.tensor_columns[name][self.index : self.index + 1]
+
         return self.storage.columns[name][self.index]
 
     def __setitem__(self, name, value) -> None:
