@@ -693,3 +693,25 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             return val.numpy()
         else:
             raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
+
+    def _convert_dict_to_doc(
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
+    ) -> BaseDocument:
+        """Convert a dict to a Document object."""
+
+        for field_name, _ in schema.__fields__.items():
+            t_ = schema._get_field_type(field_name)
+            if issubclass(t_, BaseDocument):
+                inner_dict = {}
+
+                fields = [
+                    key for key in doc_dict.keys() if key.startswith(f'{field_name}__')
+                ]
+                for key in fields:
+                    nested_name = key.replace(f'{field_name}__', '')
+                    inner_dict[nested_name] = doc_dict.pop(key)
+
+                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
+
+        schema_cls = cast(Type[BaseDocument], schema)
+        return schema_cls(**doc_dict)
