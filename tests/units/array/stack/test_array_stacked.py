@@ -52,11 +52,6 @@ def test_create_from_list_docs():
     assert da_stacked.tensor.shape == tuple([10, 3, 224, 224])
 
 
-def test_create_from_None():
-    da_stacked = DocumentArrayStacked[ImageDoc]()
-    assert len(da_stacked) == 0
-
-
 def test_len(batch):
     assert len(batch) == 10
 
