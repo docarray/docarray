@@ -99,7 +99,7 @@ def test_set_after_stacking():
 def test_stack_optional(batch):
 
     assert tnp.allclose(
-        batch._tensor_columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
+        batch._storage.tensor_columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
     )
     assert tnp.allclose(batch.tensor.tensor, tf.zeros((10, 3, 224, 224)))
 
@@ -119,7 +119,7 @@ def test_stack_mod_nested_document():
     batch = batch.stack()
 
     assert tnp.allclose(
-        batch.__storage.doc_columns['img']._tensor_columns['tensor'].tensor,
+        batch.__storage.doc_columns['img']._storage.tensor_columns['tensor'].tensor,
         tf.zeros((10, 3, 224, 224)),
     )
 
@@ -130,7 +130,7 @@ def test_stack_mod_nested_document():
 def test_stack_nested_documentarray(nested_batch):
     for i in range(len(nested_batch)):
         assert tnp.allclose(
-            nested_batch[i].img._tensor_columns['tensor'].tensor,
+            nested_batch[i].img._storage.tensor_columns['tensor'].tensor,
             tf.zeros((10, 3, 224, 224)),
         )
 
@@ -219,14 +219,14 @@ def test_stack_union():
     class Image(BaseDocument):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
 
-    batch = DocumentArray[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
+    batch = DocumentArrayStacked[Image](
+        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)],
+        tensor_type=TensorFlowTensor,
     )
     batch[3].tensor = tf.zeros((3, 224, 224))
 
     # union fields aren't actually stacked
     # just checking that there is no error
-    batch.stack()
 
 
 @pytest.mark.tensorflow
@@ -244,8 +244,8 @@ def test_any_tensor_with_tf():
     for i in range(len(da)):
         assert tnp.allclose(da[i].tensor.tensor, tensor)
 
-    assert 'tensor' in da._tensor_columns.keys()
-    assert isinstance(da._tensor_columns['tensor'], TensorFlowTensor)
+    assert 'tensor' in da._storage.tensor_columns.keys()
+    assert isinstance(da._storage.tensor_columns['tensor'], TensorFlowTensor)
 
 
 @pytest.mark.tensorflow
@@ -266,9 +266,9 @@ def test_any_tensor_with_optional():
     for i in range(len(da)):
         assert tnp.allclose(da.img[i].tensor.tensor, tensor)
 
-    assert 'tensor' in da.img._tensor_columns.keys()
-    assert isinstance(da.img._tensor_columns['tensor'], TensorFlowTensor)
-    assert isinstance(da.img._tensor_columns['tensor'].tensor, tf.Tensor)
+    assert 'tensor' in da.img._storage.tensor_columns.keys()
+    assert isinstance(da.img._storage.tensor_columns['tensor'], TensorFlowTensor)
+    assert isinstance(da.img._storage.tensor_columns['tensor'].tensor, tf.Tensor)
 
 
 @pytest.mark.tensorflow
@@ -297,7 +297,7 @@ def test_stack_none():
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
     ).stack()
 
-    assert 'tensor' in da._tensor_columns.keys()
+    assert 'tensor' in da._storage.tensor_columns.keys()
 
 
 @pytest.mark.tensorflow
