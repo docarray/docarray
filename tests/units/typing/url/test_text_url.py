@@ -7,16 +7,33 @@ from pydantic import parse_obj_as, schema_json_of
 from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import TextUrl
 
-REMOTE_TXT = 'https://de.wikipedia.org/wiki/Brixen'
+from tests import TOYDATA_DIR
+
+REMOTE_TEXT_FILE = 'https://de.wikipedia.org/wiki/Brixen'
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
-LOCAL_TXT = os.path.join(CUR_DIR, '..', '..', '..', 'toydata', 'penal_colony.txt')
+LOCAL_TEXT_FILES = [
+    str(TOYDATA_DIR / 'penal_colony.txt'),
+    str(TOYDATA_DIR / 'test.md'),
+    str(TOYDATA_DIR / 'test.html'),
+    str(TOYDATA_DIR / 'test.css'),
+    str(TOYDATA_DIR / 'test.csv'),
+    str(TOYDATA_DIR / 'test.log'),
+]
+LOCAL_TEXT_FILES_AND_BEGINNING = [
+    (str(TOYDATA_DIR / 'penal_colony.txt'), '“It’s a peculiar apparatus,”'),
+    (str(TOYDATA_DIR / 'test.md'), "# Hello"),
+    (str(TOYDATA_DIR / 'test.html'), "<html>"),
+    (str(TOYDATA_DIR / 'test.css'), 'body {'),
+    (str(TOYDATA_DIR / 'test.csv'), "John,Doe"),
+    (str(TOYDATA_DIR / 'test.log'), "2022-11-25 12:34:56 INFO: Program started"),
+]
 
 
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'url,expected_beginning',
-    [(REMOTE_TXT, '<!DOCTYPE html>'), (LOCAL_TXT, '“It’s a peculiar apparatus,”')],
+    [(REMOTE_TEXT_FILE, '<!DOCTYPE html>'), *LOCAL_TEXT_FILES_AND_BEGINNING],
 )
 def test_load(url, expected_beginning):
     uri = parse_obj_as(TextUrl, url)
@@ -27,7 +44,7 @@ def test_load(url, expected_beginning):
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('url', [REMOTE_TXT, LOCAL_TXT])
+@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE, *LOCAL_TEXT_FILES])
 def test_load_to_bytes(url):
     uri = parse_obj_as(TextUrl, url)
 
@@ -36,16 +53,19 @@ def test_load_to_bytes(url):
 
 
 @pytest.mark.proto
-def test_proto_text_url():
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE, *LOCAL_TEXT_FILES])
+def test_proto_text_url(url):
+    uri = parse_obj_as(TextUrl, url)
 
-    uri = parse_obj_as(TextUrl, LOCAL_TXT)
-
-    uri._to_node_protobuf()
+    proto = uri._to_node_protobuf()
+    assert 'text_url' in str(proto)
 
 
 @pytest.mark.internet
 def test_load_timeout():
-    url = parse_obj_as(TextUrl, REMOTE_TXT)
+    url = parse_obj_as(TextUrl, REMOTE_TEXT_FILE)
     with pytest.raises(urllib.error.URLError):
         _ = url.load(timeout=0.001)
     with pytest.raises(urllib.error.URLError):
@@ -56,6 +76,19 @@ def test_json_schema():
     schema_json_of(TextUrl)
 
 
+@pytest.mark.internet
 def test_dump_json():
-    url = parse_obj_as(TextUrl, REMOTE_TXT)
+    url = parse_obj_as(TextUrl, REMOTE_TEXT_FILE)
     orjson_dumps(url)
+
+
+@pytest.mark.parametrize(
+    'path_to_file',
+    [
+        'my/local/text/file.mp3',
+        'my/local/text/file.png',
+    ],
+)
+def test_illegal_validation(path_to_file):
+    with pytest.raises(ValueError, match='TextUrl'):
+        parse_obj_as(TextUrl, path_to_file)

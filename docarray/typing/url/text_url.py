@@ -1,7 +1,14 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING, TypeVar, Type, Union, Any
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.filetypes import TEXT_FILE_FORMATS
+
+if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
+T = TypeVar('T', bound='TextUrl')
 
 
 @_register_proto(proto_type_name='text_url')
@@ -10,6 +17,27 @@ class TextUrl(AnyUrl):
     URL to a text file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, str, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ):
+        import os
+        from urllib.parse import urlparse
+
+        url = super().validate(value, field, config)  # basic url validation
+        path = urlparse(url).path
+        ext = os.path.splitext(path)[1][1:].lower()
+
+        # pass test if extension is valid or no extension
+        has_valid_text_extension = ext in TEXT_FILE_FORMATS or ext == ''
+
+        if not has_valid_text_extension:
+            raise ValueError('Text URL must have a valid extension')
+        return cls(str(url), scheme=None)
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """
