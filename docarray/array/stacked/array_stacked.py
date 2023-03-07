@@ -325,7 +325,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
         for field, col in self._storage.columns.items():
             col[index_item] = processed_value._storage.columns[field]
-            # TODO complex indexing will not work here
 
     def _set_array_attribute(
         self: T,
