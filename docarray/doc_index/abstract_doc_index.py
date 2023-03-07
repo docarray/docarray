@@ -195,7 +195,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+    def _get_items(
+        self, doc_ids: Sequence[str]
+    ) -> Union[Sequence[TSchema], Sequence[Dict]]:
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
@@ -342,14 +344,22 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             return_singleton = False
         # retrieve data
         doc_sequence = self._get_items(key)
+        # check data
+        if return_singleton and len(doc_sequence) == 0:
+            raise KeyError(f'No document with id {key} found')
+
         # cast output
         if isinstance(doc_sequence, DocumentArray):
             out_da: DocumentArray[TSchema] = doc_sequence
         else:
+            if isinstance(doc_sequence[0], Dict):
+                doc_sequence = self._convert_to_doc_list(doc_sequence)
+
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
             out_da = da_cls(doc_sequence)
+
         return out_da[0] if return_singleton else out_da
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
@@ -715,3 +725,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         schema_cls = cast(Type[BaseDocument], schema)
         return schema_cls(**doc_dict)
+
+    def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
+        """Convert a list of docs in dict type to a list of Document objects."""
+
+        doc_list = []
+        for doc_dict in docs:
+            doc = self._convert_dict_to_doc(doc_dict, self._schema)
+            doc_list.append(doc)
+
+        return doc_list
