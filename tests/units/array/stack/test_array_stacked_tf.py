@@ -119,7 +119,7 @@ def test_stack_mod_nested_document():
     batch = batch.stack()
 
     assert tnp.allclose(
-        batch.__storage.doc_columns['img']._storage.tensor_columns['tensor'].tensor,
+        batch._storage.doc_columns['img']._storage.tensor_columns['tensor'].tensor,
         tf.zeros((10, 3, 224, 224)),
     )
 
