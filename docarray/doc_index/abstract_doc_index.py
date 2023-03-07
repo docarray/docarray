@@ -708,7 +708,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     key for key in doc_dict.keys() if key.startswith(f'{field_name}__')
                 ]
                 for key in fields:
-                    nested_name = key.replace(f'{field_name}__', '')
+                    nested_name = key[len(f'{field_name}__') :]
                     inner_dict[nested_name] = doc_dict.pop(key)
 
                 doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
