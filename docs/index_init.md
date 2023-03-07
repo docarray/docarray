@@ -7,6 +7,7 @@
 api_public
 api/docarray
 tutorials/mutlimodal_training_and_serving.md
+tutroials/add_doc_index.md
 CONTRIBUTING.md
 ```
 

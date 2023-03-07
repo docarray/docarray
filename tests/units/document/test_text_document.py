@@ -1,15 +1,15 @@
-from docarray.documents import Text
+from docarray.documents import TextDoc
 
 
 def test_text_document_init():
-    text = Text('hello world')
+    text = TextDoc('hello world')
     assert text.text == 'hello world'
     assert text == 'hello world'
 
-    text = Text(text='hello world')
+    text = TextDoc(text='hello world')
     assert text.text == 'hello world'
     assert text == 'hello world'
 
-    text = Text()
+    text = TextDoc()
     assert text is not None
     assert text.text is None

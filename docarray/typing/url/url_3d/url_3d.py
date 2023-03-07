@@ -1,8 +1,6 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
-import numpy as np
-
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 
@@ -26,7 +24,7 @@ class Url3D(AnyUrl, ABC):
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
+        value: Union[T, str, Any],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:

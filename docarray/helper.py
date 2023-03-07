@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Type
+from types import LambdaType
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Type
 
 if TYPE_CHECKING:
     from docarray import BaseDocument
@@ -8,21 +9,9 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
     """
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
-    from docarray import BaseDocument
 
-    field, _, remaining = access_path.partition('__')
-    if len(remaining) == 0:
-        return access_path in doc_type.__fields__.keys()
-    else:
-        valid_field = field in doc_type.__fields__.keys()
-        if not valid_field:
-            return False
-        else:
-            d = doc_type._get_field_type(field)
-            if not issubclass(d, BaseDocument):
-                return False
-            else:
-                return _is_access_path_valid(d, remaining)
+    field_type = _get_field_type_by_access_path(doc_type, access_path)
+    return field_type is not None
 
 
 def _all_access_paths_valid(
@@ -121,3 +110,43 @@ def _update_nested_dicts(
             to_update[k] = v
         else:
             _update_nested_dicts(to_update[k], update_with[k])
+
+
+def _get_field_type_by_access_path(
+    doc_type: Type['BaseDocument'], access_path: str
+) -> Optional[Type]:
+    """
+    Get field type by "__"-separated access path.
+    :param doc_type: type of document
+    :param access_path: "__"-separated access path
+    :return: field type of accessed attribute. If access path is invalid, return None.
+    """
+    from docarray import BaseDocument, DocumentArray
+
+    field, _, remaining = access_path.partition('__')
+    field_valid = field in doc_type.__fields__.keys()
+
+    if field_valid:
+        if len(remaining) == 0:
+            return doc_type._get_field_type(field)
+        else:
+            d = doc_type._get_field_type(field)
+            if issubclass(d, DocumentArray):
+                return _get_field_type_by_access_path(d.document_type, remaining)
+            elif issubclass(d, BaseDocument):
+                return _get_field_type_by_access_path(d, remaining)
+            else:
+                return None
+    else:
+        return None
+
+
+def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
+    """
+    Return True if `func` is lambda, local or partial function, else False.
+    """
+    return (
+        (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
+        or not hasattr(func, '__qualname__')
+        or ('<locals>' in func.__qualname__)
+    )
