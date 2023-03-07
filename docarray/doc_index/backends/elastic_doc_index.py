@@ -71,11 +71,9 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
         # ElasticSearh index setup
-        self._index_init_params = ('dims', 'similarity', 'type', 'index')
-        self._index_options = (
-            'm',
-            'ef_construction',
-        )
+        self._index_init_params = ('type',)
+        self._index_vector_params = ('dims', 'similarity', 'index')
+        self._index_vector_options = ('m', 'ef_construction')
 
         mappings = {'dynamic': 'true', '_source': {'enabled': 'true'}, 'properties': {}}
         for col_name, col in self._column_infos.items():
@@ -121,6 +119,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                     'm': 16,
                     'ef_construction': 100,
                 },
+                docarray.typing.ID: {'type': 'keyword'},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
                 # TODO: add support for other types
@@ -138,7 +137,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 return np.ndarray
 
         if python_type == docarray.typing.ID:
-            return None  # TODO(johannes): handle this
+            return docarray.typing.ID
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -151,7 +150,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request = {
                 '_index': self._db_config.index_name,
                 '_id': row['id'],
-                # '_blob': row.to_base64(),  # TODO blob is stored for nested doc
             }
             # TODO change here when more types are supported
             for col_name, col in self._column_infos.items():
@@ -201,7 +199,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             for row in es_rows:
                 if row['found']:
                     doc_dict = row['_source']
-                    doc_dict['id'] = row['_id']
                     accumulated_docs.append(doc_dict)
                 else:
                     accumulated_docs_id_not_found.append(row['_id'])
@@ -353,23 +350,48 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
         index = dict((k, col.config[k]) for k in self._index_init_params)
-        if col.n_dim:
-            index['dims'] = col.n_dim
-        index['index_options'] = dict((k, col.config[k]) for k in self._index_options)
-        index['index_options'][
-            'type'
-        ] = 'hnsw'  # dict key 'type' is confilct with the 'type' of index
+        if col.db_type == np.ndarray:
+            for k in self._index_vector_params:
+                index[k] = col.config[k]
+            if col.n_dim:
+                index['dims'] = col.n_dim
+            index['index_options'] = dict(
+                (k, col.config[k]) for k in self._index_vector_options
+            )
+            index['index_options']['type'] = 'hnsw'
         return index
 
     def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
         """Convert a list of docs to a list of Document objects."""
-        schema_cls = cast(Type[BaseDocument], self._schema)
-        doc_list = []
 
+        doc_list = []
         for doc_dict in docs:
-            doc_list.append(schema_cls(**doc_dict))
+            doc = self._convert_dict_to_doc(doc_dict, self._schema)
+            doc_list.append(doc)
 
         return doc_list
+
+    def _convert_dict_to_doc(
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
+    ) -> BaseDocument:
+        """Convert a dict to a Document object."""
+
+        for field_name, _ in schema.__fields__.items():
+            t_ = schema._get_field_type(field_name)
+            if issubclass(t_, BaseDocument):
+                inner_dict = {}
+
+                fields = [
+                    key for key in doc_dict.keys() if key.startswith(f'{field_name}__')
+                ]
+                for key in fields:
+                    nested_name = key.replace(f'{field_name}__', '')
+                    inner_dict[nested_name] = doc_dict.pop(key)
+
+                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
+
+        schema_cls = cast(Type[BaseDocument], schema)
+        return schema_cls(**doc_dict)
 
     def _send_requests(self, request: Iterable[Dict[str, Any]], **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
