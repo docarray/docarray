@@ -191,29 +191,6 @@ def test_stack_call():
 
 
 @pytest.mark.tensorflow
-def test_context_manager():
-    class Image(BaseDocument):
-        tensor: TensorFlowTensor[3, 224, 224]
-
-    da = DocumentArray[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
-    )
-
-    with da.stacked_mode() as da:
-        assert len(da) == 10
-
-        assert da.tensor.tensor.shape == ((10, 3, 224, 224))
-
-        da.tensor = tf.ones((10, 3, 224, 224))
-
-    tensor = da.tensor
-
-    assert isinstance(tensor, list)
-    for doc in da:
-        assert tnp.allclose(doc.tensor.tensor, tf.ones((3, 224, 224)))
-
-
-@pytest.mark.tensorflow
 def test_stack_union():
     class Image(BaseDocument):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]

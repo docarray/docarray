@@ -122,7 +122,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                     for i, doc in enumerate(docs):
                         val = getattr(doc, field_name)
                         if val is None:
-                            val = tensor_type.get_comp_backend().none_value()
+                            val = TensorFlowTensor(
+                                tensor_type.get_comp_backend().none_value()
+                            )
                         tf_stack.append(val.tensor)
 
                     stacked: tf.Tensor = tf.stack(tf_stack)
