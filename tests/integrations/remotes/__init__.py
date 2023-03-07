@@ -2,16 +2,16 @@ import tracemalloc
 from functools import wraps
 
 from docarray import DocumentArray
-from docarray.documents import Text
+from docarray.documents import TextDoc
 
 
 def get_test_da(n: int):
-    return DocumentArray[Text](gen_text_docs(n))
+    return DocumentArray[TextDoc](gen_text_docs(n))
 
 
 def gen_text_docs(n: int):
     for i in range(n):
-        yield Text(text=f'text {i}')
+        yield TextDoc(text=f'text {i}')
 
 
 def profile_memory(func):

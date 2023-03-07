@@ -9,7 +9,7 @@ from docarray.array.array.pushpull.file import (
     PushPullFile,
     __cache_path__,
 )
-from docarray.documents import Text
+from docarray.documents import TextDoc
 from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
@@ -31,7 +31,9 @@ def test_pushpull_correct(capsys, tmp_path: Path):
 
     # Verbose
     da1.push(f'file://{namespace_dir}/meow', show_progress=True)
-    da2 = DocumentArray[Text].pull(f'file://{namespace_dir}/meow', show_progress=True)
+    da2 = DocumentArray[TextDoc].pull(
+        f'file://{namespace_dir}/meow', show_progress=True
+    )
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -42,7 +44,7 @@ def test_pushpull_correct(capsys, tmp_path: Path):
 
     # Quiet
     da2.push(f'file://{namespace_dir}/meow')
-    da1 = DocumentArray[Text].pull(f'file://{namespace_dir}/meow')
+    da1 = DocumentArray[TextDoc].pull(f'file://{namespace_dir}/meow')
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -58,10 +60,10 @@ def test_pushpull_stream_correct(capsys, tmp_path: Path):
     da1 = get_test_da(DA_LEN)
 
     # Verbosity and correctness
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         iter(da1), f'file://{namespace_dir}/meow', show_progress=True
     )
-    doc_stream2 = DocumentArray[Text].pull_stream(
+    doc_stream2 = DocumentArray[TextDoc].pull_stream(
         f'file://{namespace_dir}/meow', show_progress=True
     )
 
@@ -74,10 +76,10 @@ def test_pushpull_stream_correct(capsys, tmp_path: Path):
     assert len(captured.err) == 0
 
     # Quiet and chained
-    doc_stream = DocumentArray[Text].pull_stream(
+    doc_stream = DocumentArray[TextDoc].pull_stream(
         f'file://{namespace_dir}/meow', show_progress=False
     )
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         doc_stream, f'file://{namespace_dir}/meow2', show_progress=False
     )
 
@@ -89,12 +91,12 @@ def test_pushpull_stream_correct(capsys, tmp_path: Path):
 def test_pull_stream_vs_pull_full(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
     namespace_dir = tmp_path
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 1),
         f'file://{namespace_dir}/meow-short',
         show_progress=False,
     )
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 4),
         f'file://{namespace_dir}/meow-long',
         show_progress=False,
@@ -104,13 +106,13 @@ def test_pull_stream_vs_pull_full(tmp_path: Path):
     def get_total_stream(url: str):
         return sum(
             len(d.text)
-            for d in DocumentArray[Text].pull_stream(url, show_progress=False)
+            for d in DocumentArray[TextDoc].pull_stream(url, show_progress=False)
         )
 
     @profile_memory
     def get_total_full(url: str):
         return sum(
-            len(d.text) for d in DocumentArray[Text].pull(url, show_progress=False)
+            len(d.text) for d in DocumentArray[TextDoc].pull(url, show_progress=False)
         )
 
     # A warmup is needed to get accurate memory usage comparison
@@ -152,12 +154,12 @@ def test_list_and_delete(capsys, tmp_path: Path):
     da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
     assert len(da_names) == 0
 
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f'file://{namespace_dir}/meow', show_progress=False
     )
     da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
     assert set(da_names) == {'meow'}
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f'file://{namespace_dir}/woof', show_progress=False
     )
     da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
@@ -183,7 +185,7 @@ def test_concurrent_push_pull(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
     namespace_dir = tmp_path
 
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN),
         f'file://{namespace_dir}/da0',
         show_progress=False,
@@ -193,7 +195,7 @@ def test_concurrent_push_pull(tmp_path: Path):
 
     def _task(choice: str):
         if choice == 'push':
-            DocumentArray[Text].push_stream(
+            DocumentArray[TextDoc].push_stream(
                 gen_text_docs(DA_LEN),
                 f'file://{namespace_dir}/da0',
                 show_progress=False,
@@ -201,7 +203,9 @@ def test_concurrent_push_pull(tmp_path: Path):
         elif choice == 'pull':
             pull_len = sum(
                 1
-                for _ in DocumentArray[Text].pull_stream(f'file://{namespace_dir}/da0')
+                for _ in DocumentArray[TextDoc].pull_stream(
+                    f'file://{namespace_dir}/da0'
+                )
             )
             assert pull_len == DA_LEN
         else:
@@ -218,7 +222,7 @@ def test_concurrent_push(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
     namespace_dir = tmp_path
 
-    DocumentArray[Text].push_stream(
+    DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN),
         f'file://{namespace_dir}/da0',
         show_progress=False,
@@ -234,7 +238,7 @@ def test_concurrent_push(tmp_path: Path):
 
     def _push(choice: str):
         if choice == 'slow':
-            DocumentArray[Text].push_stream(
+            DocumentArray[TextDoc].push_stream(
                 _slowdown_iterator(gen_text_docs(DA_LEN)),
                 f'file://{namespace_dir}/da0',
                 show_progress=False,
@@ -243,7 +247,7 @@ def test_concurrent_push(tmp_path: Path):
         elif choice == 'cold_start':
             try:
                 time.sleep(0.1)
-                DocumentArray[Text].push_stream(
+                DocumentArray[TextDoc].push_stream(
                     gen_text_docs(DA_LEN),
                     f'file://{namespace_dir}/da0',
                     show_progress=False,
