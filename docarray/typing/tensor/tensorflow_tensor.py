@@ -152,9 +152,8 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __iter__(self):
         """Iterate over the elements of this tensor's tf.Tensor."""
-        tensor = self.unwrap()
-        for i in range(len(tensor)):
-            yield tensor[i]
+        for i in range(len(self)):
+            yield self[i]
 
     @classmethod
     def __get_validators__(cls):

@@ -155,11 +155,10 @@ def test_unstack_nested_document():
     class MMdoc(BaseDocument):
         img: Image
 
-    batch = DocumentArray[MMdoc](
+    batch = DocumentArrayStacked[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
-
-    batch = batch.stack()
+    assert isinstance(batch.img._storage.tensor_columns['tensor'], TensorFlowTensor)
     da = batch.unstack()
 
     for doc in da:
