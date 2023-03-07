@@ -196,16 +196,6 @@ def add_server_address(app):
     js_text = "var server_address = '%s';" % server_address
     app.add_js_file(None, body=js_text)
 
-def configure_qa_bot_ui(app):
-    # This sets the server address to <qa-bot>
-    server_address = app.config['server_address']
-    js_text = """
-        document.addEventListener('DOMContentLoaded', function() { 
-            document.querySelector('qa-bot').setAttribute('server', '%s');
-        });
-        """ % server_address
-    app.add_js_file(None, body=js_text)
-
 
 def setup(app):
     from sphinx.domains.python import PyField
@@ -233,9 +223,3 @@ def setup(app):
             ),
         ],
     )
-    app.add_config_value(
-        name='server_address',
-        default=os.getenv('JINA_DOCSBOT_SERVER', 'https://jina-ai-docarray.docsqa.jina.ai'),
-        rebuild='',
-    )
-    app.connect('builder-inited', configure_qa_bot_ui)
