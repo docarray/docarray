@@ -56,6 +56,11 @@ def test_len(batch):
     assert len(batch) == 10
 
 
+def test_create_from_None():
+    with pytest.raises(ValueError):
+        DocumentArrayStacked[ImageDoc]([])
+
+
 def test_getitem(batch):
     for i in range(len(batch)):
         assert (batch[i].tensor == torch.zeros(3, 224, 224)).all()

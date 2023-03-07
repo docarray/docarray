@@ -98,6 +98,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']] = dict()
         any_columns: Dict[str, ListAdvanceIndex] = dict()
 
+        if len(docs) == 0:
+            raise ValueError(f'docs {docs}: should not be empty')
         docs = (
             docs
             if isinstance(docs, DocumentArray)
