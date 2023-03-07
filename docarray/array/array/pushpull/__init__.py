@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Sequence, Type
 
@@ -85,14 +86,18 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
             from docarray.array.array.pushpull.jinaai import PushPullJAC
 
             cls.__backends__[protocol] = PushPullJAC
+            logging.info('Loaded Jina AI Cloud backend')
         elif protocol == 'file':
             from docarray.array.array.pushpull.file import PushPullFile
 
             cls.__backends__[protocol] = PushPullFile
+            logging.info('Loaded Local Filesystem backend')
         elif protocol == 's3':
-            from docarray.array.array.pushpull.s3 import PushPullS3
+            # from docarray.array.array.pushpull.s3 import PushPullS3
 
-            cls.__backends__[protocol] = PushPullS3
+            # cls.__backends__[protocol] = PushPullS3
+            # logging.info('Loaded S3 backend')
+            raise NotImplementedError(f'protocol {protocol} not supported')
         else:
             raise NotImplementedError(f'protocol {protocol} not supported')
 
@@ -109,6 +114,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param show_table: whether to show the table of artifacts
         :return: a list of artifact names
         """
+        logging.info(f'Listing artifacts from {url}')
         protocol, namespace = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).list(namespace, show_table)
 
@@ -120,8 +126,16 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param url: the url of the artifact to delete
         :param missing_ok: whether to ignore if the artifact does not exist
         """
+        logging.info(f'Deleting artifact {url}')
         protocol, name = url.split('://', 2)
-        return PushPullMixin.get_backend(protocol).delete(name, missing_ok=missing_ok)
+        success = PushPullMixin.get_backend(protocol).delete(
+            name, missing_ok=missing_ok
+        )
+        if success:
+            logging.info(f'Successfully deleted artifact {url}')
+        else:
+            logging.warning(f'Failed to delete artifact {url}')
+        return success
 
     def push(
         self,
@@ -145,6 +159,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
+        logging.info(f'Pushing {len(self)} docs to {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).push(
             self, name, public, show_progress, branding
@@ -162,6 +177,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         """
         Push a stream of documents to Jina AI Cloud which can be later retrieved via :meth:`.pull_stream`
         """
+        logging.info(f'Pushing stream to {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).push_stream(
             docs, name, public, show_progress, branding
@@ -189,6 +205,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
             )
 
+        logging.info(f'Pulling {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull(
             cls, name, show_progress, local_cache
@@ -212,6 +229,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
             )
 
+        logging.info(f'Pulling Document stream from {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull_stream(
             cls, name, show_progress, local_cache
