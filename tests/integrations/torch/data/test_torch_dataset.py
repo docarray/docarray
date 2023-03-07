@@ -4,23 +4,23 @@ from torch.utils.data import DataLoader
 
 from docarray import BaseDocument, DocumentArray
 from docarray.data import MultiModalDataset
-from docarray.documents import Image, Text
+from docarray.documents import ImageDoc, TextDoc
 
 
 class PairTextImage(BaseDocument):
-    text: Text
-    image: Image
+    text: TextDoc
+    image: ImageDoc
 
 
 class ImagePreprocess:
-    def __call__(self, image: Image) -> None:
-        assert isinstance(image, Image)
+    def __call__(self, image: ImageDoc) -> None:
+        assert isinstance(image, ImageDoc)
         image.tensor = torch.randn(3, 32, 32)
 
 
 class TextPreprocess:
-    def __call__(self, text: Text) -> None:
-        assert isinstance(text, Text)
+    def __call__(self, text: TextDoc) -> None:
+        assert isinstance(text, TextDoc)
         if text.text.endswith(' meow'):
             text.embedding = torch.randn(42)
         else:
@@ -39,8 +39,8 @@ def captions_da() -> DocumentArray[PairTextImage]:
         f.readline()
         da = DocumentArray[PairTextImage](
             PairTextImage(
-                text=Text(text=i[1]),
-                image=Image(url=f"tests/toydata/image-data/{i[0]}"),
+                text=TextDoc(text=i[1]),
+                image=ImageDoc(url=f"tests/toydata/image-data/{i[0]}"),
             )
             for i in map(lambda x: x.strip().split(","), f.readlines())
         )
@@ -69,7 +69,7 @@ def test_primitives(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"text": Meowification()}
-    dataset = MultiModalDataset[Text](captions_da.text, preprocessing)
+    dataset = MultiModalDataset[TextDoc](captions_da.text, preprocessing)
     loader = DataLoader(
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )
@@ -78,11 +78,11 @@ def test_primitives(captions_da: DocumentArray[PairTextImage]):
     assert all(t.endswith(' meow') for t in batch.text)
 
 
-def test_root_field(captions_da: DocumentArray[Text]):
+def test_root_field(captions_da: DocumentArray[TextDoc]):
     BATCH_SIZE = 32
 
     preprocessing = {"": TextPreprocess()}
-    dataset = MultiModalDataset[Text](captions_da.text, preprocessing)
+    dataset = MultiModalDataset[TextDoc](captions_da.text, preprocessing)
     loader = DataLoader(
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )

@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Generator,
     Generic,
+    Iterable,
     List,
     NamedTuple,
     Optional,
@@ -68,7 +69,7 @@ def _raise_not_composable(name):
 
 
 @dataclass
-class _Column:
+class _ColumnInfo:
     docarray_type: Type
     db_type: Any
     n_dim: Optional[int]
@@ -111,7 +112,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if not isinstance(self._db_config, self.DBConfig):
             raise ValueError(f'db_config must be of type {self.DBConfig}')
         self._runtime_config = self.RuntimeConfig()
-        self._columns: Dict[str, _Column] = self._create_columns(self._schema)
+        self._column_infos: Dict[str, _ColumnInfo] = self._create_columns(self._schema)
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -545,11 +546,25 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 leaf_vals.append(getattr(doc, col_name))
         return leaf_vals
 
+    @staticmethod
+    def _transpose_col_value_dict(
+        col_value_dict: Dict[str, Iterable[Any]]
+    ) -> Generator[Dict[str, Any], None, None]:
+        """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
+        Since a generator is returned, this process comes at negligible cost.
+
+        :param docs: The DocumentArray to get the values from
+        :return: The `docs` flattened out as rows. Each row is a dictionary mapping from column name to value
+        """
+        return (dict(zip(col_value_dict, row)) for row in zip(*col_value_dict.values()))
+
     def _get_col_value_dict(
         self, docs: Union[BaseDocument, Sequence[BaseDocument]]
     ) -> Dict[str, Generator[Any, None, None]]:
         """
         Get all data from a (sequence of) document(s), flattened out by column.
+        This can be seen as the transposed representation of `_get_rows()`.
+
         :param docs: The document(s) to get the data from
         :return: A dictionary mapping column names to a generator of values
         """
@@ -566,7 +581,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         def _col_gen(col_name: str):
             return (self._get_values_by_column([doc], col_name)[0] for doc in docs_seq)
 
-        return {col_name: _col_gen(col_name) for col_name in self._columns}
+        return {col_name: _col_gen(col_name) for col_name in self._column_infos}
 
     ##################################################
     # Behind-the-scenes magic                        #
@@ -598,8 +613,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         return self.QueryBuilder()  # type: ignore
 
-    def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _Column]:
-        columns: Dict[str, _Column] = dict()
+    def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _ColumnInfo]:
+        columns: Dict[str, _ColumnInfo] = dict()
         for field_name, field_ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
             if is_union_type(t_):
@@ -624,7 +639,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 columns[field_name] = self._create_single_column(field_, t_)
         return columns
 
-    def _create_single_column(self, field: 'ModelField', type_: Type) -> _Column:
+    def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
         db_type = self.python_type_to_db_type(type_)
         config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
@@ -640,12 +655,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 n_dim = type_.__docarray_target_shape__
         else:
             n_dim = None
-        return _Column(docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim)
+        return _ColumnInfo(
+            docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim
+        )
 
     def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
         """Flatten a DocumentArray into a DocumentArray of the schema type."""
         reference_col_db_types = [
-            (name, col.db_type) for name, col in self._columns.items()
+            (name, col.db_type) for name, col in self._column_infos.items()
         ]
         if isinstance(docs, AnyDocumentArray):
             input_columns = self._create_columns(docs.document_type)

@@ -30,9 +30,7 @@ class TensorDisplay:
             from rich.segment import Segment
             from rich.style import Style
 
-            tensor_normalized = comp_be.minmax_normalize(
-                comp_be.detach(self.tensor), (0, 5)
-            )
+            tensor_normalized = comp_be.minmax_normalize(t_squeezed, (0, 5))
 
             hue = 0.75
             saturation = 1.0
