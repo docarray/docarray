@@ -50,11 +50,11 @@ class ColumnStorage:
 
         self.tensor_type = tensor_type
 
-        self.columns = ChainMap(
-            self.tensor_columns,
-            self.doc_columns,
-            self.da_columns,
-            self.any_columns,
+        self.columns = ChainMap(  # type: ignore
+            self.tensor_columns,  # type: ignore
+            self.doc_columns,  # type: ignore
+            self.da_columns,  # type: ignore
+            self.any_columns,  # type: ignore
         )  # type: ignore
 
     def __len__(self) -> int:

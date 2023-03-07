@@ -487,11 +487,11 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
             del self._storage.tensor_columns[field]
 
-        unstacked_column = ChainMap(
-            unstacked_any_column,
-            unstacked_tensor_column,
-            unstacked_da_column,
-            unstacked_doc_column,
+        unstacked_column = ChainMap(  # type: ignore
+            unstacked_any_column,  # type: ignore
+            unstacked_tensor_column,  # type: ignore
+            unstacked_da_column,  # type: ignore
+            unstacked_doc_column,  # type: ignore
         )  # type: ignore
 
         docs = []
