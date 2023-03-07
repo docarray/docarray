@@ -18,6 +18,7 @@ from typing import (
     TypeVar,
     Union,
     cast,
+    get_args,
 )
 
 import numpy as np
@@ -112,7 +113,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if not isinstance(self._db_config, self.DBConfig):
             raise ValueError(f'db_config must be of type {self.DBConfig}')
         self._runtime_config = self.RuntimeConfig()
-        self._column_infos: Dict[str, _ColumnInfo] = self._create_columns(self._schema)
+        self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
+            self._schema
+        )
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -613,31 +616,60 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         return self.QueryBuilder()  # type: ignore
 
-    def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _ColumnInfo]:
-        columns: Dict[str, _ColumnInfo] = dict()
+    def _flatten_schema(
+        self, schema: Type[BaseDocument], name_prefix: str = ''
+    ) -> List[Tuple[str, Type, 'ModelField']]:
+        """Flatten the schema of a Document into a list of column names and types.
+
+        :param schema: The schema to flatten
+        :param name_prefix: prefix to append to the column names. Used for recursive calls to handle nesting.
+        :return: A list of column names, types, and fields
+        """
+        names_types_fields: List[Tuple[str, Type, 'ModelField']] = []
         for field_name, field_ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
+            inner_prefix = name_prefix + field_name + '__'
+
             if is_union_type(t_):
+                union_args = get_args(t_)
+                if len(union_args) == 2 and type(None) in union_args:
+                    # simple "Optional" type, treat as special case:
+                    # treat as if it was a single non-optional type
+                    for t_arg in union_args:
+                        if t_arg is type(None):
+                            pass
+                        elif issubclass(t_arg, BaseDocument):
+                            names_types_fields.extend(
+                                self._flatten_schema(t_arg, name_prefix=inner_prefix)
+                            )
+                else:
+                    names_types_fields.append((field_name, t_, field_))
+            elif issubclass(t_, BaseDocument):
+                names_types_fields.extend(
+                    self._flatten_schema(t_, name_prefix=inner_prefix)
+                )
+            else:
+                names_types_fields.append((name_prefix + field_name, t_, field_))
+        return names_types_fields
+
+    def _create_column_infos(
+        self, schema: Type[BaseDocument]
+    ) -> Dict[str, _ColumnInfo]:
+        column_infos: Dict[str, _ColumnInfo] = dict()
+        for field_name, type_, field_ in self._flatten_schema(schema):
+            if is_union_type(type_):
                 raise ValueError(
                     'Union types are not supported in the schema of a DocumentIndex.'
-                    f' Instead of using type {t_} use a single specific type.'
+                    f' Instead of using type {type_} use a single specific type.'
                 )
-            elif issubclass(t_, AnyDocumentArray):
+            elif issubclass(type_, AnyDocumentArray):
                 raise ValueError(
                     'Indexing field of DocumentArray type (=subindex)'
                     'is not yet supported.'
                 )
-            elif issubclass(t_, BaseDocument):
-                columns = dict(
-                    columns,
-                    **{
-                        f'{field_name}__{nested_name}': t
-                        for nested_name, t in self._create_columns(t_).items()
-                    },
-                )
             else:
-                columns[field_name] = self._create_single_column(field_, t_)
-        return columns
+                column_infos[field_name] = self._create_single_column(field_, type_)
+        return column_infos
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
         db_type = self.python_type_to_db_type(type_)
@@ -665,7 +697,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             (name, col.db_type) for name, col in self._column_infos.items()
         ]
         if isinstance(docs, AnyDocumentArray):
-            input_columns = self._create_columns(docs.document_type)
+            input_columns = self._create_column_infos(docs.document_type)
             input_col_db_types = [
                 (name, col.db_type) for name, col in input_columns.items()
             ]
@@ -674,7 +706,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             return reference_col_db_types == input_col_db_types
         else:
             for d in docs:
-                input_columns = self._create_columns(type(d))
+                input_columns = self._create_column_infos(type(d))
                 input_col_db_types = [
                     (name, col.db_type) for name, col in input_columns.items()
                 ]
