@@ -155,6 +155,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             for col_name, col in self._column_infos.items():
                 if not col.config:
                     continue
+                if col.db_type == np.ndarray and np.all(row[col_name] == 0):
+                    row[col_name] = row[col_name] + 1.0e-9
                 request[col_name] = row[col_name]
             requests.append(request)
 
