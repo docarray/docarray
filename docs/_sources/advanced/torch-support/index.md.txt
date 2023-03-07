@@ -1,10 +1,10 @@
 # PyTorch/Deep Learning Frameworks
 
-DocArray can be easily integrated into PyTorch, Tensorflow, PaddlePaddle frameworks.
+DocArray can be easily integrated into the PyTorch, Tensorflow and PaddlePaddle frameworks.
 
-The `.embedding` and `.tensor` attributes in Document class can contain PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor.
+The `.embedding` and `.tensor` attributes in Document class can contain a PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor.
 
-It means that if you store the Document on disk in `pickle` or `protobuf` with/o compression, or transit the Document over the network in `pickle` or `protobuf` with/o compression, the data type of `.embedding` and `.tensor` is preserved.
+It means that if you store the Document on disk in `pickle` or `protobuf` with/o compression, or transmit the Document over the network in `pickle` or `protobuf` without compression, the data type of `.embedding` and `.tensor` is preserved.
 
 ```python
 import numpy as np
@@ -28,6 +28,7 @@ da.save_binary('test.protobuf.gz')
 ```
 
 Now let's load them again and check the data type:
+
 ```python
 from docarray import DocumentArray
 
@@ -44,20 +45,20 @@ for d in DocumentArray.load_binary('test.protobuf.gz'):
 
 ## Load, map, batch in one-shot
 
-There is a very common pattern in the deep learning engineering: loading big data, mapping it via some function for preprocessing on CPU, and batching it to GPU for intensive deep learning stuff.
+There is a very common pattern in deep learning engineering: loading big data, mapping it via some function for preprocessing on CPU, and batching it to GPU for intensive deep learning stuff.
 
 There are many pitfalls in this pattern when not implemented correctly, to name a few:
-- data may not fit into memory;
-- mapping via CPU only utilizes a single-core;
-- data-draining problem: GPU is not fully utilized as data is blocked by the slow CPU preprocessing step.
+- Data may not fit into memory.
+- Mapping via CPU only utilizes a single-core.
+- Data-draining problem: GPU is not fully utilized as data is blocked by the slow CPU preprocessing step.
 
-DocArray provides a high-level function {meth}`~docarray.array.mixins.dataloader.DataLoaderMixin.dataloader` that allows you to do this in one-shot, avoiding all pitfalls. The following figure illustrates this function:
+DocArray provides a high-level function {meth}`~docarray.array.mixins.dataloader.DataLoaderMixin.dataloader` that allows you to do this in one-shot, avoiding all these pitfalls. The following figure illustrates this function:
 
 ```{figure} dataloader.svg
 :width: 80%
 ```
 
-Say we have a one million 32 x 32 color images, which takes 3.14GB on the disk with `protocol='protobuf'` and `compress='gz'`. To process it: 
+Say we have one million 32x32 color images, which takes up 3.14GB on the disk with `protocol='protobuf'` and `compress='gz'`. To process it: 
 
 ```python
 import time
@@ -96,6 +97,6 @@ cpu job done
 GPU job done
 cpu job done
 GPU job done
-cpu job donecpu job done
+cpu job done
+cpu job done
 ```
-

@@ -5,12 +5,12 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <meta property="og:title" content="docarray.array.storage.milvus package" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage.milvus/" />
-<meta property="og:site_name" content="DocArray 0.21.0 Documentation" />
-<meta property="og:description" content="Submodules: docarray.array.storage.milvus.backend module, docarray.array.storage.milvus.find module, docarray.array.storage.milvus.getsetdel module, docarray.array.storage.milvus.seqlike module. Module contents:" />
-<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.21.0 Documentation" />
-<meta name="description" content="Submodules: docarray.array.storage.milvus.backend module, docarray.array.storage.milvus.find module, docarray.array.storage.milvus.getsetdel module, docarray.array.storage.milvus.seqlike module. Module contents:" />
+<meta property="og:url" content="https://docs.docarray.org/api/docarray.array.storage.milvus/" />
+<meta property="og:site_name" content="DocArray 0.21.1 Documentation" />
+<meta property="og:description" content="Submodules: docarray.array.storage.milvus.backend module- MilvusConfig- MilvusConfig.n_dim, MilvusConfig.collection_name, MilvusConfig.host, MilvusConfig.port, MilvusConfig.distance, MilvusConfig.index_type, MilvusConfig.index_params, MilvusConfig.collection_config, MilvusConfig.serialize_config,..." />
+<meta property="og:image" content="https://docs.docarray.org/_static/banner.png" />
+<meta property="og:image:alt" content="DocArray 0.21.1 Documentation" />
+<meta name="description" content="Submodules: docarray.array.storage.milvus.backend module- MilvusConfig- MilvusConfig.n_dim, MilvusConfig.collection_name, MilvusConfig.host, MilvusConfig.port, MilvusConfig.distance, MilvusConfig.index_type, MilvusConfig.index_params, MilvusConfig.collection_config, MilvusConfig.serialize_config,..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,10 +30,10 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
-        <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.storage.milvus.html" />
+        <link rel="canonical" href="https://docs.docarray.org/api/docarray.array.storage.milvus.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>docarray.array.storage.milvus package - DocArray 0.21.0 documentation</title>
+        <title>docarray.array.storage.milvus package - DocArray 0.21.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.21.0 documentation</div>
+                <div class="brand">DocArray 0.21.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -241,7 +241,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-    <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/">What is DocArray?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
@@ -327,38 +327,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/">Changelog</a></li>
 </ul>
 
-    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
-    <ul>
-        <li class="toctree-l1">
-            <a class="reference external" href="https://docs.jina.ai">
-                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
-                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
-                Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
-            Jina Hub</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://finetuner.jina.ai">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
-            Finetuner</a></li>
-        <li class="toctree-l1"><a class="reference internal" href="#">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
-            DocArray</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
-            CLIP-as-service</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/JCloud-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/JCloud-dark.svg">
-            JCloud</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
-            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/now-light.svg">
-            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/now-dark.svg">
-            NOW</a></li>
-    </ul>
 </div>
 </div>
 
@@ -406,15 +374,244 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.backend/">docarray.array.storage.milvus.backend module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.find/">docarray.array.storage.milvus.find module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.getsetdel/">docarray.array.storage.milvus.getsetdel module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/">docarray.array.storage.milvus.seqlike module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.backend/">docarray.array.storage.milvus.backend module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig"><code class="docutils literal notranslate"><span class="pre">MilvusConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.n_dim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.collection_name"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.collection_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.host"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.host</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.port"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.port</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.distance"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.distance</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.index_type"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.index_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.index_params"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.index_params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.collection_config"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.collection_config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.serialize_config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.consistency_level"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.consistency_level</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.batch_size"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.batch_size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.columns"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.columns</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.list_like"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.list_like</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.MilvusConfig.root_id"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.root_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.BackendMixin"><code class="docutils literal notranslate"><span class="pre">BackendMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.BackendMixin.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">BackendMixin.TYPE_MAP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.BackendMixin.loaded_collection"><code class="docutils literal notranslate"><span class="pre">BackendMixin.loaded_collection()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.find/">docarray.array.storage.milvus.find module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.milvus.find/#docarray.array.storage.milvus.find.FindMixin"><code class="docutils literal notranslate"><span class="pre">FindMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.getsetdel/">docarray.array.storage.milvus.getsetdel module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.milvus.getsetdel/#docarray.array.storage.milvus.getsetdel.GetSetDelMixin"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.getsetdel/#docarray.array.storage.milvus.getsetdel.GetSetDelMixin.sync"><code class="docutils literal notranslate"><span class="pre">GetSetDelMixin.sync()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/">docarray.array.storage.milvus.seqlike module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.insert"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.insert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.append"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.append()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.clear"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.clear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.count"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.extend"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.extend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.index"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.pop"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.pop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.remove"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.remove()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin.reverse"><code class="docutils literal notranslate"><span class="pre">SequenceLikeMixin.reverse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="module-docarray.array.storage.milvus">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.storage.milvus" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.milvus.</span></span><span class="sig-name descname"><span class="pre">StorageMixins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/milvus/#StorageMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.storage.milvus.find/#docarray.array.storage.milvus.find.FindMixin" title="docarray.array.storage.milvus.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.milvus.backend/#docarray.array.storage.milvus.backend.BackendMixin" title="docarray.array.storage.milvus.backend.BackendMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.milvus.getsetdel/#docarray.array.storage.milvus.getsetdel.GetSetDelMixin" title="docarray.array.storage.milvus.getsetdel.GetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.storage.milvus.seqlike/#docarray.array.storage.milvus.seqlike.SequenceLikeMixin" title="docarray.array.storage.milvus.seqlike.SequenceLikeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.TYPE_MAP">
+<span class="sig-name descname"><span class="pre">TYPE_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../docarray.array.storage.base.backend/#docarray.array.storage.base.backend.TypeMap" title="docarray.array.storage.base.backend.TypeMap"><span class="pre">TypeMap</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bool':</span> <span class="pre">TypeMap(type=&lt;DataType.BOOL:</span> <span class="pre">1&gt;,</span> <span class="pre">converter=&lt;class</span> <span class="pre">'bool'&gt;),</span> <span class="pre">'double':</span> <span class="pre">TypeMap(type=&lt;DataType.DOUBLE:</span> <span class="pre">11&gt;,</span> <span class="pre">converter=&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">'float':</span> <span class="pre">TypeMap(type=&lt;DataType.DOUBLE:</span> <span class="pre">11&gt;,</span> <span class="pre">converter=&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">'int':</span> <span class="pre">TypeMap(type=&lt;DataType.INT64:</span> <span class="pre">5&gt;,</span> <span class="pre">converter=&lt;function</span> <span class="pre">_safe_cast_int&gt;),</span> <span class="pre">'str':</span> <span class="pre">TypeMap(type=&lt;DataType.VARCHAR:</span> <span class="pre">21&gt;,</span> <span class="pre">converter=&lt;class</span> <span class="pre">'str'&gt;)}</span></em><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.TYPE_MAP" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.append" title="Permalink to this definition">#</a></dt>
+<dd><p>Append <cite>doc</cite> to the end of the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>) – The doc needs to be appended.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.clear" title="Permalink to this definition">#</a></dt>
+<dd><p>Clear the data of <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">--</span> <span class="pre">return</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">occurrences</span> <span class="pre">of</span> <span class="pre">value</span></span></span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.count" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.extend" title="Permalink to this definition">#</a></dt>
+<dd><p>S.extend(iterable) – extend sequence by appending elements from the iterable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">--</span> <span class="pre">return</span> <span class="pre">first</span> <span class="pre">index</span> <span class="pre">of</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.index" title="Permalink to this definition">#</a></dt>
+<dd><p>Raises ValueError if the value is not present.</p>
+<p>Supporting start and stop arguments is optional, but
+recommended.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.insert" title="Permalink to this definition">#</a></dt>
+<dd><p>Insert <cite>doc</cite> at <cite>index</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Position of the insertion.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>) – The doc needs to be inserted.</p></li>
+<li><p><strong>kwargs</strong> – Additional Arguments that are passed to the Document Store. This has no effect for in-memory DocumentArray.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.loaded_collection">
+<span class="sig-name descname"><span class="pre">loaded_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.loaded_collection" title="Permalink to this definition">#</a></dt>
+<dd><p>Context manager to load a collection and release it after the context is exited.
+If the collection is already loaded when entering, it will not be released while exiting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>collection</strong> – the collection to load. If None, the main collection of this indexer is used.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Context manager for the provided collection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">item</span> <span class="pre">--</span> <span class="pre">remove</span> <span class="pre">and</span> <span class="pre">return</span> <span class="pre">item</span> <span class="pre">at</span> <span class="pre">index</span> <span class="pre">(default</span> <span class="pre">last).</span></span></span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.pop" title="Permalink to this definition">#</a></dt>
+<dd><p>Raise IndexError if list is empty or index is out of range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.remove" title="Permalink to this definition">#</a></dt>
+<dd><p>S.remove(value) – remove first occurrence of value.
+Raise ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.reverse" title="Permalink to this definition">#</a></dt>
+<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.StorageMixins.sync">
+<span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.milvus.StorageMixins.sync" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.milvus.</span></span><span class="sig-name descname"><span class="pre">MilvusConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host='localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port=19530</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance='IP'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_type='HNSW'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_params=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consistency_level='Session'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size=-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_like=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_id=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/milvus/backend/#MilvusConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.n_dim">
+<span class="sig-name descname"><span class="pre">n_dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.n_dim" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.collection_name">
+<span class="sig-name descname"><span class="pre">collection_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.collection_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'localhost'</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.host" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">19530</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.port" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'IP'</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.distance" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.index_type">
+<span class="sig-name descname"><span class="pre">index_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HNSW'</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.index_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.index_params">
+<span class="sig-name descname"><span class="pre">index_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.index_params" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.collection_config">
+<span class="sig-name descname"><span class="pre">collection_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.collection_config" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.serialize_config">
+<span class="sig-name descname"><span class="pre">serialize_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.serialize_config" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.consistency_level">
+<span class="sig-name descname"><span class="pre">consistency_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Session'</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.consistency_level" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.batch_size">
+<span class="sig-name descname"><span class="pre">batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.batch_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.columns" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.list_like">
+<span class="sig-name descname"><span class="pre">list_like</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.list_like" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.storage.milvus.MilvusConfig.root_id">
+<span class="sig-name descname"><span class="pre">root_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#docarray.array.storage.milvus.MilvusConfig.root_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -431,7 +628,7 @@
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Jan 17, 2023</div>
+                            Last updated on Mar 07, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -465,7 +662,41 @@
                         <ul>
 <li><a class="reference internal" href="#">docarray.array.storage.milvus package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.array.storage.milvus">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins"><code class="docutils literal notranslate"><span class="pre">StorageMixins</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">StorageMixins.TYPE_MAP</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.append"><code class="docutils literal notranslate"><span class="pre">StorageMixins.append()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.clear"><code class="docutils literal notranslate"><span class="pre">StorageMixins.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.count"><code class="docutils literal notranslate"><span class="pre">StorageMixins.count()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.extend"><code class="docutils literal notranslate"><span class="pre">StorageMixins.extend()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.index"><code class="docutils literal notranslate"><span class="pre">StorageMixins.index()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.insert"><code class="docutils literal notranslate"><span class="pre">StorageMixins.insert()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.loaded_collection"><code class="docutils literal notranslate"><span class="pre">StorageMixins.loaded_collection()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.pop"><code class="docutils literal notranslate"><span class="pre">StorageMixins.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.remove"><code class="docutils literal notranslate"><span class="pre">StorageMixins.remove()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.reverse"><code class="docutils literal notranslate"><span class="pre">StorageMixins.reverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.StorageMixins.sync"><code class="docutils literal notranslate"><span class="pre">StorageMixins.sync()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig"><code class="docutils literal notranslate"><span class="pre">MilvusConfig</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.n_dim"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.n_dim</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.collection_name"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.collection_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.host"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.host</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.port"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.port</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.distance"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.distance</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.index_type"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.index_type</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.index_params"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.index_params</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.collection_config"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.collection_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.serialize_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.consistency_level"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.consistency_level</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.batch_size"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.batch_size</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.columns"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.columns</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.list_like"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.list_like</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.milvus.MilvusConfig.root_id"><code class="docutils literal notranslate"><span class="pre">MilvusConfig.root_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -477,19 +708,6 @@
             
         </aside>
     </div>
-    <qa-bot
-            title="DocArray Bot"
-            description="The data structure for unstructured data"
-    >
-        <template>
-            <dl>
-                <dt>You can ask questions about our docs. Try:</dt>
-                <dd>What is a DocumentArray?</dd>
-                <dd>How to use docarray with Jina?</dd>
-                <dd>How to find nearest neighbour of Documents?</dd>
-            </dl>
-        </template>
-    </qa-bot>
 </div>
 <img referrerpolicy="no-referrer-when-downgrade"
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -503,11 +721,6 @@
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() { 
-            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
-        });
-        </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     </body>

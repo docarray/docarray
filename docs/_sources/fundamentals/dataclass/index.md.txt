@@ -1,7 +1,7 @@
 (dataclass)=
 # Dataclass
 
-```{figure} https://docarray.jina.ai/_images/dataclass-banner.png
+```{figure} https://docs.docarray.org/_images/dataclass-banner.png
 :width: 0 %
 :scale: 0 %
 ```
