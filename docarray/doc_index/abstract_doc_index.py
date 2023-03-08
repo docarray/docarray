@@ -425,7 +425,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if type(docs) is List[Dict]:
+        if isinstance(docs, List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
@@ -464,13 +464,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if type(da_list) is List[List[Dict]]:
+        if len(da_list) > 0 and isinstance(da_list[0], List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
-            docs = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
+            da_list = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
 
-        return FindResultBatched(documents=docs, scores=scores)
+        return FindResultBatched(documents=da_list, scores=scores)
 
     def filter(
         self,
@@ -485,7 +485,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: a DocumentArray containing the documents that match the filter query
         """
         docs = self._filter(filter_query, limit=limit, **kwargs)
-        if type(docs) is List[Dict]:
+
+        if isinstance(docs, List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
@@ -506,7 +507,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: a DocumentArray containing the documents that match the filter query
         """
         da_list = self._filter_batched(filter_queries, limit=limit, **kwargs)
-        if type(da_list) is List[List[Dict]]:
+
+        if len(da_list) > 0 and isinstance(da_list[0], List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
@@ -536,7 +538,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_text, search_field=search_field, limit=limit, **kwargs
         )
 
-        if type(docs) is List[Dict]:
+        if isinstance(docs, List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
@@ -569,7 +571,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_texts, search_field=search_field, limit=limit, **kwargs
         )
 
-        if type(da_list) is List[List[Dict]]:
+        if len(da_list) > 0 and isinstance(da_list[0], List):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
