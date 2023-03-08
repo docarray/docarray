@@ -1,4 +1,4 @@
-from typing import List, NamedTuple, Optional, Type, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -12,7 +12,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
-    documents: DocumentArray
+    documents: Union[DocumentArray, List[Dict[str, Any]]]
     scores: AnyTensor
 
 

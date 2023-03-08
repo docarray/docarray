@@ -39,7 +39,7 @@ TSchema = TypeVar('TSchema', bound=BaseDocument)
 
 
 class FindResultBatched(NamedTuple):
-    documents: List[DocumentArray]
+    documents: Union[List[DocumentArray], List[List[Dict[str, Any]]]]
     scores: np.ndarray
 
 
@@ -262,7 +262,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-    ) -> DocumentArray:
+    ) -> Union[DocumentArray, List[Dict]]:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
@@ -276,7 +276,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-    ) -> List[DocumentArray]:
+    ) -> Union[List[DocumentArray], List[List[Dict]]]:
         """Find documents in the index based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
 
@@ -421,9 +421,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
-        return self._find(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        docs, scores = self._find(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
+
+        if type(docs) is List[Dict]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs = da_cls(self._convert_to_doc_list(docs))
+
+        return FindResult(documents=docs, scores=scores)
 
     def find_batched(
         self,
@@ -452,9 +460,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_vec_np = self._to_numpy(queries)
 
-        return self._find_batched(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        da_list, scores = self._find_batched(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
+
+        if type(da_list) is List[List[Dict]]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
+
+        return FindResultBatched(documents=docs, scores=scores)
 
     def filter(
         self,
@@ -468,7 +484,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter(filter_query, limit=limit, **kwargs)  # type: ignore
+        docs = self._filter(filter_query, limit=limit, **kwargs)
+        if type(docs) is List[Dict]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs = da_cls(self._convert_to_doc_list(docs))
+
+        return docs  # type: ignore
 
     def filter_batched(
         self,
@@ -482,7 +505,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter_batched(filter_queries, limit=limit, **kwargs)  # type: ignore
+        da_list = self._filter_batched(filter_queries, limit=limit, **kwargs)
+        if type(da_list) is List[List[Dict]]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            da_list = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
+
+        return da_list  # type: ignore
 
     def text_search(
         self,
@@ -502,9 +532,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
             query_text = query
-        return self._text_search(
-            query_text, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        docs, scores = self._text_search(
+            query_text, search_field=search_field, limit=limit, **kwargs
         )
+
+        if type(docs) is List[Dict]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs = da_cls(self._convert_to_doc_list(docs))
+
+        return FindResult(documents=docs, scores=scores)
 
     def text_search_batched(
         self,
@@ -527,9 +565,16 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
         else:
             query_texts = cast(Sequence[str], queries)
-        return self._text_search_batched(
-            query_texts, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        da_list, scores = self._text_search_batched(
+            query_texts, search_field=search_field, limit=limit, **kwargs
         )
+
+        if type(da_list) is List[List[Dict]]:
+            da_cls = DocumentArray.__class_getitem__(
+                cast(Type[BaseDocument], self._schema)
+            )
+            docs = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
+        return FindResultBatched(documents=docs, scores=scores)
 
     ##########################################################
     # Helper methods                                         #
