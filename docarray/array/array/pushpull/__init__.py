@@ -93,11 +93,10 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
             cls.__backends__[protocol] = PushPullFile
             logging.info('Loaded Local Filesystem backend')
         elif protocol == 's3':
-            # from docarray.array.array.pushpull.s3 import PushPullS3
+            from docarray.array.array.pushpull.s3 import PushPullS3
 
-            # cls.__backends__[protocol] = PushPullS3
-            # logging.info('Loaded S3 backend')
-            raise NotImplementedError(f'protocol {protocol} not supported')
+            cls.__backends__[protocol] = PushPullS3
+            logging.info('Loaded S3 backend')
         else:
             raise NotImplementedError(f'protocol {protocol} not supported')
 
