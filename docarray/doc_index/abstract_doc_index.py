@@ -549,7 +549,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def text_search_batched(
         self,
         queries: Union[Sequence[str], Sequence[BaseDocument]],
-        search_field: str = 'embedding',
+        search_field: str = 'text',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
