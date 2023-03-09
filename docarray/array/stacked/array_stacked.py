@@ -250,7 +250,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         # single doc case
         return self.document_type.from_view(ColumnStorageView(item, self._storage))
 
-    def _get_array_attribute(
+    def _get_data_column(
         self: T,
         field: str,
     ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
@@ -332,7 +332,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         for field, col in self._storage.columns.items():
             col[index_item] = processed_value._storage.columns[field]
 
-    def _set_array_attribute(
+    def _set_data_column(
         self: T,
         field: str,
         values: Union[

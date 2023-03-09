@@ -65,10 +65,10 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
                 def _property_generator(val: str):
                     def _getter(self):
-                        return self._get_array_attribute(val)
+                        return self._get_data_column(val)
 
                     def _setter(self, value):
-                        self._set_array_attribute(val, value)
+                        self._set_data_column(val, value)
 
                     # need docstring for the property
                     return property(fget=_getter, fset=_setter)
@@ -99,7 +99,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     @abstractmethod
-    def _get_array_attribute(
+    def _get_data_column(
         self: T,
         field: str,
     ) -> Union[List, T, 'AbstractTensor']:
@@ -112,7 +112,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     @abstractmethod
-    def _set_array_attribute(
+    def _set_data_column(
         self: T,
         field: str,
         values: Union[List, T, 'AbstractTensor'],

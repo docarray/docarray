@@ -204,7 +204,7 @@ class DocumentArray(
     reverse = _delegate_meth_to_data('reverse')
     sort = _delegate_meth_to_data('sort')
 
-    def _get_array_attribute(
+    def _get_data_column(
         self: T,
         field: str,
     ) -> Union[List, T, 'TorchTensor', 'NdArray']:
@@ -230,7 +230,7 @@ class DocumentArray(
         else:
             return [getattr(doc, field) for doc in self]
 
-    def _set_array_attribute(
+    def _set_data_column(
         self: T,
         field: str,
         values: Union[List, T, 'AbstractTensor'],
