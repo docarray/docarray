@@ -5,6 +5,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    MutableSequence,
     Sequence,
     Tuple,
     Type,
@@ -253,7 +254,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
+    ) -> Union[MutableSequence, 'DocumentArrayStacked', AbstractTensor]:
         """Return one column of the data
 
         :param field: name of the fields to extract

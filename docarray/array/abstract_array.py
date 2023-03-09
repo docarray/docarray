@@ -8,6 +8,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    MutableSequence,
     Sequence,
     Type,
     TypeVar,
@@ -102,7 +103,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[List, T, 'AbstractTensor']:
+    ) -> Union[MutableSequence, T, 'AbstractTensor']:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract

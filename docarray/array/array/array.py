@@ -6,6 +6,7 @@ from typing import (
     Callable,
     Iterable,
     List,
+    MutableSequence,
     Optional,
     Sequence,
     Type,
@@ -207,7 +208,7 @@ class DocumentArray(
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[List, T, 'TorchTensor', 'NdArray']:
+    ) -> Union[MutableSequence, T, 'TorchTensor', 'NdArray']:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract

@@ -25,18 +25,14 @@ class ListAdvancedIndexing(IndexingSequenceMixin[T_item]):
 
     """
 
-    _data: MutableSequence[T_item]
+    data: MutableSequence[T_item]
 
     def __init__(self, data: MutableSequence[T_item]):
-        self._data = data
+        self.data = data
 
     def __len__(self) -> int:
         return len(self._data)
 
-    @property
-    def data(self):
-        return self._data
-
     def __iter__(self) -> Iterator[T_item]:
-        for data in self._data:
-            yield data
+        for item in self.data:
+            yield item
