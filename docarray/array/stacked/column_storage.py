@@ -10,7 +10,7 @@ from typing import (
     Union,
 )
 
-from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
+from docarray.array.stacked.list_advance_indexing import ListAdvancedIndex
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -39,8 +39,8 @@ class ColumnStorage:
         self,
         tensor_columns: Dict[str, AbstractTensor],
         doc_columns: Dict[str, 'DocumentArrayStacked'],
-        da_columns: Dict[str, ListAdvanceIndex['DocumentArrayStacked']],
-        any_columns: Dict[str, ListAdvanceIndex],
+        da_columns: Dict[str, ListAdvancedIndex['DocumentArrayStacked']],
+        any_columns: Dict[str, ListAdvancedIndex],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):
         self.tensor_columns = tensor_columns

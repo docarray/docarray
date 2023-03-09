@@ -5,7 +5,7 @@ from docarray.array.array.sequence_indexing_mixin import IndexingSequenceMixin
 T_item = TypeVar('T_item')
 
 
-class ListAdvanceIndex(IndexingSequenceMixin[T_item]):
+class ListAdvancedIndex(IndexingSequenceMixin[T_item]):
     """
     A list wrapper that implement custom indexing
 
