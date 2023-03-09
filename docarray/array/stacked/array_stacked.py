@@ -20,7 +20,7 @@ from pydantic import BaseConfig, parse_obj_as
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
-from docarray.array.stacked.list_advance_indexing import ListAdvancedIndex
+from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_document import BaseDocument
 from docarray.base_document.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
@@ -96,8 +96,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
         tensor_columns: Dict[str, AbstractTensor] = dict()
         doc_columns: Dict[str, 'DocumentArrayStacked'] = dict()
-        da_columns: Dict[str, ListAdvancedIndex['DocumentArrayStacked']] = dict()
-        any_columns: Dict[str, ListAdvancedIndex] = dict()
+        da_columns: Dict[str, ListAdvancedIndexing['DocumentArrayStacked']] = dict()
+        any_columns: Dict[str, ListAdvancedIndexing] = dict()
 
         if len(docs) == 0:
             raise ValueError(f'docs {docs}: should not be empty')
@@ -163,13 +163,15 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                     docs_list = list()
                     for doc in docs:
                         docs_list.append(getattr(doc, field_name).stack())
-                    da_columns[field_name] = ListAdvancedIndex(docs_list)
+                    da_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
-                    any_columns[field_name] = ListAdvancedIndex(
+                    any_columns[field_name] = ListAdvancedIndexing(
                         getattr(docs, field_name)
                     )
             else:
-                any_columns[field_name] = ListAdvancedIndex(getattr(docs, field_name))
+                any_columns[field_name] = ListAdvancedIndexing(
+                    getattr(docs, field_name)
+                )
 
         self._storage = ColumnStorage(
             tensor_columns,
