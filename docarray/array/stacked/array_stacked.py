@@ -182,7 +182,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     @classmethod
     def from_columns_storage(cls: Type[T], storage: ColumnStorage) -> T:
         """
-        Create a DocumentArrayStack directly from a storage object
+        Create a DocumentArrayStacked directly from a storage object
         :param storage: the underlying storage.
         :return: a DocumentArrayStack
         """
