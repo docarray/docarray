@@ -577,8 +577,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docs_seq = docs
         if not self._is_schema_compatible(docs_seq):
             raise ValueError(
-                'The schema of the documents to be indexed is not compatible'
-                ' with the schema of the index.'
+                'The schema of the input documents is not compatible'
+                ' with the schema of the Document Index.'
             )
 
         def _col_gen(col_name: str):
@@ -693,27 +693,30 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
         """Flatten a DocumentArray into a DocumentArray of the schema type."""
-        reference_col_db_types = [
-            (name, col.db_type) for name, col in self._column_infos.items()
-        ]
+        reference_schema_flat = self._flatten_schema(self._schema)
+        reference_names = [name for (name, _, _) in reference_schema_flat]
+        reference_types = [t_ for (_, t_, _) in reference_schema_flat]
         if isinstance(docs, AnyDocumentArray):
-            input_columns = self._create_column_infos(docs.document_type)
-            input_col_db_types = [
-                (name, col.db_type) for name, col in input_columns.items()
-            ]
+            input_schema_flat = self._flatten_schema(docs.document_type)
+            input_names = [name for (name, _, _) in input_schema_flat]
+            input_types = [t_ for (_, t_, _) in input_schema_flat]
             # this could be relaxed in the future,
             # see schema translation ideas in the design doc
-            return reference_col_db_types == input_col_db_types
+            return reference_names == input_names and all(
+                issubclass(t1, t2) for (t1, t2) in zip(reference_types, input_types)
+            )
         else:
             for d in docs:
-                input_columns = self._create_column_infos(type(d))
-                input_col_db_types = [
-                    (name, col.db_type) for name, col in input_columns.items()
-                ]
+                input_schema_flat = self._flatten_schema(type(d))
+                input_names = [name for (name, _, _) in input_schema_flat]
+                input_types = [t_ for (_, t_, _) in input_schema_flat]
                 # this could be relaxed in the future,
                 # see schema translation ideas in the design doc
-                if reference_col_db_types != input_col_db_types:
+                if reference_names != input_names or not all(
+                    issubclass(t1, t2) for (t1, t2) in zip(reference_types, input_types)
+                ):
                     return False
+
             return True
 
     def _to_numpy(self, val: Any) -> Any:
