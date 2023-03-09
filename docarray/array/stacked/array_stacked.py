@@ -86,7 +86,6 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     """
 
     document_type: Type[T_doc]
-    _storage: ColumnStorage
 
     def __init__(
         self: T,
