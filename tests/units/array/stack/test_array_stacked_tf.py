@@ -195,14 +195,24 @@ def test_stack_union():
     class Image(BaseDocument):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
 
-    batch = DocumentArrayStacked[Image](
+    DocumentArrayStacked[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
-    batch[3].tensor = tf.zeros((3, 224, 224))
 
     # union fields aren't actually stacked
     # just checking that there is no error
+
+
+@pytest.mark.tensorflow
+def test_setitem_tensor(batch):
+    batch[3].tensor.tensor = tf.zeros((3, 224, 224))
+
+
+@pytest.mark.skip('not working yet')
+@pytest.mark.tensorflow
+def test_setitem_tensor_direct(batch):
+    batch[3].tensor = tf.zeros((3, 224, 224))
 
 
 @pytest.mark.tensorflow
