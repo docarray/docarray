@@ -345,7 +345,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # check data
-        if return_singleton and len(doc_sequence) == 0:
+        if len(doc_sequence) == 0:
             raise KeyError(f'No document with id {key} found')
 
         # cast output
