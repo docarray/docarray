@@ -26,7 +26,7 @@ from typing_inspect import is_union_type
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
-from docarray.utils.find import FindResult
+from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import torch_imported
 
 if TYPE_CHECKING:
@@ -39,6 +39,11 @@ TSchema = TypeVar('TSchema', bound=BaseDocument)
 
 
 class FindResultBatched(NamedTuple):
+    documents: List[DocumentArray]
+    scores: np.ndarray
+
+
+class _FindResultBatched(NamedTuple):
     documents: Union[List[DocumentArray], List[List[Dict[str, Any]]]]
     scores: np.ndarray
 
@@ -228,7 +233,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         """Find documents in the index
 
         :param query: query vector for KNN/ANN search. Has single axis.
@@ -246,7 +251,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         """Find documents in the index
 
         :param query: query vectors for KNN/ANN search.
@@ -293,7 +298,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         """Find documents in the index based on a text search query
 
         :param query: The text to search for
@@ -311,7 +316,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         queries: Sequence[str],
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         """Find documents in the index based on a text search query
 
         :param queries: The texts to search for
@@ -431,7 +436,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
             docs = da_cls(self._convert_to_doc_list(docs))
 
-        return FindResult(documents=docs, scores=scores)
+        return FindResult(documents=docs, scores=scores)  # type: ignore
 
     def find_batched(
         self,
@@ -470,7 +475,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
             da_list = [da_cls(self._convert_to_doc_list(docs)) for docs in da_list]
 
-        return FindResultBatched(documents=da_list, scores=scores)
+        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
 
     def filter(
         self,
@@ -544,7 +549,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
             docs = da_cls(self._convert_to_doc_list(docs))
 
-        return FindResult(documents=docs, scores=scores)
+        return FindResult(documents=docs, scores=scores)  # type: ignore
 
     def text_search_batched(
         self,
