@@ -6,7 +6,7 @@ from docarray.array.stacked.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
 
-def test_storage_init():
+def test_column_storage_init():
     class InnerDoc(BaseDocument):
         price: int
 
@@ -31,7 +31,7 @@ def test_storage_init():
         assert doc.price == i
 
 
-def test_storage_view():
+def test_column_storage_view():
     class MyDoc(BaseDocument):
         tensor: AnyTensor
         name: str

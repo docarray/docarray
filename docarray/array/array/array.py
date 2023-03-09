@@ -137,7 +137,7 @@ class DocumentArray(
     ) -> T:
         """
         Create a DocumentArray without validation any data. The data must come from a
-        trusted sources
+        trusted source
         :param docs: a Sequence (list) of Document with the same schema
         :param tensor_type: Class used to wrap the tensors of the Documents when stacked
         :return:
