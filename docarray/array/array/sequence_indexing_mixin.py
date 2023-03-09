@@ -35,8 +35,8 @@ def _is_np_int(item: Any) -> bool:
 
 class IndexingSequenceMixin(Iterable[T_item]):
     """
-    This mixin allow to extend a list into an object that can be indexed
-    a la mnumpy/pytorch.
+    This mixin allow sto extend a list into an object that can be indexed
+    a la numpy/pytorch.
 
     You can index into a IndexingSequenceMixin like a numpy array or torch tensor:
 
@@ -139,7 +139,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
 
     def _del_from_indices(self: T, item: Iterable[int]) -> None:
         for ix in sorted(item, reverse=True):
-            # reversed in needed here otherwise some the indice are not up to date after
+            # reversed is needed here otherwise some the indices are not up to date after
             # each delete
             del self._data[ix]
 
