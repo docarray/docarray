@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
-from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
     Generator,
     Generic,
@@ -13,7 +11,6 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
     Union,
@@ -43,26 +40,20 @@ class FindResultBatched(NamedTuple):
     scores: np.ndarray
 
 
-def _delegate_to_query(method_name: str, func: Callable):
-    @wraps(func)
-    def inner(self, *args, **kwargs):
-        if args:
-            raise ValueError(
-                f'Positional arguments are not supported for '
-                f'{type(self)}.`{method_name}`.'
-                f' Use keyword arguments instead.'
-            )
-        self._queries.append((method_name, kwargs))
-        return self
-
-    return inner
-
-
 def _raise_not_composable(name):
-    def _inner(*args, **kwargs):
+    def _inner(self, *args, **kwargs):
         raise NotImplementedError(
-            f'`{name}` is not usable through the query builder of this Document Store. '
-            f'But you can call `doc_store.{name}()` directly.'
+            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
+            f'But you can call `{type(self)}.{name}()` directly.'
+        )
+
+    return _inner
+
+
+def _raise_not_supported(name):
+    def _inner(self, *args, **kwargs):
+        raise NotImplementedError(
+            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
         )
 
     return _inner
@@ -74,25 +65,6 @@ class _ColumnInfo:
     db_type: Any
     n_dim: Optional[int]
     config: Dict[str, Any]
-
-
-class composable:
-    """Decorator that marks methods in a DocumentIndex as composable,
-    i.e. they can be used in a query builder.
-    """
-
-    def __init__(self, fn):
-        self.fn = fn
-
-    def __set_name__(self, owner, name):
-        if name.startswith('_') and not name.startswith('__'):
-            public_name = name[1:]
-        else:
-            public_name = name
-        setattr(
-            owner.QueryBuilder, public_name, _delegate_to_query(public_name, self.fn)
-        )
-        setattr(owner, name, self.fn)
 
 
 class BaseDocumentIndex(ABC, Generic[TSchema]):
@@ -120,11 +92,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     ###############################################
 
     class QueryBuilder(ABC):
-        def __init__(self):
-            # list of tuples (method name, kwargs)
-            # no need to populate this, it's done automatically
-            self._queries: List[Tuple[str, Dict]] = []
-
         @abstractmethod
         def build(self, *args, **kwargs) -> Any:
             """Build the DB specific query object.
@@ -133,14 +100,16 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             """
             ...
 
-        # no need to implement the methods below
-        # they are handled automatically by the `composable` decorator
-        find = _raise_not_composable('find')
-        filter = _raise_not_composable('filter')
-        text_search = _raise_not_composable('text_search')
-        find_batched = _raise_not_composable('find_batched')
-        filter_batched = _raise_not_composable('filter_batched')
-        text_search_batched = _raise_not_composable('text_search_batched')
+        # the methods below need to be implemented by subclasses
+        # If, in your subclass, one of these is not usable in a query builder, but
+        # can be called directly on the DocumentIndex, use `_raise_not_composable`.
+        # If the method is not supported _at all_, use `_raise_not_supported`.
+        find = abstractmethod(lambda *args, **kwargs: ...)
+        filter = abstractmethod(lambda *args, **kwargs: ...)
+        text_search = abstractmethod(lambda *args, **kwargs: ...)
+        find_batched = abstractmethod(lambda *args, **kwargs: ...)
+        filter_batched = abstractmethod(lambda *args, **kwargs: ...)
+        text_search_batched = abstractmethod(lambda *args, **kwargs: ...)
 
     @dataclass
     class DBConfig(ABC):
@@ -208,10 +177,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
         """
         Execute a query on the database.
-        This is intended as a pass-through to the underlying database, so that users
-        can enjoy anything that is not available through our API.
 
-        Also, this is the method that the output of the query builder is passed to.
+        Can take two kinds of inputs:
+        - A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document Index API.
+        - The output of this Document Index' `QueryBuilder.build()` method.
 
         :param query: the query to execute
         :param args: positional arguments to pass to the query
