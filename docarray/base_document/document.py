@@ -90,7 +90,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
             super().__setattr__(field, value)
         else:
             # here we first validate with pydantic
-            # Then we apply the value to the remote dict
+            # Then we apply the value to the remote dict,
             # and we change back the __dict__ value to the remote dict
             dict_ref = self.__dict__
             super().__setattr__(field, value)

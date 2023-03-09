@@ -340,7 +340,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     ) -> None:
         """Set all Documents in this DocumentArray using the passed values
 
-        :param field: name of the fields to extract
+        :param field: name of the fields to set
         :values: the values to set at the DocumentArray level
         """
 
