@@ -21,7 +21,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.stacked.list_advance_indexing import ListAdvanceIndex
-from docarray.base_document import AnyDocument, BaseDocument
+from docarray.base_document import BaseDocument
 from docarray.base_document.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -83,7 +83,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
     """
 
-    document_type: Type[BaseDocument] = AnyDocument
+    document_type: Type[T_doc]
     _storage: ColumnStorage
 
     def __init__(
@@ -243,10 +243,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         if isinstance(item, (slice, Iterable)):
             return self.__class__.from_columns_storage(self._storage[item])
         # single doc case
-        doc = cast(
-            T_doc, self.document_type.from_view(ColumnStorageView(item, self._storage))
-        )
-        return doc
+        return self.document_type.from_view(ColumnStorageView(item, self._storage))
 
     def _get_array_attribute(
         self: T,
