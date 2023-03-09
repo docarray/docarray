@@ -68,7 +68,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     is `AnyTensor` or a Union of tensor types, the
     :attr:`~docarray.array.stacked.DocumentArrayStacked.tensor_type` will be used to determine
     the type of the stacked column.
-    
+
     If the field is another `BasedDocument` the column will be another DocumentArrayStacked that follows the
     schema of the nested Document.
     If the field is a `DocumentArray` or
@@ -109,6 +109,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         )
 
         for field_name, field in self.document_type.__fields__.items():
+            # here we iterate over the field of the da schema, and we collect the data
+            # from each document and put them in the corresponding column
             field_type = self.document_type._get_field_type(field_name)
 
             if is_tensor_union(field_type):
