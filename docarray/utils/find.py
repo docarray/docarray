@@ -12,6 +12,11 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
+    documents: DocumentArray
+    scores: AnyTensor
+
+
+class _FindResult(NamedTuple):
     documents: Union[DocumentArray, List[Dict[str, Any]]]
     scores: AnyTensor
 
