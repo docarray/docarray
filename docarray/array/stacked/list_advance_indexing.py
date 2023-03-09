@@ -7,7 +7,7 @@ T_item = TypeVar('T_item')
 
 class ListAdvancedIndexing(IndexingSequenceMixin[T_item]):
     """
-    A list wrapper that implement custom indexing
+    A list wrapper that implements custom indexing
 
     You can index into a ListAdvanceIndex like a numpy array or torch tensor:
 
