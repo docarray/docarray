@@ -16,11 +16,11 @@ def batch():
     class ImageDoc(BaseDocument):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[ImageDoc](
+    batch = DocumentArrayStacked[ImageDoc](
         [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    return batch.stack()
+    return batch
 
 
 @pytest.fixture()
@@ -594,3 +594,15 @@ def test_validation_col_doc_fail(batch_nested_doc):
 
     with pytest.raises(ValueError):
         batch.inner = DocumentArray[Inner]([Inner(hello='hello') for _ in range(11)])
+
+
+def test_doc_view_update(batch):
+    batch[0].tensor = 12 * torch.ones(3, 224, 224)
+    assert (batch.tensor[0] == 12 * torch.ones(3, 224, 224)).all()
+
+
+def test_doc_view_nested(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+    # batch[0].__fields_set__
+    batch[0].inner = Inner(hello='world')
+    assert batch.inner[0].hello == 'world'

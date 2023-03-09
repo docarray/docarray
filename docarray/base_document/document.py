@@ -36,6 +36,8 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
     def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
         doc = cls.__new__(cls)
         object.__setattr__(doc, '__dict__', storage_view)
+        object.__setattr__(doc, '__fields_set__', set(storage_view.keys()))
+
         doc._init_private_attributes()
         return doc
 
@@ -81,4 +83,17 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if item in self.__fields__.keys():
             return self.__dict__[item]
         else:
-            return super().__getattribute__(item)  # TODO Why isn't this failing ?
+            return super().__getattribute__(item)
+
+    def __setattr__(self, field, value) -> None:
+        if not self.is_view():
+            super().__setattr__(field, value)
+        else:
+            # here we first validate with pydantic
+            # Then we apply the value to the remote dict
+            # and we change back the __dict__ value to the remote dict
+            dict_ref = self.__dict__
+            super().__setattr__(field, value)
+            for key, val in self.__dict__.items():
+                dict_ref[key] = val
+            object.__setattr__(self, '__dict__', dict_ref)
