@@ -254,7 +254,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         self: T,
         field: str,
     ) -> Union[List, 'DocumentArrayStacked', AbstractTensor]:
-        """Return all values of the fields from all docs this array contains
+        """Return one column of the data
 
         :param field: name of the fields to extract
         :return: Returns a list of the field value for each document
