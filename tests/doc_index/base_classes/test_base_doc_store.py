@@ -6,7 +6,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
+from docarray.doc_index.abstract_doc_index import (
+    BaseDocumentIndex,
+    _raise_not_composable,
+)
 from docarray.typing import ID, NdArray
 
 pytestmark = pytest.mark.doc_index
@@ -50,7 +53,14 @@ class DummyDocIndex(BaseDocumentIndex):
 
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def build(self):
-            return self._queries
+            return None
+
+        find = _raise_not_composable('find')
+        filter = _raise_not_composable('filter')
+        text_search = _raise_not_composable('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('find_batched')
+        text_search_batched = _raise_not_composable('text_search')
 
     def python_type_to_db_type(self, x):
         return str

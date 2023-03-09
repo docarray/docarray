@@ -313,5 +313,81 @@ That way you have full control over whether the input data gets flattened or not
 
 ## Implement a Query Builder for your Document Index
 
-This part of the process is still slightly WIP, so let's worry about it once we get there, shall we? ;)
+Every Document Index exposes a Query Builder interface which the user can use to build composed, hybrid queries.
 
+For you as a backend integrator, there are three main things that are related to this:
+
+- The `QueryBuilder` class that you need to implement
+- The `execute_query()` method that you need to implement
+- The `build_query()` method that just returns an instance of your `QueryBuilder`. You _don't_ need to implement this yourself.
+
+Overall, this interface is very flexible, meaning that not a whole lot of structure is imposed on you.
+You can decide what happens in the `QueryBuilder` class, and how the query is executed in the `execute_query()` method.
+But there are a few things that you should stick to.
+
+### Implement the `QueryBuilder` class
+
+The QueryBuilder is what accumulates partial queries and builds them into a single query, ready to be executed.
+
+Your Query Builder has to be an inner class of your Document Index, its class name has to be `QueryBuilder`, and it has to inherit from the Base Query Builder:
+
+```python
+class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+    ...
+```
+
+The Query Builder exposes the following interface:
+- The same query related methods as the `BaseDocumentIndex` class (e.g. `filter`, `find`, `text_search`, and their batched variants)
+- The `build()` method
+
+The goal of it is to enable an interface for composing coplex queries, like this:
+
+```python
+index = MyDocumentIndex[MyDoc]()
+q = index.build_query().find(...).filter(...).text_search(...).build()
+index.execute_query(q)
+```
+
+How the individual calls to `find`, `filter`, and `text_search` are combined is up to your backend.
+
+### Implement individual query methods
+
+It is up to you how you implement the individual query methods, e.g. `find`, `filter`, and `text_search` of the query builder.
+
+However, there are a few common strategies that you could use: If your backend natively supports a query builder pattern,
+then you could wrap that with the DocumentIndex Query Builder interface; or you could set these methods to simply collect
+arguments passed to it and defer the actual query building to the `build()` method (the `HNSWLibIndex does this); or you
+could eagerly build intermediate queries at every call.
+
+No matter what you do, you should stick to one design principle: **Every call to `find`, `filter`, `text_search` etc.
+should return a new instance of the Query Builder**, with updated state.
+
+**If your backend does not support all operations:**
+Most backends do not support compositions of all query operations, which is completely fine.
+If that is the case, you should handle that in the following way:
+- If an operation **is** supported by the Document Index that you are implementing, but **is not** supported by the Query Builder, you should use the pre-defined `_raise_not_composable()` helper method to raise a `NotImplementedError`.
+- If an operation **is not** supported by the Document Index that you are implementing, and **is not** supported by the Query Builder, you should use the pre-defined `_raise_not_supported()` helper method to raise a `NotImplementedError`.
+- If an operation **is** supported by the Document Index that you are implementing, and **is** supported by the Query Builder, but **is not** supported in combination with a certain other operation, you should raise a `RuntimeError`. Depending on how your Query Builder is set up, you might want to do that either eagerly during the conflicting method call, or lazily inside of `.build()`.
+
+### Implement the `build()` method
+
+It is up to you how you implement the `build()` method, and this will depend on how you implemented the individual query
+methods in the section above.
+
+Depending on this, `build()` could wrap a similar method of an underlying native query builder; or it could combine
+the collected arguments and build an actual query; or it could even be a no-op.
+The important thing is that it returns a query object that can be immediately executed by the `execute_query()` method.
+
+What exactly this query object is, is up to you. It could be a string, a dictionary, a custom object, or anything else.
+
+### Implement the `execute_query()` method
+
+The `execute_query()` method of your Document Index has to fulfill two requirements:
+1. Be able to execute a query that was built by the `build()` method of the corresponding `QueryBuilder` class, and return the results.
+2. Be able to execute a native query object of your backend, as a simple pass-through, and return the results. This is intended for users to be able to use the native query language of your backend and manually construct their own queries, if they want to.
+
+How you achieve this is up to you. If 1. and 2. condense down to the same thing because `build()` returns a native query
+is also up to you.
+
+The only thing to keep in mind is that any heavy lifting, combining of various inputs and queries, and potential validation
+should happen in the `build()` method, and not in `execute_query()`.
