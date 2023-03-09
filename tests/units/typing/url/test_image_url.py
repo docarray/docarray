@@ -11,11 +11,11 @@ from docarray.typing import ImageUrl
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_IMAGE_DATA = os.path.join(CUR_DIR, '..', '..', '..', 'toydata', 'image-data')
-IMAGE_PATHS = {
-    'png': os.path.join(PATH_TO_IMAGE_DATA, 'so_good.png'),
-    'jpg': os.path.join(PATH_TO_IMAGE_DATA, '05984.jpg'),
-    'jpeg': os.path.join(PATH_TO_IMAGE_DATA, '05984-2.jpeg'),
-}
+IMAGE_PATHS_WITH_EXTENSIONS = [
+    ('png', os.path.join(PATH_TO_IMAGE_DATA, 'so_good.png')),
+    ('jpg', os.path.join(PATH_TO_IMAGE_DATA, '05984.jpg')),
+    ('jpeg', os.path.join(PATH_TO_IMAGE_DATA, '05984-2.jpeg')),
+]
 REMOTE_JPG = (
     'https://upload.wikimedia.org/wikipedia/commons/8/80/'
     'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
@@ -32,12 +32,13 @@ def test_image_url():
     assert isinstance(tensor, np.ndarray)
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 @pytest.mark.proto
 def test_proto_image_url():
-
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)
-
-    uri._to_node_protobuf()
+    proto = uri._to_node_protobuf()
+    assert 'image_url' in str(proto)
 
 
 def test_json_schema():
@@ -53,12 +54,7 @@ def test_dump_json():
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
-    [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
-        ('remote-jpg', REMOTE_JPG),
-    ],
+    [*IMAGE_PATHS_WITH_EXTENSIONS, ('remote-jpg', REMOTE_JPG)],
 )
 def test_load(image_format, path_to_img):
     url = parse_obj_as(ImageUrl, path_to_img)
@@ -70,12 +66,7 @@ def test_load(image_format, path_to_img):
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
-    [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
-        ('remote-jpg', REMOTE_JPG),
-    ],
+    [*IMAGE_PATHS_WITH_EXTENSIONS, ('remote-jpg', REMOTE_JPG)],
 )
 @pytest.mark.parametrize('width,height', [(224, None), (None, 224), (224, 224)])
 def test_load_width_height(image_format, path_to_img, width, height):
@@ -94,12 +85,7 @@ def test_load_width_height(image_format, path_to_img, width, height):
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
-    [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
-        ('remote-jpg', REMOTE_JPG),
-    ],
+    [*IMAGE_PATHS_WITH_EXTENSIONS, ('remote-jpg', REMOTE_JPG)],
 )
 @pytest.mark.parametrize(
     'axis_layout',
@@ -134,12 +120,7 @@ def test_load_timeout():
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'image_format,path_to_img',
-    [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
-        ('jpg', REMOTE_JPG),
-    ],
+    [*IMAGE_PATHS_WITH_EXTENSIONS, ('remote-jpg', REMOTE_JPG)],
 )
 def test_load_to_bytes(image_format, path_to_img):
     url = parse_obj_as(ImageUrl, path_to_img)
@@ -152,9 +133,7 @@ def test_load_to_bytes(image_format, path_to_img):
 @pytest.mark.parametrize(
     'image_format,path_to_img',
     [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
+        *IMAGE_PATHS_WITH_EXTENSIONS,
         ('jpg', REMOTE_JPG),
         ('illegal', 'illegal'),
         ('illegal', 'https://www.google.com'),
