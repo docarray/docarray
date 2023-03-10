@@ -17,11 +17,6 @@ class ListAdvancedIndexing(IndexingSequenceMixin[T_item]):
         da[[0, 2, 3]]  # index by list of indices
         da[True, False, True, True, ...]  # index by boolean mask
 
-    You can delete items from a DocumentArray like a Python List
-
-    .. code-block:: python
-        del da[0]  # remove first element from DocumentArray
-        del da[0:5]  # remove elements for 0 to 5 from DocumentArray
 
     """
 

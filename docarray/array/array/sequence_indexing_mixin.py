@@ -38,7 +38,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
     This mixin allow sto extend a list into an object that can be indexed
     a la numpy/pytorch.
 
-    You can index into a IndexingSequenceMixin like a numpy array or torch tensor:
+    You can index into, delete from, and set items in a IndexingSequenceMixin like a numpy array or torch tensor:
 
     .. code-block:: python
         da[0]  # index by position
@@ -46,11 +46,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
         da[[0, 2, 3]]  # index by list of indices
         da[True, False, True, True, ...]  # index by boolean mask
 
-    You can delete items from a DocumentArray like a Python List
 
-    .. code-block:: python
-        del da[0]  # remove first element from DocumentArray
-        del da[0:5]  # remove elements for 0 to 5 from DocumentArray
     """
 
     _data: MutableSequence[T_item]
@@ -110,11 +106,6 @@ class IndexingSequenceMixin(Iterable[T_item]):
         return self.__class__(results)
 
     def _set_by_indices(self: T, item: Iterable[int], value: Iterable[T_item]):
-        # here we cannot use _get_offset_to_doc() because we need to change the doc
-        # that a given offset points to, not just retrieve it.
-        # Future optimization idea: _data could be List[DocContainer], where
-        # DocContainer points to the doc. Then we could use _get_offset_to_container()
-        # to swap the doc in the container.
         for ix, doc_to_set in zip(item, value):
             try:
                 self._data[ix] = doc_to_set
