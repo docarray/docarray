@@ -16,12 +16,11 @@ from typing import (
     TypeVar,
     Union,
     cast,
-    get_args,
 )
 
 import numpy as np
 from pydantic.error_wrappers import ValidationError
-from typing_inspect import is_union_type
+from typing_inspect import get_args, is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
