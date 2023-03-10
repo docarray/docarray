@@ -110,13 +110,19 @@ class PushPullJAC(PushPullLike):
 
     @staticmethod
     @hubble.login_required
-    def delete(name: str) -> None:
+    def delete(name: str, missing_ok: bool = True) -> bool:
         """
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
         """
-        # TODO: Add namespace?
-        HubbleClient(jsonify=True).delete_artifact(name=name)
+        try:
+            HubbleClient(jsonify=True).delete_artifact(name=name)
+        except hubble.excepts.RequestedEntityNotFoundError:
+            if missing_ok:
+                return False
+            else:
+                raise
+        return True
 
     @staticmethod
     @hubble.login_required
@@ -142,7 +148,6 @@ class PushPullJAC(PushPullLike):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
-        # TODO: Cache when we send?
         import requests
         import urllib3
 
@@ -212,9 +217,15 @@ class PushPullJAC(PushPullLike):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        # TODO: How do we deal with the stream header and summary
-        # if we dont have a document array to start with?
-        raise NotImplementedError('push_stream is not implemented for JAC yet')
+        from docarray import DocumentArray
+
+        # TODO: This is a temporary solution to push a stream of documents
+        # The memory footprint is not ideal
+        first_doc = next(docs)
+        da = DocumentArray[first_doc.__class__]([first_doc])
+        for doc in docs:
+            da.append(doc)
+        return PushPullJAC.push(da, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
@@ -306,6 +317,61 @@ class PushPullJAC(PushPullLike):
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
         """
-        # TODO: How do we deal with not having a length in stream header?
-        # Are we forced to duplicate code here?
-        raise NotImplementedError('pull_stream is not implemented for JAC yet')
+        import requests
+
+        headers = {}
+
+        auth_token = hubble.get_token()
+
+        if auth_token:
+            headers['Authorization'] = f'token {auth_token}'
+
+        url = HubbleClient()._base_url + EndpointsV2.download_artifact + f'?name={name}'
+        response = requests.get(url, headers=headers)
+
+        if response.ok:
+            url = response.json()['data']['download']
+        else:
+            response.raise_for_status()
+
+        with requests.get(
+            url,
+            stream=True,
+        ) as r:
+            from contextlib import nullcontext
+
+            r.raise_for_status()
+            save_name = name.replace('/', '_')
+
+            tmp_cache_file = Path(f'/tmp/{save_name}.da')
+            _source: Union[
+                _BufferedCachingRequestReader, io.BufferedReader
+            ] = _BufferedCachingRequestReader(r, tmp_cache_file)
+
+            cache_file = __cache_path__ / f'{save_name}.da'
+            if local_cache and cache_file.exists():
+                _cache_len = cache_file.stat().st_size
+                if _cache_len == int(r.headers['Content-length']):
+                    if show_progress:
+                        print(f'Loading from local cache {cache_file}')
+                    _source = open(cache_file, 'rb')
+                    r.close()
+
+            docs = cls._load_binary_stream(
+                nullcontext(_source),  # type: ignore
+                protocol='protobuf',
+                compress='gzip',
+                show_progress=show_progress,
+            )
+            try:
+                while True:
+                    yield next(docs)
+            except StopIteration:
+                pass
+
+            if local_cache:
+                if isinstance(_source, _BufferedCachingRequestReader):
+                    Path(__cache_path__).mkdir(parents=True, exist_ok=True)
+                    tmp_cache_file.rename(cache_file)
+                else:
+                    _source.close()
