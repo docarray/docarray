@@ -146,7 +146,6 @@ IMAGE_FILE_FORMATS = [
     '.xpm',
     '.ftc',
     '.icns',
-    '.gif',
     '.grib',
     '.jpf',
     '.jp2',
