@@ -6,7 +6,7 @@ authors=['DocArray']
 license='Apache 2.0'
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<4.0"
 pydantic = ">=1.10.2"
 numpy = ">=1.17.3"
 protobuf = { version = ">=3.19.0", optional = true }
@@ -50,6 +50,14 @@ ruff = ">=0.0.243"
 uvicorn = ">=0.19.0"
 httpx = ">=0.23.0"
 pytest-asyncio = ">=0.20.2"
+
+
+[tool.poetry.group.jina.dependencies]
+jina-hubble-sdk = "^0.34.0"
+
+
+[tool.poetry.group.aws.dependencies]
+smart-open = {extras = ["s3"], version = "^6.3.0"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
