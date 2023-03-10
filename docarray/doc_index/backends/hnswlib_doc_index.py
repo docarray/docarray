@@ -4,7 +4,6 @@ import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Generic,
@@ -25,22 +24,15 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
-    FindResultBatched,
     _ColumnInfo,
+    _FindResultBatched,
+    _raise_not_composable,
+    _raise_not_supported,
 )
 from docarray.proto import DocumentProto
 from docarray.utils.filter import filter as da_filter
-from docarray.utils.find import FindResult
+from docarray.utils.find import _FindResult
 from docarray.utils.misc import is_np_int, torch_imported
-
-if TYPE_CHECKING:
-
-    def composable(fn):  # type: ignore
-        return fn
-
-else:
-    # static type checkers do not like callable objects as decorators
-    from docarray.doc_index.abstract_doc_index import composable
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='HnswDocumentIndex')
@@ -50,6 +42,20 @@ if torch_imported:
     import torch
 
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+
+
+def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
+    def inner(self, *args, **kwargs):
+        if args:
+            raise ValueError(
+                f'Positional arguments are not supported for '
+                f'`{type(self)}.{method_name}`.'
+                f' Use keyword arguments instead.'
+            )
+        updated_query = self._queries + [(method_name, kwargs)]
+        return type(self)(updated_query)
+
+    return inner
 
 
 class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
@@ -94,8 +100,20 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     # Inner classes for query builder and configs #
     ###############################################
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+        def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
+            super().__init__()
+            # list of tuples (method name, kwargs)
+            self._queries: List[Tuple[str, Dict]] = query or []
+
         def build(self, *args, **kwargs) -> Any:
             return self._queries
+
+        find = _collect_query_args('find')
+        filter = _collect_query_args('filter')
+        text_search = _raise_not_supported('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('find_batched')
+        text_search_batched = _raise_not_supported('text_search')
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
@@ -190,14 +208,14 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
         docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
         out_docs, out_scores = zip(*docs_sorted)
-        return FindResult(documents=out_docs, scores=out_scores)
+        return _FindResult(documents=out_docs, scores=out_scores)
 
     def _find_batched(
         self,
         query: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(query, k=limit)
         result_das = [
@@ -206,15 +224,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
             for ids_per_query in labels
         ]
-        return FindResultBatched(documents=result_das, scores=distances)
+        return _FindResultBatched(documents=result_das, scores=distances)
 
-    @composable
-    def _find(self, query: np.ndarray, search_field: str, limit: int) -> FindResult:
+    def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(query_batched, search_field, limit)
-        return FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(documents=docs[0], scores=scores[0])
 
-    @composable
     def _filter(
         self,
         filter_query: Any,
@@ -243,7 +259,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _text_search_batched(
@@ -251,7 +267,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         queries: Sequence[str],
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _del_items(self, doc_ids: Sequence[str]):

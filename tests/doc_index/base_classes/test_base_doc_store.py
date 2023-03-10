@@ -6,7 +6,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
+from docarray.doc_index.abstract_doc_index import (
+    BaseDocumentIndex,
+    _raise_not_composable,
+)
 from docarray.typing import ID, NdArray
 
 pytestmark = pytest.mark.doc_index
@@ -50,7 +53,14 @@ class DummyDocIndex(BaseDocumentIndex):
 
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def build(self):
-            return self._queries
+            return None
+
+        find = _raise_not_composable('find')
+        filter = _raise_not_composable('filter')
+        text_search = _raise_not_composable('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('find_batched')
+        text_search_batched = _raise_not_composable('text_search')
 
     def python_type_to_db_type(self, x):
         return str
@@ -324,3 +334,44 @@ def test_transpose_data_by_columns():
         assert doc.d.id == row['d__id']
         assert doc.d.d.id == row['d__d__id']
         assert np.all(doc.d.d.tens == row['d__d__tens'])
+
+
+def test_convert_dict_to_doc():
+    store = DummyDocIndex[SimpleDoc]()
+    doc_dict = {'id': 'simple', 'tens': np.random.random((10,))}
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict['id']
+    assert np.all(doc.tens == doc_dict['tens'])
+
+    store = DummyDocIndex[FlatDoc]()
+    doc_dict = {
+        'id': 'nested',
+        'tens_one': np.random.random((10,)),
+        'tens_two': np.random.random((50,)),
+    }
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict['id']
+    assert np.all(doc.tens_one == doc_dict['tens_one'])
+    assert np.all(doc.tens_two == doc_dict['tens_two'])
+
+    store = DummyDocIndex[NestedDoc]()
+    doc_dict = {'id': 'nested', 'd__id': 'simple', 'd__tens': np.random.random((10,))}
+    doc_dict_copy = doc_dict.copy()
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict_copy['id']
+    assert doc.d.id == doc_dict_copy['d__id']
+    assert np.all(doc.d.tens == doc_dict_copy['d__tens'])
+
+    store = DummyDocIndex[DeepNestedDoc]()
+    doc_dict = {
+        'id': 'deep',
+        'd__id': 'nested',
+        'd__d__id': 'simple',
+        'd__d__tens': np.random.random((10,)),
+    }
+    doc_dict_copy = doc_dict.copy()
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict_copy['id']
+    assert doc.d.id == doc_dict_copy['d__id']
+    assert doc.d.d.id == doc_dict_copy['d__d__id']
+    assert np.all(doc.d.d.tens == doc_dict_copy['d__d__tens'])
