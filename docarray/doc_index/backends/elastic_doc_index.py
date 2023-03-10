@@ -2,7 +2,6 @@ import uuid
 import warnings
 from dataclasses import dataclass, field
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Generator,
@@ -27,22 +26,11 @@ import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
-    FindResultBatched,
     _ColumnInfo,
+    _FindResultBatched,
 )
-from docarray.utils.find import FindResult
+from docarray.utils.find import _FindResult
 from docarray.utils.misc import torch_imported
-
-# mypy: ignore-errors
-
-if TYPE_CHECKING:
-
-    def composable(fn):  # type: ignore
-        return fn
-
-else:
-    # static type checkers do not like callable objects as decorators
-    from docarray.doc_index.abstract_doc_index import composable
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentIndex')
@@ -50,6 +38,7 @@ T = TypeVar('T', bound='ElasticDocumentIndex')
 MAX_ES_RETURNED_DOCS = 10000
 
 ELASTIC_PY_VEC_TYPES = [list, tuple, np.ndarray]
+ELASTIC_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 if torch_imported:
     import torch
 
@@ -120,9 +109,12 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                     'ef_construction': 100,
                 },
                 docarray.typing.ID: {'type': 'keyword'},
+                bool: {'type': 'boolean'},
+                int: {'type': 'integer'},
+                float: {'type': 'float'},
+                str: {'type': 'text'},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
-                # TODO: add support for other types
             }
         )
 
@@ -136,8 +128,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if issubclass(python_type, allowed_type):
                 return np.ndarray
 
-        if python_type == docarray.typing.ID:
-            return docarray.typing.ID
+        if python_type in ELASTIC_PY_TYPES:
+            return python_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -209,17 +201,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         if accumulated_docs_id_not_found:
             warnings.warn(f'No document with id {accumulated_docs_id_not_found} found')
 
-        doc_list = self._convert_to_doc_list(accumulated_docs)
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-        return da_cls(doc_list)
+        return accumulated_docs
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         ...
 
-    @composable
     def _find(
         self, query: np.ndarray, search_field: str, limit: int, **kwargs
-    ) -> FindResult:
+    ) -> _FindResult:
         knn_query = {
             'field': search_field,
             'query_vector': query,
@@ -242,16 +231,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             docs.append(doc_dict)
             scores.append(result['_score'])
 
-        doc_list = self._convert_to_doc_list(docs)
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-        return FindResult(documents=da_cls(doc_list), scores=np.array(scores))
+        return _FindResult(documents=docs, scores=np.array(scores))
 
     def _find_batched(
         self,
         queries: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         result_das = []
         result_scores = []
 
@@ -261,14 +248,13 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             result_scores.append(scores)
 
         result_scores = np.array(result_scores)
-        return FindResultBatched(documents=result_das, scores=result_scores)
+        return _FindResultBatched(documents=result_das, scores=result_scores)
 
-    @composable
     def _filter(
         self,
         filter_query: Any,
         limit: int,
-    ) -> DocumentArray:
+    ) -> List[Dict]:
         resp = self._client.search(
             index=self._db_config.index_name,
             query=filter_query,
@@ -281,9 +267,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             doc_dict['id'] = result['_id']
             docs.append(doc_dict)
 
-        doc_list = self._convert_to_doc_list(docs)
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-        return da_cls(doc_list)
+        return docs
 
     def _filter_batched(
         self,
@@ -300,7 +284,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         query = {
             "bool": {
                 "must": [
@@ -323,16 +307,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             docs.append(doc_dict)
             scores.append(result['_score'])
 
-        doc_list = self._convert_to_doc_list(docs)
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
-        return FindResult(documents=da_cls(doc_list), scores=np.array(scores))
+        return _FindResult(documents=docs, scores=np.array(scores))
 
     def _text_search_batched(
         self,
         queries: Sequence[str],
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         result_das = []
         result_scores = []
 
@@ -342,7 +324,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             result_scores.append(scores)
 
         result_scores = np.array(result_scores)
-        return FindResultBatched(documents=result_das, scores=result_scores)
+        return _FindResultBatched(documents=result_das, scores=result_scores)
 
     ###############################################
     # Helpers                                     #
@@ -362,38 +344,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
             index['index_options']['type'] = 'hnsw'
         return index
-
-    def _convert_to_doc_list(self, docs: List[Dict[str, Any]]) -> List[BaseDocument]:
-        """Convert a list of docs to a list of Document objects."""
-
-        doc_list = []
-        for doc_dict in docs:
-            doc = self._convert_dict_to_doc(doc_dict, self._schema)
-            doc_list.append(doc)
-
-        return doc_list
-
-    def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
-    ) -> BaseDocument:
-        """Convert a dict to a Document object."""
-
-        for field_name, _ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
-            if issubclass(t_, BaseDocument):
-                inner_dict = {}
-
-                fields = [
-                    key for key in doc_dict.keys() if key.startswith(f'{field_name}__')
-                ]
-                for key in fields:
-                    nested_name = key.replace(f'{field_name}__', '')
-                    inner_dict[nested_name] = doc_dict.pop(key)
-
-                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
-
-        schema_cls = cast(Type[BaseDocument], schema)
-        return schema_cls(**doc_dict)
 
     def _send_requests(self, request: Iterable[Dict[str, Any]], **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
