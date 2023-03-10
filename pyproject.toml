@@ -96,6 +96,18 @@ ignore_missing_imports = true
 module = "hubble.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "smart_open"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "boto3"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "botocore"
+ignore_missing_imports = true
+
 [tool.black]
 skip-string-normalization = true # equivalent to black -S
 exclude = 'docarray/proto/pb2/*'

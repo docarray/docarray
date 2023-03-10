@@ -26,8 +26,6 @@ from typing import (
     Union,
 )
 
-from typing_extensions import Protocol
-
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
@@ -95,60 +93,7 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class BinaryIOLike(Protocol):
-    def from_bytes(
-        cls: Any,
-        data: bytes,
-        protocol: str,
-        compress: Optional[str],
-        show_progress: bool,
-    ) -> Any:
-        ...
-
-    def to_bytes(
-        self,
-        protocol: str,
-        compress: Optional[str],
-        file_ctx: Optional[BinaryIO],
-        show_progress: bool,
-    ) -> Optional[bytes]:
-        ...
-
-    document_type: Type[BaseDocument]
-
-    @property
-    def _stream_header(self) -> bytes:
-        ...
-
-    def _write_bytes(
-        self,
-        bf: BinaryIO,
-        protocol: str,
-        compress: Optional[str],
-        show_progress: bool,
-    ) -> None:
-        ...
-
-    def to_binary_stream(
-        self,
-        protocol,
-        compress: Optional[str],
-        show_progress: bool,
-    ) -> Iterator[bytes]:
-        ...
-
-    @classmethod
-    def _load_binary_stream(
-        cls: Type,
-        file_ctx: ContextManager[io.BufferedReader],
-        protocol: str,
-        compress: Optional[str],
-        show_progress: bool,
-    ) -> Iterator['BaseDocument']:
-        ...
-
-
-class IOMixinArray(Sequence[BaseDocument], BinaryIOLike):
+class IOMixinArray(Sequence[BaseDocument]):
 
     document_type: Type[BaseDocument]
 

@@ -222,7 +222,7 @@ class PushPullJAC(PushPullLike):
         # TODO: This is a temporary solution to push a stream of documents
         # The memory footprint is not ideal
         first_doc = next(docs)
-        da = DocumentArray[first_doc.__class__]([first_doc])
+        da = DocumentArray[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
             da.append(doc)
         return PushPullJAC.push(da, name, public, show_progress, branding)

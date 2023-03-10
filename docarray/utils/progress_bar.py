@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -45,7 +47,7 @@ def _get_pbar(disable):
     )
 
 
-def _get_progressbar(description: str, disable: bool, total: int):
+def _get_progressbar(description: str, disable: bool, total: Optional[int]):
     progress = _get_pbar(disable)
     task = progress.add_task(description, total=total, start=False, total_size=0)
     return progress, task

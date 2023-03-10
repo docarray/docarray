@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Sequence, Type
 
 from typing_extensions import Protocol
 
-from docarray.array.array.io import BinaryIOLike
-
 __cache_path__ = Path.home() / '.cache' / 'docarray-v2'
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -66,10 +64,11 @@ class PushPullLike(Protocol):
         ...
 
 
-class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
+class PushPullMixin(Sequence['BaseDocument']):
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     __backends__: Dict[str, PushPullLike] = {}
+    document_type: Type['BaseDocument']
 
     @classmethod
     def get_backend(cls, protocol: str) -> PushPullLike:
@@ -161,7 +160,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         logging.info(f'Pushing {len(self)} docs to {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).push(
-            self, name, public, show_progress, branding
+            self, name, public, show_progress, branding  # type: ignore
         )
 
     @classmethod
@@ -207,7 +206,7 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         logging.info(f'Pulling {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull(
-            cls, name, show_progress, local_cache
+            cls, name, show_progress, local_cache  # type: ignore
         )
 
     @classmethod
@@ -231,5 +230,5 @@ class PushPullMixin(Sequence['BaseDocument'], BinaryIOLike):
         logging.info(f'Pulling Document stream from {url}')
         protocol, name = url.split('://', 2)
         return PushPullMixin.get_backend(protocol).pull_stream(
-            cls, name, show_progress, local_cache
+            cls, name, show_progress, local_cache  # type: ignore
         )

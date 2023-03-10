@@ -5,12 +5,7 @@ import botocore
 from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
-from docarray.array.array.io import BinaryIOLike
-from docarray.array.array.pushpull.helpers import (
-    _BufferedCachingReader,
-    _from_binary_stream,
-    _to_binary_stream,
-)
+from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
@@ -23,10 +18,10 @@ class PushPullS3:
     def list(namespace: str, show_table: bool = False) -> List[str]:
         bucket, namespace = namespace.split('/', 1)
         s3 = boto3.resource('s3')
-        bucket = s3.Bucket(bucket)
+        s3_bucket = s3.Bucket(bucket)
         da_files = [
             obj.key
-            for obj in bucket.objects.all()
+            for obj in s3_bucket.objects.all()
             if obj.key.startswith(namespace) and obj.key.endswith('.da')
         ]
         da_names = [f.split('/')[-1].split('.')[0] for f in da_files]
@@ -52,7 +47,7 @@ class PushPullS3:
 
     @staticmethod
     def push(
-        da: 'BinaryIOLike',
+        da: 'DocumentArray',
         name: str,
         public: bool = False,
         show_progress: bool = False,
@@ -72,14 +67,11 @@ class PushPullS3:
         binary_stream = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
-        # TODO: Add upload caching
-        reader = _BufferedCachingReader(binary_stream, None)
         # Upload to S3
-        # TODO: Make streaming
         with open(f"s3://{bucket}/{name}.da", 'wb') as fout:
             while True:
                 try:
-                    fout.write(reader.read(2**20))
+                    fout.write(next(binary_stream))
                 except StopIteration:
                     break
 
@@ -87,7 +79,7 @@ class PushPullS3:
 
     @staticmethod
     def pull(
-        cls: Type['BinaryIOLike'],
+        cls: Type['DocumentArray'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
