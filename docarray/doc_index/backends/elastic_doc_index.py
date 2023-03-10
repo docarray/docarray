@@ -19,6 +19,7 @@ from typing import (
 )
 
 import numpy as np
+from elastic_transport import NodeConfig
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
 
@@ -93,7 +94,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        from elastic_transport import NodeConfig
 
         hosts: Union[
             str, List[Union[str, Mapping[str, Union[str, int]], NodeConfig]], None

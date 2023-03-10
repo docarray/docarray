@@ -212,12 +212,12 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         search_field: str,
         limit: int,
     ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(query, k=limit)
+        labels, distances = index.knn_query(queries, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
