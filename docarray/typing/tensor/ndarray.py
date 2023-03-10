@@ -122,7 +122,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     @classmethod
     def _docarray_from_native(cls: Type[T], value: np.ndarray) -> T:
         if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
-            return value.view(cls.__unparametrizedcls__)
+            return cast(T, value.view(cls.__unparametrizedcls__))
         return value.view(cls)
 
     @classmethod

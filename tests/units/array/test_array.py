@@ -91,13 +91,13 @@ def test_get_bulk_attributes_function():
         (Mmdoc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N))
     )
 
-    tensors = da._get_array_attribute('tensor')
+    tensors = da._get_data_column('tensor')
 
     assert len(tensors) == N
     for tensor in tensors:
         assert tensor.shape == (3, 224, 224)
 
-    texts = da._get_array_attribute('text')
+    texts = da._get_data_column('text')
 
     assert len(texts) == N
     for i, text in enumerate(texts):
@@ -118,7 +118,7 @@ def test_set_attributes():
     )
 
     list_docs = [InnerDoc(text=f'hello{i}') for i in range(N)]
-    da._set_array_attribute('inner', list_docs)
+    da._set_data_column('inner', list_docs)
 
     for doc, list_doc in zip(da, list_docs):
         assert doc.inner == list_doc
@@ -308,3 +308,14 @@ def test_generic_type_var():
     a = DocumentArray()
     f(a)
     g(a)
+
+
+def test_construct():
+    class Text(BaseDocument):
+        text: str
+
+    docs = [Text(text=f'hello {i}') for i in range(10)]
+
+    da = DocumentArray[Text].construct(docs)
+
+    assert da._data is docs
