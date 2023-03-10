@@ -697,7 +697,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docs = [docs]
         if isinstance(docs, DocumentArray):
             # validation shortcut for DocumentArray; only look at the schema
-            reference_schema_flat = self._flatten_schema(self._schema)
+            reference_schema_flat = self._flatten_schema(
+                cast(Type[BaseDocument], self._schema)
+            )
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
 
@@ -717,7 +719,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         for i in range(len(docs)):
             # validate the data
             try:
-                out_docs.append(self._schema.parse_obj(docs[i]))
+                out_docs.append(
+                    cast(Type[BaseDocument], self._schema).parse_obj(docs[i])
+                )
             except (ValueError, ValidationError):
                 raise ValueError(
                     'The schema of the input Documents is not compatible with the schema of the Document Index.'
