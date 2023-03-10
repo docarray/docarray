@@ -23,7 +23,7 @@ from typing_inspect import is_union_type
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
-from docarray.utils.find import FindResult
+from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import torch_imported
 
 if TYPE_CHECKING:
@@ -37,6 +37,11 @@ TSchema = TypeVar('TSchema', bound=BaseDocument)
 
 class FindResultBatched(NamedTuple):
     documents: List[DocumentArray]
+    scores: np.ndarray
+
+
+class _FindResultBatched(NamedTuple):
+    documents: Union[List[DocumentArray], List[List[Dict[str, Any]]]]
     scores: np.ndarray
 
 
@@ -164,7 +169,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+    def _get_items(
+        self, doc_ids: Sequence[str]
+    ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
@@ -196,7 +203,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         """Find documents in the index
 
         :param query: query vector for KNN/ANN search. Has single axis.
@@ -214,7 +221,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         """Find documents in the index
 
         :param query: query vectors for KNN/ANN search.
@@ -230,7 +237,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-    ) -> DocumentArray:
+    ) -> Union[DocumentArray, List[Dict]]:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
@@ -244,7 +251,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-    ) -> List[DocumentArray]:
+    ) -> Union[List[DocumentArray], List[List[Dict]]]:
         """Find documents in the index based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
 
@@ -261,7 +268,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         query: str,
         search_field: str,
         limit: int,
-    ) -> FindResult:
+    ) -> _FindResult:
         """Find documents in the index based on a text search query
 
         :param query: The text to search for
@@ -279,7 +286,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         queries: Sequence[str],
         search_field: str,
         limit: int,
-    ) -> FindResultBatched:
+    ) -> _FindResultBatched:
         """Find documents in the index based on a text search query
 
         :param queries: The texts to search for
@@ -312,14 +319,21 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             return_singleton = False
         # retrieve data
         doc_sequence = self._get_items(key)
+        # check data
+        if len(doc_sequence) == 0:
+            raise KeyError(f'No document with id {key} found')
+
         # cast output
         if isinstance(doc_sequence, DocumentArray):
             out_da: DocumentArray[TSchema] = doc_sequence
+        elif isinstance(doc_sequence[0], Dict):
+            out_da = self._dict_list_to_docarray(doc_sequence)  # type: ignore
         else:
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
             out_da = da_cls(doc_sequence)
+
         return out_da[0] if return_singleton else out_da
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
@@ -356,7 +370,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param docs: Documents to index
         """
         data_by_columns = self._get_col_value_dict(docs)
-        self._index(data_by_columns, **kwargs)  # type: ignore
+        self._index(data_by_columns, **kwargs)
 
     def find(
         self,
@@ -381,9 +395,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
-        return self._find(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        docs, scores = self._find(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
+
+        if isinstance(docs, List):
+            docs = self._dict_list_to_docarray(docs)
+
+        return FindResult(documents=docs, scores=scores)
 
     def find_batched(
         self,
@@ -412,9 +431,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         else:
             query_vec_np = self._to_numpy(queries)
 
-        return self._find_batched(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        da_list, scores = self._find_batched(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
+
+        if len(da_list) > 0 and isinstance(da_list[0], List):
+            da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
+
+        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
 
     def filter(
         self,
@@ -428,7 +452,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter(filter_query, limit=limit, **kwargs)  # type: ignore
+        docs = self._filter(filter_query, limit=limit, **kwargs)
+
+        if isinstance(docs, List):
+            docs = self._dict_list_to_docarray(docs)
+
+        return docs
 
     def filter_batched(
         self,
@@ -442,7 +471,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        return self._filter_batched(filter_queries, limit=limit, **kwargs)  # type: ignore
+        da_list = self._filter_batched(filter_queries, limit=limit, **kwargs)
+
+        if len(da_list) > 0 and isinstance(da_list[0], List):
+            da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
+
+        return da_list  # type: ignore
 
     def text_search(
         self,
@@ -462,14 +496,19 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
             query_text = query
-        return self._text_search(
-            query_text, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        docs, scores = self._text_search(
+            query_text, search_field=search_field, limit=limit, **kwargs
         )
+
+        if isinstance(docs, List):
+            docs = self._dict_list_to_docarray(docs)
+
+        return FindResult(documents=docs, scores=scores)
 
     def text_search_batched(
         self,
         queries: Union[Sequence[str], Sequence[BaseDocument]],
-        search_field: str = 'embedding',
+        search_field: str = 'text',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
@@ -487,9 +526,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
         else:
             query_texts = cast(Sequence[str], queries)
-        return self._text_search_batched(
-            query_texts, search_field=search_field, limit=limit, **kwargs  # type: ignore
+        da_list, scores = self._text_search_batched(
+            query_texts, search_field=search_field, limit=limit, **kwargs
         )
+
+        if len(da_list) > 0 and isinstance(da_list[0], List):
+            docs = [self._dict_list_to_docarray(docs) for docs in da_list]
+        return FindResultBatched(documents=docs, scores=scores)
 
     ##########################################################
     # Helper methods                                         #
@@ -561,7 +604,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         if not isinstance(item, type):
             # do nothing
             # enables use in static contexts with type vars, e.g. as type annotation
-            return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
+            return Generic.__class_getitem__.__func__(cls, item)
         if not issubclass(item, BaseDocument):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
@@ -663,3 +706,40 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             return val.numpy()
         else:
             raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
+
+    def _convert_dict_to_doc(
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
+    ) -> BaseDocument:
+        """
+        Convert a dict to a Document object.
+
+        :param doc_dict: A dict that contains all the flattened fields of a Document, the field names are the keys and follow the pattern {field_name} or {field_name}__{nested_name}
+        :param schema: The schema of the Document object
+        :return: A Document object
+        """
+
+        for field_name, _ in schema.__fields__.items():
+            t_ = schema._get_field_type(field_name)
+            if issubclass(t_, BaseDocument):
+                inner_dict = {}
+
+                fields = [
+                    key for key in doc_dict.keys() if key.startswith(f'{field_name}__')
+                ]
+                for key in fields:
+                    nested_name = key[len(f'{field_name}__') :]
+                    inner_dict[nested_name] = doc_dict.pop(key)
+
+                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
+
+        schema_cls = cast(Type[BaseDocument], schema)
+        return schema_cls(**doc_dict)
+
+    def _dict_list_to_docarray(
+        self, dict_list: Sequence[Dict[str, Any]]
+    ) -> DocumentArray:
+        """Convert a list of docs in dict type to a DocumentArray of the schema type."""
+
+        doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
+        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        return da_cls(doc_list)
