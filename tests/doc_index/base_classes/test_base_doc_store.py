@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, Type
+from typing import Any, Dict, Optional, Type, Union
 
 import numpy as np
 import pytest
@@ -131,7 +131,7 @@ def test_create_columns():
     assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
 
 
-def test_is_schema_compatible():
+def test_docs_validation():
     class OtherSimpleDoc(SimpleDoc):
         ...
 
@@ -141,81 +141,115 @@ def test_is_schema_compatible():
     class OtherNestedDoc(NestedDoc):
         ...
 
+    # SIMPLE
     store = DummyDocIndex[SimpleDoc]()
-    assert store._is_schema_compatible([SimpleDoc(tens=np.random.random((10,)))])
-    assert store._is_schema_compatible(
-        DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
-    )
-    assert store._is_schema_compatible([OtherSimpleDoc(tens=np.random.random((10,)))])
-    assert store._is_schema_compatible(
-        DocumentArray[OtherSimpleDoc]([OtherSimpleDoc(tens=np.random.random((10,)))])
-    )
-    assert not store._is_schema_compatible(
-        [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
-    )
-    assert not store._is_schema_compatible(
-        DocumentArray[FlatDoc](
-            [
-                FlatDoc(
-                    tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
-                )
-            ]
-        )
-    )
+    in_list = [SimpleDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[SimpleDoc](in_list)
+    assert store._validate_docs(in_da) == in_da
+    in_other_list = [OtherSimpleDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
+    in_other_da = DocumentArray[OtherSimpleDoc](in_other_list)
+    assert store._validate_docs(in_other_da) == in_other_da
 
-    store = DummyDocIndex[FlatDoc]()
-    assert store._is_schema_compatible(
-        [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
-    )
-    assert store._is_schema_compatible(
-        DocumentArray[FlatDoc](
+    with pytest.raises(ValueError):
+        store._validate_docs(
             [
                 FlatDoc(
                     tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
                 )
             ]
         )
+    with pytest.raises(ValueError):
+        store._validate_docs(
+            DocumentArray[FlatDoc](
+                [
+                    FlatDoc(
+                        tens_one=np.random.random((10,)),
+                        tens_two=np.random.random((50,)),
+                    )
+                ]
+            )
+        )
+
+    # FLAT
+    store = DummyDocIndex[FlatDoc]()
+    in_list = [
+        FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
+    ]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[FlatDoc](
+        [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
     )
-    assert store._is_schema_compatible(
+    assert store._validate_docs(in_da) == in_da
+    in_other_list = [
+        OtherFlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
+    ]
+    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
+    in_other_da = DocumentArray[OtherFlatDoc](
         [
             OtherFlatDoc(
                 tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
             )
         ]
     )
-    assert store._is_schema_compatible(
-        DocumentArray[OtherFlatDoc](
-            [
-                OtherFlatDoc(
-                    tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
-                )
-            ]
+    assert store._validate_docs(in_other_da) == in_other_da
+    with pytest.raises(ValueError):
+        store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
+    with pytest.raises(ValueError):
+        assert not store._validate_docs(
+            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
-    )
-    assert not store._is_schema_compatible([SimpleDoc(tens=np.random.random((10,)))])
-    assert not store._is_schema_compatible(
-        DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
-    )
 
+    # NESTED
     store = DummyDocIndex[NestedDoc]()
-    assert store._is_schema_compatible(
+    in_list = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[NestedDoc](
         [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
     )
-    assert store._is_schema_compatible(
-        DocumentArray[NestedDoc]([NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))])
-    )
-    assert store._is_schema_compatible(
+    assert store._validate_docs(in_da) == in_da
+    in_other_list = [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
+    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
+    in_other_da = DocumentArray[OtherNestedDoc](
         [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     )
-    assert store._is_schema_compatible(
-        DocumentArray[OtherNestedDoc](
-            [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
+
+    assert store._validate_docs(in_other_da) == in_other_da
+    with pytest.raises(ValueError):
+        store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
+    with pytest.raises(ValueError):
+        store._validate_docs(
+            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
-    )
-    assert not store._is_schema_compatible([SimpleDoc(tens=np.random.random((10,)))])
-    assert not store._is_schema_compatible(
-        DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
-    )
+
+
+def test_docs_validation_unions():
+    class OptionalDoc(BaseDocument):
+        tens: Optional[NdArray[10]] = Field(dim=1000)
+
+    class UnionDoc(BaseDocument):
+        tens: Union[NdArray[10], str] = Field(dim=1000)
+
+    # OPTIONAL
+    store = DummyDocIndex[SimpleDoc]()
+    in_list = [OptionalDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[OptionalDoc](in_list)
+    assert store._validate_docs(in_da) == in_da
+
+    with pytest.raises(ValueError):
+        store._validate_docs([OptionalDoc(tens=None)])
+
+    # OTHER UNION
+    store = DummyDocIndex[SimpleDoc]()
+    in_list = [UnionDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[UnionDoc](in_list)
+    assert isinstance(store._validate_docs(in_da), DocumentArray[BaseDocument])
+
+    with pytest.raises(ValueError):
+        store._validate_docs([UnionDoc(tens='hello')])
 
 
 def test_get_value():

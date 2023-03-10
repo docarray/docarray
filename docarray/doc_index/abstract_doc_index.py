@@ -22,6 +22,7 @@ from typing import (
 )
 
 import numpy as np
+from pydantic.error_wrappers import ValidationError
 from typing_inspect import is_union_type
 
 from docarray import BaseDocument, DocumentArray
@@ -386,9 +387,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
         """Index Documents into the index.
 
-        :param docs: Documents to index
+        :param docs: Documents to index. NOTE: passing a Sequence of Documents that is
+            not a DocumentArray comes at a performance penalty, since compatibility
+            with the Index's schema need to be checked for every Document individually.
         """
-        data_by_columns = self._get_col_value_dict(docs)
+        docs_validated = self._validate_docs(docs)
+        data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)  # type: ignore
 
     def find(
@@ -575,11 +579,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docs_seq: Sequence[BaseDocument] = [docs]
         else:
             docs_seq = docs
-        if not self._is_schema_compatible(docs_seq):
-            raise ValueError(
-                'The schema of the input documents is not compatible'
-                ' with the schema of the Document Index.'
-            )
 
         def _col_gen(col_name: str):
             return (self._get_values_by_column([doc], col_name)[0] for doc in docs_seq)
@@ -691,33 +690,44 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim
         )
 
-    def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
-        """Flatten a DocumentArray into a DocumentArray of the schema type."""
-        reference_schema_flat = self._flatten_schema(self._schema)
-        reference_names = [name for (name, _, _) in reference_schema_flat]
-        reference_types = [t_ for (_, t_, _) in reference_schema_flat]
-        if isinstance(docs, AnyDocumentArray):
+    def _validate_docs(
+        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
+    ) -> DocumentArray[BaseDocument]:
+        if isinstance(docs, BaseDocument):
+            docs = [docs]
+        if isinstance(docs, DocumentArray):
+            # validation shortcut for DocumentArray; only look at the schema
+            reference_schema_flat = self._flatten_schema(self._schema)
+            reference_names = [name for (name, _, _) in reference_schema_flat]
+            reference_types = [t_ for (_, t_, _) in reference_schema_flat]
+
             input_schema_flat = self._flatten_schema(docs.document_type)
             input_names = [name for (name, _, _) in input_schema_flat]
             input_types = [t_ for (_, t_, _) in input_schema_flat]
             # this could be relaxed in the future,
             # see schema translation ideas in the design doc
-            return reference_names == input_names and all(
-                issubclass(t1, t2) for (t1, t2) in zip(reference_types, input_types)
+            names_compatible = reference_names == input_names
+            types_compatible = all(
+                (not is_union_type(t2) and issubclass(t1, t2))
+                for (t1, t2) in zip(reference_types, input_types)
             )
-        else:
-            for d in docs:
-                input_schema_flat = self._flatten_schema(type(d))
-                input_names = [name for (name, _, _) in input_schema_flat]
-                input_types = [t_ for (_, t_, _) in input_schema_flat]
-                # this could be relaxed in the future,
-                # see schema translation ideas in the design doc
-                if reference_names != input_names or not all(
-                    issubclass(t1, t2) for (t1, t2) in zip(reference_types, input_types)
-                ):
-                    return False
+            if names_compatible and types_compatible:
+                return docs
+        out_docs = []
+        for i in range(len(docs)):
+            # validate the data
+            try:
+                out_docs.append(self._schema.parse_obj(docs[i]))
+            except (ValueError, ValidationError):
+                raise ValueError(
+                    'The schema of the input Documents is not compatible with the schema of the Document Index.'
+                    ' Ensure that the field names of your data match the field names of the Document Index schema,'
+                    ' and that the types of your data match the types of the Document Index schema.'
+                )
 
-            return True
+        return DocumentArray[BaseDocument](
+            out_docs
+        )  # TODO(johannes): use `construct` here to avoid validating again
 
     def _to_numpy(self, val: Any) -> Any:
         if isinstance(val, np.ndarray):

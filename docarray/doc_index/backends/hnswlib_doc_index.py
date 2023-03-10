@@ -143,9 +143,9 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         """Index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
-        doc_seq = docs if isinstance(docs, Sequence) else [docs]
-        data_by_columns = self._get_col_value_dict(doc_seq)
-        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in doc_seq)
+        docs_validated = self._validate_docs(docs)
+        data_by_columns = self._get_col_value_dict(docs_validated)
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
 
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
@@ -156,7 +156,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
-        self._send_docs_to_sqlite(doc_seq)
+        self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
