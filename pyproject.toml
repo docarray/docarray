@@ -6,7 +6,7 @@ authors=['DocArray']
 license='Apache 2.0'
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<4.0"
 pydantic = ">=1.10.2"
 numpy = ">=1.17.3"
 protobuf = { version = ">=3.19.0", optional = true }
