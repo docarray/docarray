@@ -31,6 +31,12 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
 
     @classmethod
     @abstractmethod
+    def copy(cls, tensor: 'TTensor') -> 'TTensor':
+        """return a copy of the tensor"""
+        ...
+
+    @classmethod
+    @abstractmethod
     def n_dim(cls, array: 'TTensor') -> int:
         """
         Get the number of the array dimensions.

@@ -79,3 +79,8 @@ class AbstractNumpyBasedBackend(AbstractComputationalBackend[T], ABC):
     def isnan(cls, tensor: T) -> T:
         """Check element-wise for nan and return result as a boolean array"""
         return cls._cast_output(cls._module.isnan(cls._get_tensor(tensor)))
+
+    @classmethod
+    def copy(cls, tensor: 'T') -> 'T':
+        """return a copy/clone of the tensor"""
+        return cls._cast_output(cls._module.array(cls._get_tensor(tensor), copy=True))
