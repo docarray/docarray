@@ -112,6 +112,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                     'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
                     'm': 16,
                     'ef_construction': 100,
+                    'num_candidates': 10000,
                 },
                 docarray.typing.ID: {'type': 'keyword'},
                 bool: {'type': 'boolean'},
@@ -209,16 +210,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         ...
 
-    def _find(
-        self, query: np.ndarray, search_field: str, limit: int, **kwargs
-    ) -> _FindResult:
+    def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
         knn_query = {
             'field': search_field,
             'query_vector': query,
             'k': limit,
-            'num_candidates': 10000
-            if 'num_candidates' not in kwargs
-            else kwargs['num_candidates'],
+            'num_candidates': self._runtime_config.default_column_config[np.ndarray][
+                'num_candidates'
+            ],
         }
 
         resp = self._client.search(
