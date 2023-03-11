@@ -5,6 +5,8 @@ if __pb__version__.startswith('4'):
         DocumentArrayProto,
         DocumentArrayStackedProto,
         DocumentProto,
+        ListOfAnyProto,
+        ListOfDocumentArrayProto,
         NdArrayProto,
         NodeProto,
     )
@@ -13,6 +15,8 @@ else:
         DocumentArrayProto,
         DocumentArrayStackedProto,
         DocumentProto,
+        ListOfAnyProto,
+        ListOfDocumentArrayProto,
         NdArrayProto,
         NodeProto,
     )
@@ -24,4 +28,6 @@ __all__ = [
     'NodeProto',
     'DocumentArrayStackedProto',
     'DocumentArrayProto',
+    'ListOfDocumentArrayProto',
+    'ListOfAnyProto',
 ]

@@ -8,6 +8,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    MutableSequence,
     Sequence,
     Type,
     TypeVar,
@@ -65,10 +66,10 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
                 def _property_generator(val: str):
                     def _getter(self):
-                        return self._get_array_attribute(val)
+                        return self._get_data_column(val)
 
                     def _setter(self, value):
-                        self._set_array_attribute(val, value)
+                        self._set_data_column(val, value)
 
                     # need docstring for the property
                     return property(fget=_getter, fset=_setter)
@@ -98,23 +99,11 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
         ...
 
-    @overload
-    def __setitem__(self: T, key: int, value: T_doc):
-        ...
-
-    @overload
-    def __setitem__(self: T, key: IndexIterType, value: T):
-        ...
-
     @abstractmethod
-    def __setitem__(self: T, key: Union[int, IndexIterType], value: Union[T, T_doc]):
-        ...
-
-    @abstractmethod
-    def _get_array_attribute(
+    def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[List, T, 'AbstractTensor']:
+    ) -> Union[MutableSequence, T, 'AbstractTensor']:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -124,7 +113,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     @abstractmethod
-    def _set_array_attribute(
+    def _set_data_column(
         self: T,
         field: str,
         values: Union[List, T, 'AbstractTensor'],
