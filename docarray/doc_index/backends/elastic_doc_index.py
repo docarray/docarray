@@ -36,8 +36,6 @@ from docarray.utils.misc import torch_imported
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentIndex')
 
-MAX_ES_RETURNED_DOCS = 10000
-
 ELASTIC_PY_VEC_TYPES = [list, tuple, np.ndarray]
 ELASTIC_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 if torch_imported:
@@ -85,6 +83,11 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         else:
             self._client.indices.create(index=self._index_name, mappings=mappings)
 
+        if len(self._db_config.index_settings):
+            self._client.indices.put_settings(
+                index=self._index_name, settings=self._db_config.index_settings
+            )
+
         self._refresh(self._index_name)
 
     ###############################################
@@ -100,6 +103,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         ] = 'http://localhost:9200'
         index_name: Optional[str] = None
         es_config: Dict[str, Any] = field(default_factory=dict)
+        index_settings: Dict[str, Any] = field(default_factory=dict)
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
@@ -187,19 +191,17 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 
-        for pos in range(0, len(doc_ids), MAX_ES_RETURNED_DOCS):
+        es_rows = self._client.mget(
+            index=self._index_name,
+            ids=doc_ids,  # type: ignore
+        )['docs']
 
-            es_rows = self._client.mget(
-                index=self._index_name,
-                ids=doc_ids[pos : pos + MAX_ES_RETURNED_DOCS],  # type: ignore
-            )['docs']
-
-            for row in es_rows:
-                if row['found']:
-                    doc_dict = row['_source']
-                    accumulated_docs.append(doc_dict)
-                else:
-                    accumulated_docs_id_not_found.append(row['_id'])
+        for row in es_rows:
+            if row['found']:
+                doc_dict = row['_source']
+                accumulated_docs.append(doc_dict)
+            else:
+                accumulated_docs_id_not_found.append(row['_id'])
 
         # raise warning if some ids are not found
         if accumulated_docs_id_not_found:
@@ -223,6 +225,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         resp = self._client.search(
             index=self._index_name,
             knn=knn_query,
+            size=limit,
         )
 
         docs = []
