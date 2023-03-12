@@ -1,10 +1,14 @@
 import base64
 import csv
+import glob
 import io
+import itertools
 import json
 import os
 import pathlib
 import pickle
+import random
+import re
 from abc import abstractmethod
 from contextlib import nullcontext
 from itertools import compress
@@ -44,6 +48,10 @@ ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
 ALLOWED_PROTOCOLS = ARRAY_PROTOCOLS.union(SINGLE_PROTOCOLS)
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
+AUDIO_FILE_EXTENSIONS = {'mp3'}
+VIDEO_FILE_EXTENSIONS = {'avi', 'mkv', 'mp4'}
+TEXT_FILE_EXTENSIONS = {'txt', 'text'}
+IMAGE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', '']
 
 
 def _protocol_and_compress_from_file_path(
@@ -302,6 +310,71 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         return json.dumps([doc.json() for doc in self])
 
+    def from_files(
+        patterns: Union[str, List[str]],
+        recursive: bool = True,
+        size: Optional[int] = None,
+        sampling_rate: Optional[float] = None,
+        read_mode: Optional[str] = None,
+        exclude_regex: Optional[str] = None,
+        *args,
+        **kwargs,
+    ) -> DocumentArray:
+        """Creates an iterator over a list of file path or the content of the files.
+        :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
+        :param recursive: If recursive is true, the pattern '**' will match any files
+            and zero or more directories and subdirectories
+        :param size: the maximum number of the files
+        :param sampling_rate: the sampling rate between [0, 1]
+        :param read_mode: specifies the mode in which the file is opened.
+            'r' for reading in text mode, 'rb' for reading in binary mode.
+            If `read_mode` is None, will iterate over filenames.
+        :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
+        :param exclude_regex: if set, then filenames that match to this pattern are not included.
+        :yield: file paths or binary content
+        .. note::
+            This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
+        """
+        document_array = []
+        if read_mode not in {'r', 'rb', None}:
+            raise RuntimeError(
+                f'read_mode should be "r", "rb" or None, got `{read_mode}`'
+            )
+
+        def _iter_file_exts(ps):
+            return itertools.chain.from_iterable(
+                glob.iglob(os.path.expanduser(p), recursive=recursive) for p in ps
+            )
+
+        num_docs = 0
+        if isinstance(patterns, str):
+            patterns = [patterns]
+
+        _r = None
+        if exclude_regex:
+            try:
+                _r = re.compile(exclude_regex)
+            except re.error:
+                raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+
+        for g in _iter_file_exts(patterns):
+            if os.path.isdir(g):
+                continue
+            if _r and _r.match(g):
+                continue
+            if sampling_rate is None or random.random() < sampling_rate:
+                if read_mode is None:
+                    d = BaseDocument(uri=g)
+                    document_array.append(d)
+                elif read_mode in {'r', 'rb'}:
+                    with open(g, read_mode) as fp:
+                        d = BaseDocument(content=fp.read(), uri=g)
+                        document_array.append(d)
+                num_docs += 1
+            if size is not None and num_docs >= size:
+                break
+        return DocumentArray[BaseDocument](document_array)
+
     @classmethod
     def from_csv(
         cls,
@@ -310,9 +383,9 @@ class IOMixinArray(Iterable[BaseDocument]):
         dialect: Union[str, csv.Dialect] = 'excel',
     ) -> 'DocumentArray':
         """
-        Load a DocumentArray from a csv file following the schema defined in the
+        Load a DocumentArray from a file path following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        Every row of the csv file will be mapped to one document in the array.
+        Every file of the directory file will be mapped to one document in the array.
         The column names (defined in the first row) have to match the field names
         of the Document type.
         For nested fields use "__"-separated access paths, such as 'image__url'.
