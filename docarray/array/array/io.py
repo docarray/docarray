@@ -310,7 +310,9 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         return json.dumps([doc.json() for doc in self])
 
+    @classmethod
     def from_files(
+        cls,
         patterns: Union[str, List[str]],
         recursive: bool = True,
         size: Optional[int] = None,
