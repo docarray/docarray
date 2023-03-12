@@ -48,10 +48,6 @@ ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
 ALLOWED_PROTOCOLS = ARRAY_PROTOCOLS.union(SINGLE_PROTOCOLS)
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
-AUDIO_FILE_EXTENSIONS = {'mp3'}
-VIDEO_FILE_EXTENSIONS = {'avi', 'mkv', 'mp4'}
-TEXT_FILE_EXTENSIONS = {'txt', 'text'}
-IMAGE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', '']
 
 
 def _protocol_and_compress_from_file_path(
@@ -321,7 +317,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         exclude_regex: Optional[str] = None,
         *args,
         **kwargs,
-    ) -> "DocumentArray":
+    ) -> 'DocumentArray':
         """Creates an iterator over a list of file path or the content of the files.
         :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
         :param recursive: If recursive is true, the pattern '**' will match any files
