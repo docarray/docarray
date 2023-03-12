@@ -29,9 +29,17 @@ class ImageUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+        import os
+        from urllib.parse import urlparse
+
         url = super().validate(value, field, config)  # basic url validation
-        has_image_extension = any(url.endswith(ext) for ext in IMAGE_FILE_FORMATS)
-        if not has_image_extension:
+        path = urlparse(url).path
+        ext = os.path.splitext(path)[1][1:].lower()
+
+        # pass test if extension is valid or no extension
+        has_valid_image_extension = ext in IMAGE_FILE_FORMATS or ext == ''
+
+        if not has_valid_image_extension:
             raise ValueError('Image URL must have a valid extension')
         return cls(str(url), scheme=None)
 

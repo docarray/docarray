@@ -135,9 +135,8 @@ def test_load_to_bytes(image_format, path_to_img):
     [
         *IMAGE_PATHS_WITH_EXTENSIONS,
         ('jpg', REMOTE_JPG),
-        ('illegal', 'illegal'),
-        ('illegal', 'https://www.google.com'),
         ('illegal', 'my/local/text/file.txt'),
+        ('illegal', 'my/local/text/file.mp3'),
     ],
 )
 def test_validation(image_format, path_to_img):
