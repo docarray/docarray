@@ -5,6 +5,8 @@ import orjson
 from pydantic import BaseModel, Field
 from rich.console import Console
 
+import numpy as np
+
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
@@ -97,3 +99,20 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
             for key, val in self.__dict__.items():
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
+
+    def __eq__(self, cls) -> bool:
+        for key1,key2 in zip(self.dict(),cls.dict()):
+            if key1 != key2 :
+                return False
+            if key1 == "id" and key2 == "id":
+                continue
+            value1 = self.dict()[key1]
+            value2 = cls.dict()[key2]
+            
+            if isinstance(value1, np.ndarray) and isinstance(value2, np.ndarray):
+                if not np.array_equal(value1, value2):
+                    return False
+            else:
+                if value1 != value2 :
+                    return False
+        return True
