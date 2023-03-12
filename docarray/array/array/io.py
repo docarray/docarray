@@ -321,7 +321,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         exclude_regex: Optional[str] = None,
         *args,
         **kwargs,
-    ) -> DocumentArray:
+    ) -> "DocumentArray":
         """Creates an iterator over a list of file path or the content of the files.
         :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
         :param recursive: If recursive is true, the pattern '**' will match any files
@@ -337,6 +337,8 @@ class IOMixinArray(Iterable[BaseDocument]):
         .. note::
             This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
         """
+        from docarray import DocumentArray
+
         document_array = []
         if read_mode not in {'r', 'rb', None}:
             raise RuntimeError(
