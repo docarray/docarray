@@ -383,9 +383,9 @@ class IOMixinArray(Iterable[BaseDocument]):
         dialect: Union[str, csv.Dialect] = 'excel',
     ) -> 'DocumentArray':
         """
-        Load a DocumentArray from a file path following the schema defined in the
+        Load a DocumentArray from a csv file following the schema defined in the
         :attr:`~docarray.DocumentArray.document_type` attribute.
-        Every file of the directory file will be mapped to one document in the array.
+        Every row of the csv file will be mapped to one document in the array.
         The column names (defined in the first row) have to match the field names
         of the Document type.
         For nested fields use "__"-separated access paths, such as 'image__url'.
