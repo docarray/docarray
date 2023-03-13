@@ -92,6 +92,7 @@ def test_pushpull_stream_correct(capsys):
     assert len(captured.err) == 0, 'No error should be printed when show_progress=False'
 
 
+@pytest.mark.skip(reason='Hubble memory properties unknown for now')
 def test_pull_stream_vs_pull_full():
     DA_NAME_SHORT: str = f'test{RANDOM}-pull-stream-vs-pull-full-short'
     DA_NAME_LONG: str = f'test{RANDOM}-pull-stream-vs-pull-full-long'

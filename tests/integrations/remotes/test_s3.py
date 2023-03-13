@@ -12,6 +12,8 @@ TOLERANCE_RATIO = 0.1  # Percentage of difference allowed in stream vs non-strea
 BUCKET: str = 'da-pushpull'
 RANDOM: str = uuid.uuid4().hex[:8]
 
+pytest.skip('CI has no AWS Credentials', allow_module_level=True)
+
 
 @pytest.fixture(scope='session', autouse=True)
 def testing_namespace():
