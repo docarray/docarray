@@ -1,3 +1,4 @@
+import io
 from typing import Dict, Iterator, List, Optional, Type
 
 import boto3
@@ -67,12 +68,26 @@ class PushPullS3:
         binary_stream = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
+
+        _buffer_size = 0
+        _buffer_cap = 4 * 1024 * 1024 - 1024
+        _buffer = io.BytesIO()
         # Upload to S3
         with open(f"s3://{bucket}/{name}.da", 'wb') as fout:
             while True:
                 try:
-                    fout.write(next(binary_stream))
+                    _buffer_size += _buffer.write(next(binary_stream))
+                    if _buffer_size >= _buffer_cap:
+                        print("flushing")
+                        _buffer.seek(0)
+                        fout.write(_buffer.read(_buffer_size))
+                        _buffer.seek(0)
+                        _buffer_size = 0
                 except StopIteration:
+                    _buffer.seek(0)
+                    fout.write(_buffer.read(_buffer_size))
+                    _buffer.seek(0)
+                    _buffer_size = 0
                     break
 
         return {}
