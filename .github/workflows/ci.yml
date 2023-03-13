@@ -164,6 +164,8 @@ jobs:
         run: |
           poetry run pytest -m "not (tensorflow or benchmark)" ${{ matrix.test-path }}
         timeout-minutes: 30
+        env:
+          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
 
   docarray-test-proto3:
