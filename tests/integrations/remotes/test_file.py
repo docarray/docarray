@@ -13,7 +13,7 @@ from docarray.documents import TextDoc
 from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
-TOLERANCE_BYTES = 2**10
+TOLERANCE_RATIO = 0.1  # Percentage of difference allowed in stream vs non-stream test
 
 
 def test_path_resolution():
@@ -140,10 +140,10 @@ def test_pull_stream_vs_pull_full(tmp_path: Path):
     ), 'Streamed and non-streamed pull should have similar statistics'
 
     assert (
-        abs(long_stream_peak - short_stream_peak) < TOLERANCE_BYTES
+        abs(long_stream_peak - short_stream_peak) / short_stream_peak < TOLERANCE_RATIO
     ), 'Streamed memory usage should not be dependent on the size of the data'
     assert (
-        abs(long_full_peak - short_full_peak) > TOLERANCE_BYTES
+        abs(long_full_peak - short_full_peak) / short_full_peak > TOLERANCE_RATIO
     ), 'Full pull memory usage should be dependent on the size of the data'
 
 
