@@ -200,17 +200,23 @@ class IOMixinArray(Iterable[BaseDocument]):
     ) -> Iterator[bytes]:
         from rich import filesize
 
-        from docarray.utils.progress_bar import _get_progressbar
+        if show_progress:
+            from docarray.utils.progress_bar import _get_progressbar
 
-        pbar, t = _get_progressbar(
-            'Serializing', disable=not show_progress, total=len(self)
-        )
+            pbar, t = _get_progressbar(
+                'Serializing', disable=not show_progress, total=len(self)
+            )
+        else:
+            from contextlib import nullcontext
+
+            pbar = nullcontext()
 
         yield self._stream_header
 
         with pbar:
-            _total_size = 0
-            pbar.start_task(t)
+            if show_progress:
+                _total_size = 0
+                pbar.start_task(t)
             for doc in self:
                 doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
                 len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
@@ -218,12 +224,13 @@ class IOMixinArray(Iterable[BaseDocument]):
 
                 yield all_bytes
 
-                _total_size += len(all_bytes)
-                pbar.update(
-                    t,
-                    advance=1,
-                    total_size=str(filesize.decimal(_total_size)),
-                )
+                if show_progress:
+                    _total_size += len(all_bytes)
+                    pbar.update(
+                        t,
+                        advance=1,
+                        total_size=str(filesize.decimal(_total_size)),
+                    )
 
     def to_bytes(
         self,
@@ -615,36 +622,43 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         from rich import filesize
 
-        from docarray.utils.progress_bar import _get_progressbar
-
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
-            pbar, t = _get_progressbar(
-                'Deserializing', disable=not show_progress, total=num_docs
-            )
+            if show_progress:
+                from docarray.utils.progress_bar import _get_progressbar
+
+                pbar, t = _get_progressbar(
+                    'Deserializing', disable=not show_progress, total=num_docs
+                )
+            else:
+                from contextlib import nullcontext
+
+                pbar = nullcontext()
 
             with pbar:
-                _total_size = 0
-                pbar.start_task(t)
+                if show_progress:
+                    _total_size = 0
+                    pbar.start_task(t)
                 for _ in range(num_docs):
                     # 4 bytes (uint32)
                     len_current_doc_in_bytes = int.from_bytes(
                         f.read(4), 'big', signed=False
                     )
-                    _total_size += len_current_doc_in_bytes
                     load_protocol: str = protocol
                     yield cls.document_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
                         compress=compress,
                     )
-                    pbar.update(
-                        t, advance=1, total_size=str(filesize.decimal(_total_size))
-                    )
+                    if show_progress:
+                        _total_size += len_current_doc_in_bytes
+                        pbar.update(
+                            t, advance=1, total_size=str(filesize.decimal(_total_size))
+                        )
 
     @classmethod
     def load_binary(
