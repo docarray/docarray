@@ -29,6 +29,69 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='IOMixin')
 
 
+def _type_to_protobuf(value: Any) -> 'NodeProto':
+    """Convert any type to a NodeProto
+    :param value: any object that need to be serialized
+    :return: a NodeProto
+    """
+    from docarray.proto import NodeProto
+
+    nested_item: 'NodeProto'
+    if isinstance(value, BaseNode):
+        nested_item = value._to_node_protobuf()
+
+    elif isinstance(value, str):
+        nested_item = NodeProto(text=value)
+
+    elif isinstance(value, bool):
+        nested_item = NodeProto(boolean=value)
+
+    elif isinstance(value, int):
+        nested_item = NodeProto(integer=value)
+
+    elif isinstance(value, float):
+        nested_item = NodeProto(float=value)
+
+    elif isinstance(value, bytes):
+        nested_item = NodeProto(blob=value)
+
+    elif isinstance(value, list):
+        from google.protobuf.struct_pb2 import ListValue
+
+        lvalue = ListValue()
+        for item in value:
+            lvalue.append(item)
+        nested_item = NodeProto(list=lvalue)
+
+    elif isinstance(value, set):
+        from google.protobuf.struct_pb2 import ListValue
+
+        lvalue = ListValue()
+        for item in value:
+            lvalue.append(item)
+        nested_item = NodeProto(set=lvalue)
+
+    elif isinstance(value, tuple):
+        from google.protobuf.struct_pb2 import ListValue
+
+        lvalue = ListValue()
+        for item in value:
+            lvalue.append(item)
+        nested_item = NodeProto(tuple=lvalue)
+
+    elif isinstance(value, dict):
+        from google.protobuf.struct_pb2 import Struct
+
+        struct = Struct()
+        struct.update(value)
+        nested_item = NodeProto(dict=struct)
+    elif value is None:
+        nested_item = NodeProto()
+    else:
+        raise ValueError(f'{type(value)} is not supported with protobuf')
+    return nested_item
+
+
 class IOMixin(Iterable[Tuple[str, Any]]):
     """
     IOMixin to define all the bytes/protobuf/json related part of BaseDocument
@@ -208,66 +271,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         :return: the protobuf message
         """
-        from docarray.proto import DocumentProto, NodeProto
+        from docarray.proto import DocumentProto
 
         data = {}
         for field, value in self:
             try:
-                if isinstance(value, BaseNode):
-                    nested_item = value._to_node_protobuf()
-
-                elif isinstance(value, str):
-                    nested_item = NodeProto(text=value)
-
-                elif isinstance(value, bool):
-                    nested_item = NodeProto(boolean=value)
-
-                elif isinstance(value, int):
-                    nested_item = NodeProto(integer=value)
-
-                elif isinstance(value, float):
-                    nested_item = NodeProto(float=value)
-
-                elif isinstance(value, bytes):
-                    nested_item = NodeProto(blob=value)
-
-                elif isinstance(value, list):
-                    from google.protobuf.struct_pb2 import ListValue
-
-                    lvalue = ListValue()
-                    for item in value:
-                        lvalue.append(item)
-                    nested_item = NodeProto(list=lvalue)
-
-                elif isinstance(value, set):
-                    from google.protobuf.struct_pb2 import ListValue
-
-                    lvalue = ListValue()
-                    for item in value:
-                        lvalue.append(item)
-                    nested_item = NodeProto(set=lvalue)
-
-                elif isinstance(value, tuple):
-                    from google.protobuf.struct_pb2 import ListValue
-
-                    lvalue = ListValue()
-                    for item in value:
-                        lvalue.append(item)
-                    nested_item = NodeProto(tuple=lvalue)
-
-                elif isinstance(value, dict):
-                    from google.protobuf.struct_pb2 import Struct
-
-                    struct = Struct()
-                    struct.update(value)
-                    nested_item = NodeProto(dict=struct)
-                elif value is None:
-                    nested_item = NodeProto()
-                else:
-                    raise ValueError(f'field {field} with {value} is not supported')
-
-                data[field] = nested_item
-
+                data[field] = _type_to_protobuf(value)
             except RecursionError as ex:
                 if len(ex.args) >= 1:
                     ex.args = (
@@ -276,11 +285,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                             'Could it be your Document is referring to itself?'
                         ),
                     )
-                raise
+                raise ex
             except Exception as ex:
                 if len(ex.args) >= 1:
                     ex.args = (f'Field `{field}` is problematic',) + ex.args
-                raise
+                raise ex
 
         return DocumentProto(data=data)
 

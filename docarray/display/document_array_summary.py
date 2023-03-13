@@ -54,16 +54,17 @@ class DocumentArraySummary:
         self.da.document_type.schema_summary()
 
     @staticmethod
-    def _get_stacked_fields(da: 'DocumentArrayStacked') -> List[str]:
+    def _get_stacked_fields(da: 'DocumentArrayStacked') -> List[str]:  # TODO this might
+        # broken
         """
         Return a list of the field names of a DocumentArrayStacked instance that are
         stacked, i.e. all the fields that are of type AbstractTensor. Nested field
         paths are separated by dot, such as: 'attr.nested_attr'.
         """
         fields = []
-        for field_name, value_tens in da._tensor_columns.items():
+        for field_name, value_tens in da._storage.tensor_columns.items():
             fields.append(field_name)
-        for field_name, value_doc in da._doc_columns.items():
+        for field_name, value_doc in da._storage.doc_columns.items():
             fields.extend(
                 [
                     f'{field_name}.{x}'
