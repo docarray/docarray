@@ -308,7 +308,7 @@ class IOMixinArray(Iterable[BaseDocument]):
 
     @classmethod
     def from_files(
-        cls,
+        cls: Type[T],
         patterns: Union[str, List[str]],
         recursive: bool = True,
         size: Optional[int] = None,
@@ -317,7 +317,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         exclude_regex: Optional[str] = None,
         *args,
         **kwargs,
-    ) -> 'DocumentArray':
+    ) -> T:
         """Creates an iterator over a list of file path or the content of the files.
         :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
         :param recursive: If recursive is true, the pattern '**' will match any files
@@ -327,17 +327,14 @@ class IOMixinArray(Iterable[BaseDocument]):
         :param read_mode: specifies the mode in which the file is opened.
             'r' for reading in text mode, 'rb' for reading in binary mode.
             If `read_mode` is None, will iterate over filenames.
-        :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
         :param exclude_regex: if set, then filenames that match to this pattern are not included.
         :yield: file paths or binary content
         .. note::
             This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
         """
-        from docarray import DocumentArray
-
         document_array = []
         if read_mode not in {'r', 'rb', None}:
-            raise RuntimeError(
+            raise ValueError(
                 f'read_mode should be "r", "rb" or None, got `{read_mode}`'
             )
 
@@ -354,8 +351,10 @@ class IOMixinArray(Iterable[BaseDocument]):
         if exclude_regex:
             try:
                 _r = re.compile(exclude_regex)
-            except re.error:
-                raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+            except re.error as err:
+                raise ValueError(
+                    f'`{exclude_regex}` is not a valid regex. regeex error {err.msg}'
+                )
 
         for g in _iter_file_exts(patterns):
             if os.path.isdir(g):
@@ -373,7 +372,7 @@ class IOMixinArray(Iterable[BaseDocument]):
                 num_docs += 1
             if size is not None and num_docs >= size:
                 break
-        return DocumentArray[BaseDocument](document_array)
+        return cls(document_array)
 
     @classmethod
     def from_csv(
