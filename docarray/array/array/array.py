@@ -57,7 +57,6 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
-
 class DocumentArray(
     IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]
 ):
