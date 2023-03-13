@@ -1,4 +1,6 @@
 import io
+import logging
+from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Type
 
 import boto3
@@ -6,10 +8,36 @@ import botocore
 from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
+from docarray.array.array.pushpull import __cache_path__
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
+
+
+class _BufferedCachingReader:
+    """A buffered reader that writes to a cache file while reading."""
+
+    def __init__(
+        self, iter_bytes: io.BufferedReader, cache_path: Optional['Path'] = None
+    ):
+        self._data = iter_bytes
+        self._cache = None
+        if cache_path:
+            self._cache_path = cache_path.with_suffix('.tmp')
+            self._cache = open(self._cache_path, 'wb')
+        self.closed = False
+
+    def read(self, size: Optional[int] = -1) -> bytes:
+        bytes = self._data.read(size)
+        if self._cache:
+            self._cache.write(bytes)
+        return bytes
+
+    def close(self):
+        if not self.closed and self._cache:
+            self._cache_path.rename(self._cache_path.with_suffix('.da'))
+            self._cache.close()
 
 
 class PushPullS3:
@@ -87,6 +115,9 @@ class PushPullS3:
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        if branding is not None:
+            logging.warning("Branding is not supported for S3 push")
+
         bucket, name = name.split('/', 1)
         binary_stream = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
@@ -137,7 +168,24 @@ class PushPullS3:
     ) -> Iterator['BaseDocument']:
         bucket, name = name.split('/', 1)
 
-        source = open(f"s3://{bucket}/{name}.da", 'rb')
+        save_name = name.replace('/', '_')
+        cache_path = __cache_path__ / f'{save_name}.da'
+
+        source = _BufferedCachingReader(
+            open(f"s3://{bucket}/{name}.da", 'rb'),
+            cache_path=cache_path if local_cache else None,
+        )
+
+        if local_cache:
+            if cache_path.exists():
+                object_header = boto3.client('s3').head_object(
+                    Bucket=bucket, Key=name + '.da'
+                )
+                if cache_path.stat().st_size == object_header['ContentLength']:
+                    logging.info(
+                        f'Using cached file for {name} (size: {cache_path.stat().st_size})'
+                    )
+                    source = open(cache_path, 'rb')
 
         return _from_binary_stream(
             cls.document_type,

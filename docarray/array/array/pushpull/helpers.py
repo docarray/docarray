@@ -1,17 +1,7 @@
 # It is usually a bad idea to have a helper file because it means we don't know where to put the code (or haven't put much thought into it).
 # With that said, rules are meant to be broken, we will live with this for now.
 from contextlib import nullcontext
-from typing import (
-    BinaryIO,
-    Dict,
-    Iterable,
-    Iterator,
-    NoReturn,
-    Optional,
-    Sequence,
-    Type,
-    TypeVar,
-)
+from typing import Dict, Iterable, Iterator, NoReturn, Optional, Sequence, Type, TypeVar
 
 from rich import filesize
 from typing_extensions import TYPE_CHECKING, Protocol
@@ -128,6 +118,14 @@ class Streamable(Protocol):
         ...
 
 
+class ReadableBytes(Protocol):
+    def read(self, size: int = -1) -> bytes:
+        ...
+
+    def close(self):
+        ...
+
+
 def _to_binary_stream(
     iterator: Iterator['Streamable'],
     total: Optional[int] = None,
@@ -167,7 +165,7 @@ T = TypeVar('T', bound=Streamable)
 
 def _from_binary_stream(
     cls: Type[T],
-    stream: BinaryIO,
+    stream: ReadableBytes,
     total: Optional[int] = None,
     protocol: str = 'protobuf',
     compress: Optional[str] = None,
