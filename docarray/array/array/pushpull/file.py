@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Type
 
@@ -98,6 +99,9 @@ class PushPullFile:
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        if branding is not None:
+            logging.warning('branding is not supported for "file" protocol')
+
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
@@ -133,6 +137,9 @@ class PushPullFile:
         show_progress: bool,
         local_cache: bool,
     ) -> Iterator['BaseDocument']:
+        if local_cache:
+            logging.warning('local_cache is not supported for "file" protocol')
+
         path = PushPullFile._abs_filepath(name).with_suffix('.da')
         source = open(path, 'rb')
         return _from_binary_stream(

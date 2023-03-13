@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Type, Union
@@ -71,7 +72,8 @@ class PushPullJAC(PushPullLike):
         :param show_table: if true, show the table of the arrays.
         :returns: List of available DocumentArray's names.
         """
-        # TODO: Use the namespace
+        if len(namespace) > 0:
+            logging.warning('Namespace is not supported for Jina AI Cloud.')
         from rich import print
 
         result = []
@@ -221,6 +223,8 @@ class PushPullJAC(PushPullLike):
 
         # TODO: This is a temporary solution to push a stream of documents
         # The memory footprint is not ideal
+        # But it must be done this way for now because Hubble expects to know the length of the DocumentArray
+        # before it starts receiving the documents
         first_doc = next(docs)
         da = DocumentArray[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
