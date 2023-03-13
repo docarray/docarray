@@ -1,5 +1,6 @@
 # It is usually a bad idea to have a helper file because it means we don't know where to put the code (or haven't put much thought into it).
 # With that said, rules are meant to be broken, we will live with this for now.
+from contextlib import nullcontext
 from typing import (
     BinaryIO,
     Dict,
@@ -12,7 +13,10 @@ from typing import (
     TypeVar,
 )
 
+from rich import filesize
 from typing_extensions import TYPE_CHECKING, Protocol
+
+from docarray.utils.progress_bar import _get_progressbar
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -126,26 +130,35 @@ class Streamable(Protocol):
 
 def _to_binary_stream(
     iterator: Iterator['Streamable'],
+    total: Optional[int] = None,
     protocol: str = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator[bytes]:
-    # TODO: Get a progress bar with no total
-    # We dont know the total in the streaming scenario
+
     if show_progress:
-        print("Whoops no progress bar for streaming yet")
-        print("Here is a cookie instead 🍪")
-        # pbar, t = _get_progressbar(
-        #'Serializing', disable=not show_progress, total=total
-        # )
+        pbar, t = _get_progressbar(
+            'Serializing', disable=not show_progress, total=total
+        )
+    else:
+        pbar = nullcontext()
 
-    for item in iterator:
-        item_bytes = item.to_bytes(protocol=protocol, compress=compress)
-        len_item_as_bytes = len(item_bytes).to_bytes(4, 'big', signed=False)
-        all_bytes = len_item_as_bytes + item_bytes
-        yield all_bytes
+    with pbar:
+        if show_progress:
+            _total_size = 0
+            count = 0
+            pbar.start_task(t)
+        for item in iterator:
+            item_bytes = item.to_bytes(protocol=protocol, compress=compress)
+            len_item_as_bytes = len(item_bytes).to_bytes(4, 'big', signed=False)
+            all_bytes = len_item_as_bytes + item_bytes
+            yield all_bytes
 
-    # TODO: Yield some information in the postamble
+            if show_progress:
+                _total_size += len(all_bytes)
+                count += 1
+                pbar.update(t, advance=1, total_size=str(filesize.decimal(_total_size)))
+
     yield int(0).to_bytes(4, 'big', signed=False)
 
 
@@ -155,28 +168,38 @@ T = TypeVar('T', bound=Streamable)
 def _from_binary_stream(
     cls: Type[T],
     stream: BinaryIO,
+    total: Optional[int] = None,
     protocol: str = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator['T']:
-    # TODO: Get a progress bar with no total
-    # We dont know the total in the streaming scenario
+
     if show_progress:
-        print("Whoops no progress bar for streaming yet")
-        print("Here is a cookie instead 🍪")
-        # pbar, t = _get_progressbar(
-        #'Serializing', disable=not show_progress, total=total
-        # )
-    while True:
-        len_bytes = stream.read(4)
-        if len(len_bytes) < 4:
-            raise ValueError('Unexpected end of stream')
-        len_item = int.from_bytes(len_bytes, 'big', signed=False)
-        if len_item == 0:
-            break
-        item_bytes = stream.read(len_item)
-        if len(item_bytes) < len_item:
-            raise ValueError('Unexpected end of stream')
-        item = cls.from_bytes(item_bytes, protocol=protocol, compress=compress)
-        yield item
-    stream.close()
+        pbar, t = _get_progressbar(
+            'Deserializing', disable=not show_progress, total=total
+        )
+    else:
+        pbar = nullcontext()
+
+    with pbar:
+        if show_progress:
+            _total_size = 0
+            pbar.start_task(t)
+        while True:
+            len_bytes = stream.read(4)
+            if len(len_bytes) < 4:
+                raise ValueError('Unexpected end of stream')
+            len_item = int.from_bytes(len_bytes, 'big', signed=False)
+            if len_item == 0:
+                break
+            item_bytes = stream.read(len_item)
+            if len(item_bytes) < len_item:
+                raise ValueError('Unexpected end of stream')
+            item = cls.from_bytes(item_bytes, protocol=protocol, compress=compress)
+
+            yield item
+
+            if show_progress:
+                _total_size += len_item + 4
+                pbar.update(t, advance=1, total_size=str(filesize.decimal(_total_size)))
+        stream.close()
