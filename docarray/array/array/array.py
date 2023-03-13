@@ -129,7 +129,7 @@ class DocumentArray(
     ):
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
         self.tensor_type = tensor_type
-
+ 
     @classmethod
     def construct(
         cls: Type[T],
@@ -147,6 +147,10 @@ class DocumentArray(
         da._data = docs if isinstance(docs, list) else list(docs)
         da.tensor_type = tensor_type
         return da
+    
+    def __eq__(self,other:Any)-> bool :
+        if isinstance(other.__len__(), int):
+            return self.__len__() == other.__len__()
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
