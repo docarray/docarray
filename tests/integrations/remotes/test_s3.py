@@ -19,7 +19,7 @@ RANDOM: str = uuid.uuid4().hex[:8]
 def minio_container():
     file_dir = os.path.dirname(__file__)
     os.system(
-        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} up minio -d --remove-orphans"
+        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} up -d --remove-orphans minio"
     )
     time.sleep(1)
     yield
