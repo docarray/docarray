@@ -1,6 +1,7 @@
 import logging
+from abc import abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Sequence, Type
+from typing import TYPE_CHECKING, Dict, Iterable, Iterator, List, Optional, Type
 
 from typing_extensions import Protocol
 
@@ -64,11 +65,15 @@ class PushPullLike(Protocol):
         ...
 
 
-class PushPullMixin(Sequence['BaseDocument']):
+class PushPullMixin(Iterable['BaseDocument']):
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     __backends__: Dict[str, PushPullLike] = {}
     document_type: Type['BaseDocument']
+
+    @abstractmethod
+    def __len__(self) -> int:
+        ...
 
     @classmethod
     def get_backend(cls, protocol: str) -> PushPullLike:
