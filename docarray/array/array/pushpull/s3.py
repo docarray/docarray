@@ -101,7 +101,6 @@ class PushPullS3:
                 try:
                     _buffer_size += _buffer.write(next(binary_stream))
                     if _buffer_size >= _buffer_cap:
-                        print("flushing")
                         _buffer.seek(0)
                         fout.write(_buffer.read(_buffer_size))
                         _buffer.seek(0)
@@ -138,9 +137,11 @@ class PushPullS3:
     ) -> Iterator['BaseDocument']:
         bucket, name = name.split('/', 1)
 
+        source = open(f"s3://{bucket}/{name}.da", 'rb')
+
         return _from_binary_stream(
             cls.document_type,
-            open(f"s3://{bucket}/{name}.da", 'rb'),
+            source,
             protocol='protobuf',
             compress='gzip',
             show_progress=show_progress,

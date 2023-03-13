@@ -1,4 +1,6 @@
 import multiprocessing as mp
+import os
+import time
 import uuid
 
 import pytest
@@ -12,17 +14,54 @@ TOLERANCE_RATIO = 0.1  # Percentage of difference allowed in stream vs non-strea
 BUCKET: str = 'da-pushpull'
 RANDOM: str = uuid.uuid4().hex[:8]
 
-pytest.skip('CI has no AWS Credentials', allow_module_level=True)
+
+@pytest.fixture(scope="session")
+def minio_container():
+    file_dir = os.path.dirname(__file__)
+    os.system(
+        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} up minio -d --remove-orphans"
+    )
+    time.sleep(1)
+    yield
+    os.system(
+        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} down --remove-orphans"
+    )
 
 
 @pytest.fixture(scope='session', autouse=True)
-def testing_namespace():
-    yield
+def testing_bucket(minio_container):
     import boto3
+    from botocore.client import Config
 
+    boto3.Session.resource.__defaults__ = (
+        "us-east-1",
+        None,
+        False,
+        None,
+        "http://localhost:9005",
+        "minioadmin",
+        "minioadmin",
+        None,
+        Config(signature_version="s3v4"),
+    )
+    boto3.Session.client.__defaults__ = (
+        "us-east-1",
+        None,
+        False,
+        None,
+        "http://localhost:9005",
+        "minioadmin",
+        "minioadmin",
+        None,
+        Config(signature_version="s3v4"),
+    )
+    # make a bucket
     s3 = boto3.resource('s3')
-    bucket = s3.Bucket(BUCKET)
-    bucket.objects.filter(Prefix=f'test{RANDOM}').delete()
+    s3.create_bucket(Bucket=BUCKET)
+
+    yield
+    s3.Bucket(BUCKET).objects.all().delete()
+    s3.Bucket(BUCKET).delete()
 
 
 def test_pushpull_correct(capsys):
