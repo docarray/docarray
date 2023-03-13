@@ -4,7 +4,7 @@ from pydantic import create_model, create_model_from_typeddict
 from pydantic.config import BaseConfig
 from typing_extensions import TypedDict
 
-from docarray import BaseDocument
+from docarray.base_document import BaseDocument
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
@@ -117,4 +117,25 @@ def create_from_typeddict(
 
     doc = create_model_from_typeddict(typeddict_cls, **kwargs)
 
+    return doc
+
+def create_from_dict(
+    data: Dict[str,Any],  # type: ignore
+    **kwargs: Any,
+):
+    if '__base__' in kwargs:
+        if not issubclass(kwargs['__base__'], BaseDocument):
+            raise ValueError(
+                f'{kwargs["__base__"]} is not a BaseDocument or its subclass'
+            )
+    else:
+        kwargs['__base__'] = BaseDocument
+    typed_dict_fields = {}
+    for key, value in data.items():
+        field_type = type(value)
+        typed_dict_fields[key] = field_type
+        print(typed_dict_fields[key])
+    
+    GeneratedTypedDict = TypedDict('GeneratedTypedDict', typed_dict_fields)
+    doc = create_model_from_typeddict(GeneratedTypedDict, **kwargs)
     return doc
