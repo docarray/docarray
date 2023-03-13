@@ -21,11 +21,34 @@ class PushPullS3:
         s3 = boto3.resource('s3')
         s3_bucket = s3.Bucket(bucket)
         da_files = [
-            obj.key
+            obj
             for obj in s3_bucket.objects.all()
             if obj.key.startswith(namespace) and obj.key.endswith('.da')
         ]
-        da_names = [f.split('/')[-1].split('.')[0] for f in da_files]
+        da_names = [f.key.split('/')[-1].split('.')[0] for f in da_files]
+
+        if show_table:
+            from rich import box, filesize
+            from rich.console import Console
+            from rich.table import Table
+
+            table = Table(
+                title=f'You have {len(da_files)} DocumentArrays in bucket s3://{bucket} under the namespace "{namespace}"',
+                box=box.SIMPLE,
+                highlight=True,
+            )
+            table.add_column('Name')
+            table.add_column('Last Modified', justify='center')
+            table.add_column('Size')
+
+            for da_name, da_file in zip(da_names, da_files):
+                table.add_row(
+                    da_name,
+                    str(da_file.last_modified),
+                    str(filesize.decimal(da_file.size)),
+                )
+
+            Console().print(table)
         return da_names
 
     @staticmethod

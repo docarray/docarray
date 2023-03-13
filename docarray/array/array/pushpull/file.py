@@ -36,10 +36,30 @@ class PushPullFile:
             raise FileNotFoundError(f'Directory {namespace} does not exist')
         da_files = [dafile for dafile in namespace_dir.glob('*.da')]
 
-        # TODO: Make nicer
         if show_table:
-            print('Name', 'Size', 'Last Modified', sep='\t\t')
-            print(*map(lambda x: f'{x.stem}\t{x.stat().st_size}', da_files), sep='\n')
+            from datetime import datetime
+
+            from rich import box, filesize
+            from rich.console import Console
+            from rich.table import Table
+
+            table = Table(
+                title=f'You have {len(da_files)} DocumentArrays in file://{namespace_dir}',
+                box=box.SIMPLE,
+                highlight=True,
+            )
+            table.add_column('Name')
+            table.add_column('Last Modified', justify='center')
+            table.add_column('Size')
+
+            for da_file in da_files:
+                table.add_row(
+                    da_file.stem,
+                    str(datetime.fromtimestamp(int(da_file.stat().st_ctime))),
+                    str(filesize.decimal(da_file.stat().st_size)),
+                )
+
+            Console().print(table)
 
         return [dafile.stem for dafile in da_files]
 
