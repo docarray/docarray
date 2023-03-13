@@ -106,9 +106,10 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 return False
             if key1 == "id" and key2 == "id":
                 continue
+            
             value1 = self.dict()[key1]
             value2 = cls.dict()[key2]
-            
+
             if isinstance(value1, np.ndarray) and isinstance(value2, np.ndarray):
                 if not np.array_equal(value1, value2):
                     return False
@@ -116,3 +117,6 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 if value1 != value2 :
                     return False
         return True
+    
+    def __ne__(self,cls) -> bool:
+        return not (self == cls)

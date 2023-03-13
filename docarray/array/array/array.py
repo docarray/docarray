@@ -1,4 +1,5 @@
 import io
+import numpy as np
 from functools import wraps
 from typing import (
     TYPE_CHECKING,
@@ -148,10 +149,13 @@ class DocumentArray(
         da.tensor_type = tensor_type
         return da
     
-    def __eq__(self,other:Any)-> bool :
-        if isinstance(other.__len__(), int):
-            return self.__len__() == other.__len__()
-
+    def __eq__(self, other : Any) -> bool:
+        if self.__len__() != other.__len__() :
+            return False
+        for value_1, value_2 in zip(self._data(), other._data()):
+            if value_1 != value_2:
+                return False
+        
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
         Validate if an Iterable of Document are compatible with this DocumentArray
