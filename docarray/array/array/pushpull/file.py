@@ -89,13 +89,12 @@ class PushPullFile:
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        """Push this DocumentArray object to the specified url.
+        """Push this DocumentArray object to the specified file path.
 
         :param name: The file path to push to.
-        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
-            Setting this to false will restrict access to only the creator.
+        :param public: Not used by the ``file`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
+        :param branding: Not used by the ``file`` protocol.
         """
         return PushPullFile.push_stream(iter(da), name, public, show_progress, branding)
 
@@ -165,7 +164,7 @@ class PushPullFile:
 
         :param name: The file path to pull from.
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocumentArray to local folder
+        :param local_cache: Not used by the ``file`` protocol.
         :return: Iterator of Documents
         """
 

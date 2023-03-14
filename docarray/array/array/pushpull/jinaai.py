@@ -69,6 +69,7 @@ class PushPullJAC(PushPullLike):
     def list(namespace: str, show_table: bool = False) -> List[str]:
         """List all available arrays in the cloud.
 
+        :param namespace: Not supported for Jina AI Cloud.
         :param show_table: if true, show the table of the arrays.
         :returns: List of available DocumentArray's names.
         """
@@ -116,6 +117,8 @@ class PushPullJAC(PushPullLike):
         """
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
+        :param missing_ok: if true, do not raise an error if the DocumentArray does not exist.
+        :return: True if the DocumentArray was deleted, False if it did not exist.
         """
         try:
             HubbleClient(jsonify=True).delete_artifact(name=name)
@@ -135,7 +138,7 @@ class PushPullJAC(PushPullLike):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocumentArray object to Jina AI Cloud which can be later retrieved via :meth:`.push`
+        """Push this DocumentArray object to Jina AI Cloud
 
         .. note::
             - Push with the same ``name`` will override the existing content.
@@ -148,7 +151,7 @@ class PushPullJAC(PushPullLike):
         :param public: By default, anyone can pull a DocumentArray if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
+        :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
         """
         import requests
         import urllib3
@@ -219,9 +222,24 @@ class PushPullJAC(PushPullLike):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        """Push a stream of documents to Jina AI Cloud
+
+        .. note::
+            - Push with the same ``name`` will override the existing content.
+            - Kinda like a public clipboard where everyone can override anyone's content.
+              So to make your content survive longer, you may want to use longer & more complicated name.
+            - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
+              persistence. Only use this full temporary transmission/storage/clipboard.
+
+        :param name: A name that can later be used to retrieve this :class:`DocumentArray`.
+        :param public: By default, anyone can pull a DocumentArray if they know its name.
+            Setting this to false will restrict access to only the creator.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
+        """
         from docarray import DocumentArray
 
-        # TODO: This is a temporary solution to push a stream of documents
+        # This is a temporary solution to push a stream of documents
         # The memory footprint is not ideal
         # But it must be done this way for now because Hubble expects to know the length of the DocumentArray
         # before it starts receiving the documents
@@ -238,7 +256,7 @@ class PushPullJAC(PushPullLike):
         name: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ):
+    ) -> 'DocumentArray':
         """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
@@ -259,13 +277,13 @@ class PushPullJAC(PushPullLike):
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
-    ):
+    ) -> Iterator['BaseDocument']:
         """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
         :param show_progress: if true, display a progress bar.
         :param local_cache: store the downloaded DocumentArray to local folder
-        :return: a :class:`DocumentArray` object
+        :return: An iterator of Documents
         """
         import requests
 

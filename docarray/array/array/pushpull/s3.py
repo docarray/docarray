@@ -45,6 +45,12 @@ class PushPullS3:
 
     @staticmethod
     def list(namespace: str, show_table: bool = False) -> List[str]:
+        """List all DocumentArrays in the specified bucket and namespace.
+
+        :param namespace: The bucket and namespace to list. e.g. my_bucket/my_namespace
+        :param show_table: If true, a rich table will be printed to the console.
+        :return: A list of DocumentArray names.
+        """
         bucket, namespace = namespace.split('/', 1)
         s3 = boto3.resource('s3')
         s3_bucket = s3.Bucket(bucket)
@@ -81,6 +87,12 @@ class PushPullS3:
 
     @staticmethod
     def delete(name: str, missing_ok: bool = True) -> bool:
+        """Delete the DocumentArray object at the specified bucket and key.
+
+        :param name: The bucket and key to delete. e.g. my_bucket/my_key
+        :param missing_ok: If true, no error will be raised if the object does not exist.
+        :return: True if the object was deleted, False if it did not exist.
+        """
         bucket, name = name.split('/', 1)
         s3 = boto3.resource('s3')
         object = s3.Object(bucket, name + '.da')
@@ -105,6 +117,14 @@ class PushPullS3:
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        """Push this DocumentArray object to the specified bucket and key.
+
+        :param docs: a stream of documents
+        :param name: The bucket and key to push to. e.g. my_bucket/my_key
+        :param public: Not used by the ``s3`` protocol.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: Not used by the ``s3`` protocol.
+        """
         return PushPullS3.push_stream(iter(da), name, public, show_progress, branding)
 
     @staticmethod
@@ -115,6 +135,14 @@ class PushPullS3:
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        """Push a stream of documents to the specified bucket and key.
+
+        :param docs: a stream of documents
+        :param name: The bucket and key to push to. e.g. my_bucket/my_key
+        :param public: Not used by the ``s3`` protocol.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: Not used by the ``s3`` protocol.
+        """
         if branding is not None:
             logging.warning("Branding is not supported for S3 push")
 
@@ -145,6 +173,13 @@ class PushPullS3:
         show_progress: bool = False,
         local_cache: bool = False,
     ) -> 'DocumentArray':
+        """Pull a :class:`DocumentArray` from the specified bucket and key.
+
+        :param name: The bucket and key to pull from. e.g. my_bucket/my_key
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local cache
+        :return: a :class:`DocumentArray` object
+        """
         da = cls(  # type: ignore
             PushPullS3.pull_stream(
                 cls, name, show_progress=show_progress, local_cache=local_cache
@@ -159,6 +194,15 @@ class PushPullS3:
         show_progress: bool,
         local_cache: bool,
     ) -> Iterator['BaseDocument']:
+        """Pull a stream of Documents from the specified name.
+        Name is expected to be in the format of bucket/key.
+
+        :param name: The bucket and key to pull from. e.g. my_bucket/my_key
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local cache
+        :return: An iterator of Documents
+        """
+
         bucket, name = name.split('/', 1)
 
         save_name = name.replace('/', '_')
