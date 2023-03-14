@@ -103,6 +103,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             tensor: TensorFlowTensor
             image_tensor: TensorFlowTensor[3, 224, 224]
             square_crop: TensorFlowTensor[3, 'x', 'x']
+            random_image: TensorFlowTensor[3, ...] # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors
@@ -110,6 +111,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             tensor=tf.zeros((128,)),
             image_tensor=tf.zeros((3, 224, 224)),
             square_crop=tf.zeros((3, 64, 64)),
+            random_image=tf.zeros(3, 128, 256),
         )
 
         # automatic shape conversion
@@ -117,6 +119,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             tensor=tf.zeros((128,)),
             image_tensor=tf.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
             square_crop=tf.zeros((3, 128, 128)),
+            random_image=tf.zeros(3, 64, 128),
         )
 
         # !! The following will raise an error due to shape mismatch !!
@@ -124,6 +127,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             tensor=tf.zeros((128,)),
             image_tensor=tf.zeros((224, 224)),  # this will fail validation
             square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
+            random_image=tf.zeros(4, 64, 128),  # this will also fail validation
         )
 
     """

@@ -59,13 +59,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             arr: NdArray
             image_arr: NdArray[3, 224, 224]
             square_crop: NdArray[3, 'x', 'x']
-
+            random_image: NdArray[3, ...] # first dimension is fixed, can have arbitrary shape
 
         # create a document with tensors
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((3, 224, 224)),
             square_crop=np.zeros((3, 64, 64)),
+            random_image=np.zeros(3, 128, 256),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -74,6 +75,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
             square_crop=np.zeros((3, 128, 128)),
+            random_image=np.zeros(3, 64, 128),
         )
         assert doc.image_arr.shape == (3, 224, 224)
 
@@ -82,6 +84,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224)),  # this will fail validation
             square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
+            random_image=np.zeros(4, 64, 128),  # this will also fail validation
         )
     """
 
