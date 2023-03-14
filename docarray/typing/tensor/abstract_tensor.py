@@ -101,7 +101,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         return NodeProto(ndarray=nd_proto, type=self._proto_type_name)
 
     @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str], ...]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
         It is called when a tensor is assigned to a field of this type.
