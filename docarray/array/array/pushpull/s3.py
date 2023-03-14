@@ -124,7 +124,12 @@ class PushPullS3:
         )
 
         # Upload to S3
-        with open(f"s3://{bucket}/{name}.da", 'wb', compression='.gz') as fout:
+        with open(
+            f"s3://{bucket}/{name}.da",
+            'wb',
+            compression='.gz',
+            transport_params={'multipart_upload': False},
+        ) as fout:
             while True:
                 try:
                     fout.write(next(binary_stream))
