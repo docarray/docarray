@@ -1,5 +1,16 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, Generic, List, Sequence, Type, TypeVar, Union, cast
+from typing import (
+    Any,
+    Dict,
+    Generator,
+    Generic,
+    List,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import weaviate
@@ -112,8 +123,42 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
         return super()._get_items(doc_ids)
 
-    def _index(self, docs: Sequence[TSchema]):
-        return super()._index(docs)
+    def _parse_document(self, document: Dict):
+        doc = document.copy()
+
+        # rewrite the id to __id
+        document_id = doc.pop('id')
+        doc['__id'] = document_id
+
+        # TODO: find better way to get the vector column
+        # find the vector column
+        vector_column = None
+        for k, v in doc.items():
+            if isinstance(v, np.ndarray):
+                vector_column = k
+                break
+
+        assert vector_column is not None, 'No vector column found'
+        vector = doc.pop(vector_column)
+        doc["embeddings"] = vector
+
+        return doc
+
+    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        docs = self._transpose_col_value_dict(column_to_data)
+        index_name = self._db_config.index_name
+
+        with self._client.batch as batch:
+            for doc in docs:
+                parsed_doc = self._parse_document(doc)
+                embeddings = parsed_doc.pop('embeddings')
+
+                batch.add_data_object(
+                    uuid=weaviate.util.generate_uuid5(parsed_doc, index_name),
+                    data_object=parsed_doc,
+                    class_name=index_name,
+                    vector=embeddings,
+                )
 
     def _text_search(self, query: str, search_field: str, limit: int) -> _FindResult:
         return super()._text_search(query, search_field, limit)
@@ -127,7 +172,12 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return super().execute_query(query, *args, **kwargs)
 
     def num_docs(self) -> int:
-        return super().num_docs()
+        index_name = self._db_config.index_name
+        result = self._client.query.aggregate(index_name).with_meta_count().do()
+
+        total_docs = result["data"]["Aggregate"][index_name][0]["meta"]["count"]
+
+        return total_docs
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
