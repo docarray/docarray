@@ -2,7 +2,9 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Generic, List, Sequence, Type, TypeVar, Union, cast
 
 import numpy as np
+import weaviate
 
+import docarray
 from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import BaseDocumentIndex, _FindResultBatched
 from docarray.utils.find import FindResult, _FindResult
@@ -10,21 +12,6 @@ from docarray.utils.find import FindResult, _FindResult
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='WeaviateDocumentIndex')
 
-DEFAULT_SCHEMA = {
-    "class": "Document",
-    "properties": [
-        {
-            "name": "document_id",
-            "dataType": ["string"],
-            "description": "The unique identifier of the document.",
-        },
-        {
-            "name": "text",
-            "dataType": ["text"],
-            "description": "The text of the document.",
-        },
-    ],
-}
 
 DEFAULT_BATCH_CONFIG = {
     "batch_size": 20,
@@ -33,18 +20,72 @@ DEFAULT_BATCH_CONFIG = {
     "num_workers": 1,
 }
 
+# TODO: add more types
+# see https://weaviate.io/developers/weaviate/configuration/datatypes
+WEAVIATE_PY_VEC_TYPES = [list, tuple, np.ndarray]
+WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
+
 
 class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
 
+        self._client = weaviate.Client(self._db_config.host)
+        self._configure_client()
+        self._create_schema()
+
+    def _configure_client(self):
+        self._client.batch.configure(**self._db_config.batch_config)
+
+    def _create_schema(self):
+        schema = {}
+
+        properties = []
+        column_infos = self._column_infos
+
+        for column_name, column_info in column_infos.items():
+            # in weaviate, we do not create a property for the vector
+            if column_info.db_type == np.ndarray:
+                continue
+            prop = {
+                "name": column_name
+                if column_name != 'id'
+                else '__id',  # in weaviate, id and _id is a reserved keyword
+                "dataType": column_info.config["dataType"],
+            }
+            properties.append(prop)
+
+        # TODO: What is the best way to specify other config that is part of schema?
+        # e.g. invertedIndexConfig, shardingConfig, moduleConfig, vectorIndexConfig
+        schema["properties"] = properties
+        schema["class"] = self._db_config.index_name
+
+        self._client.schema.create_class(schema)
+
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
         host: str = 'http://weaviate:8080'
-        schema: Dict[str, Any] = field(default_factory=lambda: DEFAULT_SCHEMA)
+        index_name: str = 'Document'
         batch_config: Dict[str, Any] = field(
             default_factory=lambda: DEFAULT_BATCH_CONFIG
+        )
+
+    @dataclass
+    class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+        default_column_config: Dict[Type, Dict[str, Any]] = field(
+            default_factory=lambda: {
+                np.ndarray: {
+                    'dataType': ['number[]'],
+                },
+                docarray.typing.ID: {'dataType': ['string']},
+                bool: {'dataType': ['boolean']},
+                int: {'dataType': ['int']},
+                float: {'dataType': ['number']},
+                str: {'dataType': ['text']},
+                # `None` is not a Type, but we allow it here anyway
+                None: {},  # type: ignore
+            }
         )
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -89,4 +130,12 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return super().num_docs()
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        return super().python_type_to_db_type(python_type)
+        """Map python type to database type."""
+        for allowed_type in WEAVIATE_PY_VEC_TYPES:
+            if issubclass(python_type, allowed_type):
+                return np.ndarray
+
+        if python_type in WEAVIATE_PY_TYPES:
+            return python_type
+
+        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
