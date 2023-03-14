@@ -1,16 +1,16 @@
 import numpy as np
 import orjson
 import pytest
+import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_document.io.json import orjson_dumps
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 from docarray.typing.tensor import NdArrayEmbedding
 
 
 @pytest.mark.proto
 def test_proto_tensor():
-
     tensor = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
 
     tensor._to_node_protobuf()
@@ -52,57 +52,105 @@ def test_unwrap():
     assert (ndarray == np.zeros((3, 224, 224))).all()
 
 
-def test_parametrized():
+@pytest.mark.parametrize(
+    'tensor_class, tensor_type, tensor_fn',
+    [(NdArray, np.ndarray, np.zeros), (TorchTensor, torch.Tensor, torch.zeros)],
+)
+def test_ellipsis_in_shape(tensor_class, tensor_type, tensor_fn):
+    # ellipsis in the end, two extra dimensions needed
+    tensor = parse_obj_as(tensor_class[3, ...], tensor_fn((3, 128, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the middle, one extra dimension needed
+    tensor = parse_obj_as(tensor_class[3, ..., 224], tensor_fn((3, 128, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the beginning, two extra dimensions needed
+    tensor = parse_obj_as(tensor_class[..., 224], tensor_fn((3, 128, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
+    assert tensor.shape == (3, 128, 224)
+
+    # more than one ellipsis in the shape
+    with pytest.raises(ValueError):
+        parse_obj_as(tensor_class[3, ..., 128, ...], tensor_fn((3, 128, 224)))
+
+    # bigger dimension than expected
+    with pytest.raises(ValueError):
+        parse_obj_as(tensor_class[3, 128, 224, ...], tensor_fn((3, 128)))
+
+    # no extra dimension needed
+    with pytest.raises(ValueError):
+        parse_obj_as(tensor_class[3, 128, 224, ...], tensor_fn((3, 128, 224)))
+
+    # wrong shape
+    with pytest.raises(ValueError):
+        parse_obj_as(tensor_class[3, 224, ...], tensor_fn((3, 128, 224)))
+
+    # passing only ellipsis as a shape
+    with pytest.raises(TypeError):
+        parse_obj_as(tensor_class[...], tensor_fn((3, 128, 224)))
+
+
+@pytest.mark.parametrize(
+    'tensor_class, tensor_type, tensor_fn',
+    [(NdArray, np.ndarray, np.zeros), (TorchTensor, torch.Tensor, torch.zeros)],
+)
+def test_parametrized(tensor_class, tensor_type, tensor_fn):
     # correct shape, single axis
-    tensor = parse_obj_as(NdArray[128], np.zeros(128))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[128], tensor_fn(128))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (128,)
 
     # correct shape, multiple axis
-    tensor = parse_obj_as(NdArray[3, 224, 224], np.zeros((3, 224, 224)))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[3, 224, 224], tensor_fn((3, 224, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (3, 224, 224)
 
     # wrong but reshapable shape
-    tensor = parse_obj_as(NdArray[3, 224, 224], np.zeros((3, 224, 224)))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[3, 224, 224], tensor_fn((3, 224, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (3, 224, 224)
 
     # wrong and not reshapable shape
     with pytest.raises(ValueError):
-        parse_obj_as(NdArray[3, 224, 224], np.zeros((224, 224)))
+        parse_obj_as(tensor_class[3, 224, 224], tensor_fn((224, 224)))
 
     # test independent variable dimensions
-    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 224, 224)))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[3, 'x', 'y'], tensor_fn((3, 224, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (3, 224, 224)
 
-    tensor = parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((3, 60, 128)))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[3, 'x', 'y'], tensor_fn((3, 60, 128)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (3, 60, 128)
 
     with pytest.raises(ValueError):
-        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((4, 224, 224)))
+        parse_obj_as(tensor_class[3, 'x', 'y'], tensor_fn((4, 224, 224)))
 
     with pytest.raises(ValueError):
-        parse_obj_as(NdArray[3, 'x', 'y'], np.zeros((100, 1)))
+        parse_obj_as(tensor_class[3, 'x', 'y'], tensor_fn((100, 1)))
 
     # test dependent variable dimensions
-    tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 224, 224)))
-    assert isinstance(tensor, NdArray)
-    assert isinstance(tensor, np.ndarray)
+    tensor = parse_obj_as(tensor_class[3, 'x', 'x'], tensor_fn((3, 224, 224)))
+    assert isinstance(tensor, tensor_class)
+    assert isinstance(tensor, tensor_type)
     assert tensor.shape == (3, 224, 224)
 
     with pytest.raises(ValueError):
-        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60, 128)))
+        tensor = parse_obj_as(tensor_class[3, 'x', 'x'], tensor_fn((3, 60, 128)))
 
     with pytest.raises(ValueError):
-        tensor = parse_obj_as(NdArray[3, 'x', 'x'], np.zeros((3, 60)))
+        tensor = parse_obj_as(tensor_class[3, 'x', 'x'], tensor_fn((3, 60)))
 
 
 def test_np_embedding():

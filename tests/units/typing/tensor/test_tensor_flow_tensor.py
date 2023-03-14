@@ -60,6 +60,29 @@ def test_from_ndarray():
 
 
 @pytest.mark.tensorflow
+def test_ellipsis_in_shape():
+    # ellipsis in the end, two extra dimensions needed
+    tf_tensor = parse_obj_as(TensorFlowTensor[3, ...], tf.zeros((3, 128, 224)))
+    assert isinstance(tf_tensor, TensorFlowTensor)
+    assert isinstance(tf_tensor.tensor, tf.Tensor)
+    assert tf_tensor.tensor.shape == (3, 128, 224)
+
+    # ellipsis in the beginning, two extra dimensions needed
+    tf_tensor = parse_obj_as(TensorFlowTensor[..., 224], tf.zeros((3, 128, 224)))
+    assert isinstance(tf_tensor, TensorFlowTensor)
+    assert isinstance(tf_tensor.tensor, tf.Tensor)
+    assert tf_tensor.tensor.shape == (3, 128, 224)
+
+    # more than one ellipsis in the shape
+    with pytest.raises(ValueError):
+        parse_obj_as(TensorFlowTensor[3, ..., 128, ...], tf.zeros((3, 128, 224)))
+
+    # wrong shape
+    with pytest.raises(ValueError):
+        parse_obj_as(TensorFlowTensor[3, 224, ...], tf.zeros((3, 128, 224)))
+
+
+@pytest.mark.tensorflow
 def test_parametrized():
     # correct shape, single axis
     tf_tensor = parse_obj_as(TensorFlowTensor[128], tf.zeros(128))
