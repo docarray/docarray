@@ -130,7 +130,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
                         f'Cannot use Ellipsis (...) more than once for the shape {shape}'
                     )
                 ellipsis_pos = ellipsis_occurrences[0]
-                dimensions_needed = len(tshape) - len(shape) + 1
+                dimensions_needed = max(len(tshape) - len(shape) + 1, 1)
                 shape = (
                     shape[:ellipsis_pos]
                     + tuple(
