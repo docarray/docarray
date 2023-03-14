@@ -84,12 +84,20 @@ class PushPullFile:
     @staticmethod
     def push(
         da: 'DocumentArray',
-        url: str,
+        name: str,
         public: bool,
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        return PushPullFile.push_stream(iter(da), url, public, show_progress, branding)
+        """Push this DocumentArray object to the specified url.
+
+        :param name: The file path to push to.
+        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
+            Setting this to false will restrict access to only the creator.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
+        """
+        return PushPullFile.push_stream(iter(da), name, public, show_progress, branding)
 
     @staticmethod
     def push_stream(
@@ -99,6 +107,14 @@ class PushPullFile:
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
+        """Push a stream of documents to the specified file path.
+
+        :param docs: a stream of documents
+        :param name: The file path to push to.
+        :param public: Not used by the ``file`` protocol.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: Not used by the ``file`` protocol.
+        """
         if branding is not None:
             logging.warning('branding is not supported for "file" protocol')
 
@@ -124,6 +140,14 @@ class PushPullFile:
         show_progress: bool,
         local_cache: bool,
     ) -> 'DocumentArray':
+        """Pull a :class:`DocumentArray` from the specified url.
+
+        :param name: The file path to pull from.
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local folder
+        :return: a :class:`DocumentArray` object
+        """
+
         return cls(
             PushPullFile.pull_stream(
                 cls, name, show_progress=show_progress, local_cache=local_cache
@@ -137,6 +161,14 @@ class PushPullFile:
         show_progress: bool,
         local_cache: bool,
     ) -> Iterator['BaseDocument']:
+        """Pull a stream of Documents from the specified file.
+
+        :param name: The file path to pull from.
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local folder
+        :return: Iterator of Documents
+        """
+
         if local_cache:
             logging.warning('local_cache is not supported for "file" protocol')
 

@@ -66,7 +66,7 @@ class PushPullLike(Protocol):
 
 
 class PushPullMixin(Iterable['BaseDocument']):
-    """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
+    """Mixin class for push/pull functionality."""
 
     __backends__: Dict[str, PushPullLike] = {}
     document_type: Type['BaseDocument']
@@ -78,10 +78,10 @@ class PushPullMixin(Iterable['BaseDocument']):
     @classmethod
     def get_backend(cls, protocol: str) -> PushPullLike:
         """
-        Register a new backend for push/pull.
+        Get the backend for the given protocol.
 
         :param protocol: the protocol to use, e.g. 'jinaai', 'file', 's3'
-        :param backend: the backend to use
+        :return: the backend class
         """
         if protocol in cls.__backends__:
             return cls.__backends__[protocol]
@@ -111,9 +111,12 @@ class PushPullMixin(Iterable['BaseDocument']):
         url: str = f'file://{__cache_path__}', show_table: bool = False
     ) -> List[str]:
         """
-        List all the artifacts in the cloud.
+        List all the DocumentArrays in the namespace.
+        url should be of the form ``protocol://namespace``
 
-        :param protocol: the protocol to use, e.g. 'jinaai', 'file', 's3'
+        If no url is provided, the DocumentArrays in the local cache will be listed.
+
+        :param url: should be of the form ``protocol://namespace``. e.g. ``s3://bucket/path/to/namespace``, ``file:///path/to/folder``
         :param show_table: whether to show the table of artifacts
         :return: a list of artifact names
         """
@@ -124,9 +127,9 @@ class PushPullMixin(Iterable['BaseDocument']):
     @classmethod
     def delete(cls, url: str, missing_ok: bool = False):
         """
-        Delete the artifact in the cloud.
+        Delete the DocumentArray at the given url.
 
-        :param url: the url of the artifact to delete
+        :param url: should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
         :param missing_ok: whether to ignore if the artifact does not exist
         """
         logging.info(f'Deleting artifact {url}')
@@ -147,20 +150,13 @@ class PushPullMixin(Iterable['BaseDocument']):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocumentArray object to Jina AI Cloud which can be later retrieved via :meth:`.push`
+        """Push this DocumentArray object to the specified url.
 
-        .. note::
-            - Push with the same ``name`` will override the existing content.
-            - Kinda like a public clipboard where everyone can override anyone's content.
-              So to make your content survive longer, you may want to use longer & more complicated name.
-            - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
-              persistence. Only use this full temporary transmission/storage/clipboard.
-
-        :param name: A name that can later be used to retrieve this :class:`DocumentArray`.
-        :param public: By default, anyone can pull a DocumentArray if they know its name.
+        :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: A dictionary of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
+        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing {len(self)} docs to {url}')
         protocol, name = url.split('://', 2)
@@ -177,8 +173,13 @@ class PushPullMixin(Iterable['BaseDocument']):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """
-        Push a stream of documents to Jina AI Cloud which can be later retrieved via :meth:`.pull_stream`
+        """Push a stream of documents to the specified url.
+
+        :param docs: a stream of documents
+        :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
+        :param show_progress: If true, a progress bar will be displayed.
+        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing stream to {url}')
         protocol, name = url.split('://', 2)
@@ -193,9 +194,9 @@ class PushPullMixin(Iterable['BaseDocument']):
         show_progress: bool = False,
         local_cache: bool = True,
     ) -> 'DocumentArray':
-        """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
+        """Pull a :class:`DocumentArray` from the specified url.
 
-        :param name: the upload name set during :meth:`.push`
+        :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
         :param show_progress: if true, display a progress bar.
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
@@ -221,8 +222,12 @@ class PushPullMixin(Iterable['BaseDocument']):
         show_progress: bool = False,
         local_cache: bool = False,
     ) -> Iterator['BaseDocument']:
-        """
-        Stream documents from remote to an iterator
+        """Pull a stream of Documents from the specified url.
+
+        :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param show_progress: if true, display a progress bar.
+        :param local_cache: store the downloaded DocumentArray to local folder
+        :return: Iterator of Documents
         """
         from docarray.base_document import AnyDocument
 
