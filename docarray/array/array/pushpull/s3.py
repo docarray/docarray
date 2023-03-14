@@ -120,11 +120,11 @@ class PushPullS3:
 
         bucket, name = name.split('/', 1)
         binary_stream = _to_binary_stream(
-            docs, protocol='protobuf', compress='gzip', show_progress=show_progress
+            docs, protocol='pickle', compress=None, show_progress=show_progress
         )
 
         # Upload to S3
-        with open(f"s3://{bucket}/{name}.da", 'wb') as fout:
+        with open(f"s3://{bucket}/{name}.da", 'wb', compression='.gz') as fout:
             while True:
                 try:
                     fout.write(next(binary_stream))
@@ -160,7 +160,7 @@ class PushPullS3:
         cache_path = __cache_path__ / f'{save_name}.da'
 
         source = _BufferedCachingReader(
-            open(f"s3://{bucket}/{name}.da", 'rb'),
+            open(f"s3://{bucket}/{name}.da", 'rb', compression='.gz'),
             cache_path=cache_path if local_cache else None,
         )
 
@@ -178,7 +178,7 @@ class PushPullS3:
         return _from_binary_stream(
             cls.document_type,
             source,
-            protocol='protobuf',
-            compress='gzip',
+            protocol='pickle',
+            compress=None,
             show_progress=show_progress,
         )
