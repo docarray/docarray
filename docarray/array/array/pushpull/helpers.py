@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
     import requests
 
+CACHING_REQUEST_READER_CHUNK_SIZE = 2**20
+
 
 def get_version_info() -> Dict:
     """
@@ -93,7 +95,9 @@ class _BufferedCachingRequestReader(_BufferedCachingReader):
     """A buffered reader for requests.Response that writes to a cache file while reading."""
 
     def __init__(self, r: 'requests.Response', cache_path: Optional['Path'] = None):
-        super().__init__(r.iter_content(chunk_size=2**20), cache_path)
+        super().__init__(
+            r.iter_content(chunk_size=CACHING_REQUEST_READER_CHUNK_SIZE), cache_path
+        )
 
 
 def raise_req_error(resp: 'requests.Response') -> NoReturn:
