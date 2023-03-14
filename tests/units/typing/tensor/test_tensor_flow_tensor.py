@@ -65,13 +65,13 @@ def test_ellipsis_in_shape():
     tf_tensor = parse_obj_as(TensorFlowTensor[3, ...], tf.zeros((3, 128, 224)))
     assert isinstance(tf_tensor, TensorFlowTensor)
     assert isinstance(tf_tensor.tensor, tf.Tensor)
-    assert tf_tensor.shape == (3, 128, 224)
+    assert tf_tensor.tensor.shape == (3, 128, 224)
 
     # ellipsis in the beginning, two extra dimensions needed
     tf_tensor = parse_obj_as(TensorFlowTensor[..., 224], tf.zeros((3, 128, 224)))
     assert isinstance(tf_tensor, TensorFlowTensor)
     assert isinstance(tf_tensor.tensor, tf.Tensor)
-    assert tf_tensor.shape == (3, 128, 224)
+    assert tf_tensor.tensor.shape == (3, 128, 224)
 
     # more than one ellipsis in the shape
     with pytest.raises(ValueError):
