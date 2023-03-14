@@ -10,7 +10,6 @@ from docarray.typing.tensor import NdArrayEmbedding
 
 @pytest.mark.proto
 def test_proto_tensor():
-
     tensor = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
 
     tensor._to_node_protobuf()
@@ -50,6 +49,60 @@ def test_unwrap():
     assert isinstance(ndarray, np.ndarray)
     assert isinstance(tensor, NdArray)
     assert (ndarray == np.zeros((3, 224, 224))).all()
+
+
+def test_ellipsis_in_shape():
+    # ellipsis in the end, two extra dimensions needed
+    tensor = parse_obj_as(NdArray[3, ...], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the end, no extra dimensions needed
+    tensor = parse_obj_as(NdArray[3, 128, 224, ...], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the middle,  one extra dimension needed
+    tensor = parse_obj_as(NdArray[3, ..., 224], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the middle, no extra dimensions needed
+    tensor = parse_obj_as(NdArray[3, ..., 128, 224], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the beginning, two extra dimensions needed
+    tensor = parse_obj_as(NdArray[..., 224], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # ellipsis in the beginning, no extra dimensions needed
+    tensor = parse_obj_as(NdArray[..., 3, 128, 224], np.zeros((3, 128, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 128, 224)
+
+    # more than one ellipsis in the shape
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, ..., 128, ...], np.zeros((3, 128, 224)))
+
+    # bigger dimension than expected
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 128, 224, ...], np.zeros((3, 128)))
+
+    # wrong shape
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 224, ...], np.zeros((3, 128, 224)))
+
+    # passing only ellipsis as a shape
+    with pytest.raises(TypeError):
+        parse_obj_as(NdArray[...], np.zeros((3, 128, 224)))
 
 
 def test_parametrized():
