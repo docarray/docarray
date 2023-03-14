@@ -246,65 +246,11 @@ class PushPullJAC(PushPullLike):
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
         """
-        import requests
+        from docarray import DocumentArray
 
-        headers = {}
-
-        auth_token = hubble.get_token()
-
-        if auth_token:
-            headers['Authorization'] = f'token {auth_token}'
-
-        url = HubbleClient()._base_url + EndpointsV2.download_artifact + f'?name={name}'
-        response = requests.get(url, headers=headers)
-
-        if response.ok:
-            url = response.json()['data']['download']
-        else:
-            response.raise_for_status()
-
-        with requests.get(
-            url,
-            stream=True,
-        ) as r:
-            from contextlib import nullcontext
-
-            from docarray import DocumentArray
-
-            r.raise_for_status()
-            save_name = name.replace('/', '_')
-
-            tmp_cache_file = Path(f'/tmp/{save_name}.da')
-            _source: Union[
-                _BufferedCachingRequestReader, io.BufferedReader
-            ] = _BufferedCachingRequestReader(r, tmp_cache_file)
-
-            cache_file = __cache_path__ / f'{save_name}.da'
-            if local_cache and cache_file.exists():
-                _cache_len = cache_file.stat().st_size
-                if _cache_len == int(r.headers['Content-length']):
-                    if show_progress:
-                        print(f'Loading from local cache {cache_file}')
-                    _source = open(cache_file, 'rb')
-                    r.close()
-
-            da = DocumentArray[cls.document_type](  # type: ignore
-                cls._load_binary_stream(
-                    nullcontext(_source),  # type: ignore
-                    protocol='protobuf',
-                    compress='gzip',
-                    show_progress=show_progress,
-                )
-            )
-
-            if local_cache:
-                if isinstance(_source, _BufferedCachingRequestReader):
-                    Path(__cache_path__).mkdir(parents=True, exist_ok=True)
-                    tmp_cache_file.rename(cache_file)
-                else:
-                    _source.close()
-
-        return da
+        return DocumentArray[cls.document_type](  # type: ignore
+            PushPullJAC.pull_stream(cls, name, show_progress, local_cache)
+        )
 
     @staticmethod
     @hubble.login_required
