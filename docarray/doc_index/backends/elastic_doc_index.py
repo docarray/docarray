@@ -1,3 +1,4 @@
+import os
 import uuid
 import warnings
 from dataclasses import dataclass, field
@@ -48,7 +49,7 @@ def _raise_has_substitue(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
             f'`{name}` is replaced by query() through the query builder of this Document Index ({type(self)}). '
-            f'But you can call `{type(self)}.{name}()` directly.'
+            f'You can also call `{type(self)}.{name}()` directly.'
         )
 
     return _inner
@@ -69,6 +70,11 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             hosts=self._db_config.hosts,
             **self._db_config.es_config,
         )
+
+        # compatibility
+        self._server_version = self._client.info()['version']['number']
+        if int(self._server_version.split('.')[0]) >= 8:
+            os.environ['ELASTIC_CLIENT_APIVERSIONING'] = '1'
 
         # ElasticSearh index setup
         self._index_init_params = ('type',)
@@ -189,7 +195,11 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
-    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+    def _index(
+        self,
+        column_to_data: Dict[str, Generator[Any, None, None]],
+        refresh: bool = True,
+    ):
 
         data = self._transpose_col_value_dict(column_to_data)  # type: ignore
         requests = []
@@ -211,7 +221,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         for info in warning_info:
             warnings.warn(str(info))
 
-        self._refresh(self._index_name)  # TODO add runtime config for efficient refresh
+        if refresh:
+            self._refresh(self._index_name)
 
     def num_docs(self) -> int:
         return self._client.count(index=self._index_name)['count']
@@ -266,13 +277,18 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
     def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
+        if int(self._server_version.split('.')[0]) >= 8:
+            warnings.warn(
+                'You are using Elasticsearch 8.0+ and the current client is 7.10.1. HNSW based vector search is not supported and the find method has a default implementation.'
+            )
+
         body = {
             'size': limit,
             'query': {
                 'script_score': {
                     'query': {'match_all': {}},
                     'script': {
-                        'source': f"cosineSimilarity(params.query_vector, '{search_field}') + 1.0",
+                        'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
                         'params': {'query_vector': query},
                     },
                 }
@@ -341,9 +357,9 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> _FindResult:
 
         search_query = {
-            "bool": {
-                "must": [
-                    {"match": {search_field: query}},
+            'bool': {
+                'must': [
+                    {'match': {search_field: query}},
                 ],
             }
         }
