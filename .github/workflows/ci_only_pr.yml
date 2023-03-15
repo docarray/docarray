@@ -43,20 +43,14 @@ jobs:
         run: |
           npm i -g netlify-cli
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          python -m pip install wheel
           python -m pip install poetry
-          cd ..
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
-          cd docs
-          export NUM_RELEASES=2 # only 2 last tags to save build time
-          bash makedoc.sh 
-          netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
+          poetry run mkdocs build
+          netlify deploy --dir=site --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        working-directory: docs
       - name: Find the prev comment if exists
         uses: peter-evans/find-comment@v1
         id: fc
