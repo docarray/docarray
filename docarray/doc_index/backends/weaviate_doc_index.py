@@ -33,18 +33,45 @@ DEFAULT_BATCH_CONFIG = {
 
 # TODO: add more types
 # see https://weaviate.io/developers/weaviate/configuration/datatypes
-WEAVIATE_PY_VEC_TYPES = [list, tuple, np.ndarray]
+WEAVIATE_PY_VEC_TYPES = [list, np.ndarray]
 WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 
 
 class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
+        self.embedding_column = None
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
-
         self._client = weaviate.Client(self._db_config.host)
         self._configure_client()
+        self._validate_columns()
+        self._set_embedding_column()
         self._create_schema()
+
+    def _validate_columns(self):
+
+        # must have at most one column with property is_embedding=True
+        # and that column must be of type WEAVIATE_PY_VEC_TYPES
+        num_embedding_columns = 0
+
+        for column_name, column_info in self._column_infos.items():
+            if column_info.config.get('is_embedding', False):
+                num_embedding_columns += 1
+                if column_info.db_type not in WEAVIATE_PY_VEC_TYPES:
+                    raise ValueError(
+                        f'Column {column_name} is marked as embedding but is not of type {WEAVIATE_PY_VEC_TYPES}'
+                    )
+
+        if num_embedding_columns > 1:
+            raise ValueError(
+                f'Only one column can be marked as embedding but found {num_embedding_columns}'
+            )
+
+    def _set_embedding_column(self):
+        for column_name, column_info in self._column_infos.items():
+            if column_info.config.get('is_embedding', False):
+                self.embedding_column = column_name
+                break
 
     def _configure_client(self):
         self._client.batch.configure(**self._db_config.batch_config)
@@ -56,8 +83,8 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         column_infos = self._column_infos
 
         for column_name, column_info in column_infos.items():
-            # in weaviate, we do not create a property for the vector
-            if column_info.db_type == np.ndarray:
+            # in weaviate, we do not create a property for the doc's embeddings
+            if column_name == self.embedding_column:
                 continue
             prop = {
                 "name": column_name
@@ -130,18 +157,6 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         document_id = doc.pop('id')
         doc['__id'] = document_id
 
-        # TODO: find better way to get the vector column
-        # find the vector column
-        vector_column = None
-        for k, v in doc.items():
-            if isinstance(v, np.ndarray):
-                vector_column = k
-                break
-
-        assert vector_column is not None, 'No vector column found'
-        vector = doc.pop(vector_column)
-        doc["embeddings"] = vector
-
         return doc
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
@@ -151,13 +166,13 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         with self._client.batch as batch:
             for doc in docs:
                 parsed_doc = self._parse_document(doc)
-                embeddings = parsed_doc.pop('embeddings')
+                vector = parsed_doc.pop(self.embedding_column)
 
                 batch.add_data_object(
                     uuid=weaviate.util.generate_uuid5(parsed_doc, index_name),
                     data_object=parsed_doc,
                     class_name=index_name,
-                    vector=embeddings,
+                    vector=vector,
                 )
 
     def _text_search(self, query: str, search_field: str, limit: int) -> _FindResult:
