@@ -53,7 +53,7 @@ pytest-asyncio = ">=0.20.2"
 
 
 [tool.poetry.group.docs.dependencies]
-mkdocstrings = ">=0.20.0"
+mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
 mkdocs-material= ">=9.1.2"
 
 [build-system]
