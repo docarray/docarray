@@ -236,6 +236,12 @@ poetry run pip install tensorflow
 poetry run pytest -v -s tests
 ```
 
+for local development we suggest to use the following command to run the tests
+```bash
+poetry run pytest -v -s tests -m 'not tensorflow and not slow and not internet'
+```
+This only take a couple of second.
+
 ### Test policy
 
 Every contribution that adds or modifies the behavior of a feature must include a suite of tests that validates that the feature works as expected.
