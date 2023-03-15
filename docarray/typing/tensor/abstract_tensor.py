@@ -83,7 +83,6 @@ class _ParametrizedMeta(type):
 
 
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
-
     __parametrized_meta__: type = _ParametrizedMeta
     __unparametrizedcls__: Optional[Type['AbstractTensor']] = None
     __docarray_target_shape__: Optional[Tuple[int, ...]] = None
@@ -102,7 +101,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         return NodeProto(ndarray=nd_proto, type=self._proto_type_name)
 
     @classmethod
-    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str]]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[Union[int, str], ...]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form AnyTensor[shape].
         It is called when a tensor is assigned to a field of this type.
@@ -121,7 +120,26 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         tshape = comp_be.shape(t)
         if tshape == shape:
             return t
-        elif any(isinstance(dim, str) for dim in shape):
+        elif any(isinstance(dim, str) or dim == Ellipsis for dim in shape):
+            ellipsis_occurrences = [
+                pos for pos, dim in enumerate(shape) if dim == Ellipsis
+            ]
+            if ellipsis_occurrences:
+                if len(ellipsis_occurrences) > 1:
+                    raise ValueError(
+                        f'Cannot use Ellipsis (...) more than once for the shape {shape}'
+                    )
+                ellipsis_pos = ellipsis_occurrences[0]
+                # Calculate how many dimensions to add. Should be at least 1.
+                dimensions_needed = max(len(tshape) - len(shape) + 1, 1)
+                shape = (
+                    shape[:ellipsis_pos]
+                    + tuple(
+                        f'__dim_var_{index}__' for index in range(dimensions_needed)
+                    )
+                    + shape[ellipsis_pos + 1 :]
+                )
+
             if len(tshape) != len(shape):
                 raise ValueError(
                     f'Tensor shape mismatch. Expected {shape}, got {tshape}'
