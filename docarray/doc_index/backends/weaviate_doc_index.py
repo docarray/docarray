@@ -5,6 +5,7 @@ from typing import (
     Generator,
     Generic,
     List,
+    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -18,7 +19,7 @@ import weaviate
 import docarray
 from docarray import BaseDocument, DocumentArray
 from docarray.doc_index.abstract_doc_index import BaseDocumentIndex, _FindResultBatched
-from docarray.utils.find import FindResult, _FindResult
+from docarray.utils.find import _FindResult
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='WeaviateDocumentIndex')
@@ -40,13 +41,24 @@ WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
         self.embedding_column = None
+        self.properties = None
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
         self._client = weaviate.Client(self._db_config.host)
         self._configure_client()
         self._validate_columns()
         self._set_embedding_column()
+        self._set_properties()
         self._create_schema()
+
+    def _set_properties(self):
+        field_overwrites = {"id": "__id"}
+
+        self.properties = [
+            field_overwrites.get(k, k)
+            for k, v in self._column_infos.items()
+            if v.config.get('is_embedding', False) is False
+        ]
 
     def _validate_columns(self):
 
@@ -142,8 +154,59 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> Union[List[DocumentArray], List[List[Dict]]]:
         return super()._filter_batched(filter_queries, limit)
 
-    def _find(self, query: np.ndarray, search_field: str, limit: int) -> FindResult:
-        return super()._find(query, search_field, limit)
+    def _find(
+        self,
+        query: np.ndarray,
+        search_field: str,
+        limit: int,
+        certainty: Optional[float] = None,
+        distance: Optional[float] = None,
+    ) -> _FindResult:
+        index_name = self._db_config.index_name
+        near_vector = {
+            "vector": query,
+        }
+
+        if certainty:
+            near_vector['certainty'] = certainty
+        if distance:
+            near_vector['distance'] = distance
+
+        score_name = 'certainty' if certainty else 'distance'
+
+        results = (
+            self._client.query.get(index_name, self.properties)
+            .with_near_vector(
+                near_vector,
+            )
+            .with_limit(limit)
+            .with_additional([score_name, "vector"])
+            .do()
+        )
+
+        return self._format_response(results, score_name)
+
+    def _format_response(self, results, score_name):
+        da_class = DocumentArray.__class_getitem__(
+            cast(Type[BaseDocument], self._schema)
+        )
+
+        documents = []
+        scores = []
+
+        for result in results["data"]["Get"][self._db_config.index_name]:
+            additional_fields = result.pop("_additional")
+            score = additional_fields[score_name]
+            scores.append(score)
+
+            document = {}
+            document["id"] = result.pop("__id")
+            document[self.embedding_column] = additional_fields["vector"]
+            document.update(result)
+
+            documents.append(self._schema.from_view(document))
+
+        return _FindResult(documents=da_class(documents), scores=scores)
 
     def _find_batched(
         self, queries: Sequence[np.ndarray], search_field: str, limit: int
