@@ -8,7 +8,6 @@ from typing import (
     Generic,
     Iterable,
     List,
-    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -19,7 +18,6 @@ from typing import (
 )
 
 import numpy as np
-from elastic_transport import NodeConfig
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
 from elasticsearch_dsl import Search  # type: ignore
@@ -153,9 +151,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        hosts: Union[
-            str, List[Union[str, Mapping[str, Union[str, int]], NodeConfig]], None
-        ] = 'http://localhost:9200'
+        hosts: Union[str, List[str], None] = 'http://localhost:9200'
         index_name: Optional[str] = None
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
