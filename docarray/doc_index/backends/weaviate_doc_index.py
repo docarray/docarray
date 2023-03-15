@@ -31,7 +31,7 @@ DEFAULT_BATCH_CONFIG = {
     "num_workers": 1,
 }
 
-# TODO: add more types
+# TODO: add more types and figure out how to handle text vs string type
 # see https://weaviate.io/developers/weaviate/configuration/datatypes
 WEAVIATE_PY_VEC_TYPES = [list, np.ndarray]
 WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
@@ -101,6 +101,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         schema["properties"] = properties
         schema["class"] = self._db_config.index_name
 
+        # TODO: check if schema already exists
         self._client.schema.create_class(schema)
 
     @dataclass
