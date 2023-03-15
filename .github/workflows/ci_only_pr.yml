@@ -46,7 +46,8 @@ jobs:
           python -m pip install poetry
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
-          poetry run mkdocs build
+          cd docs
+          bash makedocs.sh
           netlify deploy --dir=site --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
