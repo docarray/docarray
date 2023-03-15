@@ -233,15 +233,3 @@ def test_concurrent_push_pull():
 
     with mp.get_context('fork').Pool(3) as p:
         p.map(_task, ['pull', 'push', 'pull'])
-
-
-@pytest.mark.skip(reason='Not Applicable')
-def test_concurrent_push():
-    """
-    Amazon S3 does not support object locking for concurrent writers.
-    If two PUT requests are simultaneously made to the same key, the request with the latest timestamp wins.
-    However, there is no way for the processes to know if they are the latest or not.
-
-    https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#ConsistencyModel
-    """
-    pass
