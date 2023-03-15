@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import pytest
 import weaviate
@@ -63,7 +65,7 @@ def test_validate_columns(weaviate_client):
         WeaviateDocumentIndex[InvalidDoc2](db_config=dbconfig)
 
 
-def test_find(weaviate_client):
+def test_find(weaviate_client, caplog):
     class Document(BaseDocument):
         embedding: NdArray[2] = Field(dim=2, is_embedding=True)
 
@@ -86,3 +88,10 @@ def test_find(weaviate_client):
         match=r"Cannot have both 'certainty' and 'distance' at the same time",
     ):
         store.find(query, search_field=None, limit=3, certainty=0.99, distance=1e-2)
+
+    with caplog.at_level(logging.DEBUG):
+        store.find(query, search_field="foo", limit=10)
+        assert (
+            "Argument search_field is not supported for WeaviateDocumentIndex"
+            in caplog.text
+        )

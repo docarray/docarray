@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -166,6 +167,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         near_vector = {
             "vector": query,
         }
+        if search_field:
+            logging.warning(
+                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
+            )
 
         if certainty:
             near_vector['certainty'] = certainty
