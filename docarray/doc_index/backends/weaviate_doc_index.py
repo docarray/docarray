@@ -52,6 +52,8 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # must have at most one column with property is_embedding=True
         # and that column must be of type WEAVIATE_PY_VEC_TYPES
+        # TODO: update when https://github.com/weaviate/weaviate/issues/2424
+        # is implemented
         num_embedding_columns = 0
 
         for column_name, column_info in self._column_infos.items():

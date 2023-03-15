@@ -44,3 +44,20 @@ def test_index_simple_schema(weaviate_client, ten_simple_docs):
         result = result["data"]["Get"]["Document"][0]
         assert result["__id"] == doc_id
         assert np.allclose(result["_additional"]["vector"], doc_embedding)
+
+
+def test_validate_columns(weaviate_client):
+    dbconfig = WeaviateDocumentIndex.DBConfig(host="http://weaviate:8080")
+
+    class InvalidDoc1(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, is_embedding=True)
+        tens2: NdArray[10] = Field(dim=1000, is_embedding=True)
+
+    class InvalidDoc2(BaseDocument):
+        tens: int = Field(dim=1000, is_embedding=True)
+
+    with pytest.raises(ValueError, match=r"Only one column can be marked as embedding"):
+        WeaviateDocumentIndex[InvalidDoc1](db_config=dbconfig)
+
+    with pytest.raises(ValueError, match=r"marked as embedding but is not of type"):
+        WeaviateDocumentIndex[InvalidDoc2](db_config=dbconfig)
