@@ -3,7 +3,7 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.doc_index.backends.elastic_doc_index import ElasticDocumentIndex
-from tests.doc_index.elastic.fixture import start_storage  # noqa: F401
+from tests.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.doc_index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
 
 

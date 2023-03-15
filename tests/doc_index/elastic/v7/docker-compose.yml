@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node

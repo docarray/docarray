@@ -253,34 +253,38 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "elastic-transport"
-version = "8.4.0"
-description = "Transport classes and utilities shared among Python Elastic client libraries"
+name = "elasticsearch"
+version = "7.10.1"
+description = "Python client for Elasticsearch"
 category = "main"
-optional = true
-python-versions = ">=3.6"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 
 [package.dependencies]
 certifi = "*"
-urllib3 = ">=1.26.2,<2"
-
-[package.extras]
-develop = ["aiohttp", "mock", "pytest", "pytest-asyncio", "pytest-cov", "pytest-httpserver", "pytest-mock", "requests", "trustme"]
-
-[[package]]
-name = "elasticsearch"
-version = "8.6.2"
-description = "Python client for Elasticsearch"
-category = "main"
-optional = true
-python-versions = ">=3.6, <4"
-
-[package.dependencies]
-elastic-transport = ">=8,<9"
+urllib3 = ">=1.21.1,<2"
 
 [package.extras]
 async = ["aiohttp (>=3,<4)"]
+develop = ["black", "coverage", "jinja2", "mock", "pytest", "pytest-cov", "pyyaml", "requests (>=2.0.0,<3.0.0)", "sphinx (<1.7)", "sphinx-rtd-theme"]
+docs = ["sphinx (<1.7)", "sphinx-rtd-theme"]
 requests = ["requests (>=2.4.0,<3.0.0)"]
+
+[[package]]
+name = "elasticsearch-dsl"
+version = "7.4.1"
+description = "Python client for Elasticsearch"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.dependencies]
+elasticsearch = ">=7.0.0,<8.0.0"
+python-dateutil = "*"
+six = "*"
+
+[package.extras]
+develop = ["coverage (<5.0.0)", "mock", "pytest (>=3.0.0)", "pytest-cov", "pytest-mock (<3.0.0)", "pytz", "sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "entrypoints"
@@ -1766,7 +1770,7 @@ web = ["fastapi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "762e0d498828bc3c3c82ee22ffefce7a5690cc542ac77af517856373ba63291d"
+content-hash = "2c64e8e6bea549e5ccdde4b3fdcd212604c43bba5cf64f503261060f81f1ab0e"
 
 [metadata.files]
 anyio = [
@@ -2015,13 +2019,13 @@ distlib = [
     {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
     {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
 ]
-elastic-transport = [
-    {file = "elastic-transport-8.4.0.tar.gz", hash = "sha256:b9ad708ceb7fcdbc6b30a96f886609a109f042c0b9d9f2e44403b3133ba7ff10"},
-    {file = "elastic_transport-8.4.0-py3-none-any.whl", hash = "sha256:19db271ab79c9f70f8c43f8f5b5111408781a6176b54ab2e54d713b6d9ceb815"},
-]
 elasticsearch = [
-    {file = "elasticsearch-8.6.2-py3-none-any.whl", hash = "sha256:8ccbebd9a0f6f523c7db67bb54863dde8bdb93daae4ff97f7c814e0500a73e84"},
-    {file = "elasticsearch-8.6.2.tar.gz", hash = "sha256:084458e84caa91e3ad807b68aa82c022e785bead853a3b125641a25e894a1d47"},
+    {file = "elasticsearch-7.10.1-py2.py3-none-any.whl", hash = "sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955"},
+    {file = "elasticsearch-7.10.1.tar.gz", hash = "sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48"},
+]
+elasticsearch-dsl = [
+    {file = "elasticsearch-dsl-7.4.1.tar.gz", hash = "sha256:07ee9c87dc28cc3cae2daa19401e1e18a172174ad9e5ca67938f752e3902a1d5"},
+    {file = "elasticsearch_dsl-7.4.1-py2.py3-none-any.whl", hash = "sha256:97f79239a252be7c4cce554c29e64695d7ef6a4828372316a5e5ff815e7a7498"},
 ]
 entrypoints = [
     {file = "entrypoints-0.4-py3-none-any.whl", hash = "sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f"},

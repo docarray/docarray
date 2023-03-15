@@ -22,6 +22,7 @@ import numpy as np
 from elastic_transport import NodeConfig
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
+from elasticsearch_dsl import Search  # type: ignore
 
 import docarray.typing
 from docarray import BaseDocument
@@ -29,6 +30,7 @@ from docarray.doc_index.abstract_doc_index import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
+    _raise_not_composable,
 )
 from docarray.utils.find import _FindResult
 from docarray.utils.misc import torch_imported
@@ -42,6 +44,16 @@ if torch_imported:
     import torch
 
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
+
+
+def _raise_has_substitue(name):
+    def _inner(self, *args, **kwargs):
+        raise NotImplementedError(
+            f'`{name}` is replaced by query() through the query builder of this Document Index ({type(self)}). '
+            f'But you can call `{type(self)}.{name}()` directly.'
+        )
+
+    return _inner
 
 
 class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
@@ -62,30 +74,31 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # ElasticSearh index setup
         self._index_init_params = ('type',)
-        self._index_vector_params = ('dims', 'similarity', 'index')
-        self._index_vector_options = ('m', 'ef_construction')
+        self._index_vector_params = ('dims',)
 
-        mappings: Dict[str, Any] = {
-            'dynamic': True,
-            '_source': {'enabled': 'true'},
-            'properties': {},
+        body: Dict[str, Any] = {
+            'mappings': {
+                'dynamic': True,
+                '_source': {'enabled': 'true'},
+                'properties': {},
+            }
         }
 
         for col_name, col in self._column_infos.items():
             if not col.config:
                 continue  # do not create column index if no config is given
-            mappings['properties'][col_name] = self._create_index(col)
+            body['mappings']['properties'][col_name] = self._create_index(col)
 
         if self._client.indices.exists(index=self._index_name):  # type: ignore
             self._client.indices.put_mapping(
-                index=self._index_name, properties=mappings['properties']
+                index=self._index_name, body=body['mappings']
             )
         else:
-            self._client.indices.create(index=self._index_name, mappings=mappings)
+            self._client.indices.create(index=self._index_name, body=body)
 
         if len(self._db_config.index_settings):
             self._client.indices.put_settings(
-                index=self._index_name, settings=self._db_config.index_settings
+                index=self._index_name, body=self._db_config.index_settings
             )
 
         self._refresh(self._index_name)
@@ -93,11 +106,53 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ###############################################
     # Inner classes for query builder and configs #
     ###############################################
-    # TODO add class QueryBuilder
+
+    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+        def __init__(self, outer_instance, **kwargs):
+            super().__init__()
+            self._search = Search(
+                using=outer_instance._client, index=outer_instance._index_name, **kwargs
+            )
+
+        def build(self, *args, **kwargs) -> Any:
+            return self
+
+        def query(self, *args, **kwargs):
+            self._search = self._search.query(*args, **kwargs)
+            return self
+
+        def filter(self, *args, **kwargs):
+            self._search = self._search.filter(*args, **kwargs)
+            return self
+
+        def exclude(self, *args, **kwargs):
+            self._search = self._search.exclude(*args, **kwargs)
+            return self
+
+        def script_fields(self, **kwargs):
+            self._search = self._search.script_fields(**kwargs)
+            return self
+
+        def sort(self, *args, **kwargs):
+            self._search = self._search.sort(*args, **kwargs)
+            return self
+
+        # TODO: add more methods
+
+        find = _raise_has_substitue('find')
+        text_search = _raise_has_substitue('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('find_batched')
+        text_search_batched = _raise_not_composable('text_search')
+
+    def build_query(self, **kwargs) -> QueryBuilder:
+        """
+        Build a query for this DocumentIndex.
+        """
+        return self.QueryBuilder(self, **kwargs)  # type: ignore
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-
         hosts: Union[
             str, List[Union[str, Mapping[str, Union[str, int]], NodeConfig]], None
         ] = 'http://localhost:9200'
@@ -111,12 +166,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             default_factory=lambda: {
                 np.ndarray: {
                     'type': 'dense_vector',
-                    'index': True,
                     'dims': 128,
-                    'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
-                    'm': 16,
-                    'ef_construction': 100,
-                    'num_candidates': 10000,
                 },
                 docarray.typing.ID: {'type': 'keyword'},
                 bool: {'type': 'boolean'},
@@ -153,7 +203,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 '_index': self._index_name,
                 '_id': row['id'],
             }
-            # TODO change here when more types are supported
             for col_name, col in self._column_infos.items():
                 if not col.config:
                     continue
@@ -193,7 +242,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         es_rows = self._client.mget(
             index=self._index_name,
-            ids=doc_ids,  # type: ignore
+            body={'ids': doc_ids},  # type: ignore
         )['docs']
 
         for row in es_rows:
@@ -209,32 +258,37 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return accumulated_docs
 
-    def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
-        ...
+    def execute_query(self, query: QueryBuilder, *args, **kwargs) -> Any:
+        if args or kwargs:
+            raise ValueError(
+                f'args and kwargs not supported for `execute_query` on {type(self)}'
+            )
+
+        resp = query._search.execute()
+        docs, scores = self._format_response(resp)
+
+        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
     def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
-        knn_query = {
-            'field': search_field,
-            'query_vector': query,
-            'k': limit,
-            'num_candidates': self._runtime_config.default_column_config[np.ndarray][
-                'num_candidates'
-            ],
+        body = {
+            'size': limit,
+            'query': {
+                'script_score': {
+                    'query': {'match_all': {}},
+                    'script': {
+                        'source': f"cosineSimilarity(params.query_vector, '{search_field}') + 1.0",
+                        'params': {'query_vector': query},
+                    },
+                }
+            },
         }
 
         resp = self._client.search(
             index=self._index_name,
-            knn=knn_query,
-            size=limit,
+            body=body,
         )
 
-        docs = []
-        scores = []
-        for result in resp['hits']['hits']:
-            doc_dict = result['_source']
-            doc_dict['id'] = result['_id']
-            docs.append(doc_dict)
-            scores.append(result['_score'])
+        docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
@@ -259,17 +313,17 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> List[Dict]:
+        body = {
+            'size': limit,
+            'query': filter_query,
+        }
+
         resp = self._client.search(
             index=self._index_name,
-            query=filter_query,
-            size=limit,
+            body=body,
         )
 
-        docs = []
-        for result in resp['hits']['hits'][:limit]:
-            doc_dict = result['_source']
-            doc_dict['id'] = result['_id']
-            docs.append(doc_dict)
+        docs, _ = self._format_response(resp)
 
         return docs
 
@@ -289,6 +343,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         search_field: str,
         limit: int,
     ) -> _FindResult:
+
         search_query = {
             "bool": {
                 "must": [
@@ -296,20 +351,17 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 ],
             }
         }
+        body = {
+            'size': limit,
+            'query': search_query,
+        }
 
         resp = self._client.search(
             index=self._index_name,
-            query=search_query,
-            size=limit,
+            body=body,
         )
 
-        docs = []
-        scores = []
-        for result in resp['hits']['hits']:
-            doc_dict = result['_source']
-            doc_dict['id'] = result['_id']
-            docs.append(doc_dict)
-            scores.append(result['_score'])
+        docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
@@ -342,10 +394,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 index[k] = col.config[k]
             if col.n_dim:
                 index['dims'] = col.n_dim
-            index['index_options'] = dict(
-                (k, col.config[k]) for k in self._index_vector_options
-            )
-            index['index_options']['type'] = 'hnsw'
         return index
 
     def _send_requests(
@@ -370,6 +418,23 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 accumulated_info.append(info)
 
         return accumulated_info, warning_info
+
+    def _format_response(self, response: Any) -> Tuple[List[Dict], List[float]]:
+        docs = []
+        scores = []
+        for result in response['hits']['hits']:
+            if not isinstance(result, dict):
+                result = result.to_dict()
+
+            if result.get('_source', None):
+                doc_dict = result['_source']
+            else:
+                doc_dict = result['fields']
+            doc_dict['id'] = result['_id']
+            docs.append(doc_dict)
+            scores.append(result['_score'])
+
+        return docs, scores
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)

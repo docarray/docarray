@@ -28,16 +28,26 @@ class DeepNestedDoc(BaseDocument):
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-compose_yml = os.path.abspath(os.path.join(cur_dir, 'docker-compose.yml'))
+compose_yml_v7 = os.path.abspath(os.path.join(cur_dir, 'v7/docker-compose.yml'))
+compose_yml_v8 = os.path.abspath(os.path.join(cur_dir, 'v8/docker-compose.yml'))
 
 
 @pytest.fixture(scope='module', autouse=True)
-def start_storage():
-    os.system(f"docker-compose -f {compose_yml} up -d --remove-orphans")
+def start_storage_v7():
+    os.system(f"docker-compose -f {compose_yml_v7} up -d --remove-orphans")
     _wait_for_es()
 
     yield
-    os.system(f"docker-compose -f {compose_yml} down --remove-orphans")
+    os.system(f"docker-compose -f {compose_yml_v7} down --remove-orphans")
+
+
+@pytest.fixture(scope='module', autouse=True)
+def start_storage_v8():
+    os.system(f"docker-compose -f {compose_yml_v8} up -d --remove-orphans")
+    _wait_for_es()
+
+    yield
+    os.system(f"docker-compose -f {compose_yml_v8} down --remove-orphans")
 
 
 def _wait_for_es():
