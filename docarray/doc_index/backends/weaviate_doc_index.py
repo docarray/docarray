@@ -148,7 +148,17 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _filter(
         self, filter_query: Any, limit: int
     ) -> Union[DocumentArray, List[Dict]]:
-        return super()._filter(filter_query, limit)
+        results = (
+            self._client.query.get(self._db_config.index_name, self.properties)
+            .with_additional("vector")
+            .with_where(filter_query)
+            .with_limit(limit)
+            .do()
+        )
+
+        docs = results["data"]["Get"][self._db_config.index_name]
+
+        return [self._parse_weaviate_result(doc) for doc in docs]
 
     def _filter_batched(
         self, filter_queries: Any, limit: int
@@ -229,6 +239,21 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         doc['__id'] = document_id
 
         return doc
+
+    def _parse_weaviate_result(self, result: Dict) -> Dict:
+        """
+        Parse the result from weaviate to a format that is compatible with the schema
+        that was used to initialize weaviate with.
+        """
+        # rewrite the __id to id
+        result = result.copy()
+        result['id'] = result.pop('__id')
+
+        # take the vector from the _additional field
+        additional_fields = result.pop('_additional')
+        result[self.embedding_column] = additional_fields['vector']
+
+        return result
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         docs = self._transpose_col_value_dict(column_to_data)

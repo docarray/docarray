@@ -14,6 +14,11 @@ class SimpleDoc(BaseDocument):
     tens: NdArray[10] = Field(dim=1000, is_embedding=True)
 
 
+class Document(BaseDocument):
+    embedding: NdArray[2] = Field(dim=2, is_embedding=True)
+    text: str = Field()
+
+
 @pytest.fixture
 def ten_simple_docs():
     return [SimpleDoc(tens=np.random.randn(10)) for _ in range(10)]
@@ -25,6 +30,28 @@ def weaviate_client():
     client.schema.delete_all()
     yield client
     client.schema.delete_all()
+
+
+@pytest.fixture
+def documents():
+
+    texts = ["lorem ipsum", "dolor sit amet", "consectetur adipiscing elit"]
+    embeddings = [[10, 10], [10.5, 10.5], [-100, -100]]
+
+    # create the docs by enumerating from 1 and use that as the id
+    docs = [
+        Document(id=i, embedding=embedding, text=text)
+        for i, (embedding, text) in enumerate(zip(embeddings, texts))
+    ]
+
+    yield docs
+
+
+@pytest.fixture
+def test_store(weaviate_client, documents):
+    store = WeaviateDocumentIndex[Document]()
+    store.index(documents)
+    yield store
 
 
 def test_index_simple_schema(weaviate_client, ten_simple_docs):
@@ -131,3 +158,18 @@ def test_find_batched(weaviate_client, caplog):
             "Argument search_field is not supported for WeaviateDocumentIndex"
             in caplog.text
         )
+
+
+@pytest.mark.parametrize(
+    "filter_query, expected_num_docs",
+    [
+        ({"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"}, 1),
+        ({"path": ["text"], "operator": "Equal", "valueText": "foo"}, 0),
+    ],
+)
+def test_filter(test_store, filter_query, expected_num_docs):
+
+    docs = test_store.filter(filter_query, limit=3)
+    actual_num_docs = len(docs)
+
+    assert actual_num_docs == expected_num_docs
