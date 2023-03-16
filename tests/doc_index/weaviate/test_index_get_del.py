@@ -95,3 +95,39 @@ def test_find(weaviate_client, caplog):
             "Argument search_field is not supported for WeaviateDocumentIndex"
             in caplog.text
         )
+
+
+def test_find_batched(weaviate_client, caplog):
+    class Document(BaseDocument):
+        embedding: NdArray[2] = Field(dim=2, is_embedding=True)
+
+    vectors = [[10, 10], [10.5, 10.5], [-100, -100]]
+    docs = [Document(embedding=vector) for vector in vectors]
+
+    store = WeaviateDocumentIndex[Document]()
+    store.index(docs)
+
+    queries = [[10.1, 10.1], [-100, -100]]
+
+    results = store.find_batched(queries, search_field=None, limit=3, distance=1e-2)
+    assert len(results) == 1
+    assert len(results[0]) == 2
+
+    results = store.find_batched(queries, search_field=None, limit=3, certainty=0.99)
+    assert len(results) == 1
+    assert len(results[0]) == 2
+
+    with pytest.raises(
+        ValueError,
+        match=r"Cannot have both 'certainty' and 'distance' at the same time",
+    ):
+        store.find_batched(
+            queries, search_field=None, limit=3, certainty=0.99, distance=1e-2
+        )
+
+    with caplog.at_level(logging.DEBUG):
+        store.find_batched(queries, search_field="foo", limit=10)
+        assert (
+            "Argument search_field is not supported for WeaviateDocumentIndex"
+            in caplog.text
+        )
