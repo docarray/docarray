@@ -230,10 +230,10 @@ We don't enforce naming of PRs and branches, but we recommend you follow the sam
 <a name="-adding a dependency"></a>
 ## ➕ Adding a dependency
 
-To add a depepency to DocArray you need to edit the `pyproject.toml` and add your dependency in the `[tool.poetry.dependencies]` section.
+To add a dependency to DocArray, edit `pyproject.toml` and add your dependency in the `[tool.poetry.dependencies]` section.
 Always overwrite poetry default version number (if you used `poetry add XYZ`):
-- Pick an appropirate version number. You should not nescarry pick the latest one but rather pick the old enough one that is still compatible
-- Use the `>=` notation instead of the `~` to not lock upper limit
+- Pick an appropriate version number. Don't pick the latest version, but rather the oldest that is still compatible.
+- Use the `>=` notation instead of `~` to not lock upper limit.
 
 If appropriate, make the dependency optional. For example if it is a new library for a new modality or new vector database.
 
