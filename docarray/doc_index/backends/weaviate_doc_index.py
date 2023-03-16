@@ -210,15 +210,11 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         scores = []
 
         for result in results["data"]["Get"][self._db_config.index_name]:
-            additional_fields = result.pop("_additional")
-            score = additional_fields[score_name]
+
+            score = result["_additional"][score_name]
             scores.append(score)
 
-            document = {}
-            document["id"] = result.pop("__id")
-            document[self.embedding_column] = additional_fields["vector"]
-            document.update(result)
-
+            document = self._parse_weaviate_result(result)
             documents.append(self._schema.from_view(document))
 
         return _FindResult(documents=da_class(documents), scores=scores)
