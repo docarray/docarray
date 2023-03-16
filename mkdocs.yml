@@ -1,9 +1,9 @@
 site_name: "DocArray"
 theme:
-  logo: assets/favicon.png
+#  logo: assets/favicon.png
   name: material
   features:
-    - navigation.sections
+#    - navigation.sections
     - navigation.indexes
   palette:
     # Palette toggle for light mode
@@ -23,20 +23,28 @@ theme:
         name: Switch to light mode
     #primary: teal
 markdown_extensions:
-  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
-  - attr_list
-  - md_in_html
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - attr_list
+  - md_in_html
+
+
 plugins:
   - search
   - mkdocstrings:
       handlers:
-        python:
+        crystal:
           options:
             docstring_style: sphinx
