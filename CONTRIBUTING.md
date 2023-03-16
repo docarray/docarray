@@ -68,7 +68,8 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
-### Installing dependencies using poetry
+### Installing dependencies using 
+
 
 We use [Poetry](https://python-poetry.org/) to manage our dependencies.
 
@@ -243,6 +244,8 @@ you will also need to add an extra:
 [tool.poetry.extras]
 new_modalities = ['mylib']
 ```
+
+Note: Manual editing of the `pyproject.toml` is equivalent  `poetry add "mylib>=3.9"  -E new_modalities`
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
 Locally you can run the test via:
