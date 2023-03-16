@@ -35,4 +35,8 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
