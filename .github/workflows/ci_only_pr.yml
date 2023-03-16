@@ -48,6 +48,7 @@ jobs:
 
           cd docs
           bash makedocs.sh
+          cd ..
           netlify deploy --dir=site --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
