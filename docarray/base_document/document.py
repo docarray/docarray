@@ -8,6 +8,7 @@ from rich.console import Console
 import numpy as np
 
 from docarray.base_document.base_node import BaseNode
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
@@ -100,16 +101,23 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
 
-    def __eq__(self, cls) -> bool:
-        for key1,key2 in zip(self.dict(),cls.dict()):
+    def __eq__(self, other) -> bool:
+
+        if len(self.dict()) != len(other.dict()) :
+            return False
+        
+        if set(self.dict()) != set(other.dict()) :
+            return False
+        
+        for key1,key2 in zip(self.dict(),other.dict()):
+            
+            value1 = self.dict()[key1]
+            value2 = other.dict()[key2]
+            
             if key1 != key2 :
                 return False
             if key1 == "id" and key2 == "id":
                 continue
-            
-            value1 = self.dict()[key1]
-            value2 = cls.dict()[key2]
-
             if isinstance(value1, np.ndarray) and isinstance(value2, np.ndarray):
                 if not np.array_equal(value1, value2):
                     return False
@@ -118,5 +126,5 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                     return False
         return True
     
-    def __ne__(self,cls) -> bool:
-        return not (self == cls)
+    def __ne__(self,other) -> bool:
+        return not (self == other)

@@ -79,6 +79,25 @@ def test_document_array_fixed_type():
 
     assert len(da) == 10
 
+def test_array_equality():
+    class Text(BaseDocument):
+        title : str
+        tensor : NdArray
+    
+    arr1 = Text(title="hello", tensor=np.ndarray, id = 1)
+    arr2 = Text(title="hello", tensor=np.ndarray, id = 1)
+
+    assert arr1 == arr2
+
+def test_tensor_equality():
+    class Text(BaseDocument):
+        tensor = TorchTensor
+
+    torch1 = Text(tensor=[3,224,224],id=1)
+    torch2 = Text(tensor=[3,224,224],id=1)
+
+    assert torch1 == torch2
+
 
 def test_get_bulk_attributes_function():
     class Mmdoc(BaseDocument):
