@@ -4,7 +4,11 @@ from pydantic import Field
 from docarray import BaseDocument
 from docarray.doc_index.backends.mongodb_doc_index import MongoDocumentIndex
 from docarray.typing import NdArray
-from tests.doc_index.mongodb.fixture import FlatDoc, SimpleDoc
+from tests.doc_index.mongodb.fixture import (  # noqa: F401
+    FlatDoc,
+    SimpleDoc,
+    start_storage,
+)
 
 
 def test_find_simple_schema():

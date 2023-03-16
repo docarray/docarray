@@ -75,40 +75,45 @@ class MongoDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         self._index_name = self._db_config.index_name
 
-        self._client = MongoClient(
-            host=self._db_config.host, **self._db_config.es_config
-        )
+        self._client = MongoClient(host=self._db_config.host)
 
         # ElasticSearh index setup
         self._index_init_params = ('type',)
         self._index_vector_params = ('dims',)
 
-        body: Dict[str, Any] = {
-            'mappings': {
-                'dynamic': True,
-                '_source': {'enabled': 'true'},
-                'properties': {},
-            }
-        }
+        # body: Dict[str, Any] = {
+        #     'mappings': {
+        #         'dynamic': True,
+        #         '_source': {'enabled': 'true'},
+        #         'properties': {},
+        #     }
+        # }
 
-        for col_name, col in self._column_infos.items():
-            if not col.config:
-                continue  # do not create column index if no config is given
-            body['mappings']['properties'][col_name] = self._create_index(col)
+        # for col_name, col in self._column_infos.items():
+        #     if not col.config:
+        #         continue  # do not create column index if no config is given
+        #     body['mappings']['properties'][col_name] = self._create_index(col)
 
-        if self._client.indices.exists(index=self._index_name):  # type: ignore
-            self._client.indices.put_mapping(
-                index=self._index_name, body=body['mappings']
-            )
-        else:
-            self._client.indices.create(index=self._index_name, body=body)
+        # if self._client.indices.exists(index=self._index_name):  # type: ignore
+        #     self._client.indices.put_mapping(
+        #         index=self._index_name, body=body['mappings']
+        #     )
+        # else:
+        #     self._client.indices.create(index=self._index_name, body=body)
 
-        if len(self._db_config.index_settings):
-            self._client.indices.put_settings(
-                index=self._index_name, body=self._db_config.index_settings
-            )
+        # if len(self._db_config.index_settings):
+        #     self._client.indices.put_settings(
+        #         index=self._index_name, body=self._db_config.index_settings
+        #     )
 
-        self._refresh(self._index_name)
+        # self._refresh(self._index_name)
+        # if self._index_name not in self._client.list_database_names():
+        self._client_db = self._client["mongodb_index"]
+        self._collection = self._client_db["new_collection"]
+        # self._client.mongodb_index.authenticate('admin', 'admin',mechanism='SCRAM-SHA-1')
+        print(self._client.list_database_names())
+        print(self._client_db.list_collection_names())
+        print(self._collection.database)
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -161,9 +166,12 @@ class MongoDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
         host: Union[str, List[str], None] = 'mongodb://localhost:27017'
-        index_name: Optional[str] = None
+        index_name: Optional[str] = 'mongodb_index'
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
+        username: str = ('admin',)
+        password: str = ('admin',)
+        mechanism: str = 'SCRAM-SHA-1'
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
@@ -408,21 +416,8 @@ class MongoDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # TODO chunk_size
 
-        accumulated_info = []
-        warning_info = []
-        for success, info in parallel_bulk(
-            self._client,
-            request,
-            raise_on_error=False,
-            raise_on_exception=False,
-            **kwargs,
-        ):
-            if not success:
-                warning_info.append(info)
-            else:
-                accumulated_info.append(info)
-
-        return accumulated_info, warning_info
+        final_res = self._collection.insert_many(request)
+        return None, final_res
 
     def _format_response(self, response: Any) -> Tuple[List[Dict], List[float]]:
         docs = []
