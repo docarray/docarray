@@ -11,6 +11,7 @@ In this guide, we're going to go through the steps for each kind of contribution
 - [🥇 Making Your First Submission](#-making-your-first-submission)
 - [📝 Code style conventions](#-code-style-conventions)
 - [☑️ Naming Conventions](#-naming-conventions)
+- [Addind a dependency]
 - [💥 Testing DocArray Locally and on CI](#-testing-docarray-locally-and-on-ci)
 - [📖 Contributing Documentation](#-contributing-documentation)
 - [🙏 Thank You](#-thank-you)
@@ -225,6 +226,23 @@ echo "<commit message>" | commitlint
 
 We don't enforce naming of PRs and branches, but we recommend you follow the same style. It can simply be one of your commit messages, just copy/paste it, e.g. `fix(readme): improve the readability and move sections`.
 
+<a name="-adding a dependency"></a>
+## Addind a dependency
+
+To add a depepency to DocArray you need to edit the `pyproject.toml` and add your dependency in the `[tool.poetry.dependencies]` section.
+Always overwrite poetry default version number (if you used `poetry add XYZ`):
+1- pick an appropirate version number. You should not nescarry pick the latest one but rather pick the old enough one that is still compatible
+2- use the `>=` notatation instead of the `~` to not lock upper limit
+
+If the dependency should be optional, example : if it is a new library for a new modalities or a new vector database. Then you need to make the dependecy optional
+
+`mylib = {version = ">=X.y.z", optional = true }`
+
+and you need to add an extra :
+```toml
+[tool.poetry.extras]
+new_modalities = ['mylib']
+```
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
 Locally you can run the test via:
