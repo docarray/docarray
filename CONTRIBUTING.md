@@ -11,6 +11,7 @@ In this guide, we're going to go through the steps for each kind of contribution
 - [🥇 Making Your First Submission](#-making-your-first-submission)
 - [📝 Code style conventions](#-code-style-conventions)
 - [☑️ Naming Conventions](#-naming-conventions)
+- [➕ Adding a dependency](#adding-a-dependency)
 - [💥 Testing DocArray Locally and on CI](#-testing-docarray-locally-and-on-ci)
 - [📖 Contributing Documentation](#-contributing-documentation)
 - [🙏 Thank You](#-thank-you)
@@ -67,7 +68,8 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
-### Installing dependencies using poetry
+### Installing dependencies using 
+
 
 We use [Poetry](https://python-poetry.org/) to manage our dependencies.
 
@@ -225,6 +227,25 @@ echo "<commit message>" | commitlint
 
 We don't enforce naming of PRs and branches, but we recommend you follow the same style. It can simply be one of your commit messages, just copy/paste it, e.g. `fix(readme): improve the readability and move sections`.
 
+<a name="-adding a dependency"></a>
+## ➕ Adding a dependency
+
+To add a dependency to DocArray, edit `pyproject.toml` and add your dependency in the `[tool.poetry.dependencies]` section.
+Always overwrite poetry default version number (if you used `poetry add XYZ`):
+- Pick an appropriate version number. Don't pick the latest version, but rather the oldest that is still compatible.
+- Use the `>=` notation instead of `~` to not lock upper limit.
+
+If appropriate, make the dependency optional. For example if it is a new library for a new modality or new vector database.
+
+`mylib = {version = ">=X.y.z", optional = true }`
+
+you will also need to add an extra:
+```toml
+[tool.poetry.extras]
+new_modalities = ['mylib']
+```
+
+Note: Manual editing of `pyproject.toml` is equivalent  to `poetry add "mylib>=3.9"  -E new_modalities`
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
 Locally you can run the test via:
