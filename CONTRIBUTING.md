@@ -245,7 +245,7 @@ you will also need to add an extra:
 new_modalities = ['mylib']
 ```
 
-Note: Manual editing of the `pyproject.toml` is equivalent  `poetry add "mylib>=3.9"  -E new_modalities`
+Note: Manual editing of `pyproject.toml` is equivalent  to `poetry add "mylib>=3.9"  -E new_modalities`
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
 Locally you can run the test via:
