@@ -158,7 +158,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         ...
 
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index a document into the store"""
+        """index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
         doc_seq = docs if isinstance(docs, Sequence) else [docs]
@@ -325,7 +325,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     # HNSWLib helpers
     def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:
-        """Create an instance of hnswlib.Index without initializing it."""
+        """Create an instance of hnswlib.index without initializing it."""
         construct_params = dict(
             (k, col.config[k]) for k in self._index_construct_params
         )
