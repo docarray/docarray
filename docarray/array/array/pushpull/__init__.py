@@ -1,9 +1,23 @@
 import logging
 from abc import abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Iterable, Iterator, List, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    Type,
+    cast,
+)
 
 from typing_extensions import Protocol
+
+SUPPORTED_PUSH_PULL_PROTOCOLS = ['jinaai', 's3', 'file']
+PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
 
 __cache_path__ = Path.home() / '.cache' / 'docarray-v2'
 
@@ -75,8 +89,18 @@ class PushPullMixin(Iterable['BaseDocument']):
     def __len__(self) -> int:
         ...
 
+    @staticmethod
+    def resolve_url(url: str) -> Tuple[PUSH_PULL_PROTOCOL, str]:
+        """Resolve the URL to the correct protocol and name."""
+        protocol, name = url.split('://', 2)
+        if protocol in SUPPORTED_PUSH_PULL_PROTOCOLS:
+            protocol = cast(PUSH_PULL_PROTOCOL, protocol)
+            return protocol, name
+        else:
+            raise ValueError(f'Unsupported protocol {protocol}')
+
     @classmethod
-    def get_backend(cls, protocol: Literal['jinaai', 's3', 'file']) -> PushPullLike:
+    def get_backend(cls, protocol: PUSH_PULL_PROTOCOL) -> PushPullLike:
         """
         Get the backend for the given protocol.
 
@@ -121,7 +145,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         :return: a list of artifact names
         """
         logging.info(f'Listing artifacts from {url}')
-        protocol, namespace = url.split('://', 2)
+        protocol, namespace = PushPullMixin.resolve_url(url)
         return PushPullMixin.get_backend(protocol).list(namespace, show_table)
 
     @classmethod
@@ -133,7 +157,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param missing_ok: whether to ignore if the artifact does not exist
         """
         logging.info(f'Deleting artifact {url}')
-        protocol, name = url.split('://', 2)
+        protocol, name = PushPullMixin.resolve_url(url)
         success = PushPullMixin.get_backend(protocol).delete(
             name, missing_ok=missing_ok
         )
@@ -159,7 +183,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing {len(self)} docs to {url}')
-        protocol, name = url.split('://', 2)
+        protocol, name = PushPullMixin.resolve_url(url)
         return PushPullMixin.get_backend(protocol).push(
             self, name, public, show_progress, branding  # type: ignore
         )
@@ -182,7 +206,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing stream to {url}')
-        protocol, name = url.split('://', 2)
+        protocol, name = PushPullMixin.resolve_url(url)
         return PushPullMixin.get_backend(protocol).push_stream(
             docs, name, public, show_progress, branding
         )
@@ -210,7 +234,7 @@ class PushPullMixin(Iterable['BaseDocument']):
             )
 
         logging.info(f'Pulling {url}')
-        protocol, name = url.split('://', 2)
+        protocol, name = PushPullMixin.resolve_url(url)
         return PushPullMixin.get_backend(protocol).pull(
             cls, name, show_progress, local_cache  # type: ignore
         )
@@ -238,7 +262,7 @@ class PushPullMixin(Iterable['BaseDocument']):
             )
 
         logging.info(f'Pulling Document stream from {url}')
-        protocol, name = url.split('://', 2)
+        protocol, name = PushPullMixin.resolve_url(url)
         return PushPullMixin.get_backend(protocol).pull_stream(
             cls, name, show_progress, local_cache  # type: ignore
         )
