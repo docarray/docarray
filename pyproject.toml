@@ -6,7 +6,7 @@ authors=['DocArray']
 license='Apache 2.0'
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7, <4"
 pydantic = ">=1.10.2"
 numpy = ">=1.17.3"
 protobuf = { version = ">=3.19.0", optional = true }
@@ -24,6 +24,8 @@ hnswlib = {version = ">=0.6.2", optional = true }
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 pandas = {version = ">=1.1.0", optional = true }
+elastic-transport = "^8.4.0"
+elasticsearch = "^8.6.2"
 
 [tool.poetry.extras]
 common = ["protobuf", "lz4"]
@@ -35,6 +37,7 @@ mesh = ["trimesh"]
 web = ["fastapi"]
 hnswlib = ["hnswlib"]
 pandas = ["pandas"]
+elasticsearch = ["elasticsearch", "elastic_transport"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
