@@ -653,9 +653,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         return columns
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
-        db_type = self.python_type_to_db_type(type_)
-        config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
+        if 'col_type' in custom_config.keys():
+            db_type = custom_config['col_type']
+        else:
+            db_type = self.python_type_to_db_type(type_)
+
+        config = self._runtime_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (
