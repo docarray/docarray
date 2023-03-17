@@ -45,6 +45,7 @@ plugins:
   - search
   - mkdocstrings:
       handlers:
-        crystal:
+        python:
           options:
             docstring_style: sphinx
+            inherited_members: true
