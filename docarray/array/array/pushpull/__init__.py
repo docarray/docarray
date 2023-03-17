@@ -76,7 +76,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         ...
 
     @classmethod
-    def get_backend(cls, protocol: str) -> PushPullLike:
+    def get_backend(cls, protocol: Literal['jinaai', 's3', 'file']) -> PushPullLike:
         """
         Get the backend for the given protocol.
 
