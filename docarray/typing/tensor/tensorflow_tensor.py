@@ -294,3 +294,6 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __len__(self) -> int:
         return len(self.tensor)
+
+    def __eq__(self: T, other: T) -> np.ndarray:
+        return tf.equal(self.tensor, other.tensor).numpy()

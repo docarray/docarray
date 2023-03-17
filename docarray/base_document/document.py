@@ -102,25 +102,25 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
-
-        if len(self.dict()) != len(other.dict()) :
+        if self.dict().keys() != other.dict().keys() :
             return False
         
-        if set(self.dict()) != set(other.dict()) :
-            return False
-        
-        for key1,key2 in zip(self.dict(),other.dict()):
+        for key1,key2 in zip(self.dict(), other.dict()):
             
             value1 = self.dict()[key1]
             value2 = other.dict()[key2]
             
-            if key1 != key2 :
-                return False
             if key1 == "id" and key2 == "id":
                 continue
-            if isinstance(value1, np.ndarray) and isinstance(value2, np.ndarray):
-                if not np.array_equal(value1, value2):
+
+            if isinstance(value1, AbstractTensor) and isinstance(value2, AbstractTensor):
+                comp_be = value1.get_comp_backend()
+                if not comp_be.equal(value1, value2):
                     return False
+                #if len(value1) != len(value2):
+                #    return False
+                #if not (value1 == value2).all().item():
+                #    return False
             else:
                 if value1 != value2 :
                     return False
