@@ -231,7 +231,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
-            query=query_batched, limit=limit, search_field=search_field
+            queries=query_batched, limit=limit, search_field=search_field
         )
         return _FindResult(documents=docs[0], scores=scores[0])
 

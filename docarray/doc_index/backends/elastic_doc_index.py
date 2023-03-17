@@ -276,7 +276,9 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
-    def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
+    def _find(
+        self, query: np.ndarray, limit: int, search_field: str = ''
+    ) -> _FindResult:
         if int(self._server_version.split('.')[0]) >= 8:
             warnings.warn(
                 'You are using Elasticsearch 8.0+ and the current client is 7.10.1. HNSW based vector search is not supported and the find method has a default implementation.'
@@ -307,14 +309,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _find_batched(
         self,
         queries: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         result_das = []
         result_scores = []
 
         for query in queries:
-            documents, scores = self._find(query, search_field, limit)
+            documents, scores = self._find(query, limit, search_field)
             result_das.append(documents)
             result_scores.append(scores)
 
@@ -352,8 +354,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _text_search(
         self,
         query: str,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
 
         search_query = {
@@ -380,14 +382,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _text_search_batched(
         self,
         queries: Sequence[str],
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         result_das = []
         result_scores = []
 
         for query in queries:
-            documents, scores = self._text_search(query, search_field, limit)
+            documents, scores = self._text_search(query, limit, search_field)
             result_das.append(documents)
             result_scores.append(scores)
 
