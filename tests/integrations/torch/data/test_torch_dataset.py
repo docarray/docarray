@@ -121,6 +121,7 @@ def test_nested_field(captions_da: DocumentArray[PairTextImage]):
     assert batch.text.embedding.shape[1] == 42
 
 
+@pytest.mark.slow
 def test_torch_dl_multiprocessing(captions_da: DocumentArray[PairTextImage]):
     BATCH_SIZE = 32
 
