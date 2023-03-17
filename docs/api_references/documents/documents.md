@@ -1,3 +1,3 @@
-# TorchDataset
+# Documents
 
 ::: docarray.documents
