@@ -92,15 +92,6 @@ def test_build_query():
     assert isinstance(q, store.QueryBuilder)
 
 
-def test_columns_db_type_with_user_defined_mapping(tmp_path):
-    class MyDoc(BaseDocument):
-        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
-
-    store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
-
-    assert store._column_infos['tens'].db_type == np.ndarray
-
-
 def test_create_columns():
     # Simple doc
     store = DummyDocIndex[SimpleDoc]()
@@ -148,6 +139,15 @@ def test_create_columns():
     assert store._column_infos['d__tens'].db_type == str
     assert store._column_infos['d__tens'].n_dim == 10
     assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
+
+
+def test_columns_db_type_with_user_defined_mapping(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
+
+    store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
+
+    assert store._column_infos['tens'].db_type == np.ndarray
 
 
 def test_is_schema_compatible():
