@@ -178,3 +178,8 @@ def test_filter(test_store, filter_query, expected_num_docs):
 def test_text_search(test_store):
     results = test_store.text_search(query="lorem", search_field="text", limit=3)
     assert len(results.documents) == 1
+
+
+def test_del_items(test_store):
+    del test_store[["1", "2"]]
+    assert test_store.num_docs() == 1

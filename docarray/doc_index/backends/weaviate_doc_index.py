@@ -143,7 +143,27 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
     def _del_items(self, doc_ids: Sequence[str]):
-        return super()._del_items(doc_ids)
+        has_matches = True
+
+        operands = [
+            {"path": ["__id"], "operator": "Equal", "valueString": doc_id}
+            for doc_id in doc_ids
+        ]
+        where_filer = {
+            "operator": "Or",
+            "operands": operands,
+        }
+
+        # do a loop because there is a limit to how many objects can be deleted at
+        # in a single query
+        # see: https://weaviate.io/developers/weaviate/api/rest/batch#maximum-number-of-deletes-per-query
+        while has_matches:
+            results = self._client.batch.delete_objects(
+                class_name=self._db_config.index_name,
+                where=where_filer,
+            )
+
+            has_matches = results["results"]["matches"]
 
     def _filter(
         self, filter_query: Any, limit: int
