@@ -5,8 +5,6 @@ import orjson
 from pydantic import BaseModel, Field
 from rich.console import Console
 
-import numpy as np
-
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
