@@ -40,7 +40,7 @@ def documents():
 
     # create the docs by enumerating from 1 and use that as the id
     docs = [
-        Document(id=i, embedding=embedding, text=text)
+        Document(id=str(i), embedding=embedding, text=text)
         for i, (embedding, text) in enumerate(zip(embeddings, texts))
     ]
 
