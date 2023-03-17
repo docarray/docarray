@@ -173,3 +173,8 @@ def test_filter(test_store, filter_query, expected_num_docs):
     actual_num_docs = len(docs)
 
     assert actual_num_docs == expected_num_docs
+
+
+def test_text_search(test_store):
+    results = test_store.text_search(query="lorem", search_field="text", limit=3)
+    assert len(results.documents) == 1

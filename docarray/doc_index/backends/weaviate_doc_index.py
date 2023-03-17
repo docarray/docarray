@@ -268,7 +268,18 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 )
 
     def _text_search(self, query: str, search_field: str, limit: int) -> _FindResult:
-        return super()._text_search(query, search_field, limit)
+        # TODO: allow user to specify the k1 and b parameters
+        bm25 = {"query": query, "properties": [search_field]}
+
+        results = (
+            self._client.query.get(self._db_config.index_name, self.properties)
+            .with_bm25(bm25)
+            .with_limit(limit)
+            .with_additional(["score", "vector"])
+            .do()
+        )
+
+        return self._format_response(results, "score")
 
     def _text_search_batched(
         self, queries: Sequence[str], search_field: str, limit: int
