@@ -151,8 +151,8 @@ class DocumentArray(
     def __eq__(self, other : Any) -> bool:
         if self.__len__() != other.__len__() :
             return False
-        for value_1, value_2 in zip(self._data(), other._data()):
-            if value_1 != value_2:
+        for doc_self, doc_other in zip(self, other):
+            if doc_self != doc_other:
                 return False
         
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:

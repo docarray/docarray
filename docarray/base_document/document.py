@@ -103,12 +103,12 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if self.dict().keys() != other.dict().keys() :
             return False
         
-        for key1,key2 in zip(self.dict(), other.dict()):
+        for field_name in self.__fields__:
             
-            value1 = self.dict()[key1]
-            value2 = other.dict()[key2]
+            value1 = getattr(self, field_name)
+            value2 = getattr(self, field_name)
             
-            if key1 == "id" and key2 == "id":
+            if field_name == "id":
                 continue
 
             if isinstance(value1, AbstractTensor) and isinstance(value2, AbstractTensor):
@@ -116,7 +116,7 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 if not comp_be.equal(value1, value2):
                     return False
             else:
-                if value1 != value2 :
+                if value1 != value2:
                     return False
         return True
     
