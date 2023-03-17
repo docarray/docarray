@@ -322,7 +322,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     def _filter(
         self,
-        filter_query: Any,
+        filter_query: Dict[str, Any],
         limit: int,
     ) -> List[Dict]:
         body = {

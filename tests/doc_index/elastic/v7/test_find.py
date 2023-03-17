@@ -201,9 +201,7 @@ def test_query_builder():
 
     store = ElasticDocumentIndex[MyDoc]()
     index_docs = [
-        MyDoc(
-            id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'
-        )
+        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
         for i in range(10)
     ]
     store.index(index_docs)
@@ -218,14 +216,14 @@ def test_query_builder():
     assert [doc['id'] for doc in docs] == ['0', '1']
 
     # exclude
-    q = store.build_query(extra={"size": 3}).exclude('term', num=0).build()
+    q = store.build_query(extra={'size': 3}).exclude('term', num=0).build()
     docs, _ = store.execute_query(q)
     assert [doc['id'] for doc in docs] == ['2', '3', '4']
 
     # script_fields
     q = (
-        store.build_query(extra={"size": 3})
-        .script_fields(bigger_num="doc['num'].value + 10")
+        store.build_query(extra={'size': 3})
+        .script_fields(bigger_num='doc[\'num\'].value + 10')
         .build()
     )
     docs, _ = store.execute_query(q)
@@ -240,17 +238,17 @@ def test_query_builder():
     from elasticsearch_dsl import Q
 
     d = {
-        "script_score": {
-            "query": {"match_all": {}},
-            "script": {
-                "source": "cosineSimilarity(params.query_vector, 'tens') + 1.0",
-                "params": {'query_vector': index_docs[-1].tens},
+        'script_score': {
+            'query': {'match_all': {}},
+            'script': {
+                'source': '1 / (1 + l2norm(params.query_vector, \'tens\'))',
+                'params': {'query_vector': index_docs[-1].tens},
             },
         }
     }
-    q = store.build_query().query(Q(d)).sort("_score").build()
+    q = store.build_query(extra={'size': 5}).query(Q(d)).sort('_score').build()
     docs, scores = store.execute_query(q)
-    assert docs[0]['id'] == index_docs[-1].id
+    assert [doc['id'] for doc in docs] == ['9', '8', '7', '6', '5']
     assert np.allclose(docs[0]['tens'], index_docs[-1].tens)
 
     # combination
@@ -258,7 +256,7 @@ def test_query_builder():
         store.build_query()
         .query(Q(d))
         .exclude('term', num=5)
-        .filter(Q("term", num=0) | Q("term", num=1))
+        .filter(Q('term', num=0) | Q('term', num=1))
         .build()
     )
     docs, _ = store.execute_query(q)
