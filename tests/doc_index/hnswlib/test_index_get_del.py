@@ -56,6 +56,20 @@ def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
         assert index.get_current_count() == 10
 
 
+def test_index_schema_with_user_defined_mapping(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
+
+    store = HnswDocumentIndex[MyDoc](work_dir=str(tmp_path))
+    da = DocumentArray[MyDoc](
+        [MyDoc(id=j, tens=np.array([j for _ in range(10)])) for j in range(10)]
+    )
+
+    store.index(da)
+    assert store._column_infos['tens'].db_type == np.ndarray
+    assert store.num_docs() == 10
+
+
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[FlatDoc](work_dir=str(tmp_path))
