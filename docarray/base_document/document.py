@@ -117,10 +117,6 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 comp_be = value1.get_comp_backend()
                 if not comp_be.equal(value1, value2):
                     return False
-                #if len(value1) != len(value2):
-                #    return False
-                #if not (value1 == value2).all().item():
-                #    return False
             else:
                 if value1 != value2 :
                     return False

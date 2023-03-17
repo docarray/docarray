@@ -289,6 +289,6 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
     def __eq__(self: T, other: T):
         """
         Equal comparison between two tensor objects
-        :return: comparison result in T
+        :return: a representation of the tensor or ndarray
         """
         ...
