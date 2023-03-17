@@ -201,14 +201,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _find(
         self,
         query: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
         """Find documents in the index
 
         :param query: query vector for KNN/ANN search. Has single axis.
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
@@ -219,15 +219,15 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _find_batched(
         self,
         queries: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         """Find documents in the index
 
         :param queries: query vectors for KNN/ANN search.
             Has shape (batch_size, vector_dim)
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         ...
@@ -266,14 +266,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _text_search(
         self,
         query: str,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
         """Find documents in the index based on a text search query
 
         :param query: The text to search for
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
@@ -284,14 +284,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _text_search_batched(
         self,
         queries: Sequence[str],
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         """Find documents in the index based on a text search query
 
         :param queries: The texts to search for
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
