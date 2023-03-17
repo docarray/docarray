@@ -245,7 +245,30 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return super()._find_batched(queries, search_field, limit)
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
-        return super()._get_items(doc_ids)
+
+        # TODO: how to handle > QUERY_MAXIMUM_RESULTS
+        operands = [
+            {"path": ["__id"], "operator": "Equal", "valueString": doc_id}
+            for doc_id in doc_ids
+        ]
+        where_filter = {
+            "operator": "Or",
+            "operands": operands,
+        }
+
+        results = (
+            self._client.query.get(self._db_config.index_name, self.properties)
+            .with_where(where_filter)
+            .with_additional("vector")
+            .do()
+        )
+
+        docs = [
+            self._parse_weaviate_result(doc)
+            for doc in results["data"]["Get"][self._db_config.index_name]
+        ]
+
+        return docs
 
     def _parse_document(self, document: Dict):
         doc = document.copy()

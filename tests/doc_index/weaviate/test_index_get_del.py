@@ -183,3 +183,9 @@ def test_text_search(test_store):
 def test_del_items(test_store):
     del test_store[["1", "2"]]
     assert test_store.num_docs() == 1
+
+
+def test_get_items(test_store):
+    docs = test_store[["1", "2"]]
+    assert len(docs) == 2
+    assert set(doc.id for doc in docs) == {'1', '2'}
