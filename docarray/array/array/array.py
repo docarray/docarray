@@ -69,19 +69,25 @@ class DocumentArray(
     (i.e. schema). This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
-        from docarray import BaseDocument, DocumentArray
-        from docarray.typing import NdArray, ImageUrl
-        from typing import Optional
+    ---
+
+    ```python
+    from docarray import BaseDocument, DocumentArray
+    from docarray.typing import NdArray, ImageUrl
+    from typing import Optional
 
 
-        class Image(BaseDocument):
-            tensor: Optional[NdArray[100]]
-            url: ImageUrl
+    class Image(BaseDocument):
+        tensor: Optional[NdArray[100]]
+        url: ImageUrl
 
 
-        da = DocumentArray[Image](
-            Image(url='http://url.com/foo.png') for _ in range(10)
-        )  # noqa: E510
+    da = DocumentArray[Image](
+        Image(url='http://url.com/foo.png') for _ in range(10)
+    )  # noqa: E510
+    ```
+
+    ---
 
 
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
