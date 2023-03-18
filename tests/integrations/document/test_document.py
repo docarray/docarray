@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, NamedTuple
 
 import numpy as np
 import pytest
@@ -11,7 +11,8 @@ from docarray.documents.helper import (
     create_doc,
     create_doc_from_typeddict,
     create_doc_from_dict,
-)
+    create_from_named_tuple,
+    )
 from docarray.typing import AudioNdArray
 
 
@@ -148,3 +149,24 @@ def test_create_doc_from_dict():
     doc2 = MyDoc(text='txt', other='also text')
 
     assert isinstance(doc1, BaseDocument) and isinstance(doc2, BaseDocument)
+
+def test_create_from_named_tuple():
+    class MyMultiModalDoc(NamedTuple):
+        image: ImageDoc
+        text: TextDoc
+
+    with pytest.raises(ValueError):
+        _ = create_from_named_tuple(MyMultiModalDoc, __base__=BaseModel)
+
+    Doc = create_from_named_tuple(MyMultiModalDoc)
+
+    assert issubclass(Doc, BaseDocument)
+
+    class MyAudio(NamedTuple):
+        title: str
+        tensor: Optional[AudioNdArray]
+
+    Doc = create_from_named_tuple(MyAudio, __base__=AudioDoc)
+
+    assert issubclass(Doc, BaseDocument)
+    assert issubclass(Doc, AudioDoc)
