@@ -59,7 +59,7 @@ class TorchTensor(
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
             square_crop: TorchTensor[3, 'x', 'x']
-            random_image: TorchTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: TorchTensor[3, ...]  # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors

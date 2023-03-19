@@ -11,6 +11,7 @@ from docarray.utils.misc import is_tf_available
 tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf
+
     from docarray.typing import TensorFlowTensor
 
 
@@ -80,11 +81,12 @@ def test_document_array_fixed_type():
 
     assert len(da) == 10
 
+
 def test_ndarray_equality():
     class Text(BaseDocument):
-        title : str
-        tensor : NdArray
-    
+        title: str
+        tensor: NdArray
+
     arr1 = Text(title="hello", tensor=np.zeros(5))
     arr2 = Text(title="hello", tensor=np.zeros(5))
     arr3 = Text(title="hello", tensor=np.ones(5))
@@ -93,6 +95,7 @@ def test_ndarray_equality():
     assert arr1 == arr2
     assert arr1 != arr3
     assert arr1 != arr4
+
 
 def test_tensor_equality():
     class Text(BaseDocument):
@@ -107,15 +110,16 @@ def test_tensor_equality():
     assert torch1 != torch3
     assert torch1 != torch4
 
+
 def test_tensorflowtensor_equality():
     class Text(BaseDocument):
         tensor: TensorFlowTensor
-    
+
     tensor1 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
     tensor2 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
     tensor3 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 5.0]]))
     tensor4 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]))
-    
+
     assert tensor1 == tensor2
     assert tensor1 != tensor3
     assert tensor1 != tensor4

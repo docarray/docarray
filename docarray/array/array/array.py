@@ -147,14 +147,15 @@ class DocumentArray(
         da._data = docs if isinstance(docs, list) else list(docs)
         da.tensor_type = tensor_type
         return da
-    
-    def __eq__(self, other : Any) -> bool:
-        if self.__len__() != other.__len__() :
+
+    def __eq__(self, other: Any) -> bool:
+        if self.__len__() != other.__len__():
             return False
         for doc_self, doc_other in zip(self, other):
             if doc_self != doc_other:
                 return False
-        
+        return True
+
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
         Validate if an Iterable of Document are compatible with this DocumentArray

@@ -103,7 +103,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             tensor: TensorFlowTensor
             image_tensor: TensorFlowTensor[3, 224, 224]
             square_crop: TensorFlowTensor[3, 'x', 'x']
-            random_image: TensorFlowTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: TensorFlowTensor[3, ...]  # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors

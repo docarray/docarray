@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field
 from rich.console import Console
 
 from docarray.base_document.base_node import BaseNode
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.base_document.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array.stacked.column_storage import ColumnStorageView
@@ -100,18 +100,19 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
-        if self.dict().keys() != other.dict().keys() :
+        if self.dict().keys() != other.dict().keys():
             return False
-        
+
         for field_name in self.__fields__:
-            
             value1 = getattr(self, field_name)
-            value2 = getattr(self, field_name)
-            
+            value2 = getattr(other, field_name)
+
             if field_name == "id":
                 continue
 
-            if isinstance(value1, AbstractTensor) and isinstance(value2, AbstractTensor):
+            if isinstance(value1, AbstractTensor) and isinstance(
+                value2, AbstractTensor
+            ):
                 comp_be = value1.get_comp_backend()
                 if not comp_be.equal(value1, value2):
                     return False
@@ -119,6 +120,6 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 if value1 != value2:
                     return False
         return True
-    
-    def __ne__(self,other) -> bool:
+
+    def __ne__(self, other) -> bool:
         return not (self == other)
