@@ -8,6 +8,9 @@ import hubble
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
+from docarray.array.array.pushpull.abstract_push_pull_backend import (
+    AbstractPushPullBackend,
+)
 from docarray.array.array.pushpull.helpers import (
     _BufferedCachingRequestReader,
     get_version_info,
@@ -61,7 +64,7 @@ def _get_raw_summary(self: 'DocumentArray') -> List[Dict[str, Any]]:
     return items
 
 
-class PushPullJAC:
+class PushPullJAC(AbstractPushPullBackend):
     """Class to push and pull DocumentArray to and from Jina AI Cloud."""
 
     @staticmethod

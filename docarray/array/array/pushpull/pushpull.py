@@ -21,7 +21,9 @@ PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
-    from docarray.array.array.pushpull.protocols import PushPullLike
+    from docarray.array.array.pushpull.abstract_push_pull_backend import (
+        AbstractPushPullBackend,
+    )
 
 
 class ConcurrentPushException(Exception):
@@ -33,7 +35,7 @@ class ConcurrentPushException(Exception):
 class PushPullMixin(Iterable['BaseDocument']):
     """Mixin class for push/pull functionality."""
 
-    __backends__: Dict[str, 'PushPullLike'] = {}
+    __backends__: Dict[str, Type['AbstractPushPullBackend']] = {}
     document_type: Type['BaseDocument']
 
     @abstractmethod
@@ -51,7 +53,9 @@ class PushPullMixin(Iterable['BaseDocument']):
             raise ValueError(f'Unsupported protocol {protocol}')
 
     @classmethod
-    def get_backend(cls, protocol: PUSH_PULL_PROTOCOL) -> 'PushPullLike':
+    def get_backend(
+        cls, protocol: PUSH_PULL_PROTOCOL
+    ) -> Type['AbstractPushPullBackend']:
         """
         Get the backend for the given protocol.
 

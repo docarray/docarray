@@ -4,6 +4,9 @@ from typing import Dict, Iterator, List, Optional, Type
 
 from typing_extensions import TYPE_CHECKING
 
+from docarray.array.array.pushpull.abstract_push_pull_backend import (
+    AbstractPushPullBackend,
+)
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 from docarray.array.array.pushpull.pushpull import ConcurrentPushException
 from docarray.utils.cache import get_cache_path
@@ -12,7 +15,7 @@ if TYPE_CHECKING:
     from docarray import BaseDocument, DocumentArray
 
 
-class PushPullFile:
+class PushPullFile(AbstractPushPullBackend):
     @staticmethod
     def _abs_filepath(name: str) -> Path:
         """Resolve a name to an absolute path.

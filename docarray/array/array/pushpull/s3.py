@@ -8,6 +8,9 @@ import botocore
 from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
+from docarray.array.array.pushpull.abstract_push_pull_backend import (
+    AbstractPushPullBackend,
+)
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
@@ -40,7 +43,7 @@ class _BufferedCachingReader:
             self._cache.close()
 
 
-class PushPullS3:
+class PushPullS3(AbstractPushPullBackend):
     """Class to push and pull DocumentArray to and from S3."""
 
     @staticmethod
@@ -119,7 +122,7 @@ class PushPullS3:
     ) -> Dict:
         """Push this DocumentArray object to the specified bucket and key.
 
-        :param docs: a stream of documents
+        :param da: The DocumentArray to push.
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
         :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
