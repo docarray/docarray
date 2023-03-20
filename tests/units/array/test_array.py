@@ -84,13 +84,12 @@ def test_document_array_fixed_type():
 
 def test_ndarray_equality():
     class Text(BaseDocument):
-        title: str
         tensor: NdArray
 
-    arr1 = Text(title="hello", tensor=np.zeros(5))
-    arr2 = Text(title="hello", tensor=np.zeros(5))
-    arr3 = Text(title="hello", tensor=np.ones(5))
-    arr4 = Text(title="hello", tensor=np.zeros(4))
+    arr1 = Text(tensor=np.zeros(5))
+    arr2 = Text(tensor=np.zeros(5))
+    arr3 = Text(tensor=np.ones(5))
+    arr4 = Text(tensor=np.zeros(4))
 
     assert arr1 == arr2
     assert arr1 != arr3
@@ -111,6 +110,18 @@ def test_tensor_equality():
     assert torch1 != torch4
 
 
+def test_documentarray():
+    class Text(BaseDocument):
+        text: str
+
+    da1 = DocumentArray([Text(text='hello')])
+    da2 = DocumentArray([Text(text='hello')])
+
+    assert da1 == da2
+    assert da1 == [Text(text='hello') for _ in range(len(da1))]
+    assert da2 == [Text(text='hello') for _ in range(len(da2))]
+
+
 def test_tensorflowtensor_equality():
     class Text(BaseDocument):
         tensor: TensorFlowTensor
@@ -123,6 +134,19 @@ def test_tensorflowtensor_equality():
     assert tensor1 == tensor2
     assert tensor1 != tensor3
     assert tensor1 != tensor4
+
+
+def test_text_tensor():
+    class Text(BaseDocument):
+        tensor: TensorFlowTensor
+
+    class Text1(BaseDocument):
+        tensor: NdArray
+
+    arr_tensor1 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
+    arr_tensor2 = Text1(tensor=np.zeros(5))
+
+    assert arr_tensor1 != arr_tensor2
 
 
 def test_get_bulk_attributes_function():
