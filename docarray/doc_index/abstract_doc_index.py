@@ -628,10 +628,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         return self.QueryBuilder()  # type: ignore
 
+    @classmethod
     def _flatten_schema(
-        self, schema: Type[BaseDocument], name_prefix: str = ''
+        cls, schema: Type[BaseDocument], name_prefix: str = ''
     ) -> List[Tuple[str, Type, 'ModelField']]:
         """Flatten the schema of a Document into a list of column names and types.
+        Nested Documents are handled in a recursive manner by adding `'__'` as a prefix to the column name.
 
         :param schema: The schema to flatten
         :param name_prefix: prefix to append to the column names. Used for recursive calls to handle nesting.
@@ -652,13 +654,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                             pass
                         elif issubclass(t_arg, BaseDocument):
                             names_types_fields.extend(
-                                self._flatten_schema(t_arg, name_prefix=inner_prefix)
+                                cls._flatten_schema(t_arg, name_prefix=inner_prefix)
                             )
                 else:
                     names_types_fields.append((field_name, t_, field_))
             elif issubclass(t_, BaseDocument):
                 names_types_fields.extend(
-                    self._flatten_schema(t_, name_prefix=inner_prefix)
+                    cls._flatten_schema(t_, name_prefix=inner_prefix)
                 )
             else:
                 names_types_fields.append((name_prefix + field_name, t_, field_))
