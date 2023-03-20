@@ -222,6 +222,9 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return self._format_response(results, score_name)
 
     def _format_response(self, results, score_name):
+        """
+        Format the response from Weaviate into a Tuple of DocumentArray and scores
+        """
         da_class = DocumentArray.__class_getitem__(
             cast(Type[BaseDocument], self._schema)
         )
@@ -230,14 +233,13 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         scores = []
 
         for result in results["data"]["Get"][self._db_config.index_name]:
-
             score = result["_additional"][score_name]
             scores.append(score)
 
             document = self._parse_weaviate_result(result)
             documents.append(self._schema.from_view(document))
 
-        return _FindResult(documents=da_class(documents), scores=scores)
+        return da_class(documents), scores
 
     def _find_batched(
         self, queries: Sequence[np.ndarray], search_field: str, limit: int
