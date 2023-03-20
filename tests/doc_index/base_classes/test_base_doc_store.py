@@ -141,6 +141,43 @@ def test_create_columns():
     assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
 
 
+def test_flatten_schema():
+    store = DummyDocIndex[SimpleDoc]()
+    fields = SimpleDoc.__fields__
+    assert set(store._flatten_schema(SimpleDoc)) == {
+        ('id', ID, fields['id']),
+        ('tens', NdArray[10], fields['tens']),
+    }
+
+    store = DummyDocIndex[FlatDoc]()
+    fields = FlatDoc.__fields__
+    assert set(store._flatten_schema(FlatDoc)) == {
+        ('id', ID, fields['id']),
+        ('tens_one', NdArray, fields['tens_one']),
+        ('tens_two', NdArray, fields['tens_two']),
+    }
+
+    store = DummyDocIndex[NestedDoc]()
+    fields = NestedDoc.__fields__
+    fields_nested = SimpleDoc.__fields__
+    assert set(store._flatten_schema(NestedDoc)) == {
+        ('id', ID, fields['id']),
+        ('d__id', ID, fields_nested['id']),
+        ('d__tens', NdArray[10], fields_nested['tens']),
+    }
+
+    store = DummyDocIndex[DeepNestedDoc]()
+    fields = DeepNestedDoc.__fields__
+    fields_nested = NestedDoc.__fields__
+    fields_nested_nested = SimpleDoc.__fields__
+    assert set(store._flatten_schema(DeepNestedDoc)) == {
+        ('id', ID, fields['id']),
+        ('d__id', ID, fields_nested['id']),
+        ('d__d__id', ID, fields_nested_nested['id']),
+        ('d__d__tens', NdArray[10], fields_nested_nested['tens']),
+    }
+
+
 def test_docs_validation():
     class OtherSimpleDoc(SimpleDoc):
         ...
