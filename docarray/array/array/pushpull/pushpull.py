@@ -65,17 +65,17 @@ class PushPullMixin(Iterable['BaseDocument']):
             from docarray.array.array.pushpull.jinaai import PushPullJAC
 
             cls.__backends__[protocol] = PushPullJAC
-            logging.info('Loaded Jina AI Cloud backend')
+            logging.debug('Loaded Jina AI Cloud backend')
         elif protocol == 'file':
             from docarray.array.array.pushpull.file import PushPullFile
 
             cls.__backends__[protocol] = PushPullFile
-            logging.info('Loaded Local Filesystem backend')
+            logging.debug('Loaded Local Filesystem backend')
         elif protocol == 's3':
             from docarray.array.array.pushpull.s3 import PushPullS3
 
             cls.__backends__[protocol] = PushPullS3
-            logging.info('Loaded S3 backend')
+            logging.debug('Loaded S3 backend')
         else:
             raise NotImplementedError(f'protocol {protocol} not supported')
 
