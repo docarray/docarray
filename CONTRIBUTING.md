@@ -271,8 +271,8 @@ This allows:
 * the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base.
 * the contributors to be sure that they don't break already-merged features when refactoring or modifying the code base.
 
-<a name="-enabling-logging"></a>
-## Enabling logging
+<a name="-enable-logging"></a>
+## Enable logging
 See more logs by setting the log level to `DEBUG`.
 
 Example:
