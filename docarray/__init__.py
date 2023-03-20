@@ -7,3 +7,14 @@ __all__ = [
     'BaseDocument',
     'DocumentArray',
 ]
+
+import logging
+
+logger = logging.getLogger('docarray')
+
+
+handler = logging.StreamHandler()
+formatter = logging.Formatter("%(levelname)s - %(name)s - %(message)s")
+
+handler.setFormatter(formatter)
+logger.addHandler(handler)
