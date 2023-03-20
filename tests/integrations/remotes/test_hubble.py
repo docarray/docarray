@@ -26,6 +26,8 @@ def testing_namespace_cleanup():
         DocumentArray.delete(f'jinaai://{da_name}')
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_pushpull_correct(capsys):
     DA_NAME: str = f'test{RANDOM}-pushpull-correct'
     da1 = get_test_da(DA_LEN)
@@ -55,6 +57,8 @@ def test_pushpull_correct(capsys):
     assert len(captured.err) == 0, 'No error should be printed when show_progress=False'
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_pushpull_stream_correct(capsys):
     DA_NAME_1: str = f'test{RANDOM}-pushpull-stream-correct-da1'
     DA_NAME_2: str = f'test{RANDOM}-pushpull-stream-correct-da2'
@@ -92,6 +96,8 @@ def test_pushpull_stream_correct(capsys):
     assert len(captured.err) == 0, 'No error should be printed when show_progress=False'
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_pull_stream_vs_pull_full():
     import docarray.array.array.pushpull.helpers
 
@@ -151,6 +157,8 @@ def test_pull_stream_vs_pull_full():
     ), 'Full pull memory usage should be dependent on the size of the data'
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_list_and_delete():
     DA_NAME_0 = f'test{RANDOM}-list-and-delete-da0'
     DA_NAME_1 = f'test{RANDOM}-list-and-delete-da1'
@@ -204,6 +212,8 @@ def test_list_and_delete():
     ), 'Deleting a non-existent DA should return False'
 
 
+@pytest.mark.slow
+@pytest.mark.internet
 def test_concurrent_push_pull():
     # Push to DA that is being pulled should not mess up the pull
     DA_NAME_0 = f'test{RANDOM}-concurrent-push-pull-da0'

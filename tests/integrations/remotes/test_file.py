@@ -85,6 +85,7 @@ def test_pushpull_stream_correct(capsys, tmp_path: Path):
     assert len(captured.err) == 0
 
 
+@pytest.mark.slow
 def test_pull_stream_vs_pull_full(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
     namespace_dir = tmp_path
@@ -212,6 +213,7 @@ def test_concurrent_push_pull(tmp_path: Path):
         p.map(_task, ['pull', 'push', 'pull'])
 
 
+@pytest.mark.slow
 def test_concurrent_push(tmp_path: Path):
     # Double push should fail the second push
     import time
