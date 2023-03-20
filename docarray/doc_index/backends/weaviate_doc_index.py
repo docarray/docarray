@@ -6,6 +6,7 @@ from typing import (
     Generator,
     Generic,
     List,
+    Literal,
     Optional,
     Sequence,
     Type,
@@ -242,9 +243,46 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return da_class(documents), scores
 
     def _find_batched(
-        self, queries: Sequence[np.ndarray], search_field: str, limit: int
+        self,
+        queries: Sequence[np.ndarray],
+        search_field: str,
+        limit: int,
+        score_name: Literal["certainty", "distance"] = "certainty",
+        score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
-        return super()._find_batched(queries, search_field, limit)
+        index_name = self._db_config.index_name
+        if search_field != '':
+            logging.warning(
+                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
+            )
+
+        near_vector = {}
+        if score_threshold:
+            near_vector[score_name] = score_threshold
+
+        qs = []
+        for i, query in enumerate(queries):
+            near_vector["vector"] = query
+
+            q = (
+                self._client.query.get(index_name, self.properties)
+                .with_near_vector(near_vector)
+                .with_limit(limit)
+                .with_additional([score_name, "vector"])
+                .with_alias(f'query_{i}')
+            )
+
+            qs.append(q)
+
+        results = self._client.query.multi_get(qs).do()
+
+        docs_and_scores = [
+            self._format_response(result, score_name)
+            for result in results["data"]["Get"].values()
+        ]
+
+        docs, scores = zip(*docs_and_scores)
+        return list(docs), list(scores)
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
 

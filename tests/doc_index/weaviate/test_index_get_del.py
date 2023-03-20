@@ -134,23 +134,21 @@ def test_find_batched(weaviate_client, caplog):
     store = WeaviateDocumentIndex[Document]()
     store.index(docs)
 
-    queries = [[10.1, 10.1], [-100, -100]]
+    queries = np.array([[10.1, 10.1], [-100, -100]])
 
-    results = store.find_batched(queries, search_field=None, limit=3, distance=1e-2)
-    assert len(results) == 1
-    assert len(results[0]) == 2
+    results = store.find_batched(
+        queries, search_field='', limit=3, score_name="distance", score_threshold=1e-2
+    )
+    assert len(results) == 2
+    assert len(results.documents[0]) == 2
+    assert len(results.documents[1]) == 1
 
-    results = store.find_batched(queries, search_field=None, limit=3, certainty=0.99)
-    assert len(results) == 1
-    assert len(results[0]) == 2
-
-    with pytest.raises(
-        ValueError,
-        match=r"Cannot have both 'certainty' and 'distance' at the same time",
-    ):
-        store.find_batched(
-            queries, search_field=None, limit=3, certainty=0.99, distance=1e-2
-        )
+    results = store.find_batched(
+        queries, search_field='', limit=3, score_name="certainty"
+    )
+    assert len(results) == 2
+    assert len(results.documents[0]) == 3
+    assert len(results.documents[1]) == 3
 
     with caplog.at_level(logging.DEBUG):
         store.find_batched(queries, search_field="foo", limit=10)
