@@ -309,6 +309,7 @@ class MySchema(BaseDocument):
 
 In this case, the db type of `my_num` will be `'float64'` and the db type of `my_text` will be `'varchar'`. 
 Additional information regarding the col_type, such as `max_len` for `varchar` will be stored in the `_ColumnsInfo.config`.
+The given col_type has to be a valid db type, meaning that has to be described in the index's `RuntimeConfig.default_column_config`.
 
 ### The `_index()` method
 
