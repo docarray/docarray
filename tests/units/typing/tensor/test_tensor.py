@@ -4,7 +4,7 @@ import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_document.io.json import orjson_dumps
-from docarray.typing import NdArray
+from docarray.typing import AudioNdArray, NdArray
 from docarray.typing.tensor import NdArrayEmbedding
 
 
@@ -158,3 +158,35 @@ def test_parametrized_operations():
     assert isinstance(t_result, np.ndarray)
     assert isinstance(t_result, NdArray)
     assert isinstance(t_result, NdArray[128])
+
+
+def test_class_equality():
+    assert NdArray == NdArray
+    assert NdArray[128] == NdArray[128]
+    assert NdArray[128] != NdArray[256]
+    assert NdArray[128] != NdArray[2, 64]
+    assert not NdArray[128] == NdArray[2, 64]
+
+    assert NdArrayEmbedding == NdArrayEmbedding
+    assert NdArrayEmbedding[128] == NdArrayEmbedding[128]
+    assert NdArrayEmbedding[128] != NdArrayEmbedding[256]
+
+    assert AudioNdArray == AudioNdArray
+    assert AudioNdArray[128] == AudioNdArray[128]
+    assert AudioNdArray[128] != AudioNdArray[256]
+
+
+def test_class_hash():
+    assert hash(NdArray) == hash(NdArray)
+    assert hash(NdArray[128]) == hash(NdArray[128])
+    assert hash(NdArray[128]) != hash(NdArray[256])
+    assert hash(NdArray[128]) != hash(NdArray[2, 64])
+    assert not hash(NdArray[128]) == hash(NdArray[2, 64])
+
+    assert hash(NdArrayEmbedding) == hash(NdArrayEmbedding)
+    assert hash(NdArrayEmbedding[128]) == hash(NdArrayEmbedding[128])
+    assert hash(NdArrayEmbedding[128]) != hash(NdArrayEmbedding[256])
+
+    assert hash(AudioNdArray) == hash(AudioNdArray)
+    assert hash(AudioNdArray[128]) == hash(AudioNdArray[128])
+    assert hash(AudioNdArray[128]) != hash(AudioNdArray[256])
