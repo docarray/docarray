@@ -8,12 +8,12 @@ import hubble
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
-from docarray.array.array.pushpull import __cache_path__
 from docarray.array.array.pushpull.helpers import (
     _BufferedCachingRequestReader,
     get_version_info,
     raise_req_error,
 )
+from docarray.array.array.pushpull.pushpull import __cache_path__
 
 if TYPE_CHECKING:  # pragma: no cover
     import io
