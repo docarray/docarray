@@ -5,7 +5,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
 
 
-def filter(
+def filter_docs(
     docs: AnyDocumentArray,
     query: Union[str, Dict, List[Dict]],
 ) -> AnyDocumentArray:
@@ -19,7 +19,7 @@ def filter(
 
         from docarray import DocumentArray, BaseDocument
         from docarray.documents import Text, Image
-        from docarray.util.filter import filter
+        from docarray.util.filter import filter_docs
 
 
         class MyDocument(BaseDocument):
@@ -52,7 +52,7 @@ def filter(
             }
         }
 
-        results = filter(docs, query)
+        results = filter_docs(docs, query)
         assert len(results) == 1
         assert results[0].price == 30
         assert results[0].caption == 'A couple birdwatching with binoculars'
