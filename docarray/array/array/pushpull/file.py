@@ -5,10 +5,8 @@ from typing import Dict, Iterator, List, Optional, Type
 from typing_extensions import TYPE_CHECKING
 
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
-from docarray.array.array.pushpull.pushpull import (
-    ConcurrentPushException,
-    __cache_path__,
-)
+from docarray.array.array.pushpull.pushpull import ConcurrentPushException
+from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:
     from docarray import BaseDocument, DocumentArray
@@ -22,7 +20,7 @@ class PushPullFile:
         If it is a path, it is resolved to an absolute path.
         """
         if not (name.startswith('/') or name.startswith('~') or name.startswith('.')):
-            name = str(__cache_path__ / name)
+            name = str(get_cache_path() / name)
         if name.startswith('~'):
             name = str(Path.home() / name[2:])
         return Path(name).resolve()

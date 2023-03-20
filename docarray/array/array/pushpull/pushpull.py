@@ -1,6 +1,5 @@
 import logging
 from abc import abstractmethod
-from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -15,10 +14,10 @@ from typing import (
 
 from typing_extensions import Literal
 
+from docarray.utils.cache import get_cache_path
+
 SUPPORTED_PUSH_PULL_PROTOCOLS = ['jinaai', 's3', 'file']
 PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
-
-__cache_path__ = Path.home() / '.cache' / 'docarray-v2'
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
@@ -84,7 +83,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @staticmethod
     def list(
-        url: str = f'file://{__cache_path__}', show_table: bool = False
+        url: str = f'file://{get_cache_path()}', show_table: bool = False
     ) -> List[str]:
         """
         List all the DocumentArrays in the namespace.

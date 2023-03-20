@@ -9,7 +9,7 @@ from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
-from docarray.array.array.pushpull.pushpull import __cache_path__
+from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
@@ -206,7 +206,7 @@ class PushPullS3:
         bucket, name = name.split('/', 1)
 
         save_name = name.replace('/', '_')
-        cache_path = __cache_path__ / f'{save_name}.da'
+        cache_path = get_cache_path() / f'{save_name}.da'
 
         source = _BufferedCachingReader(
             open(f"s3://{bucket}/{name}.da", 'rb', compression='.gz'),

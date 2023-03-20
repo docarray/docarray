@@ -4,12 +4,9 @@ from pathlib import Path
 import pytest
 
 from docarray import DocumentArray
-from docarray.array.array.pushpull.file import (
-    ConcurrentPushException,
-    PushPullFile,
-    __cache_path__,
-)
+from docarray.array.array.pushpull.file import ConcurrentPushException, PushPullFile
 from docarray.documents import TextDoc
+from docarray.utils.cache import get_cache_path
 from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
@@ -17,7 +14,7 @@ TOLERANCE_RATIO = 0.1  # Percentage of difference allowed in stream vs non-strea
 
 
 def test_path_resolution():
-    assert PushPullFile._abs_filepath('meow') == __cache_path__ / 'meow'
+    assert PushPullFile._abs_filepath('meow') == get_cache_path() / 'meow'
     assert PushPullFile._abs_filepath('/meow') == Path('/meow')
     assert PushPullFile._abs_filepath('~/meow') == Path.home() / 'meow'
     assert PushPullFile._abs_filepath('./meow') == Path.cwd() / 'meow'
