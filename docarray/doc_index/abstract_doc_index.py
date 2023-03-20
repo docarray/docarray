@@ -669,6 +669,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _create_column_infos(
         self, schema: Type[BaseDocument]
     ) -> Dict[str, _ColumnInfo]:
+        """Collects information about every column that is implied by a given schema.
+
+        :param schema: The schema (subclass of BaseDocument) to analyze and parse
+            columns from
+        :returns: A dictionary mapping from column names to column information.
+        """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
             if is_union_type(type_):
@@ -708,6 +714,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _validate_docs(
         self, docs: Union[BaseDocument, Sequence[BaseDocument]]
     ) -> DocumentArray[BaseDocument]:
+        """Validates Document against the schema of the Document Index.
+        For validation to pass, the schema of `docs` and the schema of the Document
+        Index need to evaluate to the same flattened columns.
+        If Validation fails, a ValueError is raised.
+
+        :param docs: Document to evaluate. If this is a DocumentArray, validation is
+            performed using its `doc_type` (parametrization), without having to check
+            ever Document in `docs`. If this check fails, or if `docs` is not a
+            DocumentArray, evaluation is performed for every Document in `docs`.
+        :return: A DocumentArray containing the Documents in `docs`
+        """
         if isinstance(docs, BaseDocument):
             docs = [docs]
         if isinstance(docs, DocumentArray):
