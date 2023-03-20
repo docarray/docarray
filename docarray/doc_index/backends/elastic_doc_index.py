@@ -177,7 +177,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 str: {'type': 'text'},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
-            }
+            },
+            chunk_size=500,
         )
 
     ###############################################
@@ -424,6 +425,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request,
             raise_on_error=False,
             raise_on_exception=False,
+            chunk_size=self._runtime_config.chunk_size,
             **kwargs,
         ):
             if not success:
