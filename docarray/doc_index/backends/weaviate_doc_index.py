@@ -219,7 +219,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             .do()
         )
 
-        return self._format_response(results, score_name)
+        return self._format_response(results["data"]["Get"][index_name], score_name)
 
     def _format_response(self, results, score_name):
         """
@@ -232,7 +232,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         documents = []
         scores = []
 
-        for result in results["data"]["Get"][self._db_config.index_name]:
+        for result in results:
             score = result["_additional"][score_name]
             scores.append(score)
 
@@ -313,18 +313,18 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 )
 
     def _text_search(self, query: str, search_field: str, limit: int) -> _FindResult:
-        # TODO: allow user to specify the k1 and b parameters
+        index_name = self._db_config.index_name
         bm25 = {"query": query, "properties": [search_field]}
 
         results = (
-            self._client.query.get(self._db_config.index_name, self.properties)
+            self._client.query.get(index_name, self.properties)
             .with_bm25(bm25)
             .with_limit(limit)
             .with_additional(["score", "vector"])
             .do()
         )
 
-        return self._format_response(results, "score")
+        return self._format_response(results["data"]["Get"][index_name], "score")
 
     def _text_search_batched(
         self, queries: Sequence[str], search_field: str, limit: int
