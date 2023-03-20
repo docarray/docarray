@@ -246,7 +246,7 @@ This allows:
 
 <a name="-enabling-logging"></a>
 ## Enabling logging
-See more logs about your code by setting the log level to `DEBUG`.
+See more logs by setting the log level to `DEBUG`.
 
 Example:
 ```python
@@ -263,7 +263,7 @@ class SimpleDoc(BaseDocument):
 doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')
 ```
 
-```bash
+```console
 INFO - docarray.doc_index.abstract_doc_index - DB config created
 INFO - docarray.doc_index.abstract_doc_index - Runtime config created
 DEBUG - docarray - Working directory set to temp_path/
