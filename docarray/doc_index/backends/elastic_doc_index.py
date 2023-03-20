@@ -177,9 +177,9 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 str: {'type': 'text'},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
-            },
-            chunk_size=500,
+            }
         )
+        chunk_size: int = 500
 
     ###############################################
     # Implementation of abstract methods          #
@@ -416,8 +416,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> Tuple[List[Dict], List[Any]]:
         """Send bulk request to Elastic and gather the successful info"""
 
-        # TODO chunk_size
-
         accumulated_info = []
         warning_info = []
         for success, info in parallel_bulk(
@@ -425,7 +423,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request,
             raise_on_error=False,
             raise_on_exception=False,
-            chunk_size=self._runtime_config.chunk_size,
+            chunk_size=self._runtime_config.chunk_size,  # type: ignore
             **kwargs,
         ):
             if not success:
