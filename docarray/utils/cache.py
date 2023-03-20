@@ -1,7 +1,9 @@
 import os
+from functools import lru_cache
 from pathlib import Path
 
 
+@lru_cache(maxsize=None)
 def get_cache_path() -> Path:
     """
     Get the path to the cache directory.
