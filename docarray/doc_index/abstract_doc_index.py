@@ -28,7 +28,7 @@ from docarray.utils.misc import torch_imported
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('docarray')
 
 
 if TYPE_CHECKING:
