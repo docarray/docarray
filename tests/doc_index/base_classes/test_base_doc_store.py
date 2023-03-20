@@ -44,7 +44,11 @@ class DummyDocIndex(BaseDocumentIndex):
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: {str: {'hi': 'there'}, np.ndarray: {'you': 'good?'}}
+            default_factory=lambda: {
+                str: {'hi': 'there'},
+                np.ndarray: {'you': 'good?'},
+                'varchar': {'good': 'bye'},
+            }
         )
 
     @dataclass
@@ -139,6 +143,35 @@ def test_create_columns():
     assert store._column_infos['d__tens'].db_type == str
     assert store._column_infos['d__tens'].n_dim == 10
     assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
+
+
+def test_columns_db_type_with_user_defined_mapping(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
+
+    store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
+
+    assert store._column_infos['tens'].db_type == np.ndarray
+
+
+def test_columns_db_type_with_user_defined_mapping_additional_params(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type='varchar', max_len=1024)
+
+    store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
+
+    assert store._column_infos['tens'].db_type == 'varchar'
+    assert store._column_infos['tens'].config['max_len'] == 1024
+
+
+def test_columns_illegal_mapping(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type='non_valid_type')
+
+    with pytest.raises(
+        ValueError, match='The given col_type is not a valid db type: non_valid_type'
+    ):
+        DummyDocIndex[MyDoc](work_dir=str(tmp_path))
 
 
 def test_is_schema_compatible():
