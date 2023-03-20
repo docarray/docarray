@@ -314,7 +314,7 @@ That way you have full control over whether the input data gets flattened or not
 **The `.id` field:** Every Document has an `.id` field, which is intended to act as a unique identifier or primary key
 in your backend, if such a concepts exists in your case. In your implementation you can assume that `.id`s are **unique** and **non-empty**.
 (Strictly speaking, this uniqueness property is not guaranteed, since a user could override the auto-generated `.id` field with a custom value.
-If your implementation encounters a duplicate `.id`, it is okay to fail and raise and Exception.)
+If your implementation encounters a duplicate `.id`, it is okay to fail and raise an Exception.)
 
 ## Implement a Query Builder for your Document Index
 
