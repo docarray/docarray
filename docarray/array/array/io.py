@@ -460,7 +460,7 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         for row in df.itertuples():
             access_path2val = row._asdict()
-            access_path2val.pop('Index', None)
+            access_path2val.pop('index', None)
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             da.append(doc_type.parse_obj(doc_dict))
 
