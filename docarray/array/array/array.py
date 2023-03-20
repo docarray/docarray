@@ -62,9 +62,6 @@ class DocumentArray(
     """
      DocumentArray is a container of Documents.
 
-    :param docs: iterable of Document
-    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
-
     A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
     homogeneous and follow the same schema. To precise this schema you can use
@@ -72,29 +69,31 @@ class DocumentArray(
     (i.e. schema). This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
-    EXAMPLE USAGE
-    .. code-block:: python
-        from docarray import BaseDocument, DocumentArray
-        from docarray.typing import NdArray, ImageUrl
-        from typing import Optional
+    ---
+
+    ```python
+    from docarray import BaseDocument, DocumentArray
+    from docarray.typing import NdArray, ImageUrl
+    from typing import Optional
 
 
-        class Image(BaseDocument):
-            tensor: Optional[NdArray[100]]
-            url: ImageUrl
+    class Image(BaseDocument):
+        tensor: Optional[NdArray[100]]
+        url: ImageUrl
 
 
-        da = DocumentArray[Image](
-            Image(url='http://url.com/foo.png') for _ in range(10)
-        )  # noqa: E510
+    da = DocumentArray[Image](
+        Image(url='http://url.com/foo.png') for _ in range(10)
+    )  # noqa: E510
+    ```
+
+    ---
 
 
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
     fields at the DocumentArray level (for example `da.tensor` or `da.url`).
     You can also set fields, with `da.tensor = np.random.random([10, 100])`:
 
-
-    .. code-block:: python
         print(da.url)
         # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
         import numpy as np
@@ -106,7 +105,7 @@ class DocumentArray(
 
     You can index into a DocumentArray like a numpy array or torch tensor:
 
-    .. code-block:: python
+
         da[0]  # index by position
         da[0:5:2]  # index by slice
         da[[0, 2, 3]]  # index by list of indices
@@ -114,9 +113,11 @@ class DocumentArray(
 
     You can delete items from a DocumentArray like a Python List
 
-    .. code-block:: python
         del da[0]  # remove first element from DocumentArray
         del da[0:5]  # remove elements for 0 to 5 from DocumentArray
+
+    :param docs: iterable of Document
+    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
 
     """
 

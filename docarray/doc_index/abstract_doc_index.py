@@ -49,7 +49,7 @@ class _FindResultBatched(NamedTuple):
 def _raise_not_composable(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
-            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
+            f'`{name}` is not usable through the query builder of this Document index ({type(self)}). '
             f'But you can call `{type(self)}.{name}()` directly.'
         )
 
@@ -59,7 +59,7 @@ def _raise_not_composable(name):
 def _raise_not_supported(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
-            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
+            f'`{name}` is not usable through the query builder of this Document index ({type(self)}). '
         )
 
     return _inner
@@ -152,7 +152,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     @abstractmethod
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
-        """Index a document into the store"""
+        """index a document into the store"""
         # `column_to_data` is a dictionary from column name to a generator
         # that yields the data for that column.
         # If you want to work directly on documents, you can implement index() instead
@@ -179,7 +179,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param doc_ids: ids to get from the Document Index
+        :param doc_ids: ids to get from the Document index
         :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
         """
         ...
@@ -191,8 +191,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         Can take two kinds of inputs:
         - A native query of the underlying database. This is meant as a passthrough so that you
-        can enjoy any functionality that is not available through the Document Index API.
-        - The output of this Document Index' `QueryBuilder.build()` method.
+        can enjoy any functionality that is not available through the Document index API.
+        - The output of this Document index' `QueryBuilder.build()` method.
 
         :param query: the query to execute
         :param args: positional arguments to pass to the query
@@ -205,14 +205,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _find(
         self,
         query: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
         """Find documents in the index
 
         :param query: query vector for KNN/ANN search. Has single axis.
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
@@ -223,15 +223,15 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _find_batched(
         self,
         query: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         """Find documents in the index
 
         :param query: query vectors for KNN/ANN search.
             Has shape (batch_size, vector_dim)
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         ...
@@ -270,14 +270,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _text_search(
         self,
         query: str,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
         """Find documents in the index based on a text search query
 
         :param query: The text to search for
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
@@ -288,14 +288,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def _text_search_batched(
         self,
         queries: Sequence[str],
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         """Find documents in the index based on a text search query
 
         :param queries: The texts to search for
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
+        :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
@@ -313,7 +313,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Get one or multiple Documents into the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param key: id or ids to get from the Document Index
+        :param key: id or ids to get from the Document index
         """
         # normalize input
         if isinstance(key, str):
@@ -344,7 +344,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Delete one or multiple Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param key: id or ids to delete from the Document Index
+        :param key: id or ids to delete from the Document index
         """
         self._logger.info(f'Deleting documents with id(s) {key} from the index')
         if isinstance(key, str):
@@ -370,7 +370,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             self._runtime_config = runtime_config
 
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index Documents into the index.
+        """index Documents into the index.
 
         :param docs: Documents to index
         """
