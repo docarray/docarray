@@ -25,11 +25,7 @@ from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
 from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import torch_imported
-
 import logging
-
-logger = logging.getLogger('docarray')
-
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -90,12 +86,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 'A DocumentIndex must be typed with a Document type.'
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
+        self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
             raise ValueError(f'db_config must be of type {self.DBConfig}')
-        logger.info('DB config created')
+        self._logger.info('DB config created')
         self._runtime_config = self.RuntimeConfig()
-        logger.info('Runtime config created')
+        self._logger.info('Runtime config created')
         self._column_infos: Dict[str, _ColumnInfo] = self._create_columns(self._schema)
 
     ###############################################
@@ -349,7 +346,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         :param key: id or ids to delete from the Document Index
         """
-        logger.info(f'Deleting documents with id(s) {key} from the index')
+        self._logger.info(f'Deleting documents with id(s) {key} from the index')
         if isinstance(key, str):
             key = [key]
         self._del_items(key)
@@ -377,7 +374,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index
         """
-        logger.info(f'Indexing {len(docs)} documents')
+        self._logger.info(f'Indexing {len(docs)} documents')
         data_by_columns = self._get_col_value_dict(docs)
         self._index(data_by_columns, **kwargs)
 
@@ -399,7 +396,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        logger.info(f'Executing `find` for search field {search_field}')
+        self._logger.info(f'Executing `find` for search field {search_field}')
         if isinstance(query, BaseDocument):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
@@ -433,7 +430,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
-        logger.info(f'Executing `find_batched` for search field {search_field}')
+        self._logger.info(f'Executing `find_batched` for search field {search_field}')
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
@@ -463,7 +460,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        logger.info(f'Executing `filter` for the query {filter_query}')
+        self._logger.info(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
 
         if isinstance(docs, List):
@@ -483,7 +480,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        logger.info(f'Executing `filter_batched` for the queries {filter_queries}')
+        self._logger.info(
+            f'Executing `filter_batched` for the queries {filter_queries}'
+        )
         da_list = self._filter_batched(filter_queries, limit=limit, **kwargs)
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
@@ -505,7 +504,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        logger.info(f'Executing `text_search` for search field {search_field}')
+        self._logger.info(f'Executing `text_search` for search field {search_field}')
         if isinstance(query, BaseDocument):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
@@ -533,7 +532,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        logger.info(f'Executing `text_search_batched` for search field {search_field}')
+        self._logger.info(
+            f'Executing `text_search_batched` for search field {search_field}'
+        )
         if isinstance(queries[0], BaseDocument):
             query_docs: Sequence[BaseDocument] = cast(Sequence[BaseDocument], queries)
             query_texts: Sequence[str] = self._get_values_by_column(
