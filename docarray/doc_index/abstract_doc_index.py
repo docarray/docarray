@@ -761,9 +761,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     ' and that the types of your data match the types of the Document Index schema.'
                 )
 
-        return DocumentArray[BaseDocument](
-            out_docs
-        )  # TODO(johannes): use `construct` here to avoid validating again
+        return DocumentArray[BaseDocument].construct(out_docs)
 
     def _to_numpy(self, val: Any) -> Any:
         if isinstance(val, np.ndarray):
