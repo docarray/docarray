@@ -88,15 +88,15 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         for col_name, col in self._column_infos.items():
             if not col.config:
                 logger.warning(
-                    f'No index was created for {col_name} as it does not have a config'
+                    f'No index was created for `{col_name}` as it does not have a config'
                 )
                 continue
             if load_existing:
                 self._hnsw_indices[col_name] = self._load_index(col_name, col)
-                logger.info(f'Loading an existing index for column {col_name}')
+                logger.info(f'Loading an existing index for column `{col_name}`')
             else:
                 self._hnsw_indices[col_name] = self._create_index(col)
-                logger.info(f'Created a new index for column {col_name}')
+                logger.info(f'Created a new index for column `{col_name}`')
 
         # SQLite setup
         self._sqlite_db_path = os.path.join(self._work_dir, 'docs_sqlite.db')

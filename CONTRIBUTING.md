@@ -267,8 +267,8 @@ doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')
 INFO - docarray - DB config created
 INFO - docarray - Runtime config created
 DEBUG - docarray - Working directory set to temp_path/
-WARNING - docarray - No index was created for id as it does not have a config
-INFO - docarray - Created a new index for column vector
+WARNING - docarray - No index was created for `id` as it does not have a config
+INFO - docarray - Created a new index for column `vector`
 DEBUG - docarray - DB path set to temp_path/docs_sqlite.db
 INFO - docarray - Connection to DB has been established
 INFO - docarray - HnswDocumentIndex[SimpleDoc] has been initialized
