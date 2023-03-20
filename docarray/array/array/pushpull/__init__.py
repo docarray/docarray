@@ -7,14 +7,13 @@ from typing import (
     Iterable,
     Iterator,
     List,
-    Literal,
     Optional,
     Tuple,
     Type,
     cast,
 )
 
-from typing_extensions import Protocol
+from typing_extensions import Literal, Protocol
 
 SUPPORTED_PUSH_PULL_PROTOCOLS = ['jinaai', 's3', 'file']
 PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
