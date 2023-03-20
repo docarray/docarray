@@ -48,7 +48,9 @@ class _ParametrizedMeta(type):
     """
 
     def _equals_special_case(cls, other):
-        is_tensor = AbstractTensor in other.mro()
+        is_type = isinstance(other, type)
+        is_none_type = is_type and issubclass(other, type(None))
+        is_tensor = (not is_none_type) and AbstractTensor in other.mro()
         same_parents = is_tensor and cls.mro()[1:] == other.mro()[1:]
 
         subclass_target_shape = getattr(other, '__docarray_target_shape__', False)
