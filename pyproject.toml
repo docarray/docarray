@@ -51,6 +51,11 @@ uvicorn = ">=0.19.0"
 httpx = ">=0.23.0"
 pytest-asyncio = ">=0.20.2"
 
+
+[tool.poetry.group.docs.dependencies]
+mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
+mkdocs-material= ">=9.1.2"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -86,7 +91,7 @@ ignore_missing_imports = true
 
 [tool.black]
 skip-string-normalization = true # equivalent to black -S
-exclude = 'docarray/proto/pb2/*'
+exclude = 'docarray/proto/pb*/*'
 
 [tool.isort]
 skip_glob= ['docarray/proto/pb2/*', 'docarray/proto/pb/*']

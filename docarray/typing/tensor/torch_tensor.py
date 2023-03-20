@@ -59,6 +59,7 @@ class TorchTensor(
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
             square_crop: TorchTensor[3, 'x', 'x']
+            random_image: TorchTensor[3, ...] # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors
@@ -66,6 +67,7 @@ class TorchTensor(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(3, 224, 224),
             square_crop=torch.zeros(3, 64, 64),
+            random_image=torch.zeros(3, 128, 256),
         )
 
         # automatic shape conversion
@@ -73,6 +75,7 @@ class TorchTensor(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
             square_crop=torch.zeros(3, 128, 128),
+            random_image=torch.zeros(3, 64, 128),
         )
 
         # !! The following will raise an error due to shape mismatch !!
@@ -80,6 +83,7 @@ class TorchTensor(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224),  # this will fail validation
             square_crop=torch.zeros(3, 128, 64),  # this will also fail validation
+            random_image=torch.zeros(4, 64, 128),  # this will also fail validation
         )
     """
 
@@ -160,7 +164,7 @@ class TorchTensor(
         :return: a TorchTensor
         """
         if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
-            value.__class__ = cls.__unparametrizedcls__
+            value.__class__ = cls.__unparametrizedcls__  # type: ignore
         else:
             value.__class__ = cls
         return cast(T, value)

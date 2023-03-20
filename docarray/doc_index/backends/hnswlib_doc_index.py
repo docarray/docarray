@@ -30,7 +30,7 @@ from docarray.doc_index.abstract_doc_index import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
-from docarray.utils.filter import filter as da_filter
+from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
 from docarray.utils.misc import is_np_int, torch_imported
 
@@ -158,7 +158,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         ...
 
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index a document into the store"""
+        """index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
         docs_validated = self._validate_docs(docs)
@@ -201,7 +201,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
-            docs_filtered = da_cls(da_filter(docs_filtered, cond))
+            docs_filtered = da_cls(filter_docs(docs_filtered, cond))
 
         docs_and_scores = zip(
             docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
@@ -213,8 +213,8 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _find_batched(
         self,
         query: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(query, k=limit)
@@ -226,9 +226,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         ]
         return _FindResultBatched(documents=result_das, scores=distances)
 
-    def _find(self, query: np.ndarray, search_field: str, limit: int) -> _FindResult:
+    def _find(
+        self, query: np.ndarray, limit: int, search_field: str = ''
+    ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
-        docs, scores = self._find_batched(query_batched, search_field, limit)
+        docs, scores = self._find_batched(
+            query=query_batched, limit=limit, search_field=search_field
+        )
         return _FindResult(documents=docs[0], scores=scores[0])
 
     def _filter(
@@ -257,16 +261,16 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _text_search(
         self,
         query: str,
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _text_search_batched(
         self,
         queries: Sequence[str],
-        search_field: str,
         limit: int,
+        search_field: str = '',
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
@@ -325,7 +329,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     # HNSWLib helpers
     def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:
-        """Create an instance of hnswlib.Index without initializing it."""
+        """Create an instance of hnswlib.index without initializing it."""
         construct_params = dict(
             (k, col.config[k]) for k in self._index_construct_params
         )

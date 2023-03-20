@@ -41,6 +41,11 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return torch.stack(tensors, dim=dim)
 
     @classmethod
+    def copy(cls, tensor: 'torch.Tensor') -> 'torch.Tensor':
+        """return a copy/clone of the tensor"""
+        return tensor.clone()
+
+    @classmethod
     def to_device(cls, tensor: 'torch.Tensor', device: str) -> 'torch.Tensor':
         """Move the tensor to the specified device."""
         return tensor.to(device)
