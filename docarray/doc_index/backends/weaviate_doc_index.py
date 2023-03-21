@@ -211,24 +211,19 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
-        certainty: Optional[float] = None,
-        distance: Optional[float] = None,
+        score_name: Literal["certainty", "distance"] = "certainty",
+        score_threshold: Optional[float] = None,
     ) -> _FindResult:
         index_name = self._db_config.index_name
-        near_vector = {
-            "vector": query,
-        }
         if search_field:
             logging.warning(
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
             )
-
-        if certainty:
-            near_vector['certainty'] = certainty
-        if distance:
-            near_vector['distance'] = distance
-
-        score_name = 'certainty' if certainty else 'distance'
+        near_vector = {
+            "vector": query,
+        }
+        if score_threshold:
+            near_vector[score_name] = score_threshold
 
         results = (
             self._client.query.get(index_name, self.properties)

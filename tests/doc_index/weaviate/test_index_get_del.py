@@ -108,17 +108,13 @@ def test_find(weaviate_client, caplog):
 
     query = [10.1, 10.1]
 
-    results = store.find(query, search_field=None, limit=3, distance=1e-2)
+    results = store.find(
+        query, search_field=None, limit=3, score_name="distance", score_threshold=1e-2
+    )
     assert len(results) == 2
 
-    results = store.find(query, search_field=None, limit=3, certainty=0.99)
+    results = store.find(query, search_field=None, limit=3, score_threshold=0.99)
     assert len(results) == 2
-
-    with pytest.raises(
-        ValueError,
-        match=r"Cannot have both 'certainty' and 'distance' at the same time",
-    ):
-        store.find(query, search_field=None, limit=3, certainty=0.99, distance=1e-2)
 
     with caplog.at_level(logging.DEBUG):
         store.find(query, search_field="foo", limit=10)
