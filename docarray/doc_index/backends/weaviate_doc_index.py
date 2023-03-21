@@ -115,6 +115,8 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # TODO: What is the best way to specify other config that is part of schema?
         # e.g. invertedIndexConfig, shardingConfig, moduleConfig, vectorIndexConfig
+        #       and configure replication
+        # we will update base on user feedback
         schema["properties"] = properties
         schema["class"] = self._db_config.index_name
 
@@ -203,6 +205,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             for batched_result in batched_results["data"]["Get"].values()
         ]
 
+    # TODO: refactor to combine certainty and distance into one parameter
     def _find(
         self,
         query: np.ndarray,
@@ -412,7 +415,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def num_docs(self) -> int:
         index_name = self._db_config.index_name
         result = self._client.query.aggregate(index_name).with_meta_count().do()
-
+        # TODO: decorator to check for errors
         total_docs = result["data"]["Aggregate"][index_name][0]["meta"]["count"]
 
         return total_docs
