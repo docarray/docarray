@@ -48,7 +48,7 @@ class _FindResultBatched(NamedTuple):
 def _raise_not_composable(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
-            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
+            f'`{name}` is not usable through the query builder of this Document index ({type(self)}). '
             f'But you can call `{type(self)}.{name}()` directly.'
         )
 
@@ -58,7 +58,7 @@ def _raise_not_composable(name):
 def _raise_not_supported(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
-            f'`{name}` is not usable through the query builder of this Document Index ({type(self)}). '
+            f'`{name}` is not usable through the query builder of this Document index ({type(self)}). '
         )
 
     return _inner
@@ -148,7 +148,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     @abstractmethod
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
-        """Index a document into the store"""
+        """index a document into the store"""
         # `column_to_data` is a dictionary from column name to a generator
         # that yields the data for that column.
         # If you want to work directly on documents, you can implement index() instead
@@ -175,7 +175,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param doc_ids: ids to get from the Document Index
+        :param doc_ids: ids to get from the Document index
         :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
         """
         ...
@@ -187,8 +187,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         Can take two kinds of inputs:
         - A native query of the underlying database. This is meant as a passthrough so that you
-        can enjoy any functionality that is not available through the Document Index API.
-        - The output of this Document Index' `QueryBuilder.build()` method.
+        can enjoy any functionality that is not available through the Document index API.
+        - The output of this Document index' `QueryBuilder.build()` method.
 
         :param query: the query to execute
         :param args: positional arguments to pass to the query
@@ -309,7 +309,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Get one or multiple Documents into the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param key: id or ids to get from the Document Index
+        :param key: id or ids to get from the Document index
         """
         # normalize input
         if isinstance(key, str):
@@ -340,7 +340,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """Delete one or multiple Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
-        :param key: id or ids to delete from the Document Index
+        :param key: id or ids to delete from the Document index
         """
         if isinstance(key, str):
             key = [key]
@@ -365,7 +365,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             self._runtime_config = runtime_config
 
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
-        """Index Documents into the index.
+        """index Documents into the index.
 
         :param docs: Documents to index
         """
@@ -653,9 +653,19 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         return columns
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
-        db_type = self.python_type_to_db_type(type_)
-        config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
+
+        if 'col_type' in custom_config.keys():
+            db_type = custom_config['col_type']
+            custom_config.pop('col_type')
+            if db_type not in self._runtime_config.default_column_config.keys():
+                raise ValueError(
+                    f'The given col_type is not a valid db type: {db_type}'
+                )
+        else:
+            db_type = self.python_type_to_db_type(type_)
+
+        config = self._runtime_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (

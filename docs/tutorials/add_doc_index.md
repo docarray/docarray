@@ -57,7 +57,7 @@ Make sure that you call the `super().__init__` method, which will do some basic 
 
 Your backend (database or similar) should represent Documents in the following way:
 - Every field of a Document is a column in the database
-- Column types follow a default that you define, based on the type hint of the associated field, but can also be configures by the user
+- Column types follow a default that you define, based on the type hint of the associated field, but can also be configured by the user
 - Every row in your database thus represents a Document
 - **Nesting:** The most common way to handle nested Document (and the one where the `AbstractDocumentIndex` will hold your hand the most), is to flatten out nested Documents. But if your backend natively supports nesting representations, then feel free to leverage those!
 
@@ -145,6 +145,13 @@ class _ColumnInfo:
 - `n_dim` is the dimensionality of the column, e.g. `100` for a 100-dimensional vector. See further guidance on this below.
 
 Again, these are automatically populated for you, so you can just use them in your implementation.
+
+**Note:**
+`_ColumnInfo.docarray_type` contains the python type as specified in `self._schema`, whereas 
+`_ColumnInfo.db_type` contains the data type of a particular database column.
+By default, it holds that `_ColumnInfo.docarray_type == self.python_type_to_db_type(_ColumnInfo.db_type)`, as we will see later.
+However, you should not rely on this, because a user can manually specify a different db_type. 
+Therefore, your implementation should rely on `_ColumnInfo.db_type` and not directly call `python_type_to_db_type()`.
 
 ### Properly handle `n_dim`
 
@@ -292,6 +299,18 @@ This method is slightly special, because 1) it is not exposed to the user, and 2
 It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
 The `BaseDocumentIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
 
+If the user wants to change the default behaviour, one can set the db type by using the `col_type` field:
+
+```python
+class MySchema(BaseDocument):
+    my_num: float = Field(col_type='float64')
+    my_text: str = Field(..., col_type='varchar', max_len=2048)
+```
+
+In this case, the db type of `my_num` will be `'float64'` and the db type of `my_text` will be `'varchar'`. 
+Additional information regarding the col_type, such as `max_len` for `varchar` will be stored in the `_ColumnsInfo.config`.
+The given col_type has to be a valid db type, meaning that has to be described in the index's `RuntimeConfig.default_column_config`.
+
 ### The `_index()` method
 
 When indexing Documents, your implementation should behave in the following way:
@@ -310,6 +329,11 @@ helper method. Inside of `_index()` you can use this to transform `column_to_dat
 
 **If your backend has native nesting capabilities:** You can also ignore most of the above, and implement the public `index()` method directly.
 That way you have full control over whether the input data gets flattened or not.
+
+**The `.id` field:** Every Document has an `.id` field, which is intended to act as a unique identifier or primary key
+in your backend, if such a concepts exists in your case. In your implementation you can assume that `.id`s are **unique** and **non-empty**.
+(Strictly speaking, this uniqueness property is not guaranteed, since a user could override the auto-generated `.id` field with a custom value.
+If your implementation encounters a duplicate `.id`, it is okay to fail and raise an Exception.)
 
 ## Implement a Query Builder for your Document Index
 
