@@ -58,7 +58,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @classmethod
     def get_pushpull_backend(
-        cls: SelfPushPullMixin, protocol: PUSH_PULL_PROTOCOL
+        cls: Type[SelfPushPullMixin], protocol: PUSH_PULL_PROTOCOL
     ) -> Type['AbstractPushPullBackend']:
         """
         Get the backend for the given protocol.
@@ -91,7 +91,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @classmethod
     def list(
-        cls: SelfPushPullMixin,
+        cls: Type[SelfPushPullMixin],
         url: str = f'file://{get_cache_path()}',
         show_table: bool = False,
     ) -> List[str]:
@@ -110,7 +110,9 @@ class PushPullMixin(Iterable['BaseDocument']):
         return cls.get_pushpull_backend(protocol).list(namespace, show_table)
 
     @classmethod
-    def delete(cls: SelfPushPullMixin, url: str, missing_ok: bool = False) -> bool:
+    def delete(
+        cls: Type[SelfPushPullMixin], url: str, missing_ok: bool = False
+    ) -> bool:
         """
         Delete the DocumentArray at the given url.
 
@@ -150,7 +152,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @classmethod
     def push_stream(
-        cls: SelfPushPullMixin,
+        cls: Type[SelfPushPullMixin],
         docs: Iterator['BaseDocument'],
         url: str,
         public: bool = True,
@@ -173,7 +175,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @classmethod
     def pull(
-        cls: SelfPushPullMixin,
+        cls: Type[SelfPushPullMixin],
         url: str,
         show_progress: bool = False,
         local_cache: bool = True,
@@ -201,7 +203,7 @@ class PushPullMixin(Iterable['BaseDocument']):
 
     @classmethod
     def pull_stream(
-        cls: SelfPushPullMixin,
+        cls: Type[SelfPushPullMixin],
         url: str,
         show_progress: bool = False,
         local_cache: bool = False,
