@@ -9,6 +9,7 @@ from typing import (
     Literal,
     Optional,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -57,7 +58,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._set_properties()
         self._create_schema()
 
-    def _set_properties(self):
+    def _set_properties(self) -> None:
         field_overwrites = {"id": DOCUMENTID}
 
         self.properties = [
@@ -66,7 +67,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if v.config.get('is_embedding', False) is False
         ]
 
-    def _validate_columns(self):
+    def _validate_columns(self) -> None:
         # must have at most one column with property is_embedding=True
         # and that column must be of type WEAVIATE_PY_VEC_TYPES
         # TODO: update when https://github.com/weaviate/weaviate/issues/2424
@@ -86,16 +87,16 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 f'Only one column can be marked as embedding but found {num_embedding_columns} columns marked as embedding'
             )
 
-    def _set_embedding_column(self):
+    def _set_embedding_column(self) -> None:
         for column_name, column_info in self._column_infos.items():
             if column_info.config.get('is_embedding', False):
                 self.embedding_column = column_name
                 break
 
-    def _configure_client(self):
+    def _configure_client(self) -> None:
         self._client.batch.configure(**self._db_config.batch_config)
 
-    def _create_schema(self):
+    def _create_schema(self) -> None:
         schema = {}
 
         properties = []
@@ -159,7 +160,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
             for doc_id in doc_ids
         ]
-        where_filer = {
+        where_filter = {
             "operator": "Or",
             "operands": operands,
         }
@@ -170,7 +171,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         while has_matches:
             results = self._client.batch.delete_objects(
                 class_name=self._db_config.index_name,
-                where=where_filer,
+                where=where_filter,
             )
 
             has_matches = results["results"]["matches"]
@@ -198,7 +199,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             .with_additional("vector")
             .with_where(filter_query)
             .with_limit(limit)
-            .with_alias(f'q{i}')
+            .with_alias(f'query_{i}')
             for i, filter_query in enumerate(filter_queries)
         ]
 
@@ -240,7 +241,9 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return self._format_response(results["data"]["Get"][index_name], score_name)
 
-    def _format_response(self, results, score_name):
+    def _format_response(
+        self, results, score_name
+    ) -> Tuple[List[DocumentArray], List[float]]:
         """
         Format the response from Weaviate into a Tuple of DocumentArray and scores
         """
@@ -268,7 +271,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
-        index_name = self._db_config.index_name
+
         if search_field != '':
             logging.warning(
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
@@ -282,7 +285,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 near_vector[score_name] = score_threshold
 
             q = (
-                self._client.query.get(index_name, self.properties)
+                self._client.query.get(self._db_config.index_name, self.properties)
                 .with_near_vector(near_vector)
                 .with_limit(limit)
                 .with_additional([score_name, "vector"])
@@ -302,7 +305,9 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return list(docs), list(scores)
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
-        # TODO: how to handle > QUERY_MAXIMUM_RESULTS
+        # TODO: warn when doc_ids > QUERY_MAXIMUM_RESULTS after
+        #       https://github.com/weaviate/weaviate/issues/2792
+        #       is implemented
         operands = [
             {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
             for doc_id in doc_ids
@@ -326,10 +331,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return docs
 
-    def _parse_document(self, document: Dict):
+    def _rewrite_documentid(self, document: Dict):
         doc = document.copy()
 
-        # rewrite the id to __id
+        # rewrite the id to DOCUMENTID
         document_id = doc.pop('id')
         doc[DOCUMENTID] = document_id
 
@@ -340,7 +345,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         Parse the result from weaviate to a format that is compatible with the schema
         that was used to initialize weaviate with.
         """
-        # rewrite the __id to id
+        # rewrite the DOCUMENTID to id
         result = result.copy()
         result['id'] = result.pop(DOCUMENTID)
 
@@ -356,7 +361,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         with self._client.batch as batch:
             for doc in docs:
-                parsed_doc = self._parse_document(doc)
+                parsed_doc = self._rewrite_documentid(doc)
                 vector = parsed_doc.pop(self.embedding_column)
 
                 batch.add_data_object(
