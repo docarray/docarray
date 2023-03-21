@@ -1,4 +1,5 @@
 import copy
+import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
 
@@ -7,7 +8,8 @@ from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.helper import dataclass_from_dict, random_identity, filter_dict
 
-from redis import Redis
+from redis import Redis, RedisCluster
+from redis.exceptions import ResponseError
 from redis.commands.search.field import NumericField, TextField, VectorField, GeoField
 from redis.commands.search.indexDefinition import IndexDefinition
 
@@ -37,6 +39,7 @@ class RedisConfig:
     initial_cap: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
     root_id: bool = True
+    cluster: bool = False
 
 
 class BackendMixin(BaseBackendMixin):
@@ -77,7 +80,9 @@ class BackendMixin(BaseBackendMixin):
             config.redis_config['decode_responses'] = False
 
         if config.index_name is None:
-            config.index_name = 'index_name__' + random_identity()
+            config.index_name = 'index_name__' + random_identity() + ''
+
+        config.index_name = f'{{{config.index_name}}}'
 
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
@@ -99,7 +104,12 @@ class BackendMixin(BaseBackendMixin):
             self.append(_docs)
 
     def _build_client(self):
-        client = Redis(
+        if self._config.cluster:
+            _client_class = RedisCluster
+        else:
+            _client_class = Redis
+
+        client = _client_class(
             host=self._config.host,
             port=self._config.port,
             **self._config.redis_config,
@@ -117,9 +127,16 @@ class BackendMixin(BaseBackendMixin):
             idef = IndexDefinition(
                 prefix=[self._doc_prefix], language=self._config.language
             )
-            self._client.ft(index_name=self._config.index_name).create_index(
-                schema, definition=idef
-            )
+
+            try:
+                self._client.ft(index_name=self._config.index_name).create_index(
+                    schema, definition=idef
+                )
+            except ResponseError as e:
+                if self._config.cluster:
+                    warnings.warn('Redis Cluster does not support update schema')
+                else:
+                    raise e
 
     def _ensure_unique_config(
         self,
