@@ -22,6 +22,11 @@ class Document(BaseDocument):
     text: str = Field()
 
 
+class NestedDocument(BaseDocument):
+    text: str = Field()
+    child: Document
+
+
 @pytest.fixture
 def ten_simple_docs():
     return [SimpleDoc(tens=np.random.randn(10)) for _ in range(10)]
@@ -219,3 +224,35 @@ def test_get_items(test_store):
     docs = test_store[["1", "2"]]
     assert len(docs) == 2
     assert set(doc.id for doc in docs) == {'1', '2'}
+
+
+def test_index_nested_documents(weaviate_client):
+    store = WeaviateDocumentIndex[NestedDocument]()
+    document = NestedDocument(
+        text="lorem ipsum", child=Document(embedding=[10, 10], text="dolor sit amet")
+    )
+    store.index([document])
+    assert store.num_docs() == 1
+
+
+@pytest.mark.parametrize(
+    "search_field, query, expected_num_docs",
+    [
+        ("text", "lorem", 1),
+        ("child__text", "dolor", 1),
+        ("text", "foo", 0),
+        ("child__text", "bar", 0),
+    ],
+)
+def test_text_search_nested_documents(
+    weaviate_client, search_field, query, expected_num_docs
+):
+    store = WeaviateDocumentIndex[NestedDocument]()
+    document = NestedDocument(
+        text="lorem ipsum", child=Document(embedding=[10, 10], text="dolor sit amet")
+    )
+    store.index([document])
+
+    results = store.text_search(query=query, search_field=search_field, limit=3)
+
+    assert len(results.documents) == expected_num_docs
