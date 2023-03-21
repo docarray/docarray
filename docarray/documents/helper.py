@@ -58,7 +58,6 @@ def create_doc(
 
     if not issubclass(__base__, BaseDocument):
         raise ValueError(f'{type(__base__)} is not a BaseDocument or its subclass')
-
     doc = create_model(
         __model_name,
         __config__=__config__,
@@ -69,14 +68,14 @@ def create_doc(
         __slots__=__slots__,
         **field_definitions,
     )
-
     return doc
 
 
 def create_doc_from_typeddict(
-    typeddict_cls: Type['TypedDict'],  # type: ignore
+    typeddict_cls: Type['TypedDict'], 
+    __base__ : Type['T_doc'] = BaseDocument, # type: ignore
     **kwargs: Any,
-):
+) -> Type['T_doc']:
     """
     Create a subclass of BaseDocument based on the fields of a `TypedDict`. This is a wrapper around pydantic's create_model_from_typeddict.
     :param typeddict_cls: TypedDict class to use for the new Document class
@@ -106,17 +105,15 @@ def create_doc_from_typeddict(
         assert issubclass(Doc, Audio)
 
     """
-
-    if '__base__' in kwargs:
-        if not issubclass(kwargs['__base__'], BaseDocument):
+    if __base__:
+        if not issubclass(__base__, BaseDocument):
             raise ValueError(
-                f'{kwargs["__base__"]} is not a BaseDocument or its subclass'
+                f'{__base__} is not a BaseDocument or its subclass'
             )
     else:
-        kwargs['__base__'] = BaseDocument
+        __base__ = BaseDocument
 
-    doc = create_model_from_typeddict(typeddict_cls, **kwargs)
-
+    doc = create_model_from_typeddict(typeddict_cls,__base__=__base__, **kwargs)
     return doc
 
 
@@ -158,8 +155,9 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 
 def create_from_named_tuple(
     named_tuple_cls: Type['NamedTuple'],
+    __base__: Type['T_doc'] = BaseDocument,
     **kwargs: Any,
-): -> Type['BaseDocument']
+) -> Type['T_doc']:
     """
     Create a subclass of BaseDocument based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
     :param named_tuple_cls: NamedTuple class to use for the new Document class
@@ -186,12 +184,12 @@ def create_from_named_tuple(
         assert issubclass(Doc, Audio)
 
     """
-    if '__base__' in kwargs:
-        if not issubclass(kwargs['__base__'], BaseDocument):
+    if __base__:
+        if not issubclass(__base__, BaseDocument):
             raise ValueError(
-                f'{kwargs["__base__"]} is not a BaseDocument or its subclass'
+                f'{__base__} is not a BaseDocument or its subclass'
             )
     else:
-        kwargs['__base__'] = BaseDocument
-    doc = create_model_from_namedtuple(named_tuple_cls, **kwargs)
+        __base__ = BaseDocument
+    doc = create_model_from_namedtuple(named_tuple_cls,__base__=__base__, **kwargs)
     return doc
