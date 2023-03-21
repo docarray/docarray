@@ -6,7 +6,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract_doc_index import (
+from docarray.doc_index.abstract import (
     BaseDocumentIndex,
     _raise_not_composable,
 )

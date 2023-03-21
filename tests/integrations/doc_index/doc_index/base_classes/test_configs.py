@@ -5,7 +5,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.doc_index.abstract_doc_index import BaseDocumentIndex
+from docarray.doc_index.abstract import BaseDocumentIndex
 from docarray.typing import NdArray
 
 pytestmark = pytest.mark.doc_index

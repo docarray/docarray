@@ -22,7 +22,7 @@ import numpy as np
 
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract_doc_index import (
+from docarray.doc_index.abstract import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
