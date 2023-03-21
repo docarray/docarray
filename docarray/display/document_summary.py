@@ -130,7 +130,7 @@ class DocumentSummary:
                 or value is None
             ):
                 continue
-            elif isinstance(value, str):
+            elif isinstance(value, (str, bytes)):
                 col_2 = str(value)[:50]
                 if len(value) > 50:
                     col_2 += f' ... (length: {len(value)})'

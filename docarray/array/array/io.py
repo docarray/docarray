@@ -726,3 +726,74 @@ class IOMixinArray(Iterable[BaseDocument]):
             file_ctx=file_ctx,
             show_progress=show_progress,
         )
+
+
+def from_files(
+    patterns: Union[str, List[str]],
+    doc_type: Type['BaseDocument'],
+    url_field: str,
+    content_field: Optional[str] = None,
+    recursive: bool = True,
+    size: Optional[int] = None,
+    sampling_rate: Optional[float] = None,
+    to_dataturi: bool = False,
+    exclude_regex: Optional[str] = None,
+    *args,
+    **kwargs,
+) -> Generator['BaseDocument', None, None]:
+    """Creates an iterator over a list of file path or the content of the files.
+
+    :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
+    :param doc_type: type of document to create and store file to
+    :param url_field: stores url to this field
+    :param content_field: stores content of url to this field
+    :param recursive: If recursive is true, the pattern '**' will match any files
+        and zero or more directories and subdirectories
+    :param size: the maximum number of the files
+    :param sampling_rate: the sampling rate between [0, 1]
+    :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
+    :param exclude_regex: if set, then filenames that match to this pattern are not included.
+    :yield: file paths or binary content
+
+    .. note::
+        This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
+    """
+    import glob
+    import itertools
+    import random
+    import re
+
+    def _iter_file_exts(ps):
+        return itertools.chain.from_iterable(
+            glob.iglob(os.path.expanduser(p), recursive=recursive) for p in ps
+        )
+
+    num_docs = 0
+    if isinstance(patterns, str):
+        patterns = [patterns]
+
+    regex = None
+    if exclude_regex:
+        try:
+            regex = re.compile(exclude_regex)
+        except re.error:
+            raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+
+    for g in _iter_file_exts(patterns):
+        if os.path.isdir(g):
+            continue
+        if regex and regex.match(g):
+            continue
+
+        if sampling_rate is None or random.random() < sampling_rate:
+            if content_field is None:
+                doc = doc_type(**{url_field: g})
+            else:
+                with open(g, 'r') as fp:
+                    doc = doc_type(**{content_field: fp.read(), url_field: g})
+            # if to_dataturi:
+            #     doc.convert_uri_to_datauri()
+            yield doc
+            num_docs += 1
+        if size is not None and num_docs >= size:
+            break
