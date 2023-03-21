@@ -83,7 +83,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         if num_embedding_columns > 1:
             raise ValueError(
-                f'Only one column can be marked as embedding but found {num_embedding_columns}'
+                f'Only one column can be marked as embedding but found {num_embedding_columns} columns marked as embedding'
             )
 
     def _set_embedding_column(self):
