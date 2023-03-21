@@ -9,6 +9,7 @@ from typing import (
     Optional,
     Tuple,
     Type,
+    TypeVar,
     cast,
 )
 
@@ -32,6 +33,9 @@ class ConcurrentPushException(Exception):
     pass
 
 
+SelfPushPullMixin = TypeVar('SelfPushPullMixin', bound='PushPullMixin')
+
+
 class PushPullMixin(Iterable['BaseDocument']):
     """Mixin class for push/pull functionality."""
 
@@ -53,8 +57,8 @@ class PushPullMixin(Iterable['BaseDocument']):
             raise ValueError(f'Unsupported protocol {protocol}')
 
     @classmethod
-    def get_backend(
-        cls, protocol: PUSH_PULL_PROTOCOL
+    def get_pushpull_backend(
+        cls: SelfPushPullMixin, protocol: PUSH_PULL_PROTOCOL
     ) -> Type['AbstractPushPullBackend']:
         """
         Get the backend for the given protocol.
@@ -85,9 +89,11 @@ class PushPullMixin(Iterable['BaseDocument']):
 
         return cls.__backends__[protocol]
 
-    @staticmethod
+    @classmethod
     def list(
-        url: str = f'file://{get_cache_path()}', show_table: bool = False
+        cls: SelfPushPullMixin,
+        url: str = f'file://{get_cache_path()}',
+        show_table: bool = False,
     ) -> List[str]:
         """
         List all the DocumentArrays in the namespace.
@@ -100,22 +106,21 @@ class PushPullMixin(Iterable['BaseDocument']):
         :return: a list of artifact names
         """
         logging.info(f'Listing artifacts from {url}')
-        protocol, namespace = PushPullMixin.resolve_url(url)
-        return PushPullMixin.get_backend(protocol).list(namespace, show_table)
+        protocol, namespace = cls.resolve_url(url)
+        return cls.get_pushpull_backend(protocol).list(namespace, show_table)
 
     @classmethod
-    def delete(cls, url: str, missing_ok: bool = False):
+    def delete(cls: SelfPushPullMixin, url: str, missing_ok: bool = False) -> bool:
         """
         Delete the DocumentArray at the given url.
 
         :param url: should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
         :param missing_ok: whether to ignore if the artifact does not exist
+        :return: whether the artifact was successfully deleted
         """
         logging.info(f'Deleting artifact {url}')
-        protocol, name = PushPullMixin.resolve_url(url)
-        success = PushPullMixin.get_backend(protocol).delete(
-            name, missing_ok=missing_ok
-        )
+        protocol, name = cls.resolve_url(url)
+        success = cls.get_pushpull_backend(protocol).delete(name, missing_ok=missing_ok)
         if success:
             logging.info(f'Successfully deleted artifact {url}')
         else:
@@ -138,14 +143,14 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing {len(self)} docs to {url}')
-        protocol, name = PushPullMixin.resolve_url(url)
-        return PushPullMixin.get_backend(protocol).push(
+        protocol, name = self.__class__.resolve_url(url)
+        return self.__class__.get_pushpull_backend(protocol).push(
             self, name, public, show_progress, branding  # type: ignore
         )
 
     @classmethod
     def push_stream(
-        cls,
+        cls: SelfPushPullMixin,
         docs: Iterator['BaseDocument'],
         url: str,
         public: bool = True,
@@ -161,14 +166,14 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing stream to {url}')
-        protocol, name = PushPullMixin.resolve_url(url)
-        return PushPullMixin.get_backend(protocol).push_stream(
+        protocol, name = cls.resolve_url(url)
+        return cls.get_pushpull_backend(protocol).push_stream(
             docs, name, public, show_progress, branding
         )
 
     @classmethod
     def pull(
-        cls,
+        cls: SelfPushPullMixin,
         url: str,
         show_progress: bool = False,
         local_cache: bool = True,
@@ -189,14 +194,14 @@ class PushPullMixin(Iterable['BaseDocument']):
             )
 
         logging.info(f'Pulling {url}')
-        protocol, name = PushPullMixin.resolve_url(url)
-        return PushPullMixin.get_backend(protocol).pull(
+        protocol, name = cls.resolve_url(url)
+        return cls.get_pushpull_backend(protocol).pull(
             cls, name, show_progress, local_cache  # type: ignore
         )
 
     @classmethod
     def pull_stream(
-        cls,
+        cls: SelfPushPullMixin,
         url: str,
         show_progress: bool = False,
         local_cache: bool = False,
@@ -217,7 +222,7 @@ class PushPullMixin(Iterable['BaseDocument']):
             )
 
         logging.info(f'Pulling Document stream from {url}')
-        protocol, name = PushPullMixin.resolve_url(url)
-        return PushPullMixin.get_backend(protocol).pull_stream(
+        protocol, name = cls.resolve_url(url)
+        return cls.get_pushpull_backend(protocol).pull_stream(
             cls, name, show_progress, local_cache  # type: ignore
         )
