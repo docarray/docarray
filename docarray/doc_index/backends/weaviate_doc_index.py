@@ -184,7 +184,21 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _filter_batched(
         self, filter_queries: Any, limit: int
     ) -> Union[List[DocumentArray], List[List[Dict]]]:
-        return super()._filter_batched(filter_queries, limit)
+        qs = [
+            self._client.query.get(self._db_config.index_name, self.properties)
+            .with_additional("vector")
+            .with_where(filter_query)
+            .with_limit(limit)
+            .with_alias(f'q{i}')
+            for i, filter_query in enumerate(filter_queries)
+        ]
+
+        batched_results = self._client.query.multi_get(qs).do()
+
+        return [
+            [self._parse_weaviate_result(doc) for doc in batched_result]
+            for batched_result in batched_results["data"]["Get"].values()
+        ]
 
     def _find(
         self,

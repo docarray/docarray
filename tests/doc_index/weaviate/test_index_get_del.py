@@ -173,6 +173,29 @@ def test_filter(test_store, filter_query, expected_num_docs):
     assert actual_num_docs == expected_num_docs
 
 
+@pytest.mark.parametrize(
+    "filter_queries, expected_num_docs",
+    [
+        (
+            [
+                {"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"},
+                {"path": ["text"], "operator": "Equal", "valueText": "foo"},
+            ],
+            [1, 0],
+        ),
+    ],
+)
+def test_filter_batched(test_store, filter_queries, expected_num_docs):
+    filter_queries = [
+        {"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"},
+        {"path": ["text"], "operator": "Equal", "valueText": "foo"},
+    ]
+
+    results = test_store.filter_batched(filter_queries, limit=3)
+    actual_num_docs = [len(docs) for docs in results]
+    assert actual_num_docs == expected_num_docs
+
+
 def test_text_search(test_store):
     results = test_store.text_search(query="lorem", search_field="text", limit=3)
     assert len(results.documents) == 1
