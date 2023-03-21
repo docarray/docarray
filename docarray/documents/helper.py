@@ -159,7 +159,7 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 def create_from_named_tuple(
     named_tuple_cls: Type['NamedTuple'],
     **kwargs: Any,
-):
+): -> Type['BaseDocument']
     """
     Create a subclass of BaseDocument based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
     :param named_tuple_cls: NamedTuple class to use for the new Document class
