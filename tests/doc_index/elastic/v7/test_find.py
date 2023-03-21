@@ -195,13 +195,15 @@ def test_text_search():
 
 def test_query_builder():
     class MyDoc(BaseDocument):
-        tens: NdArray[10] = Field(dims=10)
+        tens: NdArray[10]
         num: int
         text: str
 
-    store = ElasticDocumentIndex[MyDoc]()
+    store = ElasticDocumentIndex[MyDoc](index_name='tmp')
     index_docs = [
-        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
+        MyDoc(
+            id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'
+        )
         for i in range(10)
     ]
     store.index(index_docs)
@@ -211,53 +213,59 @@ def test_query_builder():
     assert isinstance(q, store.QueryBuilder)
 
     # filter
-    q = store.build_query().filter('term', num=0).build()
+    q = store.build_query().filter({'term': {'num': 0}}).build()
     docs, _ = store.execute_query(q)
     assert [doc['id'] for doc in docs] == ['0', '1']
 
-    # exclude
-    q = store.build_query(extra={'size': 3}).exclude('term', num=0).build()
-    docs, _ = store.execute_query(q)
-    assert [doc['id'] for doc in docs] == ['2', '3', '4']
-
-    # script_fields
-    q = (
-        store.build_query(extra={'size': 3})
-        .script_fields(bigger_num='doc[\'num\'].value + 10')
-        .build()
-    )
-    docs, _ = store.execute_query(q)
-    assert [doc['bigger_num'][0] for doc in docs] == [10, 10, 11]
-
-    # query (text search)
-    q = store.build_query().query('match', text='0').build()
-    docs, _ = store.execute_query(q)
-    assert [doc['id'] for doc in docs] == ['0', '1']
-
-    # query (find)
-    from elasticsearch_dsl import Q
-
-    d = {
-        'script_score': {
-            'query': {'match_all': {}},
-            'script': {
-                'source': '1 / (1 + l2norm(params.query_vector, \'tens\'))',
-                'params': {'query_vector': index_docs[-1].tens},
-            },
-        }
-    }
-    q = store.build_query(extra={'size': 5}).query(Q(d)).sort('_score').build()
+    # find
+    q = store.build_query().find(index_docs[-1], search_field='tens', limit=3).build()
     docs, scores = store.execute_query(q)
-    assert [doc['id'] for doc in docs] == ['9', '8', '7', '6', '5']
+    assert len(docs) == 3
+    assert len(scores) == 3
+    assert docs[0]['id'] == index_docs[-1].id
     assert np.allclose(docs[0]['tens'], index_docs[-1].tens)
+
+    # text search
+    q = store.build_query().text_search('0', search_field='text').build()
+    docs, _ = store.execute_query(q)
+    assert [doc['id'] for doc in docs] == ['0', '1']
 
     # combination
     q = (
         store.build_query()
-        .query(Q(d))
-        .exclude('term', num=5)
-        .filter(Q('term', num=0) | Q('term', num=1))
+        .filter({'range': {'num': {'lte': 3}}})
+        .find(index_docs[-1], search_field='tens')
+        .text_search('0', search_field='text')
         .build()
     )
     docs, _ = store.execute_query(q)
-    assert sorted([doc['id'] for doc in docs]) == ['0', '1', '2', '3']
+    assert sorted([doc['id'] for doc in docs]) == ['0', '1']
+
+    # direct
+    index_docs = [
+        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
+        for i in range(10)
+    ]
+    store.index(index_docs)
+
+    query = {
+        'query': {
+            'script_score': {
+                'query': {
+                    'bool': {
+                        'filter': [
+                            {'range': {'num': {'gte': 2}}},
+                            {'range': {'num': {'lte': 3}}},
+                        ],
+                    },
+                },
+                'script': {
+                    'source': '1 / (1 + l2norm(params.query_vector, \'tens\'))',
+                    'params': {'query_vector': index_docs[-1].tens},
+                },
+            }
+        }
+    }
+
+    docs, _ = store.execute_query(query)
+    assert [doc['id'] for doc in docs] == ['7', '6', '5', '4']

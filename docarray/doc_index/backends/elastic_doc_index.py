@@ -1,6 +1,7 @@
 import os
 import uuid
 import warnings
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -21,7 +22,6 @@ from typing import (
 import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
-from elasticsearch_dsl import Search  # type: ignore
 
 import docarray.typing
 from docarray import BaseDocument
@@ -31,6 +31,7 @@ from docarray.doc_index.abstract_doc_index import (
     _FindResultBatched,
     _raise_not_composable,
 )
+from docarray.typing import AnyTensor
 from docarray.utils.find import _FindResult
 from docarray.utils.misc import torch_imported
 
@@ -43,16 +44,6 @@ if torch_imported:
     import torch
 
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
-
-
-def _raise_has_substitue(name):
-    def _inner(self, *args, **kwargs):
-        raise NotImplementedError(
-            f'`{name}` is replaced by query() through the query builder of this Document Index ({type(self)}). '
-            f'You can also call `{type(self)}.{name}()` directly.'
-        )
-
-    return _inner
 
 
 class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
@@ -114,37 +105,60 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def __init__(self, outer_instance, **kwargs):
             super().__init__()
-            self._search = Search(
-                using=outer_instance._client, index=outer_instance._index_name, **kwargs
-            )
+            self._outer_instance = outer_instance
+            self._query: Dict[str, Any] = {
+                'query': defaultdict(lambda: defaultdict(list))
+            }
 
         def build(self, *args, **kwargs) -> Any:
+            if (
+                'script_score' in self._query['query']
+                and 'bool' in self._query['query']
+                and len(self._query['query']['bool']) > 0
+            ):
+                self._query['query']['script_score']['query'] = {}
+                self._query['query']['script_score']['query']['bool'] = self._query[
+                    'query'
+                ]['bool']
+                del self._query['query']['bool']
+
+            return self._query
+
+        def find(
+            self,
+            query: Union[AnyTensor, BaseDocument],
+            search_field: str = 'embedding',
+            limit: int = 10,
+        ):
+            if isinstance(query, BaseDocument):
+                query_vec = BaseDocumentIndex._get_values_by_column(
+                    [query], search_field
+                )[0]
+            else:
+                query_vec = query
+            query_vec_np = BaseDocumentIndex._to_numpy(self._outer_instance, query_vec)
+            self._query['size'] = limit
+            self._query['query']['script_score'] = {
+                'query': {'match_all': {}},
+                'script': {
+                    'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
+                    'params': {'query_vector': query_vec_np},
+                },
+            }
             return self
 
-        def query(self, *args, **kwargs):
-            self._search = self._search.query(*args, **kwargs)
+        def filter(self, query: Dict[str, Any], limit: int = 10):
+            self._query['size'] = limit
+            self._query['query']['bool']['filter'].append(query)
             return self
 
-        def filter(self, *args, **kwargs):
-            self._search = self._search.filter(*args, **kwargs)
+        def text_search(self, query: str, search_field: str = 'text', limit: int = 10):
+            self._query['size'] = limit
+            self._query['query']['bool']['must'].append(
+                {'match': {search_field: query}}
+            )
             return self
 
-        def exclude(self, *args, **kwargs):
-            self._search = self._search.exclude(*args, **kwargs)
-            return self
-
-        def script_fields(self, **kwargs):
-            self._search = self._search.script_fields(**kwargs)
-            return self
-
-        def sort(self, *args, **kwargs):
-            self._search = self._search.sort(*args, **kwargs)
-            return self
-
-        # TODO: add more methods
-
-        find = _raise_has_substitue('find')
-        text_search = _raise_has_substitue('text_search')
         find_batched = _raise_not_composable('find_batched')
         filter_batched = _raise_not_composable('find_batched')
         text_search_batched = _raise_not_composable('text_search')
@@ -271,13 +285,13 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return accumulated_docs
 
-    def execute_query(self, query: QueryBuilder, *args, **kwargs) -> Any:
+    def execute_query(self, query: Dict[str, Any], *args, **kwargs) -> Any:
         if args or kwargs:
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        resp = query._search.execute()
+        resp = self._client.search(index=self._index_name, body=query)
         docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
