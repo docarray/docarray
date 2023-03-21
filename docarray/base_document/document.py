@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
 import orjson
 from pydantic import BaseModel, Field
 from rich.console import Console
-import numpy as np
 
 from docarray.base_document.base_node import BaseNode
 from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode

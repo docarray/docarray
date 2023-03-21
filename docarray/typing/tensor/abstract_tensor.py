@@ -240,6 +240,11 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         return cls._docarray_from_native(comp_backend.stack(seq))  # type: ignore
 
     @classmethod
+    def __eq__(self, other: object) -> bool:  # type: ignore
+        if not isinstance(other, AbstractTensor):
+            return NotImplemented
+
+    @classmethod
     @abc.abstractmethod
     def _docarray_from_native(cls: Type[T], value: Any) -> T:
         """
@@ -284,4 +289,3 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         :return: a representation of the tensor compatible with orjson
         """
         ...
-
