@@ -38,8 +38,10 @@ from docarray.utils.misc import torch_imported
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentIndex')
 
-ELASTIC_PY_VEC_TYPES = [list, tuple, np.ndarray]
-ELASTIC_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
+ELASTIC_PY_VEC_TYPES: List[Any] = [
+    np.ndarray,
+]
+
 if torch_imported:
     import torch
 
@@ -68,7 +70,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             os.environ['ELASTIC_CLIENT_APIVERSIONING'] = '1'
 
         # ElasticSearh index setup
-        self._index_init_params = ('type',)
         self._index_vector_params = ('dims',)
 
         body: Dict[str, Any] = {
@@ -80,8 +81,8 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         }
 
         for col_name, col in self._column_infos.items():
-            if not col.config:
-                continue  # do not create column index if no config is given
+            # if not col.config:
+            #     continue  # do not create column index if no config is given
             body['mappings']['properties'][col_name] = self._create_index(col)
 
         if self._client.indices.exists(index=self._index_name):
@@ -178,17 +179,14 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
-        default_column_config: Dict[Type, Dict[str, Any]] = field(
+        default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
-                np.ndarray: {
-                    'type': 'dense_vector',
-                    'dims': 128,
-                },
-                docarray.typing.ID: {'type': 'keyword'},
-                bool: {'type': 'boolean'},
-                int: {'type': 'integer'},
-                float: {'type': 'float'},
-                str: {'type': 'text'},
+                'dense_vector': {'dims': 128},
+                'keyword': {},
+                'boolean': {},
+                'integer': {},
+                'float': {},
+                'text': {},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
@@ -201,12 +199,21 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
+
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
-                return np.ndarray
+                return 'dense_vector'
 
-        if python_type in ELASTIC_PY_TYPES:
-            return python_type
+        elastic_py_types = {
+            bool: 'boolean',
+            int: 'integer',
+            float: 'float',
+            str: 'text',
+            docarray.typing.ID: 'keyword',
+        }
+
+        if python_type in elastic_py_types:
+            return elastic_py_types[python_type]
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -226,8 +233,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
-                if not col.config:
-                    continue
                 if col.db_type == np.ndarray and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
                 request[col_name] = row[col_name]
@@ -422,12 +427,15 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     # ElasticSearch helpers
     def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
-        index = dict((k, col.config[k]) for k in self._index_init_params)
-        if col.db_type == np.ndarray:
+
+        index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
+
+        if col.db_type == 'dense_vector':
             for k in self._index_vector_params:
                 index[k] = col.config[k]
             if col.n_dim:
                 index['dims'] = col.n_dim
+
         return index
 
     def _send_requests(
