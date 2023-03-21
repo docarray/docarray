@@ -256,3 +256,11 @@ def test_text_search_nested_documents(
     results = store.text_search(query=query, search_field=search_field, limit=3)
 
     assert len(results.documents) == expected_num_docs
+
+
+def test_reuse_existing_schema(weaviate_client, caplog):
+    WeaviateDocumentIndex[SimpleDoc]()
+
+    with caplog.at_level(logging.DEBUG):
+        WeaviateDocumentIndex[SimpleDoc]()
+        assert "Will reuse existing schema" in caplog.text

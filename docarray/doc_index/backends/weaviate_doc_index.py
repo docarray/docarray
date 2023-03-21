@@ -120,8 +120,12 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         schema["properties"] = properties
         schema["class"] = self._db_config.index_name
 
-        # TODO: check if schema already exists
-        self._client.schema.create_class(schema)
+        if self._client.schema.contains(schema):
+            logging.warning(
+                f"Found index {self._db_config.index_name} with schema {schema}. Will reuse existing schema."
+            )
+        else:
+            self._client.schema.create_class(schema)
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
