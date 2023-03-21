@@ -201,6 +201,16 @@ def test_text_search(test_store):
     assert len(results.documents) == 1
 
 
+def test_text_search_batched(test_store):
+    text_queries = ["lorem", "foo"]
+
+    results = test_store.text_search_batched(
+        queries=text_queries, search_field="text", limit=3
+    )
+    assert len(results.documents[0]) == 1
+    assert len(results.documents[1]) == 0
+
+
 def test_del_items(test_store):
     del test_store[["1", "2"]]
     assert test_store.num_docs() == 1

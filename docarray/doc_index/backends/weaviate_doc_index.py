@@ -381,7 +381,29 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def _text_search_batched(
         self, queries: Sequence[str], search_field: str, limit: int
     ) -> _FindResultBatched:
-        return super()._text_search_batched(queries, search_field, limit)
+        qs = []
+        for i, query in enumerate(queries):
+            bm25 = {"query": query, "properties": [search_field]}
+
+            q = (
+                self._client.query.get(self._db_config.index_name, self.properties)
+                .with_bm25(bm25)
+                .with_limit(limit)
+                .with_additional(["score", "vector"])
+                .with_alias(f'query_{i}')
+            )
+
+            qs.append(q)
+
+        results = self._client.query.multi_get(qs).do()
+
+        docs_and_scores = [
+            self._format_response(result, "score")
+            for result in results["data"]["Get"].values()
+        ]
+
+        docs, scores = zip(*docs_and_scores)
+        return list(docs), list(scores)
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
         return super().execute_query(query, *args, **kwargs)
