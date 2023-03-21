@@ -130,7 +130,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         ...
 
     @classmethod
-    def equal(cls, self, other: 'TTensor') -> bool:
+    def equal(cls, self: 'TTensor', other: 'TTensor') -> bool:
         if cls.shape(self) != cls.shape(other):
             return False
         return (self == other).all().item()
