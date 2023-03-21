@@ -67,7 +67,6 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         ]
 
     def _validate_columns(self):
-
         # must have at most one column with property is_embedding=True
         # and that column must be of type WEAVIATE_PY_VEC_TYPES
         # TODO: update when https://github.com/weaviate/weaviate/issues/2424
@@ -109,7 +108,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             prop = {
                 "name": column_name
                 if column_name != 'id'
-                else '__id',  # in weaviate, id and _id is a reserved keyword
+                else DOCUMENTID,  # in weaviate, id and _id is a reserved keyword
                 "dataType": column_info.config["dataType"],
             }
             properties.append(prop)
@@ -302,10 +301,9 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return list(docs), list(scores)
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
-
         # TODO: how to handle > QUERY_MAXIMUM_RESULTS
         operands = [
-            {"path": ["__id"], "operator": "Equal", "valueString": doc_id}
+            {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
             for doc_id in doc_ids
         ]
         where_filter = {
