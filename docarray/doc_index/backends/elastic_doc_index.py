@@ -93,7 +93,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 continue  # do not create column index if no config is given
             body['mappings']['properties'][col_name] = self._create_index(col)
 
-        if self._client.indices.exists(index=self._index_name):  # type: ignore
+        if self._client.indices.exists(index=self._index_name):
             self._client.indices.put_mapping(
                 index=self._index_name, body=body['mappings']
             )
@@ -153,7 +153,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         """
         Build a query for this DocumentIndex.
         """
-        return self.QueryBuilder(self, **kwargs)  # type: ignore
+        return self.QueryBuilder(self, **kwargs)
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
@@ -200,6 +200,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self,
         column_to_data: Dict[str, Generator[Any, None, None]],
         refresh: bool = True,
+        chunk_size: Optional[int] = None,
     ):
 
         data = self._transpose_col_value_dict(column_to_data)  # type: ignore
@@ -218,7 +219,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 request[col_name] = row[col_name]
             requests.append(request)
 
-        _, warning_info = self._send_requests(requests)
+        _, warning_info = self._send_requests(requests, chunk_size)
         for info in warning_info:
             warnings.warn(str(info))
 
@@ -228,14 +229,18 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def num_docs(self) -> int:
         return self._client.count(index=self._index_name)['count']
 
-    def _del_items(self, doc_ids: Sequence[str]):
+    def _del_items(
+        self,
+        doc_ids: Sequence[str],
+        chunk_size: Optional[int] = None,
+    ):
         requests = []
         for _id in doc_ids:
             requests.append(
                 {'_op_type': 'delete', '_index': self._index_name, '_id': _id}
             )
 
-        _, warning_info = self._send_requests(requests)
+        _, warning_info = self._send_requests(requests, chunk_size)
 
         # raise warning if some ids are not found
         if warning_info:
@@ -250,7 +255,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         es_rows = self._client.mget(
             index=self._index_name,
-            body={'ids': doc_ids},  # type: ignore
+            body={'ids': doc_ids},
         )['docs']
 
         for row in es_rows:
@@ -412,7 +417,10 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return index
 
     def _send_requests(
-        self, request: Iterable[Dict[str, Any]], **kwargs
+        self,
+        request: Iterable[Dict[str, Any]],
+        chunk_size: Optional[int] = None,
+        **kwargs,
     ) -> Tuple[List[Dict], List[Any]]:
         """Send bulk request to Elastic and gather the successful info"""
 
@@ -423,7 +431,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             request,
             raise_on_error=False,
             raise_on_exception=False,
-            chunk_size=self._runtime_config.chunk_size,  # type: ignore
+            chunk_size=chunk_size if chunk_size else self._runtime_config.chunk_size,  # type: ignore
             **kwargs,
         ):
             if not success:
