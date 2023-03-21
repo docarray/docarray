@@ -205,7 +205,6 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             for batched_result in batched_results["data"]["Get"].values()
         ]
 
-    # TODO: refactor to combine certainty and distance into one parameter
     def _find(
         self,
         query: np.ndarray,
