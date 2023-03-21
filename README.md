@@ -445,7 +445,7 @@ match = store.find(
 ```
 
 ## Enable logging
-See more logs by setting the log level to `DEBUG`.
+You can see more logs by setting the log level to `DEBUG` or `INFO`.
 
 Example:
 ```python

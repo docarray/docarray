@@ -273,7 +273,7 @@ This allows:
 
 <a name="-enable-logging"></a>
 ## Enable logging
-Monitor and debug your code by enabling docarray logging:
+If you need to monitor and debug your code, you can enable docarray logging:
 ```python
 import logging
 logging.getLogger('docarray').setLevel(logging.DEBUG)
