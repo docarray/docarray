@@ -532,7 +532,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
             docs = [self._dict_list_to_docarray(docs) for docs in da_list]
-        return FindResultBatched(documents=docs, scores=scores)
+            return FindResultBatched(documents=docs, scores=scores)
+
+        return FindResultBatched(documents=da_list, scores=scores)
 
     ##########################################################
     # Helper methods                                         #
