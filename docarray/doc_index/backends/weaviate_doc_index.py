@@ -121,6 +121,8 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         schema["properties"] = properties
         schema["class"] = self._db_config.index_name
 
+        # TODO: Use exists() instead of contains() when available
+        #       see https://github.com/weaviate/weaviate-python-client/issues/232
         if self._client.schema.contains(schema):
             logging.warning(
                 f"Found index {self._db_config.index_name} with schema {schema}. Will reuse existing schema."
