@@ -104,7 +104,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         # about not detected properties: https://youtrack.jetbrains.com/issue/PY-47991
         # Since the properties getter is set in _property_generator in __class_getitem__
         # this implementation of getattr should never be called.
-        pass
+        return super().__getattribute__(item)
 
     @abstractmethod
     def _get_data_column(
