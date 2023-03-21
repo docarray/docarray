@@ -30,7 +30,7 @@ from docarray.doc_index.abstract_doc_index import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
-from docarray.utils.filter import filter as da_filter
+from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
 from docarray.utils.misc import is_np_int, torch_imported
 
@@ -172,10 +172,9 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
 
         self._logger.info(f'Indexing {len(docs)} documents')
-        doc_seq = docs if isinstance(docs, Sequence) else [docs]
-        data_by_columns = self._get_col_value_dict(doc_seq)
-        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in doc_seq)
-
+        docs_validated = self._validate_docs(docs)
+        data_by_columns = self._get_col_value_dict(docs_validated)
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
         for col_name, index in self._hnsw_indices.items():
@@ -185,7 +184,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
-        self._send_docs_to_sqlite(doc_seq)
+        self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
@@ -213,7 +212,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             da_cls = DocumentArray.__class_getitem__(
                 cast(Type[BaseDocument], self._schema)
             )
-            docs_filtered = da_cls(da_filter(docs_filtered, cond))
+            docs_filtered = da_cls(filter_docs(docs_filtered, cond))
 
         self._logger.info(f'{len(docs_filtered)} results found')
         docs_and_scores = zip(

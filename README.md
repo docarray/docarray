@@ -444,6 +444,35 @@ match = store.find(
 )
 ```
 
+## Enable logging
+See more logs by setting the log level to `DEBUG`.
+
+Example:
+```python
+import ...
+# import logging and set the level to DEBUG
+import logging
+logging.getLogger('docarray').setLevel(logging.DEBUG)
+
+
+# define a simple document and create a document index
+class SimpleDoc(BaseDocument):
+    vector: NdArray = Field(dim=10)
+
+doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')
+```
+
+```console
+INFO - docarray - DB config created
+INFO - docarray - Runtime config created
+DEBUG - docarray - Working directory set to temp_path/
+WARNING - docarray - No index was created for `id` as it does not have a config
+INFO - docarray - Created a new index for column `vector`
+DEBUG - docarray - DB path set to temp_path/docs_sqlite.db
+INFO - docarray - Connection to DB has been established
+INFO - docarray - HnswDocumentIndex[SimpleDoc] has been initialized
+```
+
 ## Install the alpha
 
 to try out the alpha you can install it via git:

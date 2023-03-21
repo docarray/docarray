@@ -11,6 +11,7 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -18,7 +19,8 @@ from typing import (
 )
 
 import numpy as np
-from typing_inspect import is_union_type
+from pydantic.error_wrappers import ValidationError
+from typing_inspect import get_args, is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
@@ -93,7 +95,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self._logger.info('DB config created')
         self._runtime_config = self.RuntimeConfig()
         self._logger.info('Runtime config created')
-        self._column_infos: Dict[str, _ColumnInfo] = self._create_columns(self._schema)
+        self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
+            self._schema
+        )
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -372,10 +376,17 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
         """index Documents into the index.
 
-        :param docs: Documents to index
+        :param docs: Documents to index.
         """
+        if not isinstance(docs, BaseDocument) and not isinstance(docs, DocumentArray):
+            self._logger.warning(
+                'Passing a sequence of Documents that is not a DocumentArray comes at '
+                'a performance penalty, since compatibility with the schema of Index '
+                'needs to be checked for every Document individually.'
+            )
         self._logger.info(f'Indexing {len(docs)} documents')
-        data_by_columns = self._get_col_value_dict(docs)
+        docs_validated = self._validate_docs(docs)
+        data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
 
     def find(
@@ -601,11 +612,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docs_seq: Sequence[BaseDocument] = [docs]
         else:
             docs_seq = docs
-        if not self._is_schema_compatible(docs_seq):
-            raise ValueError(
-                'The schema of the documents to be indexed is not compatible'
-                ' with the schema of the index.'
-            )
 
         def _col_gen(col_name: str):
             return (self._get_values_by_column([doc], col_name)[0] for doc in docs_seq)
@@ -642,36 +648,83 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         return self.QueryBuilder()  # type: ignore
 
-    def _create_columns(self, schema: Type[BaseDocument]) -> Dict[str, _ColumnInfo]:
-        columns: Dict[str, _ColumnInfo] = dict()
+    @classmethod
+    def _flatten_schema(
+        cls, schema: Type[BaseDocument], name_prefix: str = ''
+    ) -> List[Tuple[str, Type, 'ModelField']]:
+        """Flatten the schema of a Document into a list of column names and types.
+        Nested Documents are handled in a recursive manner by adding `'__'` as a prefix to the column name.
+
+        :param schema: The schema to flatten
+        :param name_prefix: prefix to append to the column names. Used for recursive calls to handle nesting.
+        :return: A list of column names, types, and fields
+        """
+        names_types_fields: List[Tuple[str, Type, 'ModelField']] = []
         for field_name, field_ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
+            inner_prefix = name_prefix + field_name + '__'
+
             if is_union_type(t_):
+                union_args = get_args(t_)
+                if len(union_args) == 2 and type(None) in union_args:
+                    # simple "Optional" type, treat as special case:
+                    # treat as if it was a single non-optional type
+                    for t_arg in union_args:
+                        if t_arg is type(None):
+                            pass
+                        elif issubclass(t_arg, BaseDocument):
+                            names_types_fields.extend(
+                                cls._flatten_schema(t_arg, name_prefix=inner_prefix)
+                            )
+                else:
+                    names_types_fields.append((field_name, t_, field_))
+            elif issubclass(t_, BaseDocument):
+                names_types_fields.extend(
+                    cls._flatten_schema(t_, name_prefix=inner_prefix)
+                )
+            else:
+                names_types_fields.append((name_prefix + field_name, t_, field_))
+        return names_types_fields
+
+    def _create_column_infos(
+        self, schema: Type[BaseDocument]
+    ) -> Dict[str, _ColumnInfo]:
+        """Collects information about every column that is implied by a given schema.
+
+        :param schema: The schema (subclass of BaseDocument) to analyze and parse
+            columns from
+        :returns: A dictionary mapping from column names to column information.
+        """
+        column_infos: Dict[str, _ColumnInfo] = dict()
+        for field_name, type_, field_ in self._flatten_schema(schema):
+            if is_union_type(type_):
                 raise ValueError(
                     'Union types are not supported in the schema of a DocumentIndex.'
-                    f' Instead of using type {t_} use a single specific type.'
+                    f' Instead of using type {type_} use a single specific type.'
                 )
-            elif issubclass(t_, AnyDocumentArray):
+            elif issubclass(type_, AnyDocumentArray):
                 raise ValueError(
                     'Indexing field of DocumentArray type (=subindex)'
                     'is not yet supported.'
                 )
-            elif issubclass(t_, BaseDocument):
-                columns = dict(
-                    columns,
-                    **{
-                        f'{field_name}__{nested_name}': t
-                        for nested_name, t in self._create_columns(t_).items()
-                    },
-                )
             else:
-                columns[field_name] = self._create_single_column(field_, t_)
-        return columns
+                column_infos[field_name] = self._create_single_column(field_, type_)
+        return column_infos
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
-        db_type = self.python_type_to_db_type(type_)
-        config = self._runtime_config.default_column_config[db_type].copy()
         custom_config = field.field_info.extra
+
+        if 'col_type' in custom_config.keys():
+            db_type = custom_config['col_type']
+            custom_config.pop('col_type')
+            if db_type not in self._runtime_config.default_column_config.keys():
+                raise ValueError(
+                    f'The given col_type is not a valid db type: {db_type}'
+                )
+        else:
+            db_type = self.python_type_to_db_type(type_)
+
+        config = self._runtime_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (
@@ -688,30 +741,57 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim
         )
 
-    def _is_schema_compatible(self, docs: Sequence[BaseDocument]) -> bool:
-        """Flatten a DocumentArray into a DocumentArray of the schema type."""
-        reference_col_db_types = [
-            (name, col.db_type) for name, col in self._column_infos.items()
-        ]
-        if isinstance(docs, AnyDocumentArray):
-            input_columns = self._create_columns(docs.document_type)
-            input_col_db_types = [
-                (name, col.db_type) for name, col in input_columns.items()
-            ]
+    def _validate_docs(
+        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
+    ) -> DocumentArray[BaseDocument]:
+        """Validates Document against the schema of the Document Index.
+        For validation to pass, the schema of `docs` and the schema of the Document
+        Index need to evaluate to the same flattened columns.
+        If Validation fails, a ValueError is raised.
+
+        :param docs: Document to evaluate. If this is a DocumentArray, validation is
+            performed using its `doc_type` (parametrization), without having to check
+            ever Document in `docs`. If this check fails, or if `docs` is not a
+            DocumentArray, evaluation is performed for every Document in `docs`.
+        :return: A DocumentArray containing the Documents in `docs`
+        """
+        if isinstance(docs, BaseDocument):
+            docs = [docs]
+        if isinstance(docs, DocumentArray):
+            # validation shortcut for DocumentArray; only look at the schema
+            reference_schema_flat = self._flatten_schema(
+                cast(Type[BaseDocument], self._schema)
+            )
+            reference_names = [name for (name, _, _) in reference_schema_flat]
+            reference_types = [t_ for (_, t_, _) in reference_schema_flat]
+
+            input_schema_flat = self._flatten_schema(docs.document_type)
+            input_names = [name for (name, _, _) in input_schema_flat]
+            input_types = [t_ for (_, t_, _) in input_schema_flat]
             # this could be relaxed in the future,
             # see schema translation ideas in the design doc
-            return reference_col_db_types == input_col_db_types
-        else:
-            for d in docs:
-                input_columns = self._create_columns(type(d))
-                input_col_db_types = [
-                    (name, col.db_type) for name, col in input_columns.items()
-                ]
-                # this could be relaxed in the future,
-                # see schema translation ideas in the design doc
-                if reference_col_db_types != input_col_db_types:
-                    return False
-            return True
+            names_compatible = reference_names == input_names
+            types_compatible = all(
+                (not is_union_type(t2) and issubclass(t1, t2))
+                for (t1, t2) in zip(reference_types, input_types)
+            )
+            if names_compatible and types_compatible:
+                return docs
+        out_docs = []
+        for i in range(len(docs)):
+            # validate the data
+            try:
+                out_docs.append(
+                    cast(Type[BaseDocument], self._schema).parse_obj(docs[i])
+                )
+            except (ValueError, ValidationError):
+                raise ValueError(
+                    'The schema of the input Documents is not compatible with the schema of the Document Index.'
+                    ' Ensure that the field names of your data match the field names of the Document Index schema,'
+                    ' and that the types of your data match the types of the Document Index schema.'
+                )
+
+        return DocumentArray[BaseDocument].construct(out_docs)
 
     def _to_numpy(self, val: Any) -> Any:
         if isinstance(val, np.ndarray):

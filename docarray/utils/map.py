@@ -138,6 +138,7 @@ def map_docs_batch(
 
         ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
 
+    :param da: DocumentArray to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
