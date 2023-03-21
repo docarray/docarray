@@ -6,7 +6,10 @@ import weaviate
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.doc_index.backends.weaviate_doc_index import WeaviateDocumentIndex
+from docarray.doc_index.backends.weaviate_doc_index import (
+    DOCUMENTID,
+    WeaviateDocumentIndex,
+)
 from docarray.typing import NdArray
 
 
@@ -34,7 +37,6 @@ def weaviate_client():
 
 @pytest.fixture
 def documents():
-
     texts = ["lorem ipsum", "dolor sit amet", "consectetur adipiscing elit"]
     embeddings = [[10, 10], [10.5, 10.5], [-100, -100]]
 
@@ -64,14 +66,16 @@ def test_index_simple_schema(weaviate_client, ten_simple_docs):
         doc_embedding = doc.tens
 
         result = (
-            weaviate_client.query.get("Document", "__id")
+            weaviate_client.query.get("Document", DOCUMENTID)
             .with_additional("vector")
-            .with_where({"path": ["__id"], "operator": "Equal", "valueString": doc_id})
+            .with_where(
+                {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
+            )
             .do()
         )
 
         result = result["data"]["Get"]["Document"][0]
-        assert result["__id"] == doc_id
+        assert result[DOCUMENTID] == doc_id
         assert np.allclose(result["_additional"]["vector"], doc_embedding)
 
 
@@ -166,7 +170,6 @@ def test_find_batched(weaviate_client, caplog):
     ],
 )
 def test_filter(test_store, filter_query, expected_num_docs):
-
     docs = test_store.filter(filter_query, limit=3)
     actual_num_docs = len(docs)
 

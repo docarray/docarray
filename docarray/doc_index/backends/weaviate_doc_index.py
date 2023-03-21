@@ -39,6 +39,10 @@ DEFAULT_BATCH_CONFIG = {
 WEAVIATE_PY_VEC_TYPES = [list, np.ndarray]
 WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 
+# "id" and "_id" are reserved names in weaviate so we need to use a different
+# name for the id column in a BaseDocument
+DOCUMENTID = "docarrayid"
+
 
 class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
@@ -54,7 +58,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._create_schema()
 
     def _set_properties(self):
-        field_overwrites = {"id": "__id"}
+        field_overwrites = {"id": DOCUMENTID}
 
         self.properties = [
             field_overwrites.get(k, k)
@@ -147,7 +151,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         has_matches = True
 
         operands = [
-            {"path": ["__id"], "operator": "Equal", "valueString": doc_id}
+            {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
             for doc_id in doc_ids
         ]
         where_filer = {
@@ -328,7 +332,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         # rewrite the id to __id
         document_id = doc.pop('id')
-        doc['__id'] = document_id
+        doc[DOCUMENTID] = document_id
 
         return doc
 
@@ -339,7 +343,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         """
         # rewrite the __id to id
         result = result.copy()
-        result['id'] = result.pop('__id')
+        result['id'] = result.pop(DOCUMENTID)
 
         # take the vector from the _additional field
         additional_fields = result.pop('_additional')
