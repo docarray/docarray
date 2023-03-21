@@ -239,10 +239,6 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         # but mypy doesn't know that, so we ignore it here
         return cls._docarray_from_native(comp_backend.stack(seq))  # type: ignore
 
-    @abc.abstractmethod
-    def __eq__(self, other: object) -> bool:  # type: ignore
-        ...
-
     @classmethod
     @abc.abstractmethod
     def _docarray_from_native(cls: Type[T], value: Any) -> T:
