@@ -99,6 +99,9 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
         ...
 
+    def __getattr__(self, item) -> Any:
+        return super().__getattribute__(item)
+
     @abstractmethod
     def _get_data_column(
         self: T,
