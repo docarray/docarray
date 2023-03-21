@@ -270,13 +270,12 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
             )
 
-        near_vector = {}
-        if score_threshold:
-            near_vector[score_name] = score_threshold
-
         qs = []
         for i, query in enumerate(queries):
-            near_vector["vector"] = query
+            near_vector = {"vector": query}
+
+            if score_threshold:
+                near_vector[score_name] = score_threshold
 
             q = (
                 self._client.query.get(index_name, self.properties)
