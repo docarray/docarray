@@ -214,3 +214,13 @@ def test_nested_dict():
     doc = MyDoc(data={'data': (1, 2)})
 
     MyDoc.from_protobuf(doc.to_protobuf())
+
+
+@pytest.mark.proto
+def test_tuple_complex():
+    class MyDoc(BaseDocument):
+        data: Tuple
+
+    doc = MyDoc(data=(1, 2))
+
+    MyDoc.from_protobuf(doc.to_protobuf())

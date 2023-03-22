@@ -57,11 +57,11 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
 
         for container_type, key_name in container_type_to_key.items():
             if isinstance(value, container_type):
-                from google.protobuf.struct_pb2 import ListValue
+                from docarray.proto import ListOfAnyProto
 
-                lvalue = ListValue()
+                lvalue = ListOfAnyProto()
                 for item in value:
-                    lvalue.append(item)
+                    lvalue.data.append(_type_to_protobuf(item))
                 nested_item = NodeProto(**{key_name: lvalue})
                 return nested_item
 
@@ -71,6 +71,7 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
             struct = Struct()
             struct.update(value)
             nested_item = NodeProto(dict=struct)
+
         elif value is None:
             nested_item = NodeProto()
         else:

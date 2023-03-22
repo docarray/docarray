@@ -35,7 +35,12 @@ message GenericDictValue {
   repeated KeyValuePair entries = 1;
 }
 
-//
+
+message ListOfAnyProto {
+  repeated NodeProto data = 1;
+}
+
+
 message NodeProto {
 
   oneof content {
@@ -56,11 +61,11 @@ message NodeProto {
     // a sub DocumentArray
     DocumentArrayProto document_array = 8;
     //any list
-    google.protobuf.ListValue list = 9;
+    ListOfAnyProto list = 9;
     //any set
-    google.protobuf.ListValue set = 10;
+    ListOfAnyProto set = 10;
     //any tuple
-    google.protobuf.ListValue tuple = 11;
+    ListOfAnyProto tuple = 11;
     // dictionary with string as keys
     google.protobuf.Struct dict = 12;
   }
@@ -86,10 +91,6 @@ message DocumentArrayProto {
 
 message ListOfDocumentArrayProto {
   repeated DocumentArrayProto data = 1;
-}
-
-message ListOfAnyProto {
-  repeated NodeProto data = 1;
 }
 
 message DocumentArrayStackedProto{
