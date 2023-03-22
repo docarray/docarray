@@ -532,5 +532,42 @@ By default, if you don't specify the parameter `index` in the `find` method, the
 results = da.find('cheap', index='price')
 ```
 
+### Cluster Mode
+
+To enable cluster mode, you need to set `cluster` to `True` in `config`.
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray(
+    storage='redis',
+    config={
+        'host': '10.85.1.18',
+        'port': 7000,
+        'n_dim': 128,
+        'cluster': True,
+    },
+)
+```
+
+```{note}
+Current implementation uses hashtags to ensure all documents of a single `DocumentArray` are stored in the same shard.
+
+If you want to retrieve a `DocumentArray` from the cluster, you need to set the `index_name` without the hashtags.
+
+```python
+da = DocumentArray(
+    storage='redis',
+    config={
+        'host': '10.85.1.18',
+        'port': 7000,
+        'n_dim': 128,
+        'cluster': True,
+        'index_name': 'idx',
+    },
+)
+
+print(da._config.index_name)  # This will print {idx}
+```
 
 
