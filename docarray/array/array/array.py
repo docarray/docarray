@@ -117,7 +117,6 @@ class DocumentArray(
         del da[0:5]  # remove elements for 0 to 5 from DocumentArray
 
     :param docs: iterable of Document
-    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
 
     """
 
@@ -126,27 +125,22 @@ class DocumentArray(
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
-        tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
-        self.tensor_type = tensor_type
  
     @classmethod
     def construct(
         cls: Type[T],
         docs: Sequence[T_doc],
-        tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> T:
         """
         Create a DocumentArray without validation any data. The data must come from a
         trusted source
         :param docs: a Sequence (list) of Document with the same schema
-        :param tensor_type: Class used to wrap the tensors of the Documents when stacked
         :return:
         """
         da = cls.__new__(cls)
         da._data = docs if isinstance(docs, list) else list(docs)
-        da.tensor_type = tensor_type
         return da
 
     def __eq__(self, other: Any) -> bool:
@@ -235,7 +229,7 @@ class DocumentArray(
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
             return DocumentArray.__class_getitem__(field_type)(
-                (getattr(doc, field) for doc in self), tensor_type=self.tensor_type
+                (getattr(doc, field) for doc in self),
             )
         else:
             return [getattr(doc, field) for doc in self]
@@ -255,15 +249,21 @@ class DocumentArray(
         for doc, value in zip(self, values):
             setattr(doc, field, value)
 
-    def stack(self) -> 'DocumentArrayStacked':
+    def stack(
+        self,
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ) -> 'DocumentArrayStacked':
         """
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
+        :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
+        if the BaseDocument has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
+        :return: A DocumentArrayStacked of the same document type as self
         """
         from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         return DocumentArrayStacked.__class_getitem__(self.document_type)(
-            self, tensor_type=self.tensor_type
+            self, tensor_type=tensor_type
         )
 
     @classmethod
