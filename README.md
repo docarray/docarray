@@ -462,7 +462,7 @@ logging.getLogger('docarray').setLevel(logging.DEBUG)
 
 # define a simple document and create a document index
 class SimpleDoc(BaseDocument):
-  vector: NdArray = Field(dim=10)
+    vector: NdArray = Field(dim=10)
 
 
 doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')

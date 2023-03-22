@@ -126,7 +126,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        work_dir: str = ''
+        work_dir: str = '.'
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
