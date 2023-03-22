@@ -53,7 +53,7 @@ class DummyDocIndex(BaseDocumentIndex):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        work_dir: str = '.'
+        work_dir: str = ''
 
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def build(self):
