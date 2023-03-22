@@ -82,7 +82,8 @@ class BackendMixin(BaseBackendMixin):
         if config.index_name is None:
             config.index_name = 'index_name__' + random_identity() + ''
 
-        config.index_name = f'{{{config.index_name}}}'
+        if config.cluster:
+            config.index_name = f'{{{config.index_name}}}'
 
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
