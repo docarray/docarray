@@ -204,3 +204,13 @@ def test_torch_dtype(dtype):
     assert doc.tensor.dtype == dtype
     assert MyDoc.from_protobuf(doc.to_protobuf()).tensor.dtype == dtype
     assert MyDoc.parse_obj(doc.dict()).tensor.dtype == dtype
+
+
+@pytest.mark.proto
+def test_nested_dict():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    doc = MyDoc(data={'data': (1, 2)})
+
+    MyDoc.from_protobuf(doc.to_protobuf())
