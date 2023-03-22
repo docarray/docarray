@@ -224,3 +224,14 @@ def test_tuple_complex():
     doc = MyDoc(data=(1, 2))
 
     MyDoc.from_protobuf(doc.to_protobuf())
+
+
+@pytest.mark.proto
+def test_super_complex_nested_whatever():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    data = {'hello': (torch.zeros(55), 1, 'hi', [torch.ones(55), (1, 2)])}
+    doc = MyDoc(data=data)
+
+    MyDoc.from_protobuf(doc.to_protobuf())
