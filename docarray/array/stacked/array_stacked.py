@@ -82,8 +82,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
      numpy/PyTorch.
 
     :param docs: a DocumentArray
-    :param tensor_type: Class used to wrap the stacked tensors
-
+    :param tensor_type: Tensor Class used to wrap the stacked tensors. This is usefull
+    if the BaseDocument of this DocumentArrayStacked has some undefined tensor type like
+    AnyTensor or Union of NdArray and TorchTensor
     """
 
     document_type: Type[T_doc]
