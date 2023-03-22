@@ -1,10 +1,14 @@
 import base64
 import csv
+import glob
 import io
+import itertools
 import json
 import os
 import pathlib
 import pickle
+import random
+import re
 from abc import abstractmethod
 from contextlib import nullcontext
 from itertools import compress
@@ -770,27 +774,23 @@ def from_files(
     to_dataturi: bool = False,
     exclude_regex: Optional[str] = None,
 ) -> Generator['BaseDocument', None, None]:
-    """Creates an iterator over a list of file path or the content of the files.
+    """Yield Documents with stored urls and optionally the file content.
 
     :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'
-    :param doc_type: type of document to create and store file to
-    :param url_field: stores url to this field
-    :param content_field: stores content of url to this field
+    :param doc_type: type of document to create and store url (and content) to
+    :param url_field: field to store url to
+    :param content_field: If not None, the file content will be stored to this field.
     :param recursive: If recursive is true, the pattern '**' will match any files
         and zero or more directories and subdirectories
     :param size: the maximum number of the files
     :param sampling_rate: the sampling rate between [0, 1]
-    :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
+    :param to_dataturi: if true, the url will be transformed to the datauri and then stored to `url_field`
     :param exclude_regex: if set, then filenames that match to this pattern are not included.
-    :yield: file paths or binary content
+    :yield: Documents with stored file paths and optionally the file content
 
     .. note::
         This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
     """
-    import glob
-    import itertools
-    import random
-    import re
 
     def _iter_file_extensions(ps):
         return itertools.chain.from_iterable(
