@@ -1,5 +1,19 @@
+import glob
+import itertools
+import os
+import re
 from types import LambdaType
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Type,
+    Union,
+)
 
 if TYPE_CHECKING:
     from docarray import BaseDocument
@@ -150,3 +164,50 @@ def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
         or not hasattr(func, '__qualname__')
         or ('<locals>' in func.__qualname__)
     )
+
+
+def get_paths(
+    patterns: Union[str, List[str]],
+    recursive: bool = True,
+    size: Optional[int] = None,
+    exclude_regex: Optional[str] = None,
+) -> Generator[str, None, None]:
+    """
+    Yield file paths described by `patterns`.
+
+    :param patterns: The pattern may contain simple shell-style wildcards,
+        e.g. '\*.py', '[\*.zip, \*.gz]'
+    :param recursive: If recursive is true, the pattern '**' will match any
+        files and zero or more directories and subdirectories
+    :param size: the maximum number of the files
+    :param exclude_regex: if set, then filenames that match to this pattern
+        are not included.
+    :yield: file paths
+
+    """
+
+    if isinstance(patterns, str):
+        patterns = [patterns]
+
+    regex_to_exclude = None
+    if exclude_regex:
+        try:
+            regex_to_exclude = re.compile(exclude_regex)
+        except re.error:
+            raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+
+    def _iter_file_extensions(ps):
+        return itertools.chain.from_iterable(
+            glob.iglob(os.path.expanduser(p), recursive=recursive) for p in ps
+        )
+
+    num_docs = 0
+    for file_path in _iter_file_extensions(patterns):
+        if regex_to_exclude and regex_to_exclude.match(file_path):
+            continue
+
+        yield file_path
+
+        num_docs += 1
+        if size is not None and num_docs >= size:
+            break
