@@ -36,10 +36,6 @@ message GenericDictValue {
 }
 
 
-message ListOfAnyProto {
-  repeated NodeProto data = 1;
-}
-
 
 message NodeProto {
 
@@ -67,7 +63,7 @@ message NodeProto {
     //any tuple
     ListOfAnyProto tuple = 11;
     // dictionary with string as keys
-    google.protobuf.Struct dict = 12;
+    DictOfAnyProto dict = 12;
   }
 
   oneof docarray_type {
@@ -85,9 +81,20 @@ message DocumentProto {
 
 }
 
+message DictOfAnyProto {
+
+  map<string, NodeProto> data = 1;
+
+}
+
+message ListOfAnyProto {
+  repeated NodeProto data = 1;
+}
+
 message DocumentArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
+
 
 message ListOfDocumentArrayProto {
   repeated DocumentArrayProto data = 1;

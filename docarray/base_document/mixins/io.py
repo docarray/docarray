@@ -66,10 +66,14 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
                 return nested_item
 
         if isinstance(value, dict):
-            from google.protobuf.struct_pb2 import Struct
+            from docarray.proto import DictOfAnyProto
 
-            struct = Struct()
-            struct.update(value)
+            data = {}
+
+            for key, content in value.items():
+                data[key] = _type_to_protobuf(content)
+
+            struct = DictOfAnyProto(data=data)
             nested_item = NodeProto(dict=struct)
 
         elif value is None:
