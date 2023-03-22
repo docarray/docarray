@@ -58,12 +58,12 @@ def test_from_csv_nested(nested_doc_cls):
         assert doc.image.__class__ == ImageDoc
         assert doc.image.tensor is None
         assert doc.image.embedding is None
-        assert doc.image.bytes is None
+        assert doc.image.bytes_ is None
 
         assert doc.image2.__class__ == ImageDoc
         assert doc.image2.tensor is None
         assert doc.image2.embedding is None
-        assert doc.image2.bytes is None
+        assert doc.image2.bytes_ is None
 
     assert da[0].image2.url == 'image_10.png'
     assert da[1].image2.url is None

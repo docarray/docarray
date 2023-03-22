@@ -43,7 +43,7 @@ def test_to_from_pandas_df(nested_doc_cls):
             'image__url',
             'image__tensor',
             'image__embedding',
-            'image__bytes',
+            'image__bytes_',
         ]
     ).all()
 
