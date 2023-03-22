@@ -50,14 +50,41 @@ def test_from_files_with_storing_file_content(patterns, size):
     da = DocumentArray[MyDoc](
         list(
             from_files(
+                patterns=patterns,
+                doc_type=MyDoc,
                 url_field='url',
                 content_field='some_text',
-                doc_type=MyDoc,
-                patterns=patterns,
                 size=size,
             )
         )
     )
+    if size:
+        assert len(da) <= size
+    for doc in da:
+        doc.summary()
+        assert isinstance(doc, MyDoc)
+        assert doc.url is not None
+        assert doc.some_text is not None
+
+
+@pytest.mark.parametrize(
+    'patterns, size',
+    [
+        ('*.*', 2),
+    ],
+)
+def test_document_array_from_files(patterns, size):
+    class MyDoc(BaseDocument):
+        url: TextUrl
+        some_text: str
+
+    da = DocumentArray[MyDoc].from_files(
+        patterns=patterns,
+        url_field='url',
+        content_field='some_text',
+        size=size,
+    )
+
     if size:
         assert len(da) <= size
     for doc in da:

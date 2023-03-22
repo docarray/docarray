@@ -727,6 +727,37 @@ class IOMixinArray(Iterable[BaseDocument]):
             show_progress=show_progress,
         )
 
+    @classmethod
+    def from_files(
+        cls,
+        patterns: Union[str, List[str]],
+        url_field: str,
+        content_field: Optional[str] = None,
+        recursive: bool = True,
+        size: Optional[int] = None,
+        sampling_rate: Optional[float] = None,
+        to_dataturi: bool = False,
+        exclude_regex: Optional[str] = None,
+    ) -> 'DocumentArray':
+        from docarray import DocumentArray
+
+        doc_type = cls.document_type
+        da = DocumentArray.__class_getitem__(doc_type)()
+        da.extend(
+            docs=from_files(
+                patterns=patterns,
+                doc_type=doc_type,
+                url_field=url_field,
+                content_field=content_field,
+                recursive=recursive,
+                size=size,
+                sampling_rate=sampling_rate,
+                to_dataturi=to_dataturi,
+                exclude_regex=exclude_regex,
+            )
+        )
+        return da
+
 
 def from_files(
     patterns: Union[str, List[str]],
@@ -738,8 +769,6 @@ def from_files(
     sampling_rate: Optional[float] = None,
     to_dataturi: bool = False,
     exclude_regex: Optional[str] = None,
-    *args,
-    **kwargs,
 ) -> Generator['BaseDocument', None, None]:
     """Creates an iterator over a list of file path or the content of the files.
 
@@ -763,7 +792,7 @@ def from_files(
     import random
     import re
 
-    def _iter_file_exts(ps):
+    def _iter_file_extensions(ps):
         return itertools.chain.from_iterable(
             glob.iglob(os.path.expanduser(p), recursive=recursive) for p in ps
         )
@@ -779,7 +808,7 @@ def from_files(
         except re.error:
             raise ValueError(f'`{exclude_regex}` is not a valid regex.')
 
-    for g in _iter_file_exts(patterns):
+    for g in _iter_file_extensions(patterns):
         if os.path.isdir(g):
             continue
         if regex and regex.match(g):
