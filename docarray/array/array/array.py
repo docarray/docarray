@@ -248,7 +248,7 @@ class DocumentArray(
         """
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
-        :param tensor_type: Tensor Class used to wrap the stacked tensors. This is usefull
+        :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
         if the BaseDocument has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
         :return: A DocumentArrayStacked of the same document type as self
         """
