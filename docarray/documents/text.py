@@ -43,6 +43,7 @@ class TextDoc(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyText(Text):
             second_embedding: Optional[AnyEmbedding]
@@ -61,6 +62,7 @@ class TextDoc(BaseDocument):
 
         from docarray import BaseDocument
         from docarray.documents import ImageDoc, TextDoc
+
 
         # compose it
         class MultiModalDoc(BaseDocument):
@@ -99,7 +101,7 @@ class TextDoc(BaseDocument):
     text: Optional[str] = None
     url: Optional[TextUrl] = None
     embedding: Optional[AnyEmbedding] = None
-    bytes: Optional[bytes] = None
+    bytes: Optional[bytes]
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
