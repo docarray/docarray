@@ -44,6 +44,8 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
         bytes: 'blob',
     }
 
+    container_type_to_key = {list: 'list', set: 'set', tuple: 'tuple'}
+
     nested_item: 'NodeProto'
     if isinstance(value, BaseNode):
         nested_item = value._to_node_protobuf()
@@ -53,31 +55,17 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
                 nested_item = NodeProto(**{key_name: value})
                 return nested_item
 
-        if isinstance(value, list):
-            from google.protobuf.struct_pb2 import ListValue
+        for container_type, key_name in container_type_to_key.items():
+            if isinstance(value, container_type):
+                from google.protobuf.struct_pb2 import ListValue
 
-            lvalue = ListValue()
-            for item in value:
-                lvalue.append(item)
-            nested_item = NodeProto(list=lvalue)
+                lvalue = ListValue()
+                for item in value:
+                    lvalue.append(item)
+                nested_item = NodeProto(**{key_name: lvalue})
+                return nested_item
 
-        elif isinstance(value, set):
-            from google.protobuf.struct_pb2 import ListValue
-
-            lvalue = ListValue()
-            for item in value:
-                lvalue.append(item)
-            nested_item = NodeProto(set=lvalue)
-
-        elif isinstance(value, tuple):
-            from google.protobuf.struct_pb2 import ListValue
-
-            lvalue = ListValue()
-            for item in value:
-                lvalue.append(item)
-            nested_item = NodeProto(tuple=lvalue)
-
-        elif isinstance(value, dict):
+        if isinstance(value, dict):
             from google.protobuf.struct_pb2 import Struct
 
             struct = Struct()
