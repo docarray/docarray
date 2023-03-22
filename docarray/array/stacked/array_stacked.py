@@ -158,12 +158,17 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                         cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDocument):
-                    doc_columns[field_name] = getattr(docs, field_name).stack()
+                    doc_columns[field_name] = getattr(docs, field_name).stack(
+                        tensor_type=self.tensor_type
+                    )
 
-                elif issubclass(field_type, DocumentArray):
+                elif issubclass(field_type, AnyDocumentArray):
                     docs_list = list()
                     for doc in docs:
-                        docs_list.append(getattr(doc, field_name).stack())
+                        da = getattr(doc, field_name)
+                        if isinstance(da, DocumentArray):
+                            da = da.stack(tensor_type=self.tensor_type)
+                        docs_list.append(da)
                     da_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
@@ -507,9 +512,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
         del self._storage
 
-        return DocumentArray.__class_getitem__(self.document_type).construct(
-            docs, tensor_type=self.tensor_type
-        )
+        return DocumentArray.__class_getitem__(self.document_type).construct(docs)
 
     def traverse_flat(
         self,

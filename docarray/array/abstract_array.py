@@ -21,7 +21,6 @@ import numpy as np
 
 from docarray.base_document import BaseDocument
 from docarray.display.document_array_summary import DocumentArraySummary
-from docarray.typing import NdArray
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._typing import change_cls_name
 
@@ -36,7 +35,6 @@ IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     document_type: Type[BaseDocument]
-    tensor_type: Type['AbstractTensor'] = NdArray
     __typed_da__: Dict[Type['AnyDocumentArray'], Dict[Type[BaseDocument], Type]] = {}
 
     def __repr__(self):
