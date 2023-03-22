@@ -81,5 +81,5 @@ def test_byte_from_tensor():
     img.tensor = img.url.load()
     img.bytes_ = img.tensor.to_bytes()
 
-    assert isinstance(img.bytes, bytes)
+    assert isinstance(img.bytes_, bytes)
     assert len(img.bytes_) > 0
