@@ -20,7 +20,6 @@ from typing import (
 import hnswlib
 import numpy as np
 
-import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.index.abstract import (
     BaseDocumentIndex,
@@ -92,6 +91,15 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if not col.config:
+                # non-tensor type; don't create an index
+                continue
+            if not load_existing and (
+                (not col.n_dim and col.config['dim'] < 0) or not col.config['index']
+            ):
+                # tensor type, but don't index
+                self._logger.info(
+                    f'Not indexing column {col_name}; either `index=False` is set or no dimensionality is specified'
+                )
                 continue
             if load_existing:
                 self._hnsw_indices[col_name] = self._load_index(col_name, col)
@@ -138,7 +146,8 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
-                    'dim': 128,
+                    'dim': -1,
+                    'index': True,  # if False, don't index at all
                     'space': 'l2',  # 'l2', 'ip', 'cosine'
                     'max_elements': 1024,
                     'ef_construction': 200,
@@ -162,10 +171,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if issubclass(python_type, allowed_type):
                 return np.ndarray
 
-        if python_type == docarray.typing.ID:
-            return None
-
-        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+        return None  # all types allowed, but no db type needed
 
     def _index(self, column_data_dic, **kwargs):
         # not needed, we implement `index` directly

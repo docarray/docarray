@@ -21,11 +21,12 @@ from typing import (
 
 import numpy as np
 from pydantic.error_wrappers import ValidationError
-from typing_inspect import get_args, is_union_type
+from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
+from docarray.utils._typing import unwrap_optional_type
 from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import is_tf_available, torch_imported
 
@@ -708,7 +709,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
-            if is_union_type(type_):
+            if is_optional_type(type_):
+                column_infos[field_name] = self._create_single_column(
+                    field_, unwrap_optional_type(type_)
+                )
+            elif is_union_type(type_):
                 raise ValueError(
                     'Union types are not supported in the schema of a DocumentIndex.'
                     f' Instead of using type {type_} use a single specific type.'

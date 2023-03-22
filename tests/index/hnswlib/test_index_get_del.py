@@ -1,11 +1,15 @@
+import os
+from typing import Optional
+
 import numpy as np
 import pytest
 import torch
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
+from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import NdArray, NdArrayEmbedding, TensorFlowTensor, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -118,6 +122,45 @@ def test_index_tf(tmp_path):
     store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
 
     store.index(docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_builtin_docs(tmp_path):
+    # TextDoc
+    class TextSchema(TextDoc):
+        embedding: Optional[NdArrayEmbedding] = Field(dim=10)
+
+    store = HnswDocumentIndex[TextSchema](work_dir=str(tmp_path))
+
+    store.index(
+        DocumentArray[TextDoc](
+            [TextDoc(embedding=np.random.randn(10), text=f'{i}') for i in range(10)]
+        )
+    )
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+    # ImageDoc
+    class ImageSchema(ImageDoc):
+        embedding: Optional[NdArrayEmbedding] = Field(dim=10)
+
+    store = HnswDocumentIndex[ImageSchema](
+        work_dir=str(os.path.join(tmp_path, 'image'))
+    )
+
+    store.index(
+        DocumentArray[ImageDoc](
+            [
+                ImageDoc(
+                    embedding=np.random.randn(10), tensor=np.random.randn(3, 224, 224)
+                )
+                for _ in range(10)
+            ]
+        )
+    )
     assert store.num_docs() == 10
     for index in store._hnsw_indices.values():
         assert index.get_current_count() == 10
