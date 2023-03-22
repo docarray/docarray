@@ -43,7 +43,7 @@ if is_torch_available():
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
 if is_tf_available():
-    import tensorflow as tf
+    import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor
 

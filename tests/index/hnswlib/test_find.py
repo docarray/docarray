@@ -5,7 +5,7 @@ from pydantic import Field
 
 from docarray import BaseDocument
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import NdArray, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -29,10 +29,6 @@ class DeepNestedDoc(BaseDocument):
 
 class TorchDoc(BaseDocument):
     tens: TorchTensor[10]
-
-
-class TfDoc(BaseDocument):
-    tens: TensorFlowTensor[10]
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -84,7 +80,13 @@ def test_find_torch(tmp_path, space):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
+@pytest.mark.tensorflow
 def test_find_tensorflow(tmp_path, space):
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDocument):
+        tens: TensorFlowTensor[10]
+
     store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
 
     index_docs = [TfDoc(tens=np.zeros(10)) for _ in range(10)]

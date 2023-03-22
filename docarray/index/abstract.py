@@ -37,7 +37,7 @@ if torch_imported:
     import torch
 
 if is_tf_available():
-    import tensorflow as tf
+    import tensorflow as tf  # type: ignore
 
     from docarray.typing import TensorFlowTensor
 

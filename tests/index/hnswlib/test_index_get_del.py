@@ -9,7 +9,7 @@ from pydantic import Field
 from docarray import BaseDocument, DocumentArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray, NdArrayEmbedding, TensorFlowTensor, TorchTensor
+from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -33,10 +33,6 @@ class DeepNestedDoc(BaseDocument):
 
 class TorchDoc(BaseDocument):
     tens: TorchTensor[10]
-
-
-class TfDoc(BaseDocument):
-    tens: TensorFlowTensor[10]
 
 
 @pytest.fixture
@@ -114,7 +110,13 @@ def test_index_torch(tmp_path):
         assert index.get_current_count() == 10
 
 
+@pytest.mark.tensorflow
 def test_index_tf(tmp_path):
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDocument):
+        tens: TensorFlowTensor[10]
+
     docs = [TfDoc(tens=np.random.randn(10)) for _ in range(10)]
     # assert isinstance(docs[0].tens, torch.Tensor)
     assert isinstance(docs[0].tens, TensorFlowTensor)
