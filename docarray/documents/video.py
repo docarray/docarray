@@ -102,7 +102,7 @@ class VideoDoc(BaseDocument):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes] = None
+    bytes: Optional[bytes]
 
     @classmethod
     def validate(

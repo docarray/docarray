@@ -98,9 +98,9 @@ class TextDoc(BaseDocument):
         doc == doc2  # False, their ids are not equivalent
     """
 
-    text: Optional[str] = None
-    url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
+    text: Optional[str]
+    url: Optional[TextUrl]
+    embedding: Optional[AnyEmbedding]
     bytes: Optional[bytes]
 
     def __init__(self, text: Optional[str] = None, **kwargs):
