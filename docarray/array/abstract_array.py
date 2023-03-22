@@ -99,6 +99,11 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     def __getitem__(self, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
         ...
 
+    def __getattr__(self, item: str):
+        # Needs to be explicitly defined here for the purpose to disable PyCharm's complaints
+        # about not detected properties: https://youtrack.jetbrains.com/issue/PY-47991
+        return super().__getattribute__(item)
+
     @abstractmethod
     def _get_data_column(
         self: T,
