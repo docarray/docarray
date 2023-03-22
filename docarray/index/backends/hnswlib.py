@@ -22,7 +22,7 @@ import numpy as np
 
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract_doc_index import (
+from docarray.index.abstract import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
@@ -63,6 +63,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
         self._work_dir = self._db_config.work_dir
+        self._logger.debug(f'Working directory set to {self._work_dir}')
         load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
@@ -83,18 +84,26 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if not col.config:
-                continue  # do not create column index if no config is given
+                self._logger.warning(
+                    f'No index was created for `{col_name}` as it does not have a config'
+                )
+                continue
             if load_existing:
                 self._hnsw_indices[col_name] = self._load_index(col_name, col)
+                self._logger.info(f'Loading an existing index for column `{col_name}`')
             else:
                 self._hnsw_indices[col_name] = self._create_index(col)
+                self._logger.info(f'Created a new index for column `{col_name}`')
 
         # SQLite setup
         self._sqlite_db_path = os.path.join(self._work_dir, 'docs_sqlite.db')
+        self._logger.debug(f'DB path set to {self._sqlite_db_path}')
         self._sqlite_conn = sqlite3.connect(self._sqlite_db_path)
+        self._logger.info('Connection to DB has been established')
         self._sqlite_cursor = self._sqlite_conn.cursor()
         self._create_docs_table()
         self._sqlite_conn.commit()
+        self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -161,10 +170,11 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         """index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
+
+        self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
         hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
-
         # indexing into HNSWLib and SQLite sequentially
         # could be improved by processing in parallel
         for col_name, index in self._hnsw_indices.items():
@@ -196,6 +206,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             elif op == 'filter':
                 filter_conditions.append(op_kwargs['filter_query'])
 
+        self._logger.debug(f'Executing query {query}')
         docs_filtered = ann_docs
         for cond in filter_conditions:
             da_cls = DocumentArray.__class_getitem__(
@@ -203,6 +214,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
             docs_filtered = da_cls(filter_docs(docs_filtered, cond))
 
+        self._logger.debug(f'{len(docs_filtered)} results found')
         docs_and_scores = zip(
             docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
         )
@@ -240,7 +252,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> DocumentArray:
-
         raise NotImplementedError(
             f'{type(self)} does not support filter-only queries.'
             f' To perform post-filtering on a query, use'

@@ -110,6 +110,6 @@ markers = [
     "asyncio: marks that run async tests",
     "proto: mark tests that run with proto",
     "tensorflow: marks test using tensorflow and proto 3",
-    "doc_index: marks test using a document index",
+    "index: marks test using a document index",
     "benchmark: marks slow benchmarking tests",
 ]

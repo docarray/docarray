@@ -39,7 +39,7 @@ def nested_batch():
 
     import tensorflow as tf
 
-    batch = DocumentArray[MMdoc](
+    batch = DocumentArrayStacked[MMdoc](
         [
             MMdoc(
                 img=DocumentArray[Image](
@@ -50,7 +50,7 @@ def nested_batch():
         ]
     )
 
-    return batch.stack()
+    return batch
 
 
 @pytest.mark.tensorflow
@@ -84,11 +84,10 @@ def test_set_after_stacking():
     class Image(BaseDocument):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
+    batch = DocumentArrayStacked[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    batch = batch.stack()
     batch.tensor = tf.ones((10, 3, 224, 224))
     assert tnp.allclose(batch.tensor.tensor, tf.ones((10, 3, 224, 224)))
     for i, doc in enumerate(batch):
@@ -114,9 +113,7 @@ def test_stack_mod_nested_document():
 
     batch = DocumentArray[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
-    )
-
-    batch = batch.stack()
+    ).stack()
 
     assert tnp.allclose(
         batch._storage.doc_columns['img']._storage.tensor_columns['tensor'].tensor,
@@ -222,10 +219,10 @@ def test_any_tensor_with_tf():
     class Image(BaseDocument):
         tensor: AnyTensor
 
-    da = DocumentArray[Image](
+    da = DocumentArrayStacked[Image](
         [Image(tensor=tensor) for _ in range(10)],
         tensor_type=TensorFlowTensor,
-    ).stack()
+    )
 
     for i in range(len(da)):
         assert tnp.allclose(da[i].tensor.tensor, tensor)
@@ -244,10 +241,10 @@ def test_any_tensor_with_optional():
     class TopDoc(BaseDocument):
         img: Image
 
-    da = DocumentArray[TopDoc](
+    da = DocumentArrayStacked[TopDoc](
         [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
         tensor_type=TensorFlowTensor,
-    ).stack()
+    )
 
     for i in range(len(da)):
         assert tnp.allclose(da.img[i].tensor.tensor, tensor)
@@ -263,9 +260,9 @@ def test_get_from_slice_stacked():
         text: str
         tensor: TensorFlowTensor
 
-    da = DocumentArray[Doc](
+    da = DocumentArrayStacked[Doc](
         [Doc(text=f'hello{i}', tensor=tf.zeros((3, 224, 224))) for i in range(10)]
-    ).stack()
+    )
 
     da_sliced = da[0:10:2]
     assert isinstance(da_sliced, DocumentArrayStacked)
@@ -279,10 +276,9 @@ def test_stack_none():
     class MyDoc(BaseDocument):
         tensor: Optional[AnyTensor]
 
-    da = DocumentArray[MyDoc](
+    da = DocumentArrayStacked[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
-    ).stack()
-
+    )
     assert 'tensor' in da._storage.tensor_columns.keys()
 
 
