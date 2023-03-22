@@ -271,6 +271,14 @@ This allows:
 * the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base.
 * the contributors to be sure that they don't break already-merged features when refactoring or modifying the code base.
 
+<a name="-enable-logging"></a>
+## Enable logging
+If you need to monitor and debug your code, you can enable docarray logging:
+```python
+import logging
+logging.getLogger('docarray').setLevel(logging.DEBUG)
+```
+
 <a name="-compiling-protobuf"></a>
 ## Compiling protobuf
 
