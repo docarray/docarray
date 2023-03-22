@@ -47,6 +47,7 @@ class ImageDoc(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyImage(ImageDoc):
             second_embedding: Optional[AnyEmbedding]
@@ -66,6 +67,7 @@ class ImageDoc(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import ImageDoc, TextDoc
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             image: Image
@@ -78,7 +80,7 @@ class ImageDoc(BaseDocument):
         )
         mmdoc.image.tensor = mmdoc.image.url.load()
         # or
-        mmdoc.image.bytes = mmdoc.image.url.load_bytes()
+        mmdoc.image.bytes_ = mmdoc.image.url.load_bytes()
 
         mmdoc.image.tensor = mmdoc.image.bytes.load()
     """
@@ -86,7 +88,7 @@ class ImageDoc(BaseDocument):
     url: Optional[ImageUrl]
     tensor: Optional[ImageTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[ImageBytes]
+    bytes_: Optional[ImageBytes]
 
     @classmethod
     def validate(

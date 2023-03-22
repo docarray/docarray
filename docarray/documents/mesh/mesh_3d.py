@@ -80,7 +80,7 @@ class Mesh3D(BaseDocument):
         mmdoc.mesh.tensors = mmdoc.mesh.url.load()
 
         # or
-        mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
+        mmdoc.mesh.bytes_ = mmdoc.mesh.url.load_bytes()
 
 
     You can display your 3D mesh in a notebook from either its url, or its tensors:
@@ -104,7 +104,7 @@ class Mesh3D(BaseDocument):
     url: Optional[Mesh3DUrl]
     tensors: Optional[VerticesAndFaces]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes]
+    bytes_: Optional[bytes]
 
     @classmethod
     def validate(

@@ -78,7 +78,7 @@ class TextDoc(BaseDocument):
 
         # or
 
-        mmdoc.text_doc.bytes = mmdoc.text_doc.url.load_bytes()
+        mmdoc.text_doc.bytes_ = mmdoc.text_doc.url.load_bytes()
 
 
     This Document can be compared against another Document of the same type or a string.
@@ -101,7 +101,7 @@ class TextDoc(BaseDocument):
     text: Optional[str]
     url: Optional[TextUrl]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes]
+    bytes_: Optional[bytes]
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
