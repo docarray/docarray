@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 
 from docarray import DocumentArray
-from docarray.array.array.pushpull.file import ConcurrentPushException, FileDocStore
 from docarray.documents import TextDoc
+from docarray.remote.file import ConcurrentPushException, FileDocStore
 from docarray.utils.cache import get_cache_path
 from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
 

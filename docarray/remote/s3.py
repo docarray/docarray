@@ -8,8 +8,8 @@ import botocore
 from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
-from docarray.array.array.pushpull.abstract_doc_store import AbstractDocStore
-from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
+from docarray.remote.abstract_doc_store import AbstractDocStore
+from docarray.remote.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
