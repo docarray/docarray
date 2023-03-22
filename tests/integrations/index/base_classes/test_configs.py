@@ -5,10 +5,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.doc_index.abstract import BaseDocumentIndex
+from docarray.index.abstract import BaseDocumentIndex
 from docarray.typing import NdArray
 
-pytestmark = pytest.mark.doc_index
+pytestmark = pytest.mark.index
 
 
 class SimpleDoc(BaseDocument):
@@ -21,7 +21,7 @@ class FakeQueryBuilder:
 
 @dataclass
 class DBConfig(BaseDocumentIndex.DBConfig):
-    work_dir: str = '.'
+    work_dir: str = ''
     other: int = 5
 
 

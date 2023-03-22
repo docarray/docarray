@@ -448,19 +448,22 @@ match = store.find(
 You can see more logs by setting the log level to `DEBUG` or `INFO`.
 
 Example:
+
 ```python
 from pydantic import Field
 from docarray import BaseDocument
-from docarray.doc_index.backends.hnswlib_doc_index import HnswDocumentIndex
+from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 # import logging and set the level to DEBUG
 import logging
+
 logging.getLogger('docarray').setLevel(logging.DEBUG)
 
 
 # define a simple document and create a document index
 class SimpleDoc(BaseDocument):
-    vector: NdArray = Field(dim=10)
+  vector: NdArray = Field(dim=10)
+
 
 doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')
 ```

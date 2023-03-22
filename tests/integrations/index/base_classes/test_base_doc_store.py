@@ -6,13 +6,13 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract import (
+from docarray.index.abstract import (
     BaseDocumentIndex,
     _raise_not_composable,
 )
 from docarray.typing import ID, NdArray
 
-pytestmark = pytest.mark.doc_index
+pytestmark = pytest.mark.index
 
 
 class SimpleDoc(BaseDocument):
@@ -53,7 +53,7 @@ class DummyDocIndex(BaseDocumentIndex):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        work_dir: str = '.'
+        work_dir: str = ''
 
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def build(self):

@@ -3,10 +3,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.doc_index import HnswDocumentIndex
+from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 
-pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDocument):

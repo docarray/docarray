@@ -22,7 +22,7 @@ import numpy as np
 
 import docarray.typing
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.abstract import (
+from docarray.index.abstract import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
@@ -126,7 +126,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
-        work_dir: str = '.'
+        work_dir: str = ''
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
