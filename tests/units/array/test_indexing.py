@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import DocumentArray
+from docarray import DocumentArray, DocumentArrayStacked
 from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 
@@ -13,7 +13,6 @@ def da():
     tensors = [torch.ones((4,)) * i for i in range(10)]
     return DocumentArray[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
-        tensor_type=TorchTensor,
     )
 
 
@@ -23,7 +22,6 @@ def da_to_set():
     tensors = [torch.ones((4,)) * i * 2 for i in range(5)]
     return DocumentArray[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
-        tensor_type=TorchTensor,
     )
 
 
@@ -35,7 +33,7 @@ def da_to_set():
 @pytest.mark.parametrize('stack', [True, False])
 def test_simple_getitem(stack, da):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     assert torch.all(da[0].embedding == torch.zeros((4,)))
     assert da[0].text == 'hello 0'
@@ -44,7 +42,7 @@ def test_simple_getitem(stack, da):
 @pytest.mark.parametrize('stack', [True, False])
 def test_get_none(stack, da):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     assert da[None] is da
 
@@ -53,7 +51,7 @@ def test_get_none(stack, da):
 @pytest.mark.parametrize('index', [(1, 2, 3, 4, 6), [1, 2, 3, 4, 6]])
 def test_iterable_getitem(stack, da, index):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     indexed_da = da[index]
 
@@ -66,7 +64,7 @@ def test_iterable_getitem(stack, da, index):
 @pytest.mark.parametrize('index_dtype', [torch.int64])
 def test_torchtensor_getitem(stack, da, index_dtype):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     index = torch.tensor([1, 2, 3, 4, 6], dtype=index_dtype)
 
@@ -81,7 +79,7 @@ def test_torchtensor_getitem(stack, da, index_dtype):
 @pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_getitem(stack, da, index_dtype):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     index = np.array([1, 2, 3, 4, 6], dtype=index_dtype)
 
@@ -103,7 +101,7 @@ def test_nparray_getitem(stack, da, index_dtype):
 )
 def test_boolmask_getitem(stack, da, index):
     if stack:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     indexed_da = da[index]
 
@@ -122,7 +120,7 @@ def test_boolmask_getitem(stack, da, index):
 @pytest.mark.parametrize('stack_left', [True, False])
 def test_simple_setitem(stack_left, da, da_to_set):
     if stack_left:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
 
     da[0] = da_to_set[0]
 
@@ -135,9 +133,9 @@ def test_simple_setitem(stack_left, da, da_to_set):
 @pytest.mark.parametrize('index', [(1, 2, 3, 4, 6), [1, 2, 3, 4, 6]])
 def test_iterable_setitem(stack_left, stack_right, da, da_to_set, index):
     if stack_left:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
     if stack_right:
-        da_to_set = da_to_set.stack()
+        da_to_set = da_to_set.stack(tensor_type=TorchTensor)
 
     da[index] = da_to_set
 
@@ -158,9 +156,9 @@ def test_iterable_setitem(stack_left, stack_right, da, da_to_set, index):
 @pytest.mark.parametrize('index_dtype', [torch.int64])
 def test_torchtensor_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
     if stack_left:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
     if stack_right:
-        da_to_set = da_to_set.stack()
+        da_to_set = da_to_set.stack(tensor_type=TorchTensor)
 
     index = torch.tensor([1, 2, 3, 4, 6], dtype=index_dtype)
 
@@ -183,9 +181,9 @@ def test_torchtensor_setitem(stack_left, stack_right, da, da_to_set, index_dtype
 @pytest.mark.parametrize('index_dtype', [int, np.int_, np.int32, np.int64])
 def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
     if stack_left:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
     if stack_right:
-        da_to_set = da_to_set.stack()
+        da_to_set = da_to_set.stack(tensor_type=TorchTensor)
 
     index = np.array([1, 2, 3, 4, 6], dtype=index_dtype)
 
@@ -216,9 +214,9 @@ def test_nparray_setitem(stack_left, stack_right, da, da_to_set, index_dtype):
 )
 def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
     if stack_left:
-        da = da.stack()
+        da = da.stack(tensor_type=TorchTensor)
     if stack_right:
-        da_to_set = da_to_set.stack()
+        da_to_set = da_to_set.stack(tensor_type=TorchTensor)
 
     da[index] = da_to_set
 
@@ -238,10 +236,10 @@ def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
 def test_setitem_update_column():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * (i + 1) for i in range(10)]
-    da = DocumentArray[TextDoc](
+    da = DocumentArrayStacked[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
         tensor_type=TorchTensor,
-    ).stack()
+    )
 
     da[0] = TextDoc(text='hello', embedding=torch.zeros((4,)))
 
