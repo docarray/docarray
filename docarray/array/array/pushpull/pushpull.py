@@ -14,17 +14,16 @@ from typing import (
 )
 
 from typing_extensions import Literal
+from typing_inspect import get_args
 
 from docarray.utils.cache import get_cache_path
 
-SUPPORTED_PUSH_PULL_PROTOCOLS = ['jinaai', 's3', 'file']
 PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
+SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
-    from docarray.array.array.pushpull.abstract_push_pull_backend import (
-        AbstractPushPullBackend,
-    )
+    from docarray.array.array.pushpull.abstract_doc_store import AbstractDocStore
 
 
 class ConcurrentPushException(Exception):
@@ -39,7 +38,7 @@ SelfPushPullMixin = TypeVar('SelfPushPullMixin', bound='PushPullMixin')
 class PushPullMixin(Iterable['BaseDocument']):
     """Mixin class for push/pull functionality."""
 
-    __backends__: Dict[str, Type['AbstractPushPullBackend']] = {}
+    __backends__: Dict[str, Type['AbstractDocStore']] = {}
     document_type: Type['BaseDocument']
 
     @abstractmethod
@@ -59,7 +58,7 @@ class PushPullMixin(Iterable['BaseDocument']):
     @classmethod
     def get_pushpull_backend(
         cls: Type[SelfPushPullMixin], protocol: PUSH_PULL_PROTOCOL
-    ) -> Type['AbstractPushPullBackend']:
+    ) -> Type['AbstractDocStore']:
         """
         Get the backend for the given protocol.
 
@@ -70,19 +69,19 @@ class PushPullMixin(Iterable['BaseDocument']):
             return cls.__backends__[protocol]
 
         if protocol == 'jinaai':
-            from docarray.array.array.pushpull.jinaai import PushPullJAC
+            from docarray.array.array.pushpull.jinaai import JACDocStore
 
-            cls.__backends__[protocol] = PushPullJAC
+            cls.__backends__[protocol] = JACDocStore
             logging.debug('Loaded Jina AI Cloud backend')
         elif protocol == 'file':
-            from docarray.array.array.pushpull.file import PushPullFile
+            from docarray.array.array.pushpull.file import FileDocStore
 
-            cls.__backends__[protocol] = PushPullFile
+            cls.__backends__[protocol] = FileDocStore
             logging.debug('Loaded Local Filesystem backend')
         elif protocol == 's3':
-            from docarray.array.array.pushpull.s3 import PushPullS3
+            from docarray.array.array.pushpull.s3 import S3DocStore
 
-            cls.__backends__[protocol] = PushPullS3
+            cls.__backends__[protocol] = S3DocStore
             logging.debug('Loaded S3 backend')
         else:
             raise NotImplementedError(f'protocol {protocol} not supported')

@@ -2,15 +2,23 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import hubble
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
-from docarray.array.array.pushpull.abstract_push_pull_backend import (
-    AbstractPushPullBackend,
-)
+from docarray.array.array.pushpull.abstract_doc_store import AbstractDocStore
 from docarray.array.array.pushpull.helpers import (
     _BufferedCachingRequestReader,
     get_version_info,
@@ -64,7 +72,10 @@ def _get_raw_summary(self: 'DocumentArray') -> List[Dict[str, Any]]:
     return items
 
 
-class PushPullJAC(AbstractPushPullBackend):
+SelfJACDocStore = TypeVar('SelfJACDocStore', bound='JACDocStore')
+
+
+class JACDocStore(AbstractDocStore):
     """Class to push and pull DocumentArray to and from Jina AI Cloud."""
 
     @staticmethod
@@ -216,9 +227,10 @@ class PushPullJAC(AbstractPushPullBackend):
                 response.reason = response.json()['readableMessage']
             raise_req_error(response)
 
-    @staticmethod
+    @classmethod
     @hubble.login_required
     def push_stream(
+        cls: Type[SelfJACDocStore],
         docs: Iterator['BaseDocument'],
         name: str,
         public: bool = True,
@@ -250,7 +262,7 @@ class PushPullJAC(AbstractPushPullBackend):
         da = DocumentArray[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
             da.append(doc)
-        return PushPullJAC.push(da, name, public, show_progress, branding)
+        return cls.push(da, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
@@ -270,7 +282,7 @@ class PushPullJAC(AbstractPushPullBackend):
         from docarray import DocumentArray
 
         return DocumentArray[cls.document_type](  # type: ignore
-            PushPullJAC.pull_stream(cls, name, show_progress, local_cache)
+            JACDocStore.pull_stream(cls, name, show_progress, local_cache)
         )
 
     @staticmethod

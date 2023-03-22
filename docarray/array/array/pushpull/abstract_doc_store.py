@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from docarray import BaseDocument, DocumentArray
 
 
-class AbstractPushPullBackend(ABC):
+class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def list(namespace: str, show_table: bool) -> List[str]:
@@ -71,14 +71,14 @@ class AbstractPushPullBackend(ABC):
     @staticmethod
     @abstractmethod
     def pull(
-        cls: Type['DocumentArray'],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
     ) -> 'DocumentArray':
         """Pull a DocumentArray from the specified name.
 
-        :param cls: The DocumentArray class to instantiate
+        :param da_cls: The DocumentArray class to instantiate
         :param name: The name to pull from
         :param show_progress: If true, a progress bar will be displayed.
         :param local_cache: If true, the DocumentArray will be cached locally
@@ -89,14 +89,14 @@ class AbstractPushPullBackend(ABC):
     @staticmethod
     @abstractmethod
     def pull_stream(
-        cls: Type['DocumentArray'],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
     ) -> Iterator['BaseDocument']:
         """Pull a stream of documents from the specified name.
 
-        :param cls: The DocumentArray class to instantiate
+        :param da_cls: The DocumentArray class to instantiate
         :param name: The name to pull from
         :param show_progress: If true, a progress bar will be displayed.
         :param local_cache: If true, the DocumentArray will be cached locally

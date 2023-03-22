@@ -1,21 +1,21 @@
 import io
 import logging
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Type
+from typing import Dict, Iterator, List, Optional, Type, TypeVar
 
 import boto3
 import botocore
 from smart_open import open
 from typing_extensions import TYPE_CHECKING
 
-from docarray.array.array.pushpull.abstract_push_pull_backend import (
-    AbstractPushPullBackend,
-)
+from docarray.array.array.pushpull.abstract_doc_store import AbstractDocStore
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
+
+SelfS3DocStore = TypeVar('SelfS3DocStore', bound='S3DocStore')
 
 
 class _BufferedCachingReader:
@@ -43,7 +43,7 @@ class _BufferedCachingReader:
             self._cache.close()
 
 
-class PushPullS3(AbstractPushPullBackend):
+class S3DocStore(AbstractDocStore):
     """Class to push and pull DocumentArray to and from S3."""
 
     @staticmethod
@@ -112,8 +112,9 @@ class PushPullS3(AbstractPushPullBackend):
         object.delete()
         return True
 
-    @staticmethod
+    @classmethod
     def push(
+        cls: Type[SelfS3DocStore],
         da: 'DocumentArray',
         name: str,
         public: bool = False,
@@ -128,7 +129,7 @@ class PushPullS3(AbstractPushPullBackend):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Not used by the ``s3`` protocol.
         """
-        return PushPullS3.push_stream(iter(da), name, public, show_progress, branding)
+        return cls.push_stream(iter(da), name, public, show_progress, branding)
 
     @staticmethod
     def push_stream(
@@ -169,9 +170,10 @@ class PushPullS3(AbstractPushPullBackend):
 
         return {}
 
-    @staticmethod
+    @classmethod
     def pull(
-        cls: Type['DocumentArray'],
+        cls: Type[SelfS3DocStore],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
@@ -183,16 +185,17 @@ class PushPullS3(AbstractPushPullBackend):
         :param local_cache: store the downloaded DocumentArray to local cache
         :return: a :class:`DocumentArray` object
         """
-        da = cls(  # type: ignore
-            PushPullS3.pull_stream(
-                cls, name, show_progress=show_progress, local_cache=local_cache
+        da = da_cls(  # type: ignore
+            cls.pull_stream(
+                da_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
         return da
 
-    @staticmethod
+    @classmethod
     def pull_stream(
-        cls: Type['DocumentArray'],
+        cls: Type[SelfS3DocStore],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -228,7 +231,7 @@ class PushPullS3(AbstractPushPullBackend):
                     source = open(cache_path, 'rb')
 
         return _from_binary_stream(
-            cls.document_type,
+            da_cls.document_type,
             source,
             protocol='pickle',
             compress=None,

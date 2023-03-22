@@ -1,12 +1,10 @@
 import logging
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Type
+from typing import Dict, Iterator, List, Optional, Type, TypeVar
 
 from typing_extensions import TYPE_CHECKING
 
-from docarray.array.array.pushpull.abstract_push_pull_backend import (
-    AbstractPushPullBackend,
-)
+from docarray.array.array.pushpull.abstract_doc_store import AbstractDocStore
 from docarray.array.array.pushpull.helpers import _from_binary_stream, _to_binary_stream
 from docarray.array.array.pushpull.pushpull import ConcurrentPushException
 from docarray.utils.cache import get_cache_path
@@ -14,8 +12,10 @@ from docarray.utils.cache import get_cache_path
 if TYPE_CHECKING:
     from docarray import BaseDocument, DocumentArray
 
+SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
-class PushPullFile(AbstractPushPullBackend):
+
+class FileDocStore(AbstractDocStore):
     @staticmethod
     def _abs_filepath(name: str) -> Path:
         """Resolve a name to an absolute path.
@@ -28,15 +28,17 @@ class PushPullFile(AbstractPushPullBackend):
             name = str(Path.home() / name[2:])
         return Path(name).resolve()
 
-    @staticmethod
-    def list(namespace: str, show_table: bool) -> List[str]:
+    @classmethod
+    def list(
+        cls: Type[SelfFileDocStore], namespace: str, show_table: bool
+    ) -> List[str]:
         """List all DocumentArrays in a directory.
 
         :param namespace: The directory to list.
         :param show_table: If True, print a table of the files in the directory.
         :return: A list of the names of the DocumentArrays in the directory.
         """
-        namespace_dir = PushPullFile._abs_filepath(namespace)
+        namespace_dir = cls._abs_filepath(namespace)
         if not namespace_dir.exists():
             raise FileNotFoundError(f'Directory {namespace} does not exist')
         da_files = [dafile for dafile in namespace_dir.glob('*.da')]
@@ -68,15 +70,17 @@ class PushPullFile(AbstractPushPullBackend):
 
         return [dafile.stem for dafile in da_files]
 
-    @staticmethod
-    def delete(name: str, missing_ok: bool = False) -> bool:
+    @classmethod
+    def delete(
+        cls: Type[SelfFileDocStore], name: str, missing_ok: bool = False
+    ) -> bool:
         """Delete a DocumentArray from the local filesystem.
 
         :param name: The name of the DocumentArray to delete.
         :param missing_ok: If True, do not raise an exception if the file does not exist. Defaults to False.
         :return: True if the file was deleted, False if it did not exist.
         """
-        path = PushPullFile._abs_filepath(name)
+        path = cls._abs_filepath(name)
         try:
             path.with_suffix('.da').unlink()
             return True
@@ -85,8 +89,9 @@ class PushPullFile(AbstractPushPullBackend):
                 raise
         return False
 
-    @staticmethod
+    @classmethod
     def push(
+        cls: Type[SelfFileDocStore],
         da: 'DocumentArray',
         name: str,
         public: bool,
@@ -100,10 +105,11 @@ class PushPullFile(AbstractPushPullBackend):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Not used by the ``file`` protocol.
         """
-        return PushPullFile.push_stream(iter(da), name, public, show_progress, branding)
+        return cls.push_stream(iter(da), name, public, show_progress, branding)
 
-    @staticmethod
+    @classmethod
     def push_stream(
+        cls: Type[SelfFileDocStore],
         docs: Iterator['BaseDocument'],
         name: str,
         public: bool = True,
@@ -124,7 +130,7 @@ class PushPullFile(AbstractPushPullBackend):
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
-        path = PushPullFile._abs_filepath(name).with_suffix('.da.tmp')
+        path = cls._abs_filepath(name).with_suffix('.da.tmp')
         if path.exists():
             raise ConcurrentPushException(f'File {path} already exists.')
         with open(path, 'wb') as f:
@@ -136,9 +142,10 @@ class PushPullFile(AbstractPushPullBackend):
         path.rename(path.with_suffix(''))
         return {}
 
-    @staticmethod
+    @classmethod
     def pull(
-        cls: Type['DocumentArray'],
+        cls: Type[SelfFileDocStore],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -151,15 +158,16 @@ class PushPullFile(AbstractPushPullBackend):
         :return: a :class:`DocumentArray` object
         """
 
-        return cls(
-            PushPullFile.pull_stream(
-                cls, name, show_progress=show_progress, local_cache=local_cache
+        return da_cls(
+            cls.pull_stream(
+                da_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
 
-    @staticmethod
+    @classmethod
     def pull_stream(
-        cls: Type['DocumentArray'],
+        cls: Type[SelfFileDocStore],
+        da_cls: Type['DocumentArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -175,10 +183,10 @@ class PushPullFile(AbstractPushPullBackend):
         if local_cache:
             logging.warning('local_cache is not supported for "file" protocol')
 
-        path = PushPullFile._abs_filepath(name).with_suffix('.da')
+        path = cls._abs_filepath(name).with_suffix('.da')
         source = open(path, 'rb')
         return _from_binary_stream(
-            cls.document_type,
+            da_cls.document_type,
             source,
             protocol='protobuf',
             compress='gzip',
