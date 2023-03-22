@@ -4,6 +4,7 @@ from docarray import BaseDocument, DocumentArray
 from docarray.array.array.io import from_files
 from docarray.documents import ImageDoc
 from docarray.typing import TextUrl
+from tests import TOYDATA_DIR
 from tests.units.typing.url.test_image_url import PATH_TO_IMAGE_DATA
 
 
@@ -37,12 +38,12 @@ def test_from_files(patterns, recursive, size, sampling_rate):
 
 
 @pytest.mark.parametrize(
-    'patterns, size',
+    'patterns',
     [
-        ('*.*', 2),
+        (f'{TOYDATA_DIR}/*.txt'),
     ],
 )
-def test_from_files_with_storing_file_content(patterns, size):
+def test_from_files_with_storing_file_content(patterns):
     class MyDoc(BaseDocument):
         url: TextUrl
         some_text: str
@@ -54,26 +55,23 @@ def test_from_files_with_storing_file_content(patterns, size):
                 doc_type=MyDoc,
                 url_field='url',
                 content_field='some_text',
-                size=size,
             )
         )
     )
-    if size:
-        assert len(da) <= size
+    assert len(da) == 1
     for doc in da:
-        doc.summary()
         assert isinstance(doc, MyDoc)
         assert doc.url is not None
         assert doc.some_text is not None
 
 
 @pytest.mark.parametrize(
-    'patterns, size',
+    'patterns',
     [
-        ('*.*', 2),
+        (f'{TOYDATA_DIR}/*.txt'),
     ],
 )
-def test_document_array_from_files(patterns, size):
+def test_document_array_from_files(patterns):
     class MyDoc(BaseDocument):
         url: TextUrl
         some_text: str
@@ -82,13 +80,31 @@ def test_document_array_from_files(patterns, size):
         patterns=patterns,
         url_field='url',
         content_field='some_text',
-        size=size,
     )
 
-    if size:
-        assert len(da) <= size
+    assert len(da) == 1
     for doc in da:
-        doc.summary()
         assert isinstance(doc, MyDoc)
         assert doc.url is not None
         assert doc.some_text is not None
+
+
+def test_from_files_with_nested_fields():
+    class MyDoc(BaseDocument):
+        url: TextUrl
+        some_text: str
+
+    class NestedDoc(BaseDocument):
+        my_doc: MyDoc
+
+    da = DocumentArray[NestedDoc].from_files(
+        patterns=f'{TOYDATA_DIR}/*.txt',
+        url_field='my_doc__url',
+        content_field='my_doc__some_text',
+    )
+
+    assert len(da) == 1
+    for doc in da:
+        assert isinstance(doc, NestedDoc)
+        assert doc.my_doc.url is not None
+        assert doc.my_doc.some_text is not None

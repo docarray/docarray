@@ -743,6 +743,53 @@ class IOMixinArray(Iterable[BaseDocument]):
         to_dataturi: bool = False,
         exclude_regex: Optional[str] = None,
     ) -> 'DocumentArray':
+        """
+        Load a DocumentArray from file paths described by `patterns` following the
+        schema defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
+        One file path will be mapped to one Document, and will be stored to `url_field`.
+        Additionally, if `content_field` is not None, the content of the file will be
+        stored in there. The type of `content_field` should be str or bytes.
+
+        For nested fields use "__"-separated access paths, such as 'image__url'.
+
+        EXAMPLE USAGE:
+
+        .. code-block:: python
+
+                from docarray import BaseDocument, DocumentArray
+                from docarray.typing import TextUrl
+
+
+                class MyDoc(BaseDocument):
+                    url: TextUrl
+                    some_text: str
+
+
+                da = DocumentArray[MyDoc].from_files(
+                    patterns='path/to/files/*.txt', url_field='url', content_field='some_text', size=3
+                )
+
+                assert len(da) == 3
+                for doc in da:
+                    assert isinstance(doc, MyDoc)
+                    assert doc.url is not None
+                    assert doc.some_text is not None
+
+        :param patterns: The pattern may contain simple shell-style wildcards,
+            e.g. '\*.py', '[\*.zip, \*.gz]'
+        :param url_field: field to store url to
+        :param content_field: If not None, the file content will be stored to this field.
+        :param recursive: If recursive is true, the pattern '**' will match any files
+            and zero or more directories and subdirectories
+        :param size: the maximum number of the files
+        :param sampling_rate: the sampling rate between [0, 1]
+        :param to_dataturi: if true, the url will be transformed to the datauri and then
+            stored to `url_field`
+        :param exclude_regex: if set, then filenames that match to this pattern are not
+            included.
+
+        :return: DocumentArray where each Document stores one file path and optionally the file content.
+        """
         from docarray import DocumentArray
 
         doc_type = cls.document_type
