@@ -323,7 +323,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                     f'{value} schema : {value.document_type} is not compatible with '
                     f'this DocumentArrayStacked schema : {self.document_type}'
                 )
-            processed_value = cast(T, value.stack())  # we need to copy data here
+            processed_value = cast(
+                T, value.stack(tensor_type=self.tensor_type)
+            )  # we need to copy data here
 
         elif isinstance(value, DocumentArrayStacked):
             if not issubclass(value.document_type, self.document_type):
