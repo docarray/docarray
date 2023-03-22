@@ -36,59 +36,57 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
     """
     from docarray.proto import NodeProto
 
+    basic_type_to_key = {
+        str: 'text',
+        bool: 'boolean',
+        int: 'integer',
+        float: 'float',
+        bytes: 'blob',
+    }
+
     nested_item: 'NodeProto'
     if isinstance(value, BaseNode):
         nested_item = value._to_node_protobuf()
-
-    elif isinstance(value, str):
-        nested_item = NodeProto(text=value)
-
-    elif isinstance(value, bool):
-        nested_item = NodeProto(boolean=value)
-
-    elif isinstance(value, int):
-        nested_item = NodeProto(integer=value)
-
-    elif isinstance(value, float):
-        nested_item = NodeProto(float=value)
-
-    elif isinstance(value, bytes):
-        nested_item = NodeProto(blob=value)
-
-    elif isinstance(value, list):
-        from google.protobuf.struct_pb2 import ListValue
-
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(list=lvalue)
-
-    elif isinstance(value, set):
-        from google.protobuf.struct_pb2 import ListValue
-
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(set=lvalue)
-
-    elif isinstance(value, tuple):
-        from google.protobuf.struct_pb2 import ListValue
-
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(tuple=lvalue)
-
-    elif isinstance(value, dict):
-        from google.protobuf.struct_pb2 import Struct
-
-        struct = Struct()
-        struct.update(value)
-        nested_item = NodeProto(dict=struct)
-    elif value is None:
-        nested_item = NodeProto()
     else:
-        raise ValueError(f'{type(value)} is not supported with protobuf')
+        for basic_type, key_name in basic_type_to_key.items():
+            if isinstance(value, basic_type):
+                nested_item = NodeProto(**{key_name: value})
+                return nested_item
+
+        if isinstance(value, list):
+            from google.protobuf.struct_pb2 import ListValue
+
+            lvalue = ListValue()
+            for item in value:
+                lvalue.append(item)
+            nested_item = NodeProto(list=lvalue)
+
+        elif isinstance(value, set):
+            from google.protobuf.struct_pb2 import ListValue
+
+            lvalue = ListValue()
+            for item in value:
+                lvalue.append(item)
+            nested_item = NodeProto(set=lvalue)
+
+        elif isinstance(value, tuple):
+            from google.protobuf.struct_pb2 import ListValue
+
+            lvalue = ListValue()
+            for item in value:
+                lvalue.append(item)
+            nested_item = NodeProto(tuple=lvalue)
+
+        elif isinstance(value, dict):
+            from google.protobuf.struct_pb2 import Struct
+
+            struct = Struct()
+            struct.update(value)
+            nested_item = NodeProto(dict=struct)
+        elif value is None:
+            nested_item = NodeProto()
+        else:
+            raise ValueError(f'{type(value)} is not supported with protobuf')
     return nested_item
 
 
