@@ -445,18 +445,15 @@ match = store.find(
 ```
 
 ## Enable logging
-You can see more logs by setting the log level to `DEBUG` or `INFO`.
-
-Example:
+You can see more logs by setting the log level to `DEBUG` or `INFO`:
 
 ```python
 from pydantic import Field
 from docarray import BaseDocument
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
-# import logging and set the level to DEBUG
 import logging
-
+# get the logger and set the log level to DEBUG
 logging.getLogger('docarray').setLevel(logging.DEBUG)
 
 

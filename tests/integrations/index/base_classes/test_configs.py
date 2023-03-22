@@ -21,7 +21,7 @@ class FakeQueryBuilder:
 
 @dataclass
 class DBConfig(BaseDocumentIndex.DBConfig):
-    work_dir: str = ''
+    work_dir: str = '.'
     other: int = 5
 
 
