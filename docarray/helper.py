@@ -203,6 +203,7 @@ def get_paths(
 
     num_docs = 0
     for file_path in _iter_file_extensions(patterns):
+        print(f"file_path = {file_path}")
         if regex_to_exclude and regex_to_exclude.match(file_path):
             continue
 
