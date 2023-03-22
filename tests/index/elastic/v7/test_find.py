@@ -2,10 +2,10 @@ import numpy as np
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.doc_index.backends.elastic_doc_index import ElasticDocumentIndex
+from docarray.index import ElasticDocumentIndex
 from docarray.typing import NdArray
-from tests.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.doc_index.elastic.fixture import FlatDoc, SimpleDoc
+from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
+from tests.index.elastic.fixture import FlatDoc, SimpleDoc
 
 
 def test_find_simple_schema():

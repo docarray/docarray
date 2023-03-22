@@ -25,7 +25,7 @@ from elasticsearch.helpers import parallel_bulk
 
 import docarray.typing
 from docarray import BaseDocument
-from docarray.doc_index.abstract_doc_index import (
+from docarray.index.abstract import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
