@@ -32,16 +32,24 @@ from docarray.index.abstract import (
 from docarray.proto import DocumentProto
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import is_np_int, torch_imported
+from docarray.utils.misc import is_np_int, is_tf_available, is_torch_available
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='HnswDocumentIndex')
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-if torch_imported:
+if is_torch_available():
     import torch
 
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+
+if is_tf_available():
+    import tensorflow as tf
+
+    from docarray.typing import TensorFlowTensor
+
+    HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
+    HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
@@ -84,9 +92,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if not col.config:
-                self._logger.warning(
-                    f'No index was created for `{col_name}` as it does not have a config'
-                )
                 continue
             if load_existing:
                 self._hnsw_indices[col_name] = self._load_index(col_name, col)
@@ -327,16 +332,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         index = self._create_index_class(col)
         index.load_index(self._hnsw_locations[col_name])
         return index
-
-    def _to_numpy(self, val: Any) -> Any:
-        if isinstance(val, np.ndarray):
-            return val
-        elif isinstance(val, (list, tuple)):
-            return np.array(val)
-        elif torch_imported and isinstance(val, torch.Tensor):
-            return val.numpy()
-        else:
-            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     # HNSWLib helpers
     def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:

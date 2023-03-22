@@ -1,10 +1,11 @@
 import numpy as np
 import pytest
+import torch
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TensorFlowTensor, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -24,6 +25,14 @@ class NestedDoc(BaseDocument):
 
 class DeepNestedDoc(BaseDocument):
     d: NestedDoc
+
+
+class TorchDoc(BaseDocument):
+    tens: TorchTensor[10]
+
+
+class TfDoc(BaseDocument):
+    tens: TensorFlowTensor[10]
 
 
 @pytest.fixture
@@ -83,6 +92,32 @@ def test_index_nested_schema(ten_nested_docs, tmp_path, use_docarray):
         ten_nested_docs = DocumentArray[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_torch(tmp_path):
+    docs = [TorchDoc(tens=np.random.randn(10)) for _ in range(10)]
+    assert isinstance(docs[0].tens, torch.Tensor)
+    assert isinstance(docs[0].tens, TorchTensor)
+
+    store = HnswDocumentIndex[TorchDoc](work_dir=str(tmp_path))
+
+    store.index(docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_tf(tmp_path):
+    docs = [TfDoc(tens=np.random.randn(10)) for _ in range(10)]
+    # assert isinstance(docs[0].tens, torch.Tensor)
+    assert isinstance(docs[0].tens, TensorFlowTensor)
+
+    store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
+
+    store.index(docs)
     assert store.num_docs() == 10
     for index in store._hnsw_indices.values():
         assert index.get_current_count() == 10
