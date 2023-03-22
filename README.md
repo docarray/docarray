@@ -449,7 +449,10 @@ You can see more logs by setting the log level to `DEBUG` or `INFO`.
 
 Example:
 ```python
-import ...
+from pydantic import Field
+from docarray import BaseDocument
+from docarray.doc_index.backends.hnswlib_doc_index import HnswDocumentIndex
+from docarray.typing import NdArray
 # import logging and set the level to DEBUG
 import logging
 logging.getLogger('docarray').setLevel(logging.DEBUG)

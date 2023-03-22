@@ -378,13 +378,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index.
         """
-        if not isinstance(docs, BaseDocument) and not isinstance(docs, DocumentArray):
+        if not isinstance(docs, (BaseDocument, DocumentArray)):
             self._logger.warning(
                 'Passing a sequence of Documents that is not a DocumentArray comes at '
                 'a performance penalty, since compatibility with the schema of Index '
                 'needs to be checked for every Document individually.'
             )
-        self._logger.info(f'Indexing {len(docs)} documents')
+        self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
@@ -407,7 +407,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        self._logger.info(f'Executing `find` for search field {search_field}')
+        self._logger.debug(f'Executing `find` for search field {search_field}')
         if isinstance(query, BaseDocument):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
@@ -441,7 +441,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
-        self._logger.info(f'Executing `find_batched` for search field {search_field}')
+        self._logger.debug(f'Executing `find_batched` for search field {search_field}')
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
@@ -471,7 +471,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        self._logger.info(f'Executing `filter` for the query {filter_query}')
+        self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
 
         if isinstance(docs, List):
@@ -491,7 +491,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a DocumentArray containing the documents that match the filter query
         """
-        self._logger.info(
+        self._logger.debug(
             f'Executing `filter_batched` for the queries {filter_queries}'
         )
         da_list = self._filter_batched(filter_queries, limit=limit, **kwargs)
@@ -515,7 +515,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        self._logger.info(f'Executing `text_search` for search field {search_field}')
+        self._logger.debug(f'Executing `text_search` for search field {search_field}')
         if isinstance(query, BaseDocument):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
@@ -543,7 +543,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        self._logger.info(
+        self._logger.debug(
             f'Executing `text_search_batched` for search field {search_field}'
         )
         if isinstance(queries[0], BaseDocument):

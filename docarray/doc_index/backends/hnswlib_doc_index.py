@@ -171,7 +171,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
 
-        self._logger.info(f'Indexing {len(docs)} documents')
+        self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
         hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
@@ -214,7 +214,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
             docs_filtered = da_cls(filter_docs(docs_filtered, cond))
 
-        self._logger.info(f'{len(docs_filtered)} results found')
+        self._logger.debug(f'{len(docs_filtered)} results found')
         docs_and_scores = zip(
             docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
         )
