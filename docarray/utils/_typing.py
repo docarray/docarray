@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar
 
 from typing_inspect import get_args, is_optional_type, is_union_type
 
@@ -20,19 +20,21 @@ def is_tensor_union(type_: Any) -> bool:
             (is_type_tensor(t) or issubclass(t, type(None))) for t in get_args(type_)
         )
 
+T = TypeVar('T', bound=type)
 
-def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> None:
+def change_cls_name(cls: T, new_name: str, scope: Optional[dict] = None) -> T:
     """Change the name of a class.
 
     :param cls: the class to change the name of
     :param new_name: the new name
     :param scope: the scope in which the class is defined
+    :return: the class with the new name
     """
     if scope:
         scope[new_name] = cls
     cls.__qualname__ = cls.__qualname__[: -len(cls.__name__)] + new_name
     cls.__name__ = new_name
-
+    return cls
 
 def unwrap_optional_type(type_: Any) -> Any:
     """Return the type of an Optional type, e.g. `unwrap_optional(Optional[str]) == str`;
@@ -46,3 +48,4 @@ def unwrap_optional_type(type_: Any) -> Any:
     for arg in get_args(type_):
         if arg is not type(None):
             return arg
+
