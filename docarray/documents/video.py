@@ -93,7 +93,7 @@ class VideoDoc(BaseDocument):
 
         # or
 
-        mmdoc.video.bytes = mmdoc.video.url.load_bytes()
+        mmdoc.video.bytes_ = mmdoc.video.url.load_bytes()
 
     """
 
@@ -102,7 +102,7 @@ class VideoDoc(BaseDocument):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes]
+    bytes_: Optional[bytes]
 
     @classmethod
     def validate(
