@@ -99,9 +99,9 @@ def test_pushpull_stream_correct(capsys):
 @pytest.mark.slow
 @pytest.mark.internet
 def test_pull_stream_vs_pull_full():
-    import docarray.array.array.pushpull.helpers
+    import docarray.remote.helpers
 
-    docarray.array.array.pushpull.helpers.CACHING_REQUEST_READER_CHUNK_SIZE = 2**10
+    docarray.remote.helpers.CACHING_REQUEST_READER_CHUNK_SIZE = 2**10
     DA_NAME_SHORT: str = f'test{RANDOM}-pull-stream-vs-pull-full-short'
     DA_NAME_LONG: str = f'test{RANDOM}-pull-stream-vs-pull-full-long'
 
