@@ -83,7 +83,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         for col_name, col in self._column_infos.items():
             # if not col.config:
             #     continue  # do not create column index if no config is given
-            body['mappings']['properties'][col_name] = self._create_index(col)
+            body['mappings']['properties'][col_name] = self._create_index_mapping(col)
 
         if self._client.indices.exists(index=self._index_name):
             self._client.indices.put_mapping(
@@ -425,7 +425,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ###############################################
 
     # ElasticSearch helpers
-    def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
+    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
 
         index = {'type': col.config['type'] if 'type' in col.config else col.db_type}

@@ -127,8 +127,6 @@ def test_find_batched():
 
 
 def test_filter():
-    import itertools
-
     class MyDoc(BaseDocument):
         A: bool
         B: int
@@ -136,13 +134,7 @@ def test_filter():
 
     store = ElasticDocumentIndex[MyDoc]()
 
-    A_list = [True, False]
-    B_list = [1, 2]
-    C_list = [1.5, 2.5]
-
-    # cross product of all possible combinations
-    combinations = itertools.product(A_list, B_list, C_list)
-    index_docs = [MyDoc(A=A, B=B, C=C) for A, B, C in combinations]
+    index_docs = [MyDoc(id=f'{i}', A=(i % 2 == 0), B=i, C=i + 0.5) for i in range(10)]
     store.index(index_docs)
 
     filter_query = {'term': {'A': True}}
@@ -151,17 +143,16 @@ def test_filter():
     for doc in docs:
         assert doc.A
 
-    filter_query = {'term': {'B': 1}}
+    filter_query = {
+        "bool": {
+            "filter": [
+                {"terms": {"B": [3, 4, 7, 8]}},
+                {"range": {"C": {"gte": 3, "lte": 5}}},
+            ]
+        }
+    }
     docs = store.filter(filter_query)
-    assert len(docs) > 0
-    for doc in docs:
-        assert doc.B == 1
-
-    filter_query = {'term': {'C': 1.5}}
-    docs = store.filter(filter_query)
-    assert len(docs) > 0
-    for doc in docs:
-        assert doc.C == 1.5
+    assert [doc.id for doc in docs] == ['3', '4']
 
 
 def test_text_search():
