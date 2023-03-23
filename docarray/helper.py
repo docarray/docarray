@@ -175,6 +175,33 @@ def get_paths(
     """
     Yield file paths described by `patterns`.
 
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from typing import Optional
+        from docarray import BaseDocument, DocumentArray
+        from docarray.helper import get_paths
+        from docarray.typing import TextUrl, ImageUrl
+
+
+        class Banner(BaseDocument):
+            text_url: TextUrl
+            image_url: Optional[ImageUrl]
+
+
+        # you can call it in the constructor
+        da = DocumentArray[Banner](
+            [Banner(text_url=url) for url in get_paths(patterns='*.txt')]
+        )
+
+        # and call it after construction to set the urls
+        da.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
+
+        for doc in da:
+            assert doc.image_url.endswith('.txt')
+            assert doc.text_url.endswith('.jpg')
+
     :param patterns: The pattern may contain simple shell-style wildcards,
         e.g. '\*.py', '[\*.zip, \*.gz]'
     :param recursive: If recursive is true, the pattern '**' will match any
@@ -203,7 +230,6 @@ def get_paths(
 
     num_docs = 0
     for file_path in _iter_file_extensions(patterns):
-        print(f"file_path = {file_path}")
         if regex_to_exclude and regex_to_exclude.match(file_path):
             continue
 
