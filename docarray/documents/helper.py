@@ -73,7 +73,7 @@ def create_doc(
     return doc
 
 
-def create_from_typeddict(
+def create_doc_from_typeddict(
     typeddict_cls: Type['TypedDict'],  # type: ignore
     **kwargs: Any,
 ):
@@ -91,7 +91,7 @@ def create_from_typeddict(
 
         from docarray import BaseDocument
         from docarray.documents import Audio
-        from docarray.documents.helper import create_from_typeddict
+        from docarray.documents.helper import create_doc_from_typeddict
         from docarray.typing.tensor.audio import AudioNdArray
 
 
@@ -100,7 +100,7 @@ def create_from_typeddict(
             tensor: AudioNdArray
 
 
-        Doc = create_from_typeddict(MyAudio, __base__=Audio)
+        Doc = create_doc_from_typeddict(MyAudio, __base__=Audio)
 
         assert issubclass(Doc, BaseDocument)
         assert issubclass(Doc, Audio)
@@ -120,7 +120,7 @@ def create_from_typeddict(
     return doc
 
 
-def create_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_doc']:
+def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_doc']:
     """
     Create a subclass of BaseDocument based on example data given as a dictionary.
 
@@ -137,11 +137,11 @@ def create_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_doc'
 
         import numpy as np
         from docarray.documents import ImageDoc
-        from docarray.documents.helper import create_from_dict
+        from docarray.documents.helper import create_doc_from_dict
 
         data_dict = {'image': ImageDoc(tensor=np.random.rand(3, 224, 224)), 'author': 'me'}
 
-        MyDoc = create_from_dict(model_name='MyDoc', data_dict=data_dict)
+        MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict=data_dict)
 
         assert issubclass(MyDoc, BaseDocument)
 

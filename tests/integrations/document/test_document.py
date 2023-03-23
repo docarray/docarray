@@ -9,8 +9,8 @@ from docarray import BaseDocument, DocumentArray
 from docarray.documents import AudioDoc, ImageDoc, TextDoc
 from docarray.documents.helper import (
     create_doc,
-    create_from_typeddict,
-    create_from_dict,
+    create_doc_from_typeddict,
+    create_doc_from_dict,
 )
 from docarray.typing import AudioNdArray
 
@@ -82,15 +82,15 @@ def test_create_doc():
     assert issubclass(MyAudio, AudioDoc)
 
 
-def test_create_from_typeddict():
+def test_create_doc_from_typeddict():
     class MyMultiModalDoc(TypedDict):
         image: ImageDoc
         text: TextDoc
 
     with pytest.raises(ValueError):
-        _ = create_from_typeddict(MyMultiModalDoc, __base__=BaseModel)
+        _ = create_doc_from_typeddict(MyMultiModalDoc, __base__=BaseModel)
 
-    Doc = create_from_typeddict(MyMultiModalDoc)
+    Doc = create_doc_from_typeddict(MyMultiModalDoc)
 
     assert issubclass(Doc, BaseDocument)
 
@@ -98,20 +98,20 @@ def test_create_from_typeddict():
         title: str
         tensor: Optional[AudioNdArray]
 
-    Doc = create_from_typeddict(MyAudio, __base__=AudioDoc)
+    Doc = create_doc_from_typeddict(MyAudio, __base__=AudioDoc)
 
     assert issubclass(Doc, BaseDocument)
     assert issubclass(Doc, AudioDoc)
 
 
-def test_create_from_dict():
+def test_create_doc_from_dict():
     data_dict = {
         'image': ImageDoc(tensor=np.random.rand(3, 224, 224)),
         'text': TextDoc(text='hello'),
         'id': 123,
     }
 
-    MyDoc = create_from_dict(model_name='MyDoc', data_dict=data_dict)
+    MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict=data_dict)
 
     assert issubclass(MyDoc, BaseDocument)
 
@@ -136,11 +136,11 @@ def test_create_from_dict():
 
     # Handle empty data_dict
     with pytest.raises(ValueError):
-        MyDoc = create_from_dict(model_name='MyDoc', data_dict={})
+        MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict={})
 
     # Data with a None value
     data_dict = {'text': 'some text', 'other': None}
-    MyDoc = create_from_dict(model_name='MyDoc', data_dict=data_dict)
+    MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict=data_dict)
 
     assert issubclass(MyDoc, BaseDocument)
 
