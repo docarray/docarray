@@ -43,6 +43,7 @@ class TextDoc(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyText(Text):
             second_embedding: Optional[AnyEmbedding]
@@ -62,6 +63,7 @@ class TextDoc(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import ImageDoc, TextDoc
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             image_doc: Image
@@ -76,7 +78,7 @@ class TextDoc(BaseDocument):
 
         # or
 
-        mmdoc.text_doc.bytes = mmdoc.text_doc.url.load_bytes()
+        mmdoc.text_doc.bytes_ = mmdoc.text_doc.url.load_bytes()
 
 
     This Document can be compared against another Document of the same type or a string.
@@ -96,10 +98,10 @@ class TextDoc(BaseDocument):
         doc == doc2  # False, their ids are not equivalent
     """
 
-    text: Optional[str] = None
-    url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes: Optional[bytes] = None
+    text: Optional[str]
+    url: Optional[TextUrl]
+    embedding: Optional[AnyEmbedding]
+    bytes_: Optional[bytes]
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:

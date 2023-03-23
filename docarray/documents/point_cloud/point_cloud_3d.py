@@ -54,6 +54,7 @@ class PointCloud3D(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyPointCloud3D(PointCloud3D):
             second_embedding: Optional[AnyEmbedding]
@@ -73,6 +74,7 @@ class PointCloud3D(BaseDocument):
         from docarray import BaseDocument
         from docarray.documents import PointCloud3D, Text
 
+
         # compose it
         class MultiModalDoc(BaseDocument):
             point_cloud: PointCloud3D
@@ -89,7 +91,7 @@ class PointCloud3D(BaseDocument):
 
         # or
 
-        mmdoc.point_cloud.bytes = mmdoc.point_cloud.url.load_bytes()
+        mmdoc.point_cloud.bytes_ = mmdoc.point_cloud.url.load_bytes()
 
 
     You can display your point cloud from either its url, or its tensors:
@@ -112,7 +114,7 @@ class PointCloud3D(BaseDocument):
     url: Optional[PointCloud3DUrl]
     tensors: Optional[PointsAndColors]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes]
+    bytes_: Optional[bytes]
 
     @classmethod
     def validate(

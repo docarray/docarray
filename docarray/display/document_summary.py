@@ -130,21 +130,33 @@ class DocumentSummary:
                 or value is None
             ):
                 continue
-            elif isinstance(value, str):
+            elif isinstance(value, (str, bytes)):
                 col_2 = str(value)[:50]
                 if len(value) > 50:
                     col_2 += f' ... (length: {len(value)})'
                 table.add_row(col_1, text.Text(col_2))
             elif isinstance(value, AbstractTensor):
                 table.add_row(col_1, TensorDisplay(tensor=value))
-            elif isinstance(value, (tuple, list)):
+            elif isinstance(value, (tuple, list, set)):
+                value_list = list(value)
                 col_2 = ''
-                for i, x in enumerate(value):
+                for i, x in enumerate(value_list):
                     if len(col_2) + len(str(x)) < 50:
-                        col_2 = str(value[:i])
+                        col_2 = str(value_list[: i + 1])
                     else:
-                        col_2 = f'{col_2[:-1]}, ...] (length: {len(value)})'
+                        col_2 = f'{col_2[:-1]}, ...] (length: {len(value_list)})'
                         break
+
+                if type(value) == tuple:
+                    col_2 = col_2.replace('[', '(', 1).replace(']', ')', -1)
+                if type(value) == set:
+                    col_2 = col_2.replace('[', '{', 1).replace(']', '}', -1)
+
+                table.add_row(col_1, text.Text(col_2))
+            elif isinstance(value, dict):
+                col_2 = f'{value}'
+                if len(col_2) > 50:
+                    col_2 = f'{col_2[: 50]}' + ' ... } ' + f'(length: {len(value)})'
                 table.add_row(col_1, text.Text(col_2))
 
         if table.rows:

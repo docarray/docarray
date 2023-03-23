@@ -117,7 +117,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or doc_index)" ${{ matrix.test-path }}
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -219,7 +219,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'doc_index' tests
+          poetry run pytest -m 'index' tests
         timeout-minutes: 30
 
   docarray-test-tensorflow:

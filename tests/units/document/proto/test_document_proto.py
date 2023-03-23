@@ -7,6 +7,10 @@ import torch
 from docarray import DocumentArray
 from docarray.base_document import BaseDocument
 from docarray.typing import NdArray, TorchTensor
+from docarray.utils.misc import is_tf_available
+
+if is_tf_available():
+    import tensorflow as tf
 
 
 @pytest.mark.proto
@@ -204,3 +208,91 @@ def test_torch_dtype(dtype):
     assert doc.tensor.dtype == dtype
     assert MyDoc.from_protobuf(doc.to_protobuf()).tensor.dtype == dtype
     assert MyDoc.parse_obj(doc.dict()).tensor.dtype == dtype
+
+
+@pytest.mark.proto
+def test_nested_dict():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    doc = MyDoc(data={'data': (1, 2)})
+
+    MyDoc.from_protobuf(doc.to_protobuf())
+
+
+@pytest.mark.proto
+def test_tuple_complex():
+    class MyDoc(BaseDocument):
+        data: Tuple
+
+    doc = MyDoc(data=(1, 2))
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert doc2.data == (1, 2)
+
+
+@pytest.mark.proto
+def test_list_complex():
+    class MyDoc(BaseDocument):
+        data: List
+
+    doc = MyDoc(data=[(1, 2)])
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert doc2.data == [(1, 2)]
+
+
+@pytest.mark.proto
+def test_nested_tensor_list():
+    class MyDoc(BaseDocument):
+        data: List
+
+    doc = MyDoc(data=[np.zeros(10)])
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert isinstance(doc2.data[0], np.ndarray)
+    assert isinstance(doc2.data[0], NdArray)
+
+    assert (doc2.data[0] == np.zeros(10)).all()
+
+
+@pytest.mark.proto
+def test_nested_tensor_dict():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    doc = MyDoc(data={'hello': np.zeros(10)})
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert isinstance(doc2.data['hello'], np.ndarray)
+    assert isinstance(doc2.data['hello'], NdArray)
+
+    assert (doc2.data['hello'] == np.zeros(10)).all()
+
+
+@pytest.mark.proto
+def test_super_complex_nested():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    data = {'hello': (torch.zeros(55), 1, 'hi', [torch.ones(55), np.zeros(10), (1, 2)])}
+    doc = MyDoc(data=data)
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    (doc2.data['hello'][3][0] == torch.ones(55)).all()
+
+
+@pytest.mark.tensorflow
+def test_super_complex_nested_tensorflow():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    data = {'hello': (torch.zeros(55), 1, 'hi', [tf.ones(55), np.zeros(10), (1, 2)])}
+    doc = MyDoc(data=data)
+
+    MyDoc.from_protobuf(doc.to_protobuf())
