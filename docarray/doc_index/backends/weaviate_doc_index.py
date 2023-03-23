@@ -420,7 +420,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return list(docs), list(scores)
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
-        return super().execute_query(query, *args, **kwargs)
+        if isinstance(query, self.QueryBuilder):
+            results = query._query.do()
+            docs = results["data"]["Get"][self._db_config.index_name]
+            return [self._parse_weaviate_result(doc) for doc in docs]
 
     def num_docs(self) -> int:
         index_name = self._db_config.index_name
@@ -451,7 +454,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             )
 
         def build(self) -> Any:
-            return self._query.do()
+            return self
 
         def _overwrite_id(self, where_filter):
             """
