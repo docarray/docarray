@@ -260,6 +260,21 @@ def test_nested_tensor_list():
 
 
 @pytest.mark.proto
+def test_nested_tensor_dict():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    doc = MyDoc(data={'hello': np.zeros(10)})
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert isinstance(doc2.data['hello'], np.ndarray)
+    assert isinstance(doc2.data['hello'], NdArray)
+
+    assert (doc2.data['hello'] == np.zeros(10)).all()
+
+
+@pytest.mark.proto
 def test_super_complex_nested():
     class MyDoc(BaseDocument):
         data: Dict
@@ -267,7 +282,9 @@ def test_super_complex_nested():
     data = {'hello': (torch.zeros(55), 1, 'hi', [torch.ones(55), np.zeros(10), (1, 2)])}
     doc = MyDoc(data=data)
 
-    MyDoc.from_protobuf(doc.to_protobuf())
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    (doc2.data['hello'][3][0] == torch.ones(55)).all()
 
 
 @pytest.mark.tensorflow
