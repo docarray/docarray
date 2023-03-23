@@ -436,15 +436,32 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
+    def build_query(self) -> BaseDocumentIndex.QueryBuilder:
+        return self.QueryBuilder(self)
+
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
-        def __init__(self):
-            pass
+        def __init__(self, document_index):
+            self._query = document_index._client.query.get(
+                document_index._db_config.index_name, document_index.properties
+            )
 
-        def build(self, *args, **kwargs) -> Any:
-            pass
+        def build(self) -> Any:
+            return self._query.do()
 
-        def find(self, *args, **kwargs) -> Any:
-            pass
+        def find(
+            self,
+            query,
+            score_name: Literal["certainty", "distance"] = "certainty",
+            score_threshold: Optional[float] = None,
+        ) -> Any:
+            near_vector = {
+                "vector": query,
+            }
+            if score_threshold:
+                near_vector[score_name] = score_threshold
+
+            self._query = self._query.with_near_vector(near_vector)
+            return self
 
         def find_batched(self, *args, **kwargs) -> Any:
             pass
