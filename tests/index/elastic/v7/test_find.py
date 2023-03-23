@@ -2,7 +2,7 @@ import numpy as np
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.index import ElasticDocumentIndex
+from docarray.index import ElasticDocIndex
 from docarray.typing import NdArray
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import FlatDoc, SimpleDoc
@@ -12,7 +12,7 @@ def test_find_simple_schema():
     class SimpleSchema(BaseDocument):
         tens: NdArray[10]
 
-    store = ElasticDocumentIndex[SimpleSchema]()
+    store = ElasticDocIndex[SimpleSchema]()
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     store.index(index_docs)
@@ -32,7 +32,7 @@ def test_find_flat_schema():
         tens_one: NdArray = Field(dims=10)
         tens_two: NdArray = Field(dims=50)
 
-    store = ElasticDocumentIndex[FlatSchema]()
+    store = ElasticDocIndex[FlatSchema]()
 
     index_docs = [
         FlatDoc(tens_one=np.random.rand(10), tens_two=np.random.rand(50))
@@ -71,7 +71,7 @@ def test_find_nested_schema():
         d: NestedDoc
         tens: NdArray = Field(dims=10)
 
-    store = ElasticDocumentIndex[DeepNestedDoc]()
+    store = ElasticDocIndex[DeepNestedDoc]()
 
     index_docs = [
         DeepNestedDoc(
@@ -107,7 +107,7 @@ def test_find_nested_schema():
 
 
 def test_find_batched():
-    store = ElasticDocumentIndex[SimpleDoc]()
+    store = ElasticDocIndex[SimpleDoc]()
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     store.index(index_docs)
@@ -130,7 +130,7 @@ def test_filter():
         B: int
         C: float
 
-    store = ElasticDocumentIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
 
     index_docs = [MyDoc(id=f'{i}', A=(i % 2 == 0), B=i, C=i + 0.5) for i in range(10)]
     store.index(index_docs)
@@ -157,7 +157,7 @@ def test_text_search():
     class MyDoc(BaseDocument):
         text: str
 
-    store = ElasticDocumentIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     index_docs = [
         MyDoc(text='hello world'),
         MyDoc(text='never gonna give you up'),
@@ -188,7 +188,7 @@ def test_query_builder():
         num: int
         text: str
 
-    store = ElasticDocumentIndex[MyDoc](index_name='tmp')
+    store = ElasticDocIndex[MyDoc]()
     index_docs = [
         MyDoc(
             id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'

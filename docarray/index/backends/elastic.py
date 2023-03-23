@@ -22,6 +22,7 @@ from typing import (
 import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
+from pydantic import parse_obj_as
 
 import docarray.typing
 from docarray import BaseDocument
@@ -32,11 +33,12 @@ from docarray.index.abstract import (
     _raise_not_composable,
 )
 from docarray.typing import AnyTensor
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import _FindResult
 from docarray.utils.misc import torch_imported
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
-T = TypeVar('T', bound='ElasticDocumentIndex')
+T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [np.ndarray]
 
@@ -46,10 +48,10 @@ if torch_imported:
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
 
 
-class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
+class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(ElasticDocumentIndex.DBConfig, self._db_config)
+        self._db_config = cast(ElasticDocIndex.DBConfig, self._db_config)
 
         if self._db_config.index_name is None:
             id = uuid.uuid4().hex
@@ -135,13 +137,10 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 query_vec = query
             query_vec_np = BaseDocumentIndex._to_numpy(self._outer_instance, query_vec)
             self._query['size'] = limit
-            self._query['query']['script_score'] = {
-                'query': {'match_all': {}},
-                'script': {
-                    'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
-                    'params': {'query_vector': query_vec_np},
-                },
-            }
+            self._query['query']['script_score'] = ElasticDocIndex._form_search_body(
+                query_vec_np, limit, search_field
+            )['query']['script_score']
+
             return self
 
         def filter(self, query: Dict[str, Any], limit: int = 10):
@@ -295,28 +294,17 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         resp = self._client.search(index=self._index_name, body=query)
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
+        return _FindResult(documents=docs, scores=scores)
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         if int(self._server_version.split('.')[0]) >= 8:
             warnings.warn(
-                'You are using Elasticsearch 8.0+ and the current client is 7.10.1. HNSW based vector search is not supported and the find method has a default implementation.'
+                'You are using Elasticsearch 8.0+ and the current client is 7.10.1. HNSW based vector search is not supported and the find method has a default implementation using exhaustive KNN search with cosineSimilarity, which may result in slow performance.'
             )
 
-        body = {
-            'size': limit,
-            'query': {
-                'script_score': {
-                    'query': {'match_all': {}},
-                    'script': {
-                        'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
-                        'params': {'query_vector': query},
-                    },
-                }
-            },
-        }
+        body = self._form_search_body(query, limit, search_field)
 
         resp = self._client.search(
             index=self._index_name,
@@ -325,7 +313,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
+        return _FindResult(documents=docs, scores=scores)
 
     def _find_batched(
         self,
@@ -333,15 +321,18 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        result_das = []
-        result_scores = []
-
+        request = []
         for query in queries:
-            documents, scores = self._find(query, limit, search_field)
-            result_das.append(documents)
-            result_scores.append(scores)
+            head = {'index': self._index_name}
+            body = self._form_search_body(query, limit, search_field)
+            request.extend([head, body])
 
-        return _FindResultBatched(documents=result_das, scores=np.array(result_scores))  # type: ignore
+        responses = self._client.msearch(body=request)
+
+        das, scores = zip(
+            *[self._format_response(resp) for resp in responses['responses']]
+        )
+        return _FindResultBatched(documents=list(das), scores=np.array(scores))
 
     def _filter(
         self,
@@ -367,10 +358,16 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         filter_queries: Any,
         limit: int,
     ) -> List[List[Dict]]:
-        result_das = []
+        request = []
         for query in filter_queries:
-            result_das.append(self._filter(query, limit))
-        return result_das
+            head = {'index': self._index_name}
+            body = {'query': query, 'size': limit}
+            request.extend([head, body])
+
+        responses = self._client.msearch(body=request)
+        das, _ = zip(*[self._format_response(resp) for resp in responses['responses']])
+
+        return list(das)
 
     def _text_search(
         self,
@@ -379,17 +376,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         search_field: str = '',
     ) -> _FindResult:
 
-        search_query = {
-            'bool': {
-                'must': [
-                    {'match': {search_field: query}},
-                ],
-            }
-        }
-        body = {
-            'size': limit,
-            'query': search_query,
-        }
+        body = self._form_text_search_body(query, limit, search_field)
 
         resp = self._client.search(
             index=self._index_name,
@@ -398,7 +385,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
+        return _FindResult(documents=docs, scores=scores)
 
     def _text_search_batched(
         self,
@@ -406,15 +393,18 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        result_das = []
-        result_scores = []
-
+        request = []
         for query in queries:
-            documents, scores = self._text_search(query, limit, search_field)
-            result_das.append(documents)
-            result_scores.append(scores)
+            head = {'index': self._index_name}
+            body = self._form_text_search_body(query, limit, search_field)
+            request.extend([head, body])
 
-        return _FindResultBatched(documents=result_das, scores=np.array(result_scores))  # type: ignore
+        responses = self._client.msearch(body=request)
+
+        das, scores = zip(
+            *[self._format_response(resp) for resp in responses['responses']]
+        )
+        return _FindResultBatched(documents=list(das), scores=np.array(scores))
 
     ###############################################
     # Helpers                                     #
@@ -459,7 +449,39 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         return accumulated_info, warning_info
 
-    def _format_response(self, response: Any) -> Tuple[List[Dict], List[float]]:
+    @staticmethod
+    def _form_search_body(
+        query: np.ndarray, limit: int, search_field: str = ''
+    ) -> Dict[str, Any]:
+        body = {
+            'size': limit,
+            'query': {
+                'script_score': {
+                    'query': {'match_all': {}},
+                    'script': {
+                        'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
+                        'params': {'query_vector': query},
+                    },
+                }
+            },
+        }
+        return body
+
+    @staticmethod
+    def _form_text_search_body(
+        query: str, limit: int, search_field: str = ''
+    ) -> Dict[str, Any]:
+        body = {
+            'size': limit,
+            'query': {
+                'bool': {
+                    'must': {'match': {search_field: query}},
+                }
+            },
+        }
+        return body
+
+    def _format_response(self, response: Any) -> Tuple[List[Dict], NdArray]:
         docs = []
         scores = []
         for result in response['hits']['hits']:
@@ -474,7 +496,7 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             docs.append(doc_dict)
             scores.append(result['_score'])
 
-        return docs, scores
+        return docs, parse_obj_as(NdArray, scores)
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
