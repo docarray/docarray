@@ -22,8 +22,6 @@ def test_find_simple_schema():
 
     assert len(docs) == 5
     assert len(scores) == 5
-    print([doc.id for doc in docs])
-    print(scores)
 
     assert docs[0].id == index_docs[-1].id
     assert np.allclose(docs[0].tens, index_docs[-1].tens)

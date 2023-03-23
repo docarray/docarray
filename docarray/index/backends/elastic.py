@@ -38,9 +38,7 @@ from docarray.utils.misc import torch_imported
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentIndex')
 
-ELASTIC_PY_VEC_TYPES: List[Any] = [
-    np.ndarray,
-]
+ELASTIC_PY_VEC_TYPES: List[Any] = [np.ndarray]
 
 if torch_imported:
     import torch
@@ -81,8 +79,6 @@ class ElasticDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         }
 
         for col_name, col in self._column_infos.items():
-            # if not col.config:
-            #     continue  # do not create column index if no config is given
             body['mappings']['properties'][col_name] = self._create_index_mapping(col)
 
         if self._client.indices.exists(index=self._index_name):
