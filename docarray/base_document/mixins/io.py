@@ -231,7 +231,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return cls(**fields)
 
     @classmethod
-    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name: str) -> Any:
+    def _get_content_from_node_proto(
+        cls, value: 'NodeProto', field_name: Optional[str] = None
+    ) -> Any:
         """
         load the proto data from a node proto
 
@@ -240,12 +242,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :return: the loaded field
         """
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
-        arg_to_container: Dict[str, Callable] = {
-            'list': list,
-            'set': set,
-            'tuple': tuple,
-            'dict': dict,
-        }
 
         content_key = value.WhichOneof('content')
         docarray_type = (
@@ -266,15 +262,25 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = None
         elif docarray_type is None:
 
+            arg_to_container: Dict[str, Callable] = {
+                'list': list,
+                'set': set,
+                'tuple': tuple,
+            }
+
             if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-                from google.protobuf.json_format import MessageToDict
-
                 return_field = arg_to_container[content_key](
-                    MessageToDict(getattr(value, content_key))
+                    cls._get_content_from_node_proto(node)
+                    for node in getattr(value, content_key).data
                 )
+
+            elif content_key == 'dict':
+                return_field: Dict[str, Any] = dict()
+                for key_name, node in value.dict.data.items():
+                    return_field[key_name] = cls._get_content_from_node_proto(node)
 
             else:
                 raise ValueError(
