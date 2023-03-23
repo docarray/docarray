@@ -227,7 +227,36 @@ def test_tuple_complex():
 
     doc = MyDoc(data=(1, 2))
 
-    MyDoc.from_protobuf(doc.to_protobuf())
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert doc2.data == (1, 2)
+
+
+@pytest.mark.proto
+def test_list_complex():
+    class MyDoc(BaseDocument):
+        data: List
+
+    doc = MyDoc(data=[(1, 2)])
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert doc2.data == [(1, 2)]
+
+
+@pytest.mark.proto
+def test_nested_tensor_list():
+    class MyDoc(BaseDocument):
+        data: List
+
+    doc = MyDoc(data=[np.zeros(10)])
+
+    doc2 = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert isinstance(doc2.data[0], np.ndarray)
+    assert isinstance(doc2.data[0], NdArray)
+
+    assert (doc2.data[0] == np.zeros(10)).all()
 
 
 @pytest.mark.proto
