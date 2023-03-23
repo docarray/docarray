@@ -273,7 +273,6 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
-
         if search_field != '':
             logging.warning(
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
@@ -420,10 +419,18 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return list(docs), list(scores)
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
+        da_class = DocumentArray.__class_getitem__(
+            cast(Type[BaseDocument], self._schema)
+        )
+
         if isinstance(query, self.QueryBuilder):
             results = query._query.do()
             docs = results["data"]["Get"][self._db_config.index_name]
-            return [self._parse_weaviate_result(doc) for doc in docs]
+
+            def f(doc):
+                return self._schema.from_view(self._parse_weaviate_result(doc))
+
+            return da_class([f(doc) for doc in docs])
 
     def num_docs(self) -> int:
         index_name = self._db_config.index_name
