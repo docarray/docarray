@@ -28,20 +28,19 @@ smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 
 [tool.poetry.extras]
-common = ["protobuf", "lz4"]
-torch = ["torch"]
+common = ["protobuf", "lz4", "pandas"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
-web = ["fastapi"]
 hnswlib = ["hnswlib"]
-pandas = ["pandas"]
 jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]
+torch = ["torch"]
+web = ["fastapi"]
 
 # all
-full = ["protobuf", "lz4", "pillow", "types-pillow", "av", "pydub", "trimesh"]
+full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
