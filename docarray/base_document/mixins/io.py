@@ -255,6 +255,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 getattr(value, content_key)
             )
         elif content_key in ['document', 'document_array']:
+            if field_name is None:
+                raise ValueError(
+                    'field_name cannot be None when trying to deseriliaze a Document or a DocumentArray'
+                )
             return_field = cls._get_field_type(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
@@ -278,10 +282,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 )
 
             elif content_key == 'dict':
-                return_field: Dict[str, Any] = dict()
+                deser_dict: Dict[str, Any] = dict()
                 for key_name, node in value.dict.data.items():
-                    return_field[key_name] = cls._get_content_from_node_proto(node)
-
+                    deser_dict[key_name] = cls._get_content_from_node_proto(node)
+                return_field = deser_dict
             else:
                 raise ValueError(
                     f'key {content_key} is not supported for deserialization'
