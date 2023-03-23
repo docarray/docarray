@@ -268,11 +268,21 @@ def test_reuse_existing_schema(weaviate_client, caplog):
 
 def test_query_builder(test_store):
     query_embedding = [10.25, 10.25]
+    query_text = "ipsum"
     where_filter = {"path": ["id"], "operator": "Equal", "valueString": "1"}
     q = (
         test_store.build_query()
         .find(query=query_embedding)
         .filter(where_filter)
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert len(docs) == 1
+
+    q = (
+        test_store.build_query()
+        .text_search(query=query_text, search_field="text")
         .build()
     )
 

@@ -505,8 +505,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         def filter_batched(self, *args, **kwargs) -> Any:
             pass
 
-        def text_search(self, *args, **kwargs) -> Any:
-            pass
+        def text_search(self, query, search_field) -> Any:
+            bm25 = {"query": query, "properties": [search_field]}
+            self._query = self._query.with_bm25(**bm25)
+            return self
 
         def text_search_batched(self, *args, **kwargs) -> Any:
             pass
