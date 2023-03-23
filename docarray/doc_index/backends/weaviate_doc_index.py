@@ -435,3 +435,39 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             return python_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+
+    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+        def __init__(self):
+            pass
+
+        def build(self, *args, **kwargs) -> Any:
+            pass
+
+        def find(self, *args, **kwargs) -> Any:
+            pass
+
+        def find_batched(self, *args, **kwargs) -> Any:
+            pass
+
+        def filter(self, *args, **kwargs) -> Any:
+            pass
+
+        def filter_batched(self, *args, **kwargs) -> Any:
+            pass
+
+        def text_search(self, *args, **kwargs) -> Any:
+            pass
+
+        def text_search_batched(self, *args, **kwargs) -> Any:
+            pass
+
+        # the methods below need to be implemented by subclasses
+        # If, in your subclass, one of these is not usable in a query builder, but
+        # can be called directly on the DocumentIndex, use `_raise_not_composable`.
+        # If the method is not supported _at all_, use `_raise_not_supported`.
+        # find = abstractmethod(lambda *args, **kwargs: ...)
+        # filter = abstractmethod(lambda *args, **kwargs: ...)
+        # text_search = abstractmethod(lambda *args, **kwargs: ...)
+        # find_batched = abstractmethod(lambda *args, **kwargs: ...)
+        # filter_batched = abstractmethod(lambda *args, **kwargs: ...)
+        # text_search_batched = abstractmethod(lambda *args, **kwargs: ...)
