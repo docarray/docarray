@@ -58,7 +58,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocumentArray(
-    BaseModel, IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
+    IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc], BaseModel
 ):
     """
      DocumentArray is a container of Documents.
@@ -122,12 +122,14 @@ class DocumentArray(
     """
 
     document_type: Type[BaseDocument] = AnyDocument
+    data: List[T_doc]
 
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
     ):
-        self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
+        self.data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
+
 
     @classmethod
     def construct(
@@ -141,7 +143,7 @@ class DocumentArray(
         :return:
         """
         da = cls.__new__(cls)
-        da._data = docs if isinstance(docs, list) else list(docs)
+        da.data = docs if isinstance(docs, list) else list(docs)
         return da
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
@@ -153,17 +155,17 @@ class DocumentArray(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocumentArray"""
-        if not issubclass(self.document_type, AnyDocument) and not isinstance(
-            doc, self.document_type
+        if not issubclass(self.__fields__['document_type'].default, AnyDocument) and not isinstance(
+            doc, self.__fields__['document_type'].default
         ):
             raise ValueError(f'{doc} is not a {self.document_type}')
         return doc
 
     def __len__(self):
-        return len(self._data)
+        return len(self.data)
 
     def __iter__(self):
-        return iter(self._data)
+        return iter(self.data)
 
     def __bytes__(self) -> bytes:
         with io.BytesIO() as bf:
@@ -176,7 +178,7 @@ class DocumentArray(
         as the document_type of this DocumentArray otherwise it will fail.
         :param doc: A Document
         """
-        self._data.append(self._validate_one_doc(doc))
+        self.data.append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -185,7 +187,7 @@ class DocumentArray(
         fail.
         :param docs: Iterable of Documents
         """
-        self._data.extend(self._validate_docs(docs))
+        self.data.extend(self._validate_docs(docs))
 
     def insert(self, i: int, doc: T_doc):
         """
@@ -194,7 +196,7 @@ class DocumentArray(
         :param i: index to insert
         :param doc: A Document
         """
-        self._data.insert(i, self._validate_one_doc(doc))
+        self.data.insert(i, self._validate_one_doc(doc))
 
     pop = _delegate_meth_to_data('pop')
     remove = _delegate_meth_to_data('remove')
