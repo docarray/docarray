@@ -26,7 +26,7 @@ from elasticsearch.helpers import parallel_bulk
 
 import docarray.typing
 from docarray import BaseDocument
-from docarray.doc_index.abstract_doc_index import (
+from docarray.index.abstract import (
     BaseDocumentIndex,
     _ColumnInfo,
     _FindResultBatched,
@@ -39,8 +39,7 @@ from docarray.utils.misc import torch_imported
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocumentV8Index')
 
-ELASTIC_PY_VEC_TYPES = [list, tuple, np.ndarray]
-ELASTIC_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
+ELASTIC_PY_VEC_TYPES: List[Any] = [np.ndarray]
 if torch_imported:
     import torch
 
@@ -64,7 +63,6 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         )
 
         # ElasticSearh index setup
-        self._index_init_params = ('type',)
         self._index_vector_params = ('dims', 'similarity', 'index')
         self._index_vector_options = ('m', 'ef_construction')
 
@@ -75,11 +73,9 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         }
 
         for col_name, col in self._column_infos.items():
-            if not col.config:
-                continue  # do not create column index if no config is given
-            mappings['properties'][col_name] = self._create_index(col)
+            mappings['properties'][col_name] = self._create_index_mapping(col)
 
-        if self._client.indices.exists(index=self._index_name):  # type: ignore
+        if self._client.indices.exists(index=self._index_name):
             self._client.indices.put_mapping(
                 index=self._index_name, properties=mappings['properties']
             )
@@ -131,7 +127,7 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
                 'query_vector': query_vec_np,
                 'k': limit,
                 'num_candidates': self._outer_instance._runtime_config.default_column_config[
-                    np.ndarray
+                    'dense_vector'
                 ][
                     'num_candidates'
                 ],
@@ -160,7 +156,7 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         """
         Build a query for this DocumentIndex.
         """
-        return self.QueryBuilder(self, **kwargs)  # type: ignore
+        return self.QueryBuilder(self, **kwargs)
 
     @dataclass
     class DBConfig(BaseDocumentIndex.DBConfig):
@@ -174,10 +170,9 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
-        default_column_config: Dict[Type, Dict[str, Any]] = field(
+        default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
-                np.ndarray: {
-                    'type': 'dense_vector',
+                'dense_vector': {
                     'index': True,
                     'dims': 128,
                     'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
@@ -185,15 +180,16 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
                     'ef_construction': 100,
                     'num_candidates': 10000,
                 },
-                docarray.typing.ID: {'type': 'keyword'},
-                bool: {'type': 'boolean'},
-                int: {'type': 'integer'},
-                float: {'type': 'float'},
-                str: {'type': 'text'},
+                'keyword': {},
+                'boolean': {},
+                'integer': {},
+                'float': {},
+                'text': {},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
         )
+        chunk_size: int = 500
 
     ###############################################
     # Implementation of abstract methods          #
@@ -203,10 +199,18 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         """Map python type to database type."""
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
-                return np.ndarray
+                return 'dense_vector'
 
-        if python_type in ELASTIC_PY_TYPES:
-            return python_type
+        elastic_py_types = {
+            bool: 'boolean',
+            int: 'integer',
+            float: 'float',
+            str: 'text',
+            docarray.typing.ID: 'keyword',
+        }
+
+        if python_type in elastic_py_types:
+            return elastic_py_types[python_type]
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -214,6 +218,7 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         self,
         column_to_data: Dict[str, Generator[Any, None, None]],
         refresh: bool = True,
+        chunk_size: Optional[int] = None,
     ):
 
         data = self._transpose_col_value_dict(column_to_data)  # type: ignore
@@ -225,14 +230,12 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
-                if not col.config:
-                    continue
-                if col.db_type == np.ndarray and np.all(row[col_name] == 0):
+                if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
                 request[col_name] = row[col_name]
             requests.append(request)
 
-        _, warning_info = self._send_requests(requests)
+        _, warning_info = self._send_requests(requests, chunk_size)
         for info in warning_info:
             warnings.warn(str(info))
 
@@ -242,14 +245,18 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
     def num_docs(self) -> int:
         return self._client.count(index=self._index_name)['count']
 
-    def _del_items(self, doc_ids: Sequence[str]):
+    def _del_items(
+        self,
+        doc_ids: Sequence[str],
+        chunk_size: Optional[int] = None,
+    ):
         requests = []
         for _id in doc_ids:
             requests.append(
                 {'_op_type': 'delete', '_index': self._index_name, '_id': _id}
             )
 
-        _, warning_info = self._send_requests(requests)
+        _, warning_info = self._send_requests(requests, chunk_size)
 
         # raise warning if some ids are not found
         if warning_info:
@@ -280,17 +287,24 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
 
         return accumulated_docs
 
+    def execute_query(self, query: Dict[str, Any], *args, **kwargs) -> Any:
+        if args or kwargs:
+            raise ValueError(
+                f'args and kwargs not supported for `execute_query` on {type(self)}'
+            )
+
+        resp = self._client.search(index=self._index_name, **query)
+        docs, scores = self._format_response(resp)
+        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
+
     def _find(
-        self,
-        query: np.ndarray,
-        limit: int,
-        search_field: str = '',
+        self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         knn_query = {
             'field': search_field,
             'query_vector': query,
             'k': limit,
-            'num_candidates': self._runtime_config.default_column_config[np.ndarray][
+            'num_candidates': self._runtime_config.default_column_config['dense_vector'][  # type: ignore
                 'num_candidates'
             ],
         }
@@ -353,9 +367,9 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         search_field: str = '',
     ) -> _FindResult:
         search_query = {
-            "bool": {
-                "must": [
-                    {"match": {search_field: query}},
+            'bool': {
+                'must': [
+                    {'match': {search_field: query}},
                 ],
             }
         }
@@ -386,25 +400,17 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
 
         return _FindResultBatched(documents=result_das, scores=np.array(result_scores, dtype=object))  # type: ignore
 
-    def execute_query(self, query: Dict[str, Any], *args, **kwargs) -> Any:
-        if args or kwargs:
-            raise ValueError(
-                f'args and kwargs not supported for `execute_query` on {type(self)}'
-            )
-
-        resp = self._client.search(index=self._index_name, **query)
-        docs, scores = self._format_response(resp)
-        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
-
     ###############################################
     # Helpers                                     #
     ###############################################
 
     # ElasticSearch helpers
-    def _create_index(self, col: '_ColumnInfo') -> Dict[str, Any]:
+    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
-        index = dict((k, col.config[k]) for k in self._index_init_params)
-        if col.db_type == np.ndarray:
+
+        index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
+
+        if col.db_type == 'dense_vector':
             for k in self._index_vector_params:
                 index[k] = col.config[k]
             if col.n_dim:
@@ -416,11 +422,12 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
         return index
 
     def _send_requests(
-        self, request: Iterable[Dict[str, Any]], **kwargs
+        self,
+        request: Iterable[Dict[str, Any]],
+        chunk_size: Optional[int] = None,
+        **kwargs,
     ) -> Tuple[List[Dict], List[Any]]:
         """Send bulk request to Elastic and gather the successful info"""
-
-        # TODO chunk_size
 
         accumulated_info = []
         warning_info = []
@@ -429,6 +436,7 @@ class ElasticDocumentV8Index(BaseDocumentIndex, Generic[TSchema]):
             request,
             raise_on_error=False,
             raise_on_exception=False,
+            chunk_size=chunk_size if chunk_size else self._runtime_config.chunk_size,  # type: ignore
             **kwargs,
         ):
             if not success:

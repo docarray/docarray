@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray
-from docarray.doc_index.backends.elasticv8_doc_index import ElasticDocumentV8Index
-from tests.doc_index.elastic.fixture import start_storage_v8  # noqa: F401
-from tests.doc_index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
+from docarray.index import ElasticDocumentV8Index
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+from tests.index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
 
 
 @pytest.fixture

@@ -293,7 +293,7 @@ files = [
 name = "certifi"
 version = "2022.9.24"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -511,6 +511,44 @@ files = [
     {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
     {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
 ]
+
+[[package]]
+name = "elastic-transport"
+version = "8.4.0"
+description = "Transport classes and utilities shared among Python Elastic client libraries"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "elastic-transport-8.4.0.tar.gz", hash = "sha256:b9ad708ceb7fcdbc6b30a96f886609a109f042c0b9d9f2e44403b3133ba7ff10"},
+    {file = "elastic_transport-8.4.0-py3-none-any.whl", hash = "sha256:19db271ab79c9f70f8c43f8f5b5111408781a6176b54ab2e54d713b6d9ceb815"},
+]
+
+[package.dependencies]
+certifi = "*"
+urllib3 = ">=1.26.2,<2"
+
+[package.extras]
+develop = ["aiohttp", "mock", "pytest", "pytest-asyncio", "pytest-cov", "pytest-httpserver", "pytest-mock", "requests", "trustme"]
+
+[[package]]
+name = "elasticsearch"
+version = "8.6.2"
+description = "Python client for Elasticsearch"
+category = "main"
+optional = false
+python-versions = ">=3.6, <4"
+files = [
+    {file = "elasticsearch-8.6.2-py3-none-any.whl", hash = "sha256:8ccbebd9a0f6f523c7db67bb54863dde8bdb93daae4ff97f7c814e0500a73e84"},
+    {file = "elasticsearch-8.6.2.tar.gz", hash = "sha256:084458e84caa91e3ad807b68aa82c022e785bead853a3b125641a25e894a1d47"},
+]
+
+[package.dependencies]
+elastic-transport = ">=8,<9"
+
+[package.extras]
+async = ["aiohttp (>=3,<4)"]
+requests = ["requests (>=2.4.0,<3.0.0)"]
 
 [[package]]
 name = "entrypoints"
@@ -3134,7 +3172,7 @@ typing-extensions = ">=3.7.4"
 name = "urllib3"
 version = "1.26.14"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
@@ -3304,7 +3342,8 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [extras]
 audio = ["pydub"]
-common = ["protobuf", "lz4"]
+common = ["lz4", "protobuf"]
+elasticsearch = ["elastic-transport", "elasticsearch"]
 hnswlib = ["hnswlib"]
 image = ["pillow", "types-pillow"]
 mesh = ["trimesh"]
@@ -3315,5 +3354,5 @@ web = ["fastapi"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.7"
-content-hash = "60dc7dedebd775c6fe3f45ddd2869a07df2c28bbc83420e875eb61e118b064b2"
+python-versions = ">=3.7, <4"
+content-hash = "379b7b8c2142c02057a764e6adf06128da9b4917744fa30bbebf9a2c129abd03"
