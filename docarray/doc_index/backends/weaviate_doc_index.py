@@ -448,6 +448,21 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         def build(self) -> Any:
             return self._query.do()
 
+        def _overwrite_id(self, where_filter):
+            """
+            Overwrite the id field in the where filter to DOCUMENTID
+            if the "id" field is present in the path
+            """
+            for key, value in where_filter.items():
+                if key == "path" and value == ["id"]:
+                    where_filter[key] = [DOCUMENTID]
+                elif isinstance(value, dict):
+                    self._overwrite_id(value)
+                elif isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict):
+                            self._overwrite_id(item)
+
         def find(
             self,
             query,
@@ -466,8 +481,11 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         def find_batched(self, *args, **kwargs) -> Any:
             pass
 
-        def filter(self, *args, **kwargs) -> Any:
-            pass
+        def filter(self, where_filter) -> Any:
+            where_filter = where_filter.copy()
+            self._overwrite_id(where_filter)
+            self._query = self._query.with_where(where_filter)
+            return self
 
         def filter_batched(self, *args, **kwargs) -> Any:
             pass
