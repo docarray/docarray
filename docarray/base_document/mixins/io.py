@@ -66,6 +66,7 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
         nested_item = value._to_node_protobuf()
         return nested_item
 
+    base_node_wrap: BaseNode
     if torch_available:
         if isinstance(value, torch.Tensor):
             base_node_wrap = TorchTensor._docarray_from_native(value)
