@@ -347,13 +347,18 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         Parse the result from weaviate to a format that is compatible with the schema
         that was used to initialize weaviate with.
         """
-        # rewrite the DOCUMENTID to id
+
         result = result.copy()
-        result['id'] = result.pop(DOCUMENTID)
+
+        # rewrite the DOCUMENTID to id
+        if DOCUMENTID in result:
+            result['id'] = result.pop(DOCUMENTID)
 
         # take the vector from the _additional field
-        additional_fields = result.pop('_additional')
-        result[self.embedding_column] = additional_fields['vector']
+        if '_additional' in result:
+            additional_fields = result.pop('_additional')
+            if 'vector' in additional_fields:
+                result[self.embedding_column] = additional_fields['vector']
 
         return result
 
