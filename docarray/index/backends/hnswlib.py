@@ -4,6 +4,7 @@ import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generic,
@@ -17,7 +18,6 @@ from typing import (
     cast,
 )
 
-import hnswlib
 import numpy as np
 
 from docarray import BaseDoc, DocArray
@@ -29,9 +29,15 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
-from docarray.utils._internal.misc import is_np_int, is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_np_int, is_tf_available, is_torch_available
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
+
+if TYPE_CHECKING:
+    import hnswlib
+else:
+    hnswlib = import_library('hnswlib')
+
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')

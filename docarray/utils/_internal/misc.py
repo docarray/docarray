@@ -1,3 +1,4 @@
+import importlib
 from typing import Any
 
 import numpy as np
@@ -17,9 +18,40 @@ except (ImportError, TypeError):
 else:
     tf_imported = True
 
+import types
+from typing import Optional
+
+INSTALL_INSTRUCTIONS = {
+    'pillow': 'pip install docarray[image]',
+    'pydub': 'pip install docarray[audio]',
+    'av': 'pip install docarray[video]',
+    'trimesh': 'pip install docarray[mesh]',
+    'hnswlib': 'pip install docarray[hnswlib]',
+}
+
+
+def import_library(package: str) -> Optional[types.ModuleType]:
+    lib: Optional[types.ModuleType]
+    try:
+        lib = importlib.import_module(package)
+    except ModuleNotFoundError:
+        lib = None
+
+    if lib is None:
+        raise RuntimeError(
+            'Hnswlib is not installed. To install all the necessary libraries to use the hnsw backend, '
+            f'please do: {INSTALL_INSTRUCTIONS[package]}.'
+        )
+    else:
+        return lib
+
 
 def is_torch_available():
     return torch_imported
+
+
+def is_tf_available():
+    return tf_imported
 
 
 def is_np_int(item: Any) -> bool:
@@ -31,10 +63,6 @@ def is_np_int(item: Any) -> bool:
         except TypeError:
             return False
     return False  # this is unreachable, but mypy wants it
-
-
-def is_tf_available():
-    return tf_imported
 
 
 def is_notebook() -> bool:
