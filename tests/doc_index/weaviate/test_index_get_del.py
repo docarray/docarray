@@ -264,3 +264,17 @@ def test_reuse_existing_schema(weaviate_client, caplog):
     with caplog.at_level(logging.DEBUG):
         WeaviateDocumentIndex[SimpleDoc]()
         assert "Will reuse existing schema" in caplog.text
+
+
+def test_query_builder(test_store):
+    query_embedding = [10.25, 10.25]
+    where_filter = {"path": ["id"], "operator": "Equal", "valueString": "1"}
+    q = (
+        test_store.build_query()
+        .find(query=query_embedding)
+        .filter(where_filter)
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert len(docs) == 1
