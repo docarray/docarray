@@ -149,8 +149,8 @@ def create_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_doc'
     if not data_dict:
         raise ValueError('`data_dict` should contain at least one item')
 
-    field_types: Dict[str, Tuple[Type, ...]] = {
+    field_types = {
         field: (type(value) if value else Any, ...)
         for field, value in data_dict.items()
     }
-    return create_doc(__model_name=model_name, **field_types)
+    return create_doc(__model_name=model_name, **field_types)  # type: ignore
