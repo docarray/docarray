@@ -14,11 +14,26 @@ from typing import (
     TypeVar,
 )
 
+import numpy as np
 from typing_inspect import is_union_type
 
 from docarray.base_document.base_node import BaseNode
+from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils.compress import _compress_bytes, _decompress_bytes
+from docarray.utils.misc import is_tf_available, is_torch_available
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+
+    from docarray.typing import TorchTensor
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -36,60 +51,69 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
     """
     from docarray.proto import NodeProto
 
+    basic_type_to_key = {
+        str: 'text',
+        bool: 'boolean',
+        int: 'integer',
+        float: 'float',
+        bytes: 'blob',
+    }
+
+    container_type_to_key = {list: 'list', set: 'set', tuple: 'tuple'}
+
     nested_item: 'NodeProto'
+
     if isinstance(value, BaseNode):
         nested_item = value._to_node_protobuf()
+        return nested_item
 
-    elif isinstance(value, str):
-        nested_item = NodeProto(text=value)
+    base_node_wrap: BaseNode
+    if torch_available:
+        if isinstance(value, torch.Tensor):
+            base_node_wrap = TorchTensor._docarray_from_native(value)
+            return base_node_wrap._to_node_protobuf()
 
-    elif isinstance(value, bool):
-        nested_item = NodeProto(boolean=value)
+    if tf_available:
+        if isinstance(value, tf.Tensor):
+            base_node_wrap = TensorFlowTensor._docarray_from_native(value)
+            return base_node_wrap._to_node_protobuf()
 
-    elif isinstance(value, int):
-        nested_item = NodeProto(integer=value)
+    if isinstance(value, np.ndarray):
+        base_node_wrap = NdArray._docarray_from_native(value)
+        return base_node_wrap._to_node_protobuf()
 
-    elif isinstance(value, float):
-        nested_item = NodeProto(float=value)
+    for basic_type, key_name in basic_type_to_key.items():
+        if isinstance(value, basic_type):
+            nested_item = NodeProto(**{key_name: value})
+            return nested_item
 
-    elif isinstance(value, bytes):
-        nested_item = NodeProto(blob=value)
+    for container_type, key_name in container_type_to_key.items():
+        if isinstance(value, container_type):
+            from docarray.proto import ListOfAnyProto
 
-    elif isinstance(value, list):
-        from google.protobuf.struct_pb2 import ListValue
+            lvalue = ListOfAnyProto()
+            for item in value:
+                lvalue.data.append(_type_to_protobuf(item))
+            nested_item = NodeProto(**{key_name: lvalue})
+            return nested_item
 
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(list=lvalue)
+    if isinstance(value, dict):
+        from docarray.proto import DictOfAnyProto
 
-    elif isinstance(value, set):
-        from google.protobuf.struct_pb2 import ListValue
+        data = {}
 
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(set=lvalue)
+        for key, content in value.items():
+            data[key] = _type_to_protobuf(content)
 
-    elif isinstance(value, tuple):
-        from google.protobuf.struct_pb2 import ListValue
-
-        lvalue = ListValue()
-        for item in value:
-            lvalue.append(item)
-        nested_item = NodeProto(tuple=lvalue)
-
-    elif isinstance(value, dict):
-        from google.protobuf.struct_pb2 import Struct
-
-        struct = Struct()
-        struct.update(value)
+        struct = DictOfAnyProto(data=data)
         nested_item = NodeProto(dict=struct)
+        return nested_item
+
     elif value is None:
         nested_item = NodeProto()
+        return nested_item
     else:
         raise ValueError(f'{type(value)} is not supported with protobuf')
-    return nested_item
 
 
 class IOMixin(Iterable[Tuple[str, Any]]):
@@ -208,7 +232,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return cls(**fields)
 
     @classmethod
-    def _get_content_from_node_proto(cls, value: 'NodeProto', field_name: str) -> Any:
+    def _get_content_from_node_proto(
+        cls, value: 'NodeProto', field_name: Optional[str] = None
+    ) -> Any:
         """
         load the proto data from a node proto
 
@@ -217,12 +243,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :return: the loaded field
         """
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
-        arg_to_container: Dict[str, Callable] = {
-            'list': list,
-            'set': set,
-            'tuple': tuple,
-            'dict': dict,
-        }
 
         content_key = value.WhichOneof('content')
         docarray_type = (
@@ -236,6 +256,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 getattr(value, content_key)
             )
         elif content_key in ['document', 'document_array']:
+            if field_name is None:
+                raise ValueError(
+                    'field_name cannot be None when trying to deseriliaze a Document or a DocumentArray'
+                )
             return_field = cls._get_field_type(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
@@ -243,16 +267,26 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = None
         elif docarray_type is None:
 
+            arg_to_container: Dict[str, Callable] = {
+                'list': list,
+                'set': set,
+                'tuple': tuple,
+            }
+
             if content_key in ['text', 'blob', 'integer', 'float', 'boolean']:
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-                from google.protobuf.json_format import MessageToDict
-
                 return_field = arg_to_container[content_key](
-                    MessageToDict(getattr(value, content_key))
+                    cls._get_content_from_node_proto(node)
+                    for node in getattr(value, content_key).data
                 )
 
+            elif content_key == 'dict':
+                deser_dict: Dict[str, Any] = dict()
+                for key_name, node in value.dict.data.items():
+                    deser_dict[key_name] = cls._get_content_from_node_proto(node)
+                return_field = deser_dict
             else:
                 raise ValueError(
                     f'key {content_key} is not supported for deserialization'
