@@ -142,10 +142,10 @@ def test_filter():
         assert doc.A
 
     filter_query = {
-        "bool": {
-            "filter": [
-                {"terms": {"B": [3, 4, 7, 8]}},
-                {"range": {"C": {"gte": 3, "lte": 5}}},
+        'bool': {
+            'filter': [
+                {'terms': {'B': [3, 4, 7, 8]}},
+                {'range': {'C': {'gte': 3, 'lte': 5}}},
             ]
         }
     }
@@ -180,6 +180,28 @@ def test_text_search():
         assert len(score) > 0
         for doc in da:
             assert doc.text.index(query) >= 0
+
+
+def test_column_config():
+    class MyDoc(BaseDocument):
+        text: str
+        color: str = Field(col_type='keyword')
+
+    store = ElasticDocIndex[MyDoc]()
+    index_docs = [
+        MyDoc(id='0', text='hello world', color='red'),
+        MyDoc(id='1', text='never gonna give you up', color='blue'),
+        MyDoc(id='2', text='we are the world', color='green'),
+    ]
+    store.index(index_docs)
+
+    query = 'world'
+    docs, _ = store.text_search(query, search_field='text')
+    assert [doc.id for doc in docs] == ['0', '2']
+
+    filter_query = {'terms': {'color': ['red', 'blue']}}
+    docs = store.filter(filter_query)
+    assert [doc.id for doc in docs] == ['0', '1']
 
 
 def test_query_builder():

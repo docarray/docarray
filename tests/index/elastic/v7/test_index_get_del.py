@@ -157,6 +157,14 @@ def test_get_key_error(ten_simple_docs):
         store['not_a_real_id']
 
 
+def test_persisting(ten_simple_docs):
+    store = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+    store.index(ten_simple_docs)
+
+    store2 = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+    assert store2.num_docs() == 10
+
+
 def test_del_single(ten_simple_docs):
     store = ElasticDocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
