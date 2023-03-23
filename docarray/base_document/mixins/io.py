@@ -14,11 +14,25 @@ from typing import (
     TypeVar,
 )
 
+import numpy as np
 from typing_inspect import is_union_type
 
 from docarray.base_document.base_node import BaseNode
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils.compress import _compress_bytes, _decompress_bytes
+from docarray.utils.misc import is_tf_available, is_torch_available
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+
+    from docarray.typing import NdArray, TorchTensor
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -47,40 +61,57 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
     container_type_to_key = {list: 'list', set: 'set', tuple: 'tuple'}
 
     nested_item: 'NodeProto'
+
     if isinstance(value, BaseNode):
         nested_item = value._to_node_protobuf()
+        return nested_item
+
+    if torch_available:
+        if isinstance(value, torch.Tensor):
+            base_node_wrap = TorchTensor._docarray_from_native(value)
+            return base_node_wrap._to_node_protobuf()
+
+    if tf_available:
+        if isinstance(value, tf.Tensor):
+            base_node_wrap = TensorFlowTensor._docarray_from_native(value)
+            return base_node_wrap._to_node_protobuf()
+
+    if isinstance(value, np.ndarray):
+        base_node_wrap = NdArray._docarray_from_native(value)
+        return base_node_wrap._to_node_protobuf()
+
+    for basic_type, key_name in basic_type_to_key.items():
+        if isinstance(value, basic_type):
+            nested_item = NodeProto(**{key_name: value})
+            return nested_item
+
+    for container_type, key_name in container_type_to_key.items():
+        if isinstance(value, container_type):
+            from docarray.proto import ListOfAnyProto
+
+            lvalue = ListOfAnyProto()
+            for item in value:
+                lvalue.data.append(_type_to_protobuf(item))
+            nested_item = NodeProto(**{key_name: lvalue})
+            return nested_item
+
+    if isinstance(value, dict):
+        from docarray.proto import DictOfAnyProto
+
+        data = {}
+
+        for key, content in value.items():
+            data[key] = _type_to_protobuf(content)
+
+        struct = DictOfAnyProto(data=data)
+        nested_item = NodeProto(dict=struct)
+        return nested_item
+
+    elif value is None:
+        nested_item = NodeProto()
+        return nested_item
     else:
-        for basic_type, key_name in basic_type_to_key.items():
-            if isinstance(value, basic_type):
-                nested_item = NodeProto(**{key_name: value})
-                return nested_item
-
-        for container_type, key_name in container_type_to_key.items():
-            if isinstance(value, container_type):
-                from docarray.proto import ListOfAnyProto
-
-                lvalue = ListOfAnyProto()
-                for item in value:
-                    lvalue.data.append(_type_to_protobuf(item))
-                nested_item = NodeProto(**{key_name: lvalue})
-                return nested_item
-
-        if isinstance(value, dict):
-            from docarray.proto import DictOfAnyProto
-
-            data = {}
-
-            for key, content in value.items():
-                data[key] = _type_to_protobuf(content)
-
-            struct = DictOfAnyProto(data=data)
-            nested_item = NodeProto(dict=struct)
-
-        elif value is None:
-            nested_item = NodeProto()
-        else:
-            raise ValueError(f'{type(value)} is not supported with protobuf')
-    return nested_item
+        raise ValueError(f'{type(value)} is not supported with protobuf')
 
 
 class IOMixin(Iterable[Tuple[str, Any]]):

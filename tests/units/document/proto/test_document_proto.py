@@ -227,7 +227,7 @@ def test_tuple_complex():
 
 
 @pytest.mark.proto
-def test_super_complex_nested_whatever():
+def test_super_complex_nested():
     class MyDoc(BaseDocument):
         data: Dict
 
