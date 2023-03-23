@@ -22,6 +22,7 @@ import numpy as np
 from docarray.base_document import BaseDocument
 from docarray.display.document_array_summary import DocumentArraySummary
 from docarray.typing.abstract_type import AbstractType
+from docarray.utils._typing import change_cls_name
 
 if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto, NodeProto
@@ -59,9 +60,7 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             class _DocumentArrayTyped(cls):  # type: ignore
                 document_type: Type[BaseDocument] = cast(Type[BaseDocument], item)
 
-            cls.document_type = cast(Type[BaseDocument], item)
-
-            for field in cls.document_type.__fields__.keys():
+            for field in _DocumentArrayTyped.document_type.__fields__.keys():
 
                 def _property_generator(val: str):
                     def _getter(self):
@@ -73,16 +72,16 @@ class AnyDocumentArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                     # need docstring for the property
                     return property(fget=_getter, fset=_setter)
 
-                setattr(cls, field, _property_generator(field))
+                setattr(_DocumentArrayTyped, field, _property_generator(field))
                 # this generates property on the fly based on the schema of the item
 
             # The global scope and qualname need to refer to this class a unique name.
             # Otherwise, creating another _DocumentArrayTyped will overwrite this one.
-            # change_cls_name(
-            #     _DocumentArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
-            # )
+            change_cls_name(
+                _DocumentArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
+            )
 
-            cls.__typed_da__[cls][item] = cls
+            cls.__typed_da__[cls][item] = _DocumentArrayTyped
 
         return cls.__typed_da__[cls][item]
 
