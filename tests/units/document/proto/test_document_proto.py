@@ -7,6 +7,10 @@ import torch
 from docarray import DocumentArray
 from docarray.base_document import BaseDocument
 from docarray.typing import NdArray, TorchTensor
+from docarray.utils.misc import is_tf_available
+
+if is_tf_available():
+    import tensorflow as tf
 
 
 @pytest.mark.proto
@@ -232,6 +236,17 @@ def test_super_complex_nested():
         data: Dict
 
     data = {'hello': (torch.zeros(55), 1, 'hi', [torch.ones(55), np.zeros(10), (1, 2)])}
+    doc = MyDoc(data=data)
+
+    MyDoc.from_protobuf(doc.to_protobuf())
+
+
+@pytest.mark.tensorflow
+def test_super_complex_nested_tensorflow():
+    class MyDoc(BaseDocument):
+        data: Dict
+
+    data = {'hello': (torch.zeros(55), 1, 'hi', [tf.ones(55), np.zeros(10), (1, 2)])}
     doc = MyDoc(data=data)
 
     MyDoc.from_protobuf(doc.to_protobuf())
