@@ -79,8 +79,8 @@ def test_find_torch(tmp_path, space):
         assert torch.allclose(result.tens, torch.zeros(10, dtype=torch.float64))
 
 
-@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 @pytest.mark.tensorflow
+@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_tensorflow(tmp_path, space):
     from docarray.typing import TensorFlowTensor
 
