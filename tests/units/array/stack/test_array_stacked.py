@@ -263,10 +263,10 @@ def test_any_tensor_with_torch(tensor_type, tensor):
     class ImageDoc(BaseDocument):
         tensor: AnyTensor
 
-    da = DocumentArray[ImageDoc](
+    da = DocumentArrayStacked[ImageDoc](
         [ImageDoc(tensor=tensor) for _ in range(10)],
         tensor_type=tensor_type,
-    ).stack()
+    )
 
     for i in range(len(da)):
         assert (da[i].tensor == tensor).all()
@@ -284,10 +284,10 @@ def test_any_tensor_with_optional():
     class TopDoc(BaseDocument):
         img: ImageDoc
 
-    da = DocumentArray[TopDoc](
+    da = DocumentArrayStacked[TopDoc](
         [TopDoc(img=ImageDoc(tensor=tensor)) for _ in range(10)],
         tensor_type=TorchTensor,
-    ).stack()
+    )
 
     for i in range(len(da)):
         assert (da.img[i].tensor == tensor).all()
@@ -300,9 +300,9 @@ def test_dict_stack():
     class MyDoc(BaseDocument):
         my_dict: Dict[str, int]
 
-    da = DocumentArray[MyDoc](
+    da = DocumentArrayStacked[MyDoc](
         [MyDoc(my_dict={'a': 1, 'b': 2}) for _ in range(10)]
-    ).stack()
+    )
 
     da.my_dict
 
@@ -314,9 +314,9 @@ def test_get_from_slice_stacked():
 
     N = 10
 
-    da = DocumentArray[Doc](
+    da = DocumentArrayStacked[Doc](
         [Doc(text=f'hello{i}', tensor=np.zeros((3, 224, 224))) for i in range(N)]
-    ).stack()
+    )
 
     da_sliced = da[0:10:2]
     assert isinstance(da_sliced, DocumentArrayStacked)
@@ -334,9 +334,7 @@ def test_stack_embedding():
     class MyDoc(BaseDocument):
         embedding: AnyEmbedding
 
-    da = DocumentArray[MyDoc](
-        [MyDoc(embedding=np.zeros(10)) for _ in range(10)]
-    ).stack()
+    da = DocumentArrayStacked[MyDoc]([MyDoc(embedding=np.zeros(10)) for _ in range(10)])
 
     assert 'embedding' in da._storage.tensor_columns.keys()
     assert (da.embedding == np.zeros((10, 10))).all()
@@ -347,18 +345,17 @@ def test_stack_none(tensor_backend):
     class MyDoc(BaseDocument):
         tensor: Optional[AnyTensor]
 
-    da = DocumentArray[MyDoc](
+    da = DocumentArrayStacked[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=tensor_backend
-    ).stack()
+    )
 
     assert 'tensor' in da._storage.tensor_columns.keys()
 
 
 def test_to_device():
-    da = DocumentArray[ImageDoc](
+    da = DocumentArrayStacked[ImageDoc](
         [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
     )
-    da = da.stack()
     assert da.tensor.device == torch.device('cpu')
     da.to('meta')
     assert da.tensor.device == torch.device('meta')
@@ -368,12 +365,11 @@ def test_to_device_with_nested_da():
     class Video(BaseDocument):
         images: DocumentArray[ImageDoc]
 
-    da_image = DocumentArray[ImageDoc](
+    da_image = DocumentArrayStacked[ImageDoc](
         [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
     )
 
-    da = DocumentArray[Video]([Video(images=da_image)])
-    da = da.stack()
+    da = DocumentArrayStacked[Video]([Video(images=da_image)])
     assert da.images[0].tensor.device == torch.device('cpu')
     da.to('meta')
     assert da.images[0].tensor.device == torch.device('meta')
@@ -384,11 +380,10 @@ def test_to_device_nested():
         tensor: TorchTensor
         docs: ImageDoc
 
-    da = DocumentArray[MyDoc](
+    da = DocumentArrayStacked[MyDoc](
         [MyDoc(tensor=torch.zeros(3, 5), docs=ImageDoc(tensor=torch.zeros(3, 5)))],
         tensor_type=TorchTensor,
     )
-    da = da.stack()
     assert da.tensor.device == torch.device('cpu')
     assert da.docs.tensor.device == torch.device('cpu')
     da.to('meta')
@@ -397,10 +392,9 @@ def test_to_device_nested():
 
 
 def test_to_device_numpy():
-    da = DocumentArray[ImageDoc](
+    da = DocumentArrayStacked[ImageDoc](
         [ImageDoc(tensor=np.zeros((3, 5)))], tensor_type=NdArray
     )
-    da = da.stack()
     with pytest.raises(NotImplementedError):
         da.to('meta')
 
@@ -444,9 +438,7 @@ def test_np_scalar():
     class MyDoc(BaseDocument):
         scalar: NdArray
 
-    da = DocumentArray[MyDoc](
-        [MyDoc(scalar=np.array(2.0)) for _ in range(3)], tensor_type=NdArray
-    )
+    da = DocumentArray[MyDoc]([MyDoc(scalar=np.array(2.0)) for _ in range(3)])
     assert all(doc.scalar.ndim == 0 for doc in da)
     assert all(doc.scalar == 2.0 for doc in da)
 
@@ -467,11 +459,11 @@ def test_torch_scalar():
         scalar: TorchTensor
 
     da = DocumentArray[MyDoc](
-        [MyDoc(scalar=torch.tensor(2.0)) for _ in range(3)], tensor_type=TorchTensor
+        [MyDoc(scalar=torch.tensor(2.0)) for _ in range(3)],
     )
     assert all(doc.scalar.ndim == 0 for doc in da)
     assert all(doc.scalar == 2.0 for doc in da)
-    stacked_da = da.stack()
+    stacked_da = da.stack(tensor_type=TorchTensor)
     assert type(stacked_da.scalar) == TorchTensor
 
     assert all(type(doc.scalar) == TorchTensor for doc in stacked_da)
@@ -486,7 +478,7 @@ def test_np_nan():
     class MyDoc(BaseDocument):
         scalar: Optional[NdArray]
 
-    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)], tensor_type=NdArray)
+    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)])
     assert all(doc.scalar is None for doc in da)
     assert all(doc.scalar == doc.scalar for doc in da)
     stacked_da = da.stack()
@@ -505,10 +497,10 @@ def test_torch_nan():
     class MyDoc(BaseDocument):
         scalar: Optional[TorchTensor]
 
-    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)], tensor_type=TorchTensor)
+    da = DocumentArray[MyDoc]([MyDoc() for _ in range(3)])
     assert all(doc.scalar is None for doc in da)
     assert all(doc.scalar == doc.scalar for doc in da)
-    stacked_da = da.stack()
+    stacked_da = da.stack(tensor_type=TorchTensor)
     assert type(stacked_da.scalar) == TorchTensor
 
     assert all(type(doc.scalar) == TorchTensor for doc in stacked_da)

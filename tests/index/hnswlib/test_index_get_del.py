@@ -3,10 +3,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.doc_index.backends.hnswlib_doc_index import HnswDocumentIndex
+from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 
-pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDocument):
@@ -54,6 +54,14 @@ def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
     assert store.num_docs() == 10
     for index in store._hnsw_indices.values():
         assert index.get_current_count() == 10
+
+
+def test_schema_with_user_defined_mapping(tmp_path):
+    class MyDoc(BaseDocument):
+        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
+
+    store = HnswDocumentIndex[MyDoc](work_dir=str(tmp_path))
+    assert store._column_infos['tens'].db_type == np.ndarray
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])

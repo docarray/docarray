@@ -62,7 +62,7 @@ def test_get_access_paths():
         'img__url',
         'img__tensor',
         'img__embedding',
-        'img__bytes',
+        'img__bytes_',
     ]
 
 

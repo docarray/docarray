@@ -117,7 +117,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark)" ${{ matrix.test-path }}
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
 #        env:
 #          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -194,6 +194,32 @@ jobs:
         timeout-minutes: 30
 
 
+  docarray-doc-index:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'index' tests
+        timeout-minutes: 30
+
   docarray-test-tensorflow:
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
@@ -250,7 +276,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test, docarray-test-proto3, docarray-test-tensorflow, docarray-test-benchmarks, import-test, check-black, check-mypy, lint-ruff]
+    needs: [docarray-test, docarray-test-proto3, docarray-doc-index, docarray-test-tensorflow, docarray-test-benchmarks, import-test, check-black, check-mypy, lint-ruff]
     if: always()
     runs-on: ubuntu-latest
     steps:

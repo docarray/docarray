@@ -198,7 +198,7 @@ def test_audio_tensorflow():
 
 def test_audio_bytes():
     audio = parse_obj_as(AudioDoc, torch.zeros(10, 10, 3))
-    audio.bytes = audio.tensor.to_bytes()
+    audio.bytes_ = audio.tensor.to_bytes()
 
 
 def test_audio_shortcut_doc():

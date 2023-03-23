@@ -62,9 +62,6 @@ class DocumentArray(
     """
      DocumentArray is a container of Documents.
 
-    :param docs: iterable of Document
-    :param tensor_type: Class used to wrap the tensors of the Documents when stacked
-
     A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
     homogeneous and follow the same schema. To precise this schema you can use
@@ -72,29 +69,31 @@ class DocumentArray(
     (i.e. schema). This creates a DocumentArray that can only contains Documents of
     the type 'MyDocument'.
 
-    EXAMPLE USAGE
-    .. code-block:: python
-        from docarray import BaseDocument, DocumentArray
-        from docarray.typing import NdArray, ImageUrl
-        from typing import Optional
+    ---
+
+    ```python
+    from docarray import BaseDocument, DocumentArray
+    from docarray.typing import NdArray, ImageUrl
+    from typing import Optional
 
 
-        class Image(BaseDocument):
-            tensor: Optional[NdArray[100]]
-            url: ImageUrl
+    class Image(BaseDocument):
+        tensor: Optional[NdArray[100]]
+        url: ImageUrl
 
 
-        da = DocumentArray[Image](
-            Image(url='http://url.com/foo.png') for _ in range(10)
-        )  # noqa: E510
+    da = DocumentArray[Image](
+        Image(url='http://url.com/foo.png') for _ in range(10)
+    )  # noqa: E510
+    ```
+
+    ---
 
 
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
     fields at the DocumentArray level (for example `da.tensor` or `da.url`).
     You can also set fields, with `da.tensor = np.random.random([10, 100])`:
 
-
-    .. code-block:: python
         print(da.url)
         # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
         import numpy as np
@@ -106,7 +105,7 @@ class DocumentArray(
 
     You can index into a DocumentArray like a numpy array or torch tensor:
 
-    .. code-block:: python
+
         da[0]  # index by position
         da[0:5:2]  # index by slice
         da[[0, 2, 3]]  # index by list of indices
@@ -114,9 +113,10 @@ class DocumentArray(
 
     You can delete items from a DocumentArray like a Python List
 
-    .. code-block:: python
         del da[0]  # remove first element from DocumentArray
         del da[0:5]  # remove elements for 0 to 5 from DocumentArray
+
+    :param docs: iterable of Document
 
     """
 
@@ -125,27 +125,22 @@ class DocumentArray(
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
-        tensor_type: Type['AbstractTensor'] = NdArray,
     ):
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
-        self.tensor_type = tensor_type
 
     @classmethod
     def construct(
         cls: Type[T],
         docs: Sequence[T_doc],
-        tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> T:
         """
         Create a DocumentArray without validation any data. The data must come from a
         trusted source
         :param docs: a Sequence (list) of Document with the same schema
-        :param tensor_type: Class used to wrap the tensors of the Documents when stacked
         :return:
         """
         da = cls.__new__(cls)
         da._data = docs if isinstance(docs, list) else list(docs)
-        da.tensor_type = tensor_type
         return da
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
@@ -226,7 +221,7 @@ class DocumentArray(
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
             return DocumentArray.__class_getitem__(field_type)(
-                (getattr(doc, field) for doc in self), tensor_type=self.tensor_type
+                (getattr(doc, field) for doc in self),
             )
         else:
             return [getattr(doc, field) for doc in self]
@@ -246,15 +241,21 @@ class DocumentArray(
         for doc, value in zip(self, values):
             setattr(doc, field, value)
 
-    def stack(self) -> 'DocumentArrayStacked':
+    def stack(
+        self,
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ) -> 'DocumentArrayStacked':
         """
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
+        :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
+        if the BaseDocument has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
+        :return: A DocumentArrayStacked of the same document type as self
         """
         from docarray.array.stacked.array_stacked import DocumentArrayStacked
 
         return DocumentArrayStacked.__class_getitem__(self.document_type)(
-            self, tensor_type=self.tensor_type
+            self, tensor_type=tensor_type
         )
 
     @classmethod

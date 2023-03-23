@@ -90,7 +90,7 @@ class AudioDoc(BaseDocument):
 
         # equivalent to
 
-        mmdoc.audio.bytes = mmdoc.audio.url.load_bytes()
+        mmdoc.audio.bytes_ = mmdoc.audio.url.load_bytes()
 
         mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes.load()
 
@@ -99,7 +99,7 @@ class AudioDoc(BaseDocument):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[AudioBytes]
+    bytes_: Optional[AudioBytes]
     frame_rate: Optional[int]
 
     @classmethod
