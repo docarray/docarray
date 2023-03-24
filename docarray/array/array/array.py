@@ -58,7 +58,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocumentArray(
-    IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc], BaseModel
+    BaseModel, IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
 ):
     """
      DocumentArray is a container of Documents.
@@ -123,13 +123,13 @@ class DocumentArray(
 
     document_type: Type[BaseDocument] = AnyDocument
     data: List[T_doc]
+    __fields_set__ = set(['document_type', 'data'])
 
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
     ):
         self.data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
-
 
     @classmethod
     def construct(
@@ -303,3 +303,6 @@ class DocumentArray(
 
     def __getitem__(self, item):
         return super().__getitem__(item)
+
+    def __getattr__(self, item: str):
+        return self.__getattribute__(item)
