@@ -20,7 +20,6 @@ from typing import (
 import hnswlib
 import numpy as np
 
-import docarray.typing
 from docarray import BaseDocument, DocumentArray
 from docarray.index.abstract import (
     BaseDocumentIndex,
@@ -32,16 +31,24 @@ from docarray.index.abstract import (
 from docarray.proto import DocumentProto
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import is_np_int, torch_imported
+from docarray.utils.misc import is_np_int, is_tf_available, is_torch_available
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='HnswDocumentIndex')
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-if torch_imported:
+if is_torch_available():
     import torch
 
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+
+if is_tf_available():
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+    HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
+    HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
@@ -84,8 +91,14 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if not col.config:
-                self._logger.warning(
-                    f'No index was created for `{col_name}` as it does not have a config'
+                # non-tensor type; don't create an index
+                continue
+            if not load_existing and (
+                (not col.n_dim and col.config['dim'] < 0) or not col.config['index']
+            ):
+                # tensor type, but don't index
+                self._logger.info(
+                    f'Not indexing column {col_name}; either `index=False` is set or no dimensionality is specified'
                 )
                 continue
             if load_existing:
@@ -133,7 +146,8 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
-                    'dim': 128,
+                    'dim': -1,
+                    'index': True,  # if False, don't index at all
                     'space': 'l2',  # 'l2', 'ip', 'cosine'
                     'max_elements': 1024,
                     'ef_construction': 200,
@@ -157,10 +171,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if issubclass(python_type, allowed_type):
                 return np.ndarray
 
-        if python_type == docarray.typing.ID:
-            return None
-
-        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+        return None  # all types allowed, but no db type needed
 
     def _index(self, column_data_dic, **kwargs):
         # not needed, we implement `index` directly
@@ -327,16 +338,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         index = self._create_index_class(col)
         index.load_index(self._hnsw_locations[col_name])
         return index
-
-    def _to_numpy(self, val: Any) -> Any:
-        if isinstance(val, np.ndarray):
-            return val
-        elif isinstance(val, (list, tuple)):
-            return np.array(val)
-        elif torch_imported and isinstance(val, torch.Tensor):
-            return val.numpy()
-        else:
-            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     # HNSWLib helpers
     def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:
