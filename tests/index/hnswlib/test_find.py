@@ -1,10 +1,11 @@
 import numpy as np
 import pytest
+import torch
 from pydantic import Field
 
 from docarray import BaseDocument
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -24,6 +25,10 @@ class NestedDoc(BaseDocument):
 
 class DeepNestedDoc(BaseDocument):
     d: NestedDoc
+
+
+class TorchDoc(BaseDocument):
+    tens: TorchTensor[10]
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -47,6 +52,63 @@ def test_find_simple_schema(tmp_path, space):
     assert np.allclose(docs[0].tens, index_docs[-1].tens)
     for result in docs[1:]:
         assert np.allclose(result.tens, np.zeros(10))
+
+
+@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
+def test_find_torch(tmp_path, space):
+    store = HnswDocumentIndex[TorchDoc](work_dir=str(tmp_path))
+
+    index_docs = [TorchDoc(tens=np.zeros(10)) for _ in range(10)]
+    index_docs.append(TorchDoc(tens=np.ones(10)))
+    store.index(index_docs)
+
+    for doc in index_docs:
+        assert isinstance(doc.tens, TorchTensor)
+
+    query = TorchDoc(tens=np.ones(10))
+
+    result_docs, scores = store.find(query, search_field='tens', limit=5)
+
+    assert len(result_docs) == 5
+    assert len(scores) == 5
+    for doc in result_docs:
+        assert isinstance(doc.tens, TorchTensor)
+    assert result_docs[0].id == index_docs[-1].id
+    assert torch.allclose(result_docs[0].tens, index_docs[-1].tens)
+    for result in result_docs[1:]:
+        assert torch.allclose(result.tens, torch.zeros(10, dtype=torch.float64))
+
+
+@pytest.mark.tensorflow
+def test_find_tensorflow(tmp_path):
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDocument):
+        tens: TensorFlowTensor[10]
+
+    store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
+
+    index_docs = [TfDoc(tens=np.zeros(10)) for _ in range(10)]
+    index_docs.append(TfDoc(tens=np.ones(10)))
+    store.index(index_docs)
+
+    for doc in index_docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+
+    query = TfDoc(tens=np.ones(10))
+
+    result_docs, scores = store.find(query, search_field='tens', limit=5)
+
+    assert len(result_docs) == 5
+    assert len(scores) == 5
+    for doc in result_docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+    assert result_docs[0].id == index_docs[-1].id
+    assert np.allclose(
+        result_docs[0].tens.unwrap().numpy(), index_docs[-1].tens.unwrap().numpy()
+    )
+    for result in result_docs[1:]:
+        assert np.allclose(result.tens.unwrap().numpy(), np.zeros(10))
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
