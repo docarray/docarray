@@ -581,14 +581,3 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 raise ValueError(
                     f"Can't compose {num_clauses} clauses with {num_queries} queries"
                 )
-
-        # the methods below need to be implemented by subclasses
-        # If, in your subclass, one of these is not usable in a query builder, but
-        # can be called directly on the DocumentIndex, use `_raise_not_composable`.
-        # If the method is not supported _at all_, use `_raise_not_supported`.
-        # find = abstractmethod(lambda *args, **kwargs: ...)
-        # filter = abstractmethod(lambda *args, **kwargs: ...)
-        # text_search = abstractmethod(lambda *args, **kwargs: ...)
-        # find_batched = abstractmethod(lambda *args, **kwargs: ...)
-        # filter_batched = abstractmethod(lambda *args, **kwargs: ...)
-        # text_search_batched = abstractmethod(lambda *args, **kwargs: ...)
