@@ -10,6 +10,7 @@ from docarray.helper import (
     _dict_to_access_paths,
     _is_access_path_valid,
     _update_nested_dicts,
+    get_paths,
 )
 
 
@@ -109,3 +110,24 @@ def test_update_nested_dict():
 
     _update_nested_dicts(d1, d2)
     assert d1 == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
+
+
+def test_get_paths():
+    paths = list(get_paths(patterns='*.py'))
+    for path in paths:
+        assert path.endswith('.py')
+
+
+def test_get_paths_recursive():
+    paths_rec = list(get_paths(patterns='**', recursive=True))
+    paths_not_rec = list(get_paths(patterns='**', recursive=False))
+
+    assert len(paths_rec) > len(paths_not_rec)
+
+
+def test_get_paths_exclude():
+    paths = list(get_paths(patterns='*.py'))
+    paths_wo_init = list(get_paths(patterns='*.py', exclude_regex='__init__.[a-z]*'))
+
+    assert len(paths_wo_init) <= len(paths)
+    assert '__init__.py' not in paths_wo_init
