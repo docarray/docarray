@@ -76,11 +76,11 @@ class AudioBytes(bytes, AbstractType):
         :return: np.ndarray representing the Audio as RGB values
         """
         if TYPE_CHECKING:
-            import pydub
+            from pydub import AudioSegment
         else:
-            pydub = import_library('pydub')
+            AudioSegment = import_library('pydub.AudioSegment')
 
-        segment = pydub.AudioSegment.from_file(io.BytesIO(self))
+        segment = AudioSegment.from_file(io.BytesIO(self))
 
         # Convert to float32 using NumPy
         samples = np.array(segment.get_array_of_samples())
