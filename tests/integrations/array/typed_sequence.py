@@ -1,6 +1,6 @@
 import pytest
 
-from docarray.array.array.typed_sequence import TypedList
+from docarray.array.array.typed_sequence import MagicList
 
 
 @pytest.fixture()
@@ -15,7 +15,7 @@ def data():
         def g(self):
             return 'is this really working ?'
 
-    return TypedList[A]([A(param=1) for _ in range(3)])
+    return MagicList[A]([A(param=1) for _ in range(3)])
 
 
 def test_func_call(data):

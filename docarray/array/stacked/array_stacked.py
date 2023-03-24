@@ -20,6 +20,7 @@ from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.array import DocumentArray
+from docarray.array.array.typed_sequence import MagicList
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_document import BaseDocument
@@ -99,7 +100,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         tensor_columns: Dict[str, AbstractTensor] = dict()
         doc_columns: Dict[str, 'DocumentArrayStacked'] = dict()
         da_columns: Dict[str, ListAdvancedIndexing['DocumentArrayStacked']] = dict()
-        any_columns: Dict[str, ListAdvancedIndexing] = dict()
+        any_columns: Dict[str, MagicList] = dict()
 
         if len(docs) == 0:
             raise ValueError(f'docs {docs}: should not be empty')
@@ -172,13 +173,9 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
                         docs_list.append(da)
                     da_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
-                    any_columns[field_name] = ListAdvancedIndexing(
-                        getattr(docs, field_name)
-                    )
+                    any_columns[field_name] = MagicList(getattr(docs, field_name))
             else:
-                any_columns[field_name] = ListAdvancedIndexing(
-                    getattr(docs, field_name)
-                )
+                any_columns[field_name] = MagicList(getattr(docs, field_name))
 
         self._storage = ColumnStorage(
             tensor_columns,
