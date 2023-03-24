@@ -425,13 +425,17 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         )
 
         if isinstance(query, self.QueryBuilder):
-            results = query._query.do()
-            docs = results["data"]["Get"][self._db_config.index_name]
+            batched_results = self._client.query.multi_get(query._queries).do()
+            batched_docs = batched_results["data"]["Get"].values()
 
             def f(doc):
                 return self._schema.from_view(self._parse_weaviate_result(doc))
 
-            return da_class([f(doc) for doc in docs])
+            results = [
+                da_class([f(doc) for doc in batched_doc])
+                for batched_doc in batched_docs
+            ]
+            return results if len(results) > 1 else results[0]
 
     def num_docs(self) -> int:
         index_name = self._db_config.index_name
@@ -457,11 +461,16 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     class QueryBuilder(BaseDocumentIndex.QueryBuilder):
         def __init__(self, document_index):
-            self._query = document_index._client.query.get(
-                document_index._db_config.index_name, document_index.properties
-            )
+            self._queries = [
+                document_index._client.query.get(
+                    document_index._db_config.index_name, document_index.properties
+                )
+            ]
 
         def build(self) -> Any:
+            self._queries = [
+                query.with_alias(f'query_{i}') for i, query in enumerate(self._queries)
+            ]
             return self
 
         def _overwrite_id(self, where_filter):
@@ -491,7 +500,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if score_threshold:
                 near_vector[score_name] = score_threshold
 
-            self._query = self._query.with_near_vector(near_vector)
+            self._queries[0] = self._queries[0].with_near_vector(near_vector)
             return self
 
         def find_batched(self, *args, **kwargs) -> Any:
@@ -500,7 +509,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         def filter(self, where_filter) -> Any:
             where_filter = where_filter.copy()
             self._overwrite_id(where_filter)
-            self._query = self._query.with_where(where_filter)
+            self._queries[0] = self._queries[0].with_where(where_filter)
             return self
 
         def filter_batched(self, *args, **kwargs) -> Any:
@@ -508,7 +517,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         def text_search(self, query, search_field) -> Any:
             bm25 = {"query": query, "properties": [search_field]}
-            self._query = self._query.with_bm25(**bm25)
+            self._queries[0] = self._queries[0].with_bm25(**bm25)
             return self
 
         def text_search_batched(self, *args, **kwargs) -> Any:
