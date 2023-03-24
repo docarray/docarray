@@ -19,20 +19,20 @@ def testing_namespace_cleanup():
     da_names = list(
         filter(
             lambda x: x.startswith('test'),
-            JACDocStore.list('jinaai://', show_table=False),
+            JACDocStore.list('jac://', show_table=False),
         )
     )
     for da_name in da_names:
-        JACDocStore.delete(f'jinaai://{da_name}')
+        JACDocStore.delete(f'jac://{da_name}')
     yield
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}'),
-            JACDocStore.list('jinaai://', show_table=False),
+            JACDocStore.list('jac://', show_table=False),
         )
     )
     for da_name in da_names:
-        JACDocStore.delete(f'jinaai://{da_name}')
+        JACDocStore.delete(f'jac://{da_name}')
 
 
 @pytest.mark.slow
@@ -42,8 +42,8 @@ def test_pushpull_correct(capsys):
     da1 = get_test_da(DA_LEN)
 
     # Verbose
-    da1.push(f'jinaai://{DA_NAME}', show_progress=True)
-    da2 = DocumentArray[TextDoc].pull(f'jinaai://{DA_NAME}', show_progress=True)
+    da1.push(f'jac://{DA_NAME}', show_progress=True)
+    da2 = DocumentArray[TextDoc].pull(f'jac://{DA_NAME}', show_progress=True)
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -53,8 +53,8 @@ def test_pushpull_correct(capsys):
     assert len(captured.err) == 0
 
     # Quiet
-    da2.push(f'jinaai://{DA_NAME}')
-    da1 = DocumentArray[TextDoc].pull(f'jinaai://{DA_NAME}')
+    da2.push(f'jac://{DA_NAME}')
+    da1 = DocumentArray[TextDoc].pull(f'jac://{DA_NAME}')
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -76,10 +76,10 @@ def test_pushpull_stream_correct(capsys):
 
     # Verbosity and correctness
     DocumentArray[TextDoc].push_stream(
-        iter(da1), f'jinaai://{DA_NAME_1}', show_progress=True
+        iter(da1), f'jac://{DA_NAME_1}', show_progress=True
     )
     doc_stream2 = DocumentArray[TextDoc].pull_stream(
-        f'jinaai://{DA_NAME_1}', show_progress=True
+        f'jac://{DA_NAME_1}', show_progress=True
     )
 
     assert all(d1.id == d2.id for d1, d2 in zip(da1, doc_stream2))
@@ -92,10 +92,10 @@ def test_pushpull_stream_correct(capsys):
 
     # Quiet and chained
     doc_stream = DocumentArray[TextDoc].pull_stream(
-        f'jinaai://{DA_NAME_1}', show_progress=False
+        f'jac://{DA_NAME_1}', show_progress=False
     )
     DocumentArray[TextDoc].push_stream(
-        doc_stream, f'jinaai://{DA_NAME_2}', show_progress=False
+        doc_stream, f'jac://{DA_NAME_2}', show_progress=False
     )
 
     captured = capsys.readouterr()
@@ -116,12 +116,12 @@ def test_pull_stream_vs_pull_full():
 
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 1),
-        f'jinaai://{DA_NAME_SHORT}',
+        f'jac://{DA_NAME_SHORT}',
         show_progress=False,
     )
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 4),
-        f'jinaai://{DA_NAME_LONG}',
+        f'jac://{DA_NAME_LONG}',
         show_progress=False,
     )
 
@@ -139,17 +139,15 @@ def test_pull_stream_vs_pull_full():
         )
 
     # A warmup is needed to get accurate memory usage comparison
-    _ = get_total_stream(f'jinaai://{DA_NAME_SHORT}')
+    _ = get_total_stream(f'jac://{DA_NAME_SHORT}')
     short_total_stream, (_, short_stream_peak) = get_total_stream(
-        f'jinaai://{DA_NAME_SHORT}'
+        f'jac://{DA_NAME_SHORT}'
     )
-    long_total_stream, (_, long_stream_peak) = get_total_stream(
-        f'jinaai://{DA_NAME_LONG}'
-    )
+    long_total_stream, (_, long_stream_peak) = get_total_stream(f'jac://{DA_NAME_LONG}')
 
-    _ = get_total_full(f'jinaai://{DA_NAME_SHORT}')
-    short_total_full, (_, short_full_peak) = get_total_full(f'jinaai://{DA_NAME_SHORT}')
-    long_total_full, (_, long_full_peak) = get_total_full(f'jinaai://{DA_NAME_LONG}')
+    _ = get_total_full(f'jac://{DA_NAME_SHORT}')
+    short_total_full, (_, short_full_peak) = get_total_full(f'jac://{DA_NAME_SHORT}')
+    long_total_full, (_, long_full_peak) = get_total_full(f'jac://{DA_NAME_LONG}')
 
     assert (
         short_total_stream == short_total_full
@@ -168,6 +166,7 @@ def test_pull_stream_vs_pull_full():
 
 @pytest.mark.slow
 @pytest.mark.internet
+@pytest.mark.skip(reason='The CI account might be broken')
 def test_list_and_delete():
     DA_NAME_0 = f'test{RANDOM}-list-and-delete-da0'
     DA_NAME_1 = f'test{RANDOM}-list-and-delete-da1'
@@ -181,7 +180,7 @@ def test_list_and_delete():
     assert len(da_names) == 0
 
     DocumentArray[TextDoc].push(
-        get_test_da(DA_LEN), f'jinaai://{DA_NAME_0}', show_progress=False
+        get_test_da(DA_LEN), f'jac://{DA_NAME_0}', show_progress=False
     )
     da_names = list(
         filter(
@@ -191,7 +190,7 @@ def test_list_and_delete():
     )
     assert set(da_names) == {DA_NAME_0}
     DocumentArray[TextDoc].push(
-        get_test_da(DA_LEN), f'jinaai://{DA_NAME_1}', show_progress=False
+        get_test_da(DA_LEN), f'jac://{DA_NAME_1}', show_progress=False
     )
     da_names = list(
         filter(
@@ -230,7 +229,7 @@ def test_concurrent_push_pull():
 
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN),
-        f'jinaai://{DA_NAME_0}',
+        f'jac://{DA_NAME_0}',
         show_progress=False,
     )
 
@@ -240,12 +239,12 @@ def test_concurrent_push_pull():
         if choice == 'push':
             DocumentArray[TextDoc].push_stream(
                 gen_text_docs(DA_LEN),
-                f'jinaai://{DA_NAME_0}',
+                f'jac://{DA_NAME_0}',
                 show_progress=False,
             )
         elif choice == 'pull':
             pull_len = sum(
-                1 for _ in DocumentArray[TextDoc].pull_stream(f'jinaai://{DA_NAME_0}')
+                1 for _ in DocumentArray[TextDoc].pull_stream(f'jac://{DA_NAME_0}')
             )
             assert pull_len == DA_LEN
         else:
