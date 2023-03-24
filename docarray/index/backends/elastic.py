@@ -40,7 +40,7 @@ from docarray.utils.misc import is_tf_available, is_torch_available
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocIndex')
 
-ELASTIC_PY_VEC_TYPES: List[Any] = [np.ndarray]
+ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray]
 
 if is_torch_available():
     import torch
@@ -76,9 +76,6 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
         self._server_version = self._client.info()['version']['number']
         if int(self._server_version.split('.')[0]) >= 8:
             os.environ['ELASTIC_CLIENT_APIVERSIONING'] = '1'
-
-        # ElasticSearh index setup
-        self._index_vector_params = ('dims',)
 
         body: Dict[str, Any] = {
             'mappings': {
@@ -242,10 +239,11 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
                 return 'dense_vector'
 
         elastic_py_types = {
+            docarray.typing.ID: 'keyword',
+            docarray.typing.AnyUrl: 'keyword',
             bool: 'boolean',
             int: 'integer',
             float: 'float',
-            docarray.typing.ID: 'keyword',
             str: 'text',
             bytes: 'binary',
             dict: 'object',
@@ -461,13 +459,12 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
     def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
 
-        index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
+        index = col.config.copy()
+        if 'type' not in index:
+            index['type'] = col.db_type
 
-        if col.db_type == 'dense_vector':
-            for k in self._index_vector_params:
-                index[k] = col.config[k]
-            if col.n_dim:
-                index['dims'] = col.n_dim
+        if col.db_type == 'dense_vector' and col.n_dim:
+            index['dims'] = col.n_dim
 
         return index
 
