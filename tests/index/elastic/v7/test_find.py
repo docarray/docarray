@@ -1,9 +1,10 @@
 import numpy as np
+import torch
 from pydantic import Field
 
 from docarray import BaseDocument
 from docarray.index import ElasticDocIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import FlatDoc, SimpleDoc
 
@@ -106,6 +107,63 @@ def test_find_nested_schema():
     assert np.allclose(docs[0].d.d.tens, index_docs[-1].d.d.tens)
 
 
+def test_find_torch():
+    class TorchDoc(BaseDocument):
+        tens: TorchTensor[10]
+
+    store = ElasticDocIndex[TorchDoc]()
+
+    # A dense_vector field stores dense vectors of float values.
+    index_docs = [
+        TorchDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
+    ]
+    store.index(index_docs)
+
+    for doc in index_docs:
+        assert isinstance(doc.tens, TorchTensor)
+
+    query = index_docs[-1]
+    docs, scores = store.find(query, search_field='tens', limit=5)
+
+    assert len(docs) == 5
+    assert len(scores) == 5
+    for doc in docs:
+        assert isinstance(doc.tens, TorchTensor)
+
+    assert docs[0].id == index_docs[-1].id
+    assert torch.allclose(docs[0].tens, index_docs[-1].tens)
+
+
+def test_find_tensorflow():
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDocument):
+        tens: TensorFlowTensor[10]
+
+    store = ElasticDocIndex[TfDoc]()
+
+    index_docs = [
+        TfDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
+    ]
+    store.index(index_docs)
+
+    for doc in index_docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+
+    query = index_docs[-1]
+    docs, scores = store.find(query, search_field='tens', limit=5)
+
+    assert len(docs) == 5
+    assert len(scores) == 5
+    for doc in docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+
+    assert docs[0].id == index_docs[-1].id
+    assert np.allclose(
+        docs[0].tens.unwrap().numpy(), index_docs[-1].tens.unwrap().numpy()
+    )
+
+
 def test_find_batched():
     store = ElasticDocIndex[SimpleDoc]()
 
@@ -180,28 +238,6 @@ def test_text_search():
         assert len(score) > 0
         for doc in da:
             assert doc.text.index(query) >= 0
-
-
-def test_column_config():
-    class MyDoc(BaseDocument):
-        text: str
-        color: str = Field(col_type='keyword')
-
-    store = ElasticDocIndex[MyDoc]()
-    index_docs = [
-        MyDoc(id='0', text='hello world', color='red'),
-        MyDoc(id='1', text='never gonna give you up', color='blue'),
-        MyDoc(id='2', text='we are the world', color='green'),
-    ]
-    store.index(index_docs)
-
-    query = 'world'
-    docs, _ = store.text_search(query, search_field='text')
-    assert [doc.id for doc in docs] == ['0', '2']
-
-    filter_query = {'terms': {'color': ['red', 'blue']}}
-    docs = store.filter(filter_query)
-    assert [doc.id for doc in docs] == ['0', '1']
 
 
 def test_query_builder():
