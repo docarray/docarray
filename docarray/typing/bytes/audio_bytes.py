@@ -7,6 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -74,10 +75,12 @@ class AudioBytes(bytes, AbstractType):
 
         :return: np.ndarray representing the Audio as RGB values
         """
+        if TYPE_CHECKING:
+            import pydub
+        else:
+            pydub = import_library('pydub')
 
-        from pydub import AudioSegment  # type: ignore
-
-        segment = AudioSegment.from_file(io.BytesIO(self))
+        segment = pydub.AudioSegment.from_file(io.BytesIO(self))
 
         # Convert to float32 using NumPy
         samples = np.array(segment.get_array_of_samples())

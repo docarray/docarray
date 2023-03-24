@@ -1,9 +1,9 @@
 import warnings
 from abc import ABC
-from typing import Any, BinaryIO, Dict, TypeVar, Union
+from typing import TYPE_CHECKING, Any, BinaryIO, Dict, TypeVar, Union
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_notebook
+from docarray.utils._internal.misc import import_library, is_notebook
 
 T = TypeVar('T', bound='AbstractAudioTensor')
 
@@ -37,12 +37,15 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param sample_width: sample width in bytes
         :param pydub_args: dictionary of additional arguments for pydub.AudioSegment.export function
         """
-        from pydub import AudioSegment  # type: ignore
+        if TYPE_CHECKING:
+            import pydub
+        else:
+            pydub = import_library('pydub')
 
         comp_backend = self.get_comp_backend()
         channels = 2 if comp_backend.n_dim(array=self) > 1 else 1  # type: ignore
 
-        segment = AudioSegment(
+        segment = pydub.AudioSegment(
             self.to_bytes(),
             frame_rate=frame_rate,
             sample_width=sample_width,
