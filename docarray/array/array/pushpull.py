@@ -15,7 +15,7 @@ from typing import (
 from typing_extensions import Literal
 from typing_inspect import get_args
 
-PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
+PUSH_PULL_PROTOCOL = Literal['jac', 's3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -53,14 +53,14 @@ class PushPullMixin(Iterable['BaseDocument']):
         """
         Get the backend for the given protocol.
 
-        :param protocol: the protocol to use, e.g. 'jinaai', 'file', 's3'
+        :param protocol: the protocol to use, e.g. 'jac', 'file', 's3'
         :return: the backend class
         """
         if protocol in cls.__backends__:
             return cls.__backends__[protocol]
 
-        if protocol == 'jinaai':
-            from docarray.store.jinaai import JACDocStore
+        if protocol == 'jac':
+            from docarray.store.jac import JACDocStore
 
             cls.__backends__[protocol] = JACDocStore
             logging.debug('Loaded Jina AI Cloud backend')
@@ -89,10 +89,10 @@ class PushPullMixin(Iterable['BaseDocument']):
         """Push this DocumentArray object to the specified url.
 
         :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
+        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocumentArray if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
+        :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing {len(self)} docs to {url}')
         protocol, name = self.__class__.resolve_url(url)
@@ -113,9 +113,9 @@ class PushPullMixin(Iterable['BaseDocument']):
 
         :param docs: a stream of documents
         :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jinaai`` protocol. If true, anyone can pull a DocumentArray if they know its name.
+        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocumentArray if they know its name.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Only used by ``jinaai`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
+        :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing stream to {url}')
         protocol, name = cls.resolve_url(url)
