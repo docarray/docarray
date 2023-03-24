@@ -35,3 +35,6 @@ class ListAdvancedIndexing(IndexingSequenceMixin[T_item]):
     def __iter__(self) -> Iterator[T_item]:
         for item in self._data:
             yield item
+
+    def __eq__(self, other):
+        return self._data == other
