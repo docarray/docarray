@@ -35,17 +35,25 @@ from docarray.index.abstract import (
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import torch_imported
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [np.ndarray]
 
-if torch_imported:
+if is_torch_available():
     import torch
 
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
+
+if is_tf_available():
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+    ELASTIC_PY_VEC_TYPES.append(tf.Tensor)
+    ELASTIC_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
 class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
@@ -176,12 +184,46 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
-                'dense_vector': {'dims': 128},
-                'keyword': {},
+                'binary': {},
                 'boolean': {},
+                'keyword': {},
+                'long': {},
                 'integer': {},
+                'short': {},
+                'byte': {},
+                'double': {},
                 'float': {},
+                'half_float': {},
+                'scaled_float': {},
+                'unsigned_long': {},
+                'dates': {},
+                'alias': {},
+                'object': {},
+                'flattened': {},
+                'nested': {},
+                'join': {},
+                'integer_range': {},
+                'float_range': {},
+                'long_range': {},
+                'double_range': {},
+                'date_range': {},
+                'ip': {},
+                'version': {},
+                'histogram': {},
                 'text': {},
+                'annotated_text': {},
+                'completion': {},
+                'search_as_you_type': {},
+                'token_count': {},
+                'dense_vector': {'dims': 128},
+                'sparse_vector': {},
+                'rank_feature': {},
+                'rank_features': {},
+                'geo_point': {},
+                'geo_shape': {},
+                'point': {},
+                'shape': {},
+                'percolator': {},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
@@ -203,12 +245,15 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
             bool: 'boolean',
             int: 'integer',
             float: 'float',
-            str: 'text',
             docarray.typing.ID: 'keyword',
+            str: 'text',
+            bytes: 'binary',
+            dict: 'object',
         }
 
-        if python_type in elastic_py_types:
-            return elastic_py_types[python_type]
+        for type in elastic_py_types.keys():
+            if issubclass(python_type, type):
+                return elastic_py_types[type]
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
@@ -228,8 +273,10 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
-                if col.db_type == np.ndarray and np.all(row[col_name] == 0):
+                if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
+                if row[col_name] is None:
+                    continue
                 request[col_name] = row[col_name]
             requests.append(request)
 
