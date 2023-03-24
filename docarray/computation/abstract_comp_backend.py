@@ -1,4 +1,6 @@
 import typing
+import torch
+import numpy as np
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union
 
@@ -128,12 +130,6 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     def isnan(cls, tensor: 'TTensor') -> 'TTensor':
         """Check element-wise for nan and return result as a boolean array"""
         ...
-
-    @classmethod
-    def equal(cls, self, other) -> bool:
-        if cls.shape(self) != cls.shape(other):
-            return False
-        return (self.tensor == other.tensor).numpy().all().item()
 
     @classmethod
     @abstractmethod

@@ -102,7 +102,7 @@ def test_tensor_equality():
 
     torch1 = Text(tensor=torch.zeros(128))
     torch2 = Text(tensor=torch.zeros(128))
-    torch3 = Text(tensor=torch.zeros(127))
+    torch3 = Text(tensor=torch.zeros(126))
     torch4 = Text(tensor=torch.ones(128))
 
     assert torch1 == torch2
@@ -143,10 +143,16 @@ def test_text_tensor():
     class Text1(BaseDocument):
         tensor: NdArray
 
-    arr_tensor1 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
-    arr_tensor2 = Text1(tensor=np.zeros(5))
+    class Text2(BaseDocument):
+        tensor: TorchTensor
+
+    arr_tensor1 = Text(tensor=tf.constant([[1.0, 2.0]]))
+    arr_tensor2 = Text1(tensor=np.zeros(2))
+    arr_tensor3 = Text2(tensor=torch.zeros(2))
 
     assert arr_tensor1 != arr_tensor2
+    assert arr_tensor1 != arr_tensor3
+    assert arr_tensor2 == arr_tensor3
 
 
 def test_get_bulk_attributes_function():

@@ -110,14 +110,20 @@ class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
             if field_name == 'id':
                 continue
 
-            if type(value1) != type(value2):
-                return False
-
             if isinstance(value1, AbstractTensor) and isinstance(
                 value2, AbstractTensor
             ):
-                comp_be = value1.get_comp_backend()
-                if not comp_be.equal(value1, value2):
+
+                comp_be1 = value1.get_comp_backend()
+                comp_be2 = value2.get_comp_backend()
+
+                if comp_be1.shape(value1) != comp_be2.shape(value2):
+                    return False
+                if (
+                    not (comp_be1.to_numpy(value1) == comp_be2.to_numpy(value2))
+                    .all()
+                    .item()
+                ):
                     return False
             else:
                 if value1 != value2:
