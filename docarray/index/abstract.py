@@ -844,7 +844,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
 
         for field_name, _ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
+            t_ = unwrap_optional_type(schema._get_field_type(field_name))
             if issubclass(t_, BaseDocument):
                 inner_dict = {}
 
