@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from docarray import BaseDocument, DocumentArray
+from docarray.array.array.typed_sequence import MagicList
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils.misc import is_tf_available
 
@@ -202,7 +203,7 @@ def test_get_bulk_attributes_union_type():
     tensors = da.tensor
 
     assert len(tensors) == N
-    assert isinstance(tensors, list)
+    assert isinstance(tensors, MagicList)
     for tensor in tensors:
         assert tensor.shape == (3, 224, 224)
 

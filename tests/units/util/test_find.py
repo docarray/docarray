@@ -158,7 +158,7 @@ def test_find_batched_torch(random_torch_batch_query, random_torch_index, metric
 
 
 def test_find_batched_torch_tensor_query(random_torch_batch_query, random_torch_index):
-    query = torch.stack(random_torch_batch_query.tensor)
+    query = torch.stack(random_torch_batch_query.tensor._data)
     results = find_batched(
         random_torch_index,
         query,

@@ -23,6 +23,7 @@ from docarray.array.array.sequence_indexing_mixin import (
     IndexingSequenceMixin,
     IndexIterType,
 )
+from docarray.array.array.typed_sequence import MagicList
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
 
@@ -224,7 +225,7 @@ class DocumentArray(
                 (getattr(doc, field) for doc in self),
             )
         else:
-            return [getattr(doc, field) for doc in self]
+            return MagicList([getattr(doc, field) for doc in self])
 
     def _set_data_column(
         self: T,

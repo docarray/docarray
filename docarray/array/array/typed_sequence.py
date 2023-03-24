@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import MutableSequence, TypeVar
 
 from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
 from docarray.utils._typing import change_cls_name
@@ -6,7 +6,8 @@ from docarray.utils._typing import change_cls_name
 T_item = TypeVar('T_item', bound=type)
 
 
-class MagicList(ListAdvancedIndexing[T_item]):
+class MagicList(ListAdvancedIndexing[T_item], MutableSequence[T_item]):
+
     _internal_type: T_item
 
     def __class_getitem__(cls, item):
@@ -26,3 +27,6 @@ class MagicList(ListAdvancedIndexing[T_item]):
 
     def __repr__(self):
         return self._data.__repr__()
+
+    def insert(self, index: int, value: T_item) -> None:
+        self._data.insert(index, value)
