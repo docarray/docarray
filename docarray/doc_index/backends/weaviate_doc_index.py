@@ -545,6 +545,8 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 self._overwrite_id(clause)
                 new_queries.append(query.with_where(clause))
 
+            self._queries = new_queries
+
             return self
 
         def text_search(self, query, search_field) -> Any:
