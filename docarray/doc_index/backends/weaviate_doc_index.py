@@ -94,7 +94,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 break
 
     def _configure_client(self) -> None:
-        self._client.batch.configure(**self._db_config.batch_config)
+        self._client.batch.configure(**self._runtime_config.batch_config)
 
     def _create_schema(self) -> None:
         schema = {}
@@ -134,9 +134,6 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     class DBConfig(BaseDocumentIndex.DBConfig):
         host: str = 'http://weaviate:8080'
         index_name: str = 'Document'
-        batch_config: Dict[str, Any] = field(
-            default_factory=lambda: DEFAULT_BATCH_CONFIG
-        )
 
     @dataclass
     class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
@@ -153,6 +150,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
+        )
+
+        batch_config: Dict[str, Any] = field(
+            default_factory=lambda: DEFAULT_BATCH_CONFIG
         )
 
     def _del_items(self, doc_ids: Sequence[str]):
