@@ -1,11 +1,11 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
@@ -49,7 +49,10 @@ class PointsAndColors(BaseDoc):
         Plot point cloud consisting of points in 3D space and optionally colors.
         To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
-        import trimesh
+        if TYPE_CHECKING:
+            import trimesh
+        else:
+            trimesh = import_library('trimesh')
         from IPython.display import display
 
         colors = (
