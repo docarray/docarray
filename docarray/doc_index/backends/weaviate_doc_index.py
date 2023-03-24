@@ -570,9 +570,7 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             # if there's only one query, then we can lengthen it to match the number
             # of clauses
             elif num_queries == 1:
-                return [
-                    copy.deepcopy(queries[0]) for _ in range(num_clauses)
-                ] * num_clauses, clauses
+                return [copy.deepcopy(queries[0]) for _ in range(num_clauses)], clauses
             # if the number of queries and clauses is the same, then we can just
             # return them as-is
             elif num_clauses == num_queries:
