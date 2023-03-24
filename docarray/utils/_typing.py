@@ -20,7 +20,9 @@ def is_tensor_union(type_: Any) -> bool:
             (is_type_tensor(t) or issubclass(t, type(None))) for t in get_args(type_)
         )
 
+
 T = TypeVar('T', bound=type)
+
 
 def change_cls_name(cls: T, new_name: str, scope: Optional[dict] = None) -> T:
     """Change the name of a class.
@@ -36,6 +38,7 @@ def change_cls_name(cls: T, new_name: str, scope: Optional[dict] = None) -> T:
     cls.__name__ = new_name
     return cls
 
+
 def unwrap_optional_type(type_: Any) -> Any:
     """Return the type of an Optional type, e.g. `unwrap_optional(Optional[str]) == str`;
     `unwrap_optional(Union[None, int, None]) == int`.
@@ -48,4 +51,3 @@ def unwrap_optional_type(type_: Any) -> Any:
     for arg in get_args(type_):
         if arg is not type(None):
             return arg
-
