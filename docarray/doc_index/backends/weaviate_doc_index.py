@@ -554,8 +554,19 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             self._queries[0] = self._queries[0].with_bm25(**bm25)
             return self
 
-        def text_search_batched(self, *args, **kwargs) -> Any:
-            pass
+        def text_search_batched(self, queries, search_field) -> Any:
+            adj_queries, adj_clauses = self._resize_queries_and_clauses(
+                self._queries, queries
+            )
+            new_queries = []
+
+            for query, clause in zip(adj_queries, adj_clauses):
+                bm25 = {"query": clause, "properties": [search_field]}
+                new_queries.append(query.with_bm25(**bm25))
+
+            self._queries = new_queries
+
+            return self
 
         def _resize_queries_and_clauses(self, queries, clauses):
             """
