@@ -21,19 +21,25 @@ from typing import (
 
 import numpy as np
 from pydantic.error_wrappers import ValidationError
-from typing_inspect import get_args, is_union_type
+from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
+from docarray.utils._typing import unwrap_optional_type
 from docarray.utils.find import FindResult, _FindResult
-from docarray.utils.misc import torch_imported
+from docarray.utils.misc import is_tf_available, torch_imported
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 if torch_imported:
     import torch
+
+if is_tf_available():
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
 
 TSchema = TypeVar('TSchema', bound=BaseDocument)
 
@@ -614,7 +620,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             docs_seq = docs
 
         def _col_gen(col_name: str):
-            return (self._get_values_by_column([doc], col_name)[0] for doc in docs_seq)
+            return (
+                self._to_numpy(
+                    self._get_values_by_column([doc], col_name)[0],
+                    allow_passthrough=True,
+                )
+                for doc in docs_seq
+            )
 
         return {col_name: _col_gen(col_name) for col_name in self._column_infos}
 
@@ -697,7 +709,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
-            if is_union_type(type_):
+            if is_optional_type(type_):
+                column_infos[field_name] = self._create_single_column(
+                    field_, unwrap_optional_type(type_)
+                )
+            elif is_union_type(type_):
                 raise ValueError(
                     'Union types are not supported in the schema of a DocumentIndex.'
                     f' Instead of using type {type_} use a single specific type.'
@@ -793,15 +809,28 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         return DocumentArray[BaseDocument].construct(out_docs)
 
-    def _to_numpy(self, val: Any) -> Any:
+    def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
+        """
+        Converts a value to a numpy array, if possible.
+
+        :param val: The value to convert
+        :param allow_passthrough: If True, the value is returned as-is if it is not convertible to a numpy array.
+            If False, a `ValueError` is raised if the value is not convertible to a numpy array.
+        :return: The value as a numpy array, or as-is if `allow_passthrough` is True and the value is not convertible
+        """
         if isinstance(val, np.ndarray):
             return val
-        elif isinstance(val, (list, tuple)):
+        if is_tf_available() and isinstance(val, TensorFlowTensor):
+            return val.unwrap().numpy()
+        if isinstance(val, (list, tuple)):
             return np.array(val)
-        elif torch_imported and isinstance(val, torch.Tensor):
+        if (torch_imported and isinstance(val, torch.Tensor)) or (
+            is_tf_available() and isinstance(val, tf.Tensor)
+        ):
             return val.numpy()
-        else:
-            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
+        if allow_passthrough:
+            return val
+        raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
         self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
@@ -815,7 +844,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
 
         for field_name, _ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
+            t_ = unwrap_optional_type(schema._get_field_type(field_name))
             if issubclass(t_, BaseDocument):
                 inner_dict = {}
 
