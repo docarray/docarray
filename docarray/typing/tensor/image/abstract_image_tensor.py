@@ -40,12 +40,12 @@ class AbstractImageTensor(AbstractTensor, ABC):
         """
         if is_notebook():
             if TYPE_CHECKING:
-                import PIL
+                from PIL import Image as PILImage
             else:
-                PIL = import_library('PIL')
+                PILImage = import_library('PIL.Image')
 
             np_array = self.get_comp_backend().to_numpy(self)
-            img = PIL.Image.fromarray(np_array)
+            img = PILImage.fromarray(np_array)
 
             from IPython.display import display
 

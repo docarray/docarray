@@ -38,14 +38,14 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param pydub_args: dictionary of additional arguments for pydub.AudioSegment.export function
         """
         if TYPE_CHECKING:
-            from pydub import AudioSegment
+            import pydub
         else:
-            AudioSegment = import_library('pydub.AudioSegment')
+            pydub = import_library('pydub')
 
         comp_backend = self.get_comp_backend()
         channels = 2 if comp_backend.n_dim(array=self) > 1 else 1  # type: ignore
 
-        segment = AudioSegment(
+        segment = pydub.AudioSegment(
             self.to_bytes(),
             frame_rate=frame_rate,
             sample_width=sample_width,
