@@ -6,6 +6,7 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.documents import TextDoc
+from docarray.store import JACDocStore
 from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
@@ -19,11 +20,11 @@ def testing_namespace_cleanup():
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}'),
-            DocumentArray.list('jinaai://', show_table=False),
+            JACDocStore.list('jinaai://', show_table=False),
         )
     )
     for da_name in da_names:
-        DocumentArray.delete(f'jinaai://{da_name}')
+        JACDocStore.delete(f'jinaai://{da_name}')
 
 
 @pytest.mark.slow
@@ -166,7 +167,7 @@ def test_list_and_delete():
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}-list-and-delete'),
-            DocumentArray.list('jinaai://', show_table=False),
+            JACDocStore.list(show_table=False),
         )
     )
     assert len(da_names) == 0
@@ -177,7 +178,7 @@ def test_list_and_delete():
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}-list-and-delete'),
-            DocumentArray.list('jinaai://', show_table=False),
+            JACDocStore.list(show_table=False),
         )
     )
     assert set(da_names) == {DA_NAME_0}
@@ -187,18 +188,18 @@ def test_list_and_delete():
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}-list-and-delete'),
-            DocumentArray.list('jinaai://', show_table=False),
+            JACDocStore.list(show_table=False),
         )
     )
     assert set(da_names) == {DA_NAME_0, DA_NAME_1}
 
-    assert DocumentArray.delete(
-        f'jinaai://{DA_NAME_0}'
+    assert JACDocStore.delete(
+        f'{DA_NAME_0}'
     ), 'Deleting an existing DA should return True'
     da_names = list(
         filter(
             lambda x: x.startswith(f'test{RANDOM}-list-and-delete'),
-            DocumentArray.list('jinaai://', show_table=False),
+            JACDocStore.list(show_table=False),
         )
     )
     assert set(da_names) == {DA_NAME_1}
@@ -206,9 +207,10 @@ def test_list_and_delete():
     with pytest.raises(
         hubble.excepts.RequestedEntityNotFoundError
     ):  # Deleting a non-existent DA without safety should raise an error
-        DocumentArray.delete(f'jinaai://{DA_NAME_0}')
-    assert not DocumentArray.delete(
-        f'jinaai://{DA_NAME_0}', missing_ok=True
+        JACDocStore.delete(f'{DA_NAME_0}', missing_ok=False)
+
+    assert not JACDocStore.delete(
+        f'{DA_NAME_0}', missing_ok=True
     ), 'Deleting a non-existent DA should return False'
 
 

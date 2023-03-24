@@ -7,6 +7,7 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.documents import TextDoc
+from docarray.store import S3DocStore
 from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
@@ -189,32 +190,33 @@ def test_pull_stream_vs_pull_full():
 def test_list_and_delete():
     namespace_dir = f'{BUCKET}/test{RANDOM}/list-and-delete'
 
-    da_names = DocumentArray.list(f's3://{namespace_dir}', show_table=False)
+    da_names = S3DocStore.list(namespace_dir, show_table=False)
     assert len(da_names) == 0
 
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f's3://{namespace_dir}/meow', show_progress=False
     )
-    da_names = DocumentArray.list(f's3://{namespace_dir}', show_table=False)
+    da_names = S3DocStore.list(f'{namespace_dir}', show_table=False)
     assert set(da_names) == {'meow'}
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f's3://{namespace_dir}/woof', show_progress=False
     )
-    da_names = DocumentArray.list(f's3://{namespace_dir}', show_table=False)
+    da_names = S3DocStore.list(f'{namespace_dir}', show_table=False)
     assert set(da_names) == {'meow', 'woof'}
 
-    assert DocumentArray.delete(
-        f's3://{namespace_dir}/meow'
+    assert S3DocStore.delete(
+        f'{namespace_dir}/meow'
     ), 'Deleting an existing DA should return True'
-    da_names = DocumentArray.list(f's3://{namespace_dir}', show_table=False)
+    da_names = S3DocStore.list(namespace_dir, show_table=False)
     assert set(da_names) == {'woof'}
 
     with pytest.raises(
         ValueError
     ):  # Deleting a non-existent DA without safety should raise an error
-        DocumentArray.delete(f's3://{namespace_dir}/meow')
-    assert not DocumentArray.delete(
-        f's3://{namespace_dir}/meow', missing_ok=True
+        S3DocStore.delete(f'{namespace_dir}/meow', missing_ok=False)
+
+    assert not S3DocStore.delete(
+        f'{namespace_dir}/meow', missing_ok=True
     ), 'Deleting a non-existent DA should return False'
 
 

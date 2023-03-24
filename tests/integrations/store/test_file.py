@@ -145,36 +145,37 @@ def test_pull_stream_vs_pull_full(tmp_path: Path):
     ), 'Full pull memory usage should be dependent on the size of the data'
 
 
-def test_list_and_delete(capsys, tmp_path: Path):
+def test_list_and_delete(tmp_path: Path):
     tmp_path.mkdir(parents=True, exist_ok=True)
-    namespace_dir = tmp_path
+    namespace_dir = str(tmp_path)
 
-    da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
+    da_names = FileDocStore.list(namespace_dir, show_table=False)
     assert len(da_names) == 0
 
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f'file://{namespace_dir}/meow', show_progress=False
     )
-    da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
+    da_names = FileDocStore.list(namespace_dir, show_table=False)
     assert set(da_names) == {'meow'}
     DocumentArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN), f'file://{namespace_dir}/woof', show_progress=False
     )
-    da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
+    da_names = FileDocStore.list(namespace_dir, show_table=False)
     assert set(da_names) == {'meow', 'woof'}
 
-    assert DocumentArray.delete(
-        f'file://{namespace_dir}/meow'
+    assert FileDocStore.delete(
+        f'{namespace_dir}/meow'
     ), 'Deleting an existing DA should return True'
-    da_names = DocumentArray.list(f'file://{namespace_dir}', show_table=False)
+    da_names = FileDocStore.list(namespace_dir, show_table=False)
     assert set(da_names) == {'woof'}
 
     with pytest.raises(
         FileNotFoundError
     ):  # Deleting a non-existent DA without safety should raise an error
-        DocumentArray.delete(f'file://{namespace_dir}/meow')
-    assert not DocumentArray.delete(
-        f'file://{namespace_dir}/meow', missing_ok=True
+        FileDocStore.delete(f'{namespace_dir}/meow', missing_ok=False)
+
+    assert not FileDocStore.delete(
+        f'{namespace_dir}/meow', missing_ok=True
     ), 'Deleting a non-existent DA should return False'
 
 

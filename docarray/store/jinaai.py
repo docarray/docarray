@@ -80,7 +80,7 @@ class JACDocStore(AbstractDocStore):
 
     @staticmethod
     @hubble.login_required
-    def list(namespace: str, show_table: bool = False) -> List[str]:
+    def list(namespace: str = '', show_table: bool = False) -> List[str]:
         """List all available arrays in the cloud.
 
         :param namespace: Not supported for Jina AI Cloud.

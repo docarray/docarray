@@ -5,7 +5,6 @@ from typing import (
     Dict,
     Iterable,
     Iterator,
-    List,
     Optional,
     Tuple,
     Type,
@@ -15,8 +14,6 @@ from typing import (
 
 from typing_extensions import Literal
 from typing_inspect import get_args
-
-from docarray.utils.cache import get_cache_path
 
 PUSH_PULL_PROTOCOL = Literal['jinaai', 's3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
@@ -81,46 +78,6 @@ class PushPullMixin(Iterable['BaseDocument']):
             raise NotImplementedError(f'protocol {protocol} not supported')
 
         return cls.__backends__[protocol]
-
-    @classmethod
-    def list(
-        cls: Type[SelfPushPullMixin],
-        url: str = f'file://{get_cache_path()}',
-        show_table: bool = False,
-    ) -> List[str]:
-        """
-        List all the DocumentArrays in the namespace.
-        url should be of the form ``protocol://namespace``
-
-        If no url is provided, the DocumentArrays in the local cache will be listed.
-
-        :param url: should be of the form ``protocol://namespace``. e.g. ``s3://bucket/path/to/namespace``, ``file:///path/to/folder``
-        :param show_table: whether to show the table of artifacts
-        :return: a list of artifact names
-        """
-        logging.info(f'Listing artifacts from {url}')
-        protocol, namespace = cls.resolve_url(url)
-        return cls.get_pushpull_backend(protocol).list(namespace, show_table)
-
-    @classmethod
-    def delete(
-        cls: Type[SelfPushPullMixin], url: str, missing_ok: bool = False
-    ) -> bool:
-        """
-        Delete the DocumentArray at the given url.
-
-        :param url: should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param missing_ok: whether to ignore if the artifact does not exist
-        :return: whether the artifact was successfully deleted
-        """
-        logging.info(f'Deleting artifact {url}')
-        protocol, name = cls.resolve_url(url)
-        success = cls.get_pushpull_backend(protocol).delete(name, missing_ok=missing_ok)
-        if success:
-            logging.info(f'Successfully deleted artifact {url}')
-        else:
-            logging.warning(f'Failed to delete artifact {url}')
-        return success
 
     def push(
         self,
