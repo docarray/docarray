@@ -5,9 +5,9 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.documents import TextDoc
-from docarray.remote.file import ConcurrentPushException, FileDocStore
+from docarray.store.file import ConcurrentPushException, FileDocStore
 from docarray.utils.cache import get_cache_path
-from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
+from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.1  # Percentage of difference allowed in stream vs non-stream test

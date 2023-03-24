@@ -7,7 +7,7 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.documents import TextDoc
-from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
+from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-stream test

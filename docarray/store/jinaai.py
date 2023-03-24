@@ -18,8 +18,8 @@ import hubble
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
-from docarray.remote.abstract_doc_store import AbstractDocStore
-from docarray.remote.helpers import (
+from docarray.store.abstract_doc_store import AbstractDocStore
+from docarray.store.helpers import (
     _BufferedCachingRequestReader,
     get_version_info,
     raise_req_error,

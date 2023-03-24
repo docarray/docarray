@@ -6,7 +6,7 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.documents import TextDoc
-from tests.integrations.remotes import gen_text_docs, get_test_da, profile_memory
+from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-stream test
@@ -99,9 +99,9 @@ def test_pushpull_stream_correct(capsys):
 @pytest.mark.slow
 @pytest.mark.internet
 def test_pull_stream_vs_pull_full():
-    import docarray.remote.helpers
+    import docarray.store.helpers
 
-    docarray.remote.helpers.CACHING_REQUEST_READER_CHUNK_SIZE = 2**10
+    docarray.store.helpers.CACHING_REQUEST_READER_CHUNK_SIZE = 2**10
     DA_NAME_SHORT: str = f'test{RANDOM}-pull-stream-vs-pull-full-short'
     DA_NAME_LONG: str = f'test{RANDOM}-pull-stream-vs-pull-full-long'
 

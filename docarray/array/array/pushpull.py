@@ -23,7 +23,7 @@ SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDocument, DocumentArray
-    from docarray.remote.abstract_doc_store import AbstractDocStore
+    from docarray.store.abstract_doc_store import AbstractDocStore
 
 
 SelfPushPullMixin = TypeVar('SelfPushPullMixin', bound='PushPullMixin')
@@ -63,17 +63,17 @@ class PushPullMixin(Iterable['BaseDocument']):
             return cls.__backends__[protocol]
 
         if protocol == 'jinaai':
-            from docarray.remote.jinaai import JACDocStore
+            from docarray.store.jinaai import JACDocStore
 
             cls.__backends__[protocol] = JACDocStore
             logging.debug('Loaded Jina AI Cloud backend')
         elif protocol == 'file':
-            from docarray.remote.file import FileDocStore
+            from docarray.store.file import FileDocStore
 
             cls.__backends__[protocol] = FileDocStore
             logging.debug('Loaded Local Filesystem backend')
         elif protocol == 's3':
-            from docarray.remote.s3 import S3DocStore
+            from docarray.store.s3 import S3DocStore
 
             cls.__backends__[protocol] = S3DocStore
             logging.debug('Loaded S3 backend')

@@ -4,9 +4,9 @@ from typing import Dict, Iterator, List, Optional, Type, TypeVar
 
 from typing_extensions import TYPE_CHECKING
 
-from docarray.remote.abstract_doc_store import AbstractDocStore
-from docarray.remote.exceptions import ConcurrentPushException
-from docarray.remote.helpers import _from_binary_stream, _to_binary_stream
+from docarray.store.abstract_doc_store import AbstractDocStore
+from docarray.store.exceptions import ConcurrentPushException
+from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:
