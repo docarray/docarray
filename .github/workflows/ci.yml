@@ -219,7 +219,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index' tests
+          poetry run pytest -m 'index and (not tensorflow)' tests
         timeout-minutes: 30
 
   docarray-test-tensorflow:
