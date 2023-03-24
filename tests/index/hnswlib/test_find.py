@@ -80,7 +80,7 @@ def test_find_torch(tmp_path, space):
 
 
 @pytest.mark.tensorflow
-def test_find_tensorflow(tmp_path, space):
+def test_find_tensorflow(tmp_path):
     from docarray.typing import TensorFlowTensor
 
     class TfDoc(BaseDocument):
