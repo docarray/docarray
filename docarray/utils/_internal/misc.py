@@ -27,17 +27,20 @@ INSTALL_INSTRUCTIONS = {
     'av': 'pip install "docarray[video]"',
     'trimesh': 'pip install "docarray[mesh]"',
     'hnswlib': 'pip install "docarray[hnswlib]"',
+    'fastapi': 'pip install "docarray[web]"',
 }
 
 
-def import_library(package: str) -> Optional[types.ModuleType]:
+def import_library(
+    package: str, raise_error: bool = True
+) -> Optional[types.ModuleType]:
     lib: Optional[types.ModuleType]
     try:
         lib = importlib.import_module(package)
     except ModuleNotFoundError:
         lib = None
 
-    if lib is None:
+    if lib is None and raise_error:
         raise RuntimeError(
             f'{package} is not installed. To install all the necessary libraries to use the hnsw backend, '
             f'please do: `{INSTALL_INSTRUCTIONS[package]}`.'
