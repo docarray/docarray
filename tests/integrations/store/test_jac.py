@@ -16,6 +16,14 @@ RANDOM: str = uuid.uuid4().hex[:8]
 
 @pytest.fixture(scope='session', autouse=True)
 def testing_namespace_cleanup():
+    da_names = list(
+        filter(
+            lambda x: x.startswith('test'),
+            JACDocStore.list('jinaai://', show_table=False),
+        )
+    )
+    for da_name in da_names:
+        JACDocStore.delete(f'jinaai://{da_name}')
     yield
     da_names = list(
         filter(
