@@ -1,3 +1,4 @@
+import copy
 import logging
 from dataclasses import dataclass, field
 from typing import (
@@ -503,8 +504,29 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             self._queries[0] = self._queries[0].with_near_vector(near_vector)
             return self
 
-        def find_batched(self, *args, **kwargs) -> Any:
-            pass
+        def find_batched(
+            self,
+            queries,
+            score_name: Literal["certainty", "distance"] = "certainty",
+            score_threshold: Optional[float] = None,
+        ) -> Any:
+            adj_queries, adj_clauses = self._resize_queries_and_clauses(
+                self._queries, queries
+            )
+            new_queries = []
+
+            for query, clause in zip(adj_queries, adj_clauses):
+                near_vector = {
+                    "vector": clause,
+                }
+                if score_threshold:
+                    near_vector[score_name] = score_threshold
+
+                new_queries.append(query.with_near_vector(near_vector))
+
+            self._queries = new_queries
+
+            return self
 
         def filter(self, where_filter) -> Any:
             where_filter = where_filter.copy()
@@ -522,6 +544,33 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
         def text_search_batched(self, *args, **kwargs) -> Any:
             pass
+
+        def _resize_queries_and_clauses(self, queries, clauses):
+            """
+            Adjust the length and content of queries and clauses so that we can compose
+            them element-wise
+            """
+            num_clauses = len(clauses)
+            num_queries = len(queries)
+
+            # if there's only one clause, then we assume that it should be applied
+            # to every query
+            if num_clauses == 1:
+                return queries, clauses * num_queries
+            # if there's only one query, then we can lengthen it to match the number
+            # of clauses
+            elif num_queries == 1:
+                return [
+                    copy.deepcopy(queries[0]) for _ in range(num_clauses)
+                ] * num_clauses, clauses
+            # if the number of queries and clauses is the same, then we can just
+            # return them as-is
+            elif num_clauses == num_queries:
+                return queries, clauses
+            else:
+                raise ValueError(
+                    f"Can't compose {num_clauses} clauses with {num_queries} queries"
+                )
 
         # the methods below need to be implemented by subclasses
         # If, in your subclass, one of these is not usable in a query builder, but
