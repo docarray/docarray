@@ -288,3 +288,32 @@ def test_query_builder(test_store):
 
     docs = test_store.execute_query(q)
     assert len(docs) == 1
+
+
+def test_batched_query_builder(test_store):
+    query_embeddings = [[10.25, 10.25], [-100, -100]]
+    query_texts = ["ipsum", "foo"]
+    where_filters = [{"path": ["id"], "operator": "Equal", "valueString": "1"}]
+
+    q = (
+        test_store.build_query()
+        .find_batched(
+            queries=query_embeddings, score_name="certainty", score_threshold=0.99
+        )
+        .filter_batched(filters=where_filters)
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert len(docs[0]) == 1
+    assert len(docs[1]) == 0
+
+    q = (
+        test_store.build_query()
+        .text_search_batched(queries=query_texts, search_field="text")
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert len(docs[0]) == 1
+    assert len(docs[1]) == 0
