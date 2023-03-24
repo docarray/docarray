@@ -80,7 +80,6 @@ def test_find_torch(tmp_path, space):
 
 
 @pytest.mark.tensorflow
-@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_tensorflow(tmp_path, space):
     from docarray.typing import TensorFlowTensor
 
