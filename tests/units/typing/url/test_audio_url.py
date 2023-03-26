@@ -22,7 +22,7 @@ AUDIO_FILES = [
     str(VIDEODATA_DIR / 'hello.wav'),
     str(VIDEODATA_DIR / 'olleh.wav'),
 ]
-REMOTE_AUDIO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/audio-data/olleh.wav?raw=true'  # noqa: E501
+REMOTE_AUDIO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/olleh.wav?raw=true'  # noqa: E501
 
 
 @pytest.mark.slow

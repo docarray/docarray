@@ -21,7 +21,7 @@ VIDEO_FILE = [
     str(VIDEODATA_DIR / 'mov_bbb.avi'),
     str(VIDEODATA_DIR / 'mov_bbb.wmv'),
     str(VIDEODATA_DIR / 'mov_bbb.rm'),
-    'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/video-data/mov_bbb.mp4?raw=true',  # noqa: E501
+    'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true',  # noqa: E501
 ]
 
 NON_VIDEO_FILES = [
