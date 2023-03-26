@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 from docarray.typing.bytes.video_bytes import VideoLoadResult
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.filetypes import VIDEO_FILE_FORMATS
 from docarray.utils.misc import is_notebook
 
 if TYPE_CHECKING:
@@ -11,8 +12,6 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
 T = TypeVar('T', bound='VideoUrl')
-
-VIDEO_FILE_FORMATS = ['mp4']
 
 
 @_register_proto(proto_type_name='video_url')
@@ -29,13 +28,18 @@ class VideoUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+        import os
+        from urllib.parse import urlparse
+
         url = super().validate(value, field, config)
-        has_video_extension = any(ext in url for ext in VIDEO_FILE_FORMATS)
+        path = urlparse(url).path
+        ext = os.path.splitext(path)[1][1:].lower()
+
+        # pass test if extension is valid or no extension
+        has_video_extension = ext in VIDEO_FILE_FORMATS or ext == ''
+
         if not has_video_extension:
-            raise ValueError(
-                f'Video URL must have one of the following extensions:'
-                f'{VIDEO_FILE_FORMATS}'
-            )
+            raise ValueError('Video URL must have a valid extension')
         return cls(str(url), scheme=None)
 
     def load(self: T, **kwargs) -> VideoLoadResult:

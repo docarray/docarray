@@ -14,14 +14,29 @@ if tf_available:
     import tensorflow as tf
     import tensorflow._api.v2.experimental.numpy as tnp
 
+VIDEODATA_DIR = TOYDATA_DIR / 'video-data'
 
-LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
-REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
+VIDEO_FILE = [
+    str(VIDEODATA_DIR / 'mov_bbb.mp4'),
+    str(VIDEODATA_DIR / 'mov_bbb.avi'),
+    str(VIDEODATA_DIR / 'mov_bbb.wmv'),
+    str(VIDEODATA_DIR / 'mov_bbb.rm'),
+    'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/video-data/mov_bbb.mp4?raw=true',  # noqa: E501
+]
+
+NON_VIDEO_FILES = [
+    str(TOYDATA_DIR / 'captions.csv'),
+    str(TOYDATA_DIR / 'cube.ply'),
+    str(TOYDATA_DIR / 'test.glb'),
+    str(TOYDATA_DIR / 'test.png'),
+    'illegal',
+    'https://www.github.com',
+]
 
 
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('file_url', [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE])
+@pytest.mark.parametrize('file_url', VIDEO_FILE)
 def test_video(file_url):
     vid = VideoDoc(url=file_url)
     vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
@@ -61,3 +76,12 @@ def test_video_shortcut_doc():
     assert doc.video.url == 'http://myurl.mp4'
     assert (doc.video2.tensor == np.zeros((10, 10, 3))).all()
     assert (doc.video3.tensor == torch.zeros(10, 10, 3)).all()
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize('file_url', NON_VIDEO_FILES)
+def test_non_video(file_url):
+    with pytest.raises(Exception):
+        audio = VideoDoc(url=file_url)
+        _, _ = audio.url.load()
