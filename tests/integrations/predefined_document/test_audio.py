@@ -21,26 +21,28 @@ if tf_available:
     from docarray.typing.tensor import TensorFlowTensor
     from docarray.typing.tensor.audio import AudioTensorFlowTensor
 
+AUDIODATA_DIR = TOYDATA_DIR / 'audio-data'
+
 LOCAL_AUDIO_FILES = [
-    str(TOYDATA_DIR / 'hello.wav'),
-    str(TOYDATA_DIR / 'olleh.wav'),
-    str(TOYDATA_DIR / 'hello.mp3'),
-    str(TOYDATA_DIR / 'hello.flac'),
-    str(TOYDATA_DIR / 'hello.ogg'),
-    str(TOYDATA_DIR / 'hello.wma'),
-    str(TOYDATA_DIR / 'hello.aac'),
-    str(TOYDATA_DIR / 'hello'),
+    str(AUDIODATA_DIR / 'hello.wav'),
+    str(AUDIODATA_DIR / 'olleh.wav'),
+    str(AUDIODATA_DIR / 'hello.mp3'),
+    str(AUDIODATA_DIR / 'hello.flac'),
+    str(AUDIODATA_DIR / 'hello.ogg'),
+    str(AUDIODATA_DIR / 'hello.wma'),
+    str(AUDIODATA_DIR / 'hello.aac'),
+    str(AUDIODATA_DIR / 'hello'),
 ]
 
 LOCAL_AUDIO_FILES_AND_FORMAT = [
-    (str(TOYDATA_DIR / 'hello.wav'), 'wav'),
-    (str(TOYDATA_DIR / 'olleh.wav'), 'wav'),
-    (str(TOYDATA_DIR / 'hello.mp3'), 'mp3'),
-    (str(TOYDATA_DIR / 'hello.flac'), 'flac'),
-    (str(TOYDATA_DIR / 'hello.ogg'), 'ogg'),
-    (str(TOYDATA_DIR / 'hello.wma'), 'asf'),
-    (str(TOYDATA_DIR / 'hello.aac'), 'adts'),
-    (str(TOYDATA_DIR / 'hello'), 'wav'),
+    (str(AUDIODATA_DIR / 'hello.wav'), 'wav'),
+    (str(AUDIODATA_DIR / 'olleh.wav'), 'wav'),
+    (str(AUDIODATA_DIR / 'hello.mp3'), 'mp3'),
+    (str(AUDIODATA_DIR / 'hello.flac'), 'flac'),
+    (str(AUDIODATA_DIR / 'hello.ogg'), 'ogg'),
+    (str(AUDIODATA_DIR / 'hello.wma'), 'asf'),
+    (str(AUDIODATA_DIR / 'hello.aac'), 'adts'),
+    (str(AUDIODATA_DIR / 'hello'), 'wav'),
 ]
 
 NON_AUDIO_FILES = [
