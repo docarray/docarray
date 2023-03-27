@@ -26,7 +26,7 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
-from docarray.utils._typing import unwrap_optional_type
+from docarray.utils._typing import is_tensor_union, unwrap_optional_type
 from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import is_tf_available, torch_imported
 
@@ -682,14 +682,23 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     # simple "Optional" type, treat as special case:
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
-                        if t_arg is type(None):
-                            pass
-                        elif issubclass(t_arg, BaseDocument):
-                            names_types_fields.extend(
-                                cls._flatten_schema(t_arg, name_prefix=inner_prefix)
-                            )
+                        if t_arg is not type(None):
+                            if issubclass(t_arg, BaseDocument):
+                                names_types_fields.extend(
+                                    cls._flatten_schema(t_arg, name_prefix=inner_prefix)
+                                )
+                            else:
+                                names_types_fields.append(
+                                    (name_prefix + field_name, t_arg, field_)
+                                )
+
+                elif is_tensor_union(t_):
+                    names_types_fields.append((name_prefix + field_name, t_, field_))
+
                 else:
-                    names_types_fields.append((field_name, t_, field_))
+                    raise Exception(
+                        f'Union type {t_} is not supported. Only Union of subclasses of ndarray or Union[type, None] are supported.'
+                    )
             elif issubclass(t_, BaseDocument):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)

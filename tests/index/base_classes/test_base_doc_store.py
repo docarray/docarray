@@ -6,11 +6,12 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDocument, DocumentArray
-from docarray.index.abstract import (
-    BaseDocumentIndex,
-    _raise_not_composable,
-)
-from docarray.typing import ID, NdArray
+from docarray.documents import ImageDoc
+from docarray.index.abstract import BaseDocumentIndex, _raise_not_composable
+from docarray.typing import ID, ImageBytes, ImageUrl, NdArray
+from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
+from docarray.typing.tensor.image.image_ndarray import ImageNdArray
+from docarray.utils.misc import is_tf_available, is_torch_available
 
 pytestmark = pytest.mark.index
 
@@ -180,6 +181,67 @@ def test_flatten_schema():
         ('d__d__id', ID, fields_nested_nested['id']),
         ('d__d__tens', NdArray[10], fields_nested_nested['tens']),
     }
+
+
+def test_flatten_schema_union():
+    class MyDoc(BaseDocument):
+        image: ImageDoc
+
+    store = DummyDocIndex[MyDoc]()
+    fields = MyDoc.__fields__
+    fields_image = ImageDoc.__fields__
+
+    torch_available = is_torch_available()
+    if torch_available:
+        from docarray.typing.tensor.embedding.torch import TorchEmbedding
+        from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+
+    tf_available = is_tf_available()
+    if tf_available:
+        from docarray.typing.tensor.embedding.tensorflow import (
+            TensorFlowEmbedding as TFEmbedding,
+        )
+        from docarray.typing.tensor.image.image_tensorflow_tensor import (
+            ImageTensorFlowTensor as ImageTFTensor,
+        )
+
+    tensor_type = Union[ImageNdArray, None]
+    embedding_type = Union[NdArrayEmbedding, None]
+    if tf_available and torch_available:
+        tensor_type = Union[ImageNdArray, ImageTorchTensor, ImageTFTensor, None]  # type: ignore
+        embedding_type = Union[NdArrayEmbedding, TorchEmbedding, TFEmbedding, None]
+    elif tf_available:
+        tensor_type = Union[ImageNdArray, ImageTFTensor, None]
+        embedding_type = Union[NdArrayEmbedding, TFEmbedding, None]
+    elif torch_available:
+        tensor_type = Union[ImageNdArray, ImageTorchTensor, None]
+        embedding_type = Union[NdArrayEmbedding, TorchEmbedding, None]
+
+    assert set(store._flatten_schema(MyDoc)) == {
+        ('id', ID, fields['id']),
+        ('image__id', ID, fields_image['id']),
+        ('image__url', ImageUrl, fields_image['url']),
+        ('image__tensor', tensor_type, fields_image['tensor']),
+        ('image__embedding', embedding_type, fields_image['embedding']),
+        ('image__bytes_', ImageBytes, fields_image['bytes_']),
+    }
+
+    class MyDoc2(BaseDocument):
+        tensor: Union[NdArray, str]
+
+    with pytest.raises(Exception):
+        _ = DummyDocIndex[MyDoc2]()
+
+    # class MyDoc3(BaseDocument):
+    #     tensor: Union[NdArray, ImageTorchTensor]
+
+    # store = DummyDocIndex[MyDoc3]()
+    # fields = MyDoc3.__fields__
+    # fields_image = ImageDoc.__fields__
+    # assert set(store._flatten_schema(MyDoc3)) == {
+    #     ('id', ID, fields['id']),
+    #     ('tensor', Union[NdArray, ImageNdArray], fields_image['tensor']),
+    # }
 
 
 def test_columns_db_type_with_user_defined_mapping(tmp_path):
