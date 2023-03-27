@@ -327,7 +327,7 @@ def test_reverse():
 
     docs = [Text(text=f'hello {i}') for i in range(10)]
 
-    da = DocumentArray[Text].construct(docs)
+    da = DocumentArray[Text](docs)
     da.reverse()
     assert da[-1].text == 'hello 0'
     assert da[0].text == 'hello 9'
