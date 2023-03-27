@@ -15,12 +15,12 @@ This means that DocArray lets you do the following things:
 ## Represent
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 
 
-class MyDocument(BaseDocument):
+class MyDocument(BaseDoc):
     description: str
     image_url: ImageUrl
     image_tensor: Optional[TorchTensor[1704, 2272, 3]]
@@ -62,12 +62,12 @@ doc.embedding = clip_image_encoder(
 ### Compose nested Documents:
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MultiModalDocument(BaseDocument):
+class MultiModalDocument(BaseDoc):
     image_doc: ImageDoc
     text_doc: TextDoc
 
@@ -79,12 +79,12 @@ doc = MultiModalDocument(
 
 ### Collect multiple `Documents` into a `DocArray`:
 ```python
-from docarray import DocArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.typing import AnyTensor, ImageUrl
 import numpy as np
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     url: ImageUrl
     tensor: AnyTensor
 ```
@@ -233,20 +233,20 @@ Not very easy on the eyes if you ask us. And even worse, if you need to add one 
 So, now let's see what the same code looks like with DocArray:
 
 ```python
-from docarray import DocArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
 
 import torch
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     text: TextDoc
     image: ImageDoc
     audio: AudioDoc
 
 
-class PairPodcast(BaseDocument):
+class PairPodcast(BaseDoc):
     left: Podcast
     right: Podcast
 
@@ -297,12 +297,12 @@ This would look like the following:
 ```python
 from typing import Optional
 
-from docarray import DocArray, BaseDocument
+from docarray import DocArray, BaseDoc
 
 import tensorflow as tf
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     audio_tensor: Optional[AudioTensorFlowTensor]
     embedding: Optional[AudioTensorFlowTensor]
 
@@ -328,17 +328,17 @@ import numpy as np
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 from docarray.base_document import DocumentResponse
 
 
-class InputDoc(BaseDocument):
+class InputDoc(BaseDoc):
     img: ImageDoc
 
 
-class OutputDoc(BaseDocument):
+class OutputDoc(BaseDoc):
     embedding_clip: NdArray
     embedding_bert: NdArray
 
@@ -368,12 +368,12 @@ The big advantage here is **first-class support for ML centric data**, such as {
 This includes handy features such as validating the shape of a tensor:
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor
 import torch
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: TorchTensor[3, 224, 224]
 
 
@@ -382,7 +382,7 @@ doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
 doc = MyDoc(tensor=torch.zeros(224))  # fails validation
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     tensor: TorchTensor[3, 'x', 'x']
 
 
@@ -407,13 +407,13 @@ store it there, and thus make it searchable:
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.stores import DocumentStore
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     image: ImageDoc
     text: TextDoc
     description: str
@@ -449,7 +449,7 @@ You can see more logs by setting the log level to `DEBUG` or `INFO`:
 
 ```python
 from pydantic import Field
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 import logging
@@ -459,7 +459,7 @@ logging.getLogger('docarray').setLevel(logging.DEBUG)
 
 
 # define a simple document and create a document index
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     vector: NdArray = Field(dim=10)
 
 

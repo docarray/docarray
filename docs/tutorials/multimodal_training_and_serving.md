@@ -78,12 +78,12 @@ The first thing we are trying to achieve when using DocArray is to clearly model
 about which tensors are supposed to represent what.
 
 To do that we are using a concept that is at the core of DocArray. The `Document`, a collection of multi-modal data.
-The `BaseDocument` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
+The `BaseDoc` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
 
 Let's start by defining a few Documents to handle the different modalities that we will use during our training:
 
 ```python
-from docarray import BaseDocument, DocArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import TorchTensor, ImageUrl
 ```
 
@@ -93,7 +93,7 @@ Let's first create a Document for our Text modality. It will contain a number of
 from docarray.documents import TextDoc as BaseText
 
 
-class Tokens(BaseDocument):
+class Tokens(BaseDoc):
     input_ids: TorchTensor[48]
     attention_mask: TorchTensor
 ```
@@ -116,7 +116,7 @@ Under the hood, an `Image` looks something like this (with the only main differe
 supported ML framework):
 
 ```python
-# class Image(BaseDocument):
+# class Image(BaseDoc):
 #     url: Optional[ImageUrl]
 #     tensor: Optional[TorchTesor]
 #     embedding: Optional[TorchTensor]
@@ -128,7 +128,7 @@ Actually, the `BaseText` above also alredy includes `tensor`, `url` and `embeddi
 The final Document used for training here is the `PairTextImage`, which simply combines the Text and Image modalities:
 
 ```python
-class PairTextImage(BaseDocument):
+class PairTextImage(BaseDoc):
     text: Text
     image: Image
 ```

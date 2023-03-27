@@ -1,3 +1,3 @@
-# BaseDocument
+# BaseDoc
 
-::: docarray.base_document.document.BaseDocument
+::: docarray.base_document.document.BaseDoc
