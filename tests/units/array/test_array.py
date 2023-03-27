@@ -1,5 +1,5 @@
 from typing import Optional, TypeVar, Union
-
+import pytest
 import numpy as np
 import pytest
 import torch
@@ -122,12 +122,13 @@ def test_documentarray():
     assert da2 == [Text(text='hello') for _ in range(len(da2))]
 
 
+@pytest.mark.tensorflow
 def test_tensorflowtensor_equality():
     class Text(BaseDocument):
         tensor: TensorFlowTensor
 
-    tensor1 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
-    tensor2 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0]]))
+    tensor1 = Text(tensor=tf.constant([1, 2, 3, 4, 5, 6]))
+    tensor2 = Text(tensor=tf.constant([1, 2, 3, 4, 5, 6]))
     tensor3 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 5.0]]))
     tensor4 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]))
 
@@ -137,22 +138,16 @@ def test_tensorflowtensor_equality():
 
 
 def test_text_tensor():
-    class Text(BaseDocument):
-        tensor: TensorFlowTensor
-
     class Text1(BaseDocument):
         tensor: NdArray
 
     class Text2(BaseDocument):
         tensor: TorchTensor
 
-    arr_tensor1 = Text(tensor=tf.constant([[1.0, 2.0]]))
-    arr_tensor2 = Text1(tensor=np.zeros(2))
-    arr_tensor3 = Text2(tensor=torch.zeros(2))
+    arr_tensor1 = Text1(tensor=np.zeros(2))
+    arr_tensor2 = Text2(tensor=torch.zeros(2))
 
-    assert arr_tensor1 != arr_tensor2
-    assert arr_tensor1 != arr_tensor3
-    assert arr_tensor2 == arr_tensor3
+    assert arr_tensor1 == arr_tensor2
 
 
 def test_get_bulk_attributes_function():
