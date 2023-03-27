@@ -74,6 +74,8 @@ nav:
   - Home: README.md
   - Tutorial - User Guide:
     - user_guide/intro.md
+    - user_guide/first_step.md
+
   - How-to:
     - how_to/add_doc_index.md
     - how_to/multimodal_training_and_serving.md
