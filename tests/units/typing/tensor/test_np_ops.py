@@ -1,14 +1,14 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import NdArray
 
 
 def test_tensor_ops():
-    class A(BaseDocument):
+    class A(BaseDoc):
         tensor: NdArray[3, 224, 224]
 
-    class B(BaseDocument):
+    class B(BaseDoc):
         tensor: NdArray[3, 112, 224]
 
     tensor = A(tensor=np.ones((3, 224, 224))).tensor

@@ -11,7 +11,7 @@ except ImportError:
     Response = JSONResponse = NoImportResponse  # type: ignore
 
 
-class DocumentResponse(JSONResponse):
+class DocResponse(JSONResponse):
     """
     This is a custom Response class for FastAPI and starlette. This is needed
     to handle serialization of the Document types when using FastAPI
@@ -19,10 +19,10 @@ class DocumentResponse(JSONResponse):
       EXAMPLE USAGE
         .. code-block:: python
             from docarray.documets import Text
-            from docarray.base_document import DocumentResponse
+            from docarray.base_document import DocResponse
 
 
-            @app.post("/doc/", response_model=Text, response_class=DocumentResponse)
+            @app.post("/doc/", response_model=Text, response_class=DocResponse)
             async def create_item(doc: Text) -> Text:
                 return doc
     """

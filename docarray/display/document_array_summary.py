@@ -4,11 +4,11 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array import DocumentArrayStacked
-    from docarray.array.abstract_array import AnyDocumentArray
+    from docarray.array.abstract_array import AnyDocArray
 
 
 class DocumentArraySummary:
-    def __init__(self, da: 'AnyDocumentArray'):
+    def __init__(self, da: 'AnyDocArray'):
         self.da = da
 
     def summary(self) -> None:

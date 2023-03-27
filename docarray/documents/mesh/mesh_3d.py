@@ -1,6 +1,6 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_document import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing.tensor.embedding import AnyEmbedding
 from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
@@ -8,7 +8,7 @@ from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
 T = TypeVar('T', bound='Mesh3D')
 
 
-class Mesh3D(BaseDocument):
+class Mesh3D(BaseDoc):
     """
     Document for handling meshes for 3D data representation.
 
@@ -63,12 +63,12 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import Mesh3D, Text
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             mesh: Mesh3D
             text: Text
 

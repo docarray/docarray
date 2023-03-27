@@ -16,10 +16,10 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument
+    from docarray import BaseDoc
 
 
-def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> bool:
+def _is_access_path_valid(doc_type: Type['BaseDoc'], access_path: str) -> bool:
     """
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
@@ -29,7 +29,7 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
 
 
 def _all_access_paths_valid(
-    doc_type: Type['BaseDocument'], access_paths: List[str]
+    doc_type: Type['BaseDoc'], access_paths: List[str]
 ) -> List[bool]:
     """
     Check if all access paths ("__"-separated) are valid for a given Document class.
@@ -127,7 +127,7 @@ def _update_nested_dicts(
 
 
 def _get_field_type_by_access_path(
-    doc_type: Type['BaseDocument'], access_path: str
+    doc_type: Type['BaseDoc'], access_path: str
 ) -> Optional[Type]:
     """
     Get field type by "__"-separated access path.
@@ -135,7 +135,7 @@ def _get_field_type_by_access_path(
     :param access_path: "__"-separated access path
     :return: field type of accessed attribute. If access path is invalid, return None.
     """
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
 
     field, _, remaining = access_path.partition('__')
     field_valid = field in doc_type.__fields__.keys()
@@ -147,7 +147,7 @@ def _get_field_type_by_access_path(
             d = doc_type._get_field_type(field)
             if issubclass(d, DocumentArray):
                 return _get_field_type_by_access_path(d.document_type, remaining)
-            elif issubclass(d, BaseDocument):
+            elif issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:
                 return None
@@ -180,12 +180,12 @@ def get_paths(
     .. code-block:: python
 
         from typing import Optional
-        from docarray import BaseDocument, DocumentArray
+        from docarray import BaseDoc, DocumentArray
         from docarray.helper import get_paths
         from docarray.typing import TextUrl, ImageUrl
 
 
-        class Banner(BaseDocument):
+        class Banner(BaseDoc):
             text_url: TextUrl
             image_url: Optional[ImageUrl]
 

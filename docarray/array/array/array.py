@@ -17,14 +17,14 @@ from typing import (
 
 from typing_inspect import is_union_type
 
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.io import IOMixinArray
 from docarray.array.array.pushpull import PushPullMixin
 from docarray.array.array.sequence_indexing_mixin import (
     IndexingSequenceMixin,
     IndexIterType,
 )
-from docarray.base_document import AnyDocument, BaseDocument
+from docarray.base_document import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='DocumentArray')
-T_doc = TypeVar('T_doc', bound=BaseDocument)
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def _delegate_meth_to_data(meth_name: str) -> Callable:
@@ -58,7 +58,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocumentArray(
-    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]
+    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
 ):
     """
      DocumentArray is a container of Documents.
@@ -73,12 +73,12 @@ class DocumentArray(
     ---
 
     ```python
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
     from docarray.typing import NdArray, ImageUrl
     from typing import Optional
 
 
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: Optional[NdArray[100]]
         url: ImageUrl
 
@@ -121,7 +121,7 @@ class DocumentArray(
 
     """
 
-    document_type: Type[BaseDocument] = AnyDocument
+    document_type: Type[BaseDoc] = AnyDoc
 
     def __init__(
         self,
@@ -153,7 +153,7 @@ class DocumentArray(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocumentArray"""
-        if not issubclass(self.document_type, AnyDocument) and not isinstance(
+        if not issubclass(self.document_type, AnyDoc) and not isinstance(
             doc, self.document_type
         ):
             raise ValueError(f'{doc} is not a {self.document_type}')
@@ -216,7 +216,7 @@ class DocumentArray(
         if (
             not is_union_type(field_type)
             and isinstance(field_type, type)
-            and issubclass(field_type, BaseDocument)
+            and issubclass(field_type, BaseDoc)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -250,7 +250,7 @@ class DocumentArray(
         Convert the DocumentArray into a DocumentArrayStacked. `Self` cannot be used
         afterwards
         :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
-        if the BaseDocument has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
+        if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
         :return: A DocumentArrayStacked of the same document type as self
         """
         from docarray.array.stacked.array_stacked import DocumentArrayStacked
@@ -262,7 +262,7 @@ class DocumentArray(
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, Iterable[BaseDocument]],
+        value: Union[T, Iterable[BaseDoc]],
         field: 'ModelField',
         config: 'BaseConfig',
     ):
@@ -279,8 +279,8 @@ class DocumentArray(
         self: 'DocumentArray',
         access_path: str,
     ) -> List[Any]:
-        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten_one_level(nodes)
+        nodes = list(AnyDocArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocArray._flatten_one_level(nodes)
 
         return flattened
 

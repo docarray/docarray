@@ -15,10 +15,10 @@ if TYPE_CHECKING:
 
 _console: Console = Console()
 
-T = TypeVar('T', bound='BaseDocument')
+T = TypeVar('T', bound='BaseDoc')
 
 
-class BaseDocument(BaseModel, IOMixin, UpdateMixin, BaseNode):
+class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
     The base class for Documents
     """

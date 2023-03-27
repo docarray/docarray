@@ -4,16 +4,16 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils.find import find, find_batched
 
 
-class TorchDoc(BaseDocument):
+class TorchDoc(BaseDoc):
     tensor: TorchTensor
 
 
-class NdDoc(BaseDocument):
+class NdDoc(BaseDoc):
     tensor: NdArray
 
 
@@ -257,7 +257,7 @@ def test_find_batched_np_stacked(random_nd_batch_query, random_nd_index, stack_w
 
 
 def test_find_optional():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         embedding: Optional[TorchTensor]
 
     query = MyDoc(embedding=torch.rand(10))
@@ -275,7 +275,7 @@ def test_find_optional():
 
 
 def test_find_union():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         embedding: Union[TorchTensor, NdArray]
 
     query = MyDoc(embedding=torch.rand(10))
@@ -294,11 +294,11 @@ def test_find_union():
 
 @pytest.mark.parametrize('stack', [False, True])
 def test_find_nested(stack):
-    class InnerDoc(BaseDocument):
+    class InnerDoc(BaseDoc):
         title: str
         embedding: TorchTensor
 
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         inner: InnerDoc
 
     query = MyDoc(inner=InnerDoc(title='query', embedding=torch.rand(2)))
@@ -323,7 +323,7 @@ def test_find_nested(stack):
 
 
 def test_find_nested_union_optional():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]
         embedding2: Optional[Union[TorchTensor, NdArray]]
         embedding3: Optional[Optional[TorchTensor]]

@@ -1,12 +1,12 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
 from docarray.typing import AnyTensor, NdArray
 
 
 def test_da_init():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: AnyTensor
         name: str
 
@@ -19,7 +19,7 @@ def test_da_init():
 
 
 def test_da_iter():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: AnyTensor
         name: str
 

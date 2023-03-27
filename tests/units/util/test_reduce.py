@@ -2,17 +2,17 @@ from typing import Dict, List, Optional, Set
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 from docarray.utils.reduce import reduce, reduce_all
 
 
-class InnerDoc(BaseDocument):
+class InnerDoc(BaseDoc):
     integer: int
     inner_list: List
 
 
-class MMDoc(BaseDocument):
+class MMDoc(BaseDoc):
     text: str = ''
     price: int = 0
     categories: Optional[List[str]] = None

@@ -25,7 +25,7 @@ from typing import (
     Union,
 )
 
-from docarray.base_document import AnyDocument, BaseDocument
+from docarray.base_document import AnyDoc, BaseDoc
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
     _all_access_paths_valid,
@@ -92,9 +92,9 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[BaseDocument]):
+class IOMixinArray(Iterable[BaseDoc]):
 
-    document_type: Type[BaseDocument]
+    document_type: Type[BaseDoc]
 
     @abstractmethod
     def __len__(self):
@@ -103,7 +103,7 @@ class IOMixinArray(Iterable[BaseDocument]):
     @abstractmethod
     def __init__(
         self,
-        docs: Optional[Iterable[BaseDocument]] = None,
+        docs: Optional[Iterable[BaseDoc]] = None,
     ):
         ...
 
@@ -354,7 +354,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        if cls.document_type == AnyDocument:
+        if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
@@ -435,10 +435,10 @@ class IOMixinArray(Iterable[BaseDocument]):
 
             import pandas as pd
 
-            from docarray import BaseDocument, DocumentArray
+            from docarray import BaseDoc, DocumentArray
 
 
-            class Person(BaseDocument):
+            class Person(BaseDoc):
                 name: str
                 follower: int
 
@@ -459,7 +459,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         """
         from docarray import DocumentArray
 
-        if cls.document_type == AnyDocument:
+        if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
@@ -611,7 +611,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         protocol: str = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
-    ) -> Generator['BaseDocument', None, None]:
+    ) -> Generator['BaseDoc', None, None]:
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
@@ -668,7 +668,7 @@ class IOMixinArray(Iterable[BaseDocument]):
         compress: Optional[str] = None,
         show_progress: bool = False,
         streaming: bool = False,
-    ) -> Union[T, Generator['BaseDocument', None, None]]:
+    ) -> Union[T, Generator['BaseDoc', None, None]]:
         """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.

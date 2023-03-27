@@ -18,11 +18,11 @@ from typing import (
 
 from pydantic import BaseConfig, parse_obj_as
 
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
-from docarray.base_document import BaseDocument
+from docarray.base_document import BaseDoc
 from docarray.base_document.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -48,12 +48,12 @@ if tf_available:
 else:
     TensorFlowTensor = None  # type: ignore
 
-T_doc = TypeVar('T_doc', bound=BaseDocument)
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocumentArrayStacked')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocumentArrayStacked(AnyDocumentArray[T_doc]):
+class DocumentArrayStacked(AnyDocArray[T_doc]):
     """
     DocumentArrayStacked is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -64,7 +64,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
     column based instead of row based. Each field
     of the schema of the DocumentArrayStack
     (the :attr:`~docarray.array.stacked.DocumentArrayStacked.document_type` which is a
-    `BaseDocument`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, stacked (torch/np/tf) tensor.
+    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, stacked (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
     :attr:`~docarray.array.stacked.DocumentArrayStacked.tensor_type` will be used to determine
@@ -83,7 +83,7 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
     :param docs: a DocumentArray
     :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
-    if the BaseDocument of this DocumentArrayStacked has some undefined tensor type like
+    if the BaseDoc of this DocumentArrayStacked has some undefined tensor type like
     AnyTensor or Union of NdArray and TorchTensor
     """
 
@@ -158,12 +158,12 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
 
                         cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
-                elif issubclass(field_type, BaseDocument):
+                elif issubclass(field_type, BaseDoc):
                     doc_columns[field_name] = getattr(docs, field_name).stack(
                         tensor_type=self.tensor_type
                     )
 
-                elif issubclass(field_type, AnyDocumentArray):
+                elif issubclass(field_type, AnyDocArray):
                     docs_list = list()
                     for doc in docs:
                         da = getattr(doc, field_name)
@@ -521,8 +521,8 @@ class DocumentArrayStacked(AnyDocumentArray[T_doc]):
         self,
         access_path: str,
     ) -> Union[List[Any], 'TorchTensor', 'NdArray']:
-        nodes = list(AnyDocumentArray._traverse(node=self, access_path=access_path))
-        flattened = AnyDocumentArray._flatten_one_level(nodes)
+        nodes = list(AnyDocArray._traverse(node=self, access_path=access_path))
+        flattened = AnyDocArray._flatten_one_level(nodes)
 
         cls_to_check = (NdArray, TorchTensor) if TorchTensor is not None else (NdArray,)
 

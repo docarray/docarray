@@ -1,8 +1,8 @@
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 
 
 def test_instance_and_equivalence():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         text: str
 
     docs = DocumentArray[MyDoc]([MyDoc(text='hello')])
@@ -14,7 +14,7 @@ def test_instance_and_equivalence():
 
 
 def test_subclassing():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         text: str
 
     class MyDocArray(DocumentArray[MyDoc]):
@@ -28,6 +28,6 @@ def test_subclassing():
     assert isinstance(docs, MyDocArray)
     assert isinstance(docs, DocumentArray[MyDoc])
 
-    assert issubclass(MyDoc, BaseDocument)
-    assert not issubclass(DocumentArray[MyDoc], DocumentArray[BaseDocument])
-    assert not issubclass(MyDocArray, DocumentArray[BaseDocument])
+    assert issubclass(MyDoc, BaseDoc)
+    assert not issubclass(DocumentArray[MyDoc], DocumentArray[BaseDoc])
+    assert not issubclass(MyDocArray, DocumentArray[BaseDoc])

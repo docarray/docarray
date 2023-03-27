@@ -2,16 +2,16 @@ from typing import Dict, List, Optional, Set
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 
 
-class InnerDoc(BaseDocument):
+class InnerDoc(BaseDoc):
     integer: int
     inner_list: List
 
 
-class MMDoc(BaseDocument):
+class MMDoc(BaseDoc):
     text: str = ''
     price: int = 0
     categories: Optional[List[str]] = None
@@ -75,7 +75,7 @@ def test_update_complex(doc1, doc2):
 
 
 def test_update_simple():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         content: str
         title: Optional[str] = None
         tags_: List
@@ -92,10 +92,10 @@ def test_update_simple():
 
 
 def test_update_different_schema_fails():
-    class DocA(BaseDocument):
+    class DocA(BaseDoc):
         content: str
 
-    class DocB(BaseDocument):
+    class DocB(BaseDoc):
         image: Optional[ImageDoc] = None
 
     docA = DocA(content='haha')

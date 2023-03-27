@@ -1,14 +1,14 @@
 import json
 from typing import Dict, List, Union
 
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocumentArray
 
 
 def filter_docs(
-    docs: AnyDocumentArray,
+    docs: AnyDocArray,
     query: Union[str, Dict, List[Dict]],
-) -> AnyDocumentArray:
+) -> AnyDocArray:
     """
     Filter the Documents in the index according to the given filter query.
 
@@ -17,12 +17,12 @@ def filter_docs(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDocument
+        from docarray import DocumentArray, BaseDoc
         from docarray.documents import Text, Image
         from docarray.util.filter import filter_docs
 
 
-        class MyDocument(BaseDocument):
+        class MyDocument(BaseDoc):
             caption: Text
             image: Image
             price: int

@@ -1,9 +1,9 @@
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     embedding: NdArray
     text: str
     image: ImageDoc

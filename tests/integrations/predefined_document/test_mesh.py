@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic import parse_obj_as
 
-from docarray.base_document.document import BaseDocument
+from docarray.base_document.doc import BaseDoc
 from docarray.documents import Mesh3D
 from tests import TOYDATA_DIR
 
@@ -29,7 +29,7 @@ def test_str_init():
 
 
 def test_doc():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         mesh1: Mesh3D
         mesh2: Mesh3D
 

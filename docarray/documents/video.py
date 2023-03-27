@@ -2,7 +2,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDocument
+from docarray.base_document import BaseDoc
 from docarray.documents import AudioDoc
 from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -23,7 +23,7 @@ if tf_available:
 T = TypeVar('T', bound='VideoDoc')
 
 
-class VideoDoc(BaseDocument):
+class VideoDoc(BaseDoc):
     """
     Document for handling video.
     The Video Document can contain a VideoUrl (`VideoDoc.url`), an Audio Document
@@ -73,12 +73,12 @@ class VideoDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import TextDoc, VideoDoc
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             video: Video
             text: Text
 

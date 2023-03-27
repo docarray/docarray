@@ -1,6 +1,6 @@
-from docarray.base_document.any_document import AnyDocument
+from docarray.base_document.any_doc import AnyDoc
 from docarray.base_document.base_node import BaseNode
-from docarray.base_document.document import BaseDocument
-from docarray.base_document.document_response import DocumentResponse
+from docarray.base_document.doc import BaseDoc
+from docarray.base_document.doc_response import DocResponse
 
-__all__ = ['AnyDocument', 'BaseDocument', 'BaseNode', 'DocumentResponse']
+__all__ = ['AnyDoc', 'BaseDoc', 'BaseNode', 'DocResponse']

@@ -19,18 +19,18 @@ PUSH_PULL_PROTOCOL = Literal['jac', 's3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
     from docarray.store.abstract_doc_store import AbstractDocStore
 
 
 SelfPushPullMixin = TypeVar('SelfPushPullMixin', bound='PushPullMixin')
 
 
-class PushPullMixin(Iterable['BaseDocument']):
+class PushPullMixin(Iterable['BaseDoc']):
     """Mixin class for push/pull functionality."""
 
     __backends__: Dict[str, Type['AbstractDocStore']] = {}
-    document_type: Type['BaseDocument']
+    document_type: Type['BaseDoc']
 
     @abstractmethod
     def __len__(self) -> int:
@@ -103,7 +103,7 @@ class PushPullMixin(Iterable['BaseDocument']):
     @classmethod
     def push_stream(
         cls: Type[SelfPushPullMixin],
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         url: str,
         public: bool = True,
         show_progress: bool = False,
@@ -137,9 +137,9 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
         """
-        from docarray.base_document import AnyDocument
+        from docarray.base_document import AnyDoc
 
-        if cls.document_type == AnyDocument:
+        if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
@@ -157,7 +157,7 @@ class PushPullMixin(Iterable['BaseDocument']):
         url: str,
         show_progress: bool = False,
         local_cache: bool = False,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a stream of Documents from the specified url.
 
         :param url: url specifying the protocol and save name of the DocumentArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
@@ -165,9 +165,9 @@ class PushPullMixin(Iterable['BaseDocument']):
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: Iterator of Documents
         """
-        from docarray.base_document import AnyDocument
+        from docarray.base_document import AnyDoc
 
-        if cls.document_type == AnyDocument:
+        if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'

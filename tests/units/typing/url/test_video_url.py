@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.base_document.io.json import orjson_dumps
 from docarray.typing import (
     AudioNdArray,
@@ -76,7 +76,7 @@ def test_load_one_of_named_tuple_results(file_url, field, attr_cls):
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
 def test_load_video_url_to_video_torch_tensor_field(file_url):
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
         tensor: Optional[VideoTorchTensor]
 
@@ -95,7 +95,7 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
 def test_load_video_url_to_video_tensorflow_tensor_field(file_url):
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
         tensor: Optional[VideoTensorFlowTensor]
 

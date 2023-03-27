@@ -2,10 +2,10 @@ from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocumentArray
 from docarray.array.stacked.array_stacked import DocumentArrayStacked
-from docarray.base_document import BaseDocument
+from docarray.base_document import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -22,8 +22,8 @@ class _FindResult(NamedTuple):
 
 
 def find(
-    index: AnyDocumentArray,
-    query: Union[AnyTensor, BaseDocument],
+    index: AnyDocArray,
+    query: Union[AnyTensor, BaseDoc],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -50,12 +50,12 @@ def find(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDocument
+        from docarray import DocumentArray, BaseDoc
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(BaseDocument):
+        class MyDocument(BaseDoc):
             embedding: TorchTensor
 
 
@@ -111,7 +111,7 @@ def find(
 
 
 def find_batched(
-    index: AnyDocumentArray,
+    index: AnyDocArray,
     query: Union[AnyTensor, DocumentArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
@@ -139,12 +139,12 @@ def find_batched(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDocument
+        from docarray import DocumentArray, BaseDoc
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(BaseDocument):
+        class MyDocument(BaseDoc):
             embedding: TorchTensor
 
 
@@ -219,7 +219,7 @@ def find_batched(
 
 
 def _extract_embedding_single(
-    data: Union[DocumentArray, BaseDocument, AnyTensor],
+    data: Union[DocumentArray, BaseDoc, AnyTensor],
     embedding_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
@@ -230,8 +230,8 @@ def _extract_embedding_single(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-    if isinstance(data, BaseDocument):
-        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+    if isinstance(data, BaseDoc):
+        emb = next(AnyDocArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -242,7 +242,7 @@ def _extract_embedding_single(
 
 
 def _extract_embeddings(
-    data: Union[AnyDocumentArray, BaseDocument, AnyTensor],
+    data: Union[AnyDocArray, BaseDoc, AnyTensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> AnyTensor:
@@ -255,10 +255,10 @@ def _extract_embeddings(
     """
     emb: AnyTensor
     if isinstance(data, DocumentArray):
-        emb_list = list(AnyDocumentArray._traverse(data, embedding_field))
+        emb_list = list(AnyDocArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
-    elif isinstance(data, (DocumentArrayStacked, BaseDocument)):
-        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+    elif isinstance(data, (DocumentArrayStacked, BaseDoc)):
+        emb = next(AnyDocArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 
@@ -267,7 +267,7 @@ def _extract_embeddings(
     return emb
 
 
-def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
+def _da_attr_type(da: AnyDocArray, access_path: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocumentArray.
 
@@ -283,7 +283,7 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
 
     if is_union_type(field_type):
         # determine type based on the fist element
-        field_type = type(next(AnyDocumentArray._traverse(da[0], access_path)))
+        field_type = type(next(AnyDocArray._traverse(da[0], access_path)))
 
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(

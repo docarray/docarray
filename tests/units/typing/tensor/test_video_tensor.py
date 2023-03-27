@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic.tools import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import (
     AudioNdArray,
     AudioTorchTensor,
@@ -30,7 +30,7 @@ if tf_available:
     ],
 )
 def test_set_video_tensor(tensor, cls_video_tensor, cls_tensor):
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         tensor: cls_video_tensor
 
     doc = MyVideoDoc(tensor=tensor)
@@ -42,7 +42,7 @@ def test_set_video_tensor(tensor, cls_video_tensor, cls_tensor):
 
 @pytest.mark.tensorflow
 def test_set_video_tensor_tensorflow():
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         tensor: VideoTensorFlowTensor
 
     doc = MyVideoDoc(tensor=tf.zeros((1, 224, 224, 3)))

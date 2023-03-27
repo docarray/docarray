@@ -10,7 +10,7 @@ from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
 
 SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
@@ -110,7 +110,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push_stream(
         cls: Type[SelfFileDocStore],
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -171,7 +171,7 @@ class FileDocStore(AbstractDocStore):
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a stream of Documents from the specified file.
 
         :param name: The file path to pull from.

@@ -165,9 +165,9 @@ def test_parametrized_operations():
 
 
 def test_deepcopy():
-    from docarray import BaseDocument
+    from docarray import BaseDoc
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         embedding: TorchEmbedding
 
     doc = MMdoc(embedding=torch.randn(32))

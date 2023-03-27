@@ -29,7 +29,7 @@ from docarray.utils.cache import get_cache_path
 if TYPE_CHECKING:  # pragma: no cover
     import io
 
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
 
 
 def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
@@ -231,7 +231,7 @@ class JACDocStore(AbstractDocStore):
     @hubble.login_required
     def push_stream(
         cls: Type[SelfJACDocStore],
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -292,7 +292,7 @@ class JACDocStore(AbstractDocStore):
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a :class:`DocumentArray` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`

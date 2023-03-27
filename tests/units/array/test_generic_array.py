@@ -1,9 +1,9 @@
-from docarray import BaseDocument, DocumentArray
-from docarray.base_document import AnyDocument
+from docarray import BaseDoc, DocumentArray
+from docarray.base_document import AnyDoc
 
 
 def test_generic_init():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     da = DocumentArray[Text]([])
@@ -14,6 +14,6 @@ def test_generic_init():
 
 def test_normal_access_init():
     da = DocumentArray([])
-    da.document_type == AnyDocument
+    da.document_type == AnyDoc
 
     assert isinstance(da, DocumentArray)

@@ -1,14 +1,14 @@
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
 @pytest.mark.proto
 def test_simple_proto():
-    class CustomDoc(BaseDocument):
+    class CustomDoc(BaseDoc):
         text: str
         tensor: NdArray
 
@@ -25,7 +25,7 @@ def test_simple_proto():
 
 @pytest.mark.proto
 def test_nested_proto():
-    class CustomDocument(BaseDocument):
+    class CustomDocument(BaseDoc):
         text: TextDoc
         image: ImageDoc
 
@@ -44,7 +44,7 @@ def test_nested_proto():
 
 @pytest.mark.proto
 def test_nested_proto_any_doc():
-    class CustomDocument(BaseDocument):
+    class CustomDocument(BaseDoc):
         text: TextDoc
         image: ImageDoc
 

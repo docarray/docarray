@@ -2,12 +2,12 @@ import pytest
 import torch
 from torch.utils.data import DataLoader
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.data import MultiModalDataset
 from docarray.documents import ImageDoc, TextDoc
 
 
-class PairTextImage(BaseDocument):
+class PairTextImage(BaseDoc):
     text: TextDoc
     image: ImageDoc
 

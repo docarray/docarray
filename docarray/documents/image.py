@@ -2,7 +2,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDocument
+from docarray.base_document import BaseDoc
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
@@ -19,7 +19,7 @@ if tf_available:
     import tensorflow as tf  # type: ignore
 
 
-class ImageDoc(BaseDocument):
+class ImageDoc(BaseDoc):
     """
     Document for handling images.
     It can contain an ImageUrl (`Image.url`), an AnyTensor (`Image.tensor`),
@@ -64,12 +64,12 @@ class ImageDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import ImageDoc, TextDoc
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             image: Image
             text: Text
 

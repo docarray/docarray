@@ -6,7 +6,7 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
@@ -14,24 +14,24 @@ from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-class FlatDoc(BaseDocument):
+class FlatDoc(BaseDoc):
     tens_one: NdArray = Field(dim=10)
     tens_two: NdArray = Field(dim=50)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
 
 
-class DeepNestedDoc(BaseDocument):
+class DeepNestedDoc(BaseDoc):
     d: NestedDoc
 
 
-class TorchDoc(BaseDocument):
+class TorchDoc(BaseDoc):
     tens: TorchTensor[10]
 
 
@@ -66,7 +66,7 @@ def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
 
 
 def test_schema_with_user_defined_mapping(tmp_path):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
 
     store = HnswDocumentIndex[MyDoc](work_dir=str(tmp_path))
@@ -114,7 +114,7 @@ def test_index_torch(tmp_path):
 def test_index_tf(tmp_path):
     from docarray.typing import TensorFlowTensor
 
-    class TfDoc(BaseDocument):
+    class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
     docs = [TfDoc(tens=np.random.randn(10)) for _ in range(10)]

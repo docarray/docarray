@@ -5,12 +5,12 @@ from typing import Callable, Generator, Optional, TypeVar, Union
 
 from rich.progress import track
 
-from docarray import BaseDocument
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray import BaseDoc
+from docarray.array.abstract_array import AnyDocArray
 from docarray.helper import _is_lambda_or_partial_or_local_function
 
-T = TypeVar('T', bound=AnyDocumentArray)
-T_doc = TypeVar('T_doc', bound=BaseDocument)
+T = TypeVar('T', bound=AnyDocArray)
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def map_docs(
@@ -48,8 +48,8 @@ def map_docs(
             assert doc.tensor is not None
 
     :param da: DocumentArray to apply function to
-    :param func: a function that takes a :class:`BaseDocument` as input and outputs
-        a :class:`BaseDocument`.
+    :param func: a function that takes a :class:`BaseDoc` as input and outputs
+        a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
@@ -107,16 +107,16 @@ def map_docs_batch(
     """
     Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
     yielding the results.
-    Each element in the returned iterator is an :class:`AnyDocumentArray`.
+    Each element in the returned iterator is an :class:`AnyDocArray`.
 
     EXAMPLE USAGE
 
     .. code-block:: python
-        from docarray import BaseDocument, DocumentArray
+        from docarray import BaseDoc, DocumentArray
         from docarray.utils.map import map_docs_batch
 
 
-        class MyDoc(BaseDocument):
+        class MyDoc(BaseDoc):
             name: str
 
 
@@ -142,8 +142,8 @@ def map_docs_batch(
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-    :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
-        an :class:`AnyDocumentArray` or a :class:`BaseDocument`.
+    :param func: a function that takes an :class:`AnyDocArray` as input and outputs
+        an :class:`AnyDocArray` or a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.

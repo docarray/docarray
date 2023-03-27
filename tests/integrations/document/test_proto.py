@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import (
     AnyEmbedding,
@@ -30,7 +30,7 @@ if tf_available:
 
 @pytest.mark.proto
 def test_multi_modal_doc_proto():
-    class MyMultiModalDoc(BaseDocument):
+    class MyMultiModalDoc(BaseDoc):
         image: ImageDoc
         text: TextDoc
 
@@ -43,10 +43,10 @@ def test_multi_modal_doc_proto():
 
 @pytest.mark.proto
 def test_all_types():
-    class NestedDoc(BaseDocument):
+    class NestedDoc(BaseDoc):
         tensor: NdArray
 
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         img_url: ImageUrl
         txt_url: TextUrl
         mesh_url: Mesh3DUrl
@@ -126,10 +126,10 @@ def test_all_types():
 
 @pytest.mark.tensorflow
 def test_tensorflow_types():
-    class NestedDoc(BaseDocument):
+    class NestedDoc(BaseDoc):
         tensor: TensorFlowTensor
 
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tf_tensor: TensorFlowTensor
         tf_tensor_param: TensorFlowTensor[224, 224, 3]
         generic_tf_tensor: AnyTensor

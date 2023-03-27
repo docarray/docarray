@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.typing import AnyEmbedding, AnyTensor
 
 
-class LegacyDocument(BaseDocument):
+class LegacyDocument(BaseDoc):
     """
     This Document is the LegacyDocument. It follows the same schema as in DocArray v1.
     It can be useful to start migrating a codebase from v1 to v2.

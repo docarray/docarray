@@ -2,7 +2,7 @@ from typing import Generator, Optional
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 from docarray.typing import ImageUrl, NdArray
 from docarray.utils.map import map_docs, map_docs_batch
@@ -67,7 +67,7 @@ def load_from_da(da: DocumentArray) -> DocumentArray:
     return da
 
 
-class MyImage(BaseDocument):
+class MyImage(BaseDoc):
     tensor: Optional[NdArray]
     url: ImageUrl
 

@@ -4,7 +4,7 @@ from typing import Dict, Iterator, List, Optional, Type
 from typing_extensions import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
 
 
 class AbstractDocStore(ABC):
@@ -52,7 +52,7 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def push_stream(
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         url: str,
         public: bool = True,
         show_progress: bool = False,
@@ -93,7 +93,7 @@ class AbstractDocStore(ABC):
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a stream of documents from the specified name.
 
         :param da_cls: The DocumentArray class to instantiate

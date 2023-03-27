@@ -50,16 +50,17 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import NdArray
         import numpy as np
 
 
-        class MyDoc(BaseDocument):
+        class MyDoc(BaseDoc):
             arr: NdArray
             image_arr: NdArray[3, 224, 224]
             square_crop: NdArray[3, 'x', 'x']
-            random_image: NdArray[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: NdArray[3, ...]  # first dimension is fixed, can have arbitrary shape
+
 
         # create a document with tensors
         doc = MyDoc(

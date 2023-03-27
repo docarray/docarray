@@ -1,6 +1,6 @@
 import pytest
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.utils.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -13,7 +13,7 @@ if tf_available:
 
 @pytest.mark.tensorflow
 def test_set_tensorflow_tensor():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         t: TensorFlowTensor
 
     doc = MyDocument(t=tf.zeros((3, 224, 224)))
@@ -25,7 +25,7 @@ def test_set_tensorflow_tensor():
 
 @pytest.mark.tensorflow
 def test_set_tf_embedding():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         embedding: TensorFlowEmbedding
 
     doc = MyDocument(embedding=tf.zeros((128,)))

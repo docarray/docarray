@@ -2,7 +2,7 @@ from typing import Optional, Union
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.array import DocumentArrayStacked
 from docarray.typing import AnyTensor, NdArray
 from docarray.utils.misc import is_tf_available
@@ -17,7 +17,7 @@ if tf_available:
 
 @pytest.fixture()
 def batch():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
     import tensorflow as tf
@@ -31,10 +31,10 @@ def batch():
 
 @pytest.fixture()
 def nested_batch():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         img: DocumentArray[Image]
 
     import tensorflow as tf
@@ -81,7 +81,7 @@ def test_iterator(batch):
 
 @pytest.mark.tensorflow
 def test_set_after_stacking():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
     batch = DocumentArrayStacked[Image](
@@ -105,10 +105,10 @@ def test_stack_optional(batch):
 
 @pytest.mark.tensorflow
 def test_stack_mod_nested_document():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         img: Image
 
     batch = DocumentArray[MMdoc](
@@ -146,10 +146,10 @@ def test_convert_to_da(batch):
 
 @pytest.mark.tensorflow
 def test_unstack_nested_document():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         img: Image
 
     batch = DocumentArrayStacked[MMdoc](
@@ -173,7 +173,7 @@ def test_unstack_nested_documentarray(nested_batch):
 
 @pytest.mark.tensorflow
 def test_stack_call():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
     da = DocumentArray[Image](
@@ -189,7 +189,7 @@ def test_stack_call():
 
 @pytest.mark.tensorflow
 def test_stack_union():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
 
     DocumentArrayStacked[Image](
@@ -216,7 +216,7 @@ def test_setitem_tensor_direct(batch):
 def test_any_tensor_with_tf():
     tensor = tf.zeros((3, 224, 224))
 
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: AnyTensor
 
     da = DocumentArrayStacked[Image](
@@ -235,10 +235,10 @@ def test_any_tensor_with_tf():
 def test_any_tensor_with_optional():
     tensor = tf.zeros((3, 224, 224))
 
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: Optional[AnyTensor]
 
-    class TopDoc(BaseDocument):
+    class TopDoc(BaseDoc):
         img: Image
 
     da = DocumentArrayStacked[TopDoc](
@@ -256,7 +256,7 @@ def test_any_tensor_with_optional():
 
 @pytest.mark.tensorflow
 def test_get_from_slice_stacked():
-    class Doc(BaseDocument):
+    class Doc(BaseDoc):
         text: str
         tensor: TensorFlowTensor
 
@@ -273,7 +273,7 @@ def test_get_from_slice_stacked():
 
 @pytest.mark.tensorflow
 def test_stack_none():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: Optional[AnyTensor]
 
     da = DocumentArrayStacked[MyDoc](
@@ -284,7 +284,7 @@ def test_stack_none():
 
 @pytest.mark.tensorflow
 def test_keep_dtype_tf():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: TensorFlowTensor
 
     da = DocumentArray[MyDoc](

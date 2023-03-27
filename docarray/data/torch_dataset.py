@@ -2,11 +2,11 @@ from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from torch.utils.data import Dataset
 
-from docarray import BaseDocument, DocumentArray, DocumentArrayStacked
+from docarray import BaseDoc, DocumentArray, DocumentArrayStacked
 from docarray.typing import TorchTensor
 from docarray.utils._typing import change_cls_name
 
-T_doc = TypeVar('T_doc', bound=BaseDocument)
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 class MultiModalDataset(Dataset, Generic[T_doc]):
@@ -51,16 +51,16 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     .. code-block:: python
     import torch
     from torch.utils.data import DataLoader
-    from docarray import DocumentArray, BaseDocument
+    from docarray import DocumentArray, BaseDoc
     from docarray.data import MultiModalDataset
     from docarray.documents import Text
 
 
-    class Thesis(BaseDocument):
+    class Thesis(BaseDoc):
         title: Text
 
 
-    class Student(BaseDocument):
+    class Student(BaseDoc):
         thesis: Thesis
 
 
@@ -92,8 +92,8 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         print(batch.thesis.title.embedding)
     """
 
-    document_type: Optional[Type[BaseDocument]] = None
-    __typed_ds__: Dict[Type[BaseDocument], Type['MultiModalDataset']] = {}
+    document_type: Optional[Type[BaseDoc]] = None
+    __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(
         self, da: 'DocumentArray[T_doc]', preprocessing: Dict[str, Callable]
@@ -132,8 +132,8 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         return batch_da
 
     @classmethod
-    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['MultiModalDataset']:
-        if not issubclass(item, BaseDocument):
+    def __class_getitem__(cls, item: Type[BaseDoc]) -> Type['MultiModalDataset']:
+        if not issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )

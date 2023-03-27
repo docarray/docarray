@@ -42,11 +42,11 @@ class UpdateMixin:
 
             .. code-block:: python
 
-                from docarray import BaseDocument
+                from docarray import BaseDoc
                 from docarray.documents import Text
 
 
-                class MyDocument(BaseDocument):
+                class MyDocument(BaseDoc):
                     content: str
                     title: Optional[str] = None
                     tags_: List

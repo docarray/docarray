@@ -50,7 +50,7 @@ class AudioBytes(bytes, AbstractType):
 
         .. code-block:: python
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             import numpy as np
 
             from docarray.typing import AudioUrl

@@ -3,15 +3,15 @@ import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument
-from docarray.base_document import DocumentResponse
+from docarray import BaseDoc
+from docarray.base_document import DocResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
 @pytest.mark.asyncio
 async def test_fast_api():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         img: ImageDoc
         text: TextDoc
         title: str
@@ -22,7 +22,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=Mmdoc, response_class=DocumentResponse)
+    @app.post("/doc/", response_model=Mmdoc, response_class=DocResponse)
     async def create_item(doc: Mmdoc):
         return doc
 
@@ -38,10 +38,10 @@ async def test_fast_api():
 
 @pytest.mark.asyncio
 async def test_image():
-    class InputDoc(BaseDocument):
+    class InputDoc(BaseDoc):
         img: ImageDoc
 
-    class OutputDoc(BaseDocument):
+    class OutputDoc(BaseDoc):
         embedding_clip: NdArray
         embedding_bert: NdArray
 
@@ -49,7 +49,7 @@ async def test_image():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         doc = OutputDoc(
@@ -75,10 +75,10 @@ async def test_image():
 
 @pytest.mark.asyncio
 async def test_sentence_to_embeddings():
-    class InputDoc(BaseDocument):
+    class InputDoc(BaseDoc):
         text: str
 
-    class OutputDoc(BaseDocument):
+    class OutputDoc(BaseDoc):
         embedding_clip: NdArray
         embedding_bert: NdArray
 
@@ -86,7 +86,7 @@ async def test_sentence_to_embeddings():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         return OutputDoc(

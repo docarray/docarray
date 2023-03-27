@@ -4,7 +4,7 @@ from time import time
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 from docarray.utils.map import map_docs, map_docs_batch
@@ -13,7 +13,7 @@ from tests.units.typing.test_bytes import IMAGE_PATHS
 pytestmark = [pytest.mark.benchmark, pytest.mark.slow]
 
 
-class MyMatrix(BaseDocument):
+class MyMatrix(BaseDoc):
     matrix: NdArray
 
 

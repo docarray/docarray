@@ -13,7 +13,7 @@ from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocumentArray
 
 SelfS3DocStore = TypeVar('SelfS3DocStore', bound='S3DocStore')
 
@@ -133,7 +133,7 @@ class S3DocStore(AbstractDocStore):
 
     @staticmethod
     def push_stream(
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -199,7 +199,7 @@ class S3DocStore(AbstractDocStore):
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a stream of Documents from the specified name.
         Name is expected to be in the format of bucket/key.
 

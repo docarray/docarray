@@ -3,13 +3,13 @@ from typing import Optional
 import pandas as pd
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.documents import ImageDoc
 
 
 @pytest.fixture()
 def nested_doc_cls():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         count: Optional[int]
         text: str
 
@@ -54,14 +54,14 @@ def test_to_from_pandas_df(nested_doc_cls):
 
 @pytest.fixture()
 def nested_doc():
-    class Inner(BaseDocument):
+    class Inner(BaseDoc):
         img: Optional[ImageDoc]
 
-    class Middle(BaseDocument):
+    class Middle(BaseDoc):
         img: Optional[ImageDoc]
         inner: Optional[Inner]
 
-    class Outer(BaseDocument):
+    class Outer(BaseDoc):
         img: Optional[ImageDoc]
         middle: Optional[Middle]
 

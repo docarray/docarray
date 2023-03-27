@@ -22,11 +22,11 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
         from typing import Optional
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import ImageTorchTensor, ImageUrl
 
 
-        class MyImageDoc(BaseDocument):
+        class MyImageDoc(BaseDoc):
             title: str
             tensor: Optional[ImageTorchTensor]
             url: Optional[ImageUrl]

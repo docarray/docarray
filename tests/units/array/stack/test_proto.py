@@ -2,14 +2,14 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.array import DocumentArrayStacked
 from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.fixture()
 def batch():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TorchTensor[3, 224, 224]
 
     batch = DocumentArray[Image](
@@ -26,7 +26,7 @@ def test_proto_stacked_mode_torch(batch):
 
 @pytest.mark.proto
 def test_proto_stacked_mode_numpy():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: NdArray[3, 224, 224]
 
     da = DocumentArray[MyDoc](
@@ -40,7 +40,7 @@ def test_proto_stacked_mode_numpy():
 
 @pytest.mark.proto
 def test_stacked_proto():
-    class CustomDocument(BaseDocument):
+    class CustomDocument(BaseDoc):
         image: NdArray
 
     da = DocumentArray[CustomDocument](

@@ -1,13 +1,13 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.array import DocumentArrayStacked
 from docarray.array.stacked.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
 
 def test_document_view():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: AnyTensor
         name: str
 

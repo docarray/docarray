@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocumentArray
 from docarray.typing import ImageUrl, NdArray, TorchTensor
 from docarray.utils.misc import is_tf_available
 
@@ -15,7 +15,7 @@ if tf_available:
 
 @pytest.fixture()
 def da():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     return DocumentArray[Text]([Text(text=f'hello {i}') for i in range(10)])
@@ -27,7 +27,7 @@ def test_iterate(da):
 
 
 def test_append():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     da = DocumentArray[Text]([])
@@ -39,7 +39,7 @@ def test_append():
 
 
 def test_extend():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello', id=str(i)) for i in range(10)])
@@ -58,7 +58,7 @@ def test_slice(da):
 
 
 def test_document_array():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     da = DocumentArray([Text(text='hello') for _ in range(10)])
@@ -72,7 +72,7 @@ def test_empty_array():
 
 
 def test_document_array_fixed_type():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     da = DocumentArray[Text]([Text(text='hello') for _ in range(10)])
@@ -81,7 +81,7 @@ def test_document_array_fixed_type():
 
 
 def test_get_bulk_attributes_function():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         text: str
         tensor: NdArray
 
@@ -105,10 +105,10 @@ def test_get_bulk_attributes_function():
 
 
 def test_set_attributes():
-    class InnerDoc(BaseDocument):
+    class InnerDoc(BaseDoc):
         text: str
 
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         inner: InnerDoc
 
     N = 10
@@ -125,7 +125,7 @@ def test_set_attributes():
 
 
 def test_get_bulk_attributes():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         text: str
         tensor: NdArray
 
@@ -149,10 +149,10 @@ def test_get_bulk_attributes():
 
 
 def test_get_bulk_attributes_document():
-    class InnerDoc(BaseDocument):
+    class InnerDoc(BaseDoc):
         text: str
 
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         inner: InnerDoc
 
     N = 10
@@ -165,7 +165,7 @@ def test_get_bulk_attributes_document():
 
 
 def test_get_bulk_attributes_optional_type():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         text: str
         tensor: Optional[NdArray]
 
@@ -189,7 +189,7 @@ def test_get_bulk_attributes_optional_type():
 
 
 def test_get_bulk_attributes_union_type():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         text: str
         tensor: Union[NdArray, TorchTensor]
 
@@ -215,7 +215,7 @@ def test_get_bulk_attributes_union_type():
 
 @pytest.mark.tensorflow
 def test_get_bulk_attributes_union_type_nested():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         embedding: Union[Optional[TorchTensor], Optional[NdArray]]
         embedding2: Optional[Union[TorchTensor, NdArray, TensorFlowTensor]]
         embedding3: Optional[Optional[TorchTensor]]
@@ -244,7 +244,7 @@ def test_get_bulk_attributes_union_type_nested():
 
 
 def test_get_from_slice():
-    class Doc(BaseDocument):
+    class Doc(BaseDoc):
         text: str
         tensor: NdArray
 
@@ -297,12 +297,12 @@ def test_del_item(da):
 
 
 def test_generic_type_var():
-    T = TypeVar('T', bound=BaseDocument)
+    T = TypeVar('T', bound=BaseDoc)
 
     def f(a: DocumentArray[T]) -> DocumentArray[T]:
         return a
 
-    def g(a: DocumentArray['BaseDocument']) -> DocumentArray['BaseDocument']:
+    def g(a: DocumentArray['BaseDoc']) -> DocumentArray['BaseDoc']:
         return a
 
     a = DocumentArray()
@@ -311,7 +311,7 @@ def test_generic_type_var():
 
 
 def test_construct():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     docs = [Text(text=f'hello {i}') for i in range(10)]
@@ -322,7 +322,7 @@ def test_construct():
 
 
 def test_reverse():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
     docs = [Text(text=f'hello {i}') for i in range(10)]
@@ -333,7 +333,7 @@ def test_reverse():
     assert da[0].text == 'hello 9'
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     tensor: Optional[NdArray]
     url: ImageUrl
 

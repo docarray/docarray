@@ -1,16 +1,16 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.array import DocumentArrayStacked
 from docarray.array.stacked.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
 
 def test_column_storage_init():
-    class InnerDoc(BaseDocument):
+    class InnerDoc(BaseDoc):
         price: int
 
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: AnyTensor
         name: str
         doc: InnerDoc
@@ -32,7 +32,7 @@ def test_column_storage_init():
 
 
 def test_column_storage_view():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: AnyTensor
         name: str
 
