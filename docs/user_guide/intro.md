@@ -26,17 +26,19 @@ This will install the main dependencies of `DocArray` and will work will all the
     pip install "docarray[common]"
     ``` 
 
-!!! note 
-    You can always only install a subset of the dependencies for the modalities that you need.
-    For instance lets say you only want to work with images, you can do
+Depending on your usage you might want to only use `DocArray` with only a couple of specific modalities. 
+For instance lets say you only want to work with images, you can do install `DocArray` using the following command:
 
-    ```
-    pip install "docarray[image]"
-    ```
+```
+pip install "docarray[image]"
+```
 
-    or with image and audio
+or with image and audio
 
 
-    ```
-    pip install "docarray[image, audio]"
-    ```
+```
+pip install "docarray[image, audio]"
+```
+
+!!! warning 
+    This way of installing `DocArray` is only valid starting with version `0.30`
