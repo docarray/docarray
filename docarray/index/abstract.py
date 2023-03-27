@@ -27,7 +27,7 @@ from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import unwrap_optional_type
-from docarray.utils._internal.misc import import_library, is_tf_available
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
@@ -820,12 +820,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         if isinstance(val, np.ndarray):
             return val
-        if is_tf_available() and isinstance(val, TensorFlowTensor):
+        if tf is not None and isinstance(val, TensorFlowTensor):
             return val.unwrap().numpy()
         if isinstance(val, (list, tuple)):
             return np.array(val)
         if (torch is not None and isinstance(val, torch.Tensor)) or (
-            is_tf_available() and isinstance(val, tf.Tensor)
+            tf is not None and isinstance(val, tf.Tensor)
         ):
             return val.numpy()
         if allow_passthrough:
