@@ -22,6 +22,9 @@ import types
 from typing import Optional
 
 INSTALL_INSTRUCTIONS = {
+    'pandas': 'pip install "docarray[common]"',
+    'google.protobuf': 'pip install "docarray[common]"',
+    'lz4': 'pip install "docarray[common]"',
     'PIL.Image': 'pip install "docarray[image]"',
     'pydub': 'pip install "docarray[audio]"',
     'av': 'pip install "docarray[video]"',
@@ -37,7 +40,7 @@ def import_library(
     lib: Optional[types.ModuleType]
     try:
         lib = importlib.import_module(package)
-    except ModuleNotFoundError:
+    except (ModuleNotFoundError, ImportError):
         lib = None
 
     if lib is None and raise_error:

@@ -32,6 +32,7 @@ from docarray.helper import (
     _dict_to_access_paths,
 )
 from docarray.utils._internal.compress import _decompress_bytes, _get_compress_ctx
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -500,7 +501,10 @@ class IOMixinArray(Iterable[BaseDoc]):
 
         :return: pandas.DataFrame
         """
-        import pandas as pd
+        if TYPE_CHECKING:
+            import pandas as pd
+        else:
+            pd = import_library('pandas')
 
         fields = self.document_type._get_access_paths()
         df = pd.DataFrame(columns=fields)
