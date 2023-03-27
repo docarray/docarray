@@ -5,8 +5,16 @@ from docarray.utils.misc import import_library
 if TYPE_CHECKING:
     from fastapi.responses import JSONResponse
 else:
-    fastapi = import_library('fastapi')
-    from fastapi.responses import JSONResponse
+    fastapi = import_library('fastapi', raise_error=False)
+    if fastapi is None:
+
+        class NoImportResponse:
+            def __init__(self, *args, **kwargs):
+                ImportError('fastapi is not installed')
+
+        JSONResponse = NoImportResponse  # type: ignore
+    else:
+        from fastapi.responses import JSONResponse
 
 
 class DocResponse(JSONResponse):
