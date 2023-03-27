@@ -16,8 +16,6 @@ theme:
       primary: teal
       toggle:
         icon: material/brightness-7
-
-
         name: Switch to dark mode
 
     # Palette toggle for dark mode
@@ -44,6 +42,17 @@ markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
+
+extra:
+#  analytics:
+#    provider: google
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/docarray/docarray
+  - icon: fontawesome/brands/discord
+    link: https://discord.com/invite/WaMp6PVPgR
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/docarray
 
 
 plugins:
