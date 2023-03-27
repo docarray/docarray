@@ -1,7 +1,13 @@
-from typing import Any, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
 
 import numpy as np
-import torch
+
+from docarray.utils.misc import import_library
+
+if TYPE_CHECKING:
+    import torch
+else:
+    torch = import_library('torch', raise_error=True)
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
 

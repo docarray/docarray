@@ -2,16 +2,22 @@ from copy import copy
 from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
-import torch  # type: ignore
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
     from pydantic import BaseConfig
-    from docarray.proto import NdArrayProto
+    from pydantic.fields import ModelField
+
     from docarray.computation.torch_backend import TorchCompBackend
+    from docarray.proto import NdArrayProto
+
+if TYPE_CHECKING:
+    import torch
+else:
+    torch = import_library('torch', raise_error=True)
 
 from docarray.base_doc.base_node import BaseNode
 
