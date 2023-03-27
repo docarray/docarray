@@ -366,4 +366,3 @@ def test_sort():
     assert len(da) == 3
     assert da[0].url == 'http://url.com/foo_0.png'
     assert da[1].url == 'http://url.com/foo_1.png'
-    assert da
