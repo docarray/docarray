@@ -4,7 +4,6 @@ import numpy as np
 import torch
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
-from docarray.typing.tensor.torch_tensor import TorchTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:
