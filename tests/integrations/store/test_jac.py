@@ -4,7 +4,7 @@ import uuid
 import hubble
 import pytest
 
-from docarray import DocumentArray
+from docarray import DocArray
 from docarray.documents import TextDoc
 from docarray.store import JACDocStore
 from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
@@ -43,7 +43,7 @@ def test_pushpull_correct(capsys):
 
     # Verbose
     da1.push(f'jac://{DA_NAME}', show_progress=True)
-    da2 = DocumentArray[TextDoc].pull(f'jac://{DA_NAME}', show_progress=True)
+    da2 = DocArray[TextDoc].pull(f'jac://{DA_NAME}', show_progress=True)
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -54,7 +54,7 @@ def test_pushpull_correct(capsys):
 
     # Quiet
     da2.push(f'jac://{DA_NAME}')
-    da1 = DocumentArray[TextDoc].pull(f'jac://{DA_NAME}')
+    da1 = DocArray[TextDoc].pull(f'jac://{DA_NAME}')
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -75,10 +75,8 @@ def test_pushpull_stream_correct(capsys):
     da1 = get_test_da(DA_LEN)
 
     # Verbosity and correctness
-    DocumentArray[TextDoc].push_stream(
-        iter(da1), f'jac://{DA_NAME_1}', show_progress=True
-    )
-    doc_stream2 = DocumentArray[TextDoc].pull_stream(
+    DocArray[TextDoc].push_stream(iter(da1), f'jac://{DA_NAME_1}', show_progress=True)
+    doc_stream2 = DocArray[TextDoc].pull_stream(
         f'jac://{DA_NAME_1}', show_progress=True
     )
 
@@ -91,12 +89,10 @@ def test_pushpull_stream_correct(capsys):
     assert len(captured.err) == 0
 
     # Quiet and chained
-    doc_stream = DocumentArray[TextDoc].pull_stream(
+    doc_stream = DocArray[TextDoc].pull_stream(
         f'jac://{DA_NAME_1}', show_progress=False
     )
-    DocumentArray[TextDoc].push_stream(
-        doc_stream, f'jac://{DA_NAME_2}', show_progress=False
-    )
+    DocArray[TextDoc].push_stream(doc_stream, f'jac://{DA_NAME_2}', show_progress=False)
 
     captured = capsys.readouterr()
     assert (
@@ -114,12 +110,12 @@ def test_pull_stream_vs_pull_full():
     DA_NAME_SHORT: str = f'test{RANDOM}-pull-stream-vs-pull-full-short'
     DA_NAME_LONG: str = f'test{RANDOM}-pull-stream-vs-pull-full-long'
 
-    DocumentArray[TextDoc].push_stream(
+    DocArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 1),
         f'jac://{DA_NAME_SHORT}',
         show_progress=False,
     )
-    DocumentArray[TextDoc].push_stream(
+    DocArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 4),
         f'jac://{DA_NAME_LONG}',
         show_progress=False,
@@ -128,14 +124,13 @@ def test_pull_stream_vs_pull_full():
     @profile_memory
     def get_total_stream(url: str):
         return sum(
-            len(d.text)
-            for d in DocumentArray[TextDoc].pull_stream(url, show_progress=False)
+            len(d.text) for d in DocArray[TextDoc].pull_stream(url, show_progress=False)
         )
 
     @profile_memory
     def get_total_full(url: str):
         return sum(
-            len(d.text) for d in DocumentArray[TextDoc].pull(url, show_progress=False)
+            len(d.text) for d in DocArray[TextDoc].pull(url, show_progress=False)
         )
 
     # A warmup is needed to get accurate memory usage comparison
@@ -179,7 +174,7 @@ def test_list_and_delete():
     )
     assert len(da_names) == 0
 
-    DocumentArray[TextDoc].push(
+    DocArray[TextDoc].push(
         get_test_da(DA_LEN), f'jac://{DA_NAME_0}', show_progress=False
     )
     da_names = list(
@@ -189,7 +184,7 @@ def test_list_and_delete():
         )
     )
     assert set(da_names) == {DA_NAME_0}
-    DocumentArray[TextDoc].push(
+    DocArray[TextDoc].push(
         get_test_da(DA_LEN), f'jac://{DA_NAME_1}', show_progress=False
     )
     da_names = list(
@@ -227,7 +222,7 @@ def test_concurrent_push_pull():
     # Push to DA that is being pulled should not mess up the pull
     DA_NAME_0 = f'test{RANDOM}-concurrent-push-pull-da0'
 
-    DocumentArray[TextDoc].push_stream(
+    DocArray[TextDoc].push_stream(
         gen_text_docs(DA_LEN),
         f'jac://{DA_NAME_0}',
         show_progress=False,
@@ -237,14 +232,14 @@ def test_concurrent_push_pull():
 
     def _task(choice: str):
         if choice == 'push':
-            DocumentArray[TextDoc].push_stream(
+            DocArray[TextDoc].push_stream(
                 gen_text_docs(DA_LEN),
                 f'jac://{DA_NAME_0}',
                 show_progress=False,
             )
         elif choice == 'pull':
             pull_len = sum(
-                1 for _ in DocumentArray[TextDoc].pull_stream(f'jac://{DA_NAME_0}')
+                1 for _ in DocArray[TextDoc].pull_stream(f'jac://{DA_NAME_0}')
             )
             assert pull_len == DA_LEN
         else:

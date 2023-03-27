@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from pydantic import Field
 
-from docarray import BaseDoc, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.index.abstract import BaseDocIndex, _raise_not_composable
 from docarray.typing import ID, NdArray
 
@@ -221,12 +221,12 @@ def test_docs_validation():
     # SIMPLE
     store = DummyDocIndex[SimpleDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDoc])
-    in_da = DocumentArray[SimpleDoc](in_list)
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[SimpleDoc](in_list)
     assert store._validate_docs(in_da) == in_da
     in_other_list = [OtherSimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDoc])
-    in_other_da = DocumentArray[OtherSimpleDoc](in_other_list)
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherSimpleDoc](in_other_list)
     assert store._validate_docs(in_other_da) == in_other_da
 
     with pytest.raises(ValueError):
@@ -239,7 +239,7 @@ def test_docs_validation():
         )
     with pytest.raises(ValueError):
         store._validate_docs(
-            DocumentArray[FlatDoc](
+            DocArray[FlatDoc](
                 [
                     FlatDoc(
                         tens_one=np.random.random((10,)),
@@ -254,16 +254,16 @@ def test_docs_validation():
     in_list = [
         FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDoc])
-    in_da = DocumentArray[FlatDoc](
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[FlatDoc](
         [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
     )
     assert store._validate_docs(in_da) == in_da
     in_other_list = [
         OtherFlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDoc])
-    in_other_da = DocumentArray[OtherFlatDoc](
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherFlatDoc](
         [
             OtherFlatDoc(
                 tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
@@ -275,20 +275,18 @@ def test_docs_validation():
         store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
     with pytest.raises(ValueError):
         assert not store._validate_docs(
-            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
+            DocArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
 
     # NESTED
     store = DummyDocIndex[NestedDoc]()
     in_list = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDoc])
-    in_da = DocumentArray[NestedDoc](
-        [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
-    )
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[NestedDoc]([NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))])
     assert store._validate_docs(in_da) == in_da
     in_other_list = [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDoc])
-    in_other_da = DocumentArray[OtherNestedDoc](
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherNestedDoc](
         [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     )
 
@@ -297,7 +295,7 @@ def test_docs_validation():
         store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
     with pytest.raises(ValueError):
         store._validate_docs(
-            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
+            DocArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
 
 
@@ -311,8 +309,8 @@ def test_docs_validation_unions():
     # OPTIONAL
     store = DummyDocIndex[SimpleDoc]()
     in_list = [OptionalDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDoc])
-    in_da = DocumentArray[OptionalDoc](in_list)
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[OptionalDoc](in_list)
     assert store._validate_docs(in_da) == in_da
 
     with pytest.raises(ValueError):
@@ -321,9 +319,9 @@ def test_docs_validation_unions():
     # OTHER UNION
     store = DummyDocIndex[SimpleDoc]()
     in_list = [UnionDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDoc])
-    in_da = DocumentArray[UnionDoc](in_list)
-    assert isinstance(store._validate_docs(in_da), DocumentArray[BaseDoc])
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[UnionDoc](in_list)
+    assert isinstance(store._validate_docs(in_da), DocArray[BaseDoc])
 
     with pytest.raises(ValueError):
         store._validate_docs([UnionDoc(tens='hello')])

@@ -15,7 +15,7 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocArrayStacked
 
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
@@ -26,11 +26,11 @@ T = TypeVar('T', bound='ColumnStorage')
 class ColumnStorage:
     """
     ColumnStorage is a container to store the columns of the
-    :class:`~docarray.array.stacked.DocumentArrayStacked`.
+    :class:`~docarray.array.stacked.DocArrayStacked`.
 
     :param tensor_columns: a Dict of AbstractTensor
-    :param doc_columns: a Dict of :class:`~docarray.array.stacked.DocumentArrayStacked`
-    :param da_columns: a Dict of List of :class:`~docarray.array.stacked.DocumentArrayStacked`
+    :param doc_columns: a Dict of :class:`~docarray.array.stacked.DocArrayStacked`
+    :param da_columns: a Dict of List of :class:`~docarray.array.stacked.DocArrayStacked`
     :param any_columns: a Dict of List
     :param tensor_type: Class used to wrap the stacked tensors
     """
@@ -38,8 +38,8 @@ class ColumnStorage:
     def __init__(
         self,
         tensor_columns: Dict[str, AbstractTensor],
-        doc_columns: Dict[str, 'DocumentArrayStacked'],
-        da_columns: Dict[str, ListAdvancedIndexing['DocumentArrayStacked']],
+        doc_columns: Dict[str, 'DocArrayStacked'],
+        da_columns: Dict[str, ListAdvancedIndexing['DocArrayStacked']],
         any_columns: Dict[str, ListAdvancedIndexing],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):

@@ -27,12 +27,12 @@ class UpdateMixin:
          - setting data properties of the second Document to the first Document
          if they are not None
          - Concatenating lists and updating sets
-         - Updating recursively Documents and DocumentArrays
+         - Updating recursively Documents and DocArrays
          - Updating Dictionaries of the left with the right
 
         It behaves as an update operation for Dictionaries, except that since
         it is applied to a static schema type, the presence of the field is
-        given by the field not having a None value and that DocumentArrays,
+        given by the field not having a None value and that DocArrays,
         lists and sets are concatenated. It is worth mentioning that Tuples
         are not merged together since they are meant to be inmutable,
         so they behave as regular types and the value of `self` is updated
@@ -74,7 +74,7 @@ class UpdateMixin:
             )
         from collections import namedtuple
 
-        from docarray import DocumentArray
+        from docarray import DocArray
         from docarray.utils.reduce import reduce
 
         # Declaring namedtuple()
@@ -105,7 +105,7 @@ class UpdateMixin:
                     field_type = doc._get_field_type(field_name)
 
                     if isinstance(field_type, type) and issubclass(
-                        field_type, DocumentArray
+                        field_type, DocArray
                     ):
                         nested_docarray_fields.append(field_name)
                     else:

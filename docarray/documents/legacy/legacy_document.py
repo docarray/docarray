@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from docarray import BaseDoc, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import AnyEmbedding, AnyTensor
 
 
@@ -16,7 +16,7 @@ class LegacyDocument(BaseDoc):
     of the data is similar.
     .. code-block:: python
 
-        from docarray import DocumentArray
+        from docarray import DocArray
         from docarray.documents.legacy import LegacyDocument
         import numpy as np
 
@@ -27,15 +27,15 @@ class LegacyDocument(BaseDoc):
 
         doc.tags['price'] = 10
 
-        doc.chunks = DocumentArray[Document]([Document() for _ in range(10)])
+        doc.chunks = DocArray[Document]([Document() for _ in range(10)])
 
-        doc.chunks = DocumentArray[Document]([Document() for _ in range(10)])
+        doc.chunks = DocArray[Document]([Document() for _ in range(10)])
 
     """
 
     tensor: Optional[AnyTensor]
-    chunks: Optional[DocumentArray[LegacyDocument]]
-    matches: Optional[DocumentArray[LegacyDocument]]
+    chunks: Optional[DocArray[LegacyDocument]]
+    matches: Optional[DocArray[LegacyDocument]]
     blob: Optional[bytes]
     text: Optional[str]
     url: Optional[str]

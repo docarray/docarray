@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 
-from docarray import BaseDoc, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
@@ -26,12 +26,12 @@ def nested_doc():
     class Outer(BaseDoc):
         img: Optional[ImageDoc]
         middle: Optional[Middle]
-        da: DocumentArray[Inner]
+        da: DocArray[Inner]
 
     doc = Outer(
         img=ImageDoc(),
         middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc())),
-        da=DocumentArray[Inner]([Inner(img=ImageDoc(url='test.png'))]),
+        da=DocArray[Inner]([Inner(img=ImageDoc(url='test.png'))]),
     )
     return doc
 

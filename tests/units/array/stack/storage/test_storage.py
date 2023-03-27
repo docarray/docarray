@@ -1,7 +1,7 @@
 import numpy as np
 
 from docarray import BaseDoc
-from docarray.array import DocumentArrayStacked
+from docarray.array import DocArrayStacked
 from docarray.array.stacked.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
@@ -20,13 +20,13 @@ def test_column_storage_init():
         for i in range(4)
     ]
 
-    storage = DocumentArrayStacked[MyDoc](docs)._storage
+    storage = DocArrayStacked[MyDoc](docs)._storage
 
     assert (storage.tensor_columns['tensor'] == np.zeros((4, 10))).all()
     for name in storage.any_columns['name']:
         assert name == 'hello'
     inner_docs = storage.doc_columns['doc']
-    assert isinstance(inner_docs, DocumentArrayStacked[InnerDoc])
+    assert isinstance(inner_docs, DocArrayStacked[InnerDoc])
     for i, doc in enumerate(inner_docs):
         assert doc.price == i
 
@@ -38,7 +38,7 @@ def test_column_storage_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = DocumentArrayStacked[MyDoc](docs)._storage
+    storage = DocArrayStacked[MyDoc](docs)._storage
 
     view = ColumnStorageView(0, storage)
 

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import DocumentArray
+from docarray import DocArray
 from docarray.base_document import BaseDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils.misc import is_tf_available
@@ -57,11 +57,11 @@ def test_proto_with_chunks_doc():
 
     class CustomDoc(BaseDoc):
         text: str
-        chunks: DocumentArray[CustomInnerDoc]
+        chunks: DocArray[CustomInnerDoc]
 
     doc = CustomDoc(
         text='hello',
-        chunks=DocumentArray[CustomInnerDoc](
+        chunks=DocArray[CustomInnerDoc](
             [CustomInnerDoc(tensor=np.zeros((3, 224, 224))) for _ in range(5)],
         ),
     )
@@ -95,11 +95,11 @@ def test_proto_with_chunks_doc_pytorch():
 
     class CustomDoc(BaseDoc):
         text: str
-        chunks: DocumentArray[CustomInnerDoc]
+        chunks: DocArray[CustomInnerDoc]
 
     doc = CustomDoc(
         text='hello',
-        chunks=DocumentArray[CustomInnerDoc](
+        chunks=DocArray[CustomInnerDoc](
             [CustomInnerDoc(tensor=torch.zeros((3, 224, 224))) for _ in range(5)],
         ),
     )

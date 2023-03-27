@@ -1,4 +1,4 @@
-from docarray import BaseDoc, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.base_document import AnyDoc
 
 
@@ -6,14 +6,14 @@ def test_generic_init():
     class Text(BaseDoc):
         text: str
 
-    da = DocumentArray[Text]([])
+    da = DocArray[Text]([])
     da.document_type == Text
 
-    assert isinstance(da, DocumentArray)
+    assert isinstance(da, DocArray)
 
 
 def test_normal_access_init():
-    da = DocumentArray([])
+    da = DocArray([])
     da.document_type == AnyDoc
 
-    assert isinstance(da, DocumentArray)
+    assert isinstance(da, DocArray)

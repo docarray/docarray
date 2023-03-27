@@ -2,7 +2,7 @@ from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from torch.utils.data import Dataset
 
-from docarray import BaseDoc, DocumentArray, DocumentArrayStacked
+from docarray import BaseDoc, DocArray, DocArrayStacked
 from docarray.typing import TorchTensor
 from docarray.utils._typing import change_cls_name
 
@@ -14,7 +14,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     A dataset that can be used inside a PyTorch DataLoader.
     In other words, it implements the PyTorch Dataset interface.
 
-    :param da: the DocumentArray to be used as the dataset
+    :param da: the DocArray to be used as the dataset
     :param preprocessing: a dictionary of field names and preprocessing functions
 
     The preprocessing dictionary passed to the constructor consists of keys that are
@@ -24,7 +24,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     EXAMPLE USAGE
     .. code-block:: python
     from torch.utils.data import DataLoader
-    from docarray import DocumentArray
+    from docarray import DocArray
     from docarray.data import MultiModalDataset
     from docarray.documents import Text
 
@@ -33,7 +33,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         return f"Number {text}"
 
 
-    da = DocumentArray[Text](Text(text=str(i)) for i in range(16))
+    da = DocArray[Text](Text(text=str(i)) for i in range(16))
     ds = MultiModalDataset[Text](da, preprocessing={'text': prepend_number})
     loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[Text].collate_fn)
     for batch in loader:
@@ -51,7 +51,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     .. code-block:: python
     import torch
     from torch.utils.data import DataLoader
-    from docarray import DocumentArray, BaseDoc
+    from docarray import DocArray, BaseDoc
     from docarray.data import MultiModalDataset
     from docarray.documents import Text
 
@@ -78,7 +78,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         )
 
 
-    da = DocumentArray[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
+    da = DocArray[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
     ds = MultiModalDataset[Student](
         da,
         preprocessing={
@@ -96,7 +96,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(
-        self, da: 'DocumentArray[T_doc]', preprocessing: Dict[str, Callable]
+        self, da: 'DocArray[T_doc]', preprocessing: Dict[str, Callable]
     ) -> None:
         self.da = da
         self._preprocessing = preprocessing
@@ -123,12 +123,12 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     def collate_fn(cls, batch: List[T_doc]):
         doc_type = cls.document_type
         if doc_type:
-            batch_da = DocumentArrayStacked[doc_type](  # type: ignore
+            batch_da = DocArrayStacked[doc_type](  # type: ignore
                 batch,
                 tensor_type=TorchTensor,
             )
         else:
-            batch_da = DocumentArrayStacked(batch, tensor_type=TorchTensor)
+            batch_da = DocArrayStacked(batch, tensor_type=TorchTensor)
         return batch_da
 
     @classmethod

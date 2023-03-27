@@ -2,7 +2,7 @@ import json
 from typing import Dict, List, Union
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocumentArray
+from docarray.array.array.array import DocArray
 
 
 def filter_docs(
@@ -17,7 +17,7 @@ def filter_docs(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDoc
+        from docarray import DocArray, BaseDoc
         from docarray.documents import Text, Image
         from docarray.util.filter import filter_docs
 
@@ -28,7 +28,7 @@ def filter_docs(
             price: int
 
 
-        docs = DocumentArray[MyDocument](
+        docs = DocArray[MyDocument](
             [
                 MyDocument(
                     caption='A tiger in the jungle',
@@ -58,9 +58,9 @@ def filter_docs(
         assert results[0].caption == 'A couple birdwatching with binoculars'
         assert results[0].image.url == 'binocularsphoto.png'
 
-    :param docs: the DocumentArray where to apply the filter
+    :param docs: the DocArray where to apply the filter
     :param query: the query to filter by
-    :return: A DocumentArray containing the Documents
+    :return: A DocArray containing the Documents
     in `docs` that fulfill the filter conditions in the `query`
     """
     from docarray.utils.query_language.query_parser import QueryParser
@@ -68,7 +68,7 @@ def filter_docs(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocumentArray.__class_getitem__(docs.document_type)(
+        return DocArray.__class_getitem__(docs.document_type)(
             d for d in docs if parser.evaluate(d)
         )
     else:

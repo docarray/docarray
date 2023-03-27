@@ -13,7 +13,7 @@ from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils.cache import get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDoc, DocumentArray
+    from docarray import BaseDoc, DocArray
 
 SelfS3DocStore = TypeVar('SelfS3DocStore', bound='S3DocStore')
 
@@ -44,15 +44,15 @@ class _BufferedCachingReader:
 
 
 class S3DocStore(AbstractDocStore):
-    """Class to push and pull DocumentArray to and from S3."""
+    """Class to push and pull DocArray to and from S3."""
 
     @staticmethod
     def list(namespace: str, show_table: bool = False) -> List[str]:
-        """List all DocumentArrays in the specified bucket and namespace.
+        """List all DocArrays in the specified bucket and namespace.
 
         :param namespace: The bucket and namespace to list. e.g. my_bucket/my_namespace
         :param show_table: If true, a rich table will be printed to the console.
-        :return: A list of DocumentArray names.
+        :return: A list of DocArray names.
         """
         bucket, namespace = namespace.split('/', 1)
         s3 = boto3.resource('s3')
@@ -70,7 +70,7 @@ class S3DocStore(AbstractDocStore):
             from rich.table import Table
 
             table = Table(
-                title=f'You have {len(da_files)} DocumentArrays in bucket s3://{bucket} under the namespace "{namespace}"',
+                title=f'You have {len(da_files)} DocArrays in bucket s3://{bucket} under the namespace "{namespace}"',
                 box=box.SIMPLE,
                 highlight=True,
             )
@@ -90,7 +90,7 @@ class S3DocStore(AbstractDocStore):
 
     @staticmethod
     def delete(name: str, missing_ok: bool = True) -> bool:
-        """Delete the DocumentArray object at the specified bucket and key.
+        """Delete the DocArray object at the specified bucket and key.
 
         :param name: The bucket and key to delete. e.g. my_bucket/my_key
         :param missing_ok: If true, no error will be raised if the object does not exist.
@@ -115,15 +115,15 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfS3DocStore],
-        da: 'DocumentArray',
+        da: 'DocArray',
         name: str,
         public: bool = False,
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocumentArray object to the specified bucket and key.
+        """Push this DocArray object to the specified bucket and key.
 
-        :param da: The DocumentArray to push.
+        :param da: The DocArray to push.
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
         :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
@@ -173,17 +173,17 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocumentArray'],
+        da_cls: Type['DocArray'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
-    ) -> 'DocumentArray':
-        """Pull a :class:`DocumentArray` from the specified bucket and key.
+    ) -> 'DocArray':
+        """Pull a :class:`DocArray` from the specified bucket and key.
 
         :param name: The bucket and key to pull from. e.g. my_bucket/my_key
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocumentArray to local cache
-        :return: a :class:`DocumentArray` object
+        :param local_cache: store the downloaded DocArray to local cache
+        :return: a :class:`DocArray` object
         """
         da = da_cls(  # type: ignore
             cls.pull_stream(
@@ -195,7 +195,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull_stream(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocumentArray'],
+        da_cls: Type['DocArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -205,7 +205,7 @@ class S3DocStore(AbstractDocStore):
 
         :param name: The bucket and key to pull from. e.g. my_bucket/my_key
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocumentArray to local cache
+        :param local_cache: store the downloaded DocArray to local cache
         :return: An iterator of Documents
         """
 

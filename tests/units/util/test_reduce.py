@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Set
 
 import pytest
 
-from docarray import BaseDoc, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.utils.reduce import reduce, reduce_all
 
@@ -17,8 +17,8 @@ class MMDoc(BaseDoc):
     price: int = 0
     categories: Optional[List[str]] = None
     image: Optional[ImageDoc] = None
-    matches: Optional[DocumentArray] = None
-    matches_with_same_id: Optional[DocumentArray] = None
+    matches: Optional[DocArray] = None
+    matches_with_same_id: Optional[DocArray] = None
     opt_int: Optional[int] = None
     test_set: Optional[Set] = None
     inner_doc: Optional[InnerDoc] = None
@@ -31,9 +31,9 @@ def doc1():
         text='hey here',
         categories=['a', 'b', 'c'],
         price=10,
-        matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc](
-            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        matches=DocArray[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocArray[MMDoc](
+            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'a'},
         inner_doc=InnerDoc(integer=2, inner_list=['c', 'd']),
@@ -49,9 +49,9 @@ def doc2(doc1):
         categories=['d', 'e', 'f'],
         price=5,
         opt_int=5,
-        matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc](
-            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        matches=DocArray[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocArray[MMDoc](
+            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'b'},
         inner_doc=InnerDoc(integer=3, inner_list=['a', 'b']),
@@ -60,8 +60,8 @@ def doc2(doc1):
 
 
 def test_reduce_different_ids():
-    da1 = DocumentArray[MMDoc]([MMDoc() for _ in range(10)])
-    da2 = DocumentArray[MMDoc]([MMDoc() for _ in range(10)])
+    da1 = DocArray[MMDoc]([MMDoc() for _ in range(10)])
+    da2 = DocArray[MMDoc]([MMDoc() for _ in range(10)])
     result = reduce(da1, da2)
     assert len(result) == 20
     # da1 is changed in place (no extra memory)
@@ -69,8 +69,8 @@ def test_reduce_different_ids():
 
 
 def test_reduce(doc1, doc2):
-    da1 = DocumentArray[MMDoc]([doc1, MMDoc()])
-    da2 = DocumentArray[MMDoc]([MMDoc(), doc2])
+    da1 = DocArray[MMDoc]([doc1, MMDoc()])
+    da2 = DocArray[MMDoc]([MMDoc(), doc2])
     result = reduce(da1, da2)
     assert len(result) == 3
     # da1 is changed in place (no extra memory)
@@ -89,9 +89,9 @@ def test_reduce(doc1, doc2):
 
 
 def test_reduce_all(doc1, doc2):
-    da1 = DocumentArray[MMDoc]([doc1, MMDoc()])
-    da2 = DocumentArray[MMDoc]([MMDoc(), doc2])
-    da3 = DocumentArray[MMDoc]([MMDoc(), MMDoc(), doc1])
+    da1 = DocArray[MMDoc]([doc1, MMDoc()])
+    da2 = DocArray[MMDoc]([MMDoc(), doc2])
+    da3 = DocArray[MMDoc]([MMDoc(), MMDoc(), doc1])
     result = reduce_all([da1, da2, da3])
     assert len(result) == 5
     # da1 is changed in place (no extra memory)

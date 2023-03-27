@@ -36,8 +36,8 @@ from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
 if TYPE_CHECKING:
     import pandas as pd
 
-    from docarray import DocumentArray
-    from docarray.proto import DocumentArrayProto
+    from docarray import DocArray
+    from docarray.proto import DocArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
 
@@ -108,19 +108,19 @@ class IOMixinArray(Iterable[BaseDoc]):
         ...
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayProto') -> T:
         """create a Document from a protobuf message
-        :param pb_msg: The protobuf message from where to construct the DocumentArray
+        :param pb_msg: The protobuf message from where to construct the DocArray
         """
         return cls(
             cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
         )
 
-    def to_protobuf(self) -> 'DocumentArrayProto':
-        """Convert DocumentArray into a Protobuf message"""
-        from docarray.proto import DocumentArrayProto
+    def to_protobuf(self) -> 'DocArrayProto':
+        """Convert DocArray into a Protobuf message"""
+        from docarray.proto import DocArrayProto
 
-        da_proto = DocumentArrayProto()
+        da_proto = DocArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
@@ -134,13 +134,13 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
-        """Deserialize bytes into a DocumentArray.
+        """Deserialize bytes into a DocArray.
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the deserialized DocumentArray
+        :return: the deserialized DocArray
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(data),
@@ -270,13 +270,13 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
-        """Deserialize base64 strings into a DocumentArray.
+        """Deserialize base64 strings into a DocArray.
 
         :param data: Base64 string to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the deserialized DocumentArray
+        :return: the deserialized DocArray
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(base64.b64decode(data)),
@@ -312,17 +312,17 @@ class IOMixinArray(Iterable[BaseDoc]):
         cls: Type[T],
         file: Union[str, bytes, bytearray],
     ) -> T:
-        """Deserialize JSON strings or bytes into a DocumentArray.
+        """Deserialize JSON strings or bytes into a DocArray.
 
-        :param file: JSON object from where to deserialize a DocumentArray
-        :return: the deserialized DocumentArray
+        :param file: JSON object from where to deserialize a DocArray
+        :return: the deserialized DocArray
         """
         json_docs = json.loads(file)
         return cls([cls.document_type.parse_raw(v) for v in json_docs])
 
     def to_json(self) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
-        :return: JSON serialization of DocumentArray
+        :return: JSON serialization of DocArray
         """
         return json.dumps([doc.json() for doc in self])
 
@@ -332,36 +332,36 @@ class IOMixinArray(Iterable[BaseDoc]):
         file_path: str,
         encoding: str = 'utf-8',
         dialect: Union[str, csv.Dialect] = 'excel',
-    ) -> 'DocumentArray':
+    ) -> 'DocArray':
         """
-        Load a DocumentArray from a csv file following the schema defined in the
-        :attr:`~docarray.DocumentArray.document_type` attribute.
+        Load a DocArray from a csv file following the schema defined in the
+        :attr:`~docarray.DocArray.document_type` attribute.
         Every row of the csv file will be mapped to one document in the array.
         The column names (defined in the first row) have to match the field names
         of the Document type.
         For nested fields use "__"-separated access paths, such as 'image__url'.
 
-        List-like fields (including field of type DocumentArray) are not supported.
+        List-like fields (including field of type DocArray) are not supported.
 
-        :param file_path: path to csv file to load DocumentArray from.
+        :param file_path: path to csv file to load DocArray from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
         :param dialect: defines separator and how to handle whitespaces etc.
             Can be a csv.Dialect instance or one string of:
             'excel' (for comma seperated values),
             'excel-tab' (for tab separated values),
             'unix' (for csv file generated on UNIX systems).
-        :return: DocumentArray
+        :return: DocArray
         """
-        from docarray import DocumentArray
+        from docarray import DocArray
 
         if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+                'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
             )
 
         doc_type = cls.document_type
-        da = DocumentArray.__class_getitem__(doc_type)()
+        da = DocArray.__class_getitem__(doc_type)()
 
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
@@ -376,7 +376,7 @@ class IOMixinArray(Iterable[BaseDoc]):
             )
             if not all(valid_paths):
                 raise ValueError(
-                    f'Column names do not match the schema of the DocumentArray\'s '
+                    f'Column names do not match the schema of the DocArray\'s '
                     f'document type ({cls.document_type.__name__}): '
                     f'{list(compress(field_names, [not v for v in valid_paths]))}'
                 )
@@ -393,7 +393,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
     ) -> None:
         """
-        Save a DocumentArray to a csv file.
+        Save a DocArray to a csv file.
         The field names will be stored in the first row. Each row corresponds to the
         information of one Document.
         Columns for nested fields will be named after the "__"-seperated access paths,
@@ -417,17 +417,17 @@ class IOMixinArray(Iterable[BaseDoc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocumentArray':
+    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocArray':
         """
-        Load a DocumentArray from a `pandas.DataFrame` following the schema
-        defined in the :attr:`~docarray.DocumentArray.document_type` attribute.
+        Load a DocArray from a `pandas.DataFrame` following the schema
+        defined in the :attr:`~docarray.DocArray.document_type` attribute.
         Every row of the dataframe will be mapped to one Document in the array.
         The column names of the dataframe have to match the field names of the
         Document type.
         For nested fields use "__"-separated access paths as column names,
         such as 'image__url'.
 
-        List-like fields (including field of type DocumentArray) are not supported.
+        List-like fields (including field of type DocArray) are not supported.
 
         EXAMPLE USAGE:
 
@@ -435,7 +435,7 @@ class IOMixinArray(Iterable[BaseDoc]):
 
             import pandas as pd
 
-            from docarray import BaseDoc, DocumentArray
+            from docarray import BaseDoc, DocArray
 
 
             class Person(BaseDoc):
@@ -447,26 +447,26 @@ class IOMixinArray(Iterable[BaseDoc]):
                 data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
             )
 
-            da = DocumentArray[Person].from_pandas(df)
+            da = DocArray[Person].from_pandas(df)
 
             assert da.name == ['Maria', 'Jake']
             assert da.follower == [12345, 54321]
 
 
         :param df: pandas.DataFrame to extract Document's information from
-        :return: DocumentArray where each Document contains the information of one
+        :return: DocArray where each Document contains the information of one
             corresponding row of the `pandas.DataFrame`.
         """
-        from docarray import DocumentArray
+        from docarray import DocArray
 
         if cls.document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocumentArray\'s Document type using `DocumentArray[MyDoc]`.'
+                'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
             )
 
         doc_type = cls.document_type
-        da = DocumentArray.__class_getitem__(doc_type)()
+        da = DocArray.__class_getitem__(doc_type)()
         field_names = df.columns.tolist()
 
         if field_names is None or len(field_names) == 0:
@@ -477,7 +477,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         )
         if not all(valid_paths):
             raise ValueError(
-                f'Column names do not match the schema of the DocumentArray\'s '
+                f'Column names do not match the schema of the DocArray\'s '
                 f'document type ({cls.document_type.__name__}): '
                 f'{list(compress(field_names, [not v for v in valid_paths]))}'
             )
@@ -492,7 +492,7 @@ class IOMixinArray(Iterable[BaseDoc]):
 
     def to_pandas(self) -> 'pd.DataFrame':
         """
-        Save a DocumentArray to a `pandas.DataFrame`.
+        Save a DocArray to a `pandas.DataFrame`.
         The field names will be stored as column names. Each row of the dataframe corresponds
         to the information of one Document.
         Columns for nested fields will be named after the "__"-seperated access paths,
@@ -533,11 +533,11 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str],
         show_progress: bool,
     ):
-        """Read a `DocumentArray` object from a binary file
+        """Read a `DocArray` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: a `DocumentArray`
+        :return: a `DocArray`
         """
         with file_ctx as fp:
             if isinstance(fp, bytes):
@@ -551,9 +551,9 @@ class IOMixinArray(Iterable[BaseDoc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocumentArrayProto
+            from docarray.proto import DocArrayProto
 
-            dap = DocumentArrayProto()
+            dap = DocArrayProto()
             dap.ParseFromString(d)
 
             return cls.from_protobuf(dap)
@@ -677,7 +677,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
-        :return: a DocumentArray object
+        :return: a DocArray object
 
         .. note::
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
@@ -724,12 +724,12 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> None:
-        """Save DocumentArray into a binary file.
+        """Save DocArray into a binary file.
 
-        It will use the protocol to pick how to save the DocumentArray.
-        If used 'picke-array` and `protobuf-array` the DocumentArray will be stored
+        It will use the protocol to pick how to save the DocArray.
+        If used 'picke-array` and `protobuf-array` the DocArray will be stored
         and compressed at complete level using `pickle` or `protobuf`.
-        When using `protobuf` or `pickle` as protocol each Document in DocumentArray
+        When using `protobuf` or `pickle` as protocol each Document in DocArray
         will be stored individually and this would make it available for streaming.
 
         :param file: File or filename to which the data is saved.

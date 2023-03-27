@@ -293,7 +293,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
     @abc.abstractmethod
     def to_protobuf(self) -> 'NdArrayProto':
-        """Convert DocumentArray into a Protobuf message"""
+        """Convert DocArray into a Protobuf message"""
         ...
 
     def unwrap(self):

@@ -29,7 +29,7 @@ def map_docs(
 
     .. code-block:: python
 
-        from docarray import DocumentArray
+        from docarray import DocArray
         from docarray.documents import Image
         from docarray.utils.map import map_docs
 
@@ -39,15 +39,15 @@ def map_docs(
             return img
 
 
-        da = DocumentArray[Image]([Image(url='/path/to/img.png') for _ in range(100)])
-        da = DocumentArray[Image](
+        da = DocArray[Image]([Image(url='/path/to/img.png') for _ in range(100)])
+        da = DocArray[Image](
             list(map_docs(da, load_url_to_tensor, backend='thread'))
         )  # threading is usually a good option for IO-bound tasks such as loading an image from url
 
         for doc in da:
             assert doc.tensor is not None
 
-    :param da: DocumentArray to apply function to
+    :param da: DocArray to apply function to
     :param func: a function that takes a :class:`BaseDoc` as input and outputs
         a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
@@ -112,7 +112,7 @@ def map_docs_batch(
     EXAMPLE USAGE
 
     .. code-block:: python
-        from docarray import BaseDoc, DocumentArray
+        from docarray import BaseDoc, DocArray
         from docarray.utils.map import map_docs_batch
 
 
@@ -120,13 +120,13 @@ def map_docs_batch(
             name: str
 
 
-        def upper_case_name(da: DocumentArray[MyDoc]) -> DocumentArray[MyDoc]:
+        def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
             da.name = [n.upper() for n in da.name]
             return da
 
 
         batch_size = 16
-        da = DocumentArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+        da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
         it = map_docs_batch(da, upper_case_name, batch_size=batch_size)
         for i, d in enumerate(it):
             da[i * batch_size : (i + 1) * batch_size] = d
@@ -138,7 +138,7 @@ def map_docs_batch(
 
         ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
 
-    :param da: DocumentArray to apply function to
+    :param da: DocArray to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
@@ -166,7 +166,7 @@ def map_docs_batch(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
 
-    :yield: DocumentArrays returned from `func`
+    :yield: DocArrays returned from `func`
     """
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
