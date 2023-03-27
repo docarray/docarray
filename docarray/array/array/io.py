@@ -16,6 +16,7 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    Iterator,
     List,
     Optional,
     Tuple,
@@ -177,36 +178,59 @@ class IOMixinArray(Iterable[BaseDocument]):
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
             elif protocol in SINGLE_PROTOCOLS:
-                from rich import filesize
-
-                from docarray.utils.progress_bar import _get_progressbar
-
-                pbar, t = _get_progressbar(
-                    'Serializing', disable=not show_progress, total=len(self)
+                f.write(
+                    b''.join(
+                        self.to_binary_stream(
+                            protocol=protocol,
+                            compress=compress,
+                            show_progress=show_progress,
+                        )
+                    )
                 )
-
-                f.write(self._stream_header)
-
-                with pbar:
-                    _total_size = 0
-                    pbar.start_task(t)
-                    for doc in self:
-                        doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
-                        len_doc_as_bytes = len(doc_bytes).to_bytes(
-                            4, 'big', signed=False
-                        )
-                        all_bytes = len_doc_as_bytes + doc_bytes
-                        f.write(all_bytes)
-                        _total_size += len(all_bytes)
-                        pbar.update(
-                            t,
-                            advance=1,
-                            total_size=str(filesize.decimal(_total_size)),
-                        )
             else:
                 raise ValueError(
                     f'protocol={protocol} is not supported. Can be only {ALLOWED_PROTOCOLS}.'
                 )
+
+    def to_binary_stream(
+        self,
+        protocol: str = 'protobuf',
+        compress: Optional[str] = None,
+        show_progress: bool = False,
+    ) -> Iterator[bytes]:
+        from rich import filesize
+
+        if show_progress:
+            from docarray.utils.progress_bar import _get_progressbar
+
+            pbar, t = _get_progressbar(
+                'Serializing', disable=not show_progress, total=len(self)
+            )
+        else:
+            from contextlib import nullcontext
+
+            pbar = nullcontext()
+
+        yield self._stream_header
+
+        with pbar:
+            if show_progress:
+                _total_size = 0
+                pbar.start_task(t)
+            for doc in self:
+                doc_bytes = doc.to_bytes(protocol=protocol, compress=compress)
+                len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
+                all_bytes = len_doc_as_bytes + doc_bytes
+
+                yield all_bytes
+
+                if show_progress:
+                    _total_size += len(all_bytes)
+                    pbar.update(
+                        t,
+                        advance=1,
+                        total_size=str(filesize.decimal(_total_size)),
+                    )
 
     def to_bytes(
         self,
@@ -584,7 +608,7 @@ class IOMixinArray(Iterable[BaseDocument]):
     def _load_binary_stream(
         cls: Type[T],
         file_ctx: ContextManager[io.BufferedReader],
-        protocol: Optional[str] = None,
+        protocol: str = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> Generator['BaseDocument', None, None]:
@@ -598,37 +622,43 @@ class IOMixinArray(Iterable[BaseDocument]):
 
         from rich import filesize
 
-        from docarray import BaseDocument
-        from docarray.utils.progress_bar import _get_progressbar
-
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
-            pbar, t = _get_progressbar(
-                'Deserializing', disable=not show_progress, total=num_docs
-            )
+            if show_progress:
+                from docarray.utils.progress_bar import _get_progressbar
+
+                pbar, t = _get_progressbar(
+                    'Deserializing', disable=not show_progress, total=num_docs
+                )
+            else:
+                from contextlib import nullcontext
+
+                pbar = nullcontext()
 
             with pbar:
-                _total_size = 0
-                pbar.start_task(t)
+                if show_progress:
+                    _total_size = 0
+                    pbar.start_task(t)
                 for _ in range(num_docs):
                     # 4 bytes (uint32)
                     len_current_doc_in_bytes = int.from_bytes(
                         f.read(4), 'big', signed=False
                     )
-                    _total_size += len_current_doc_in_bytes
-                    load_protocol: str = protocol or 'protobuf'
-                    yield BaseDocument.from_bytes(
+                    load_protocol: str = protocol
+                    yield cls.document_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
                         compress=compress,
                     )
-                    pbar.update(
-                        t, advance=1, total_size=str(filesize.decimal(_total_size))
-                    )
+                    if show_progress:
+                        _total_size += len_current_doc_in_bytes
+                        pbar.update(
+                            t, advance=1, total_size=str(filesize.decimal(_total_size))
+                        )
 
     @classmethod
     def load_binary(
@@ -670,12 +700,18 @@ class IOMixinArray(Iterable[BaseDocument]):
         else:
             raise FileNotFoundError(f'cannot find file {file}')
         if streaming:
-            return cls._load_binary_stream(
-                file_ctx,
-                protocol=load_protocol,
-                compress=load_compress,
-                show_progress=show_progress,
-            )
+            if load_protocol not in SINGLE_PROTOCOLS:
+                raise ValueError(
+                    f'`streaming` is only available when using {" or ".join(map(lambda x: f"`{x}`", SINGLE_PROTOCOLS))} as protocol, '
+                    f'got {load_protocol}'
+                )
+            else:
+                return cls._load_binary_stream(
+                    file_ctx,
+                    protocol=load_protocol,
+                    compress=load_compress,
+                    show_progress=show_progress,
+                )
         else:
             return cls._load_binary_all(
                 file_ctx, load_protocol, load_compress, show_progress
