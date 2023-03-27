@@ -5,7 +5,9 @@ repo_name: docarray/docarray
 repo_url: https://github.com/docarray/docarray
 edit_uri: ''
 theme:
-#  logo: assets/favicon.png
+  logo: assets/logo-light.svg
+
+  favicon: assets/favicon.png
   name: material
   features:
 #    - navigation.sections
@@ -18,12 +20,15 @@ theme:
         icon: material/brightness-7
         name: Switch to dark mode
 
+
     # Palette toggle for dark mode
     - scheme: slate
       primary: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+#        logo: assets/docarray-light.svg
+
     #primary: teal
 markdown_extensions:
   - pymdownx.highlight:
