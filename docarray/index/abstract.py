@@ -27,14 +27,16 @@ from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import unwrap_optional_type
-from docarray.utils._internal.misc import is_tf_available, torch_imported
+from docarray.utils._internal.misc import import_library, is_tf_available
 from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
-if torch_imported:
+if TYPE_CHECKING:
     import torch
+else:
+    torch = import_library('torch', raise_error=False)
 
 if is_tf_available():
     import tensorflow as tf  # type: ignore
@@ -818,7 +820,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             return val.unwrap().numpy()
         if isinstance(val, (list, tuple)):
             return np.array(val)
-        if (torch_imported and isinstance(val, torch.Tensor)) or (
+        if (torch is not None and isinstance(val, torch.Tensor)) or (
             is_tf_available() and isinstance(val, tf.Tensor)
         ):
             return val.numpy()

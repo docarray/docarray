@@ -5,11 +5,12 @@ import numpy as np
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library, is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_tf_available
 
-torch_available = is_torch_available()
-if torch_available:
+if TYPE_CHECKING:
     import torch
+else:
+    torch = import_library('torch', raise_error=False)
 
 tf_available = is_tf_available()
 if tf_available:
@@ -36,7 +37,7 @@ class PointsAndColors(BaseDoc):
         value: Union[str, AbstractTensor, Any],
     ) -> T:
         if isinstance(value, (AbstractTensor, np.ndarray)) or (
-            torch_available
+            torch is not None
             and isinstance(value, torch.Tensor)
             or (tf_available and isinstance(value, tf.Tensor))
         ):

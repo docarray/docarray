@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
@@ -6,13 +6,15 @@ from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_tf_available
 
 T = TypeVar('T', bound='ImageDoc')
 
-torch_available = is_torch_available()
-if torch_available:
+if TYPE_CHECKING:
     import torch
+else:
+    torch = import_library('torch', raise_error=False)
+
 
 tf_available = is_tf_available()
 if tf_available:
@@ -99,7 +101,7 @@ class ImageDoc(BaseDoc):
             value = cls(url=value)
         elif (
             isinstance(value, (AbstractTensor, np.ndarray))
-            or (torch_available and isinstance(value, torch.Tensor))
+            or (torch is not None and isinstance(value, torch.Tensor))
             or (tf_available and isinstance(value, tf.Tensor))
         ):
             value = cls(tensor=value)

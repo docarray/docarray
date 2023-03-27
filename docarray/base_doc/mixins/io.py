@@ -21,7 +21,7 @@ from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
@@ -29,10 +29,11 @@ if tf_available:
 
     from docarray.typing import TensorFlowTensor
 
-torch_available = is_torch_available()
-if torch_available:
-    import torch
 
+if TYPE_CHECKING:
+    import torch
+else:
+    torch = import_library('torch', raise_error=False)
     from docarray.typing import TorchTensor
 
 if TYPE_CHECKING:
@@ -68,7 +69,7 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
         return nested_item
 
     base_node_wrap: BaseNode
-    if torch_available:
+    if torch is not None:
         if isinstance(value, torch.Tensor):
             base_node_wrap = TorchTensor._docarray_from_native(value)
             return base_node_wrap._to_node_protobuf()

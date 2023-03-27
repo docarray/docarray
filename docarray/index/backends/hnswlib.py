@@ -29,7 +29,7 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
-from docarray.utils._internal.misc import import_library, is_np_int, is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_np_int, is_tf_available
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
 
@@ -43,10 +43,15 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-if is_torch_available():
-    import torch
 
+if TYPE_CHECKING:
+    import torch
+else:
+    torch = import_library('torch', raise_error=False)
+
+if torch is not None:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+
 
 if is_tf_available():
     import tensorflow as tf  # type: ignore
