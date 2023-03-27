@@ -19,7 +19,7 @@ from docarray.typing import ImageUrl
 
 
 class BannerDoc(BaseDoc):
-    img_url: ImageUrl
+    image_url: ImageUrl
     title: str
     description: str
 ```
@@ -33,7 +33,7 @@ banner = BannerDoc(
     description="This is a banner",
 )
 
-assert banner.img_url == "https://example.com/image.png"
+assert banner.image_url == "https://example.com/image.png"
 assert banner.title == "Hello World"
 assert banner.description == "This is a banner"
 ```

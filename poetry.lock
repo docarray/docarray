@@ -1780,6 +1780,21 @@ griffe = ">=0.24"
 mkdocstrings = ">=0.19"
 
 [[package]]
+name = "mktestdocs"
+version = "0.2.0"
+description = ""
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mktestdocs-0.2.0-py2.py3-none-any.whl", hash = "sha256:0ce2ba702dfe7f2a516878fd1787d4c1f95e4a088248893bb5788ac037010559"},
+    {file = "mktestdocs-0.2.0.tar.gz", hash = "sha256:a6b401c63ac02ab683443e0fcb27c58fc8c2264cf4e9e93835741d234f917267"},
+]
+
+[package.extras]
+test = ["pytest (>=4.0.2)"]
+
+[[package]]
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
@@ -4015,4 +4030,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "e2db7830e67ddd737fe6c47eac5ecc746afd2ce47a4cef013182b30e50a3737d"
+content-hash = "c5b13c9b48aa9edf9d494ce8ba91cfdd9f78d4220ae758ac8a74b69963fc7253"
