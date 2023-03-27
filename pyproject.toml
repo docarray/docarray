@@ -40,6 +40,9 @@ pandas = ["pandas"]
 jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]
 
+# all
+full = ["protobuf", "lz4", "pillow", "types-pillow", "av", "pydub", "trimesh"]
+
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
 pre-commit = ">=2.20.0"
