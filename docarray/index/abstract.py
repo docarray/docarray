@@ -44,7 +44,8 @@ if TYPE_CHECKING:
     from docarray.typing import TensorFlowTensor
 else:
     tf = import_library('tensorflow', raise_error=False)
-    from docarray.typing import TensorFlowTensor
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
