@@ -1,5 +1,6 @@
 import importlib
-from typing import Any
+import types
+from typing import Any, Optional
 
 import numpy as np
 
@@ -18,8 +19,6 @@ except (ImportError, TypeError):
 else:
     tf_imported = True
 
-import types
-from typing import Optional
 
 INSTALL_INSTRUCTIONS = {
     'pandas': 'pip install "docarray[common]"',
@@ -33,6 +32,8 @@ INSTALL_INSTRUCTIONS = {
     'fastapi': 'pip install "docarray[web]"',
     'torch': 'pip install "docarray[torch]"',
     'tensorflow': 'pip install pip install protobuf==3.19.0 tensorflow',
+    'smart-open.open': 'pip install "docarray[aws]"',
+    'hubble': 'pip install "docarray[jac]"',
 }
 
 

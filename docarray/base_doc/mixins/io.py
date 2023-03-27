@@ -25,26 +25,19 @@ from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    import torch
+    from pydantic.fields import ModelField
 
-    from docarray.typing import TensorFlowTensor
+    from docarray.proto import DocumentProto, NodeProto
+    from docarray.typing import TensorFlowTensor, TorchTensor
 else:
     tf = import_library('tensorflow', raise_error=False)
     if tf is not None:
         from docarray.typing import TensorFlowTensor
 
-if TYPE_CHECKING:
-    import torch
-
-    from docarray.typing import TorchTensor
-else:
     torch = import_library('torch', raise_error=False)
     if torch is not None:
         from docarray.typing import TorchTensor
-
-if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-
-    from docarray.proto import DocumentProto, NodeProto
 
 
 T = TypeVar('T', bound='IOMixin')

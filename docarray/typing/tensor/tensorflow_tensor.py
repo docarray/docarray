@@ -2,23 +2,22 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 
+from docarray.base_doc.base_node import BaseNode
+from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
+    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+    from docarray.proto import NdArrayProto
 else:
     tf = import_library('tensorflow', raise_error=True)
 
-from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-    from pydantic import BaseConfig
-    from docarray.proto import NdArrayProto
-    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
-
-from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')

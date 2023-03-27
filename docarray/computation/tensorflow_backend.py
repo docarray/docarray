@@ -3,6 +3,9 @@ from typing import TYPE_CHECKING, Callable, List, Optional, Tuple
 
 import numpy as np
 
+from docarray.computation import AbstractComputationalBackend
+from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
+from docarray.typing import TensorFlowTensor
 from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
@@ -11,10 +14,6 @@ if TYPE_CHECKING:
 else:
     tf = import_library('tensorflow', raise_error=True)
     tnp = tf._api.v2.experimental.numpy
-
-from docarray.computation import AbstractComputationalBackend
-from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
-from docarray.typing import TensorFlowTensor
 
 
 def _unsqueeze_if_single_axis(*matrices: tf.Tensor) -> List[tf.Tensor]:

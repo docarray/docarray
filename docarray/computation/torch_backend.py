@@ -2,14 +2,13 @@ from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
 
 import numpy as np
 
+from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
 from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import torch
 else:
     torch = import_library('torch', raise_error=True)
-
-from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
 
 
 def _unsqueeze_if_single_axis(*matrices: torch.Tensor) -> List[torch.Tensor]:

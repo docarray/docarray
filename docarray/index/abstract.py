@@ -31,21 +31,16 @@ from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-
-if TYPE_CHECKING:
-    import torch
-else:
-    torch = import_library('torch', raise_error=False)
-
-if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    import torch
+    from pydantic.fields import ModelField
 
     from docarray.typing import TensorFlowTensor
 else:
     tf = import_library('tensorflow', raise_error=False)
     if tf is not None:
         from docarray.typing import TensorFlowTensor
+    torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 

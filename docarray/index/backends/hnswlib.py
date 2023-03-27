@@ -35,35 +35,28 @@ from docarray.utils.find import _FindResult
 
 if TYPE_CHECKING:
     import hnswlib
+    import tensorflow as tf  # type: ignore
+    import torch
+
+    from docarray.typing import TensorFlowTensor
 else:
-    hnswlib = import_library('hnswlib')
-
-
-TSchema = TypeVar('TSchema', bound=BaseDoc)
-T = TypeVar('T', bound='HnswDocumentIndex')
+    hnswlib = import_library('hnswlib', raise_error=True)
+    torch = import_library('torch', raise_error=False)
+    tf = import_library('tensorflow', raise_error=False)
+    from docarray.typing import TensorFlowTensor
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-
-if TYPE_CHECKING:
-    import torch
-else:
-    torch = import_library('torch', raise_error=False)
 
 if torch is not None:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
-
-if TYPE_CHECKING:
-    import tensorflow as tf  # type: ignore
-
-    from docarray.typing import TensorFlowTensor
-else:
-    tf = import_library('tensorflow', raise_error=False)
-    from docarray.typing import TensorFlowTensor
-
 if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
     HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
+
+
+TSchema = TypeVar('TSchema', bound=BaseDoc)
+T = TypeVar('T', bound='HnswDocumentIndex')
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead

@@ -11,15 +11,11 @@ from docarray.typing.url.video_url import VideoUrl
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
     import torch
 else:
-    torch = import_library('torch', raise_error=False)
-
-
-if TYPE_CHECKING:
-    import tensorflow as tf  # type: ignore
-else:
     tf = import_library('tensorflow', raise_error=False)
+    torch = import_library('torch', raise_error=False)
 
 
 T = TypeVar('T', bound='VideoDoc')

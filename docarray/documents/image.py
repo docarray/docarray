@@ -8,17 +8,14 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
 from docarray.utils._internal.misc import import_library
 
-T = TypeVar('T', bound='ImageDoc')
-
-if TYPE_CHECKING:
-    import torch
-else:
-    torch = import_library('torch', raise_error=False)
-
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    import torch
 else:
     tf = import_library('tensorflow', raise_error=False)
+    torch = import_library('torch', raise_error=False)
+
+T = TypeVar('T', bound='ImageDoc')
 
 
 class ImageDoc(BaseDoc):

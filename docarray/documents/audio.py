@@ -10,13 +10,10 @@ from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
     import torch
 else:
     torch = import_library('torch', raise_error=False)
-
-if TYPE_CHECKING:
-    import tensorflow as tf  # type: ignore
-else:
     tf = import_library('tensorflow', raise_error=False)
 
 
