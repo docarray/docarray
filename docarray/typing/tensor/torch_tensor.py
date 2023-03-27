@@ -9,6 +9,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
+    import torch
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
