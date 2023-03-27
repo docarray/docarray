@@ -40,10 +40,11 @@ if TYPE_CHECKING:
 
     from docarray.typing import TensorFlowTensor
 else:
-    hnswlib = import_library('hnswlib', raise_error=True)
+    hnswlib = import_library('hnswlib', raise_error=False)
     torch = import_library('torch', raise_error=False)
     tf = import_library('tensorflow', raise_error=False)
-    from docarray.typing import TensorFlowTensor
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
 
 HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
 
