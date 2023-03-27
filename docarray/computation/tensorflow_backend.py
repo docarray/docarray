@@ -1,9 +1,16 @@
 import typing
-from typing import Callable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Callable, List, Optional, Tuple
 
 import numpy as np
-import tensorflow as tf  # type: ignore
-import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+
+from docarray.utils.misc import import_library
+
+if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+else:
+    tf = import_library('tensorflow', raise_error=True)
+    tnp = tf._api.v2.experimental.numpy
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend

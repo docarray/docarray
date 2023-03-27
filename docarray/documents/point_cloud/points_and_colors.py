@@ -5,16 +5,17 @@ import numpy as np
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library, is_tf_available
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     import torch
 else:
     torch = import_library('torch', raise_error=False)
 
-tf_available = is_tf_available()
-if tf_available:
+if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+else:
+    tf = import_library('tensorflow', raise_error=False)
 
 T = TypeVar('T', bound='PointsAndColors')
 
@@ -39,7 +40,7 @@ class PointsAndColors(BaseDoc):
         if isinstance(value, (AbstractTensor, np.ndarray)) or (
             torch is not None
             and isinstance(value, torch.Tensor)
-            or (tf_available and isinstance(value, tf.Tensor))
+            or (tf is not None and isinstance(value, tf.Tensor))
         ):
             value = cls(points=value)
 

@@ -38,9 +38,12 @@ if TYPE_CHECKING:
 else:
     torch = import_library('torch', raise_error=False)
 
-if is_tf_available():
+if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
 
+    from docarray.typing import TensorFlowTensor
+else:
+    tf = import_library('tensorflow', raise_error=False)
     from docarray.typing import TensorFlowTensor
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)

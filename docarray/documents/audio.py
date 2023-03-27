@@ -7,16 +7,17 @@ from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
-from docarray.utils._internal.misc import import_library, is_tf_available
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     import torch
 else:
     torch = import_library('torch', raise_error=False)
 
-tf_available = is_tf_available()
-if tf_available:
+if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+else:
+    tf = import_library('tensorflow', raise_error=False)
 
 
 T = TypeVar('T', bound='AudioDoc')
@@ -113,7 +114,7 @@ class AudioDoc(BaseDoc):
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
             torch is not None
             and isinstance(value, torch.Tensor)
-            or (tf_available and isinstance(value, tf.Tensor))
+            or (tf is not None and isinstance(value, tf.Tensor))
         ):
             value = cls(tensor=value)
 

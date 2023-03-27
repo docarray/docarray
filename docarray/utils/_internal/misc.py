@@ -31,6 +31,8 @@ INSTALL_INSTRUCTIONS = {
     'trimesh': 'pip install "docarray[mesh]"',
     'hnswlib': 'pip install "docarray[hnswlib]"',
     'fastapi': 'pip install "docarray[web]"',
+    'torch': 'pip install "docarray[torch]"',
+    'tensorflow': 'pip install pip install protobuf==3.19.0 tensorflow',
 }
 
 

@@ -1,7 +1,13 @@
 from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
-import tensorflow as tf  # type: ignore
+
+from docarray.utils.misc import import_library
+
+if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+else:
+    tf = import_library('tensorflow', raise_error=True)
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
