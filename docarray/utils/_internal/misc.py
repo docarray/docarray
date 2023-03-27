@@ -24,7 +24,7 @@ from typing import Optional
 INSTALL_INSTRUCTIONS = {
     'pandas': 'pip install "docarray[common]"',
     'google.protobuf': 'pip install "docarray[common]"',
-    'lz4': 'pip install "docarray[common]"',
+    'lz4.frame': 'pip install "docarray[common]"',
     'PIL.Image': 'pip install "docarray[image]"',
     'pydub': 'pip install "docarray[audio]"',
     'av': 'pip install "docarray[video]"',

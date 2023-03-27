@@ -1,11 +1,16 @@
-from typing import IO, Callable, Optional
+from typing import IO, TYPE_CHECKING, Callable, Optional
+
+from docarray.utils._internal.misc import import_library
 
 
 def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
     if algorithm == 'lz4':
-        import lz4.frame  # type: ignore
+        if TYPE_CHECKING:
+            import lz4.frame as lz4_frame  # type: ignore
+        else:
+            lz4_frame = import_library('lz4.frame')
 
-        data = lz4.frame.compress(data)
+        data = lz4_frame.compress(data)
     elif algorithm == 'bz2':
         import bz2
 
@@ -27,9 +32,13 @@ def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
 
 def _decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
     if algorithm == 'lz4':
-        import lz4.frame  # type: ignore
 
-        data = lz4.frame.decompress(data)
+        if TYPE_CHECKING:
+            import lz4.frame as lz4_frame  # type: ignore
+        else:
+            lz4_frame = import_library('lz4.frame')
+
+        data = lz4_frame.decompress(data)
     elif algorithm == 'bz2':
         import bz2
 
@@ -51,10 +60,14 @@ def _decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
 
 def _get_compress_ctx(algorithm: Optional[str] = None) -> Optional[Callable]:
     if algorithm == 'lz4':
-        import lz4.frame  # type: ignore
+
+        if TYPE_CHECKING:
+            import lz4.frame as lz4_frame  # type: ignore
+        else:
+            lz4_frame = import_library('lz4.frame')
 
         def _fun(x: IO[bytes]):
-            return lz4.frame.LZ4FrameFile(x, 'wb')
+            return lz4_frame.LZ4FrameFile(x, 'wb')
 
         compress_ctx = _fun
     elif algorithm == 'gzip':
