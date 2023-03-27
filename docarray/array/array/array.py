@@ -19,6 +19,7 @@ from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.array.array.io import IOMixinArray
+from docarray.array.array.pushpull import PushPullMixin
 from docarray.array.array.sequence_indexing_mixin import (
     IndexingSequenceMixin,
     IndexIterType,
@@ -57,7 +58,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocumentArray(
-    IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
+    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocumentArray[T_doc]
 ):
     """
      DocumentArray is a container of Documents.
