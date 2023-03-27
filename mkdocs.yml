@@ -43,9 +43,21 @@ markdown_extensions:
 
 plugins:
   - search
+  - awesome-pages
   - mkdocstrings:
       handlers:
         python:
           options:
             docstring_style: sphinx
             inherited_members: true
+
+nav:
+  - Home: README.md
+  - User Guide:
+    - user_guide/intro.md
+  - Tutorials:
+    - tutorials/add_doc_index.md
+    - tutorials/multimodal_training_and_serving.md
+    - tutorials/optimize_performance_with_id_generation.md
+  - ...
+  - Contributing: CONTRIBUTING.md
