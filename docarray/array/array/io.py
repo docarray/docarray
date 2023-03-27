@@ -25,7 +25,7 @@ from typing import (
     Union,
 )
 
-from docarray.base_document import AnyDoc, BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
     _all_access_paths_valid,

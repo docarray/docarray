@@ -6,7 +6,7 @@ from rich.tree import Tree
 from typing_extensions import TYPE_CHECKING
 from typing_inspect import is_optional_type, is_union_type
 
-from docarray.base_document.doc import BaseDoc
+from docarray.base_doc.doc import BaseDoc
 from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

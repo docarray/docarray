@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from docarray.base_document.doc import BaseDoc
+from docarray.base_doc.doc import BaseDoc
 
 
 def test_base_document_init():

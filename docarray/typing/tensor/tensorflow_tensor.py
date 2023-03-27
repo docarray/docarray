@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')

@@ -3,7 +3,7 @@ __version__ = '0.30.0a3'
 import logging
 
 from docarray.array import DocArray, DocArrayStacked
-from docarray.base_document.doc import BaseDoc
+from docarray.base_doc.doc import BaseDoc
 
 __all__ = ['BaseDoc', 'DocArray', 'DocArrayStacked']
 

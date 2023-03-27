@@ -331,7 +331,7 @@ from httpx import AsyncClient
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_document import DocumentResponse
+from docarray.base_doc import DocumentResponse
 
 
 class InputDoc(BaseDoc):

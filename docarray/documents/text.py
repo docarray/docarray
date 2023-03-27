@@ -1,6 +1,6 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDoc
+from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 

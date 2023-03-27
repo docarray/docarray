@@ -2,7 +2,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDoc
+from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor

@@ -1,6 +1,6 @@
 import numpy as np
 
-from docarray.base_document import AnyDoc, BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 

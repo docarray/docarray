@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray import BaseDoc
-from docarray.base_document import DocResponse
+from docarray.base_doc import DocResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 

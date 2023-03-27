@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import BaseDoc
-from docarray.base_document import AnyDoc
+from docarray.base_doc import AnyDoc
 from docarray.typing import (
     AnyEmbedding,
     AnyUrl,

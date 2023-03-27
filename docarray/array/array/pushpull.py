@@ -137,7 +137,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         :param local_cache: store the downloaded DocArray to local folder
         :return: a :class:`DocArray` object
         """
-        from docarray.base_document import AnyDoc
+        from docarray.base_doc import AnyDoc
 
         if cls.document_type == AnyDoc:
             raise TypeError(
@@ -165,7 +165,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         :param local_cache: store the downloaded DocArray to local folder
         :return: Iterator of Documents
         """
-        from docarray.base_document import AnyDoc
+        from docarray.base_doc import AnyDoc
 
         if cls.document_type == AnyDoc:
             raise TypeError(

@@ -1,6 +1,6 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDoc
+from docarray.base_doc import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing.tensor.embedding import AnyEmbedding
 from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl

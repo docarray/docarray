@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')

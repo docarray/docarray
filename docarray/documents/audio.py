@@ -2,7 +2,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDoc
+from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor

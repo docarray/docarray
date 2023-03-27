@@ -22,8 +22,8 @@ from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocArray
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
-from docarray.base_document import BaseDoc
-from docarray.base_document.mixins.io import _type_to_protobuf
+from docarray.base_doc import BaseDoc
+from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union

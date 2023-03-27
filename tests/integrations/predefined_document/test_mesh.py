@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic import parse_obj_as
 
-from docarray.base_document.doc import BaseDoc
+from docarray.base_doc.doc import BaseDoc
 from docarray.documents import Mesh3D
 from tests import TOYDATA_DIR
 

@@ -5,9 +5,9 @@ import orjson
 from pydantic import BaseModel, Field
 from rich.console import Console
 
-from docarray.base_document.base_node import BaseNode
-from docarray.base_document.io.json import orjson_dumps, orjson_dumps_and_decode
-from docarray.base_document.mixins import IOMixin, UpdateMixin
+from docarray.base_doc.base_node import BaseNode
+from docarray.base_doc.io.json import orjson_dumps, orjson_dumps_and_decode
+from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 
 if TYPE_CHECKING:

@@ -342,7 +342,7 @@ FastAPI will be able to automatically translate it into a fully fledged API with
 
 ```python
 from fastapi import FastAPI
-from docarray.base_document import DocumentResponse
+from docarray.base_doc import DocumentResponse
 ```
 
 ```python

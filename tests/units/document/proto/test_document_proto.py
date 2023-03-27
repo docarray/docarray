@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from docarray import DocArray
-from docarray.base_document import BaseDoc
+from docarray.base_doc import BaseDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils.misc import is_tf_available
 

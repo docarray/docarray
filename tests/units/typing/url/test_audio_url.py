@@ -6,7 +6,7 @@ import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDoc
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AudioTorchTensor, AudioUrl
 from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR

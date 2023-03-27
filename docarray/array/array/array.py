@@ -24,7 +24,7 @@ from docarray.array.array.sequence_indexing_mixin import (
     IndexingSequenceMixin,
     IndexIterType,
 )
-from docarray.base_document import AnyDoc, BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:

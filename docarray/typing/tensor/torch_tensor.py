@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
     from docarray.computation.torch_backend import TorchCompBackend
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
