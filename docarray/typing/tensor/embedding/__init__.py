@@ -3,19 +3,24 @@ from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
 
 __all__ = ['NdArrayEmbedding', 'AnyEmbedding']
 
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    from docarray.typing.tensor.embedding.torch import TorchEmbedding  # noqa F401
-
-    __all__.append('TorchEmbedding')
+torch_tensors = ['TorchEmbedding']
+tf_tensors = ['TensorFlowEmbedding']
 
 
-tf_available = is_tf_available()
-if tf_available:
-    from docarray.typing.tensor.embedding.tensorflow import (  # noqa F401
-        TensorFlowEmbedding,
-    )
+def __getattr__(name: str):
+    if name in torch_tensors:
+        import_library('torch', raise_error=True)
+        from docarray.typing.tensor.embedding.torch import TorchEmbedding  # noqa
 
-    __all__.append('TensorFlowEmbedding')
+        __all__.extend(torch_tensors)
+
+    elif name in tf_tensors:
+        import_library('tensorflow', raise_error=True)
+
+        from docarray.typing.tensor.embedding.tensorflow import (  # noqa
+            TensorFlowEmbedding,
+        )
+
+        __all__.extend(tf_tensors)

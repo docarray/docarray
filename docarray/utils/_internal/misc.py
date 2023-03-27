@@ -21,19 +21,21 @@ else:
 
 
 INSTALL_INSTRUCTIONS = {
-    'pandas': 'pip install "docarray[common]"',
-    'google.protobuf': 'pip install "docarray[common]"',
-    'lz4.frame': 'pip install "docarray[common]"',
-    'PIL.Image': 'pip install "docarray[image]"',
-    'pydub': 'pip install "docarray[audio]"',
-    'av': 'pip install "docarray[video]"',
-    'trimesh': 'pip install "docarray[mesh]"',
-    'hnswlib': 'pip install "docarray[hnswlib]"',
-    'fastapi': 'pip install "docarray[web]"',
-    'torch': 'pip install "docarray[torch]"',
-    'tensorflow': 'pip install pip install protobuf==3.19.0 tensorflow',
-    'smart-open.open': 'pip install "docarray[aws]"',
-    'hubble': 'pip install "docarray[jac]"',
+    'pandas': '"docarray[common]"',
+    'google.protobuf': '"docarray[common]"',
+    'lz4.frame': '"docarray[common]"',
+    'PIL.Image': '"docarray[image]"',
+    'pydub': '"docarray[audio]"',
+    'av': '"docarray[video]"',
+    'trimesh': '"docarray[mesh]"',
+    'hnswlib': '"docarray[hnswlib]"',
+    'fastapi': '"docarray[web]"',
+    'torch': '"docarray[torch]"',
+    'tensorflow': 'protobuf==3.19.0 tensorflow',
+    'smart_open': '"docarray[aws]"',
+    'boto3': '"docarray[aws]"',
+    'botocore': '"docarray[aws]"',
+    'hubble': '"docarray[jac]"',
 }
 
 
@@ -49,7 +51,7 @@ def import_library(
     if lib is None and raise_error:
         raise RuntimeError(
             f'{package} is not installed. To install all the necessary libraries to use the hnsw backend, '
-            f'please do: `{INSTALL_INSTRUCTIONS[package]}`.'
+            f'please do: `pip install {INSTALL_INSTRUCTIONS[package]}`.'
         )
     else:
         return lib

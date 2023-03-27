@@ -37,39 +37,43 @@ __all__ = [
     'ImageNdArray',
 ]
 
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
-    from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
-    from docarray.typing.tensor.image import ImageTorchTensor  # noqa:  F401
-    from docarray.typing.tensor.video.video_torch_tensor import VideoTorchTensor  # noqa
+torch_tensors = [
+    'AudioTorchTensor',
+    'TorchEmbedding',
+    'TorchTensor',
+    'VideoTorchTensor',
+    'ImageTorchTensor',
+]
 
-    __all__.extend(
-        [
-            'AudioTorchTensor',
-            'TorchEmbedding',
-            'TorchTensor',
-            'VideoTorchTensor',
-            'ImageTorchTensor',
-        ]
-    )
+tf_tensors = [
+    'TensorFlowTensor',
+    'TensorFlowEmbedding',
+    'AudioTensorFlowTensor',
+    'ImageTensorFlowTensor',
+    'VideoTensorFlowTensor',
+]
 
-tf_available = is_tf_available()
-if tf_available:
-    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa
 
-    __all__.extend(
-        [
-            'TensorFlowTensor',
-            'TensorFlowEmbedding',
-            'AudioTensorFlowTensor',
-            'ImageTensorFlowTensor',
-            'VideoTensorFlowTensor',
-        ]
-    )
+def __getattr__(name: str):
+    if name in torch_tensors:
+        import_library('torch', raise_error=True)
+
+        from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
+        from docarray.typing.tensor.audio import AudioTorchTensor  # noqa:  F401
+        from docarray.typing.tensor.image import ImageTorchTensor  # noqa:  F401
+        from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
+
+        __all__.extend(torch_tensors)
+
+    elif name in tf_tensors:
+        import_library('tensorflow', raise_error=True)
+
+        from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
+        from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
+        from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+        from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+        from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa
+
+        __all__.extend(tf_tensors)

@@ -10,26 +10,31 @@ __all__ = [
     'NdArrayEmbedding',
     'ImageNdArray',
     'ImageTensor',
-    'TensorFlowTensor',
 ]
 
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    from docarray.typing.tensor.embedding import TorchEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
-    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
-
-    __all__.extend(['TorchEmbedding', 'TorchTensor', 'ImageTorchTensor'])
-
-    torch_available = is_torch_available()
+torch_tensors = ['TorchEmbedding', 'ImageTorchTensor', 'TorchTensor']
+tf_tensors = ['TensorFlowEmbedding', 'TensorFlowTensor', 'ImageTensorFlowTensor']
 
 
-tf_available = is_tf_available()
-if tf_available:
-    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
+def __getattr__(name: str):
+    if name in torch_tensors:
+        import_library('torch', raise_error=True)
 
-    __all__.extend(['TensorFlowEmbedding', 'TensorFlowTensor', 'ImageTensorFlowTensor'])
+        from docarray.typing.tensor.embedding import TorchEmbedding  # noqa: F401
+        from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
+        from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
+
+        __all__.extend(torch_tensors)
+
+    elif name in tf_tensors:
+        import_library('tensorflow', raise_error=True)
+
+        from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+        from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+        from docarray.typing.tensor.tensorflow_tensor import (  # noqa: F401
+            TensorFlowTensor,
+        )
+
+        __all__.extend(tf_tensors)

@@ -3,19 +3,26 @@ from docarray.typing.tensor.image.image_tensor import ImageTensor
 
 __all__ = ['ImageNdArray', 'ImageTensor']
 
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor  # noqa
-
-    __all__.extend(['ImageTorchTensor'])
+torch_tensors = ['ImageTorchTensor']
+tf_tensors = ['ImageTensorFlowTensor']
 
 
-tf_available = is_tf_available()
-if tf_available:
-    from docarray.typing.tensor.image.image_tensorflow_tensor import (  # noqa
-        ImageTensorFlowTensor,
-    )
+def __getattr__(name: str):
+    if name in torch_tensors:
+        import_library('torch', raise_error=True)
+        from docarray.typing.tensor.image.image_torch_tensor import (  # noqa
+            ImageTorchTensor,
+        )
 
-    __all__.extend(['ImageTensorFlowTensor'])
+        __all__.extend(torch_tensors)
+
+    elif name in tf_tensors:
+        import_library('tensorflow', raise_error=True)
+
+        from docarray.typing.tensor.image.image_tensorflow_tensor import (  # noqa
+            ImageTensorFlowTensor,
+        )
+
+        __all__.extend(tf_tensors)

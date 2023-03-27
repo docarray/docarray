@@ -9,7 +9,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
-    import torch
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
@@ -38,7 +37,10 @@ class metaTorchAndNode(
 
 @_register_proto(proto_type_name='torch_tensor')
 class TorchTensor(
-    torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
+    torch.Tensor,
+    AbstractTensor,
+    Generic[ShapeT],
+    metaclass=metaTorchAndNode,
 ):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
