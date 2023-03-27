@@ -28,8 +28,9 @@ if TYPE_CHECKING:
 
     from docarray.typing import TensorFlowTensor
 else:
-    tf = import_library('tensorflow', raise_error=True)
-    from docarray.typing import TensorFlowTensor
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
 
 if TYPE_CHECKING:
     import torch
@@ -37,7 +38,8 @@ if TYPE_CHECKING:
     from docarray.typing import TorchTensor
 else:
     torch = import_library('torch', raise_error=False)
-    from docarray.typing import TorchTensor
+    if torch is not None:
+        from docarray.typing import TorchTensor
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
