@@ -5,7 +5,7 @@ from docarray.utils.misc import import_library
 if TYPE_CHECKING:
     from google.protobuf import __version__ as __pb__version__
 else:
-    protobuf = import_library('google.protobuf')
+    protobuf = import_library('google.protobuf', raise_error=True)
     __pb__version__ = protobuf.__version__
 
 

@@ -91,7 +91,7 @@ class ImageBytes(bytes, AbstractType):
         if TYPE_CHECKING:
             from PIL import Image as PILImage
         else:
-            PILImage = import_library('PIL').Image
+            PILImage = import_library('PIL', raise_error=True).Image
 
         raw_img = PILImage.open(BytesIO(self))
         if width or height:

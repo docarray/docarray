@@ -52,7 +52,7 @@ class PointsAndColors(BaseDoc):
         if TYPE_CHECKING:
             import trimesh
         else:
-            trimesh = import_library('trimesh')
+            trimesh = import_library('trimesh', raise_error=True)
         from IPython.display import display
 
         colors = (

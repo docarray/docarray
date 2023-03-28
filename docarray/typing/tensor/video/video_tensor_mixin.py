@@ -78,7 +78,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         if TYPE_CHECKING:
             import av
         else:
-            av = import_library('av')
+            av = import_library('av', raise_error=True)
 
         np_tensor = self.get_comp_backend().to_numpy(array=self)
         video_tensor = np_tensor.astype('uint8')

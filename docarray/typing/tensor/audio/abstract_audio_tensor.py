@@ -40,7 +40,7 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         if TYPE_CHECKING:
             import pydub
         else:
-            pydub = import_library('pydub')
+            pydub = import_library('pydub', raise_error=True)
 
         comp_backend = self.get_comp_backend()
         channels = 2 if comp_backend.n_dim(array=self) > 1 else 1  # type: ignore

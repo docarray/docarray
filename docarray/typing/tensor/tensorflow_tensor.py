@@ -18,7 +18,6 @@ else:
     tf = import_library('tensorflow', raise_error=True)
 
 
-
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
 

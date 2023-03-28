@@ -59,7 +59,7 @@ class Url3D(AnyUrl, ABC):
         if TYPE_CHECKING:
             import trimesh
         else:
-            trimesh = import_library('trimesh')
+            trimesh = import_library('trimesh', raise_error=True)
 
         if not trimesh_args:
             trimesh_args = {}

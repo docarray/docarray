@@ -78,7 +78,7 @@ class AudioBytes(bytes, AbstractType):
         if TYPE_CHECKING:
             import pydub
         else:
-            pydub = import_library('pydub')
+            pydub = import_library('pydub', raise_error=True)
 
         segment = pydub.AudioSegment.from_file(io.BytesIO(self))
 

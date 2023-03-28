@@ -504,7 +504,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         if TYPE_CHECKING:
             import pandas as pd
         else:
-            pd = import_library('pandas')
+            pd = import_library('pandas', raise_error=True)
 
         fields = self.document_type._get_access_paths()
         df = pd.DataFrame(columns=fields)
