@@ -64,9 +64,9 @@ class AudioUrl(AnyUrl):
             audio_tensor: Optional[AudioNdArray]
 
 
-        doc = MyDoc(audio_url="toydata/hello.wav")
-        # doc.audio_tensor, doc.frame_rate = doc.audio_url.load()
-        # assert isinstance(doc.audio_tensor, np.ndarray)
+        doc = MyDoc(audio_url='https://www.kozco.com/tech/piano2.wav')
+        doc.audio_tensor, _ = doc.audio_url.load()
+        assert isinstance(doc.audio_tensor, np.ndarray)
         ```
 
         ---
