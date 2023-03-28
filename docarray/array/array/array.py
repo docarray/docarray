@@ -27,7 +27,7 @@ from docarray.array.array.sequence_indexing_mixin import (
 )
 from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
-from pydantic.generics import GenericModel
+from pydantic import BaseModel
 
 
 if TYPE_CHECKING:
@@ -61,7 +61,11 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocArray(
-    GenericModel, IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
+    BaseModel,
+    PushPullMixin,
+    IndexingSequenceMixin[T_doc],
+    IOMixinArray,
+    AnyDocArray[T_doc],
 ):
     """
      DocArray is a container of Documents.
