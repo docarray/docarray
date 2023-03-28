@@ -8,7 +8,7 @@ def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
         if TYPE_CHECKING:
             import lz4.frame as lz4_frame  # type: ignore
         else:
-            lz4_frame = import_library('lz4.frame')
+            lz4_frame = import_library('lz4').frame
 
         data = lz4_frame.compress(data)
     elif algorithm == 'bz2':
@@ -36,7 +36,7 @@ def _decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
         if TYPE_CHECKING:
             import lz4.frame as lz4_frame  # type: ignore
         else:
-            lz4_frame = import_library('lz4.frame')
+            lz4_frame = import_library('lz4').frame
 
         data = lz4_frame.decompress(data)
     elif algorithm == 'bz2':
@@ -64,7 +64,7 @@ def _get_compress_ctx(algorithm: Optional[str] = None) -> Optional[Callable]:
         if TYPE_CHECKING:
             import lz4.frame as lz4_frame  # type: ignore
         else:
-            lz4_frame = import_library('lz4.frame')
+            lz4_frame = import_library('lz4').frame
 
         def _fun(x: IO[bytes]):
             return lz4_frame.LZ4FrameFile(x, 'wb')

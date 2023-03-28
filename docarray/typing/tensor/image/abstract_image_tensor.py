@@ -18,7 +18,7 @@ class AbstractImageTensor(AbstractTensor, ABC):
         if TYPE_CHECKING:
             from PIL import Image as PILImage
         else:
-            PILImage = import_library('PIL.Image')
+            PILImage = import_library('PIL').Image
 
         if format == 'jpg':
             format = 'jpeg'  # unify it to ISO standard
@@ -42,7 +42,7 @@ class AbstractImageTensor(AbstractTensor, ABC):
             if TYPE_CHECKING:
                 from PIL import Image as PILImage
             else:
-                PILImage = import_library('PIL.Image')
+                PILImage = import_library('PIL').Image
 
             np_array = self.get_comp_backend().to_numpy(self)
             img = PILImage.fromarray(np_array)

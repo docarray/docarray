@@ -23,8 +23,8 @@ else:
 INSTALL_INSTRUCTIONS = {
     'pandas': '"docarray[common]"',
     'google.protobuf': '"docarray[common]"',
-    'lz4.frame': '"docarray[common]"',
-    'PIL.Image': '"docarray[image]"',
+    'lz4': '"docarray[common]"',
+    'PIL': '"docarray[image]"',
     'pydub': '"docarray[audio]"',
     'av': '"docarray[video]"',
     'trimesh': '"docarray[mesh]"',
@@ -32,10 +32,10 @@ INSTALL_INSTRUCTIONS = {
     'fastapi': '"docarray[web]"',
     'torch': '"docarray[torch]"',
     'tensorflow': 'protobuf==3.19.0 tensorflow',
+    'hubble': '"docarray[jac]"',
     'smart_open': '"docarray[aws]"',
     'boto3': '"docarray[aws]"',
     'botocore': '"docarray[aws]"',
-    'hubble': '"docarray[jac]"',
 }
 
 

@@ -17,5 +17,5 @@ def __getattr__(name: str):
         import_library('fastapi', raise_error=True)
         from docarray.base_document.document_response import DocumentResponse  # noqa
 
-        __all__.extend(['DocumentResponse'])
+        __all__.append('DocumentResponse')
         return DocumentResponse
