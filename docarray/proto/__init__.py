@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from docarray.utils.misc import import_library
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from google.protobuf import __version__ as __pb__version__

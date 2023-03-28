@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from docarray.utils.misc import import_library
+from docarray.utils._internal.misc import import_library
 
 __all__ = []
 
