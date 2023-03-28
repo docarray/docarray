@@ -38,9 +38,6 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         """
         Save video tensor to a .mp4 file.
 
-
-
-
         ---
 
         ```python
