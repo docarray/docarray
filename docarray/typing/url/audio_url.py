@@ -48,27 +48,30 @@ class AudioUrl(AnyUrl):
         """
         Load the data from the url into an AudioNdArray.
 
+
+        ---
+
+        ```python
+        from typing import Optional
+        from docarray import BaseDoc
+        import numpy as np
+
+        from docarray.typing import AudioUrl, AudioNdArray
+
+
+        class MyDoc(BaseDoc):
+            audio_url: AudioUrl
+            audio_tensor: Optional[AudioNdArray]
+
+
+        doc = MyDoc(audio_url="toydata/hello.wav")
+        # doc.audio_tensor, doc.frame_rate = doc.audio_url.load()
+        # assert isinstance(doc.audio_tensor, np.ndarray)
+        ```
+
+        ---
+
         :return: AudioNdArray representing the audio file content.
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            from docarray import BaseDoc
-            import numpy as np
-
-            from docarray.typing import AudioUrl
-
-
-            class MyDoc(Document):
-                audio_url: AudioUrl
-                audio_tensor: AudioNdArray
-
-
-            doc = MyDoc(audio_url="toydata/hello.wav")
-            doc.audio_tensor, doc.frame_rate = doc.audio_url.load()
-            assert isinstance(doc.audio_tensor, np.ndarray)
-
         """
         bytes_ = AudioBytes(self.load_bytes())
         return bytes_.load()
