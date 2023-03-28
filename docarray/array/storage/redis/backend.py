@@ -105,12 +105,7 @@ class BackendMixin(BaseBackendMixin):
             self.append(_docs)
 
     def _build_client(self):
-        if self._config.cluster:
-            _client_class = RedisCluster
-        else:
-            _client_class = Redis
-
-        client = _client_class(
+        client = Redis(
             host=self._config.host,
             port=self._config.port,
             **self._config.redis_config,
