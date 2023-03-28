@@ -3,7 +3,7 @@ import pytest
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.utils.misc import is_tf_available
 
 tf_available = is_tf_available()

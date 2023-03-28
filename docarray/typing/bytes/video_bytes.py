@@ -59,12 +59,12 @@ class VideoBytes(bytes, AbstractType):
 
         .. code-block:: python
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             from docarray.typing import VideoUrl
             import numpy as np
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 video_url: VideoUrl
 
 

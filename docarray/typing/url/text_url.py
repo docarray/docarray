@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, TypeVar, Type, Union, Any
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -47,11 +47,11 @@ class TextUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             from docarray.typing import TextUrl
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 remote_url: TextUrl
                 local_url: TextUrl
 

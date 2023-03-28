@@ -61,7 +61,7 @@ jobs:
           poetry install --without dev
           poetry run pip install tensorflow==2.11.0
       - name: Test basic import
-        run: poetry run python -c 'from docarray import DocumentArray, BaseDocument'
+        run: poetry run python -c 'from docarray import DocArray, BaseDoc'
 
 
   check-mypy:

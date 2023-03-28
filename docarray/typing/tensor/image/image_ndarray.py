@@ -20,11 +20,11 @@ class ImageNdArray(AbstractImageTensor, NdArray):
 
         from typing import Optional
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import ImageNdArray, ImageUrl
 
 
-        class MyImageDoc(BaseDocument):
+        class MyImageDoc(BaseDoc):
             title: str
             tensor: Optional[ImageNdArray]
             url: Optional[ImageUrl]

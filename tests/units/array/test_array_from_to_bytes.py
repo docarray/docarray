@@ -1,11 +1,11 @@
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     embedding: NdArray
     text: str
     image: ImageDoc
@@ -17,7 +17,7 @@ class MyDoc(BaseDocument):
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
 def test_from_to_bytes(protocol, compress, show_progress):
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [
             MyDoc(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
@@ -28,7 +28,7 @@ def test_from_to_bytes(protocol, compress, show_progress):
     bytes_da = da.to_bytes(
         protocol=protocol, compress=compress, show_progress=show_progress
     )
-    da2 = DocumentArray[MyDoc].from_bytes(
+    da2 = DocArray[MyDoc].from_bytes(
         bytes_da, protocol=protocol, compress=compress, show_progress=show_progress
     )
     assert len(da2) == 2
@@ -47,7 +47,7 @@ def test_from_to_bytes(protocol, compress, show_progress):
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
 def test_from_to_base64(protocol, compress, show_progress):
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [
             MyDoc(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
@@ -58,7 +58,7 @@ def test_from_to_base64(protocol, compress, show_progress):
     bytes_da = da.to_base64(
         protocol=protocol, compress=compress, show_progress=show_progress
     )
-    da2 = DocumentArray[MyDoc].from_base64(
+    da2 = DocArray[MyDoc].from_base64(
         bytes_da, protocol=protocol, compress=compress, show_progress=show_progress
     )
     assert len(da2) == 2

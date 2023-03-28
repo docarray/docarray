@@ -2,7 +2,7 @@ import pytest
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import TorchEmbedding, TorchTensor
 
 
@@ -165,9 +165,9 @@ def test_parametrized_operations():
 
 
 def test_deepcopy():
-    from docarray import BaseDocument
+    from docarray import BaseDoc
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         embedding: TorchEmbedding
 
     doc = MMdoc(embedding=torch.randn(32))

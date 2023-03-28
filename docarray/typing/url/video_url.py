@@ -57,12 +57,12 @@ class VideoUrl(AnyUrl):
 
             from typing import Optional
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
 
             from docarray.typing import VideoUrl, VideoNdArray, AudioNdArray, NdArray
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 video_url: VideoUrl
                 video: Optional[VideoNdArray]
                 audio: Optional[AudioNdArray]

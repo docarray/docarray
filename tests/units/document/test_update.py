@@ -2,22 +2,22 @@ from typing import Dict, List, Optional, Set
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 
 
-class InnerDoc(BaseDocument):
+class InnerDoc(BaseDoc):
     integer: int
     inner_list: List
 
 
-class MMDoc(BaseDocument):
+class MMDoc(BaseDoc):
     text: str = ''
     price: int = 0
     categories: Optional[List[str]] = None
     image: Optional[ImageDoc] = None
-    matches: Optional[DocumentArray] = None
-    matches_with_same_id: Optional[DocumentArray] = None
+    matches: Optional[DocArray] = None
+    matches_with_same_id: Optional[DocArray] = None
     opt_int: Optional[int] = None
     test_set: Optional[Set] = None
     inner_doc: Optional[InnerDoc] = None
@@ -30,9 +30,9 @@ def doc1():
         text='hey here',
         categories=['a', 'b', 'c'],
         price=10,
-        matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc](
-            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        matches=DocArray[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocArray[MMDoc](
+            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'a'},
         inner_doc=InnerDoc(integer=2, inner_list=['c', 'd']),
@@ -48,9 +48,9 @@ def doc2(doc1):
         categories=['d', 'e', 'f'],
         price=5,
         opt_int=5,
-        matches=DocumentArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocumentArray[MMDoc](
-            [MMDoc(id='a', matches=DocumentArray[MMDoc]([MMDoc()]))]
+        matches=DocArray[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocArray[MMDoc](
+            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'b'},
         inner_doc=InnerDoc(integer=3, inner_list=['a', 'b']),
@@ -75,7 +75,7 @@ def test_update_complex(doc1, doc2):
 
 
 def test_update_simple():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         content: str
         title: Optional[str] = None
         tags_: List
@@ -92,10 +92,10 @@ def test_update_simple():
 
 
 def test_update_different_schema_fails():
-    class DocA(BaseDocument):
+    class DocA(BaseDoc):
         content: str
 
-    class DocB(BaseDocument):
+    class DocB(BaseDoc):
         image: Optional[ImageDoc] = None
 
     docA = DocA(content='haha')

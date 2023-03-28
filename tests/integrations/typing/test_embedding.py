@@ -1,11 +1,11 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import AnyEmbedding
 
 
 def test_set_embedding():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         embedding: AnyEmbedding
 
     d = MyDocument(embedding=np.zeros((3, 224, 224)))

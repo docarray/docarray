@@ -1,11 +1,11 @@
 from typing import Type
 
-from .document import BaseDocument
+from .doc import BaseDoc
 
 
-class AnyDocument(BaseDocument):
+class AnyDoc(BaseDoc):
     """
-    AnyDocument is a Document that is not tied to any schema
+    AnyDoc is a Document that is not tied to any schema
     """
 
     def __init__(self, **kwargs):
@@ -13,7 +13,7 @@ class AnyDocument(BaseDocument):
         self.__dict__.update(kwargs)
 
     @classmethod
-    def _get_field_type(cls, field: str) -> Type['BaseDocument']:
+    def _get_field_type(cls, field: str) -> Type['BaseDoc']:
         """
         Accessing the nested python Class define in the schema.
         Could be useful for reconstruction of Document in
@@ -21,4 +21,4 @@ class AnyDocument(BaseDocument):
         :param field: name of the field
         :return:
         """
-        return AnyDocument
+        return AnyDoc

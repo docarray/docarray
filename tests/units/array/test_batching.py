@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import NdArray
 
 
@@ -9,12 +9,12 @@ from docarray.typing import NdArray
 @pytest.mark.parametrize('stack', [False, True])
 @pytest.mark.parametrize('batch_size,n_batches', [(16, 7), (10, 10)])
 def test_batch(shuffle, stack, batch_size, n_batches):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         id: int
         tensor: NdArray
 
     t_shape = (32, 32)
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [
             MyDoc(
                 id=i,

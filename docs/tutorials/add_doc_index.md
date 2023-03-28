@@ -9,7 +9,7 @@ This document shows how to add a new Document Index to DocArray.
 
 That process can be broken down into a number of basic steps:
 
-1. Create a new class that inherits from `BaseDocumentIndex`
+1. Create a new class that inherits from `BaseDocIndex`
 2. Declare default configurations for your Document Index
 3. Implement abstract methods for indexing, searching, and deleting
 4. Implement a Query Builder for your Document Index
@@ -27,14 +27,14 @@ This is _not_ how you should store Documents in your implementation! You can fin
 
 ## Create a new Document Index class
 
-To get started, create a new class that inherits from `BaseDocumentIndex` and `typing.Generic`:
+To get started, create a new class that inherits from `BaseDocIndex` and `typing.Generic`:
 
 
 ```python
-TSchema = TypeVar('TSchema', bound=BaseDocument)
+TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-class MyDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
+class MyDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ...
 ```
 
@@ -84,11 +84,11 @@ To help you with all of this, `super().__init__` inject a few helpful attributes
 When a user instantiates a Document Index, they do so in a parametric way, like so:
 
 ```python
-class Inner(BaseDocument):
+class Inner(BaseDoc):
     embedding: NdArray[512]
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: NdArray[100]
     other_tensor: NdArray = Field(dim=10, space='cosine')
     description: str
@@ -167,7 +167,7 @@ This leads to four possible scenarios:
 Imagine the user defines a schema like the following:
 
 ```python
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: NdArray[100]
 
 
@@ -182,7 +182,7 @@ The `tensor` column in your backend should be configured to have dimensionality 
 Imagine the user defines a schema like the following:
 
 ```python
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: NdArray = Field(dim=50)
 
 
@@ -197,7 +197,7 @@ The `tensor` column in your backend should be configured to have dimensionality 
 Imagine the user defines a schema like the following:
 
 ```python
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: NdArray[100] = Field(dim=50)
 
 
@@ -212,7 +212,7 @@ The `tensor` column in your backend should be configured to have dimensionality 
 Imagine the user defines a schema like the following:
 
 ```python
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: NdArray
 
 
@@ -231,17 +231,17 @@ In order to define what can be stored in them, and what the default values are, 
 
 ```python
 @dataclass
-class DBConfig(BaseDocumentIndex.DBConfig):
+class DBConfig(BaseDocIndex.DBConfig):
     ...
 
 
 @dataclass
-class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+class RuntimeConfig(BaseDocIndex.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = ...
 ```
 
 Note that:
-- `DBConfig` inherits from `BaseDocumentIndex.DBConfig` and `RuntimeConfig` inherits from `BaseDocumentIndex.RuntimeConfig`
+- `DBConfig` inherits from `BaseDocIndex.DBConfig` and `RuntimeConfig` inherits from `BaseDocIndex.RuntimeConfig`
 - All fields in each dataclass need to have default values. Choose these sensibly, as they will be used if the user does not specify a value.
 
 ### The `DBConfig` class
@@ -278,7 +278,7 @@ In general, the following is true:
 - For every method that you need to implement, there is a public variant (e.g. `index`) and a private variant (e.g. `_index`)
 - You should usually implement the private variant, which is called by the already implemented public variant. This should make your life easier, because some preprocessing and data normalization will already be done for you.
 - You can, however, also implement the public variant directly, if you want to do something special.
-  - **Caution**: While this is a perfectly fine thing to do, it might create more maintenance work for you in the future, because the public variant defined in the `BaseDocumentIndex` might change in the future, and you will have to update your implementation accordingly.
+  - **Caution**: While this is a perfectly fine thing to do, it might create more maintenance work for you in the future, because the public variant defined in the `BaseDocIndex` might change in the future, and you will have to update your implementation accordingly.
 
 Further:
 - You don't absolutely have to implement everything. If a feature (e.g. `text_search`) is not supported by your backend, just raise a `NotImplementedError` in the corresponding method.
@@ -289,7 +289,7 @@ Further:
   These can then be used to control DB specific behaviours, such as consistency levels, batch sizes, etc. As mentioned above, it is good practice to mirror these arguments in `self.RuntimeConfig`.
 
 Overall, you're asked to implement the methods that appear after the `Abstract methods; Subclasses must implement these`
-comment in the `BaseDocumentIndex` class.
+comment in the `BaseDocIndex` class.
 The details of each method should become clear from the docstrings and type hints.
 
 ### The `python_type_to_db_type()` method
@@ -297,12 +297,12 @@ The details of each method should become clear from the docstrings and type hint
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
 It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
-The `BaseDocumentIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
+The `BaseDocIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
 
 If the user wants to change the default behaviour, one can set the db type by using the `col_type` field:
 
 ```python
-class MySchema(BaseDocument):
+class MySchema(BaseDoc):
     my_num: float = Field(col_type='float64')
     my_text: str = Field(..., col_type='varchar', max_len=2048)
 ```
@@ -356,12 +356,12 @@ The QueryBuilder is what accumulates partial queries and builds them into a sing
 Your Query Builder has to be an inner class of your Document Index, its class name has to be `QueryBuilder`, and it has to inherit from the Base Query Builder:
 
 ```python
-class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+class QueryBuilder(BaseDocIndex.QueryBuilder):
     ...
 ```
 
 The Query Builder exposes the following interface:
-- The same query related methods as the `BaseDocumentIndex` class (e.g. `filter`, `find`, `text_search`, and their batched variants)
+- The same query related methods as the `BaseDocIndex` class (e.g. `filter`, `find`, `text_search`, and their batched variants)
 - The `build()` method
 
 The goal of it is to enable an interface for composing coplex queries, like this:

@@ -3,8 +3,8 @@ from typing import Optional
 import pytest
 import torch
 
-from docarray import BaseDocument, DocumentArray
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray import BaseDoc, DocArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 
@@ -15,27 +15,27 @@ num_sub_sub_docs = 3
 
 @pytest.fixture
 def multi_model_docs():
-    class SubSubDoc(BaseDocument):
+    class SubSubDoc(BaseDoc):
         sub_sub_text: TextDoc
         sub_sub_tensor: TorchTensor[2]
 
-    class SubDoc(BaseDocument):
+    class SubDoc(BaseDoc):
         sub_text: TextDoc
-        sub_da: DocumentArray[SubSubDoc]
+        sub_da: DocArray[SubSubDoc]
 
-    class MultiModalDoc(BaseDocument):
+    class MultiModalDoc(BaseDoc):
         mm_text: TextDoc
         mm_tensor: Optional[TorchTensor[3, 2, 2]]
-        mm_da: DocumentArray[SubDoc]
+        mm_da: DocArray[SubDoc]
 
-    docs = DocumentArray[MultiModalDoc](
+    docs = DocArray[MultiModalDoc](
         [
             MultiModalDoc(
                 mm_text=TextDoc(text=f'hello{i}'),
                 mm_da=[
                     SubDoc(
                         sub_text=TextDoc(text=f'sub_{i}_1'),
-                        sub_da=DocumentArray[SubSubDoc](
+                        sub_da=DocArray[SubSubDoc](
                             [
                                 SubSubDoc(
                                     sub_sub_text=TextDoc(text='subsub'),
@@ -78,10 +78,10 @@ def test_traverse_flat(multi_model_docs, access_path, len_result):
 
 
 def test_traverse_stacked_da():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocumentArray[Image](
+    batch = DocArray[Image](
         [
             Image(
                 tensor=torch.zeros(3, 224, 224),
@@ -106,13 +106,13 @@ def test_traverse_stacked_da():
     ],
 )
 def test_flatten_one_level(input_list, output_list):
-    flattened = AnyDocumentArray._flatten_one_level(sequence=input_list)
+    flattened = AnyDocArray._flatten_one_level(sequence=input_list)
     assert flattened == output_list
 
 
 def test_flatten_one_level_list_of_da():
-    doc = BaseDocument()
-    input_list = [DocumentArray([doc, doc, doc])]
+    doc = BaseDoc()
+    input_list = [DocArray([doc, doc, doc])]
 
-    flattened = AnyDocumentArray._flatten_one_level(sequence=input_list)
+    flattened = AnyDocArray._flatten_one_level(sequence=input_list)
     assert flattened == [doc, doc, doc]

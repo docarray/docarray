@@ -53,12 +53,12 @@ class ImageUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             from docarray.typing import ImageUrl
             import numpy as np
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 img_url: ImageUrl
 
 

@@ -1,13 +1,13 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
 T = TypeVar('T', bound='TextDoc')
 
 
-class TextDoc(BaseDocument):
+class TextDoc(BaseDoc):
     """
     Document for handling text.
     It can contain a TextUrl (`TextDoc.url`), a str (`TextDoc.text`),
@@ -60,12 +60,12 @@ class TextDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import ImageDoc, TextDoc
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             image_doc: Image
             text_doc: Text
 
