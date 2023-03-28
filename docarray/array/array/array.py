@@ -203,7 +203,7 @@ class DocArray(
         :return: Returns a list of the field value for each document
         in the array like container
         """
-        field_type = self.__class__.document_type._get_field_type(field)
+        field_type = self.__class__._document_type._get_field_type(field)
 
         if (
             not is_union_type(field_type)
@@ -247,7 +247,7 @@ class DocArray(
         """
         from docarray.array.stacked.array_stacked import DocArrayStacked
 
-        return DocArrayStacked.__class_getitem__(self.document_type)(
+        return DocArrayStacked.__class_getitem__(self._document_type)(
             self, tensor_type=tensor_type
         )
 

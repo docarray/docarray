@@ -274,7 +274,7 @@ def _da_attr_type(da: AnyDocArray, access_path: str) -> Type[AnyTensor]:
     :return: the type of the attribute
     """
     field_type: Optional[Type] = _get_field_type_by_access_path(
-        da.document_type, access_path
+        da._document_type, access_path
     )
     if field_type is None:
         raise ValueError(f"Access path is not valid: {access_path}")

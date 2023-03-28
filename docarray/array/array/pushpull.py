@@ -139,7 +139,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls._document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
@@ -167,7 +167,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls._document_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'

@@ -121,7 +121,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     @classmethod
     def collate_fn(cls, batch: List[T_doc]):
-        doc_type = cls.document_type
+        doc_type = cls._document_type
         if doc_type:
             batch_da = DocArrayStacked[doc_type](  # type: ignore
                 batch,

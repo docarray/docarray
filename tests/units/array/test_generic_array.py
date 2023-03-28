@@ -7,13 +7,13 @@ def test_generic_init():
         text: str
 
     da = DocArray[Text]([])
-    da.document_type == Text
+    da._document_type == Text
 
     assert isinstance(da, DocArray)
 
 
 def test_normal_access_init():
     da = DocArray([])
-    da.document_type == AnyDoc
+    da._document_type == AnyDoc
 
     assert isinstance(da, DocArray)

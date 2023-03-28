@@ -78,7 +78,7 @@ class DocumentSummary:
                             sub_tree.add(DocumentSummary._get_schema(cls=arg))
                         elif issubclass(arg, DocArray):
                             sub_tree.add(
-                                DocumentSummary._get_schema(cls=arg.document_type)
+                                DocumentSummary._get_schema(cls=arg._document_type)
                             )
                     tree.add(sub_tree)
 
@@ -90,7 +90,7 @@ class DocumentSummary:
                 elif issubclass(field_type, DocArray):
                     sub_tree = Tree(node_name, highlight=True)
                     sub_tree.add(
-                        DocumentSummary._get_schema(cls=field_type.document_type)
+                        DocumentSummary._get_schema(cls=field_type._document_type)
                     )
                     tree.add(sub_tree)
 

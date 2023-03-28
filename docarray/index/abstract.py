@@ -777,7 +777,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
 
-            input_schema_flat = self._flatten_schema(docs.document_type)
+            input_schema_flat = self._flatten_schema(docs._document_type)
             input_names = [name for (name, _, _) in input_schema_flat]
             input_types = [t_ for (_, t_, _) in input_schema_flat]
             # this could be relaxed in the future,

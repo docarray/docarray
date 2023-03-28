@@ -186,7 +186,7 @@ class FileDocStore(AbstractDocStore):
         path = cls._abs_filepath(name).with_suffix('.da')
         source = open(path, 'rb')
         return _from_binary_stream(
-            da_cls.document_type,
+            da_cls._document_type,
             source,
             protocol='protobuf',
             compress='gzip',

@@ -281,7 +281,7 @@ class JACDocStore(AbstractDocStore):
         """
         from docarray import DocArray
 
-        return DocArray[cls.document_type](  # type: ignore
+        return DocArray[cls._document_type](  # type: ignore
             JACDocStore.pull_stream(cls, name, show_progress, local_cache)
         )
 
