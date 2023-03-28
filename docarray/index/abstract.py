@@ -801,7 +801,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     ' and that the types of your data match the types of the Document Index schema.'
                 )
 
-        return DocArray[BaseDoc].construct(out_docs)
+        return DocArray[BaseDoc].construct(data=out_docs)
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """

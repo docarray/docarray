@@ -93,7 +93,6 @@ class _LazyRequestReader:
 
 
 class IOMixinArray(Iterable[BaseDoc]):
-
     _document_type: Type[BaseDoc]
 
     @abstractmethod
@@ -649,7 +648,7 @@ class IOMixinArray(Iterable[BaseDoc]):
                         f.read(4), 'big', signed=False
                     )
                     load_protocol: str = protocol
-                    yield cls.document_type.from_bytes(
+                    yield cls._document_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
                         compress=compress,

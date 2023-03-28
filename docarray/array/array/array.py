@@ -8,7 +8,6 @@ from typing import (
     List,
     MutableSequence,
     Optional,
-    Sequence,
     Type,
     TypeVar,
     Union,
@@ -31,9 +30,6 @@ from pydantic import BaseModel
 
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.array.stacked.array_stacked import DocArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
