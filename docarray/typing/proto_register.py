@@ -1,10 +1,10 @@
 from typing import Callable, Dict, Type, TypeVar
 
-from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 
-_PROTO_TYPE_NAME_TO_CLASS: Dict[str, Type[AbstractType]] = {}
+_PROTO_TYPE_NAME_TO_CLASS: Dict[str, Type[BaseNode]] = {}
 
-T = TypeVar('T', bound='AbstractType')
+T = TypeVar('T', bound='BaseNode')
 
 
 def _register_proto(

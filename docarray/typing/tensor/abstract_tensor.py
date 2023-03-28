@@ -18,6 +18,7 @@ from typing import (
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -104,7 +105,7 @@ class _ParametrizedMeta(type):
             )
 
 
-class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
+class AbstractTensor(Generic[TTensor, T], AbstractType, BaseNode, ABC, Sized):
     __parametrized_meta__: type = _ParametrizedMeta
     __unparametrizedcls__: Optional[Type['AbstractTensor']] = None
     __docarray_target_shape__: Optional[Tuple[int, ...]] = None

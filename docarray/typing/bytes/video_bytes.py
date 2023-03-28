@@ -7,6 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 
 if TYPE_CHECKING:
@@ -24,7 +25,7 @@ class VideoLoadResult(NamedTuple):
 
 
 @_register_proto(proto_type_name='video_bytes')
-class VideoBytes(bytes, AbstractType):
+class VideoBytes(bytes, AbstractType, BaseNode):
     """
     Bytes that store a video and that can be load into a video tensor
     """

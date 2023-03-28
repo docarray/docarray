@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from docarray.proto import NodeProto
 
 from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='ID')
 
 
 @_register_proto(proto_type_name='id')
-class ID(str, AbstractType):
+class ID(str, AbstractType, BaseNode):
     """
     Represent an unique ID
     """
@@ -31,7 +32,6 @@ class ID(str, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         try:
             id: str = str(value)
             return cls(id)

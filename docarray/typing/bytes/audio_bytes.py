@@ -6,6 +6,7 @@ from pydantic import parse_obj_as
 from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ T = TypeVar('T', bound='AudioBytes')
 
 
 @_register_proto(proto_type_name='audio_bytes')
-class AudioBytes(bytes, AbstractType):
+class AudioBytes(bytes, AbstractType, BaseNode):
     """
     Bytes that store an audio and that can be load into an Audio tensor
     """
@@ -29,7 +30,6 @@ class AudioBytes(bytes, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         value = bytes_validator(value)
         return cls(value)
 

@@ -9,6 +9,7 @@ from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
 from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 
 if TYPE_CHECKING:
@@ -22,7 +23,7 @@ T = TypeVar('T', bound='AnyUrl')
 
 
 @_register_proto(proto_type_name='any_url')
-class AnyUrl(BaseAnyUrl, AbstractType):
+class AnyUrl(BaseAnyUrl, AbstractType, BaseNode):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )

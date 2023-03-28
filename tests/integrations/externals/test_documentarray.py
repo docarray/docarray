@@ -10,7 +10,7 @@ from docarray.documents import TextDoc
 @pytest.mark.asyncio
 async def test_fast_api():
     doc = TextDoc(text='some txt')
-    docs = DocArray[TextDoc](docs=[doc])
+    docs = DocArray[TextDoc](data=[doc])
     app = FastAPI()
 
     @app.post("/doc/")
@@ -24,3 +24,18 @@ async def test_fast_api():
 
     returned_docs = DocArray[TextDoc].from_json(response.content.decode())
     returned_docs.summary()
+
+
+def test_smth():
+    value = {
+        'data': [
+            {
+                'id': 'decb27da25f015fb175fc2e607022e53',
+                'text': 'some txt',
+                'url': None,
+                'embedding': None,
+                'bytes_': None,
+            }
+        ]
+    }
+    da = DocArray[TextDoc](**value)

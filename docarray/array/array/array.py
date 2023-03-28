@@ -133,25 +133,10 @@ class DocArray(
 
     def __init__(
         self,
-        docs: Optional[Iterable[T_doc]] = None,
+        data: Optional[Iterable[T_doc]] = None,
     ):
         super().__init__()
-        self.data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
-
-    @classmethod
-    def construct(
-        cls: Type[T],
-        docs: Sequence[T_doc],
-    ) -> T:
-        """
-        Create a DocArray without validation any data. The data must come from a
-        trusted source
-        :param docs: a Sequence (list) of Document with the same schema
-        :return:
-        """
-        da = cls.__new__(cls)
-        da.data = docs if isinstance(docs, list) else list(docs)
-        return da
+        self.data: List[T_doc] = list(self._validate_docs(data)) if data else []
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
@@ -162,7 +147,9 @@ class DocArray(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocArray"""
-        if not issubclass(self._document_type, AnyDoc) and not isinstance(
+        if isinstance(doc, Dict):
+            return self._document_type(**doc)
+        elif not issubclass(self._document_type, AnyDoc) and not isinstance(
             doc, self._document_type
         ):
             raise ValueError(f'{doc} is not a {self._document_type}')
@@ -268,23 +255,18 @@ class DocArray(
             self, tensor_type=tensor_type
         )
 
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ):
-        from docarray.array.stacked.array_stacked import DocArrayStacked
-
-        if isinstance(value, (cls, DocArrayStacked)):
-            return value
-        elif isinstance(value, Dict):
-            return cls([cls._document_type(**v) for v in value['data']])
-        elif isinstance(value, Iterable):
-            return cls(value)
-        else:
-            raise TypeError(f'Expecting an Iterable of {cls._document_type}')
+    # @classmethod
+    # def validate(cls, value: Any) -> 'DocArray[T_doc]':
+    #     from docarray.array.stacked.array_stacked import DocArrayStacked
+    #
+    #     if isinstance(value, (cls, DocArrayStacked)):
+    #         return value
+    #     elif isinstance(value, Dict):
+    #         return cls([cls._document_type(**v) for v in value['data']])
+    #     elif isinstance(value, Iterable):
+    #         return cls(value)
+    #     else:
+    #         raise TypeError(f'Expecting an Iterable of {cls._document_type}')
 
     def traverse_flat(
         self: 'DocArray',

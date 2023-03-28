@@ -21,7 +21,7 @@ import numpy as np
 
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
-from docarray.typing.abstract_type import AbstractType
+from docarray.base_doc.base_node import BaseNode
 from docarray.utils._typing import change_cls_name
 
 if TYPE_CHECKING:
@@ -33,7 +33,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
+class AnyDocArray(Sequence[T_doc], Generic[T_doc], BaseNode):
     _document_type: Type[BaseDoc]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDoc], Type]] = {}
 
