@@ -13,6 +13,7 @@ from typing import (
     TypeVar,
     Union,
     overload,
+    Dict,
 )
 
 from typing_inspect import is_union_type
@@ -25,6 +26,8 @@ from docarray.array.array.sequence_indexing_mixin import (
 )
 from docarray.base_document import AnyDocument, BaseDocument
 from docarray.typing import NdArray
+from pydantic.generics import GenericModel
+
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -51,13 +54,13 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
     @wraps(func)
     def _delegate_meth(self, *args, **kwargs):
-        return getattr(self._data, meth_name)(*args, **kwargs)
+        return getattr(self.data, meth_name)(*args, **kwargs)
 
     return _delegate_meth
 
 
 class DocumentArray(
-    IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
+    GenericModel, IndexingSequenceMixin[T_doc], IOMixinArray, AnyDocumentArray[T_doc]
 ):
     """
      DocumentArray is a container of Documents.
@@ -120,13 +123,15 @@ class DocumentArray(
 
     """
 
-    document_type: Type[BaseDocument] = AnyDocument
+    data: List[T_doc] = []
+    _document_type: Type[BaseDocument] = AnyDocument
 
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
     ):
-        self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
+        super().__init__()
+        self.data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
 
     @classmethod
     def construct(
@@ -140,7 +145,7 @@ class DocumentArray(
         :return:
         """
         da = cls.__new__(cls)
-        da._data = docs if isinstance(docs, list) else list(docs)
+        da.data = docs if isinstance(docs, list) else list(docs)
         return da
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
@@ -152,17 +157,17 @@ class DocumentArray(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocumentArray"""
-        if not issubclass(self.document_type, AnyDocument) and not isinstance(
-            doc, self.document_type
+        if not issubclass(self._document_type, AnyDocument) and not isinstance(
+            doc, self._document_type
         ):
-            raise ValueError(f'{doc} is not a {self.document_type}')
+            raise ValueError(f'{doc} is not a {self._document_type}')
         return doc
 
     def __len__(self):
-        return len(self._data)
+        return len(self.data)
 
     def __iter__(self):
-        return iter(self._data)
+        return iter(self.data)
 
     def __bytes__(self) -> bytes:
         with io.BytesIO() as bf:
@@ -175,7 +180,7 @@ class DocumentArray(
         as the document_type of this DocumentArray otherwise it will fail.
         :param doc: A Document
         """
-        self._data.append(self._validate_one_doc(doc))
+        self.data.append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -184,7 +189,7 @@ class DocumentArray(
         fail.
         :param docs: Iterable of Documents
         """
-        self._data.extend(self._validate_docs(docs))
+        self.data.extend(self._validate_docs(docs))
 
     def insert(self, i: int, doc: T_doc):
         """
@@ -193,7 +198,7 @@ class DocumentArray(
         :param i: index to insert
         :param doc: A Document
         """
-        self._data.insert(i, self._validate_one_doc(doc))
+        self.data.insert(i, self._validate_one_doc(doc))
 
     pop = _delegate_meth_to_data('pop')
     remove = _delegate_meth_to_data('remove')
@@ -269,10 +274,12 @@ class DocumentArray(
 
         if isinstance(value, (cls, DocumentArrayStacked)):
             return value
+        elif isinstance(value, Dict):
+            return cls([cls._document_type(**v) for v in value['data']])
         elif isinstance(value, Iterable):
             return cls(value)
         else:
-            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+            raise TypeError(f'Expecting an Iterable of {cls._document_type}')
 
     def traverse_flat(
         self: 'DocumentArray',

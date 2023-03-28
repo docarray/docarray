@@ -51,7 +51,7 @@ class DocumentArraySummary:
                     table.add_row(f'  • {field_name}:', col_2)
 
         Console().print(Panel(table, title='DocumentArray Summary', expand=False))
-        self.da.document_type.schema_summary()
+        self.da._document_type.schema_summary()
 
     @staticmethod
     def _get_stacked_fields(da: 'DocumentArrayStacked') -> List[str]:  # TODO this might
