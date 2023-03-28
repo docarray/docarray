@@ -29,7 +29,6 @@ class VerticesAndFaces(BaseDoc):
     def display(self) -> None:
         """
         Plot mesh consisting of vertices and faces.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         if TYPE_CHECKING:
             import trimesh

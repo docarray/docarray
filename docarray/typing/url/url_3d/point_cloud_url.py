@@ -89,7 +89,6 @@ class PointCloud3DUrl(Url3D):
     ) -> None:
         """
         Plot point cloud from url.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
 
         First, it loads the point cloud into a :class:`PointsAndColors` object, and then
         calls display on it. The following is therefore equivalent:

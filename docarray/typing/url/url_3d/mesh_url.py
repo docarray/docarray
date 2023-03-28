@@ -71,7 +71,6 @@ class Mesh3DUrl(Url3D):
         """
         Plot mesh from url.
         This loads the Trimesh instance of the 3D mesh, and then displays it.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         from IPython.display import display
 
