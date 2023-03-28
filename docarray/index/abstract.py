@@ -21,13 +21,13 @@ from typing import (
 
 import numpy as np
 from pydantic.error_wrappers import ValidationError
-from typing_inspect import get_args, is_union_type
+from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import is_tensor_union, unwrap_optional_type
+from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, torch_imported
 from docarray.utils.find import FindResult, _FindResult
 
@@ -677,7 +677,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
             if is_union_type(t_):
                 union_args = get_args(t_)
-                if len(union_args) == 2 and type(None) in union_args:
+
+                if is_tensor_union(t_):
+                    names_types_fields.append(
+                        (name_prefix + field_name, AbstractTensor, field_)
+                    )
+
+                elif len(union_args) == 2 and type(None) in union_args:
                     # simple "Optional" type, treat as special case:
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
@@ -690,19 +696,17 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                                 names_types_fields.append(
                                     (name_prefix + field_name, t_arg, field_)
                                 )
-
-                elif is_tensor_union(t_):
-                    names_types_fields.append(
-                        (name_prefix + field_name, AbstractTensor, field_)
-                    )
-
                 else:
-                    raise Exception(
+                    raise ValueError(
                         f'Union type {t_} is not supported. Only Union of subclasses of ndarray or Union[type, None] are supported.'
                     )
             elif issubclass(t_, BaseDoc):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)
+                )
+            elif issubclass(t_, AbstractTensor):
+                names_types_fields.append(
+                    (name_prefix + field_name, AbstractTensor, field_)
                 )
             else:
                 names_types_fields.append((name_prefix + field_name, t_, field_))
@@ -717,10 +721,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
-            # if is_optional_type(type_): # TODO
-            #     column_infos[field_name] = self._create_single_column(
-            #         field_, unwrap_optional_type(type_)
-            #     )
+            # Union types are handle in _flatten_schema
             if issubclass(type_, AnyDocArray):
                 raise ValueError(
                     'Indexing field of DocArray type (=subindex)'
@@ -732,7 +733,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
         custom_config = field.field_info.extra
-
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
@@ -747,13 +747,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (
-            hasattr(type_, '__docarray_target_shape__')
-            and type_.__docarray_target_shape__
+            hasattr(field.type_, '__docarray_target_shape__')
+            and field.type_.__docarray_target_shape__
         ):
-            if len(type_.__docarray_target_shape__) == 1:
-                n_dim = type_.__docarray_target_shape__[0]
+            if len(field.type_.__docarray_target_shape__) == 1:
+                n_dim = field.type_.__docarray_target_shape__[0]
             else:
-                n_dim = type_.__docarray_target_shape__
+                n_dim = field.type_.__docarray_target_shape__
         else:
             n_dim = None
         return _ColumnInfo(
@@ -785,20 +785,20 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
             try:
                 input_schema_flat = self._flatten_schema(docs.document_type)
+            except ValueError:
+                pass
+            else:
                 input_names = [name for (name, _, _) in input_schema_flat]
                 input_types = [t_ for (_, t_, _) in input_schema_flat]
                 # this could be relaxed in the future,
                 # see schema translation ideas in the design doc
                 names_compatible = reference_names == input_names
-                # TODO change here?
                 types_compatible = all(
-                    (issubclass(t1, t2))
+                    (issubclass(t2, t1))
                     for (t1, t2) in zip(reference_types, input_types)
                 )
                 if names_compatible and types_compatible:
                     return docs
-            except Exception:
-                pass
 
         out_docs = []
         for i in range(len(docs)):
@@ -848,7 +848,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: A Document object
         """
         for field_name, _ in schema.__fields__.items():
-            t_ = unwrap_optional_type(schema._get_field_type(field_name))
+            t_ = schema._get_field_type(field_name)
+            if is_optional_type(t_):
+                for t_arg in get_args(t_):
+                    if t_arg is not type(None):
+                        t_ = t_arg
 
             if not is_union_type(t_) and issubclass(t_, BaseDoc):
                 inner_dict = {}
