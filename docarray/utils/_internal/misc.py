@@ -21,9 +21,9 @@ else:
 
 
 INSTALL_INSTRUCTIONS = {
-    'pandas': '"docarray[common]"',
     'google.protobuf': '"docarray[common]"',
     'lz4': '"docarray[common]"',
+    'pandas': '"docarray[pandas]"',
     'PIL': '"docarray[image]"',
     'pydub': '"docarray[audio]"',
     'av': '"docarray[video]"',
