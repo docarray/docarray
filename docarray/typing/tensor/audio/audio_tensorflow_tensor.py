@@ -25,11 +25,11 @@ class AudioTensorFlowTensor(
         import tensorflow as tf
         from pydantic import parse_obj_as
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import AudioTensorFlowTensor, AudioUrl
 
 
-        class MyAudioDoc(BaseDocument):
+        class MyAudioDoc(BaseDoc):
             title: str
             audio_tensor: Optional[AudioTensorFlowTensor]
             url: Optional[AudioUrl]

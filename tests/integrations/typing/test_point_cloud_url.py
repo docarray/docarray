@@ -1,9 +1,9 @@
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import PointCloud3DUrl
 
 
 def test_set_point_cloud_url():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         point_cloud_url: PointCloud3DUrl
 
     d = MyDocument(point_cloud_url="https://jina.ai/mesh.obj")

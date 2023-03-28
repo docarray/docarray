@@ -1,16 +1,16 @@
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     embedding: NdArray
     text: str
     image: ImageDoc
 
 
 def test_from_to_json():
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [
             MyDoc(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
@@ -19,7 +19,7 @@ def test_from_to_json():
         ]
     )
     json_da = da.to_json()
-    da2 = DocumentArray[MyDoc].from_json(json_da)
+    da2 = DocArray[MyDoc].from_json(json_da)
     assert len(da2) == 2
     assert len(da) == len(da2)
     for d1, d2 in zip(da, da2):

@@ -4,19 +4,19 @@ from pydantic import create_model, create_model_from_typeddict
 from pydantic.config import BaseConfig
 from typing_extensions import TypedDict
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
 
-    T_doc = TypeVar('T_doc', bound=BaseDocument)
+    T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def create_doc(
     __model_name: str,
     *,
     __config__: Optional[Type[BaseConfig]] = None,
-    __base__: Type['T_doc'] = BaseDocument,  # type: ignore
+    __base__: Type['T_doc'] = BaseDoc,  # type: ignore
     __module__: str = __name__,
     __validators__: Dict[str, 'AnyClassMethod'] = None,  # type: ignore
     __cls_kwargs__: Dict[str, Any] = None,  # type: ignore
@@ -24,10 +24,10 @@ def create_doc(
     **field_definitions: Any,
 ) -> Type['T_doc']:
     """
-    Dynamically create a subclass of BaseDocument. This is a wrapper around pydantic's create_model.
+    Dynamically create a subclass of BaseDoc. This is a wrapper around pydantic's create_model.
     :param __model_name: name of the created model
     :param __config__: config class to use for the new model
-    :param __base__: base class for the new model to inherit from, must be BaseDocument or its subclass
+    :param __base__: base class for the new model to inherit from, must be BaseDoc or its subclass
     :param __module__: module of the created model
     :param __validators__: a dict of method names and @validator class methods
     :param __cls_kwargs__: a dict for class creation
@@ -51,13 +51,13 @@ def create_doc(
             tensor=(AudioNdArray, ...),
         )
 
-        assert issubclass(MyAudio, BaseDocument)
+        assert issubclass(MyAudio, BaseDoc)
         assert issubclass(MyAudio, Audio)
 
     """
 
-    if not issubclass(__base__, BaseDocument):
-        raise ValueError(f'{type(__base__)} is not a BaseDocument or its subclass')
+    if not issubclass(__base__, BaseDoc):
+        raise ValueError(f'{type(__base__)} is not a BaseDoc or its subclass')
 
     doc = create_model(
         __model_name,
@@ -78,7 +78,7 @@ def create_doc_from_typeddict(
     **kwargs: Any,
 ):
     """
-    Create a subclass of BaseDocument based on the fields of a `TypedDict`. This is a wrapper around pydantic's create_model_from_typeddict.
+    Create a subclass of BaseDoc based on the fields of a `TypedDict`. This is a wrapper around pydantic's create_model_from_typeddict.
     :param typeddict_cls: TypedDict class to use for the new Document class
     :param kwargs: extra arguments to pass to `create_model_from_typeddict`
     :return: the new Document class
@@ -89,7 +89,7 @@ def create_doc_from_typeddict(
 
         from typing_extensions import TypedDict
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import Audio
         from docarray.documents.helper import create_doc_from_typeddict
         from docarray.typing.tensor.audio import AudioNdArray
@@ -102,18 +102,16 @@ def create_doc_from_typeddict(
 
         Doc = create_doc_from_typeddict(MyAudio, __base__=Audio)
 
-        assert issubclass(Doc, BaseDocument)
+        assert issubclass(Doc, BaseDoc)
         assert issubclass(Doc, Audio)
 
     """
 
     if '__base__' in kwargs:
-        if not issubclass(kwargs['__base__'], BaseDocument):
-            raise ValueError(
-                f'{kwargs["__base__"]} is not a BaseDocument or its subclass'
-            )
+        if not issubclass(kwargs['__base__'], BaseDoc):
+            raise ValueError(f'{kwargs["__base__"]} is not a BaseDoc or its subclass')
     else:
-        kwargs['__base__'] = BaseDocument
+        kwargs['__base__'] = BaseDoc
 
     doc = create_model_from_typeddict(typeddict_cls, **kwargs)
 
@@ -122,7 +120,7 @@ def create_doc_from_typeddict(
 
 def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_doc']:
     """
-    Create a subclass of BaseDocument based on example data given as a dictionary.
+    Create a subclass of BaseDoc based on example data given as a dictionary.
 
     In case the example contains None as a value,
     corresponding field will be viewed as the type Any.
@@ -143,7 +141,7 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 
         MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict=data_dict)
 
-        assert issubclass(MyDoc, BaseDocument)
+        assert issubclass(MyDoc, BaseDoc)
 
     """
     if not data_dict:

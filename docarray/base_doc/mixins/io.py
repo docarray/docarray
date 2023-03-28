@@ -17,7 +17,7 @@ from typing import (
 import numpy as np
 from typing_inspect import is_union_type
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils.compress import _compress_bytes, _decompress_bytes
@@ -118,7 +118,7 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
 
 class IOMixin(Iterable[Tuple[str, Any]]):
     """
-    IOMixin to define all the bytes/protobuf/json related part of BaseDocument
+    IOMixin to define all the bytes/protobuf/json related part of BaseDoc
     """
 
     __fields__: Dict[str, 'ModelField']
@@ -258,7 +258,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         elif content_key in ['document', 'document_array']:
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a Document or a DocumentArray'
+                    'field_name cannot be None when trying to deseriliaze a Document or a DocArray'
                 )
             return_field = cls._get_field_type(field_name).from_protobuf(
                 getattr(value, content_key)
@@ -345,12 +345,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         :return: list of all access paths
         """
-        from docarray import BaseDocument
+        from docarray import BaseDoc
 
         paths = []
         for field in cls.__fields__.keys():
             field_type = cls._get_field_type(field)
-            if not is_union_type(field_type) and issubclass(field_type, BaseDocument):
+            if not is_union_type(field_type) and issubclass(field_type, BaseDoc):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:
                     paths.append(f'{field}__{path}')

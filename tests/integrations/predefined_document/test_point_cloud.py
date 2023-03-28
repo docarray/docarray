@@ -3,7 +3,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import PointCloud3D
 from docarray.utils.misc import is_tf_available
 from tests import TOYDATA_DIR
@@ -46,7 +46,7 @@ def test_point_cloud_tensorflow():
 
 
 def test_point_cloud_shortcut_doc():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         pc: PointCloud3D
         pc2: PointCloud3D
         pc3: PointCloud3D
@@ -63,7 +63,7 @@ def test_point_cloud_shortcut_doc():
 
 @pytest.mark.tensorflow
 def test_point_cloud_shortcut_doc_tf():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         pc: PointCloud3D
         pc2: PointCloud3D
 

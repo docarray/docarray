@@ -2,28 +2,28 @@ from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
 
-from docarray.array.abstract_array import AnyDocumentArray
-from docarray.array.array.array import DocumentArray
-from docarray.array.stacked.array_stacked import DocumentArrayStacked
-from docarray.base_document import BaseDocument
+from docarray.array.abstract_array import AnyDocArray
+from docarray.array.array.array import DocArray
+from docarray.array.stacked.array_stacked import DocArrayStacked
+from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
-    documents: DocumentArray
+    documents: DocArray
     scores: AnyTensor
 
 
 class _FindResult(NamedTuple):
-    documents: Union[DocumentArray, List[Dict[str, Any]]]
+    documents: Union[DocArray, List[Dict[str, Any]]]
     scores: AnyTensor
 
 
 def find(
-    index: AnyDocumentArray,
-    query: Union[AnyTensor, BaseDocument],
+    index: AnyDocArray,
+    query: Union[AnyTensor, BaseDoc],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -50,16 +50,16 @@ def find(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDocument
+        from docarray import DocArray, BaseDoc
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(BaseDocument):
+        class MyDocument(BaseDoc):
             embedding: TorchTensor
 
 
-        index = DocumentArray[MyDocument](
+        index = DocArray[MyDocument](
             [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
         )
 
@@ -94,7 +94,7 @@ def find(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: A named tuple of the form (DocumentArray, AnyTensor),
+    :return: A named tuple of the form (DocArray, AnyTensor),
         where the first element contains the closes matches for the query,
         and the second element contains the corresponding scores.
     """
@@ -111,8 +111,8 @@ def find(
 
 
 def find_batched(
-    index: AnyDocumentArray,
-    query: Union[AnyTensor, DocumentArray],
+    index: AnyDocArray,
+    query: Union[AnyTensor, DocArray],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -139,23 +139,21 @@ def find_batched(
 
     .. code-block:: python
 
-        from docarray import DocumentArray, BaseDocument
+        from docarray import DocArray, BaseDoc
         from docarray.typing import TorchTensor
         from docarray.util.find import find
 
 
-        class MyDocument(BaseDocument):
+        class MyDocument(BaseDoc):
             embedding: TorchTensor
 
 
-        index = DocumentArray[MyDocument](
+        index = DocArray[MyDocument](
             [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
         )
 
-        # use DocumentArray as query
-        query = DocumentArray[MyDocument](
-            [MyDocument(embedding=torch.rand(128)) for _ in range(3)]
-        )
+        # use DocArray as query
+        query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
         results = find(
             index=index,
             query=query,
@@ -187,7 +185,7 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocumentArray, AnyTensor),
+    :return: a list of named tuples of the form (DocArray, AnyTensor),
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """
@@ -210,16 +208,16 @@ def find_batched(
 
     results = []
     for indices_per_query, scores_per_query in zip(top_indices, top_scores):
-        docs_per_query: DocumentArray = DocumentArray([])
+        docs_per_query: DocArray = DocArray([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
-        docs_per_query = DocumentArray(docs_per_query)
+        docs_per_query = DocArray(docs_per_query)
         results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
     return results
 
 
 def _extract_embedding_single(
-    data: Union[DocumentArray, BaseDocument, AnyTensor],
+    data: Union[DocArray, BaseDoc, AnyTensor],
     embedding_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
@@ -230,8 +228,8 @@ def _extract_embedding_single(
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
-    if isinstance(data, BaseDocument):
-        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+    if isinstance(data, BaseDoc):
+        emb = next(AnyDocArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -242,7 +240,7 @@ def _extract_embedding_single(
 
 
 def _extract_embeddings(
-    data: Union[AnyDocumentArray, BaseDocument, AnyTensor],
+    data: Union[AnyDocArray, BaseDoc, AnyTensor],
     embedding_field: str,
     embedding_type: Type,
 ) -> AnyTensor:
@@ -254,11 +252,11 @@ def _extract_embeddings(
     :return: the embeddings
     """
     emb: AnyTensor
-    if isinstance(data, DocumentArray):
-        emb_list = list(AnyDocumentArray._traverse(data, embedding_field))
+    if isinstance(data, DocArray):
+        emb_list = list(AnyDocArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
-    elif isinstance(data, (DocumentArrayStacked, BaseDocument)):
-        emb = next(AnyDocumentArray._traverse(data, embedding_field))
+    elif isinstance(data, (DocArrayStacked, BaseDoc)):
+        emb = next(AnyDocArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 
@@ -267,11 +265,11 @@ def _extract_embeddings(
     return emb
 
 
-def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
+def _da_attr_type(da: AnyDocArray, access_path: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
-    (schema) of the DocumentArray.
+    (schema) of the DocArray.
 
-    :param da: the DocumentArray
+    :param da: the DocArray
     :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """
@@ -283,7 +281,7 @@ def _da_attr_type(da: AnyDocumentArray, access_path: str) -> Type[AnyTensor]:
 
     if is_union_type(field_type):
         # determine type based on the fist element
-        field_type = type(next(AnyDocumentArray._traverse(da[0], access_path)))
+        field_type = type(next(AnyDocArray._traverse(da[0], access_path)))
 
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(

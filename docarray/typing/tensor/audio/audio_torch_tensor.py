@@ -18,11 +18,11 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
         import torch
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import AudioTorchTensor, AudioUrl
 
 
-        class MyAudioDoc(BaseDocument):
+        class MyAudioDoc(BaseDoc):
             title: str
             audio_tensor: Optional[AudioTorchTensor]
             url: Optional[AudioUrl]

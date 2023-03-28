@@ -28,11 +28,11 @@ class VideoNdArray(NdArray, VideoTensorMixin):
         import numpy as np
         from pydantic import parse_obj_as
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import VideoNdArray, VideoUrl
 
 
-        class MyVideoDoc(BaseDocument):
+        class MyVideoDoc(BaseDoc):
             title: str
             url: Optional[VideoUrl]
             video_tensor: Optional[VideoNdArray]

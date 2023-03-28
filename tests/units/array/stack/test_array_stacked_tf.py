@@ -2,8 +2,8 @@ from typing import Optional, Union
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
-from docarray.array import DocumentArrayStacked
+from docarray import BaseDoc, DocArray
+from docarray.array import DocArrayStacked
 from docarray.typing import AnyTensor, NdArray
 from docarray.utils.misc import is_tf_available
 
@@ -17,32 +17,30 @@ if tf_available:
 
 @pytest.fixture()
 def batch():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
     import tensorflow as tf
 
-    batch = DocumentArray[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
-    )
+    batch = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     return batch.stack()
 
 
 @pytest.fixture()
 def nested_batch():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
-        img: DocumentArray[Image]
+    class MMdoc(BaseDoc):
+        img: DocArray[Image]
 
     import tensorflow as tf
 
-    batch = DocumentArrayStacked[MMdoc](
+    batch = DocArrayStacked[MMdoc](
         [
             MMdoc(
-                img=DocumentArray[Image](
+                img=DocArray[Image](
                     [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
                 )
             )
@@ -69,7 +67,7 @@ def test_getitem(batch):
 @pytest.mark.tensorflow
 def test_get_slice(batch):
     sliced = batch[0:2]
-    assert isinstance(sliced, DocumentArrayStacked)
+    assert isinstance(sliced, DocArrayStacked)
     assert len(sliced) == 2
 
 
@@ -81,10 +79,10 @@ def test_iterator(batch):
 
 @pytest.mark.tensorflow
 def test_set_after_stacking():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    batch = DocumentArrayStacked[Image](
+    batch = DocArrayStacked[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
     )
 
@@ -105,13 +103,13 @@ def test_stack_optional(batch):
 
 @pytest.mark.tensorflow
 def test_stack_mod_nested_document():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         img: Image
 
-    batch = DocumentArray[MMdoc](
+    batch = DocArray[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     ).stack()
 
@@ -124,7 +122,7 @@ def test_stack_mod_nested_document():
 
 
 @pytest.mark.tensorflow
-def test_stack_nested_documentarray(nested_batch):
+def test_stack_nested_DocArray(nested_batch):
     for i in range(len(nested_batch)):
         assert tnp.allclose(
             nested_batch[i].img._storage.tensor_columns['tensor'].tensor,
@@ -146,13 +144,13 @@ def test_convert_to_da(batch):
 
 @pytest.mark.tensorflow
 def test_unstack_nested_document():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    class MMdoc(BaseDocument):
+    class MMdoc(BaseDoc):
         img: Image
 
-    batch = DocumentArrayStacked[MMdoc](
+    batch = DocArrayStacked[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
     assert isinstance(batch.img._storage.tensor_columns['tensor'], TensorFlowTensor)
@@ -163,22 +161,20 @@ def test_unstack_nested_document():
 
 
 @pytest.mark.tensorflow
-def test_unstack_nested_documentarray(nested_batch):
+def test_unstack_nested_DocArray(nested_batch):
     batch = nested_batch.unstack()
     for i in range(len(batch)):
-        assert isinstance(batch[i].img, DocumentArray)
+        assert isinstance(batch[i].img, DocArray)
         for doc in batch[i].img:
             assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
 
 
 @pytest.mark.tensorflow
 def test_stack_call():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    da = DocumentArray[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
-    )
+    da = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     da = da.stack()
 
@@ -189,10 +185,10 @@ def test_stack_call():
 
 @pytest.mark.tensorflow
 def test_stack_union():
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
 
-    DocumentArrayStacked[Image](
+    DocArrayStacked[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
@@ -216,10 +212,10 @@ def test_setitem_tensor_direct(batch):
 def test_any_tensor_with_tf():
     tensor = tf.zeros((3, 224, 224))
 
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: AnyTensor
 
-    da = DocumentArrayStacked[Image](
+    da = DocArrayStacked[Image](
         [Image(tensor=tensor) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
@@ -235,13 +231,13 @@ def test_any_tensor_with_tf():
 def test_any_tensor_with_optional():
     tensor = tf.zeros((3, 224, 224))
 
-    class Image(BaseDocument):
+    class Image(BaseDoc):
         tensor: Optional[AnyTensor]
 
-    class TopDoc(BaseDocument):
+    class TopDoc(BaseDoc):
         img: Image
 
-    da = DocumentArrayStacked[TopDoc](
+    da = DocArrayStacked[TopDoc](
         [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
@@ -256,16 +252,16 @@ def test_any_tensor_with_optional():
 
 @pytest.mark.tensorflow
 def test_get_from_slice_stacked():
-    class Doc(BaseDocument):
+    class Doc(BaseDoc):
         text: str
         tensor: TensorFlowTensor
 
-    da = DocumentArrayStacked[Doc](
+    da = DocArrayStacked[Doc](
         [Doc(text=f'hello{i}', tensor=tf.zeros((3, 224, 224))) for i in range(10)]
     )
 
     da_sliced = da[0:10:2]
-    assert isinstance(da_sliced, DocumentArrayStacked)
+    assert isinstance(da_sliced, DocArrayStacked)
 
     tensors = da_sliced.tensor.tensor
     assert tensors.shape == (5, 3, 224, 224)
@@ -273,10 +269,10 @@ def test_get_from_slice_stacked():
 
 @pytest.mark.tensorflow
 def test_stack_none():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: Optional[AnyTensor]
 
-    da = DocumentArrayStacked[MyDoc](
+    da = DocArrayStacked[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
     )
     assert 'tensor' in da._storage.tensor_columns.keys()
@@ -284,10 +280,10 @@ def test_stack_none():
 
 @pytest.mark.tensorflow
 def test_keep_dtype_tf():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tensor: TensorFlowTensor
 
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [MyDoc(tensor=tf.zeros([2, 4], dtype=tf.int32)) for _ in range(3)]
     )
     assert da[0].tensor.tensor.dtype == tf.int32
