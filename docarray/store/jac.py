@@ -24,7 +24,7 @@ from docarray.store.helpers import (
     get_version_info,
     raise_req_error,
 )
-from docarray.utils.cache import _get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
     import io

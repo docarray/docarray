@@ -6,7 +6,7 @@ from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 T = TypeVar('T', bound='ImageDoc')
 

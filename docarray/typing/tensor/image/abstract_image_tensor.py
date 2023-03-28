@@ -3,7 +3,7 @@ import warnings
 from abc import ABC
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 
 class AbstractImageTensor(AbstractTensor, ABC):

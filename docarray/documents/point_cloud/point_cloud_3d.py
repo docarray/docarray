@@ -6,7 +6,7 @@ from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:

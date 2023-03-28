@@ -38,7 +38,7 @@ __all__ = [
     'ImageNdArray',
 ]
 
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:

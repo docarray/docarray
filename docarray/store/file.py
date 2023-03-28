@@ -7,7 +7,7 @@ from typing_extensions import TYPE_CHECKING
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.exceptions import ConcurrentPushException
 from docarray.store.helpers import _from_binary_stream, _to_binary_stream
-from docarray.utils.cache import _get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:
     from docarray import BaseDoc, DocArray

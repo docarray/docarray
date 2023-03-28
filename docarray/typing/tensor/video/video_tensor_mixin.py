@@ -7,7 +7,7 @@ import numpy as np
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 T = TypeVar('T', bound='VideoTensorMixin')
 

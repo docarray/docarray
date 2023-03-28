@@ -6,7 +6,7 @@ import pytest
 from docarray import DocArray
 from docarray.documents import TextDoc
 from docarray.store.file import ConcurrentPushException, FileDocStore
-from docarray.utils.cache import _get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10

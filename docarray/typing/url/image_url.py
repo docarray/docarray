@@ -5,7 +5,7 @@ import numpy as np
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig

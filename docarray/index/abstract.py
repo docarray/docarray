@@ -26,9 +26,9 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
-from docarray.utils._typing import unwrap_optional_type
+from docarray.utils._internal._typing import unwrap_optional_type
+from docarray.utils._internal.misc import is_tf_available, torch_imported
 from docarray.utils.find import FindResult, _FindResult
-from docarray.utils.misc import is_tf_available, torch_imported
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
