@@ -4568,12 +4568,13 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [extras]
 audio = ["pydub"]
 aws = ["smart-open"]
-common = ["protobuf", "lz4", "pandas"]
+common = ["protobuf", "lz4"]
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
 hnswlib = ["hnswlib"]
 image = ["pillow", "types-pillow"]
 jac = ["jina-hubble-sdk"]
 mesh = ["trimesh"]
+pandas = ["pandas"]
 torch = ["torch"]
 video = ["av"]
 web = ["fastapi"]
@@ -4581,4 +4582,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "bc2ee0a24999257a7d6f76cb120864a4aac2426e24999e299eeea273b895c8c9"
+content-hash = "33f01d36bd1b134d7ab90505bba21a95a500d0898aeaae63e71e8213616098c2"
