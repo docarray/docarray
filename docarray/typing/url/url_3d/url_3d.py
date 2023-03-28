@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import trimesh

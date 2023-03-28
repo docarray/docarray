@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     from fastapi.responses import JSONResponse

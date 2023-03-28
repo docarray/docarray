@@ -6,7 +6,7 @@ import numpy as np
 from docarray.computation import AbstractComputationalBackend
 from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
 from docarray.typing import TensorFlowTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore

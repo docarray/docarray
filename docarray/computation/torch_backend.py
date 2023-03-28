@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union
 import numpy as np
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import torch

@@ -6,7 +6,7 @@ import numpy as np
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 if TYPE_CHECKING:
     import torch

@@ -4,7 +4,7 @@ from docarray.base_doc.doc import BaseDoc
 
 __all__ = ['AnyDoc', 'BaseDoc', 'BaseNode']
 
-from docarray.utils._internal.misc import import_library
+from docarray.utils.misc import import_library
 
 
 def __getattr__(name: str):
