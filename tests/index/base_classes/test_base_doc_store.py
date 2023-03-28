@@ -347,8 +347,11 @@ def test_docs_validation_unions():
     class OptionalDoc(BaseDocument):
         tens: Optional[NdArray[10]] = Field(dim=1000)
 
-    class UnionDoc(BaseDocument):
+    class MixedUnionDoc(BaseDocument):
         tens: Union[NdArray[10], str] = Field(dim=1000)
+
+    class TensorUnionDoc(BaseDocument):
+        tens: Union[NdArray[10], AbstractTensor] = Field(dim=1000)
 
     # OPTIONAL
     store = DummyDocIndex[SimpleDoc]()
@@ -360,15 +363,28 @@ def test_docs_validation_unions():
     with pytest.raises(ValueError):
         store._validate_docs([OptionalDoc(tens=None)])
 
-    # OTHER UNION
+    # MIXED UNION
     store = DummyDocIndex[SimpleDoc]()
-    in_list = [UnionDoc(tens=np.random.random((10,)))]
+    in_list = [MixedUnionDoc(tens=np.random.random((10,)))]
     assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[UnionDoc](in_list)
+    in_da = DocumentArray[MixedUnionDoc](in_list)
     assert isinstance(store._validate_docs(in_da), DocumentArray[BaseDocument])
 
     with pytest.raises(ValueError):
-        store._validate_docs([UnionDoc(tens='hello')])
+        store._validate_docs([MixedUnionDoc(tens='hello')])
+
+    # TENSOR UNION
+    store = DummyDocIndex[TensorUnionDoc]()
+    in_list = [SimpleDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[SimpleDoc](in_list)
+    assert isinstance(store._validate_docs(in_da), DocumentArray[BaseDocument])
+
+    store = DummyDocIndex[SimpleDoc]()
+    in_list = [TensorUnionDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
+    in_da = DocumentArray[TensorUnionDoc](in_list)
+    assert store._validate_docs(in_da) == in_da
 
 
 def test_get_value():

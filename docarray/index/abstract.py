@@ -780,7 +780,6 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         if isinstance(docs, BaseDocument):
             docs = [docs]
-        # TODO List of Docs
         if isinstance(docs, DocumentArray):
             # validation shortcut for DocumentArray; only look at the schema
             reference_schema_flat = self._flatten_schema(
@@ -788,20 +787,23 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             )
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
+            try:
+                input_schema_flat = self._flatten_schema(docs.document_type)
+                input_names = [name for (name, _, _) in input_schema_flat]
+                input_types = [t_ for (_, t_, _) in input_schema_flat]
+                # this could be relaxed in the future,
+                # see schema translation ideas in the design doc
+                names_compatible = reference_names == input_names
+                # TODO change here?
+                types_compatible = all(
+                    (issubclass(t1, t2))
+                    for (t1, t2) in zip(reference_types, input_types)
+                )
+                if names_compatible and types_compatible:
+                    return docs
+            except Exception:
+                pass
 
-            input_schema_flat = self._flatten_schema(docs.document_type)
-            input_names = [name for (name, _, _) in input_schema_flat]
-            input_types = [t_ for (_, t_, _) in input_schema_flat]
-            # this could be relaxed in the future,
-            # see schema translation ideas in the design doc
-            names_compatible = reference_names == input_names
-            # TODO change here?
-            types_compatible = all(
-                (not is_union_type(t2) and issubclass(t1, t2))
-                for (t1, t2) in zip(reference_types, input_types)
-            )
-            if names_compatible and types_compatible:
-                return docs
         out_docs = []
         for i in range(len(docs)):
             # validate the data
