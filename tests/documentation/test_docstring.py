@@ -42,6 +42,9 @@ members = []
 for obj in obj_to_check:
     members.extend(get_codeblock_members(obj))
 
+print(f"len(members) = {len(members)}")
+print(f"len(set(members)) = {len(set(members))}")
+
 
 @pytest.mark.parametrize("obj", members, ids=lambda d: d.__qualname__)
 def test_member(obj):
