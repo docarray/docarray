@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     import pandas as pd
 
     from docarray import DocArray
-    from docarray.proto import DocArrayProto
+    from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
 
@@ -108,7 +108,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         ...
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocArray
         """
@@ -116,11 +116,11 @@ class IOMixinArray(Iterable[BaseDoc]):
             cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
         )
 
-    def to_protobuf(self) -> 'DocArrayProto':
+    def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocArray into a Protobuf message"""
-        from docarray.proto import DocArrayProto
+        from docarray.proto import DocumentArrayProto
 
-        da_proto = DocArrayProto()
+        da_proto = DocumentArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
@@ -551,9 +551,9 @@ class IOMixinArray(Iterable[BaseDoc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocArrayProto
+            from docarray.proto import DocumentArrayProto
 
-            dap = DocArrayProto()
+            dap = DocumentArrayProto()
             dap.ParseFromString(d)
 
             return cls.from_protobuf(dap)
