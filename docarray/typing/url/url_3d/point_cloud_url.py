@@ -31,26 +31,29 @@ class PointCloud3DUrl(Url3D):
         """
         Load the data from the url into an NdArray containing point cloud information.
 
-        EXAMPLE USAGE
 
-        .. code-block:: python
+        ---
 
-            import numpy as np
-            from docarray import BaseDoc
+        ```python
+        import numpy as np
+        from docarray import BaseDoc
 
-            from docarray.typing import PointCloud3DUrl
-
-
-            class MyDoc(BaseDoc):
-                point_cloud_url: PointCloud3DUrl
+        from docarray.typing import PointCloud3DUrl
 
 
-            doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+        class MyDoc(BaseDoc):
+            point_cloud_url: PointCloud3DUrl
 
-            point_cloud = doc.point_cloud_url.load(samples=100)
 
-            assert isinstance(point_cloud, np.ndarray)
-            assert point_cloud.shape == (100, 3)
+        doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+
+        # point_cloud = doc.point_cloud_url.load(samples=100)
+
+        # assert isinstance(point_cloud, np.ndarray)
+        # assert point_cloud.shape == (100, 3)
+        ```
+
+        ---
 
         :param samples: number of points to sample from the mesh
         :param multiple_geometries: if False, store point cloud in 2D np.ndarray.

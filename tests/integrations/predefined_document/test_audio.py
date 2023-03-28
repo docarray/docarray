@@ -10,7 +10,7 @@ from docarray import BaseDoc
 from docarray.documents import AudioDoc
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()

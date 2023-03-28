@@ -14,7 +14,7 @@ from docarray.typing import (
     VideoTorchTensor,
     VideoUrl,
 )
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()

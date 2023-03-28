@@ -12,7 +12,7 @@ from rich.progress import (
 )
 
 
-class QPSColumn(TextColumn):
+class _QPSColumn(TextColumn):
     def render(self, task) -> Text:
         if task.speed:
             _text = f'{task.speed:.0f} QPS'
@@ -34,7 +34,7 @@ def _get_pbar(disable: bool, total: Optional[int] = None):
         BarColumn(),
         MofNCompleteColumn(),
         '•',
-        QPSColumn('{task.speed} QPS', justify='right', style='progress.data.speed'),
+        _QPSColumn('{task.speed} QPS', justify='right', style='progress.data.speed'),
         '•',
         TimeRemainingColumn() if total else TimeElapsedColumn(),
         '•',

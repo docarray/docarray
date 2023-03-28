@@ -22,10 +22,10 @@ import numpy as np
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
 from docarray.base_doc.base_node import BaseNode
-from docarray.utils._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
-    from docarray.proto import DocArrayProto, NodeProto
+    from docarray.proto import DocumentArrayProto, NodeProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocArray')
@@ -130,12 +130,12 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], BaseNode):
 
     @classmethod
     @abstractmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message"""
         ...
 
     @abstractmethod
-    def to_protobuf(self) -> 'DocArrayProto':
+    def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocArray into a Protobuf message"""
         ...
 

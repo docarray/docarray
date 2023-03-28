@@ -51,34 +51,35 @@ class ImageBytes(bytes, AbstractType, BaseNode):
         """
         Load the image from the bytes into a numpy.ndarray image tensor
 
-        EXAMPLE USAGE
+        ---
 
-        .. code-block:: python
-
-            from docarray import BaseDoc
-            from docarray.typing import ImageUrl
-            import numpy as np
-
-
-            class MyDoc(BaseDoc):
-                img_url: ImageUrl
+        ```python
+        from docarray import BaseDoc
+        from docarray.typing import ImageUrl
+        import numpy as np
 
 
-            doc = MyDoc(
-                img_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
-                "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
-            )
+        class MyDoc(BaseDoc):
+            img_url: ImageUrl
 
-            img_tensor = doc.img_url.load()
-            assert isinstance(img_tensor, np.ndarray)
 
-            img_tensor = doc.img_url.load(height=224, width=224)
-            assert img_tensor.shape == (224, 224, 3)
+        doc = MyDoc(
+            img_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
+            "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+        )
 
-            layout = ('C', 'W', 'H')
-            img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
-            assert img_tensor.shape == (3, 200, 100)
+        img_tensor = doc.img_url.load()
+        assert isinstance(img_tensor, np.ndarray)
 
+        img_tensor = doc.img_url.load(height=224, width=224)
+        assert img_tensor.shape == (224, 224, 3)
+
+        layout = ('C', 'W', 'H')
+        img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
+        assert img_tensor.shape == (3, 200, 100)
+        ```
+
+        ---
 
         :param width: width of the image tensor.
         :param height: height of the image tensor.

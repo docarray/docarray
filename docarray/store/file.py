@@ -7,7 +7,7 @@ from typing_extensions import TYPE_CHECKING
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.exceptions import ConcurrentPushException
 from docarray.store.helpers import _from_binary_stream, _to_binary_stream
-from docarray.utils.cache import get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:
     from docarray import BaseDoc, DocArray
@@ -23,7 +23,7 @@ class FileDocStore(AbstractDocStore):
         If it is a path, it is resolved to an absolute path.
         """
         if not (name.startswith('/') or name.startswith('~') or name.startswith('.')):
-            name = str(get_cache_path() / name)
+            name = str(_get_cache_path() / name)
         if name.startswith('~'):
             name = str(Path.home() / name[2:])
         return Path(name).resolve()
