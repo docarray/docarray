@@ -2,9 +2,6 @@ from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.typing.tensor.image.image_tensor import ImageTensor
-
-__all__ = ['ImageNdArray', 'ImageTensor']
-
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -12,6 +9,8 @@ if TYPE_CHECKING:
         ImageTensorFlowTensor,
     )
     from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor  # noqa
+
+__all__ = ['ImageNdArray', 'ImageTensor']
 
 
 def __getattr__(name: str):
