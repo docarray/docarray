@@ -87,7 +87,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     AnyTensor or Union of NdArray and TorchTensor
     """
 
-    document_type: Type[T_doc]
+    _document_type: Type[T_doc]
 
     def __init__(
         self: T,
