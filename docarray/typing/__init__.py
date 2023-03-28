@@ -17,18 +17,6 @@ from docarray.typing.url import (
     TextUrl,
     VideoUrl,
 )
-from docarray.utils._internal.misc import import_library
-
-if TYPE_CHECKING:
-    from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
-    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
-    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
-    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
-    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
 
 __all__ = [
     'NdArray',
@@ -50,6 +38,20 @@ __all__ = [
     'ImageTensor',
     'ImageNdArray',
 ]
+
+from docarray.utils._internal.misc import import_library
+
+if TYPE_CHECKING:
+    from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
+    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
+
 
 torch_tensors = [
     'AudioTorchTensor',

@@ -2,6 +2,9 @@ from typing import TYPE_CHECKING
 
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
+
+__all__ = ['AudioNdArray', 'AudioTensor']
+
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -9,8 +12,6 @@ if TYPE_CHECKING:
         AudioTensorFlowTensor,
     )
     from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor  # noqa
-
-__all__ = ['AudioNdArray', 'AudioTensor']
 
 
 def __getattr__(name: str):

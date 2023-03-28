@@ -2,6 +2,9 @@ from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
 from docarray.typing.tensor.video.video_tensor import VideoTensor
+
+__all__ = ['VideoNdArray', 'VideoTensor']
+
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -9,8 +12,6 @@ if TYPE_CHECKING:
         VideoTensorFlowTensor,
     )
     from docarray.typing.tensor.video.video_torch_tensor import VideoTorchTensor  # noqa
-
-__all__ = ['VideoNdArray', 'VideoTensor']
 
 
 def __getattr__(name: str):
