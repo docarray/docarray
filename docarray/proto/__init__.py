@@ -12,8 +12,8 @@ else:
 if __pb__version__.startswith('4'):
     from docarray.proto.pb.docarray_pb2 import (
         DictOfAnyProto,
-        DocArrayProto,
         DocArrayStackedProto,
+        DocumentArrayProto,
         DocumentProto,
         ListOfAnyProto,
         ListOfDocArrayProto,
@@ -23,8 +23,8 @@ if __pb__version__.startswith('4'):
 else:
     from docarray.proto.pb2.docarray_pb2 import (
         DictOfAnyProto,
-        DocArrayProto,
         DocArrayStackedProto,
+        DocumentArrayProto,
         DocumentProto,
         ListOfAnyProto,
         ListOfDocArrayProto,
@@ -33,12 +33,12 @@ else:
     )
 
 __all__ = [
-    'DocArrayProto',
+    'DocumentArrayProto',
     'DocumentProto',
     'NdArrayProto',
     'NodeProto',
     'DocArrayStackedProto',
-    'DocArrayProto',
+    'DocumentArrayProto',
     'ListOfDocArrayProto',
     'ListOfAnyProto',
     'DictOfAnyProto',
