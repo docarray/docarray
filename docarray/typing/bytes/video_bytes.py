@@ -8,7 +8,7 @@ from pydantic.validators import bytes_validator
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
-from docarray.utils.misc import import_library
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField

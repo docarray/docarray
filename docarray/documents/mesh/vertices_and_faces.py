@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
 from docarray.base_doc import BaseDoc
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.utils.misc import import_library
+from docarray.utils._internal.misc import import_library
 
 T = TypeVar('T', bound='VerticesAndFaces')
 

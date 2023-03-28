@@ -5,7 +5,7 @@ from docarray.store.file import FileDocStore
 __all__ = ['FileDocStore']
 
 
-from docarray.utils.misc import import_library
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from docarray.store.jac import JACDocStore  # noqa: F401
