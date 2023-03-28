@@ -1,4 +1,4 @@
-from docarray.typing.bytes import ImageBytes
+from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
 from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
 from docarray.typing.tensor.audio import AudioNdArray
@@ -35,6 +35,9 @@ __all__ = [
     'ImageBytes',
     'ImageTensor',
     'ImageNdArray',
+    'ImageBytes',
+    'VideoBytes',
+    'AudioBytes',
 ]
 
 from docarray.utils._internal.misc import is_tf_available, is_torch_available

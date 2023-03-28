@@ -5,9 +5,9 @@ import numpy as np
 from pydantic import parse_obj_as
 from pydantic.validators import bytes_validator
 
-from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor import AudioNdArray, NdArray, VideoNdArray
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
