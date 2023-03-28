@@ -9,9 +9,8 @@ from docarray import BaseDocument, DocumentArray
 from docarray.documents import ImageDoc
 from docarray.index.abstract import BaseDocumentIndex, _raise_not_composable
 from docarray.typing import ID, ImageBytes, ImageUrl, NdArray
-from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
-from docarray.typing.tensor.image.image_ndarray import ImageNdArray
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils.misc import is_torch_available
 
 pytestmark = pytest.mark.index
 
@@ -193,36 +192,14 @@ def test_flatten_schema_union():
 
     torch_available = is_torch_available()
     if torch_available:
-        from docarray.typing.tensor.embedding.torch import TorchEmbedding
         from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
-
-    tf_available = is_tf_available()
-    if tf_available:
-        from docarray.typing.tensor.embedding.tensorflow import (
-            TensorFlowEmbedding as TFEmbedding,
-        )
-        from docarray.typing.tensor.image.image_tensorflow_tensor import (
-            ImageTensorFlowTensor as ImageTFTensor,
-        )
-
-    tensor_type = Union[ImageNdArray, None]
-    embedding_type = Union[NdArrayEmbedding, None]
-    if tf_available and torch_available:
-        tensor_type = Union[ImageNdArray, ImageTorchTensor, ImageTFTensor, None]  # type: ignore
-        embedding_type = Union[NdArrayEmbedding, TorchEmbedding, TFEmbedding, None]
-    elif tf_available:
-        tensor_type = Union[ImageNdArray, ImageTFTensor, None]
-        embedding_type = Union[NdArrayEmbedding, TFEmbedding, None]
-    elif torch_available:
-        tensor_type = Union[ImageNdArray, ImageTorchTensor, None]
-        embedding_type = Union[NdArrayEmbedding, TorchEmbedding, None]
 
     assert set(store._flatten_schema(MyDoc)) == {
         ('id', ID, fields['id']),
         ('image__id', ID, fields_image['id']),
         ('image__url', ImageUrl, fields_image['url']),
-        ('image__tensor', tensor_type, fields_image['tensor']),
-        ('image__embedding', embedding_type, fields_image['embedding']),
+        ('image__tensor', AbstractTensor, fields_image['tensor']),
+        ('image__embedding', AbstractTensor, fields_image['embedding']),
         ('image__bytes_', ImageBytes, fields_image['bytes_']),
     }
 
@@ -232,16 +209,15 @@ def test_flatten_schema_union():
     with pytest.raises(Exception):
         _ = DummyDocIndex[MyDoc2]()
 
-    # class MyDoc3(BaseDocument):
-    #     tensor: Union[NdArray, ImageTorchTensor]
+    class MyDoc3(BaseDocument):
+        tensor: Union[NdArray, ImageTorchTensor]
 
-    # store = DummyDocIndex[MyDoc3]()
-    # fields = MyDoc3.__fields__
-    # fields_image = ImageDoc.__fields__
-    # assert set(store._flatten_schema(MyDoc3)) == {
-    #     ('id', ID, fields['id']),
-    #     ('tensor', Union[NdArray, ImageNdArray], fields_image['tensor']),
-    # }
+    store = DummyDocIndex[MyDoc3]()
+    fields = MyDoc3.__fields__
+    assert set(store._flatten_schema(MyDoc3)) == {
+        ('id', ID, fields['id']),
+        ('tensor', AbstractTensor, fields['tensor']),
+    }
 
 
 def test_columns_db_type_with_user_defined_mapping(tmp_path):
@@ -366,6 +342,7 @@ def test_docs_validation():
         )
 
 
+# TODO change here
 def test_docs_validation_unions():
     class OptionalDoc(BaseDocument):
         tens: Optional[NdArray[10]] = Field(dim=1000)
@@ -541,3 +518,31 @@ def test_convert_dict_to_doc():
     assert doc.d.id == doc_dict_copy['d__id']
     assert doc.d.d.id == doc_dict_copy['d__d__id']
     assert np.all(doc.d.d.tens == doc_dict_copy['d__d__tens'])
+
+    class MyDoc(BaseDocument):
+        image: ImageDoc
+
+    store = DummyDocIndex[MyDoc]()
+    doc_dict = {
+        'id': 'root',
+        'image__id': 'nested',
+        'image__tensor': np.random.random((128,)),
+    }
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+
+    torch_available = is_torch_available()
+    if torch_available:
+        from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+
+    class MyDoc2(BaseDocument):
+        tens: Union[NdArray, ImageTorchTensor]
+
+    store = DummyDocIndex[MyDoc2]()
+    doc_dict = {
+        'id': 'root',
+        'tens': np.random.random((128,)),
+    }
+    doc_dict_copy = doc_dict.copy()
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict_copy['id']
+    assert np.all(doc.tens == doc_dict_copy['tens'])

@@ -21,11 +21,12 @@ from typing import (
 
 import numpy as np
 from pydantic.error_wrappers import ValidationError
-from typing_inspect import get_args, is_optional_type, is_union_type
+from typing_inspect import get_args, is_union_type
 
 from docarray import BaseDocument, DocumentArray
 from docarray.array.abstract_array import AnyDocumentArray
 from docarray.typing import AnyTensor
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._typing import is_tensor_union, unwrap_optional_type
 from docarray.utils.find import FindResult, _FindResult
 from docarray.utils.misc import is_tf_available, torch_imported
@@ -693,7 +694,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                                 )
 
                 elif is_tensor_union(t_):
-                    names_types_fields.append((name_prefix + field_name, t_, field_))
+                    names_types_fields.append(
+                        (name_prefix + field_name, AbstractTensor, field_)
+                    )
 
                 else:
                     raise Exception(
@@ -718,16 +721,11 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
-            if is_optional_type(type_):
-                column_infos[field_name] = self._create_single_column(
-                    field_, unwrap_optional_type(type_)
-                )
-            elif is_union_type(type_):
-                raise ValueError(
-                    'Union types are not supported in the schema of a DocumentIndex.'
-                    f' Instead of using type {type_} use a single specific type.'
-                )
-            elif issubclass(type_, AnyDocumentArray):
+            # if is_optional_type(type_): # TODO
+            #     column_infos[field_name] = self._create_single_column(
+            #         field_, unwrap_optional_type(type_)
+            #     )
+            if issubclass(type_, AnyDocumentArray):
                 raise ValueError(
                     'Indexing field of DocumentArray type (=subindex)'
                     'is not yet supported.'
@@ -782,6 +780,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """
         if isinstance(docs, BaseDocument):
             docs = [docs]
+        # TODO List of Docs
         if isinstance(docs, DocumentArray):
             # validation shortcut for DocumentArray; only look at the schema
             reference_schema_flat = self._flatten_schema(
@@ -796,6 +795,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             # this could be relaxed in the future,
             # see schema translation ideas in the design doc
             names_compatible = reference_names == input_names
+            # TODO change here?
             types_compatible = all(
                 (not is_union_type(t2) and issubclass(t1, t2))
                 for (t1, t2) in zip(reference_types, input_types)
@@ -851,9 +851,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
-
         for field_name, _ in schema.__fields__.items():
-            t_ = unwrap_optional_type(schema._get_field_type(field_name))
+            t_ = schema._get_field_type(field_name)
+            if is_tensor_union(t_):
+                t_ = AbstractTensor
+            else:
+                t_ = unwrap_optional_type(t_)
+
             if issubclass(t_, BaseDocument):
                 inner_dict = {}
 
