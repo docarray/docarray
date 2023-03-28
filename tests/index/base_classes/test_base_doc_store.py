@@ -342,7 +342,6 @@ def test_docs_validation():
         )
 
 
-# TODO change here
 def test_docs_validation_unions():
     class OptionalDoc(BaseDocument):
         tens: Optional[NdArray[10]] = Field(dim=1000)

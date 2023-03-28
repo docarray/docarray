@@ -854,13 +854,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: A Document object
         """
         for field_name, _ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
-            if is_tensor_union(t_):
-                t_ = AbstractTensor
-            else:
-                t_ = unwrap_optional_type(t_)
+            t_ = unwrap_optional_type(schema._get_field_type(field_name))
 
-            if issubclass(t_, BaseDocument):
+            if not is_union_type(t_) and issubclass(t_, BaseDocument):
                 inner_dict = {}
 
                 fields = [
