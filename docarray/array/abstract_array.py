@@ -19,9 +19,9 @@ from typing import (
 
 import numpy as np
 
+from docarray.base_doc.base_node import BaseNode
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
-from docarray.base_doc.base_node import BaseNode
 from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
