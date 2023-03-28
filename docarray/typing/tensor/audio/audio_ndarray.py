@@ -16,12 +16,12 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
 
         from typing import Optional
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import AudioNdArray, AudioUrl
         import numpy as np
 
 
-        class MyAudioDoc(BaseDocument):
+        class MyAudioDoc(BaseDoc):
             title: str
             audio_tensor: Optional[AudioNdArray]
             url: Optional[AudioUrl]

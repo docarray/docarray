@@ -1,6 +1,6 @@
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import TextDoc
 
 
@@ -15,7 +15,7 @@ def test_str_init():
 
 
 def test_doc():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         text1: TextDoc
         text2: TextDoc
 

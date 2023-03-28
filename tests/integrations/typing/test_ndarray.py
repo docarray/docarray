@@ -1,11 +1,11 @@
 import numpy as np
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import NdArray
 
 
 def test_set_tensor():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         tensor: NdArray
 
     d = MyDocument(tensor=np.zeros((3, 224, 224)))

@@ -2,7 +2,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -21,7 +21,7 @@ if tf_available:
 T = TypeVar('T', bound='AudioDoc')
 
 
-class AudioDoc(BaseDocument):
+class AudioDoc(BaseDoc):
     """
     Document for handling audios.
 
@@ -70,7 +70,7 @@ class AudioDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import AudioDoc, TextDoc
 
 

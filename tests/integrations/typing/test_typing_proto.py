@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument
-from docarray.base_document import AnyDocument
+from docarray import BaseDoc
+from docarray.base_doc import AnyDoc
 from docarray.typing import (
     AnyEmbedding,
     AnyUrl,
@@ -18,7 +18,7 @@ from docarray.typing import (
 
 @pytest.mark.proto
 def test_proto_all_types():
-    class Mymmdoc(BaseDocument):
+    class Mymmdoc(BaseDoc):
         tensor: NdArray
         torch_tensor: TorchTensor
         embedding: AnyEmbedding
@@ -39,7 +39,7 @@ def test_proto_all_types():
         point_cloud_url='http://jina.ai/mesh.obj',
     )
 
-    new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
+    new_doc = AnyDoc.from_protobuf(doc.to_protobuf())
 
     for field, value in new_doc:
         if field == 'embedding':
@@ -55,7 +55,7 @@ def test_proto_all_types_proto3():
 
     from docarray.typing import TensorFlowTensor
 
-    class Mymmdoc(BaseDocument):
+    class Mymmdoc(BaseDoc):
         tensor: NdArray
         torch_tensor: TorchTensor
         tf_tensor: TensorFlowTensor
@@ -78,7 +78,7 @@ def test_proto_all_types_proto3():
         point_cloud_url='http://jina.ai/mesh.obj',
     )
 
-    new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
+    new_doc = AnyDoc.from_protobuf(doc.to_protobuf())
 
     for field, value in new_doc:
         if field == 'embedding':

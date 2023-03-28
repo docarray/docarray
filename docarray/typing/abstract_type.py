@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
 from pydantic import BaseConfig
 from pydantic.fields import ModelField
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 if TYPE_CHECKING:
     from docarray.proto import NodeProto

@@ -3,37 +3,37 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-class FlatDoc(BaseDocument):
+class FlatDoc(BaseDoc):
     tens_one: NdArray = Field(dim=10)
     tens_two: NdArray = Field(dim=50)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
 
 
-class DeepNestedDoc(BaseDocument):
+class DeepNestedDoc(BaseDoc):
     d: NestedDoc
 
 
-class TorchDoc(BaseDocument):
+class TorchDoc(BaseDoc):
     tens: TorchTensor[10]
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_simple_schema(tmp_path, space):
-    class SimpleSchema(BaseDocument):
+    class SimpleSchema(BaseDoc):
         tens: NdArray[10] = Field(space=space)
 
     store = HnswDocumentIndex[SimpleSchema](work_dir=str(tmp_path))
@@ -83,7 +83,7 @@ def test_find_torch(tmp_path, space):
 def test_find_tensorflow(tmp_path):
     from docarray.typing import TensorFlowTensor
 
-    class TfDoc(BaseDocument):
+    class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
     store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
@@ -113,7 +113,7 @@ def test_find_tensorflow(tmp_path):
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_flat_schema(tmp_path, space):
-    class FlatSchema(BaseDocument):
+    class FlatSchema(BaseDoc):
         tens_one: NdArray = Field(dim=10, space=space)
         tens_two: NdArray = Field(dim=50, space=space)
 
@@ -147,14 +147,14 @@ def test_find_flat_schema(tmp_path, space):
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_nested_schema(tmp_path, space):
-    class SimpleDoc(BaseDocument):
+    class SimpleDoc(BaseDoc):
         tens: NdArray[10] = Field(space=space)
 
-    class NestedDoc(BaseDocument):
+    class NestedDoc(BaseDoc):
         d: SimpleDoc
         tens: NdArray[10] = Field(space=space)
 
-    class DeepNestedDoc(BaseDocument):
+    class DeepNestedDoc(BaseDoc):
         d: NestedDoc
         tens: NdArray = Field(space=space, dim=10)
 

@@ -1,22 +1,22 @@
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
 
 @pytest.mark.proto
 def test_simple_proto():
-    class CustomDoc(BaseDocument):
+    class CustomDoc(BaseDoc):
         text: str
         tensor: NdArray
 
-    da = DocumentArray(
+    da = DocArray(
         [CustomDoc(text='hello', tensor=np.zeros((3, 224, 224))) for _ in range(10)]
     )
 
-    new_da = DocumentArray[CustomDoc].from_protobuf(da.to_protobuf())
+    new_da = DocArray[CustomDoc].from_protobuf(da.to_protobuf())
 
     for doc1, doc2 in zip(da, new_da):
         assert doc1.text == doc2.text
@@ -25,11 +25,11 @@ def test_simple_proto():
 
 @pytest.mark.proto
 def test_nested_proto():
-    class CustomDocument(BaseDocument):
+    class CustomDocument(BaseDoc):
         text: TextDoc
         image: ImageDoc
 
-    da = DocumentArray[CustomDocument](
+    da = DocArray[CustomDocument](
         [
             CustomDocument(
                 text=TextDoc(text='hello'),
@@ -39,16 +39,16 @@ def test_nested_proto():
         ]
     )
 
-    DocumentArray[CustomDocument].from_protobuf(da.to_protobuf())
+    DocArray[CustomDocument].from_protobuf(da.to_protobuf())
 
 
 @pytest.mark.proto
 def test_nested_proto_any_doc():
-    class CustomDocument(BaseDocument):
+    class CustomDocument(BaseDoc):
         text: TextDoc
         image: ImageDoc
 
-    da = DocumentArray[CustomDocument](
+    da = DocArray[CustomDocument](
         [
             CustomDocument(
                 text=TextDoc(text='hello'),
@@ -58,4 +58,4 @@ def test_nested_proto_any_doc():
         ]
     )
 
-    DocumentArray.from_protobuf(da.to_protobuf())
+    DocArray.from_protobuf(da.to_protobuf())

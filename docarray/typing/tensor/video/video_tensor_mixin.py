@@ -53,12 +53,12 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         .. code-block:: python
             import numpy as np
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             from docarray.typing.tensor.audio.audio_tensor import AudioTensor
             from docarray.typing.tensor.video.video_tensor import VideoTensor
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 video_tensor: VideoTensor
                 audio_tensor: AudioTensor
 

@@ -1,11 +1,14 @@
+from typing import Optional
+
 from rich.progress import (
-    Progress,
     BarColumn,
-    SpinnerColumn,
     MofNCompleteColumn,
-    TextColumn,
-    TimeRemainingColumn,
+    Progress,
+    SpinnerColumn,
     Text,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
 )
 
 
@@ -24,8 +27,8 @@ class QPSColumn(TextColumn):
         return text
 
 
-def _get_pbar(disable):
-    return Progress(
+def _get_pbar(disable: bool, total: Optional[int] = None):
+    columns = (
         SpinnerColumn(),
         TextColumn('[bold]{task.description}'),
         BarColumn(),
@@ -33,19 +36,23 @@ def _get_pbar(disable):
         '•',
         QPSColumn('{task.speed} QPS', justify='right', style='progress.data.speed'),
         '•',
-        TimeRemainingColumn(),
+        TimeRemainingColumn() if total else TimeElapsedColumn(),
         '•',
         TextColumn(
             '[bold blue]{task.fields[total_size]}',
             justify='right',
             style='progress.filesize',
         ),
+    )
+
+    return Progress(
+        *columns,
         transient=False,
         disable=disable,
     )
 
 
-def _get_progressbar(description, disable, total):
-    progress = _get_pbar(disable)
+def _get_progressbar(description: str, disable: bool, total: Optional[int]):
+    progress = _get_pbar(disable, total)
     task = progress.add_task(description, total=total, start=False, total_size=0)
     return progress, task

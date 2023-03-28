@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import AnyEmbedding, AnyTensor
 
 
-class LegacyDocument(BaseDocument):
+class LegacyDocument(BaseDoc):
     """
     This Document is the LegacyDocument. It follows the same schema as in DocArray v1.
     It can be useful to start migrating a codebase from v1 to v2.
@@ -16,7 +16,7 @@ class LegacyDocument(BaseDocument):
     of the data is similar.
     .. code-block:: python
 
-        from docarray import DocumentArray
+        from docarray import DocArray
         from docarray.documents.legacy import LegacyDocument
         import numpy as np
 
@@ -27,15 +27,15 @@ class LegacyDocument(BaseDocument):
 
         doc.tags['price'] = 10
 
-        doc.chunks = DocumentArray[Document]([Document() for _ in range(10)])
+        doc.chunks = DocArray[Document]([Document() for _ in range(10)])
 
-        doc.chunks = DocumentArray[Document]([Document() for _ in range(10)])
+        doc.chunks = DocArray[Document]([Document() for _ in range(10)])
 
     """
 
     tensor: Optional[AnyTensor]
-    chunks: Optional[DocumentArray[LegacyDocument]]
-    matches: Optional[DocumentArray[LegacyDocument]]
+    chunks: Optional[DocArray[LegacyDocument]]
+    matches: Optional[DocArray[LegacyDocument]]
     blob: Optional[bytes]
     text: Optional[str]
     url: Optional[str]
