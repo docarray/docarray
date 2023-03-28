@@ -10,41 +10,43 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
     Adds audio-specific features to the tensor.
 
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
+    ```python
+    from typing import Optional
 
-        from typing import Optional
+    import torch
 
-        import torch
-
-        from docarray import BaseDoc
-        from docarray.typing import AudioTorchTensor, AudioUrl
-
-
-        class MyAudioDoc(BaseDoc):
-            title: str
-            audio_tensor: Optional[AudioTorchTensor]
-            url: Optional[AudioUrl]
-            bytes_: Optional[bytes]
+    from docarray import BaseDoc
+    from docarray.typing import AudioTorchTensor, AudioUrl
 
 
-        doc_1 = MyAudioDoc(
-            title='my_first_audio_doc',
-            audio_tensor=torch.randn(size=(1000, 2)),
-        )
+    class MyAudioDoc(BaseDoc):
+        title: str
+        audio_tensor: Optional[AudioTorchTensor]
+        url: Optional[AudioUrl]
+        bytes_: Optional[bytes]
 
-        doc_1.audio_tensor.save(file_path='path/to/file_1.wav')
-        doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
-        doc_2 = MyAudioDoc(
-            title='my_second_audio_doc',
-            url='https://www.kozco.com/tech/piano2.wav',
-        )
+    doc_1 = MyAudioDoc(
+        title='my_first_audio_doc',
+        audio_tensor=torch.zeros(1000, 2),
+    )
 
-        doc_2.audio_tensor = doc_2.url.load()
-        doc_2.audio_tensor.save(file_path='path/to/file_2.wav')
-        doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
+    doc_1.audio_tensor.save(file_path='/tmp/file_1.wav')
+    doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
+
+    doc_2 = MyAudioDoc(
+        title='my_second_audio_doc',
+        url='https://www.kozco.com/tech/piano2.wav',
+    )
+
+    doc_2.audio_tensor, _ = doc_2.url.load()
+    doc_2.audio_tensor.save(file_path='/tmp/file_2.wav')
+    doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
+    ```
+
+    ---
     """
 
     ...
