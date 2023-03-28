@@ -1,6 +1,7 @@
 from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.bytes import ImageBytes
+from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
 from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
 from docarray.typing.tensor.audio import AudioNdArray
@@ -36,9 +37,11 @@ __all__ = [
     'ImageBytes',
     'ImageTensor',
     'ImageNdArray',
+    'ImageBytes',
+    'VideoBytes',
+    'AudioBytes',
 ]
 
-from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401

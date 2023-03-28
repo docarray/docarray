@@ -47,32 +47,35 @@ class AudioBytes(bytes, AbstractType):
         """
         Load the Audio from the bytes into a numpy.ndarray Audio tensor
 
-        EXAMPLE USAGE
+        ---
 
-        .. code-block:: python
+        ```python
+        from typing import Optional
+        from docarray import BaseDoc
+        from docarray.typing import AudioUrl, NdArray, AudioBytes
 
-            from docarray import BaseDoc
-            import numpy as np
-
-            from docarray.typing import AudioUrl
-
-
-            class MyAudio(Document):
-                url: AudioUrl
-                tensor: Optional[NdArray]
-                bytes: Optional[bytes]
+        import numpy as np
 
 
-            doc = MyAudio(url="toydata/hello.wav")
-            doc.bytes = doc.url.load_bytes()
-            doc.tensor, doc.frame_rate = doc.bytes.load()
+        class MyAudio(BaseDoc):
+            url: AudioUrl
+            tensor: Optional[NdArray]
+            bytes: Optional[AudioBytes]
+            frame_rate: Optional[float]
 
-            # Note this is equivalent to do
 
-            doc.tensor, doc.frame_rate = doc.url.load()
+        doc = MyAudio(url='https://www.kozco.com/tech/piano2.wav')
+        doc.bytes = doc.url.load_bytes()
+        doc.tensor, doc.frame_rate = doc.bytes.load()
 
-            assert isinstance(doc.audio_tensor, np.ndarray)
+        # Note this is equivalent to do
 
+        doc.tensor, doc.frame_rate = doc.url.load()
+
+        assert isinstance(doc.tensor, np.ndarray)
+        ```
+
+        ---
         :return: np.ndarray representing the Audio as RGB values
         """
         if TYPE_CHECKING:
