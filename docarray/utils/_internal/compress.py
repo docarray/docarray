@@ -1,4 +1,4 @@
-from typing import Optional, Callable, IO
+from typing import IO, Callable, Optional
 
 
 def _compress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:

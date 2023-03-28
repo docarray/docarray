@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from docarray.utils.query_language.lookup import (
+from docarray.utils._internal.query_language.lookup import (
     LookupLeaf,
     LookupNode,
     LookupTreeElem,

@@ -22,7 +22,7 @@ import numpy as np
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
 from docarray.typing.abstract_type import AbstractType
-from docarray.utils._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
     from docarray.proto import DocArrayProto, NodeProto

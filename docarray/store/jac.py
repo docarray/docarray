@@ -24,7 +24,7 @@ from docarray.store.helpers import (
     get_version_info,
     raise_req_error,
 )
-from docarray.utils.cache import get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
     import io
@@ -331,7 +331,7 @@ class JACDocStore(AbstractDocStore):
                 _BufferedCachingRequestReader, io.BufferedReader
             ] = _BufferedCachingRequestReader(r, tmp_cache_file)
 
-            cache_file = get_cache_path() / f'{save_name}.da'
+            cache_file = _get_cache_path() / f'{save_name}.da'
             if local_cache and cache_file.exists():
                 _cache_len = cache_file.stat().st_size
                 if _cache_len == int(r.headers['Content-length']):
@@ -354,7 +354,7 @@ class JACDocStore(AbstractDocStore):
 
             if local_cache:
                 if isinstance(_source, _BufferedCachingRequestReader):
-                    Path(get_cache_path()).mkdir(parents=True, exist_ok=True)
+                    Path(_get_cache_path()).mkdir(parents=True, exist_ok=True)
                     tmp_cache_file.rename(cache_file)
                 else:
                     _source.close()

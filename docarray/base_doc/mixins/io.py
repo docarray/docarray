@@ -20,8 +20,8 @@ from typing_inspect import is_union_type
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
-from docarray.utils.compress import _compress_bytes, _decompress_bytes
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 tf_available = is_tf_available()
 if tf_available:
