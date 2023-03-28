@@ -46,8 +46,6 @@ class TorchTensor(
     This type can also be used in a parametrized way,
     specifying the shape of the tensor.
 
-    EXAMPLE USAGE
-
     ---
 
     ```python
