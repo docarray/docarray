@@ -5,7 +5,7 @@ import pytest
 from docarray import BaseDoc, DocArray
 from docarray.array import DocArrayStacked
 from docarray.typing import AnyTensor, NdArray
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:

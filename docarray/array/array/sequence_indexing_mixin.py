@@ -14,7 +14,7 @@ from typing import (
 
 import numpy as np
 
-from docarray.utils.misc import is_torch_available
+from docarray.utils._internal.misc import is_torch_available
 
 T_item = TypeVar('T_item')
 T = TypeVar('T', bound='IndexingSequenceMixin')

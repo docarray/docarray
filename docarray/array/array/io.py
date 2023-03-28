@@ -31,7 +31,7 @@ from docarray.helper import (
     _all_access_paths_valid,
     _dict_to_access_paths,
 )
-from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
+from docarray.utils._internal.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -201,7 +201,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         from rich import filesize
 
         if show_progress:
-            from docarray.utils.progress_bar import _get_progressbar
+            from docarray.utils._internal.progress_bar import _get_progressbar
 
             pbar, t = _get_progressbar(
                 'Serializing', disable=not show_progress, total=len(self)
@@ -564,7 +564,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         else:
             from rich import filesize
 
-            from docarray.utils.progress_bar import _get_progressbar
+            from docarray.utils._internal.progress_bar import _get_progressbar
 
             # 1 byte (uint8)
             # 8 bytes (uint64)
@@ -629,7 +629,7 @@ class IOMixinArray(Iterable[BaseDoc]):
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
             if show_progress:
-                from docarray.utils.progress_bar import _get_progressbar
+                from docarray.utils._internal.progress_bar import _get_progressbar
 
                 pbar, t = _get_progressbar(
                     'Deserializing', disable=not show_progress, total=num_docs

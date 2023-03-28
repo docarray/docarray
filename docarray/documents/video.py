@@ -8,7 +8,7 @@ from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:

@@ -26,8 +26,8 @@ from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._typing import is_tensor_union
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal._typing import is_tensor_union
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField

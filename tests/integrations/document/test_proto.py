@@ -18,7 +18,7 @@ from docarray.typing import (
     TorchTensor,
 )
 from docarray.typing.tensor import NdArrayEmbedding
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
