@@ -50,7 +50,7 @@ def import_library(
 
     if lib is None and raise_error:
         raise RuntimeError(
-            f'The following required library is not installed: {package} '
+            f'The following required library is not installed: {package} \n'
             f'To install all necessary libraries, run: `pip install {INSTALL_INSTRUCTIONS[package]}`.'
         )
     else:
