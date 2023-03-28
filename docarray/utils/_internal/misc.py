@@ -50,8 +50,8 @@ def import_library(
 
     if lib is None and raise_error:
         raise RuntimeError(
-            f'{package} is not installed. To install all the necessary libraries to use the hnsw backend, '
-            f'please do: `pip install {INSTALL_INSTRUCTIONS[package]}`.'
+            f'The following required library is not installed: {package} '
+            f'To install all necessary libraries, run: `pip install {INSTALL_INSTRUCTIONS[package]}`.'
         )
     else:
         return lib
