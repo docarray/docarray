@@ -7,10 +7,10 @@ from typing_extensions import TYPE_CHECKING
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.exceptions import ConcurrentPushException
 from docarray.store.helpers import _from_binary_stream, _to_binary_stream
-from docarray.utils.cache import get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocArray
 
 SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
@@ -23,7 +23,7 @@ class FileDocStore(AbstractDocStore):
         If it is a path, it is resolved to an absolute path.
         """
         if not (name.startswith('/') or name.startswith('~') or name.startswith('.')):
-            name = str(get_cache_path() / name)
+            name = str(_get_cache_path() / name)
         if name.startswith('~'):
             name = str(Path.home() / name[2:])
         return Path(name).resolve()
@@ -32,11 +32,11 @@ class FileDocStore(AbstractDocStore):
     def list(
         cls: Type[SelfFileDocStore], namespace: str, show_table: bool
     ) -> List[str]:
-        """List all DocumentArrays in a directory.
+        """List all DocArrays in a directory.
 
         :param namespace: The directory to list.
         :param show_table: If True, print a table of the files in the directory.
-        :return: A list of the names of the DocumentArrays in the directory.
+        :return: A list of the names of the DocArrays in the directory.
         """
         namespace_dir = cls._abs_filepath(namespace)
         if not namespace_dir.exists():
@@ -51,7 +51,7 @@ class FileDocStore(AbstractDocStore):
             from rich.table import Table
 
             table = Table(
-                title=f'You have {len(da_files)} DocumentArrays in file://{namespace_dir}',
+                title=f'You have {len(da_files)} DocArrays in file://{namespace_dir}',
                 box=box.SIMPLE,
                 highlight=True,
             )
@@ -74,9 +74,9 @@ class FileDocStore(AbstractDocStore):
     def delete(
         cls: Type[SelfFileDocStore], name: str, missing_ok: bool = False
     ) -> bool:
-        """Delete a DocumentArray from the local filesystem.
+        """Delete a DocArray from the local filesystem.
 
-        :param name: The name of the DocumentArray to delete.
+        :param name: The name of the DocArray to delete.
         :param missing_ok: If True, do not raise an exception if the file does not exist. Defaults to False.
         :return: True if the file was deleted, False if it did not exist.
         """
@@ -92,13 +92,13 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfFileDocStore],
-        da: 'DocumentArray',
+        da: 'DocArray',
         name: str,
         public: bool,
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        """Push this DocumentArray object to the specified file path.
+        """Push this DocArray object to the specified file path.
 
         :param name: The file path to push to.
         :param public: Not used by the ``file`` protocol.
@@ -110,7 +110,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push_stream(
         cls: Type[SelfFileDocStore],
-        docs: Iterator['BaseDocument'],
+        docs: Iterator['BaseDoc'],
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -145,17 +145,17 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocumentArray'],
+        da_cls: Type['DocArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> 'DocumentArray':
-        """Pull a :class:`DocumentArray` from the specified url.
+    ) -> 'DocArray':
+        """Pull a :class:`DocArray` from the specified url.
 
         :param name: The file path to pull from.
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocumentArray to local folder
-        :return: a :class:`DocumentArray` object
+        :param local_cache: store the downloaded DocArray to local folder
+        :return: a :class:`DocArray` object
         """
 
         return da_cls(
@@ -167,11 +167,11 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull_stream(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocumentArray'],
+        da_cls: Type['DocArray'],
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> Iterator['BaseDocument']:
+    ) -> Iterator['BaseDoc']:
         """Pull a stream of Documents from the specified file.
 
         :param name: The file path to pull from.

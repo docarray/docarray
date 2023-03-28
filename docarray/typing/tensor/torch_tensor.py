@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
     from docarray.computation.torch_backend import TorchCompBackend
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -50,16 +50,18 @@ class TorchTensor(
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import TorchTensor
         import torch
 
 
-        class MyDoc(BaseDocument):
+        class MyDoc(BaseDoc):
             tensor: TorchTensor
             image_tensor: TorchTensor[3, 224, 224]
             square_crop: TorchTensor[3, 'x', 'x']
-            random_image: TorchTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: TorchTensor[
+                3, ...
+            ]  # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors

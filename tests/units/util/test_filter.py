@@ -3,12 +3,12 @@ from typing import Any, Dict, List, Optional
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.utils.filter import filter_docs
 
 
-class MMDoc(BaseDocument):
+class MMDoc(BaseDoc):
     text_doc: TextDoc
     text: str = ''
     image: Optional[ImageDoc] = None
@@ -45,7 +45,7 @@ def docs():
         optional_num=30,
         dictionary={'a': 0, 'b': 1},
     )
-    docs = DocumentArray[MMDoc]([mmdoc1, mmdoc2, mmdoc3])
+    docs = DocArray[MMDoc]([mmdoc1, mmdoc2, mmdoc3])
 
     return docs
 
@@ -173,7 +173,7 @@ def test_array_simple_filters(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_placehold_filter(dict_api):
-    docs = DocumentArray[MMDoc](
+    docs = DocArray[MMDoc](
         [
             MMDoc(text='A', text_doc=TextDoc(text='A')),
             MMDoc(text='A', text_doc=TextDoc(text='B')),
@@ -246,12 +246,12 @@ def test_logic_filter(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_from_docstring(dict_api):
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         caption: TextDoc
         image: ImageDoc
         price: int
 
-    docs = DocumentArray[MyDocument](
+    docs = DocArray[MyDocument](
         [
             MyDocument(
                 caption='A tiger in the jungle',

@@ -23,13 +23,13 @@ import numpy as np
 from pydantic.error_wrappers import ValidationError
 from typing_inspect import get_args, is_union_type
 
-from docarray import BaseDocument, DocumentArray
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray import BaseDoc, DocArray
+from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._typing import is_tensor_union, unwrap_optional_type
+from docarray.utils._internal._typing import is_tensor_union, unwrap_optional_type
+from docarray.utils._internal.misc import is_tf_available, torch_imported
 from docarray.utils.find import FindResult, _FindResult
-from docarray.utils.misc import is_tf_available, torch_imported
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -42,16 +42,16 @@ if is_tf_available():
 
     from docarray.typing import TensorFlowTensor
 
-TSchema = TypeVar('TSchema', bound=BaseDocument)
+TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
 class FindResultBatched(NamedTuple):
-    documents: List[DocumentArray]
+    documents: List[DocArray]
     scores: np.ndarray
 
 
 class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocumentArray], List[List[Dict[str, Any]]]]
+    documents: Union[List[DocArray], List[List[Dict[str, Any]]]]
     scores: np.ndarray
 
 
@@ -82,12 +82,12 @@ class _ColumnInfo:
     config: Dict[str, Any]
 
 
-class BaseDocumentIndex(ABC, Generic[TSchema]):
+class BaseDocIndex(ABC, Generic[TSchema]):
     """Abstract class for all Document Stores"""
 
-    # the BaseDocument that defines the schema of the store
+    # the BaseDoc that defines the schema of the store
     # for subclasses this is filled automatically
-    _schema: Optional[Type[BaseDocument]] = None
+    _schema: Optional[Type[BaseDoc]] = None
 
     def __init__(self, db_config=None, **kwargs):
         if self._schema is None:
@@ -252,12 +252,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-    ) -> Union[DocumentArray, List[Dict]]:
+    ) -> Union[DocArray, List[Dict]]:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocumentArray containing the documents that match the filter query
+        :return: a DocArray containing the documents that match the filter query
         """
         ...
 
@@ -266,13 +266,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-    ) -> Union[List[DocumentArray], List[List[Dict]]]:
+    ) -> Union[List[DocArray], List[List[Dict]]]:
         """Find documents in the index based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
 
         :param filter_queries: the DB specific filter queries to execute
         :param limit: maximum number of documents to return per query
-        :return: List of DocumentArrays containing the documents
+        :return: List of DocArrays containing the documents
             that match the filter queries
         """
         ...
@@ -320,7 +320,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def __getitem__(
         self, key: Union[str, Sequence[str]]
-    ) -> Union[TSchema, DocumentArray[TSchema]]:
+    ) -> Union[TSchema, DocArray[TSchema]]:
         """Get one or multiple Documents into the index, by `id`.
         If no document is found, a KeyError is raised.
 
@@ -339,14 +339,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             raise KeyError(f'No document with id {key} found')
 
         # cast output
-        if isinstance(doc_sequence, DocumentArray):
-            out_da: DocumentArray[TSchema] = doc_sequence
+        if isinstance(doc_sequence, DocArray):
+            out_da: DocArray[TSchema] = doc_sequence
         elif isinstance(doc_sequence[0], Dict):
             out_da = self._dict_list_to_docarray(doc_sequence)  # type: ignore
         else:
-            da_cls = DocumentArray.__class_getitem__(
-                cast(Type[BaseDocument], self._schema)
-            )
+            da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
             out_da = da_cls(doc_sequence)
 
         return out_da[0] if return_singleton else out_da
@@ -380,14 +378,14 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 raise ValueError(f'runtime_config must be of type {self.RuntimeConfig}')
             self._runtime_config = runtime_config
 
-    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
+    def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
 
         :param docs: Documents to index.
         """
-        if not isinstance(docs, (BaseDocument, DocumentArray)):
+        if not isinstance(docs, (BaseDoc, DocArray)):
             self._logger.warning(
-                'Passing a sequence of Documents that is not a DocumentArray comes at '
+                'Passing a sequence of Documents that is not a DocArray comes at '
                 'a performance penalty, since compatibility with the schema of Index '
                 'needs to be checked for every Document individually.'
             )
@@ -398,7 +396,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def find(
         self,
-        query: Union[AnyTensor, BaseDocument],
+        query: Union[AnyTensor, BaseDoc],
         search_field: str = 'embedding',
         limit: int = 10,
         **kwargs,
@@ -415,7 +413,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
-        if isinstance(query, BaseDocument):
+        if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
             query_vec = query
@@ -431,7 +429,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def find_batched(
         self,
-        queries: Union[AnyTensor, DocumentArray],
+        queries: Union[AnyTensor, DocArray],
         search_field: str = 'embedding',
         limit: int = 10,
         **kwargs,
@@ -440,7 +438,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
         :param queries: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
-            or a DocumentArray.
+            or a DocArray.
             If a tensor-like is passed, it should have shape (batch_size, vector_dim)
         :param search_field: name of the field to search on.
             Documents in the index are retrieved based on this similarity
@@ -471,12 +469,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         filter_query: Any,
         limit: int = 10,
         **kwargs,
-    ) -> DocumentArray:
+    ) -> DocArray:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocumentArray containing the documents that match the filter query
+        :return: a DocArray containing the documents that match the filter query
         """
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
@@ -491,12 +489,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         filter_queries: Any,
         limit: int = 10,
         **kwargs,
-    ) -> List[DocumentArray]:
+    ) -> List[DocArray]:
         """Find documents in the index based on multiple filter queries.
 
         :param filter_queries: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocumentArray containing the documents that match the filter query
+        :return: a DocArray containing the documents that match the filter query
         """
         self._logger.debug(
             f'Executing `filter_batched` for the queries {filter_queries}'
@@ -510,7 +508,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def text_search(
         self,
-        query: Union[str, BaseDocument],
+        query: Union[str, BaseDoc],
         search_field: str = 'text',
         limit: int = 10,
         **kwargs,
@@ -523,7 +521,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `text_search` for search field {search_field}')
-        if isinstance(query, BaseDocument):
+        if isinstance(query, BaseDoc):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
             query_text = query
@@ -538,7 +536,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     def text_search_batched(
         self,
-        queries: Union[Sequence[str], Sequence[BaseDocument]],
+        queries: Union[Sequence[str], Sequence[BaseDoc]],
         search_field: str = 'text',
         limit: int = 10,
         **kwargs,
@@ -553,8 +551,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         self._logger.debug(
             f'Executing `text_search_batched` for search field {search_field}'
         )
-        if isinstance(queries[0], BaseDocument):
-            query_docs: Sequence[BaseDocument] = cast(Sequence[BaseDocument], queries)
+        if isinstance(queries[0], BaseDoc):
+            query_docs: Sequence[BaseDoc] = cast(Sequence[BaseDoc], queries)
             query_texts: Sequence[str] = self._get_values_by_column(
                 query_docs, search_field
             )
@@ -574,10 +572,10 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
     ##########################################################
 
     @staticmethod
-    def _get_values_by_column(docs: Sequence[BaseDocument], col_name: str) -> List[Any]:
+    def _get_values_by_column(docs: Sequence[BaseDoc], col_name: str) -> List[Any]:
         """Get the value of a column of a document.
 
-        :param docs: The DocumentArray to get the values from
+        :param docs: The DocArray to get the values from
         :param col_name: The name of the column, e.g. 'text' or 'image__tensor'
         :return: The value of the column of `doc`
         """
@@ -585,7 +583,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         for doc in docs:
             if '__' in col_name:
                 fields = col_name.split('__')
-                leaf_doc: BaseDocument = doc
+                leaf_doc: BaseDoc = doc
                 for f in fields[:-1]:
                     leaf_doc = getattr(leaf_doc, f)
                 leaf_vals.append(getattr(leaf_doc, fields[-1]))
@@ -600,13 +598,13 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
         Since a generator is returned, this process comes at negligible cost.
 
-        :param docs: The DocumentArray to get the values from
+        :param docs: The DocArray to get the values from
         :return: The `docs` flattened out as rows. Each row is a dictionary mapping from column name to value
         """
         return (dict(zip(col_value_dict, row)) for row in zip(*col_value_dict.values()))
 
     def _get_col_value_dict(
-        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
+        self, docs: Union[BaseDoc, Sequence[BaseDoc]]
     ) -> Dict[str, Generator[Any, None, None]]:
         """
         Get all data from a (sequence of) document(s), flattened out by column.
@@ -615,8 +613,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         :param docs: The document(s) to get the data from
         :return: A dictionary mapping column names to a generator of values
         """
-        if isinstance(docs, BaseDocument):
-            docs_seq: Sequence[BaseDocument] = [docs]
+        if isinstance(docs, BaseDoc):
+            docs_seq: Sequence[BaseDoc] = [docs]
         else:
             docs_seq = docs
 
@@ -640,7 +638,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             # do nothing
             # enables use in static contexts with type vars, e.g. as type annotation
             return Generic.__class_getitem__.__func__(cls, item)
-        if not issubclass(item, BaseDocument):
+        if not issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
@@ -663,7 +661,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
     @classmethod
     def _flatten_schema(
-        cls, schema: Type[BaseDocument], name_prefix: str = ''
+        cls, schema: Type[BaseDoc], name_prefix: str = ''
     ) -> List[Tuple[str, Type, 'ModelField']]:
         """Flatten the schema of a Document into a list of column names and types.
         Nested Documents are handled in a recursive manner by adding `'__'` as a prefix to the column name.
@@ -684,7 +682,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
                         if t_arg is not type(None):
-                            if issubclass(t_arg, BaseDocument):
+                            if issubclass(t_arg, BaseDoc):
                                 names_types_fields.extend(
                                     cls._flatten_schema(t_arg, name_prefix=inner_prefix)
                                 )
@@ -702,7 +700,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     raise Exception(
                         f'Union type {t_} is not supported. Only Union of subclasses of ndarray or Union[type, None] are supported.'
                     )
-            elif issubclass(t_, BaseDocument):
+            elif issubclass(t_, BaseDoc):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)
                 )
@@ -710,12 +708,10 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                 names_types_fields.append((name_prefix + field_name, t_, field_))
         return names_types_fields
 
-    def _create_column_infos(
-        self, schema: Type[BaseDocument]
-    ) -> Dict[str, _ColumnInfo]:
+    def _create_column_infos(self, schema: Type[BaseDoc]) -> Dict[str, _ColumnInfo]:
         """Collects information about every column that is implied by a given schema.
 
-        :param schema: The schema (subclass of BaseDocument) to analyze and parse
+        :param schema: The schema (subclass of BaseDoc) to analyze and parse
             columns from
         :returns: A dictionary mapping from column names to column information.
         """
@@ -725,9 +721,9 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
             #     column_infos[field_name] = self._create_single_column(
             #         field_, unwrap_optional_type(type_)
             #     )
-            if issubclass(type_, AnyDocumentArray):
+            if issubclass(type_, AnyDocArray):
                 raise ValueError(
-                    'Indexing field of DocumentArray type (=subindex)'
+                    'Indexing field of DocArray type (=subindex)'
                     'is not yet supported.'
                 )
             else:
@@ -765,25 +761,25 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         )
 
     def _validate_docs(
-        self, docs: Union[BaseDocument, Sequence[BaseDocument]]
-    ) -> DocumentArray[BaseDocument]:
+        self, docs: Union[BaseDoc, Sequence[BaseDoc]]
+    ) -> DocArray[BaseDoc]:
         """Validates Document against the schema of the Document Index.
         For validation to pass, the schema of `docs` and the schema of the Document
         Index need to evaluate to the same flattened columns.
         If Validation fails, a ValueError is raised.
 
-        :param docs: Document to evaluate. If this is a DocumentArray, validation is
+        :param docs: Document to evaluate. If this is a DocArray, validation is
             performed using its `doc_type` (parametrization), without having to check
             ever Document in `docs`. If this check fails, or if `docs` is not a
-            DocumentArray, evaluation is performed for every Document in `docs`.
-        :return: A DocumentArray containing the Documents in `docs`
+            DocArray, evaluation is performed for every Document in `docs`.
+        :return: A DocArray containing the Documents in `docs`
         """
-        if isinstance(docs, BaseDocument):
+        if isinstance(docs, BaseDoc):
             docs = [docs]
-        if isinstance(docs, DocumentArray):
-            # validation shortcut for DocumentArray; only look at the schema
+        if isinstance(docs, DocArray):
+            # validation shortcut for DocArray; only look at the schema
             reference_schema_flat = self._flatten_schema(
-                cast(Type[BaseDocument], self._schema)
+                cast(Type[BaseDoc], self._schema)
             )
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
@@ -808,9 +804,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         for i in range(len(docs)):
             # validate the data
             try:
-                out_docs.append(
-                    cast(Type[BaseDocument], self._schema).parse_obj(docs[i])
-                )
+                out_docs.append(cast(Type[BaseDoc], self._schema).parse_obj(docs[i]))
             except (ValueError, ValidationError):
                 raise ValueError(
                     'The schema of the input Documents is not compatible with the schema of the Document Index.'
@@ -818,7 +812,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
                     ' and that the types of your data match the types of the Document Index schema.'
                 )
 
-        return DocumentArray[BaseDocument].construct(out_docs)
+        return DocArray[BaseDoc].construct(out_docs)
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
@@ -844,8 +838,8 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDocument]
-    ) -> BaseDocument:
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc]
+    ) -> BaseDoc:
         """
         Convert a dict to a Document object.
 
@@ -856,7 +850,7 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
         for field_name, _ in schema.__fields__.items():
             t_ = unwrap_optional_type(schema._get_field_type(field_name))
 
-            if not is_union_type(t_) and issubclass(t_, BaseDocument):
+            if not is_union_type(t_) and issubclass(t_, BaseDoc):
                 inner_dict = {}
 
                 fields = [
@@ -868,14 +862,12 @@ class BaseDocumentIndex(ABC, Generic[TSchema]):
 
                 doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
 
-        schema_cls = cast(Type[BaseDocument], schema)
+        schema_cls = cast(Type[BaseDoc], schema)
         return schema_cls(**doc_dict)
 
-    def _dict_list_to_docarray(
-        self, dict_list: Sequence[Dict[str, Any]]
-    ) -> DocumentArray:
-        """Convert a list of docs in dict type to a DocumentArray of the schema type."""
+    def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocArray:
+        """Convert a list of docs in dict type to a DocArray of the schema type."""
 
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return da_cls(doc_list)

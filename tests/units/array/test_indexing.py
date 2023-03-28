@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import DocumentArray, DocumentArrayStacked
+from docarray import DocArray, DocArrayStacked
 from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 
@@ -11,7 +11,7 @@ from docarray.typing import TorchTensor
 def da():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * i for i in range(10)]
-    return DocumentArray[TextDoc](
+    return DocArray[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
     )
 
@@ -20,7 +20,7 @@ def da():
 def da_to_set():
     texts = [f'hello {2*i}' for i in range(5)]
     tensors = [torch.ones((4,)) * i * 2 for i in range(5)]
-    return DocumentArray[TextDoc](
+    return DocArray[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
     )
 
@@ -236,7 +236,7 @@ def test_boolmask_setitem(stack_left, stack_right, da, da_to_set, index):
 def test_setitem_update_column():
     texts = [f'hello {i}' for i in range(10)]
     tensors = [torch.ones((4,)) * (i + 1) for i in range(10)]
-    da = DocumentArrayStacked[TextDoc](
+    da = DocArrayStacked[TextDoc](
         [TextDoc(text=text, embedding=tens) for text, tens in zip(texts, tensors)],
         tensor_type=TorchTensor,
     )

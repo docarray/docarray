@@ -28,11 +28,11 @@ class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode
         import torch
         from pydantic import parse_obj_as
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import VideoTorchTensor, VideoUrl
 
 
-        class MyVideoDoc(BaseDocument):
+        class MyVideoDoc(BaseDoc):
             title: str
             url: Optional[VideoUrl]
             video_tensor: Optional[VideoTorchTensor]

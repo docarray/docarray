@@ -7,7 +7,7 @@ from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.filetypes import AUDIO_FILE_FORMATS
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -54,7 +54,7 @@ class AudioUrl(AnyUrl):
 
         .. code-block:: python
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
             import numpy as np
 
             from docarray.typing import AudioUrl

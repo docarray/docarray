@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 from docarray.typing.bytes.video_bytes import VideoLoadResult
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -57,12 +57,12 @@ class VideoUrl(AnyUrl):
 
             from typing import Optional
 
-            from docarray import BaseDocument
+            from docarray import BaseDoc
 
             from docarray.typing import VideoUrl, VideoNdArray, AudioNdArray, NdArray
 
 
-            class MyDoc(BaseDocument):
+            class MyDoc(BaseDoc):
                 video_url: VideoUrl
                 video: Optional[VideoNdArray]
                 audio: Optional[AudioNdArray]

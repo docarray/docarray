@@ -78,12 +78,12 @@ The first thing we are trying to achieve when using DocArray is to clearly model
 about which tensors are supposed to represent what.
 
 To do that we are using a concept that is at the core of DocArray. The `Document`, a collection of multi-modal data.
-The `BaseDocument` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
+The `BaseDoc` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
 
 Let's start by defining a few Documents to handle the different modalities that we will use during our training:
 
 ```python
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import TorchTensor, ImageUrl
 ```
 
@@ -93,7 +93,7 @@ Let's first create a Document for our Text modality. It will contain a number of
 from docarray.documents import TextDoc as BaseText
 
 
-class Tokens(BaseDocument):
+class Tokens(BaseDoc):
     input_ids: TorchTensor[48]
     attention_mask: TorchTensor
 ```
@@ -116,7 +116,7 @@ Under the hood, an `Image` looks something like this (with the only main differe
 supported ML framework):
 
 ```python
-# class Image(BaseDocument):
+# class Image(BaseDoc):
 #     url: Optional[ImageUrl]
 #     tensor: Optional[TorchTesor]
 #     embedding: Optional[TorchTensor]
@@ -128,7 +128,7 @@ Actually, the `BaseText` above also alredy includes `tensor`, `url` and `embeddi
 The final Document used for training here is the `PairTextImage`, which simply combines the Text and Image modalities:
 
 ```python
-class PairTextImage(BaseDocument):
+class PairTextImage(BaseDoc):
     text: Text
     image: Image
 ```
@@ -184,14 +184,14 @@ import pandas as pd
 
 def get_flickr8k_da(file: str = "captions.txt", N: Optional[int] = None):
     df = pd.read_csv(file, nrows=N)
-    da = DocumentArray[PairTextImage](
+    da = DocArray[PairTextImage](
         PairTextImage(text=Text(text=i.caption), image=Image(url=f"Images/{i.image}"))
         for i in df.itertuples()
     )
     return da
 ```
 
-In the `get_flickr8k_da` method we process the Flickr8k dataset into a `DocumentArray`.
+In the `get_flickr8k_da` method we process the Flickr8k dataset into a `DocArray`.
 
 Now let's instantiate this dataset using the `MultiModalDataset` class. The constructor takes in the `da` and a dictionary of preprocessing transformations:
 
@@ -214,11 +214,11 @@ loader = DataLoader(
 )
 ```
 
-## Create the Pytorch model that works on DocumentArray
+## Create the Pytorch model that works on DocArray
 
 
 In this section we create two encoders, one per modality (Text and Image). These encoders are normal PyTorch `nn.Module`s.
-The only difference is that they operate on DocumentArray rather that on torch.Tensor:
+The only difference is that they operate on DocArray rather that on torch.Tensor:
 
 ```python
 class TextEncoder(nn.Module):
@@ -226,7 +226,7 @@ class TextEncoder(nn.Module):
         super().__init__()
         self.bert = DistilBertModel.from_pretrained("distilbert-base-uncased")
 
-    def forward(self, texts: DocumentArray[Text]) -> TorchTensor:
+    def forward(self, texts: DocArray[Text]) -> TorchTensor:
         last_hidden_state = self.bert(
             input_ids=texts.tokens.input_ids, attention_mask=texts.tokens.attention_mask
         ).last_hidden_state
@@ -240,8 +240,8 @@ class TextEncoder(nn.Module):
         return masked_output.sum(dim=1) / attention_mask.sum(-1, keepdim=True)
 ```
 
-The `TextEncoder` takes a `DocumentArray` of `Text`s as input, and returns an embedding `TorchTensor` as output.
-`DocumentArray` can be seen as a list of `Text` documents, and the encoder will treat it as one batch.
+The `TextEncoder` takes a `DocArray` of `Text`s as input, and returns an embedding `TorchTensor` as output.
+`DocArray` can be seen as a list of `Text` documents, and the encoder will treat it as one batch.
 
 
 ```python
@@ -251,12 +251,12 @@ class VisionEncoder(nn.Module):
         self.backbone = torchvision.models.resnet18(pretrained=True)
         self.linear = nn.LazyLinear(out_features=768)
 
-    def forward(self, images: DocumentArray[Image]) -> TorchTensor:
+    def forward(self, images: DocArray[Image]) -> TorchTensor:
         x = self.backbone(images.tensor)
         return self.linear(x)
 ```
 
-Similarly, the `VisionEncoder` also takes a `DocumentArray` of `Image`s as input, and returns an embedding `TorchTensor` as output.
+Similarly, the `VisionEncoder` also takes a `DocArray` of `Image`s as input, and returns an embedding `TorchTensor` as output.
 However, it operates on the `image` attribute of each Document.
 
 Now we can instantiate our encoders:
@@ -289,7 +289,7 @@ def cosine_sim(x_mat: TorchTensor, y_mat: TorchTensor) -> TorchTensor:
 ```
 
 ```python
-def clip_loss(image: DocumentArray[Image], text: DocumentArray[Text]) -> TorchTensor:
+def clip_loss(image: DocArray[Image], text: DocArray[Text]) -> TorchTensor:
     sims = cosine_sim(image.embedding, text.embedding)
     return torch.norm(sims - torch.eye(sims.shape[0], device=DEVICE))
 ```
@@ -301,7 +301,7 @@ In the type hints of `cosine_sim` and `clip_loss` you can again notice that we c
 num_epoch = 1  # here you should do more epochs to really learn something
 ```
 
-One things to notice here is that our dataloader does not return a `torch.Tensor` but a `DocumentArray[PairTextImage]`,
+One things to notice here is that our dataloader does not return a `torch.Tensor` but a `DocArray[PairTextImage]`,
 which is exactly what our model can operate on.
 
 So let's write a training loop and train our encoders:
@@ -312,7 +312,7 @@ from tqdm import tqdm
 with torch.autocast(device_type="cuda", dtype=torch.float16):
     for epoch in range(num_epoch):
         for i, batch in tqdm(enumerate(loader), total=len(loader), desc=f"Epoch {epoch}"):
-            batch.to(DEVICE)  # DocumentArray can be moved to device
+            batch.to(DEVICE)  # DocArray can be moved to device
 
             optim.zero_grad()
             # FORWARD PASS:
@@ -342,7 +342,7 @@ FastAPI will be able to automatically translate it into a fully fledged API with
 
 ```python
 from fastapi import FastAPI
-from docarray.base_document import DocumentResponse
+from docarray.base_doc import DocumentResponse
 ```
 
 ```python
@@ -366,7 +366,7 @@ async def embed_text(doc: Text) -> Text:
     with torch.autocast(device_type="cuda", dtype=torch.float16):
         with torch.inference_mode():
             text_preprocess(doc)
-            da = DocumentArray[Text]([doc], tensor_type=TorchTensor).stack()
+            da = DocArray[Text]([doc], tensor_type=TorchTensor).stack()
             da.to(DEVICE)
             doc.embedding = text_encoder(da)[0].to('cpu')
     return doc

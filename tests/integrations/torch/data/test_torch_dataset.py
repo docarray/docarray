@@ -2,12 +2,12 @@ import pytest
 import torch
 from torch.utils.data import DataLoader
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.data import MultiModalDataset
 from docarray.documents import ImageDoc, TextDoc
 
 
-class PairTextImage(BaseDocument):
+class PairTextImage(BaseDoc):
     text: TextDoc
     image: ImageDoc
 
@@ -34,10 +34,10 @@ class Meowification:
 
 
 @pytest.fixture
-def captions_da() -> DocumentArray[PairTextImage]:
+def captions_da() -> DocArray[PairTextImage]:
     with open("tests/toydata/captions.csv", "r") as f:
         f.readline()
-        da = DocumentArray[PairTextImage](
+        da = DocArray[PairTextImage](
             PairTextImage(
                 text=TextDoc(text=i[1]),
                 image=ImageDoc(url=f"tests/toydata/image-data/{i[0]}"),
@@ -47,7 +47,7 @@ def captions_da() -> DocumentArray[PairTextImage]:
     return da
 
 
-def test_torch_dataset(captions_da: DocumentArray[PairTextImage]):
+def test_torch_dataset(captions_da: DocArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
@@ -56,16 +56,16 @@ def test_torch_dataset(captions_da: DocumentArray[PairTextImage]):
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )
 
-    from docarray.array.stacked.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocArrayStacked
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocumentArrayStacked[PairTextImage])
+        assert isinstance(batch, DocArrayStacked[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
 
-def test_primitives(captions_da: DocumentArray[PairTextImage]):
+def test_primitives(captions_da: DocArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"text": Meowification()}
@@ -78,7 +78,7 @@ def test_primitives(captions_da: DocumentArray[PairTextImage]):
     assert all(t.endswith(' meow') for t in batch.text)
 
 
-def test_root_field(captions_da: DocumentArray[TextDoc]):
+def test_root_field(captions_da: DocArray[TextDoc]):
     BATCH_SIZE = 32
 
     preprocessing = {"": TextPreprocess()}
@@ -91,7 +91,7 @@ def test_root_field(captions_da: DocumentArray[TextDoc]):
     assert batch.embedding.shape[1] == 64
 
 
-def test_nested_field(captions_da: DocumentArray[PairTextImage]):
+def test_nested_field(captions_da: DocArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {
@@ -122,7 +122,7 @@ def test_nested_field(captions_da: DocumentArray[PairTextImage]):
 
 
 @pytest.mark.slow
-def test_torch_dl_multiprocessing(captions_da: DocumentArray[PairTextImage]):
+def test_torch_dl_multiprocessing(captions_da: DocArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
@@ -136,17 +136,17 @@ def test_torch_dl_multiprocessing(captions_da: DocumentArray[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocArrayStacked
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocumentArrayStacked[PairTextImage])
+        assert isinstance(batch, DocArrayStacked[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
 
 @pytest.mark.skip(reason="UNRESOLVED BUG")
-def test_torch_dl_pin_memory(captions_da: DocumentArray[PairTextImage]):
+def test_torch_dl_pin_memory(captions_da: DocArray[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
@@ -164,10 +164,10 @@ def test_torch_dl_pin_memory(captions_da: DocumentArray[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocumentArrayStacked
+    from docarray.array.stacked.array_stacked import DocArrayStacked
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocumentArrayStacked[PairTextImage])
+        assert isinstance(batch, DocArrayStacked[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])

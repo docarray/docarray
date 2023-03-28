@@ -6,11 +6,11 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import AudioDoc
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -202,7 +202,7 @@ def test_audio_bytes():
 
 
 def test_audio_shortcut_doc():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         audio: AudioDoc
         audio2: AudioDoc
         audio3: AudioDoc

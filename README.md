@@ -15,12 +15,12 @@ This means that DocArray lets you do the following things:
 ## Represent
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 
 
-class MyDocument(BaseDocument):
+class MyDocument(BaseDoc):
     description: str
     image_url: ImageUrl
     image_tensor: Optional[TorchTensor[1704, 2272, 3]]
@@ -62,12 +62,12 @@ doc.embedding = clip_image_encoder(
 ### Compose nested Documents:
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MultiModalDocument(BaseDocument):
+class MultiModalDocument(BaseDoc):
     image_doc: ImageDoc
     text_doc: TextDoc
 
@@ -77,22 +77,22 @@ doc = MultiModalDocument(
 )
 ```
 
-### Collect multiple `Documents` into a `DocumentArray`:
+### Collect multiple `Documents` into a `DocArray`:
 ```python
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.typing import AnyTensor, ImageUrl
 import numpy as np
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     url: ImageUrl
     tensor: AnyTensor
 ```
 
 ```python
-from docarray import DocumentArray
+from docarray import DocArray
 
-da = DocumentArray[Image](
+da = DocArray[Image](
     [
         Image(
             url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
@@ -103,7 +103,7 @@ da = DocumentArray[Image](
 )
 ```
 
-Access fields at the DocumentArray level:
+Access fields at the DocArray level:
 
 ```python
 print(len(da.tensor))
@@ -122,7 +122,7 @@ print(da.tensor.shape)
 ```
 
 ## Send
-- **Serialize** any `Document` or `DocumentArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
+- **Serialize** any `Document` or `DocArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
 - Use in **microservice** architecture: Send over **HTTP** or **gRPC**
 - Integrate seamlessly with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
 
@@ -144,22 +144,22 @@ Image.from_protobuf(doc.to_protobuf())
 ```
 
 ## Store
-- Persist a `DocumentArray` using a **`DocumentStore`**
+- Persist a `DocArray` using a **`DocumentStore`**
 - Store your Documents in any supported (vector) database: **Elasticsearch**, **Qdrant**, **Weaviate**, **Redis**, **Milvus**, **ANNLite** or **SQLite**
 - Leverage DocumentStores to **perform vector search on your multi-modal data**
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray
+from docarray import DocArray
 from docarray.documents import ImageDoc
 from docarray.stores import DocumentStore
 import numpy as np
 
-da = DocumentArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
+da = DocArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
 store = DocumentStore[ImageDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocumentArray into the DocumentStore
+store.insert(da)  # insert the DocArray into the DocumentStore
 # find the 10 most similar images based on the 'embedding' field
 match = store.find(ImageDoc(embedding=np.zeros((128,))), field='embedding', top_k=10)
 ```
@@ -186,7 +186,7 @@ If you come from Pydantic, you can see Documents as juiced up models, and DocArr
 - **ML focused types**: Tensor, TorchTensor, TFTensor, Embedding, ...
 - **Types that are alive**: ImageUrl can `.load()` a URL to image tensor, TextUrl can load and tokenize text documents, etc.
 - **Pre-built Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio and more. Note that all of these will be valid Pydantic models!
-- The concepts of **DocumentArray and DocumentStore**
+- The concepts of **DocArray and DocumentStore**
 - Cloud-ready: Serialization to **Protobuf** for use with microservices and **gRPC**
 - Support for **vector search functionalities**, such as `find()` and `embed()`
 
@@ -233,20 +233,20 @@ Not very easy on the eyes if you ask us. And even worse, if you need to add one 
 So, now let's see what the same code looks like with DocArray:
 
 ```python
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
 
 import torch
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     text: TextDoc
     image: ImageDoc
     audio: AudioDoc
 
 
-class PairPodcast(BaseDocument):
+class PairPodcast(BaseDoc):
     left: Podcast
     right: Podcast
 
@@ -258,14 +258,14 @@ class MyPodcastModel(nn.Module):
         self.image_encoder = ImageEncoder()
         self.text_encoder = TextEncoder()
 
-    def forward_podcast(self, da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+    def forward_podcast(self, da: DocArray[Podcast]) -> DocArray[Podcast]:
         da.audio.embedding = self.audio_encoder(da.audio.tensor)
         da.text.embedding = self.text_encoder(da.text.tensor)
         da.image.embedding = self.image_encoder(da.image.tensor)
 
         return da
 
-    def forward(self, da: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
+    def forward(self, da: DocArray[PairPodcast]) -> DocArray[PairPodcast]:
         da.left = self.forward_podcast(da.left)
         da.right = self.forward_podcast(da.right)
 
@@ -297,12 +297,12 @@ This would look like the following:
 ```python
 from typing import Optional
 
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 
 import tensorflow as tf
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     audio_tensor: Optional[AudioTensorFlowTensor]
     embedding: Optional[AudioTensorFlowTensor]
 
@@ -312,7 +312,7 @@ class MyPodcastModel(tf.keras.Model):
         super().__init__()
         self.audio_encoder = AudioEncoder()
 
-    def call(self, inputs: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+    def call(self, inputs: DocArray[Podcast]) -> DocArray[Podcast]:
         inputs.audio_tensor.embedding = self.audio_encoder(
             inputs.audio_tensor.tensor
         )  # access audio_tensor's .tensor attribute
@@ -328,17 +328,17 @@ import numpy as np
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_document import DocumentResponse
+from docarray.base_doc import DocumentResponse
 
 
-class InputDoc(BaseDocument):
+class InputDoc(BaseDoc):
     img: ImageDoc
 
 
-class OutputDoc(BaseDocument):
+class OutputDoc(BaseDoc):
     embedding_clip: NdArray
     embedding_bert: NdArray
 
@@ -368,12 +368,12 @@ The big advantage here is **first-class support for ML centric data**, such as {
 This includes handy features such as validating the shape of a tensor:
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor
 import torch
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: TorchTensor[3, 224, 224]
 
 
@@ -382,7 +382,7 @@ doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
 doc = MyDoc(tensor=torch.zeros(224))  # fails validation
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     tensor: TorchTensor[3, 'x', 'x']
 
 
@@ -407,13 +407,13 @@ store it there, and thus make it searchable:
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.stores import DocumentStore
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     image: ImageDoc
     text: TextDoc
     description: str
@@ -427,11 +427,11 @@ def _random_my_doc():
     )
 
 
-da = DocumentArray([_random_my_doc() for _ in range(1000)])  # create some data
+da = DocArray([_random_my_doc() for _ in range(1000)])  # create some data
 store = DocumentStore[MyDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocumentArray into the DocumentStore
+store.insert(da)  # insert the DocArray into the DocumentStore
 
 # find the 10 most similar images based on the image embedding field
 match = store.find(
@@ -449,16 +449,17 @@ You can see more logs by setting the log level to `DEBUG` or `INFO`:
 
 ```python
 from pydantic import Field
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 import logging
+
 # get the logger and set the log level to DEBUG
 logging.getLogger('docarray').setLevel(logging.DEBUG)
 
 
 # define a simple document and create a document index
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     vector: NdArray = Field(dim=10)
 
 

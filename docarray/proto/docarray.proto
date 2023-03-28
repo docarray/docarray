@@ -54,8 +54,8 @@ message NodeProto {
     NdArrayProto ndarray = 6;
     // a sub Document
     DocumentProto document = 7;
-    // a sub DocumentArray
-    DocumentArrayProto document_array = 8;
+    // a sub DocArray
+    DocArrayProto document_array = 8;
     //any list
     ListOfAnyProto list = 9;
     //any set
@@ -91,18 +91,18 @@ message ListOfAnyProto {
   repeated NodeProto data = 1;
 }
 
-message DocumentArrayProto {
+message DocArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
 
 
-message ListOfDocumentArrayProto {
-  repeated DocumentArrayProto data = 1;
+message ListOfDocArrayProto {
+  repeated DocArrayProto data = 1;
 }
 
-message DocumentArrayStackedProto{
+message DocArrayStackedProto{
   map<string, NdArrayProto> tensor_columns = 1; // a dict of document columns
-  map<string, DocumentArrayStackedProto> doc_columns = 2; // a dict of tensor columns
-  map<string, ListOfDocumentArrayProto> da_columns = 3; // a dict of document array columns
+  map<string, DocArrayStackedProto> doc_columns = 2; // a dict of tensor columns
+  map<string, ListOfDocArrayProto> da_columns = 3; // a dict of document array columns
   map<string, ListOfAnyProto> any_columns = 4; // a dict of any columns. Used for the rest of the data
 }

@@ -2,18 +2,18 @@ from typing import Optional
 
 import torch
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.typing import TorchTensor
 
 
 def test_torch_train():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         text: str
         tensor: Optional[TorchTensor[3, 224, 224]]
 
     N = 10
 
-    batch = DocumentArray[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
+    batch = DocArray[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
     batch.tensor = torch.zeros(N, 3, 224, 224)
 
     batch = batch.stack()

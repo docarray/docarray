@@ -5,10 +5,10 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
@@ -26,7 +26,7 @@ if tf_available:
     ],
 )
 def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
-    class MyAudioDoc(BaseDocument):
+    class MyAudioDoc(BaseDoc):
         tensor: cls_audio_tensor
 
     doc = MyAudioDoc(tensor=tensor)
@@ -37,7 +37,7 @@ def test_set_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
 
 @pytest.mark.tensorflow
 def test_set_audio_tensorflow_tensor():
-    class MyAudioDoc(BaseDocument):
+    class MyAudioDoc(BaseDoc):
         tensor: AudioTensorFlowTensor
 
     doc = MyAudioDoc(tensor=tf.zeros((1000, 2)))

@@ -1,12 +1,12 @@
 import tracemalloc
 from functools import wraps
 
-from docarray import DocumentArray
+from docarray import DocArray
 from docarray.documents import TextDoc
 
 
 def get_test_da(n: int):
-    return DocumentArray[TextDoc](gen_text_docs(n))
+    return DocArray[TextDoc](gen_text_docs(n))
 
 
 def gen_text_docs(n: int):
