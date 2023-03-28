@@ -136,7 +136,6 @@ class DocArrayStacked(AnyDocArray[T_doc]):
                     tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
-
                     tensor = getattr(docs[0], field_name)
                     column_shape = (
                         (len(docs), *tensor.shape)
@@ -248,7 +247,9 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     def __getitem__(self: T, item: IndexIterType) -> T:
         ...
 
-    def __getitem__(self: T, item: Union[int, IndexIterType]) -> Union[T_doc, T]:
+    def __getitem__(
+        self: T, item: Union[int, IndexIterType]
+    ) -> Union[T_doc, T, BaseDoc]:
         if item is None:
             return self  # PyTorch behaviour
         # multiple docs case
@@ -374,7 +375,6 @@ class DocArrayStacked(AnyDocArray[T_doc]):
             self._storage.tensor_columns[field] = values
 
         elif field in self._storage.doc_columns.keys():
-
             values_ = parse_obj_as(
                 DocArrayStacked.__class_getitem__(
                     self._storage.doc_columns[field]._document_type

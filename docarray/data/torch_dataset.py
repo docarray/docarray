@@ -92,7 +92,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         print(batch.thesis.title.embedding)
     """
 
-    document_type: Optional[Type[BaseDoc]] = None
+    _document_type: Optional[Type[BaseDoc]] = None
     __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(

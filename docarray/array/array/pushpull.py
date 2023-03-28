@@ -30,7 +30,7 @@ class PushPullMixin(Iterable['BaseDoc']):
     """Mixin class for push/pull functionality."""
 
     __backends__: Dict[str, Type['AbstractDocStore']] = {}
-    document_type: Type['BaseDoc']
+    _document_type: Type['BaseDoc']
 
     @abstractmethod
     def __len__(self) -> int:
