@@ -31,7 +31,6 @@ __all__ = [
     'AnyUrl',
     'ID',
     'AnyTensor',
-    'TensorFlowTensor',
     'NdArrayEmbedding',
     'ImageBytes',
     'ImageTensor',
@@ -59,7 +58,7 @@ if torch_available:
 
 tf_available = is_tf_available()
 if tf_available:
-    from docarray.typing.tensor import TensorFlowTensor
+    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
     from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
