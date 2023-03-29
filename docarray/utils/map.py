@@ -1,4 +1,4 @@
-__all__ = ['map_docs', 'map_docs_batch']
+__all__ = ['map_docs', 'map_docs_batched']
 from contextlib import nullcontext
 from math import ceil
 from multiprocessing.pool import Pool, ThreadPool
@@ -103,7 +103,7 @@ def map_docs(
             yield x
 
 
-def map_docs_batch(
+def map_docs_batched(
     da: T,
     func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
@@ -122,7 +122,7 @@ def map_docs_batch(
 
     ```python
     from docarray import BaseDoc, DocArray
-    from docarray.utils.map import map_docs_batch
+    from docarray.utils.map import map_docs_batched
 
 
     class MyDoc(BaseDoc):
@@ -136,7 +136,7 @@ def map_docs_batch(
 
     batch_size = 16
     da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-    it = map_docs_batch(da, upper_case_name, batch_size=batch_size)
+    it = map_docs_batched(da, upper_case_name, batch_size=batch_size)
     for i, d in enumerate(it):
         da[i * batch_size : (i + 1) * batch_size] = d
 
