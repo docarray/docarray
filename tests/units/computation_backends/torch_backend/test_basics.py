@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 import torch
 
@@ -100,3 +101,46 @@ def test_minmax_normalize(array, t_range, x_range, result):
         tensor=array, t_range=t_range, x_range=x_range
     )
     assert torch.allclose(output, result)
+
+
+def test_reshape():
+    a = torch.tensor([[[1, 2, 3], [4, 5, 6]]])
+    b = TorchCompBackend.reshape(a, (2, 3))
+    assert torch.equal(b, torch.tensor([[1, 2, 3], [4, 5, 6]]))
+
+
+def test_copy():
+    a = torch.tensor([1, 2, 3])
+    b = TorchCompBackend.copy(a)
+    assert torch.equal(a, b)
+
+
+def test_stack():
+    a = torch.tensor([1, 2, 3])
+    b = torch.tensor([4, 5, 6])
+    stacked = TorchCompBackend.stack([a, b], dim=0)
+    assert torch.equal(stacked, torch.tensor([[1, 2, 3], [4, 5, 6]]))
+
+
+def test_empty_all():
+    shape = (2, 3)
+    dtype = torch.float32
+    device = 'cpu'
+    a = TorchCompBackend.empty(shape, dtype, device)
+    assert a.shape == shape and a.dtype == dtype and a.device.type == device
+
+
+def test_to_numpy():
+    a = torch.tensor([1, 2, 3])
+    b = TorchCompBackend.to_numpy(a)
+    assert np.array_equal(b, np.array(a))
+
+
+def test_none_value():
+    assert torch.isnan(TorchCompBackend.none_value())
+
+
+def test_detach():
+    a = torch.tensor([1.0, 2.0, 3.0], requires_grad=True)
+    b = TorchCompBackend.detach(a)
+    assert not b.requires_grad
