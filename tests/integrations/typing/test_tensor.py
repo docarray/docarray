@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import AnyTensor, NdArray, TorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
@@ -17,7 +17,7 @@ else:
 
 
 def test_set_tensor():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         tensor: AnyTensor
 
     d = MyDocument(tensor=np.zeros((3, 224, 224)))
@@ -35,7 +35,7 @@ def test_set_tensor():
 
 @pytest.mark.tensorflow
 def test_set_tensor_tensorflow():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         tensor: AnyTensor
 
     d = MyDocument(tensor=tf.zeros((3, 224, 224)))

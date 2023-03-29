@@ -1,3 +1,3 @@
-# DocumentArray
+# DocArray
 
-::: docarray.array.array.array.DocumentArray
+::: docarray.array.array.array.DocArray

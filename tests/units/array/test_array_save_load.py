@@ -3,12 +3,12 @@ import os
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     embedding: NdArray
     text: str
     image: ImageDoc
@@ -23,7 +23,7 @@ class MyDoc(BaseDocument):
 def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
     tmp_file = os.path.join(tmp_path, 'test')
 
-    da = DocumentArray[MyDoc](
+    da = DocArray[MyDoc](
         [
             MyDoc(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
@@ -36,7 +36,7 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
-    da2 = DocumentArray[MyDoc].load_binary(
+    da2 = DocArray[MyDoc].load_binary(
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
@@ -59,7 +59,7 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
 def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_progress):
     tmp_file = os.path.join(tmp_path, 'test')
 
-    da = DocumentArray[MyDoc]()
+    da = DocArray[MyDoc]()
 
     def _extend_da(num_docs=100):
         for _ in range(num_docs):
@@ -79,8 +79,8 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_pro
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
-    da2 = DocumentArray[MyDoc]()
-    da_generator = DocumentArray[MyDoc].load_binary(
+    da2 = DocArray[MyDoc]()
+    da_generator = DocArray[MyDoc].load_binary(
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 

@@ -3,14 +3,14 @@ from typing import Optional
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from tests import TOYDATA_DIR
 
 
 @pytest.fixture()
 def nested_doc_cls():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         count: Optional[int]
         text: str
 
@@ -22,7 +22,7 @@ def nested_doc_cls():
 
 
 def test_to_from_csv(tmpdir, nested_doc_cls):
-    da = DocumentArray[nested_doc_cls](
+    da = DocArray[nested_doc_cls](
         [
             nested_doc_cls(
                 count=0,
@@ -37,13 +37,13 @@ def test_to_from_csv(tmpdir, nested_doc_cls):
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
-    da_from = DocumentArray[nested_doc_cls].from_csv(tmp_file)
+    da_from = DocArray[nested_doc_cls].from_csv(tmp_file)
     for doc1, doc2 in zip(da, da_from):
         assert doc1 == doc2
 
 
 def test_from_csv_nested(nested_doc_cls):
-    da = DocumentArray[nested_doc_cls].from_csv(
+    da = DocArray[nested_doc_cls].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
     )
     assert len(da) == 3
@@ -72,14 +72,14 @@ def test_from_csv_nested(nested_doc_cls):
 
 @pytest.fixture()
 def nested_doc():
-    class Inner(BaseDocument):
+    class Inner(BaseDoc):
         img: Optional[ImageDoc]
 
-    class Middle(BaseDocument):
+    class Middle(BaseDoc):
         img: Optional[ImageDoc]
         inner: Optional[Inner]
 
-    class Outer(BaseDocument):
+    class Outer(BaseDoc):
         img: Optional[ImageDoc]
         middle: Optional[Middle]
 
@@ -91,11 +91,9 @@ def nested_doc():
 
 def test_from_csv_without_schema_raise_exception():
     with pytest.raises(TypeError, match='no document schema defined'):
-        DocumentArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
+        DocArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
 
 
 def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
     with pytest.raises(ValueError, match='Column names do not match the schema'):
-        DocumentArray[nested_doc.__class__].from_csv(
-            file_path=str(TOYDATA_DIR / 'docs.csv')
-        )
+        DocArray[nested_doc.__class__].from_csv(file_path=str(TOYDATA_DIR / 'docs.csv'))

@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, TypeVar, Type, Union, Any
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -43,31 +43,26 @@ class TextUrl(AnyUrl):
         """
         Load the text file into a string.
 
-        EXAMPLE USAGE
 
-        .. code-block:: python
+        ---
 
-            from docarray import BaseDocument
-            from docarray.typing import TextUrl
-
-
-            class MyDoc(BaseDocument):
-                remote_url: TextUrl
-                local_url: TextUrl
+        ```python
+        from docarray import BaseDoc
+        from docarray.typing import TextUrl
 
 
-            doc = MyDoc(
-                remote_url='https://de.wikipedia.org/wiki/Brixen',
-                local_url='home/username/my_file.txt',
-            )
+        class MyDoc(BaseDoc):
+            remote_url: TextUrl
 
-            remote_txt = doc.remote_url.load()
-            print(remote_txt)
-            # prints: ```<!DOCTYPE html>\n<html class="client-nojs" ... > ...```
 
-            local_txt = doc.local_url.load()
-            print(local_txt)
-            # prints content of my_file.txt
+        doc = MyDoc(
+            remote_url='https://de.wikipedia.org/wiki/Brixen',
+        )
+
+        remote_txt = doc.remote_url.load()
+        ```
+
+        ---
 
 
         :param timeout: timeout (sec) for urlopen network request.

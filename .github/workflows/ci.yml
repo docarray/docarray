@@ -61,7 +61,7 @@ jobs:
           poetry install --without dev
           poetry run pip install tensorflow==2.11.0
       - name: Test basic import
-        run: poetry run python -c 'from docarray import DocumentArray, BaseDocument'
+        run: poetry run python -c 'from docarray import DocArray, BaseDoc'
 
 
   check-mypy:
@@ -100,7 +100,7 @@ jobs:
       matrix:
         python-version: [3.7]
 #        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
-        test-path: [tests/integrations, tests/units]
+        test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -119,8 +119,8 @@ jobs:
         run: |
           poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
-#        env:
-#          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+        env:
+          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 #      - name: Check codecov file
 #        id: check_files
 #        uses: andstor/file-existence-action@v1
@@ -144,7 +144,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
-        test-path: [tests/integrations, tests/units]
+        test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -164,6 +164,8 @@ jobs:
         run: |
           poetry run pytest -m "not (tensorflow or benchmark)" ${{ matrix.test-path }}
         timeout-minutes: 30
+        env:
+          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
 
   docarray-test-proto3:
@@ -272,7 +274,6 @@ jobs:
         run: |
           poetry run pytest -m 'benchmark' tests
         timeout-minutes: 30
-
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:

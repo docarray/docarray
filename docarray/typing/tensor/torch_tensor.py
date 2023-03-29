@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
     from docarray.computation.torch_backend import TorchCompBackend
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -46,45 +46,54 @@ class TorchTensor(
     This type can also be used in a parametrized way,
     specifying the shape of the tensor.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
-
-        from docarray import BaseDocument
-        from docarray.typing import TorchTensor
-        import torch
-
-
-        class MyDoc(BaseDocument):
-            tensor: TorchTensor
-            image_tensor: TorchTensor[3, 224, 224]
-            square_crop: TorchTensor[3, 'x', 'x']
-            random_image: TorchTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import TorchTensor
+    import torch
 
 
-        # create a document with tensors
-        doc = MyDoc(
-            tensor=torch.zeros(128),
-            image_tensor=torch.zeros(3, 224, 224),
-            square_crop=torch.zeros(3, 64, 64),
-            random_image=torch.zeros(3, 128, 256),
-        )
+    class MyDoc(BaseDoc):
+        tensor: TorchTensor
+        image_tensor: TorchTensor[3, 224, 224]
+        square_crop: TorchTensor[3, 'x', 'x']
+        random_image: TorchTensor[
+            3, ...
+        ]  # first dimension is fixed, can have arbitrary shape
 
-        # automatic shape conversion
-        doc = MyDoc(
-            tensor=torch.zeros(128),
-            image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
-            square_crop=torch.zeros(3, 128, 128),
-            random_image=torch.zeros(3, 64, 128),
-        )
 
-        # !! The following will raise an error due to shape mismatch !!
+    # create a document with tensors
+    doc = MyDoc(
+        tensor=torch.zeros(128),
+        image_tensor=torch.zeros(3, 224, 224),
+        square_crop=torch.zeros(3, 64, 64),
+        random_image=torch.zeros(3, 128, 256),
+    )
+
+    # automatic shape conversion
+    doc = MyDoc(
+        tensor=torch.zeros(128),
+        image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
+        square_crop=torch.zeros(3, 128, 128),
+        random_image=torch.zeros(3, 64, 128),
+    )
+
+    # !! The following will raise an error due to shape mismatch !!
+    from pydantic import ValidationError
+
+    try:
         doc = MyDoc(
             tensor=torch.zeros(128),
             image_tensor=torch.zeros(224, 224),  # this will fail validation
             square_crop=torch.zeros(3, 128, 64),  # this will also fail validation
             random_image=torch.zeros(4, 64, 128),  # this will also fail validation
         )
+    except ValidationError as e:
+        pass
+    ```
+
+    ---
     """
 
     __parametrized_meta__ = metaTorchAndNode

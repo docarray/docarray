@@ -2,18 +2,18 @@ import numpy as np
 import pytest
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
     tens: NdArray[50]
 

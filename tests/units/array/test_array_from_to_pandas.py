@@ -3,13 +3,13 @@ from typing import Optional
 import pandas as pd
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 
 
 @pytest.fixture()
 def nested_doc_cls():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         count: Optional[int]
         text: str
 
@@ -20,7 +20,7 @@ def nested_doc_cls():
 
 
 def test_to_from_pandas_df(nested_doc_cls):
-    da = DocumentArray[nested_doc_cls](
+    da = DocArray[nested_doc_cls](
         [
             nested_doc_cls(
                 count=0,
@@ -47,21 +47,21 @@ def test_to_from_pandas_df(nested_doc_cls):
         ]
     ).all()
 
-    da_from_df = DocumentArray[nested_doc_cls].from_pandas(df)
+    da_from_df = DocArray[nested_doc_cls].from_pandas(df)
     for doc1, doc2 in zip(da, da_from_df):
         assert doc1 == doc2
 
 
 @pytest.fixture()
 def nested_doc():
-    class Inner(BaseDocument):
+    class Inner(BaseDoc):
         img: Optional[ImageDoc]
 
-    class Middle(BaseDocument):
+    class Middle(BaseDoc):
         img: Optional[ImageDoc]
         inner: Optional[Inner]
 
-    class Outer(BaseDocument):
+    class Outer(BaseDoc):
         img: Optional[ImageDoc]
         middle: Optional[Middle]
 
@@ -76,7 +76,7 @@ def test_from_pandas_without_schema_raise_exception():
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocumentArray.from_pandas(df=df)
+        DocArray.from_pandas(df=df)
 
 
 def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
@@ -84,4 +84,4 @@ def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocumentArray[nested_doc.__class__].from_pandas(df=df)
+        DocArray[nested_doc.__class__].from_pandas(df=df)
