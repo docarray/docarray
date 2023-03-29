@@ -29,6 +29,7 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
@@ -46,7 +47,7 @@ else:
     if tf is not None:
         from docarray.typing import TensorFlowTensor
 
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
+HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
 
 if torch is not None:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
