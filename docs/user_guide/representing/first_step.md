@@ -1,4 +1,4 @@
-# First Step : BaseDoc
+# Representing
 
 At the heart of `DocArray` lies the concept of [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
@@ -125,7 +125,7 @@ class YoutubeVideoDoc(BaseDoc):
 
 You now hava `YoutubeVideoDoc` that is a pythonic representation of a Youtube video. 
 
-This representation can now be used to send (LINK) or to store (LINK) data. You can even use it directly to [train a machine learning](../how_to/multimodal_training_and_serving.md) [Pytorch](https://pytorch.org/docs/stable/index.html) model on this representation. 
+This representation can now be used to send (LINK) or to store (LINK) data. You can even use it directly to [train a machine learning](../../how_to/multimodal_training_and_serving.md) [Pytorch](https://pytorch.org/docs/stable/index.html) model on this representation. 
 
 
 !!! note

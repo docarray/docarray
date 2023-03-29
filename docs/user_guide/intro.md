@@ -1,6 +1,14 @@
 # User Guide - Intro
 
-This user guide show you how to use `DocArray` with most of its features, step by step.
+This user guide show you how to use `DocArray` with most of its features.
+
+They are three main section:
+
+- [Representing Data](representing/first_step.md): This section will show you how to use `DocArray` to represent your data.
+- [Sending Data](sending/first_step.md): This section will show you how to use `DocArray` to send your data.
+- [Storing Data](storing/first_step.md): This section will show you how to use `DocArray` to store your data.
+
+You should first start by reading the [Representing Data](representing/first_step.md) section and both the [Sending Data](sending/first_step.md) and [Storing Data](storing/first_step.md) section can be read in any order.
 
 You wil first need to install `DocArray` in you python environment. 
 ## Install DocArray
