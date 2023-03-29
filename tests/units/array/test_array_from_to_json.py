@@ -18,7 +18,7 @@ def test_from_to_json():
             MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
-    json_da = da.to_json()
+    json_da = da.json()
     da2 = DocArray[MyDoc].from_json(json_da)
     assert len(da2) == 2
     assert len(da) == len(da2)

@@ -312,7 +312,7 @@ def test_construct():
 
     docs = [Text(text=f'hello {i}') for i in range(10)]
 
-    da = DocArray[Text].construct(docs)
+    da = DocArray[Text].construct(data=docs)
 
     assert da.data is docs
 

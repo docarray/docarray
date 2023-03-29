@@ -15,6 +15,7 @@ from typing import (
     Dict,
 )
 
+import orjson
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
@@ -25,15 +26,15 @@ from docarray.array.array.sequence_indexing_mixin import (
     IndexIterType,
 )
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc.io.json import orjson_dumps, orjson_dumps_and_decode
 from docarray.typing import NdArray
 from pydantic import BaseModel
-
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array.stacked.array_stacked import DocArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='DocArray')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
@@ -126,6 +127,13 @@ class DocArray(
 
     data: List[T_doc] = []
     _document_type: Type[BaseDoc] = AnyDoc
+
+    class Config:
+        json_loads = orjson.loads
+        json_dumps = orjson_dumps_and_decode
+        json_encoders = {AbstractTensor: orjson_dumps}
+
+        validate_assignment = True
 
     def __init__(
         self,
