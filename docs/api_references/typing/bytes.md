@@ -1,0 +1,6 @@
+# Bytes
+
+::: docarray.typing.bytes
+
+
+

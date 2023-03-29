@@ -1,3 +1,3 @@
-# DocumentArrayStacked
+# DocArrayStacked
 
-::: docarray.array.array.array.DocumentArrayStacked
+::: docarray.array.array.array.DocArrayStacked

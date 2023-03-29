@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -46,46 +46,54 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
     This type can also be used in a parametrized way, specifying the shape of the array.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import NdArray
+    import numpy as np
 
-        from docarray import BaseDocument
-        from docarray.typing import NdArray
-        import numpy as np
+
+    class MyDoc(BaseDoc):
+        arr: NdArray
+        image_arr: NdArray[3, 224, 224]
+        square_crop: NdArray[3, 'x', 'x']
+        random_image: NdArray[3, ...]  # first dimension is fixed, can have arbitrary shape
 
 
-        class MyDoc(BaseDocument):
-            arr: NdArray
-            image_arr: NdArray[3, 224, 224]
-            square_crop: NdArray[3, 'x', 'x']
-            random_image: NdArray[3, ...] # first dimension is fixed, can have arbitrary shape
+    # create a document with tensors
+    doc = MyDoc(
+        arr=np.zeros((128,)),
+        image_arr=np.zeros((3, 224, 224)),
+        square_crop=np.zeros((3, 64, 64)),
+        random_image=np.zeros((3, 128, 256)),
+    )
+    assert doc.image_arr.shape == (3, 224, 224)
 
-        # create a document with tensors
-        doc = MyDoc(
-            arr=np.zeros((128,)),
-            image_arr=np.zeros((3, 224, 224)),
-            square_crop=np.zeros((3, 64, 64)),
-            random_image=np.zeros(3, 128, 256),
-        )
-        assert doc.image_arr.shape == (3, 224, 224)
+    # automatic shape conversion
+    doc = MyDoc(
+        arr=np.zeros((128,)),
+        image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+        square_crop=np.zeros((3, 128, 128)),
+        random_image=np.zeros((3, 64, 128)),
+    )
+    assert doc.image_arr.shape == (3, 224, 224)
 
-        # automatic shape conversion
-        doc = MyDoc(
-            arr=np.zeros((128,)),
-            image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
-            square_crop=np.zeros((3, 128, 128)),
-            random_image=np.zeros(3, 64, 128),
-        )
-        assert doc.image_arr.shape == (3, 224, 224)
+    # !! The following will raise an error due to shape mismatch !!
+    from pydantic import ValidationError
 
-        # !! The following will raise an error due to shape mismatch !!
+    try:
         doc = MyDoc(
             arr=np.zeros((128,)),
             image_arr=np.zeros((224, 224)),  # this will fail validation
             square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
-            random_image=np.zeros(4, 64, 128),  # this will also fail validation
+            random_image=np.zeros((4, 64, 128)),  # this will also fail validation
         )
+    except ValidationError as e:
+        pass
+    ```
+
+    ---
     """
 
     __parametrized_meta__ = metaNumpy

@@ -1,4 +1,4 @@
-from docarray.array.array.array import DocumentArray
-from docarray.array.stacked.array_stacked import DocumentArrayStacked
+from docarray.array.array.array import DocArray
+from docarray.array.stacked.array_stacked import DocArrayStacked
 
-__all__ = ['DocumentArray', 'DocumentArrayStacked']
+__all__ = ['DocArray', 'DocArrayStacked']

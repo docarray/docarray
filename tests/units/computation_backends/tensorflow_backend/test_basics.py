@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:

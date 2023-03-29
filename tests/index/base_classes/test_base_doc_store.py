@@ -5,30 +5,30 @@ import numpy as np
 import pytest
 from pydantic import Field
 
-from docarray import BaseDocument, DocumentArray
-from docarray.index.abstract import (
-    BaseDocumentIndex,
-    _raise_not_composable,
-)
-from docarray.typing import ID, NdArray
+from docarray import BaseDoc, DocArray
+from docarray.documents import ImageDoc
+from docarray.index.abstract import BaseDocIndex, _raise_not_composable
+from docarray.typing import ID, ImageBytes, ImageUrl, NdArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import torch_imported
 
 pytestmark = pytest.mark.index
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-class FlatDoc(BaseDocument):
+class FlatDoc(BaseDoc):
     tens_one: NdArray = Field(dim=10)
     tens_two: NdArray = Field(dim=50)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
 
 
-class DeepNestedDoc(BaseDocument):
+class DeepNestedDoc(BaseDoc):
     d: NestedDoc
 
 
@@ -40,22 +40,23 @@ def _identity(*x, **y):
     return x, y
 
 
-class DummyDocIndex(BaseDocumentIndex):
+class DummyDocIndex(BaseDocIndex):
     @dataclass
-    class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 str: {'hi': 'there'},
                 np.ndarray: {'you': 'good?'},
                 'varchar': {'good': 'bye'},
+                AbstractTensor: {'dim': 1000},
             }
         )
 
     @dataclass
-    class DBConfig(BaseDocumentIndex.DBConfig):
+    class DBConfig(BaseDocIndex.DBConfig):
         work_dir: str = '.'
 
-    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+    class QueryBuilder(BaseDocIndex.QueryBuilder):
         def build(self):
             return None
 
@@ -106,7 +107,7 @@ def test_create_columns():
     assert store._column_infos['id'].n_dim is None
     assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._column_infos['tens'].docarray_type, NdArray)
+    assert issubclass(store._column_infos['tens'].docarray_type, AbstractTensor)
     assert store._column_infos['tens'].db_type == str
     assert store._column_infos['tens'].n_dim == 10
     assert store._column_infos['tens'].config == {'dim': 1000, 'hi': 'there'}
@@ -120,12 +121,12 @@ def test_create_columns():
     assert store._column_infos['id'].n_dim is None
     assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._column_infos['tens_one'].docarray_type, NdArray)
+    assert issubclass(store._column_infos['tens_one'].docarray_type, AbstractTensor)
     assert store._column_infos['tens_one'].db_type == str
     assert store._column_infos['tens_one'].n_dim is None
     assert store._column_infos['tens_one'].config == {'dim': 10, 'hi': 'there'}
 
-    assert issubclass(store._column_infos['tens_two'].docarray_type, NdArray)
+    assert issubclass(store._column_infos['tens_two'].docarray_type, AbstractTensor)
     assert store._column_infos['tens_two'].db_type == str
     assert store._column_infos['tens_two'].n_dim is None
     assert store._column_infos['tens_two'].config == {'dim': 50, 'hi': 'there'}
@@ -139,7 +140,7 @@ def test_create_columns():
     assert store._column_infos['id'].n_dim is None
     assert store._column_infos['id'].config == {'hi': 'there'}
 
-    assert issubclass(store._column_infos['d__tens'].docarray_type, NdArray)
+    assert issubclass(store._column_infos['d__tens'].docarray_type, AbstractTensor)
     assert store._column_infos['d__tens'].db_type == str
     assert store._column_infos['d__tens'].n_dim == 10
     assert store._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
@@ -150,15 +151,15 @@ def test_flatten_schema():
     fields = SimpleDoc.__fields__
     assert set(store._flatten_schema(SimpleDoc)) == {
         ('id', ID, fields['id']),
-        ('tens', NdArray[10], fields['tens']),
+        ('tens', AbstractTensor, fields['tens']),
     }
 
     store = DummyDocIndex[FlatDoc]()
     fields = FlatDoc.__fields__
     assert set(store._flatten_schema(FlatDoc)) == {
         ('id', ID, fields['id']),
-        ('tens_one', NdArray, fields['tens_one']),
-        ('tens_two', NdArray, fields['tens_two']),
+        ('tens_one', AbstractTensor, fields['tens_one']),
+        ('tens_two', AbstractTensor, fields['tens_two']),
     }
 
     store = DummyDocIndex[NestedDoc]()
@@ -167,7 +168,7 @@ def test_flatten_schema():
     assert set(store._flatten_schema(NestedDoc)) == {
         ('id', ID, fields['id']),
         ('d__id', ID, fields_nested['id']),
-        ('d__tens', NdArray[10], fields_nested['tens']),
+        ('d__tens', AbstractTensor, fields_nested['tens']),
     }
 
     store = DummyDocIndex[DeepNestedDoc]()
@@ -178,12 +179,49 @@ def test_flatten_schema():
         ('id', ID, fields['id']),
         ('d__id', ID, fields_nested['id']),
         ('d__d__id', ID, fields_nested_nested['id']),
-        ('d__d__tens', NdArray[10], fields_nested_nested['tens']),
+        ('d__d__tens', AbstractTensor, fields_nested_nested['tens']),
+    }
+
+
+def test_flatten_schema_union():
+    class MyDoc(BaseDoc):
+        image: ImageDoc
+
+    store = DummyDocIndex[MyDoc]()
+    fields = MyDoc.__fields__
+    fields_image = ImageDoc.__fields__
+
+    if torch_imported:
+        from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+
+    assert set(store._flatten_schema(MyDoc)) == {
+        ('id', ID, fields['id']),
+        ('image__id', ID, fields_image['id']),
+        ('image__url', ImageUrl, fields_image['url']),
+        ('image__tensor', AbstractTensor, fields_image['tensor']),
+        ('image__embedding', AbstractTensor, fields_image['embedding']),
+        ('image__bytes_', ImageBytes, fields_image['bytes_']),
+    }
+
+    class MyDoc2(BaseDoc):
+        tensor: Union[NdArray, str]
+
+    with pytest.raises(ValueError):
+        _ = DummyDocIndex[MyDoc2]()
+
+    class MyDoc3(BaseDoc):
+        tensor: Union[NdArray, ImageTorchTensor]
+
+    store = DummyDocIndex[MyDoc3]()
+    fields = MyDoc3.__fields__
+    assert set(store._flatten_schema(MyDoc3)) == {
+        ('id', ID, fields['id']),
+        ('tensor', AbstractTensor, fields['tensor']),
     }
 
 
 def test_columns_db_type_with_user_defined_mapping(tmp_path):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
 
     store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
@@ -192,7 +230,7 @@ def test_columns_db_type_with_user_defined_mapping(tmp_path):
 
 
 def test_columns_db_type_with_user_defined_mapping_additional_params(tmp_path):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, col_type='varchar', max_len=1024)
 
     store = DummyDocIndex[MyDoc](work_dir=str(tmp_path))
@@ -202,7 +240,7 @@ def test_columns_db_type_with_user_defined_mapping_additional_params(tmp_path):
 
 
 def test_columns_illegal_mapping(tmp_path):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, col_type='non_valid_type')
 
     with pytest.raises(
@@ -224,12 +262,12 @@ def test_docs_validation():
     # SIMPLE
     store = DummyDocIndex[SimpleDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[SimpleDoc](in_list)
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[SimpleDoc](in_list)
     assert store._validate_docs(in_da) == in_da
     in_other_list = [OtherSimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
-    in_other_da = DocumentArray[OtherSimpleDoc](in_other_list)
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherSimpleDoc](in_other_list)
     assert store._validate_docs(in_other_da) == in_other_da
 
     with pytest.raises(ValueError):
@@ -242,7 +280,7 @@ def test_docs_validation():
         )
     with pytest.raises(ValueError):
         store._validate_docs(
-            DocumentArray[FlatDoc](
+            DocArray[FlatDoc](
                 [
                     FlatDoc(
                         tens_one=np.random.random((10,)),
@@ -257,16 +295,16 @@ def test_docs_validation():
     in_list = [
         FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[FlatDoc](
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[FlatDoc](
         [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
     )
     assert store._validate_docs(in_da) == in_da
     in_other_list = [
         OtherFlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
-    in_other_da = DocumentArray[OtherFlatDoc](
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherFlatDoc](
         [
             OtherFlatDoc(
                 tens_one=np.random.random((10,)), tens_two=np.random.random((50,))
@@ -278,20 +316,18 @@ def test_docs_validation():
         store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
     with pytest.raises(ValueError):
         assert not store._validate_docs(
-            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
+            DocArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
 
     # NESTED
     store = DummyDocIndex[NestedDoc]()
     in_list = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[NestedDoc](
-        [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
-    )
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[NestedDoc]([NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))])
     assert store._validate_docs(in_da) == in_da
     in_other_list = [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(store._validate_docs(in_other_list), DocumentArray[BaseDocument])
-    in_other_da = DocumentArray[OtherNestedDoc](
+    assert isinstance(store._validate_docs(in_other_list), DocArray[BaseDoc])
+    in_other_da = DocArray[OtherNestedDoc](
         [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     )
 
@@ -300,36 +336,52 @@ def test_docs_validation():
         store._validate_docs([SimpleDoc(tens=np.random.random((10,)))])
     with pytest.raises(ValueError):
         store._validate_docs(
-            DocumentArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
+            DocArray[SimpleDoc]([SimpleDoc(tens=np.random.random((10,)))])
         )
 
 
 def test_docs_validation_unions():
-    class OptionalDoc(BaseDocument):
+    class OptionalDoc(BaseDoc):
         tens: Optional[NdArray[10]] = Field(dim=1000)
 
-    class UnionDoc(BaseDocument):
+    class MixedUnionDoc(BaseDoc):
         tens: Union[NdArray[10], str] = Field(dim=1000)
+
+    class TensorUnionDoc(BaseDoc):
+        tens: Union[NdArray[10], AbstractTensor] = Field(dim=1000)
 
     # OPTIONAL
     store = DummyDocIndex[SimpleDoc]()
     in_list = [OptionalDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[OptionalDoc](in_list)
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[OptionalDoc](in_list)
     assert store._validate_docs(in_da) == in_da
 
     with pytest.raises(ValueError):
         store._validate_docs([OptionalDoc(tens=None)])
 
-    # OTHER UNION
+    # MIXED UNION
     store = DummyDocIndex[SimpleDoc]()
-    in_list = [UnionDoc(tens=np.random.random((10,)))]
-    assert isinstance(store._validate_docs(in_list), DocumentArray[BaseDocument])
-    in_da = DocumentArray[UnionDoc](in_list)
-    assert isinstance(store._validate_docs(in_da), DocumentArray[BaseDocument])
+    in_list = [MixedUnionDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[MixedUnionDoc](in_list)
+    assert isinstance(store._validate_docs(in_da), DocArray[BaseDoc])
 
     with pytest.raises(ValueError):
-        store._validate_docs([UnionDoc(tens='hello')])
+        store._validate_docs([MixedUnionDoc(tens='hello')])
+
+    # TENSOR UNION
+    store = DummyDocIndex[TensorUnionDoc]()
+    in_list = [SimpleDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[SimpleDoc](in_list)
+    assert store._validate_docs(in_da) == in_da
+
+    store = DummyDocIndex[SimpleDoc]()
+    in_list = [TensorUnionDoc(tens=np.random.random((10,)))]
+    assert isinstance(store._validate_docs(in_list), DocArray[BaseDoc])
+    in_da = DocArray[TensorUnionDoc](in_list)
+    assert store._validate_docs(in_da) == in_da
 
 
 def test_get_value():
@@ -479,3 +531,30 @@ def test_convert_dict_to_doc():
     assert doc.d.id == doc_dict_copy['d__id']
     assert doc.d.d.id == doc_dict_copy['d__d__id']
     assert np.all(doc.d.d.tens == doc_dict_copy['d__d__tens'])
+
+    class MyDoc(BaseDoc):
+        image: ImageDoc
+
+    store = DummyDocIndex[MyDoc]()
+    doc_dict = {
+        'id': 'root',
+        'image__id': 'nested',
+        'image__tensor': np.random.random((128,)),
+    }
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+
+    if torch_imported:
+        from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+
+    class MyDoc2(BaseDoc):
+        tens: Union[NdArray, ImageTorchTensor]
+
+    store = DummyDocIndex[MyDoc2]()
+    doc_dict = {
+        'id': 'root',
+        'tens': np.random.random((128,)),
+    }
+    doc_dict_copy = doc_dict.copy()
+    doc = store._convert_dict_to_doc(doc_dict, store._schema)
+    assert doc.id == doc_dict_copy['id']
+    assert np.all(doc.tens == doc_dict_copy['tens'])

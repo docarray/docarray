@@ -4,14 +4,14 @@ from typing import Any, Dict, Type
 import pytest
 from pydantic import Field
 
-from docarray import BaseDocument
-from docarray.index.abstract import BaseDocumentIndex
+from docarray import BaseDoc
+from docarray.index.abstract import BaseDocIndex
 from docarray.typing import NdArray
 
 pytestmark = pytest.mark.index
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
@@ -20,13 +20,13 @@ class FakeQueryBuilder:
 
 
 @dataclass
-class DBConfig(BaseDocumentIndex.DBConfig):
+class DBConfig(BaseDocIndex.DBConfig):
     work_dir: str = '.'
     other: int = 5
 
 
 @dataclass
-class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+class RuntimeConfig(BaseDocIndex.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = field(
         default_factory=lambda: {
             str: {
@@ -42,7 +42,7 @@ def _identity(*x, **y):
     return x, y
 
 
-class DummyDocIndex(BaseDocumentIndex):
+class DummyDocIndex(BaseDocIndex):
     DBConfig = DBConfig
     RuntimeConfig = RuntimeConfig
 

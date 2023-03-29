@@ -276,6 +276,7 @@ This allows:
 If you need to monitor and debug your code, you can enable docarray logging:
 ```python
 import logging
+
 logging.getLogger('docarray').setLevel(logging.DEBUG)
 ```
 

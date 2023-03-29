@@ -1,9 +1,9 @@
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import ID
 
 
 def test_set_id():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         id: ID
 
     d = MyDocument(id="123")
