@@ -39,7 +39,7 @@ class VideoUrl(AnyUrl):
         has_video_extension = ext in VIDEO_FILE_FORMATS or ext == ''
 
         if not has_video_extension:
-            raise ValueError('Video URL must have a valid extension')
+            raise ValueError(f'Video URL must have a valid video extension, or no extension at all. Choose one from {VIDEO_FILE_FORMATS}')
         return cls(str(url), scheme=None)
 
     def load(self: T, **kwargs) -> VideoLoadResult:
