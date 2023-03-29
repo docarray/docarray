@@ -42,15 +42,15 @@ class VideoNdArray(NdArray, VideoTensorMixin):
         video_tensor=np.random.random((100, 224, 224, 3)),
     )
 
-    doc_1.video_tensor.save(file_path='file_1.mp4')
+    doc_1.video_tensor.save(file_path='/tmp/file_1.mp4')
 
     doc_2 = MyVideoDoc(
         title='my_second_video_doc',
-        url='file_1.mp4',
+        url='/tmp/file_1.mp4',
     )
 
     doc_2.video_tensor = parse_obj_as(VideoNdArray, doc_2.url.load().video)
-    doc_2.video_tensor.save(file_path='file_2.mp4')
+    doc_2.video_tensor.save(file_path='/tmp/file_2.mp4')
     ```
 
     ---
