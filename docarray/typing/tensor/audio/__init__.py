@@ -1,3 +1,4 @@
+import types
 from typing import TYPE_CHECKING
 
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
@@ -14,12 +15,12 @@ __all__ = ['AudioNdArray', 'AudioTensor']
 
 
 def __getattr__(name: str):
+    lib: types.ModuleType
     if name == 'AudioTorchTensor':
         import_library('torch', raise_error=True)
         import docarray.typing.tensor.audio.audio_torch_tensor as lib
     elif name == 'AudioTensorFlowTensor':
         import_library('tensorflow', raise_error=True)
-
         import docarray.typing.tensor.audio.audio_tensorflow_tensor as lib
 
     tensor_cls = getattr(lib, name)

@@ -1,3 +1,5 @@
+import types
+
 from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.audio import AudioNdArray
@@ -38,6 +40,7 @@ def __getattr__(name: str):
     elif 'TensorFlow' in name:
         import_library('tensorflow', raise_error=True)
 
+    lib: types.ModuleType
     if name == 'TorchTensor':
         import docarray.typing.tensor.torch_tensor as lib
     elif name == 'TensorFlowTensor':

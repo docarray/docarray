@@ -1,3 +1,5 @@
+import types
+
 from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
@@ -14,6 +16,7 @@ __all__ = ['VideoNdArray', 'VideoTensor']
 
 
 def __getattr__(name: str):
+    lib: types.ModuleType
     if name == 'VideoTorchTensor':
         import_library('torch', raise_error=True)
         import docarray.typing.tensor.video.video_torch_tensor as lib

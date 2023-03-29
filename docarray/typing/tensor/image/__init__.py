@@ -1,3 +1,5 @@
+import types
+
 from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
@@ -14,6 +16,7 @@ __all__ = ['ImageNdArray', 'ImageTensor']
 
 
 def __getattr__(name: str):
+    lib: types.ModuleType
     if name == 'ImageTorchTensor':
         import_library('torch', raise_error=True)
         import docarray.typing.tensor.image.image_torch_tensor as lib

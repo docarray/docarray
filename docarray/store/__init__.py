@@ -1,3 +1,4 @@
+import types
 from typing import TYPE_CHECKING
 
 from docarray.store.file import FileDocStore
@@ -11,6 +12,7 @@ __all__ = ['FileDocStore']
 
 
 def __getattr__(name: str):
+    lib: types.ModuleType
     if name == 'JACDocStore':
         import_library('hubble', raise_error=True)
         import docarray.store.jac as lib

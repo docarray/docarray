@@ -1,3 +1,5 @@
+import types
+
 from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding
@@ -12,6 +14,7 @@ __all__ = ['NdArrayEmbedding', 'AnyEmbedding']
 
 
 def __getattr__(name: str):
+    lib: types.ModuleType
     if name == 'TorchEmbedding':
         import_library('torch', raise_error=True)
         import docarray.typing.tensor.embedding.torch as lib
