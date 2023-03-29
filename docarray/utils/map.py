@@ -26,8 +26,6 @@ def map_docs(
     Return an iterator that applies `func` to every Document in `da` in parallel,
     yielding the results.
 
-    EXAMPLE USAGE
-
     ---
 
     ```python
