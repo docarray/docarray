@@ -10,7 +10,7 @@ from typing_extensions import TYPE_CHECKING
 
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.helpers import _from_binary_stream, _to_binary_stream
-from docarray.utils.cache import get_cache_path
+from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDoc, DocArray
@@ -212,7 +212,7 @@ class S3DocStore(AbstractDocStore):
         bucket, name = name.split('/', 1)
 
         save_name = name.replace('/', '_')
-        cache_path = get_cache_path() / f'{save_name}.da'
+        cache_path = _get_cache_path() / f'{save_name}.da'
 
         source = _BufferedCachingReader(
             open(f"s3://{bucket}/{name}.da", 'rb', compression='.gz'),

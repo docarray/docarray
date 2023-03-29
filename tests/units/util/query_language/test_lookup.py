@@ -1,6 +1,6 @@
 import pytest
 
-from docarray.utils.query_language.lookup import dunder_get, lookup
+from docarray.utils._internal.query_language.lookup import dunder_get, lookup
 
 
 class A:

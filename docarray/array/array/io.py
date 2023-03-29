@@ -31,13 +31,13 @@ from docarray.helper import (
     _all_access_paths_valid,
     _dict_to_access_paths,
 )
-from docarray.utils.compress import _decompress_bytes, _get_compress_ctx
+from docarray.utils._internal.compress import _decompress_bytes, _get_compress_ctx
 
 if TYPE_CHECKING:
     import pandas as pd
 
     from docarray import DocArray
-    from docarray.proto import DocArrayProto
+    from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
 
@@ -108,7 +108,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         ...
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocArray
         """
@@ -116,11 +116,11 @@ class IOMixinArray(Iterable[BaseDoc]):
             cls._document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
         )
 
-    def to_protobuf(self) -> 'DocArrayProto':
+    def to_protobuf(self) -> 'DocumentArrayProto':
         """Convert DocArray into a Protobuf message"""
-        from docarray.proto import DocArrayProto
+        from docarray.proto import DocumentArrayProto
 
-        da_proto = DocArrayProto()
+        da_proto = DocumentArrayProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
@@ -201,7 +201,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         from rich import filesize
 
         if show_progress:
-            from docarray.utils.progress_bar import _get_progressbar
+            from docarray.utils._internal.progress_bar import _get_progressbar
 
             pbar, t = _get_progressbar(
                 'Serializing', disable=not show_progress, total=len(self)
@@ -551,9 +551,9 @@ class IOMixinArray(Iterable[BaseDoc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocArrayProto
+            from docarray.proto import DocumentArrayProto
 
-            dap = DocArrayProto()
+            dap = DocumentArrayProto()
             dap.ParseFromString(d)
 
             return cls.from_protobuf(dap)
@@ -564,7 +564,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         else:
             from rich import filesize
 
-            from docarray.utils.progress_bar import _get_progressbar
+            from docarray.utils._internal.progress_bar import _get_progressbar
 
             # 1 byte (uint8)
             # 8 bytes (uint64)
@@ -629,7 +629,7 @@ class IOMixinArray(Iterable[BaseDoc]):
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
             if show_progress:
-                from docarray.utils.progress_bar import _get_progressbar
+                from docarray.utils._internal.progress_bar import _get_progressbar
 
                 pbar, t = _get_progressbar(
                     'Deserializing', disable=not show_progress, total=num_docs

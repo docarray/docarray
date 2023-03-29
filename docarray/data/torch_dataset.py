@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 
 from docarray import BaseDoc, DocArray, DocArrayStacked
 from docarray.typing import TorchTensor
-from docarray.utils._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 

@@ -8,7 +8,7 @@ from pydantic import parse_obj_as
 from docarray import BaseDoc
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:

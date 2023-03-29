@@ -7,7 +7,7 @@ import torch
 from docarray import DocArray
 from docarray.base_doc import BaseDoc
 from docarray.typing import NdArray, TorchTensor
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 
 if is_tf_available():
     import tensorflow as tf

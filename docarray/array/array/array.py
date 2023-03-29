@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
     from docarray.array.stacked.array_stacked import DocArrayStacked
-    from docarray.proto import DocArrayProto
+    from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -292,7 +292,7 @@ class DocArray(
         return flattened
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocArray
         """

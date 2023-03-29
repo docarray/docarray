@@ -55,7 +55,7 @@ message NodeProto {
     // a sub Document
     DocumentProto document = 7;
     // a sub DocArray
-    DocArrayProto document_array = 8;
+    DocumentArrayProto document_array = 8;
     //any list
     ListOfAnyProto list = 9;
     //any set
@@ -91,13 +91,13 @@ message ListOfAnyProto {
   repeated NodeProto data = 1;
 }
 
-message DocArrayProto {
+message DocumentArrayProto {
     repeated DocumentProto docs = 1; // a list of Documents
 }
 
 
 message ListOfDocArrayProto {
-  repeated DocArrayProto data = 1;
+  repeated DocumentArrayProto data = 1;
 }
 
 message DocArrayStackedProto{

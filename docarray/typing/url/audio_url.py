@@ -7,7 +7,7 @@ from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.filetypes import AUDIO_FILE_FORMATS
-from docarray.utils.misc import is_notebook
+from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -48,27 +48,30 @@ class AudioUrl(AnyUrl):
         """
         Load the data from the url into an AudioNdArray.
 
+
+        ---
+
+        ```python
+        from typing import Optional
+        from docarray import BaseDoc
+        import numpy as np
+
+        from docarray.typing import AudioUrl, AudioNdArray
+
+
+        class MyDoc(BaseDoc):
+            audio_url: AudioUrl
+            audio_tensor: Optional[AudioNdArray]
+
+
+        doc = MyDoc(audio_url='https://www.kozco.com/tech/piano2.wav')
+        doc.audio_tensor, _ = doc.audio_url.load()
+        assert isinstance(doc.audio_tensor, np.ndarray)
+        ```
+
+        ---
+
         :return: AudioNdArray representing the audio file content.
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            from docarray import BaseDoc
-            import numpy as np
-
-            from docarray.typing import AudioUrl
-
-
-            class MyDoc(Document):
-                audio_url: AudioUrl
-                audio_tensor: AudioNdArray
-
-
-            doc = MyDoc(audio_url="toydata/hello.wav")
-            doc.audio_tensor, doc.frame_rate = doc.audio_url.load()
-            assert isinstance(doc.audio_tensor, np.ndarray)
-
         """
         bytes_ = AudioBytes(self.load_bytes())
         return bytes_.load()

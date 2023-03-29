@@ -29,9 +29,9 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
+from docarray.utils._internal.misc import is_np_int, is_tf_available, is_torch_available
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import is_np_int, is_tf_available, is_torch_available
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
