@@ -139,7 +139,7 @@ class _ColumnInfo:
     config: Dict[str, Any]
 ```
 
-- `docarray_type` is the type of the column in DocArray, e.g. `NdArray` or `str`
+- `docarray_type` is the type of the column in DocArray, e.g. `AbstractTensor` or `str`
 - `db_type` is the type of the column in the Document Index, e.g. `np.ndarray` or `str`. You can customize the mapping from `docarray_type` to `db_type`, as we will see later.
 - `config` is a dictionary of configurations for the column. For example, for the `other_tensor` column above, this would contain the `space` and `dim` configurations.
 - `n_dim` is the dimensionality of the column, e.g. `100` for a 100-dimensional vector. See further guidance on this below.
@@ -152,6 +152,9 @@ Again, these are automatically populated for you, so you can just use them in yo
 By default, it holds that `_ColumnInfo.docarray_type == self.python_type_to_db_type(_ColumnInfo.db_type)`, as we will see later.
 However, you should not rely on this, because a user can manually specify a different db_type. 
 Therefore, your implementation should rely on `_ColumnInfo.db_type` and not directly call `python_type_to_db_type()`.
+
+**Caution**
+`AbstractTensor` will be the `_ColumnInfo.docarray_type` if the field in `self._schema` is a subclass of `AbstractTensor` or a tensor Union.
 
 ### Properly handle `n_dim`
 
@@ -296,7 +299,7 @@ The details of each method should become clear from the docstrings and type hint
 
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
-It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
+It is intended to do the following: It takes a type of a field in the store's schema (e.g. `AbstractTensor` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
 The `BaseDocIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
 
 If the user wants to change the default behaviour, one can set the db type by using the `col_type` field:

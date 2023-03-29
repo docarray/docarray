@@ -698,7 +698,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                                 )
                 else:
                     raise ValueError(
-                        f'Union type {t_} is not supported. Only Union of subclasses of ndarray or Union[type, None] are supported.'
+                        f'Union type {t_} is not supported. Only Union of subclasses of AbstractTensor or Union[type, None] are supported.'
                     )
             elif issubclass(t_, BaseDoc):
                 names_types_fields.extend(
