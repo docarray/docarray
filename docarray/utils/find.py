@@ -1,7 +1,11 @@
-from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast, Tuple, Callable, Generator, TypeVar
 
 from typing_inspect import is_union_type
+from contextlib import nullcontext
+from math import ceil
+from multiprocessing.pool import Pool, ThreadPool
 
+from rich.progress import track
 from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocArray
 from docarray.array.stacked.array_stacked import DocArrayStacked
@@ -9,17 +13,18 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-
+from docarray.utils.map import map_docs_batch
 
 class FindResult(NamedTuple):
     documents: DocArray
     scores: AnyTensor
 
-
 class _FindResult(NamedTuple):
     documents: Union[DocArray, List[Dict[str, Any]]]
     scores: AnyTensor
 
+class Doc(BaseDoc):
+    embedding: AnyTensor=None
 
 def find(
     index: AnyDocArray,
@@ -52,7 +57,7 @@ def find(
 
         from docarray import DocArray, BaseDoc
         from docarray.typing import TorchTensor
-        from docarray.util.find import find
+        from docarray.utils.find import find
 
 
         class MyDocument(BaseDoc):
@@ -68,7 +73,6 @@ def find(
         top_matches, scores = find(
             index=index,
             query=query,
-            embedding_field='tensor',
             metric='cosine_sim',
         )
 
@@ -77,7 +81,6 @@ def find(
         top_matches, scores = find(
             index=index,
             query=query,
-            embedding_field='tensor',
             metric='cosine_sim',
         )
 
@@ -103,6 +106,7 @@ def find(
         index=index,
         query=query,
         embedding_field=embedding_field,
+        batch_size=None,
         metric=metric,
         limit=limit,
         device=device,
@@ -114,10 +118,16 @@ def find_batched(
     index: AnyDocArray,
     query: Union[AnyTensor, DocArray],
     embedding_field: str = 'embedding',
+    batch_size: int=1,
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
+    shuffle: bool = False,
+    backend: str = 'thread',
+    num_worker: Optional[int] = None,
+    pool: Optional[Union[Pool, ThreadPool]] = None,
+    show_progress: bool = False,
 ) -> List[FindResult]:
     """
     Find the closest Documents in the index to the queries.
@@ -141,8 +151,8 @@ def find_batched(
 
         from docarray import DocArray, BaseDoc
         from docarray.typing import TorchTensor
-        from docarray.util.find import find
-
+        from docarray.utils.find import find_batched
+        import torch
 
         class MyDocument(BaseDoc):
             embedding: TorchTensor
@@ -153,21 +163,21 @@ def find_batched(
         )
 
         # use DocArray as query
-        query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-        results = find(
+        query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(10)])
+        results = find_batched(
             index=index,
             query=query,
-            embedding_field='tensor',
+            batch_size=5,
             metric='cosine_sim',
         )
         top_matches, scores = results[0]
 
         # use tensor as query
-        query = torch.rand(3, 128)
-        results, scores = find(
+        query = torch.rand(10, 128)
+        results= find_batched(
             index=index,
             query=query,
-            embedding_field='tensor',
+            batch_size=5,
             metric='cosine_sim',
         )
         top_matches, scores = results[0]
@@ -176,6 +186,8 @@ def find_batched(
     :param query: the query to search for
     :param embedding_field: the tensor-like field in the index to use
         for the similarity computation
+    :param batch_size: Size of each generated batch (except the last one, which might
+        be smaller).
     :param metric: the distance metric to use for the similarity computation.
         Can be one of the following strings:
         'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance,
@@ -185,34 +197,88 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
+    :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
+        Defaults to `thread`.
+        In general, if `func` is IO-bound then `thread` is a good choice.
+        On the other hand, if `func` is CPU-bound, then you may use `process`.
+        In practice, you should try yourselves to figure out the best value.
+        However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
+        you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
+        .. warning::
+            When using `process` backend, your `func` should not modify elements in-place.
+            This is because the multiprocessing backend passes the variable via pickle
+            and works in another process.
+            The passed object and the original object do **not** share the same memory.
+    :param num_worker: the number of parallel workers. If not given, then the number of CPUs
+        in the system will be used.
+    :param show_progress: show a progress bar
+    :param pool: use an existing/external pool. If given, `backend` is ignored and you will
+        be responsible for closing the pool.
     :return: a list of named tuples of the form (DocArray, AnyTensor),
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """
+        
     if descending is None:
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
     embedding_type = _da_attr_type(index, embedding_field)
     comp_backend = embedding_type.get_comp_backend()
-
-    # extract embeddings from query and index
+    # extract embeddings from index
     index_embeddings = _extract_embeddings(index, embedding_field, embedding_type)
-    query_embeddings = _extract_embeddings(query, embedding_field, embedding_type)
-
-    # compute distances and return top results
     metric_fn = getattr(comp_backend.Metrics, metric)
-    dists = metric_fn(query_embeddings, index_embeddings, device=device)
-    top_scores, top_indices = comp_backend.Retrieval.top_k(
-        dists, k=limit, device=device, descending=descending
-    )
 
     results = []
-    for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+
+    def _get_result(query: Union[AnyDocArray, BaseDoc, AnyTensor]):
+        q_embed = _extract_embeddings(query, embedding_field, embedding_type)
+        dists=metric_fn(q_embed, index_embeddings, device=device)
+        top_scores, top_indices = comp_backend.Retrieval.top_k(
+            dists, k=limit, device=device, descending=descending
+        )
+        return top_indices,top_scores
+    
+    if batch_size is not None:
+        if batch_size <= 0:
+            raise ValueError(
+                f'`batch_size` must be larger than 0, receiving {batch_size}'
+            )
+        else:
+            batch_size = int(batch_size)
+    else :
+        top_indices,top_scores= _get_result(query)
+        res = []
+        for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+            docs_per_query: DocArray = DocArray([])
+            for idx in indices_per_query:  # workaround until #930 is fixed
+                docs_per_query.append(index[idx])
+            docs_per_query = DocArray(docs_per_query)
+            res.append(FindResult(scores=scores_per_query, documents=docs_per_query))
+        return res
+    
+    if not(isinstance(query, DocArray) or isinstance(query, (DocArrayStacked, BaseDoc))):
+        query = cast(AnyTensor, query)
+        d = DocArray[Doc](Doc() for _ in range(comp_backend.shape(tensor=query)[0]))
+        d.embedding = query
+        query=d
+
+
+    it = map_docs_batch(da=query,func=_get_result, batch_size=batch_size,
+                                        backend=backend,
+                                        num_worker=num_worker,
+                                        shuffle=shuffle,
+                                        pool=pool,
+                                        show_progress=show_progress)
+    
+    for (indices_per_query, scores_per_query) in it:
         docs_per_query: DocArray = DocArray([])
-        for idx in indices_per_query:  # workaround until #930 is fixed
-            docs_per_query.append(index[idx])
-        docs_per_query = DocArray(docs_per_query)
-        results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
+        for idx,scores in zip(indices_per_query,scores_per_query):  # workaround until #930 is fixed
+            docs_per_query=(index[idx])
+            results.append(FindResult(scores=scores, documents=docs_per_query))
+
     return results
 
 
