@@ -76,7 +76,7 @@ def map_docs(
         be responsible for closing the pool.
     :param show_progress: show a progress bar. Defaults to False.
 
-    :return: Documents returned from `func`
+    :return: yield Documents returned from `func`
     """
 
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
