@@ -9,6 +9,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Mapping,
     NamedTuple,
     Optional,
     Sequence,
@@ -593,7 +594,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     @staticmethod
     def _transpose_col_value_dict(
-        col_value_dict: Dict[str, Iterable[Any]]
+        col_value_dict: Mapping[str, Iterable[Any]]
     ) -> Generator[Dict[str, Any], None, None]:
         """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
         Since a generator is returned, this process comes at negligible cost.

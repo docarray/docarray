@@ -10,6 +10,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -255,12 +256,12 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
 
     def _index(
         self,
-        column_to_data: Dict[str, Generator[Any, None, None]],
+        column_to_data: Mapping[str, Generator[Any, None, None]],
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
 
-        data = self._transpose_col_value_dict(column_to_data)  # type: ignore
+        data = self._transpose_col_value_dict(column_to_data)
         requests = []
 
         for row in data:
