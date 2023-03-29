@@ -34,6 +34,7 @@ from docarray.index.abstract import (
     _raise_not_composable,
 )
 from docarray.typing import AnyTensor
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 from docarray.utils.find import _FindResult
@@ -41,7 +42,7 @@ from docarray.utils.find import _FindResult
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='ElasticV7DocIndex')
 
-ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray]
+ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
 if is_torch_available():
     import torch
