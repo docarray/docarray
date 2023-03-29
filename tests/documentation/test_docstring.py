@@ -15,7 +15,7 @@ import docarray.documents
 import docarray.index
 import docarray.store
 import docarray.typing
-from docarray.utils import find
+from docarray.utils import find, map
 
 SUB_MODULE_TO_CHECK = [
     docarray,
@@ -25,6 +25,7 @@ SUB_MODULE_TO_CHECK = [
     docarray.store,
     docarray.typing,
     find,
+    map,
 ]
 
 
