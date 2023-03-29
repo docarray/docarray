@@ -7,11 +7,11 @@ __all__ = ['AnyDoc', 'BaseDoc', 'BaseNode']
 
 
 def __getattr__(name: str):
-    if name not in __all__:
-        __all__.append(name)
-
     if name == 'DocResponse':
         import_library('fastapi', raise_error=True)
         from docarray.base_doc.doc_response import DocResponse
+
+        if name not in __all__:
+            __all__.append(name)
 
         return DocResponse

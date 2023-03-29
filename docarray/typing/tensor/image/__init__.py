@@ -14,22 +14,16 @@ __all__ = ['ImageNdArray', 'ImageTensor']
 
 
 def __getattr__(name: str):
+    if name == 'ImageTorchTensor':
+        import_library('torch', raise_error=True)
+        import docarray.typing.tensor.image.image_torch_tensor as lib
+    elif name == 'ImageTensorFlowTensor':
+        import_library('tensorflow', raise_error=True)
+        import docarray.typing.tensor.image.image_tensorflow_tensor as lib
+
+    tensor_cls = getattr(lib, name)
+
     if name not in __all__:
         __all__.append(name)
 
-    if name == 'ImageTorchTensor':
-        import_library('torch', raise_error=True)
-        from docarray.typing.tensor.image.image_torch_tensor import (  # noqa
-            ImageTorchTensor,
-        )
-
-        return ImageTorchTensor
-
-    elif name == 'ImageTensorFlowTensor':
-        import_library('tensorflow', raise_error=True)
-
-        from docarray.typing.tensor.image.image_tensorflow_tensor import (  # noqa
-            ImageTensorFlowTensor,
-        )
-
-        return ImageTensorFlowTensor
+    return tensor_cls

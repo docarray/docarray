@@ -9,12 +9,11 @@ __all__ = []
 
 
 def __getattr__(name: str):
-
-    if name not in __all__:
-        __all__.append(name)
-
     if name == 'HnswDocumentIndex':
         import_library('hnswlib', raise_error=True)
         from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa
+
+        if name not in __all__:
+            __all__.append(name)
 
         return HnswDocumentIndex

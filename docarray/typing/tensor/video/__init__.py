@@ -14,23 +14,16 @@ __all__ = ['VideoNdArray', 'VideoTensor']
 
 
 def __getattr__(name: str):
+    if name == 'VideoTorchTensor':
+        import_library('torch', raise_error=True)
+        import docarray.typing.tensor.video.video_torch_tensor as lib
+    elif name == 'VideoTensorFlowTensor':
+        import_library('tensorflow', raise_error=True)
+        import docarray.typing.tensor.video.video_tensorflow_tensor as lib
+
+    tensor_cls = getattr(lib, name)
 
     if name not in __all__:
         __all__.append(name)
 
-    if name == 'VideoTorchTensor':
-        import_library('torch', raise_error=True)
-        from docarray.typing.tensor.video.video_torch_tensor import (  # noqa
-            VideoTorchTensor,
-        )
-
-        return VideoTorchTensor
-
-    elif name == 'VideoTensorFlowTensor':
-        import_library('tensorflow', raise_error=True)
-
-        from docarray.typing.tensor.video.video_tensorflow_tensor import (  # noqa
-            VideoTensorFlowTensor,
-        )
-
-        return VideoTensorFlowTensor
+    return tensor_cls

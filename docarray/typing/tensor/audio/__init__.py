@@ -14,22 +14,17 @@ __all__ = ['AudioNdArray', 'AudioTensor']
 
 
 def __getattr__(name: str):
-    if name not in __all__:
-        __all__.append(name)
-
     if name == 'AudioTorchTensor':
         import_library('torch', raise_error=True)
-        from docarray.typing.tensor.audio.audio_torch_tensor import (  # noqa
-            AudioTorchTensor,
-        )
-
-        return AudioTorchTensor
-
+        import docarray.typing.tensor.audio.audio_torch_tensor as lib
     elif name == 'AudioTensorFlowTensor':
         import_library('tensorflow', raise_error=True)
 
-        from docarray.typing.tensor.audio.audio_tensorflow_tensor import (  # noqa
-            AudioTensorFlowTensor,
-        )
+        import docarray.typing.tensor.audio.audio_tensorflow_tensor as lib
 
-        return AudioTensorFlowTensor
+    tensor_cls = getattr(lib, name)
+
+    if name not in __all__:
+        __all__.append(name)
+
+    return tensor_cls
