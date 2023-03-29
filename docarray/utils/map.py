@@ -29,27 +29,29 @@ def map_docs(
     ---
 
     ```python
-    # from docarray import DocArray
-    # from docarray.documents import ImageDoc
-    # from docarray.utils.map import map_docs
-    #
-    #
-    # def load_url_to_tensor(img: ImageDoc) -> ImageDoc:
-    #     img.tensor = img.url.load()
-    #     return img
-    #
-    #
-    # url = 'https://github.com/docarray/artwork/blob/main/stacked/color/docarray-stacked-color.png'
-    #
-    #
-    # da = DocArray[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
-    # da = DocArray[ImageDoc](
-    #     list(map_docs(da, load_url_to_tensor, backend='thread'))
-    # )  # threading is usually a good option for IO-bound tasks such as loading an
-    # # ImageDoc from url
-    #
-    # for doc in da:
-    #     assert doc.tensor is not None
+    from docarray import DocArray
+    from docarray.documents import ImageDoc
+    from docarray.utils.map import map_docs
+
+
+    def load_url_to_tensor(img: ImageDoc) -> ImageDoc:
+        img.tensor = img.url.load()
+        return img
+
+
+    url = (
+        'https://upload.wikimedia.org/wikipedia/commons/8/80/'
+        'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
+    )
+
+    da = DocArray[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
+    da = DocArray[ImageDoc](
+        list(map_docs(da, load_url_to_tensor, backend='thread'))
+    )  # threading is usually a good option for IO-bound tasks such as loading an
+    # ImageDoc from url
+
+    for doc in da:
+        assert doc.tensor is not None
     ```
 
     ---
@@ -119,27 +121,27 @@ def map_docs_batch(
     ---
 
     ```python
-    # from docarray import BaseDoc, DocArray
-    # from docarray.utils.map import map_docs_batch
-    #
-    #
-    # class MyDoc(BaseDoc):
-    #     name: str
-    #
-    #
-    # def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
-    #     da.name = [n.upper() for n in da.name]
-    #     return da
-    #
-    #
-    # batch_size = 16
-    # da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-    # it = map_docs_batch(da, upper_case_name, batch_size=batch_size)
-    # for i, d in enumerate(it):
-    #     da[i * batch_size : (i + 1) * batch_size] = d
-    #
-    # assert len(da) == 100
-    # print(da.name[:3])
+    from docarray import BaseDoc, DocArray
+    from docarray.utils.map import map_docs_batch
+
+
+    class MyDoc(BaseDoc):
+        name: str
+
+
+    def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
+        da.name = [n.upper() for n in da.name]
+        return da
+
+
+    batch_size = 16
+    da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    it = map_docs_batch(da, upper_case_name, batch_size=batch_size)
+    for i, d in enumerate(it):
+        da[i * batch_size : (i + 1) * batch_size] = d
+
+    assert len(da) == 100
+    print(da.name[:3])
     ```
 
     ---
