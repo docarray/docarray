@@ -1,3 +1,5 @@
+__all__ = ['find', 'find_batched']
+
 from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
@@ -61,7 +63,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='tensor',
+        embedding_field='embedding',
         metric='cosine_sim',
     )
 
@@ -70,7 +72,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='tensor',
+        embedding_field='embedding',
         metric='cosine_sim',
     )
     ```
@@ -128,39 +130,39 @@ def find_batched(
     ---
 
     ```python
-    from docarray import DocArray, BaseDoc
-    from docarray.typing import TorchTensor
-    from docarray.utils.find import find
-    import torch
-
-
-    class MyDocument(BaseDoc):
-        embedding: TorchTensor
-
-
-    index = DocArray[MyDocument](
-        [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
-    )
-
-    # use DocArray as query
-    query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-    results = find(
-        index=index,
-        query=query,
-        embedding_field='tensor',
-        metric='cosine_sim',
-    )
-    top_matches, scores = results[0]
-
-    # use tensor as query
-    query = torch.rand(3, 128)
-    results, scores = find(
-        index=index,
-        query=query,
-        embedding_field='tensor',
-        metric='cosine_sim',
-    )
-    top_matches, scores = results[0]
+    # from docarray import DocArray, BaseDoc
+    # from docarray.typing import TorchTensor
+    # from docarray.utils.find import find
+    # import torch
+    #
+    #
+    # class MyDocument(BaseDoc):
+    #     embedding: TorchTensor
+    #
+    #
+    # index = DocArray[MyDocument](
+    #     [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
+    # )
+    #
+    # # use DocArray as query
+    # query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
+    # results = find(
+    #     index=index,
+    #     query=query,
+    #     embedding_field='embedding',
+    #     metric='cosine_sim',
+    # )
+    # top_matches, scores = results[0]
+    #
+    # # use tensor as query
+    # query = torch.rand(3, 128)
+    # results, scores = find(
+    #     index=index,
+    #     query=query,
+    #     embedding_field='embedding',
+    #     metric='cosine_sim',
+    # )
+    # top_matches, scores = results[0]
     ```
 
     ---
