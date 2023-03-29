@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray
-from docarray.index import ElasticDocIndex
+from docarray.index import ElasticV7DocIndex
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
 
@@ -35,7 +35,7 @@ def ten_deep_nested_docs():
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_simple_schema(ten_simple_docs, use_docarray):
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     if use_docarray:
         ten_simple_docs = DocumentArray[SimpleDoc](ten_simple_docs)
 
@@ -45,7 +45,7 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_flat_schema(ten_flat_docs, use_docarray):
-    store = ElasticDocIndex[FlatDoc]()
+    store = ElasticV7DocIndex[FlatDoc]()
     if use_docarray:
         ten_flat_docs = DocumentArray[FlatDoc](ten_flat_docs)
 
@@ -55,7 +55,7 @@ def test_index_flat_schema(ten_flat_docs, use_docarray):
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_nested_schema(ten_nested_docs, use_docarray):
-    store = ElasticDocIndex[NestedDoc]()
+    store = ElasticV7DocIndex[NestedDoc]()
     if use_docarray:
         ten_nested_docs = DocumentArray[NestedDoc](ten_nested_docs)
 
@@ -65,7 +65,7 @@ def test_index_nested_schema(ten_nested_docs, use_docarray):
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):
-    store = ElasticDocIndex[DeepNestedDoc]()
+    store = ElasticV7DocIndex[DeepNestedDoc]()
     if use_docarray:
         ten_deep_nested_docs = DocumentArray[DeepNestedDoc](ten_deep_nested_docs)
 
@@ -75,7 +75,7 @@ def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):
 
 def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):
     # simple
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -85,7 +85,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(store[id_].tens == d.tens)
 
     # flat
-    store = ElasticDocIndex[FlatDoc]()
+    store = ElasticV7DocIndex[FlatDoc]()
     store.index(ten_flat_docs)
 
     assert store.num_docs() == 10
@@ -96,7 +96,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(store[id_].tens_two == d.tens_two)
 
     # nested
-    store = ElasticDocIndex[NestedDoc]()
+    store = ElasticV7DocIndex[NestedDoc]()
     store.index(ten_nested_docs)
 
     assert store.num_docs() == 10
@@ -111,7 +111,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
     docs_to_get_idx = [0, 2, 4, 6, 8]
 
     # simple
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -123,7 +123,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(d_out.tens == d_in.tens)
 
     # flat
-    store = ElasticDocIndex[FlatDoc]()
+    store = ElasticV7DocIndex[FlatDoc]()
     store.index(ten_flat_docs)
 
     assert store.num_docs() == 10
@@ -136,7 +136,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(d_out.tens_two == d_in.tens_two)
 
     # nested
-    store = ElasticDocIndex[NestedDoc]()
+    store = ElasticV7DocIndex[NestedDoc]()
     store.index(ten_nested_docs)
 
     assert store.num_docs() == 10
@@ -150,7 +150,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
 
 
 def test_get_key_error(ten_simple_docs):
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
@@ -158,15 +158,15 @@ def test_get_key_error(ten_simple_docs):
 
 
 def test_persisting(ten_simple_docs):
-    store = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+    store = ElasticV7DocIndex[SimpleDoc](index_name='test_persisting')
     store.index(ten_simple_docs)
 
-    store2 = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+    store2 = ElasticV7DocIndex[SimpleDoc](index_name='test_persisting')
     assert store2.num_docs() == 10
 
 
 def test_del_single(ten_simple_docs):
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
     # delete once
     assert store.num_docs() == 10
@@ -196,7 +196,7 @@ def test_del_single(ten_simple_docs):
 def test_del_multiple(ten_simple_docs):
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10
@@ -213,7 +213,7 @@ def test_del_multiple(ten_simple_docs):
 
 
 def test_del_key_error(ten_simple_docs):
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     with pytest.warns(UserWarning):
@@ -221,7 +221,7 @@ def test_del_key_error(ten_simple_docs):
 
 
 def test_num_docs(ten_simple_docs):
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
     assert store.num_docs() == 10

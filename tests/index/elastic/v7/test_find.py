@@ -3,7 +3,7 @@ import torch
 from pydantic import Field
 
 from docarray import BaseDocument
-from docarray.index import ElasticDocIndex
+from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray, TorchTensor
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import FlatDoc, SimpleDoc
@@ -13,7 +13,7 @@ def test_find_simple_schema():
     class SimpleSchema(BaseDocument):
         tens: NdArray[10]
 
-    store = ElasticDocIndex[SimpleSchema]()
+    store = ElasticV7DocIndex[SimpleSchema]()
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     store.index(index_docs)
@@ -33,7 +33,7 @@ def test_find_flat_schema():
         tens_one: NdArray = Field(dims=10)
         tens_two: NdArray = Field(dims=50)
 
-    store = ElasticDocIndex[FlatSchema]()
+    store = ElasticV7DocIndex[FlatSchema]()
 
     index_docs = [
         FlatDoc(tens_one=np.random.rand(10), tens_two=np.random.rand(50))
@@ -72,7 +72,7 @@ def test_find_nested_schema():
         d: NestedDoc
         tens: NdArray = Field(dims=10)
 
-    store = ElasticDocIndex[DeepNestedDoc]()
+    store = ElasticV7DocIndex[DeepNestedDoc]()
 
     index_docs = [
         DeepNestedDoc(
@@ -111,7 +111,7 @@ def test_find_torch():
     class TorchDoc(BaseDocument):
         tens: TorchTensor[10]
 
-    store = ElasticDocIndex[TorchDoc]()
+    store = ElasticV7DocIndex[TorchDoc]()
 
     # A dense_vector field stores dense vectors of float values.
     index_docs = [
@@ -140,7 +140,7 @@ def test_find_tensorflow():
     class TfDoc(BaseDocument):
         tens: TensorFlowTensor[10]
 
-    store = ElasticDocIndex[TfDoc]()
+    store = ElasticV7DocIndex[TfDoc]()
 
     index_docs = [
         TfDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
@@ -165,7 +165,7 @@ def test_find_tensorflow():
 
 
 def test_find_batched():
-    store = ElasticDocIndex[SimpleDoc]()
+    store = ElasticV7DocIndex[SimpleDoc]()
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     store.index(index_docs)
@@ -188,7 +188,7 @@ def test_filter():
         B: int
         C: float
 
-    store = ElasticDocIndex[MyDoc]()
+    store = ElasticV7DocIndex[MyDoc]()
 
     index_docs = [MyDoc(id=f'{i}', A=(i % 2 == 0), B=i, C=i + 0.5) for i in range(10)]
     store.index(index_docs)
@@ -215,7 +215,7 @@ def test_text_search():
     class MyDoc(BaseDocument):
         text: str
 
-    store = ElasticDocIndex[MyDoc]()
+    store = ElasticV7DocIndex[MyDoc]()
     index_docs = [
         MyDoc(text='hello world'),
         MyDoc(text='never gonna give you up'),
@@ -246,7 +246,7 @@ def test_query_builder():
         num: int
         text: str
 
-    store = ElasticDocIndex[MyDoc]()
+    store = ElasticV7DocIndex[MyDoc]()
     index_docs = [
         MyDoc(
             id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'

@@ -25,20 +25,20 @@ from elasticsearch.helpers import parallel_bulk
 from pydantic import parse_obj_as
 
 import docarray.typing
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index.abstract import (
-    BaseDocumentIndex,
+    BaseDocIndex,
     _ColumnInfo,
     _FindResultBatched,
     _raise_not_composable,
 )
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import is_tf_available, is_torch_available
 
-TSchema = TypeVar('TSchema', bound=BaseDocument)
-T = TypeVar('T', bound='ElasticDocIndex')
+TSchema = TypeVar('TSchema', bound=BaseDoc)
+T = TypeVar('T', bound='ElasticV7DocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray]
 
@@ -56,10 +56,10 @@ if is_tf_available():
     ELASTIC_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
-class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
+class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(ElasticDocIndex.DBConfig, self._db_config)
+        self._db_config = cast(ElasticV7DocIndex.DBConfig, self._db_config)
 
         if self._db_config.index_name is None:
             id = uuid.uuid4().hex
@@ -106,7 +106,7 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
     # Inner classes for query builder and configs #
     ###############################################
 
-    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+    class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, outer_instance, **kwargs):
             super().__init__()
             self._outer_instance = outer_instance
@@ -130,19 +130,17 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
 
         def find(
             self,
-            query: Union[AnyTensor, BaseDocument],
+            query: Union[AnyTensor, BaseDoc],
             search_field: str = 'embedding',
             limit: int = 10,
         ):
-            if isinstance(query, BaseDocument):
-                query_vec = BaseDocumentIndex._get_values_by_column(
-                    [query], search_field
-                )[0]
+            if isinstance(query, BaseDoc):
+                query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
             else:
                 query_vec = query
-            query_vec_np = BaseDocumentIndex._to_numpy(self._outer_instance, query_vec)
+            query_vec_np = BaseDocIndex._to_numpy(self._outer_instance, query_vec)
             self._query['size'] = limit
-            self._query['query']['script_score'] = ElasticDocIndex._form_search_body(
+            self._query['query']['script_score'] = ElasticV7DocIndex._form_search_body(
                 query_vec_np, limit, search_field
             )['query']['script_score']
 
@@ -171,14 +169,14 @@ class ElasticDocIndex(BaseDocumentIndex, Generic[TSchema]):
         return self.QueryBuilder(self, **kwargs)
 
     @dataclass
-    class DBConfig(BaseDocumentIndex.DBConfig):
+    class DBConfig(BaseDocIndex.DBConfig):
         hosts: Union[str, List[str], None] = 'http://localhost:9200'
         index_name: Optional[str] = None
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
 
     @dataclass
-    class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
                 'binary': {},
