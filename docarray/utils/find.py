@@ -1,11 +1,9 @@
-from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast, Tuple, Callable, Generator, TypeVar
+from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
-from contextlib import nullcontext
-from math import ceil
+
 from multiprocessing.pool import Pool, ThreadPool
 
-from rich.progress import track
 from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocArray
 from docarray.array.stacked.array_stacked import DocArrayStacked
@@ -15,16 +13,20 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.map import map_docs_batch
 
+
 class FindResult(NamedTuple):
     documents: DocArray
     scores: AnyTensor
+
 
 class _FindResult(NamedTuple):
     documents: Union[DocArray, List[Dict[str, Any]]]
     scores: AnyTensor
 
+
 class Doc(BaseDoc):
-    embedding: AnyTensor=None
+    embedding: AnyTensor
+
 
 def find(
     index: AnyDocArray,
@@ -33,7 +35,7 @@ def find(
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
-    descending: Optional[bool] = None,
+    descending: bool = False,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -106,7 +108,6 @@ def find(
         index=index,
         query=query,
         embedding_field=embedding_field,
-        batch_size=None,
         metric=metric,
         limit=limit,
         device=device,
@@ -118,11 +119,11 @@ def find_batched(
     index: AnyDocArray,
     query: Union[AnyTensor, DocArray],
     embedding_field: str = 'embedding',
-    batch_size: int=1,
+    batch_size: Optional[int] = None,
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
-    descending: Optional[bool] = None,
+    descending: bool = False,
     shuffle: bool = False,
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -221,7 +222,7 @@ def find_batched(
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """
-        
+
     if descending is None:
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
@@ -233,14 +234,14 @@ def find_batched(
 
     results = []
 
-    def _get_result(query: Union[AnyDocArray, BaseDoc, AnyTensor]):
+    def _get_result(query: Union[DocArray, AnyTensor]):
         q_embed = _extract_embeddings(query, embedding_field, embedding_type)
-        dists=metric_fn(q_embed, index_embeddings, device=device)
+        dists = metric_fn(q_embed, index_embeddings, device=device)
         top_scores, top_indices = comp_backend.Retrieval.top_k(
             dists, k=limit, device=device, descending=descending
         )
-        return top_indices,top_scores
-    
+        return top_indices, top_scores
+
     if batch_size is not None:
         if batch_size <= 0:
             raise ValueError(
@@ -248,8 +249,8 @@ def find_batched(
             )
         else:
             batch_size = int(batch_size)
-    else :
-        top_indices,top_scores= _get_result(query)
+    else:
+        top_indices, top_scores = _get_result(query)
         res = []
         for indices_per_query, scores_per_query in zip(top_indices, top_scores):
             docs_per_query: DocArray = DocArray([])
@@ -258,25 +259,32 @@ def find_batched(
             docs_per_query = DocArray(docs_per_query)
             res.append(FindResult(scores=scores_per_query, documents=docs_per_query))
         return res
-    
-    if not(isinstance(query, DocArray) or isinstance(query, (DocArrayStacked, BaseDoc))):
+
+    if not (
+        isinstance(query, DocArray) or isinstance(query, (DocArrayStacked, BaseDoc))
+    ):
         query = cast(AnyTensor, query)
-        d = DocArray[Doc](Doc() for _ in range(comp_backend.shape(tensor=query)[0]))
+        d = DocArray[Doc](Doc() for _ in range(comp_backend.shape(query)[0]))
         d.embedding = query
-        query=d
+        query = d
 
+    it = map_docs_batch(
+        da=query,
+        func=_get_result,
+        batch_size=batch_size,
+        backend=backend,
+        num_worker=num_worker,
+        shuffle=shuffle,
+        pool=pool,
+        show_progress=show_progress,
+    )
 
-    it = map_docs_batch(da=query,func=_get_result, batch_size=batch_size,
-                                        backend=backend,
-                                        num_worker=num_worker,
-                                        shuffle=shuffle,
-                                        pool=pool,
-                                        show_progress=show_progress)
-    
-    for (indices_per_query, scores_per_query) in it:
-        docs_per_query: DocArray = DocArray([])
-        for idx,scores in zip(indices_per_query,scores_per_query):  # workaround until #930 is fixed
-            docs_per_query=(index[idx])
+    for indices_per_query, scores_per_query in it:
+        docs_per_query: DocArray = DocArray([])   #type: ignore
+        for idx, scores in zip(
+            indices_per_query, scores_per_query
+        ):  # workaround until #930 is fixed
+            docs_per_query = index[idx]
             results.append(FindResult(scores=scores, documents=docs_per_query))
 
     return results
