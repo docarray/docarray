@@ -22,7 +22,7 @@ def da():
 
 
 def test_iterate(da):
-    for doc, doc2 in zip(da, da._data):
+    for doc, doc2 in zip(da, da.data):
         assert doc.id == doc2.id
 
 
@@ -314,7 +314,7 @@ def test_construct():
 
     da = DocArray[Text].construct(docs)
 
-    assert da._data is docs
+    assert da.data is docs
 
 
 def test_reverse():

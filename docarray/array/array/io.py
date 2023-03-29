@@ -80,13 +80,13 @@ def _protocol_and_compress_from_file_path(
 
 class _LazyRequestReader:
     def __init__(self, r):
-        self._data = r.iter_content(chunk_size=1024 * 1024)
+        self.data = r.iter_content(chunk_size=1024 * 1024)
         self.content = b''
 
     def __getitem__(self, item: slice):
         while len(self.content) < item.stop:
             try:
-                self.content += next(self._data)
+                self.content += next(self.data)
             except StopIteration:
                 return self.content[item.start : -1 : item.step]
         return self.content[item]
