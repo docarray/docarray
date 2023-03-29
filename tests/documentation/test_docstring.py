@@ -15,6 +15,7 @@ import docarray.documents
 import docarray.index
 import docarray.store
 import docarray.typing
+from docarray.utils import filter, find, map
 
 SUB_MODULE_TO_CHECK = [
     docarray,
@@ -23,6 +24,9 @@ SUB_MODULE_TO_CHECK = [
     docarray.documents,
     docarray.store,
     docarray.typing,
+    find,
+    map,
+    filter,
 ]
 
 
@@ -37,6 +41,7 @@ obj_to_check = []
 
 for lib in SUB_MODULE_TO_CHECK:
     obj_to_check.extend(get_obj_to_check(lib))
+
 
 members = []
 for obj in obj_to_check:

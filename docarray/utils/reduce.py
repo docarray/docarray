@@ -1,3 +1,5 @@
+__all__ = ['reduce', 'reduce_all']
+
 from typing import Dict, List, Optional
 
 from docarray import DocArray

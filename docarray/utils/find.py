@@ -1,3 +1,5 @@
+__all__ = ['find', 'find_batched']
+
 from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
 from typing_inspect import is_union_type
@@ -34,52 +36,48 @@ def find(
     Find the closest Documents in the index to the query.
     Supports PyTorch and NumPy embeddings.
 
-    .. note::
-        This utility function is likely to be removed once
-        Document Stores are available.
-        At that point, and in-memory Document Store will serve the same purpose
-        by exposing a .find() method.
+    !!! note
+        This is a simple implementation of exact search. If you need to do advance
+        search using approximate nearest neighbours search or hybrid search or
+        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
 
-    .. note::
-        This is a simple implementation that assumes the same embedding field name for
-        both query and index, does not support nested search, and does not support
-        hybrid (multi-vector) search. These shortcoming will be addressed in future
-        versions.
+    ---
 
-    EXAMPLE USAGE
-
-    .. code-block:: python
-
-        from docarray import DocArray, BaseDoc
-        from docarray.typing import TorchTensor
-        from docarray.util.find import find
+    ```python
+    from docarray import DocArray, BaseDoc
+    from docarray.typing import TorchTensor
+    from docarray.utils.find import find
+    import torch
 
 
-        class MyDocument(BaseDoc):
-            embedding: TorchTensor
+    class MyDocument(BaseDoc):
+        embedding: TorchTensor
 
 
-        index = DocArray[MyDocument](
-            [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
-        )
+    index = DocArray[MyDocument](
+        [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
+    )
 
-        # use Document as query
-        query = MyDocument(embedding=torch.rand(128))
-        top_matches, scores = find(
-            index=index,
-            query=query,
-            embedding_field='tensor',
-            metric='cosine_sim',
-        )
+    # use Document as query
+    query = MyDocument(embedding=torch.rand(128))
+    top_matches, scores = find(
+        index=index,
+        query=query,
+        embedding_field='embedding',
+        metric='cosine_sim',
+    )
 
-        # use tensor as query
-        query = torch.rand(128)
-        top_matches, scores = find(
-            index=index,
-            query=query,
-            embedding_field='tensor',
-            metric='cosine_sim',
-        )
+    # use tensor as query
+    query = torch.rand(128)
+    top_matches, scores = find(
+        index=index,
+        query=query,
+        embedding_field='embedding',
+        metric='cosine_sim',
+    )
+    ```
+
+    ---
 
     :param index: the index of Documents to search in
     :param query: the query to search for
@@ -123,54 +121,51 @@ def find_batched(
     Find the closest Documents in the index to the queries.
     Supports PyTorch and NumPy embeddings.
 
-    .. note::
-        This utility function is likely to be removed once
-        Document Stores are available.
-        At that point, and in-memory Document Store will serve the same purpose
-        by exposing a .find() method.
-
-    .. note::
-        This is a simple implementation that assumes the same embedding field name for
-        both query and index, does not support nested search, and does not support
-        hybrid (multi-vector) search. These shortcoming will be addressed in future
-        versions.
-
-        EXAMPLE USAGE
-
-    .. code-block:: python
-
-        from docarray import DocArray, BaseDoc
-        from docarray.typing import TorchTensor
-        from docarray.util.find import find
+    !!! note
+        This is a simple implementation of exact search. If you need to do advance
+        search using approximate nearest neighbours search or hybrid search or
+        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
 
 
-        class MyDocument(BaseDoc):
-            embedding: TorchTensor
+    ---
+
+    ```python
+    from docarray import DocArray, BaseDoc
+    from docarray.typing import TorchTensor
+    from docarray.utils.find import find_batched
+    import torch
 
 
-        index = DocArray[MyDocument](
-            [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
-        )
+    class MyDocument(BaseDoc):
+        embedding: TorchTensor
 
-        # use DocArray as query
-        query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-        results = find(
-            index=index,
-            query=query,
-            embedding_field='tensor',
-            metric='cosine_sim',
-        )
-        top_matches, scores = results[0]
 
-        # use tensor as query
-        query = torch.rand(3, 128)
-        results, scores = find(
-            index=index,
-            query=query,
-            embedding_field='tensor',
-            metric='cosine_sim',
-        )
-        top_matches, scores = results[0]
+    index = DocArray[MyDocument](
+        [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
+    )
+
+    # use DocArray as query
+    query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
+    results = find_batched(
+        index=index,
+        query=query,
+        embedding_field='embedding',
+        metric='cosine_sim',
+    )
+    top_matches, scores = results[0]
+
+    # use tensor as query
+    query = torch.rand(3, 128)
+    results = find_batched(
+        index=index,
+        query=query,
+        embedding_field='embedding',
+        metric='cosine_sim',
+    )
+    top_matches, scores = results[0]
+    ```
+
+    ---
 
     :param index: the index of Documents to search in
     :param query: the query to search for
