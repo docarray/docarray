@@ -31,6 +31,7 @@ INSTALL_INSTRUCTIONS = {
     'av': '"docarray[video]"',
     'trimesh': '"docarray[mesh]"',
     'hnswlib': '"docarray[hnswlib]"',
+    'elasticsearch': '"docarray[elasticsearch]"',
     'fastapi': '"docarray[web]"',
     'torch': '"docarray[torch]"',
     'tensorflow': 'protobuf==3.19.0 tensorflow',
