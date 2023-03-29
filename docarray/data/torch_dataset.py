@@ -142,7 +142,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             global _TypedDataset
 
             class _TypedDataset(cls):  # type: ignore
-                document_type = item
+                _document_type = item
 
             change_cls_name(
                 _TypedDataset, f'{cls.__name__}[{item.__name__}]', globals()
