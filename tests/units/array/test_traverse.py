@@ -32,21 +32,23 @@ def multi_model_docs():
         [
             MultiModalDoc(
                 mm_text=TextDoc(text=f'hello{i}'),
-                mm_da=[
-                    SubDoc(
-                        sub_text=TextDoc(text=f'sub_{i}_1'),
-                        sub_da=DocArray[SubSubDoc](
-                            [
-                                SubSubDoc(
-                                    sub_sub_text=TextDoc(text='subsub'),
-                                    sub_sub_tensor=torch.zeros(2),
-                                )
-                                for _ in range(num_sub_sub_docs)
-                            ]
-                        ),
-                    )
-                    for _ in range(num_sub_docs)
-                ],
+                mm_da=DocArray[SubDoc](
+                    [
+                        SubDoc(
+                            sub_text=TextDoc(text=f'sub_{i}_1'),
+                            sub_da=DocArray[SubSubDoc](
+                                [
+                                    SubSubDoc(
+                                        sub_sub_text=TextDoc(text='subsub'),
+                                        sub_sub_tensor=torch.zeros(2),
+                                    )
+                                    for _ in range(num_sub_sub_docs)
+                                ]
+                            ),
+                        )
+                        for _ in range(num_sub_docs)
+                    ],
+                ),
             )
             for i in range(num_docs)
         ]
