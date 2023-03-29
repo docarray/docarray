@@ -29,9 +29,9 @@ def __getattr__(name: str):
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
         )
 
-    tensor_cls = getattr(lib, name)
+    store_cls = getattr(lib, name)
 
     if name not in __all__:
         __all__.append(name)
 
-    return tensor_cls
+    return store_cls

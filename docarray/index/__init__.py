@@ -7,6 +7,7 @@ from docarray.utils._internal.misc import (
 )
 
 if TYPE_CHECKING:
+    from docarray.index.backends.elastic import ElasticV7DocIndex  # noqa: F401
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
 
 __all__ = []
