@@ -1,8 +1,12 @@
+from typing import Union
+
 import numpy as np
 import pytest
 
-from docarray import DocumentArray
+from docarray import BaseDoc, DocArray
+from docarray.documents import ImageDoc, TextDoc
 from docarray.index import ElasticV7DocIndex
+from docarray.typing import NdArray
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
 
@@ -37,7 +41,7 @@ def ten_deep_nested_docs():
 def test_index_simple_schema(ten_simple_docs, use_docarray):
     store = ElasticV7DocIndex[SimpleDoc]()
     if use_docarray:
-        ten_simple_docs = DocumentArray[SimpleDoc](ten_simple_docs)
+        ten_simple_docs = DocArray[SimpleDoc](ten_simple_docs)
 
     store.index(ten_simple_docs)
     assert store.num_docs() == 10
@@ -47,7 +51,7 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):
 def test_index_flat_schema(ten_flat_docs, use_docarray):
     store = ElasticV7DocIndex[FlatDoc]()
     if use_docarray:
-        ten_flat_docs = DocumentArray[FlatDoc](ten_flat_docs)
+        ten_flat_docs = DocArray[FlatDoc](ten_flat_docs)
 
     store.index(ten_flat_docs)
     assert store.num_docs() == 10
@@ -57,7 +61,7 @@ def test_index_flat_schema(ten_flat_docs, use_docarray):
 def test_index_nested_schema(ten_nested_docs, use_docarray):
     store = ElasticV7DocIndex[NestedDoc]()
     if use_docarray:
-        ten_nested_docs = DocumentArray[NestedDoc](ten_nested_docs)
+        ten_nested_docs = DocArray[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
     assert store.num_docs() == 10
@@ -67,7 +71,7 @@ def test_index_nested_schema(ten_nested_docs, use_docarray):
 def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):
     store = ElasticV7DocIndex[DeepNestedDoc]()
     if use_docarray:
-        ten_deep_nested_docs = DocumentArray[DeepNestedDoc](ten_deep_nested_docs)
+        ten_deep_nested_docs = DocArray[DeepNestedDoc](ten_deep_nested_docs)
 
     store.index(ten_deep_nested_docs)
     assert store.num_docs() == 10
@@ -238,3 +242,39 @@ def test_num_docs(ten_simple_docs):
 
     del store[more_docs[2].id, ten_simple_docs[7].id]
     assert store.num_docs() == 10
+
+
+def test_index_union_doc():
+    class MyDoc(BaseDoc):
+        tensor: Union[NdArray, str]
+
+    class MySchema(BaseDoc):
+        tensor: NdArray
+
+    store = ElasticV7DocIndex[MySchema]()
+    doc = [MyDoc(tensor=np.random.randn(128))]
+    store.index(doc)
+
+    id_ = doc[0].id
+    assert store[id_].id == id_
+    assert np.all(store[id_].tensor == doc[0].tensor)
+
+
+def test_index_multi_modal_doc():
+    class MyMultiModalDoc(BaseDoc):
+        image: ImageDoc
+        text: TextDoc
+
+    store = ElasticV7DocIndex[MyMultiModalDoc]()
+
+    doc = [
+        MyMultiModalDoc(
+            image=ImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
+        )
+    ]
+    store.index(doc)
+
+    id_ = doc[0].id
+    assert store[id_].id == id_
+    assert np.all(store[id_].image.embedding == doc[0].image.embedding)
+    assert store[id_].text.text == doc[0].text.text

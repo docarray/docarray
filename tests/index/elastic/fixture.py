@@ -4,26 +4,26 @@ import time
 import pytest
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dims=1000)
 
 
-class FlatDoc(BaseDocument):
+class FlatDoc(BaseDoc):
     tens_one: NdArray = Field(dims=10)
     tens_two: NdArray = Field(dims=50)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
 
 
-class DeepNestedDoc(BaseDocument):
+class DeepNestedDoc(BaseDoc):
     d: NestedDoc
 
 

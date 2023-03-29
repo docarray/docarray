@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray, TorchTensor
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
@@ -10,7 +10,7 @@ from tests.index.elastic.fixture import FlatDoc, SimpleDoc
 
 
 def test_find_simple_schema():
-    class SimpleSchema(BaseDocument):
+    class SimpleSchema(BaseDoc):
         tens: NdArray[10]
 
     store = ElasticV7DocIndex[SimpleSchema]()
@@ -29,7 +29,7 @@ def test_find_simple_schema():
 
 
 def test_find_flat_schema():
-    class FlatSchema(BaseDocument):
+    class FlatSchema(BaseDoc):
         tens_one: NdArray = Field(dims=10)
         tens_two: NdArray = Field(dims=50)
 
@@ -61,14 +61,14 @@ def test_find_flat_schema():
 
 
 def test_find_nested_schema():
-    class SimpleDoc(BaseDocument):
+    class SimpleDoc(BaseDoc):
         tens: NdArray[10]
 
-    class NestedDoc(BaseDocument):
+    class NestedDoc(BaseDoc):
         d: SimpleDoc
         tens: NdArray[10]
 
-    class DeepNestedDoc(BaseDocument):
+    class DeepNestedDoc(BaseDoc):
         d: NestedDoc
         tens: NdArray = Field(dims=10)
 
@@ -108,7 +108,7 @@ def test_find_nested_schema():
 
 
 def test_find_torch():
-    class TorchDoc(BaseDocument):
+    class TorchDoc(BaseDoc):
         tens: TorchTensor[10]
 
     store = ElasticV7DocIndex[TorchDoc]()
@@ -137,7 +137,7 @@ def test_find_torch():
 def test_find_tensorflow():
     from docarray.typing import TensorFlowTensor
 
-    class TfDoc(BaseDocument):
+    class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
     store = ElasticV7DocIndex[TfDoc]()
@@ -183,7 +183,7 @@ def test_find_batched():
 
 
 def test_filter():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         A: bool
         B: int
         C: float
@@ -212,7 +212,7 @@ def test_filter():
 
 
 def test_text_search():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         text: str
 
     store = ElasticV7DocIndex[MyDoc]()
@@ -241,7 +241,7 @@ def test_text_search():
 
 
 def test_query_builder():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10]
         num: int
         text: str

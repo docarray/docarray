@@ -1,12 +1,12 @@
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import ElasticV7DocIndex
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 
 
 def test_column_config():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         text: str
         color: str = Field(col_type='keyword')
 
@@ -28,7 +28,7 @@ def test_column_config():
 
 
 def test_field_object():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         manager: dict = Field(
             properties={
                 'age': {'type': 'integer'},
@@ -58,7 +58,7 @@ def test_field_object():
 
 
 def test_field_geo_point():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         location: dict = Field(col_type='geo_point')
 
     store = ElasticV7DocIndex[MyDoc]()
@@ -85,7 +85,7 @@ def test_field_geo_point():
 
 
 def test_field_range():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         expected_attendees: dict = Field(col_type='integer_range')
         time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
 
