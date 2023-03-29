@@ -1,7 +1,10 @@
 from docarray.base_doc.any_doc import AnyDoc
 from docarray.base_doc.base_node import BaseNode
 from docarray.base_doc.doc import BaseDoc
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 __all__ = ['AnyDoc', 'BaseDoc', 'BaseNode']
 
@@ -15,3 +18,7 @@ def __getattr__(name: str):
             __all__.append(name)
 
         return DocResponse
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )

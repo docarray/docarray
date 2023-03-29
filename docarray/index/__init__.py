@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
@@ -17,3 +20,7 @@ def __getattr__(name: str):
             __all__.append(name)
 
         return HnswDocumentIndex
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )

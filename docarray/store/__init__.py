@@ -2,7 +2,10 @@ import types
 from typing import TYPE_CHECKING
 
 from docarray.store.file import FileDocStore
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.store.jac import JACDocStore  # noqa: F401
@@ -21,6 +24,10 @@ def __getattr__(name: str):
         import_library('botocore', raise_error=True)
         import_library('boto3', raise_error=True)
         import docarray.store.s3 as lib
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
     tensor_cls = getattr(lib, name)
 

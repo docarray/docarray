@@ -3,7 +3,10 @@ from typing import TYPE_CHECKING
 
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.typing.tensor.audio.audio_tensorflow_tensor import (  # noqa
@@ -22,6 +25,10 @@ def __getattr__(name: str):
     elif name == 'AudioTensorFlowTensor':
         import_library('tensorflow', raise_error=True)
         import docarray.typing.tensor.audio.audio_tensorflow_tensor as lib
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
     tensor_cls = getattr(lib, name)
 

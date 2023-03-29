@@ -8,7 +8,10 @@ from docarray.typing.tensor.image import ImageNdArray, ImageTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video import VideoNdArray
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
@@ -53,6 +56,10 @@ def __getattr__(name: str):
         import docarray.typing.tensor.audio as lib
     elif name in ['VideoTorchTensor', 'VideoTensorFlowTensor']:
         import docarray.typing.tensor.video as lib
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
     tensor_cls = getattr(lib, name)
 

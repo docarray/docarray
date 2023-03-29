@@ -4,7 +4,10 @@ from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
 from docarray.typing.tensor.video.video_tensor import VideoTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.typing.tensor.video.video_tensorflow_tensor import (  # noqa
@@ -23,6 +26,10 @@ def __getattr__(name: str):
     elif name == 'VideoTensorFlowTensor':
         import_library('tensorflow', raise_error=True)
         import docarray.typing.tensor.video.video_tensorflow_tensor as lib
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
     tensor_cls = getattr(lib, name)
 

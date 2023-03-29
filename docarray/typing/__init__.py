@@ -17,7 +17,10 @@ from docarray.typing.url import (
     TextUrl,
     VideoUrl,
 )
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
 
 if TYPE_CHECKING:
     from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
@@ -54,11 +57,31 @@ __all__ = [
 ]
 
 
+_torch_tensors = [
+    'TorchTensor',
+    'TorchEmbedding',
+    'ImageTorchTensor',
+    'AudioTorchTensor',
+    'VideoTorchTensor',
+]
+_tf_tensors = [
+    'TensorFlowTensor',
+    'TensorFlowEmbedding',
+    'ImageTensorFlowTensor',
+    'AudioTensorFlowTensor',
+    'VideoTensorFlowTensor',
+]
+
+
 def __getattr__(name: str):
-    if 'Torch' in name:
+    if name in _torch_tensors:
         import_library('torch', raise_error=True)
-    elif 'TensorFlow' in name:
+    elif name in _tf_tensors:
         import_library('tensorflow', raise_error=True)
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
     import docarray.typing.tensor
 

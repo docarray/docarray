@@ -1,4 +1,6 @@
 import importlib
+import os
+import re
 import types
 from typing import Any, Optional
 
@@ -55,6 +57,12 @@ def import_library(
         )
     else:
         return lib
+
+
+def _get_path_from_docarray_root_level(file_path: str) -> str:
+    path = os.path.dirname(file_path)
+    rel_path = re.sub('(?s:.*)docarray', 'docarray', path).replace('/', '.')
+    return rel_path
 
 
 def is_torch_available():
