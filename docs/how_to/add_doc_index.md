@@ -154,7 +154,7 @@ However, you should not rely on this, because a user can manually specify a diff
 Therefore, your implementation should rely on `_ColumnInfo.db_type` and not directly call `python_type_to_db_type()`.
 
 **Caution**
-`AbstractTensor` will be the `_ColumnInfo.docarray_type` if the field in `self._schema` is a subclass of `AbstractTensor` or a tensor Union.
+If a subclass of `AbstractTensor` appears in the Document Index's schema (i.e. `TorchTensor`, `NdArray`, or `TensorFlowTensor`), then `_ColumnInfo.docarray_type` will simply show `AbstractTensor` instead of the specific subclass. This is because the abstract class normalizes all input data of type `AbstractTensor` to `np.ndarray` anyways, which should make your life easier. Just be sure to properly handle `AbstractTensor` as a possible value or `_ColumnInfo.docarray_type`, and you won't have to worry about the differences between torch, tf, and np.
 
 ### Properly handle `n_dim`
 
