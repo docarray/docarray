@@ -804,6 +804,28 @@ gmpy = ["gmpy"]
 gmpy2 = ["gmpy2"]
 
 [[package]]
+name = "elasticsearch"
+version = "7.10.1"
+description = "Python client for Elasticsearch"
+category = "main"
+optional = true
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
+files = [
+    {file = "elasticsearch-7.10.1-py2.py3-none-any.whl", hash = "sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955"},
+    {file = "elasticsearch-7.10.1.tar.gz", hash = "sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48"},
+]
+
+[package.dependencies]
+certifi = "*"
+urllib3 = ">=1.21.1,<2"
+
+[package.extras]
+async = ["aiohttp (>=3,<4)"]
+develop = ["black", "coverage", "jinja2", "mock", "pytest", "pytest-cov", "pyyaml", "requests (>=2.0.0,<3.0.0)", "sphinx (<1.7)", "sphinx-rtd-theme"]
+docs = ["sphinx (<1.7)", "sphinx-rtd-theme"]
+requests = ["requests (>=2.4.0,<3.0.0)"]
+
+[[package]]
 name = "entrypoints"
 version = "0.4"
 description = "Discover and load entry points from installed packages."
@@ -4569,6 +4591,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 audio = ["pydub"]
 aws = ["smart-open"]
 common = ["protobuf", "lz4"]
+elasticsearch = ["elasticsearch"]
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
 hnswlib = ["hnswlib"]
 image = ["pillow", "types-pillow"]
@@ -4582,4 +4605,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "33f01d36bd1b134d7ab90505bba21a95a500d0898aeaae63e71e8213616098c2"
+content-hash = "821f6cd00f78c456f6146f39c14f0704e4f2d113c35db00c58462d8cfbe3a538"

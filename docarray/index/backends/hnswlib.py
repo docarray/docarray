@@ -241,12 +241,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(query, k=limit)
+        labels, distances = index.knn_query(queries, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
@@ -260,7 +260,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
-            query=query_batched, limit=limit, search_field=search_field
+            queries=query_batched, limit=limit, search_field=search_field
         )
         return _FindResult(documents=docs[0], scores=scores[0])
 
