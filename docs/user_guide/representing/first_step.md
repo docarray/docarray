@@ -49,11 +49,11 @@ all the features of `BaseModel` in your `Doc` class.
 This namely means that `BaseDoc`:
 
 * Will perform data validation: `BaseDoc` will check that the data you pass to it is valid. If not, it will raise an
-  error. Data being "valid" is actually define by the type use in the docstring itself, but we will come back on this concept later (TODO add typing section)
+  error. Data being "valid"  is actually defined by the type used in the docstring itself, but we will come back to this concept later (TODO add typing section)
 
 * Can be configured using a nested `Config` class, see pydantic [documentation](https://docs.pydantic.dev/usage/model_config/) for more details on what kind of config Pydantic offer.
 
-* Can be used as a drop in replacement for `BaseModel` in your code and is compatible with tools using Pydantic like [FastAPI]('https://fastapi.tiangolo.com/').
+* Can be used as a drop-in replacement for `BaseModel` in your code and is compatible with tools using Pydantic like [FastAPI]('https://fastapi.tiangolo.com/').
 
 
 ###  What is the difference with Pydantic `BaseModel`? (INCOMPLETE)
@@ -71,14 +71,14 @@ Another difference is that [BaseDoc][docarray.base_doc.doc.BaseDoc] has a genera
 
 ## `BaseDoc` allows to represent MultiModal and nested Data.
 
-Let's say you want to represent a Youtube video in your application. Maybe to build a search system of Youtube video.
+Let's say you want to represent a Youtube video in your application. Maybe to build a search system for Youtube video.
 A Youtube video is not only composed of a video, but it also has a title, a description, a thumbnail (and more but let's keep it simple).
 
 All of these elements are from different `modalities` LINK TO MODALITIES SECTION (not ready), title and description are text, the thumbnail is an image, and the video in itself is, well, a video.
 
 DocArray allows to represent all of this Multi Modal data in a single object. 
 
-Let's first create an `BaseDoc` for each of elements of that compose the Youtube video.
+Let's first create an `BaseDoc` for each of the elements that compose the Youtube video.
 
 First for the thumbnail which is an image
 ```python
@@ -123,14 +123,14 @@ class YoutubeVideoDoc(BaseDoc):
 ```
 
 
-You now hava `YoutubeVideoDoc` that is a pythonic representation of a Youtube video. 
+You now have `YoutubeVideoDoc` which is a pythonic representation of a Youtube video. 
 
 This representation can now be used to send (LINK) or to store (LINK) data. You can even use it directly to [train a machine learning](../../how_to/multimodal_training_and_serving.md) [Pytorch](https://pytorch.org/docs/stable/index.html) model on this representation. 
 
 
 !!! note
 
-    You see here that `ImageDoc` and `VideoDoc` are as well [BaseDoc][docarray.base_doc.doc.BaseDoc] that is later use inside another [BaseDoc][docarray.base_doc.doc.BaseDoc]`.
+    You see here that `ImageDoc` and `VideoDoc` are as well [BaseDoc][docarray.base_doc.doc.BaseDoc] that is later used inside another [BaseDoc][docarray.base_doc.doc.BaseDoc]`.
     This is what we call nested data representation. 
 
     [BaseDoc][docarray.base_doc.doc.BaseDoc] can be nested to represent any kind of data hierarchy.
