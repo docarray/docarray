@@ -1,14 +1,14 @@
 # User Guide - Intro
 
-This user guide show you how to use `DocArray` with most of its features.
+This user guide shows you how to use `DocArray` with most of its features.
 
-They are three main section:
+They are three main sections:
 
 - [Representing Data](representing/first_step.md): This section will show you how to use `DocArray` to represent your data.
 - [Sending Data](sending/first_step.md): This section will show you how to use `DocArray` to send your data.
 - [Storing Data](storing/first_step.md): This section will show you how to use `DocArray` to store your data.
 
-You should first start by reading the [Representing Data](representing/first_step.md) section and both the [Sending Data](sending/first_step.md) and [Storing Data](storing/first_step.md) section can be read in any order.
+You should first start by reading the [Representing Data](representing/first_step.md) section and both the [Sending Data](sending/first_step.md) and [Storing Data](storing/first_step.md) sections can be read in any order.
 
 You wil first need to install `DocArray` in you python environment. 
 ## Install DocArray
@@ -28,14 +28,14 @@ This will install the main dependencies of `DocArray` and will work will all the
     pip install "docarray"
     ``` 
     
-    If you want to install user protobuf with the minimal dependencies you can do
+    If you want to install user protobuf with minimal dependencies you can do
 
     ```
     pip install "docarray[common]"
     ``` 
 
 Depending on your usage you might want to only use `DocArray` with only a couple of specific modalities. 
-For instance lets say you only want to work with images, you can do install `DocArray` using the following command:
+For instance let's say you only want to work with images, you can install `DocArray` using the following command:
 
 ```
 pip install "docarray[image]"
