@@ -318,14 +318,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         :return: the deserialized DocArray
         """
         json_docs = json.loads(file)
-        return cls(
-            [
-                cls.document_type(**v)
-                if isinstance(v, dict)
-                else cls.document_type.parse_raw(v)
-                for v in json_docs
-            ]
-        )
+        return cls([cls.document_type(**v) for v in json_docs])
 
     def to_json(self) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
