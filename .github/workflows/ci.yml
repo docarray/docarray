@@ -86,6 +86,7 @@ jobs:
 #      - uses: actions/checkout@v2.5.0
 #      - id: set-matrix
 #        run: |
+           sudo apt-get update
 #          sudo apt-get install jq
 #          export value=$(bash scripts/get-all-test-paths.sh)
 #          echo "matrix=$value" >> $GITHUB_OUTPUT
@@ -112,6 +113,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
+          sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
           
       - name: Test
@@ -157,6 +159,7 @@ jobs:
           python -m pip install poetry
           rm poetry.lock
           poetry install --all-extras
+          sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
@@ -187,6 +190,7 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install protobuf==3.19.0 # we check that we support 3.19
+          sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
@@ -214,6 +218,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
+          sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
@@ -242,6 +247,7 @@ jobs:
           poetry install --all-extras
           poetry run pip install protobuf==3.19.0
           poetry run pip install tensorflow==2.11.0
+          sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
