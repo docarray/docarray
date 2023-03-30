@@ -6,9 +6,10 @@ from pydantic import BaseModel, Field
 from rich.console import Console
 
 from docarray.base_doc.base_node import BaseNode
-from docarray.base_doc.io.json import orjson_dumps, orjson_dumps_and_decode
+from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array.stacked.column_storage import ColumnStorageView
@@ -28,7 +29,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps_and_decode
-        json_encoders = {dict: orjson_dumps}
+        json_encoders = {AbstractTensor: lambda x: x}
 
         validate_assignment = True
 

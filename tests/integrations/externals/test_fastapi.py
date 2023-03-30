@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray import BaseDoc, DocArray
-from docarray.base_doc import DocResponse
+from docarray.base_doc.doc_response import DocArrayResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
@@ -24,7 +24,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_class=DocResponse)
+    @app.post("/doc/", response_class=DocArrayResponse)
     async def create_item(doc: Mmdoc) -> Mmdoc:
         return doc
 
@@ -51,7 +51,7 @@ async def test_image():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=DocResponse)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         doc = OutputDoc(
@@ -88,7 +88,7 @@ async def test_sentence_to_embeddings():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=OutputDoc, response_class=DocResponse)
+    @app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
     async def create_item(doc: InputDoc) -> OutputDoc:
         ## call my fancy model to generate the embeddings
         return OutputDoc(
@@ -118,7 +118,7 @@ async def test_docarray():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_class=DocResponse)
+    @app.post("/doc/", response_class=DocArrayResponse)
     async def func(fastapi_docs: List[ImageDoc]) -> List[ImageDoc]:
         docarray_docs = DocArray[ImageDoc].construct(fastapi_docs)
         return list(docarray_docs)
@@ -127,6 +127,7 @@ async def test_docarray():
         response = await ac.post("/doc/", data=docs.to_json())
 
     assert response.status_code == 200
+
     docs = DocArray[ImageDoc].from_json(response.content.decode())
     assert len(docs) == 2
     assert docs[0].tensor.shape == (3, 224, 224)

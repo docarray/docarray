@@ -10,7 +10,7 @@ else:
     JSONResponse = fastapi.responses.JSONResponse
 
 
-class DocResponse(JSONResponse):
+class DocArrayResponse(JSONResponse):
     """
     This is a custom Response class for FastAPI and starlette. This is needed
     to handle serialization of the Document types when using FastAPI
@@ -27,16 +27,4 @@ class DocResponse(JSONResponse):
     """
 
     def render(self, content: Any) -> bytes:
-        if isinstance(content, bytes):
-            return content
-        elif (
-            isinstance(content, list)
-            and len(content) > 0
-            and isinstance(content[0], bytes)
-        ):
-            content = [item.decode() for item in content]
-            return orjson_dumps(content)
-        elif isinstance(content, list) and len(content) == 0:
-            return bytes([])
-        else:
-            raise ValueError(f'{self.__class__} only work with json bytes content')
+        return orjson_dumps(content)
