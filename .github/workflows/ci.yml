@@ -217,13 +217,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
+          poetry run pip install protobuf==3.19.0
+          poetry run pip install tensorflow==2.11.0
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and (not tensorflow)' tests
+          poetry run pytest -m 'index' tests
         timeout-minutes: 30
 
   docarray-test-tensorflow:
