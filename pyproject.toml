@@ -14,7 +14,7 @@ torch = { version = ">=1.0.0", optional = true }
 orjson = ">=3.8.2"
 pillow = {version = ">=9.3.0", optional = true }
 types-pillow = {version = ">=9.3.0.1", optional = true }
-trimesh = {version = ">=3.17.1", optional = true}
+trimesh = {version = ">=3.17.1", extras = ["easy"], optional = true }
 typing-inspect = ">=0.8.0"
 types-requests = ">=2.28.11.6"
 av = {version = ">=10.0.0", optional = true}
@@ -30,20 +30,20 @@ jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 
 [tool.poetry.extras]
 common = ["protobuf", "lz4"]
-torch = ["torch"]
+pandas = ["pandas"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
-web = ["fastapi"]
 hnswlib = ["hnswlib"]
-pandas = ["pandas"]
 elasticsearch = ["elasticsearch"]
 jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]
+torch = ["torch"]
+web = ["fastapi"]
 
 # all
-full = ["protobuf", "lz4", "pillow", "types-pillow", "av", "pydub", "trimesh"]
+full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
@@ -77,43 +77,20 @@ plugins = "pydantic.mypy"
 check_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = "av"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pandas"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "trimesh"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "hnswlib"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "typing_inspect"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "IPython.display"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "hubble.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "smart_open"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "boto3"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "botocore"
+module = [
+    "botocore",
+    "pydub",
+    "boto3",
+    "lz4",
+    "smart_open",
+    "hubble.*",
+    "IPython.display",
+    "typing_inspect",
+    "hnswlib",
+    "trimesh",
+    "pandas",
+    "av",
+]
 ignore_missing_imports = true
 
 [tool.black]

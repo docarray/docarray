@@ -1,14 +1,12 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-try:
-    from fastapi.responses import JSONResponse, Response
-except ImportError:
+from docarray.utils._internal.misc import import_library
 
-    class NoImportResponse:
-        def __init__(self, *args, **kwargs):
-            ImportError('fastapi is not installed')
-
-    Response = JSONResponse = NoImportResponse  # type: ignore
+if TYPE_CHECKING:
+    from fastapi.responses import JSONResponse
+else:
+    fastapi = import_library('fastapi', raise_error=True)
+    JSONResponse = fastapi.responses.JSONResponse
 
 
 class DocResponse(JSONResponse):
