@@ -6,7 +6,7 @@ from docarray.typing import NdArray, TorchTensor
 
 try:
     from docarray.typing import TensorFlowTensor
-except RuntimeError:
+except (ImportError, TypeError):
     pass
 
 
