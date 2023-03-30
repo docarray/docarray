@@ -1,13 +1,19 @@
 import typing
-from typing import Callable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Callable, List, Optional, Tuple
 
 import numpy as np
-import tensorflow as tf  # type: ignore
-import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
 
 from docarray.computation import AbstractComputationalBackend
 from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
 from docarray.typing import TensorFlowTensor
+from docarray.utils._internal.misc import import_library
+
+if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
+else:
+    tf = import_library('tensorflow', raise_error=True)
+    tnp = tf._api.v2.experimental.numpy
 
 
 def _unsqueeze_if_single_axis(*matrices: tf.Tensor) -> List[tf.Tensor]:

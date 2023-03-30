@@ -2,18 +2,22 @@ from copy import copy
 from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
-import torch  # type: ignore
-
-from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
-
-if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-    from pydantic import BaseConfig
-    from docarray.proto import NdArrayProto
-    from docarray.computation.torch_backend import TorchCompBackend
 
 from docarray.base_doc.base_node import BaseNode
+from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import import_library
+
+if TYPE_CHECKING:
+    import torch
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
+    from docarray.computation.torch_backend import TorchCompBackend
+    from docarray.proto import NdArrayProto
+else:
+    torch = import_library('torch', raise_error=True)
+
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -34,7 +38,10 @@ class metaTorchAndNode(
 
 @_register_proto(proto_type_name='torch_tensor')
 class TorchTensor(
-    torch.Tensor, AbstractTensor, Generic[ShapeT], metaclass=metaTorchAndNode
+    torch.Tensor,
+    AbstractTensor,
+    Generic[ShapeT],
+    metaclass=metaTorchAndNode,
 ):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor

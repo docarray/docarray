@@ -1,4 +1,8 @@
-from typing import Any
+import importlib
+import os
+import re
+import types
+from typing import Any, Optional
 
 import numpy as np
 
@@ -18,8 +22,56 @@ else:
     tf_imported = True
 
 
+INSTALL_INSTRUCTIONS = {
+    'google.protobuf': '"docarray[common]"',
+    'lz4': '"docarray[common]"',
+    'pandas': '"docarray[pandas]"',
+    'PIL': '"docarray[image]"',
+    'pydub': '"docarray[audio]"',
+    'av': '"docarray[video]"',
+    'trimesh': '"docarray[mesh]"',
+    'hnswlib': '"docarray[hnswlib]"',
+    'elasticsearch': '"docarray[elasticsearch]"',
+    'fastapi': '"docarray[web]"',
+    'torch': '"docarray[torch]"',
+    'tensorflow': 'protobuf==3.19.0 tensorflow',
+    'hubble': '"docarray[jac]"',
+    'smart_open': '"docarray[aws]"',
+    'boto3': '"docarray[aws]"',
+    'botocore': '"docarray[aws]"',
+}
+
+
+def import_library(
+    package: str, raise_error: bool = True
+) -> Optional[types.ModuleType]:
+    lib: Optional[types.ModuleType]
+    try:
+        lib = importlib.import_module(package)
+    except (ModuleNotFoundError, ImportError):
+        lib = None
+
+    if lib is None and raise_error:
+        raise ImportError(
+            f'The following required library is not installed: {package} \n'
+            f'To install all necessary libraries, run: `pip install {INSTALL_INSTRUCTIONS[package]}`.'
+        )
+    else:
+        return lib
+
+
+def _get_path_from_docarray_root_level(file_path: str) -> str:
+    path = os.path.dirname(file_path)
+    rel_path = re.sub('(?s:.*)docarray', 'docarray', path).replace('/', '.')
+    return rel_path
+
+
 def is_torch_available():
     return torch_imported
+
+
+def is_tf_available():
+    return tf_imported
 
 
 def is_np_int(item: Any) -> bool:
@@ -31,10 +83,6 @@ def is_np_int(item: Any) -> bool:
         except TypeError:
             return False
     return False  # this is unreachable, but mypy wants it
-
-
-def is_tf_available():
-    return tf_imported
 
 
 def is_notebook() -> bool:
