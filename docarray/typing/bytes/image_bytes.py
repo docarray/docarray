@@ -7,6 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -88,7 +89,11 @@ class ImageBytes(bytes, AbstractType):
         :return: np.ndarray representing the image as RGB values
         """
 
-        from PIL import Image as PILImage
+        if TYPE_CHECKING:
+            from PIL import Image as PILImage
+        else:
+            PIL = import_library('PIL', raise_error=True)  # noqa: F841
+            from PIL import Image as PILImage
 
         raw_img = PILImage.open(BytesIO(self))
         if width or height:

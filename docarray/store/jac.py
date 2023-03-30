@@ -14,10 +14,6 @@ from typing import (
     Union,
 )
 
-import hubble
-from hubble import Client as HubbleClient
-from hubble.client.endpoints import EndpointsV2
-
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.helpers import (
     _BufferedCachingRequestReader,
@@ -25,11 +21,21 @@ from docarray.store.helpers import (
     raise_req_error,
 )
 from docarray.utils._internal.cache import _get_cache_path
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:  # pragma: no cover
     import io
 
     from docarray import BaseDoc, DocArray
+
+if TYPE_CHECKING:
+    import hubble
+    from hubble import Client as HubbleClient
+    from hubble.client.endpoints import EndpointsV2
+else:
+    hubble = import_library('hubble', raise_error=True)
+    HubbleClient = hubble.Client
+    EndpointsV2 = hubble.client.endpoints.EndpointsV2
 
 
 def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:

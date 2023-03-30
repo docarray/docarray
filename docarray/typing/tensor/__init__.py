@@ -1,9 +1,29 @@
+import types
+
+from typing_extensions import TYPE_CHECKING
+
 from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.image import ImageNdArray, ImageTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video import VideoNdArray
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
+)
+
+if TYPE_CHECKING:
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.embedding import TorchEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
 
 __all__ = [
     'NdArray',
@@ -16,43 +36,34 @@ __all__ = [
     'VideoNdArray',
 ]
 
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
-torch_available = is_torch_available()
-if torch_available:
-    from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
-    from docarray.typing.tensor.embedding import TorchEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
-    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
-    from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
+def __getattr__(name: str):
+    if 'Torch' in name:
+        import_library('torch', raise_error=True)
+    elif 'TensorFlow' in name:
+        import_library('tensorflow', raise_error=True)
 
-    __all__.extend(
-        [
-            'TorchEmbedding',
-            'TorchTensor',
-            'ImageTorchTensor',
-            'AudioTorchTensor',
-            'VideoTorchTensor',
-        ]
-    )
+    lib: types.ModuleType
+    if name == 'TorchTensor':
+        import docarray.typing.tensor.torch_tensor as lib
+    elif name == 'TensorFlowTensor':
+        import docarray.typing.tensor.tensorflow_tensor as lib
+    elif name in ['TorchEmbedding', 'TensorFlowEmbedding']:
+        import docarray.typing.tensor.embedding as lib
+    elif name in ['ImageTorchTensor', 'ImageTensorFlowTensor']:
+        import docarray.typing.tensor.image as lib
+    elif name in ['AudioTorchTensor', 'AudioTensorFlowTensor']:
+        import docarray.typing.tensor.audio as lib
+    elif name in ['VideoTorchTensor', 'VideoTensorFlowTensor']:
+        import docarray.typing.tensor.video as lib
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
 
-    torch_available = is_torch_available()
+    tensor_cls = getattr(lib, name)
 
+    if name not in __all__:
+        __all__.append(name)
 
-tf_available = is_tf_available()
-if tf_available:
-    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
-    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
-    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
-
-    __all__.extend(
-        [
-            'TensorFlowEmbedding',
-            'TensorFlowTensor',
-            'ImageTensorFlowTensor',
-            'AudioTensorFlowTensor',
-            'VideoTensorFlowTensor',
-        ]
-    )
+    return tensor_cls

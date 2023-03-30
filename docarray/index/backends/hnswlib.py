@@ -4,6 +4,7 @@ import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generic,
@@ -17,7 +18,6 @@ from typing import (
     cast,
 )
 
-import hnswlib
 import numpy as np
 
 from docarray import BaseDoc, DocArray
@@ -30,26 +30,35 @@ from docarray.index.abstract import (
 )
 from docarray.proto import DocumentProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_np_int, is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
 
-TSchema = TypeVar('TSchema', bound=BaseDoc)
-T = TypeVar('T', bound='HnswDocumentIndex')
-
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
-if is_torch_available():
+if TYPE_CHECKING:
+    import hnswlib
+    import tensorflow as tf  # type: ignore
     import torch
 
+    from docarray.typing import TensorFlowTensor
+else:
+    hnswlib = import_library('hnswlib', raise_error=False)
+    torch = import_library('torch', raise_error=False)
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
+
+HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
+
+if torch is not None:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
-if is_tf_available():
-    import tensorflow as tf  # type: ignore
-
-    from docarray.typing import TensorFlowTensor
-
+if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
     HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
+
+
+TSchema = TypeVar('TSchema', bound=BaseDoc)
+T = TypeVar('T', bound='HnswDocumentIndex')
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
