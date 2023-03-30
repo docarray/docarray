@@ -59,6 +59,8 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
             class _DocArrayTyped(cls):  # type: ignore
                 document_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
+                __origin__ = cls
+                __args__ = [item]
 
             for field in _DocArrayTyped.document_type.__fields__.keys():
 

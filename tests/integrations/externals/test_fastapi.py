@@ -1,9 +1,11 @@
+from typing import List
+
 import numpy as np
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDoc
+from docarray import BaseDoc, DocArray
 from docarray.base_doc import DocResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
@@ -107,3 +109,25 @@ async def test_sentence_to_embeddings():
     assert isinstance(doc, OutputDoc)
     assert doc.embedding_clip.shape == (100, 1)
     assert doc.embedding_bert.shape == (100, 1)
+
+
+@pytest.mark.asyncio
+async def test_docarray():
+    doc = TextDoc(text='some txt')
+    docs = DocArray[TextDoc]([doc])
+
+    app = FastAPI()
+
+    @app.post("/doc/")
+    async def func(fastapi_docs: List[TextDoc]) -> DocArray[TextDoc]:
+        fastapi_docs = DocArray[TextDoc].construct(fastapi_docs)
+        return fastapi_docs
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/doc/", data=docs.to_json())
+
+    assert response.status_code == 200
+
+    docs = DocArray[TextDoc].from_json(response.content.decode())
+    assert docs and len(docs) == 1
+    assert docs[0].text == 'some txt'

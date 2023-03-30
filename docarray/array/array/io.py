@@ -93,7 +93,6 @@ class _LazyRequestReader:
 
 
 class IOMixinArray(Iterable[BaseDoc]):
-
     document_type: Type[BaseDoc]
 
     @abstractmethod
@@ -250,7 +249,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
 
-        with (file_ctx or io.BytesIO()) as bf:
+        with file_ctx or io.BytesIO() as bf:
             self._write_bytes(
                 bf=bf,
                 protocol=protocol,
@@ -318,13 +317,14 @@ class IOMixinArray(Iterable[BaseDoc]):
         :return: the deserialized DocArray
         """
         json_docs = json.loads(file)
-        return cls([cls.document_type.parse_raw(v) for v in json_docs])
+        return cls([cls.document_type(**v) for v in json_docs])
 
     def to_json(self) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
         :return: JSON serialization of DocArray
         """
-        return json.dumps([doc.json() for doc in self])
+        doc_jsons = ', '.join([doc.json() for doc in self])
+        return f'[{doc_jsons}]'
 
     @classmethod
     def from_csv(

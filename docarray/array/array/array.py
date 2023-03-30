@@ -28,9 +28,6 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.array.stacked.array_stacked import DocArrayStacked
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
@@ -127,6 +124,7 @@ class DocArray(
         self,
         docs: Optional[Iterable[T_doc]] = None,
     ):
+        super().__init__()
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
 
     @classmethod
@@ -258,22 +256,6 @@ class DocArray(
         return DocArrayStacked.__class_getitem__(self.document_type)(
             self, tensor_type=tensor_type
         )
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ):
-        from docarray.array.stacked.array_stacked import DocArrayStacked
-
-        if isinstance(value, (cls, DocArrayStacked)):
-            return value
-        elif isinstance(value, Iterable):
-            return cls(value)
-        else:
-            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
     def traverse_flat(
         self: 'DocArray',
