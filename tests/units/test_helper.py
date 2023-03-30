@@ -2,7 +2,7 @@ from typing import Optional
 
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
@@ -10,27 +10,28 @@ from docarray.helper import (
     _dict_to_access_paths,
     _is_access_path_valid,
     _update_nested_dicts,
+    get_paths,
 )
 
 
 @pytest.fixture()
 def nested_doc():
-    class Inner(BaseDocument):
+    class Inner(BaseDoc):
         img: Optional[ImageDoc]
 
-    class Middle(BaseDocument):
+    class Middle(BaseDoc):
         img: Optional[ImageDoc]
         inner: Optional[Inner]
 
-    class Outer(BaseDocument):
+    class Outer(BaseDoc):
         img: Optional[ImageDoc]
         middle: Optional[Middle]
-        da: DocumentArray[Inner]
+        da: DocArray[Inner]
 
     doc = Outer(
         img=ImageDoc(),
         middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc())),
-        da=DocumentArray[Inner]([Inner(img=ImageDoc(url='test.png'))]),
+        da=DocArray[Inner]([Inner(img=ImageDoc(url='test.png'))]),
     )
     return doc
 
@@ -50,7 +51,7 @@ def test_is_access_path_not_valid(nested_doc):
 
 
 def test_get_access_paths():
-    class Painting(BaseDocument):
+    class Painting(BaseDoc):
         title: str
         img: ImageDoc
 
@@ -109,3 +110,24 @@ def test_update_nested_dict():
 
     _update_nested_dicts(d1, d2)
     assert d1 == {'text': 'hello', 'image': {'tensor': None, 'url': 'some.png'}}
+
+
+def test_get_paths():
+    paths = list(get_paths(patterns='*.py'))
+    for path in paths:
+        assert path.endswith('.py')
+
+
+def test_get_paths_recursive():
+    paths_rec = list(get_paths(patterns='**', recursive=True))
+    paths_not_rec = list(get_paths(patterns='**', recursive=False))
+
+    assert len(paths_rec) > len(paths_not_rec)
+
+
+def test_get_paths_exclude():
+    paths = list(get_paths(patterns='*.py'))
+    paths_wo_init = list(get_paths(patterns='*.py', exclude_regex='__init__.[a-z]*'))
+
+    assert len(paths_wo_init) <= len(paths)
+    assert '__init__.py' not in paths_wo_init

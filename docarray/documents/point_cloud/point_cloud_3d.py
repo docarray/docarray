@@ -2,11 +2,11 @@ from typing import Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
@@ -19,7 +19,7 @@ if tf_available:
 T = TypeVar('T', bound='PointCloud3D')
 
 
-class PointCloud3D(BaseDocument):
+class PointCloud3D(BaseDoc):
     """
     Document for handling point clouds for 3D data representation.
 
@@ -71,12 +71,12 @@ class PointCloud3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import PointCloud3D, Text
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             point_cloud: PointCloud3D
             text: Text
 

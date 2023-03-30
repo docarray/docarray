@@ -4,16 +4,16 @@ from time import time
 import numpy as np
 import pytest
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.utils.map import map_docs, map_docs_batch
+from docarray.utils.map import map_docs, map_docs_batched
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 pytestmark = [pytest.mark.benchmark, pytest.mark.slow]
 
 
-class MyMatrix(BaseDocument):
+class MyMatrix(BaseDoc):
     matrix: NdArray
 
 
@@ -32,7 +32,7 @@ def test_map_docs_multiprocessing():
             n_docs = 5
             rng = np.random.RandomState(0)
             matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
-            da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
+            da = DocArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(
                 map_docs(
@@ -47,7 +47,7 @@ def test_map_docs_multiprocessing():
         assert time_2_cpu < time_1_cpu
 
 
-def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
+def cpu_intensive_batch(da: DocArray[MyMatrix]) -> DocArray[MyMatrix]:
     # some cpu intensive function
     for doc in da:
         for i in range(3000):
@@ -56,17 +56,17 @@ def cpu_intensive_batch(da: DocumentArray[MyMatrix]) -> DocumentArray[MyMatrix]:
     return da
 
 
-def test_map_docs_batch_multiprocessing():
+def test_map_docs_batched_multiprocessing():
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
             n_docs = 16
             rng = np.random.RandomState(0)
             matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
-            da = DocumentArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
+            da = DocArray[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(
-                map_docs_batch(
+                map_docs_batched(
                     da=da,
                     func=cpu_intensive_batch,
                     batch_size=8,
@@ -91,7 +91,7 @@ def io_intensive(img: ImageDoc) -> ImageDoc:
 def test_map_docs_multithreading():
     def time_multithreading(num_workers: int) -> float:
         n_docs = 100
-        da = DocumentArray[ImageDoc](
+        da = DocArray[ImageDoc](
             [ImageDoc(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
         )
         start_time = time()
@@ -106,22 +106,22 @@ def test_map_docs_multithreading():
     assert time_2_thread < time_1_thread
 
 
-def io_intensive_batch(da: DocumentArray[ImageDoc]) -> DocumentArray[ImageDoc]:
+def io_intensive_batch(da: DocArray[ImageDoc]) -> DocArray[ImageDoc]:
     # some io intensive function: load and set image url
     for doc in da:
         doc.tensor = doc.url.load()
     return da
 
 
-def test_map_docs_batch_multithreading():
+def test_map_docs_batched_multithreading():
     def time_multithreading_batch(num_workers: int) -> float:
         n_docs = 100
-        da = DocumentArray[ImageDoc](
+        da = DocArray[ImageDoc](
             [ImageDoc(url=IMAGE_PATHS['png']) for _ in range(n_docs)]
         )
         start_time = time()
         list(
-            map_docs_batch(
+            map_docs_batched(
                 da=da,
                 func=io_intensive_batch,
                 backend='thread',

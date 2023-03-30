@@ -1,12 +1,12 @@
 from typing import Any, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.typing.tensor.tensor import AnyTensor
 
 T = TypeVar('T', bound='VerticesAndFaces')
 
 
-class VerticesAndFaces(BaseDocument):
+class VerticesAndFaces(BaseDoc):
     """
     Document for handling 3D mesh tensor data.
 

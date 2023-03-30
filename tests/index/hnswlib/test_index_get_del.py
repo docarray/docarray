@@ -1,29 +1,38 @@
+import os
+from typing import Optional
+
 import numpy as np
 import pytest
+import torch
 from pydantic import Field
 
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
+from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-class FlatDoc(BaseDocument):
+class FlatDoc(BaseDoc):
     tens_one: NdArray = Field(dim=10)
     tens_two: NdArray = Field(dim=50)
 
 
-class NestedDoc(BaseDocument):
+class NestedDoc(BaseDoc):
     d: SimpleDoc
 
 
-class DeepNestedDoc(BaseDocument):
+class DeepNestedDoc(BaseDoc):
     d: NestedDoc
+
+
+class TorchDoc(BaseDoc):
+    tens: TorchTensor[10]
 
 
 @pytest.fixture
@@ -48,7 +57,7 @@ def ten_nested_docs():
 def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_simple_docs = DocumentArray[SimpleDoc](ten_simple_docs)
+        ten_simple_docs = DocArray[SimpleDoc](ten_simple_docs)
 
     store.index(ten_simple_docs)
     assert store.num_docs() == 10
@@ -57,7 +66,7 @@ def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
 
 
 def test_schema_with_user_defined_mapping(tmp_path):
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
 
     store = HnswDocumentIndex[MyDoc](work_dir=str(tmp_path))
@@ -68,7 +77,7 @@ def test_schema_with_user_defined_mapping(tmp_path):
 def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[FlatDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_flat_docs = DocumentArray[FlatDoc](ten_flat_docs)
+        ten_flat_docs = DocArray[FlatDoc](ten_flat_docs)
 
     store.index(ten_flat_docs)
     assert store.num_docs() == 10
@@ -80,9 +89,80 @@ def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
 def test_index_nested_schema(ten_nested_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_nested_docs = DocumentArray[NestedDoc](ten_nested_docs)
+        ten_nested_docs = DocArray[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_torch(tmp_path):
+    docs = [TorchDoc(tens=np.random.randn(10)) for _ in range(10)]
+    assert isinstance(docs[0].tens, torch.Tensor)
+    assert isinstance(docs[0].tens, TorchTensor)
+
+    store = HnswDocumentIndex[TorchDoc](work_dir=str(tmp_path))
+
+    store.index(docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+@pytest.mark.tensorflow
+def test_index_tf(tmp_path):
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDoc):
+        tens: TensorFlowTensor[10]
+
+    docs = [TfDoc(tens=np.random.randn(10)) for _ in range(10)]
+    # assert isinstance(docs[0].tens, torch.Tensor)
+    assert isinstance(docs[0].tens, TensorFlowTensor)
+
+    store = HnswDocumentIndex[TfDoc](work_dir=str(tmp_path))
+
+    store.index(docs)
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_builtin_docs(tmp_path):
+    # TextDoc
+    class TextSchema(TextDoc):
+        embedding: Optional[NdArrayEmbedding] = Field(dim=10)
+
+    store = HnswDocumentIndex[TextSchema](work_dir=str(tmp_path))
+
+    store.index(
+        DocArray[TextDoc](
+            [TextDoc(embedding=np.random.randn(10), text=f'{i}') for i in range(10)]
+        )
+    )
+    assert store.num_docs() == 10
+    for index in store._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+    # ImageDoc
+    class ImageSchema(ImageDoc):
+        embedding: Optional[NdArrayEmbedding] = Field(dim=10)
+
+    store = HnswDocumentIndex[ImageSchema](
+        work_dir=str(os.path.join(tmp_path, 'image'))
+    )
+
+    store.index(
+        DocArray[ImageDoc](
+            [
+                ImageDoc(
+                    embedding=np.random.randn(10), tensor=np.random.randn(3, 224, 224)
+                )
+                for _ in range(10)
+            ]
+        )
+    )
     assert store.num_docs() == 10
     for index in store._hnsw_indices.values():
         assert index.get_current_count() == 10

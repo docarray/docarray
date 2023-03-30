@@ -1,15 +1,15 @@
 import numpy as np
 
-from docarray.base_document import AnyDocument, BaseDocument
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 
 def test_any_doc():
-    class InnerDocument(BaseDocument):
+    class InnerDocument(BaseDoc):
         text: str
         tensor: NdArray
 
-    class CustomDoc(BaseDocument):
+    class CustomDoc(BaseDoc):
         inner: InnerDocument
         text: str
 
@@ -17,7 +17,7 @@ def test_any_doc():
         text='bye', inner=InnerDocument(text='hello', tensor=np.zeros((3, 224, 224)))
     )
 
-    any_doc = AnyDocument(**doc.__dict__)
+    any_doc = AnyDoc(**doc.__dict__)
 
     assert any_doc.text == doc.text
     assert any_doc.inner.text == doc.inner.text

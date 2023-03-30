@@ -6,7 +6,7 @@ from rich.tree import Tree
 from typing_extensions import TYPE_CHECKING
 from typing_inspect import is_optional_type, is_union_type
 
-from docarray.base_document.document import BaseDocument
+from docarray.base_doc.doc import BaseDoc
 from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -20,7 +20,7 @@ class DocumentSummary:
 
     def __init__(
         self,
-        doc: Optional['BaseDocument'] = None,
+        doc: Optional['BaseDoc'] = None,
     ):
         self.doc = doc
 
@@ -32,7 +32,7 @@ class DocumentSummary:
         rich.print(t)
 
     @staticmethod
-    def schema_summary(cls: Type['BaseDocument']) -> None:
+    def schema_summary(cls: Type['BaseDoc']) -> None:
         """Print a summary of the Documents schema."""
         from rich.console import Console
         from rich.panel import Panel
@@ -49,13 +49,13 @@ class DocumentSummary:
         console.print(panel)
 
     @staticmethod
-    def _get_schema(cls: Type['BaseDocument'], doc_name: Optional[str] = None) -> Tree:
+    def _get_schema(cls: Type['BaseDoc'], doc_name: Optional[str] = None) -> Tree:
         """Get Documents schema as a rich.tree.Tree object."""
         import re
 
         from rich.tree import Tree
 
-        from docarray import BaseDocument, DocumentArray
+        from docarray import BaseDoc, DocArray
 
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
@@ -74,20 +74,20 @@ class DocumentSummary:
                 if is_union_type(field_type) or is_optional_type(field_type):
                     sub_tree = Tree(node_name, highlight=True)
                     for arg in field_type.__args__:
-                        if issubclass(arg, BaseDocument):
+                        if issubclass(arg, BaseDoc):
                             sub_tree.add(DocumentSummary._get_schema(cls=arg))
-                        elif issubclass(arg, DocumentArray):
+                        elif issubclass(arg, DocArray):
                             sub_tree.add(
                                 DocumentSummary._get_schema(cls=arg.document_type)
                             )
                     tree.add(sub_tree)
 
-                elif issubclass(field_type, BaseDocument):
+                elif issubclass(field_type, BaseDoc):
                     tree.add(
                         DocumentSummary._get_schema(cls=field_type, doc_name=field_name)
                     )
 
-                elif issubclass(field_type, DocumentArray):
+                elif issubclass(field_type, DocArray):
                     sub_tree = Tree(node_name, highlight=True)
                     sub_tree.add(
                         DocumentSummary._get_schema(cls=field_type.document_type)
@@ -112,7 +112,7 @@ class DocumentSummary:
         from rich import box, text
         from rich.table import Table
 
-        from docarray import BaseDocument, DocumentArray
+        from docarray import BaseDoc, DocArray
 
         table = Table(
             'Attribute',
@@ -125,26 +125,41 @@ class DocumentSummary:
         for field_name, value in self.doc.__dict__.items():
             col_1 = f'{field_name}: {value.__class__.__name__}'
             if (
-                isinstance(value, (ID, DocumentArray, BaseDocument))
+                isinstance(value, (ID, DocArray, BaseDoc))
                 or field_name.startswith('_')
                 or value is None
             ):
                 continue
-            elif isinstance(value, str):
+            elif isinstance(value, (str, bytes)):
                 col_2 = str(value)[:50]
                 if len(value) > 50:
                     col_2 += f' ... (length: {len(value)})'
                 table.add_row(col_1, text.Text(col_2))
             elif isinstance(value, AbstractTensor):
                 table.add_row(col_1, TensorDisplay(tensor=value))
-            elif isinstance(value, (tuple, list)):
+            elif isinstance(value, (tuple, list, set, frozenset)):
+                value_list = list(value)
                 col_2 = ''
-                for i, x in enumerate(value):
+                for i, x in enumerate(value_list):
                     if len(col_2) + len(str(x)) < 50:
-                        col_2 = str(value[:i])
+                        col_2 = str(value_list[: i + 1])
                     else:
-                        col_2 = f'{col_2[:-1]}, ...] (length: {len(value)})'
+                        col_2 = f'{col_2[:-1]}, ...] (length: {len(value_list)})'
                         break
+
+                if type(value) == tuple:
+                    col_2 = col_2.replace('[', '(', 1).replace(']', ')', -1)
+                if type(value) == set or type(value) == frozenset:
+                    col_2 = col_2.replace('[', '{', 1).replace(']', '}', -1)
+
+                table.add_row(col_1, text.Text(col_2))
+            elif isinstance(value, dict):
+                col_2 = f'{value}'
+                if len(col_2) > 50:
+                    col_2 = f'{col_2[: 50]}' + ' ... } ' + f'(length: {len(value)})'
+                table.add_row(col_1, text.Text(col_2))
+            else:
+                col_2 = f'{value}'
                 table.add_row(col_1, text.Text(col_2))
 
         if table.rows:
@@ -162,7 +177,7 @@ class DocumentSummary:
         :return: Tree with all children.
 
         """
-        from docarray import BaseDocument, DocumentArray
+        from docarray import BaseDoc, DocArray
 
         tree = Tree(node) if tree is None else tree.add(node)  # type: ignore
 
@@ -170,14 +185,14 @@ class DocumentSummary:
             nested_attrs = [
                 k
                 for k, v in node.doc.__dict__.items()
-                if isinstance(v, (DocumentArray, BaseDocument))
+                if isinstance(v, (DocArray, BaseDoc))
             ]
             for attr in nested_attrs:
                 value = getattr(node.doc, attr)
                 attr_type = value.__class__.__name__
                 icon = ':diamond_with_a_dot:'
 
-                if isinstance(value, BaseDocument):
+                if isinstance(value, BaseDoc):
                     icon = ':large_orange_diamond:'
                     value = [value]
 

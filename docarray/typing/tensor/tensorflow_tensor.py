@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
 
-from docarray.base_document.base_node import BaseNode
+from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
@@ -94,16 +94,18 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import TensorFlowTensor
         import tensorflow as tf
 
 
-        class MyDoc(BaseDocument):
+        class MyDoc(BaseDoc):
             tensor: TensorFlowTensor
             image_tensor: TensorFlowTensor[3, 224, 224]
             square_crop: TensorFlowTensor[3, 'x', 'x']
-            random_image: TensorFlowTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: TensorFlowTensor[
+                3, ...
+            ]  # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors

@@ -1,4 +1,4 @@
-from docarray.typing.bytes import ImageBytes
+from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
 from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
 from docarray.typing.tensor.audio import AudioNdArray
@@ -31,14 +31,16 @@ __all__ = [
     'AnyUrl',
     'ID',
     'AnyTensor',
-    'TensorFlowTensor',
     'NdArrayEmbedding',
     'ImageBytes',
     'ImageTensor',
     'ImageNdArray',
+    'ImageBytes',
+    'VideoBytes',
+    'AudioBytes',
 ]
 
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
 if torch_available:
@@ -59,7 +61,7 @@ if torch_available:
 
 tf_available = is_tf_available()
 if tf_available:
-    from docarray.typing.tensor import TensorFlowTensor
+    from docarray.typing.tensor import TensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
     from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401

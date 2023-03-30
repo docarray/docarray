@@ -1,3 +1,4 @@
+__all__ = ['map_docs', 'map_docs_batched']
 from contextlib import nullcontext
 from math import ceil
 from multiprocessing.pool import Pool, ThreadPool
@@ -5,12 +6,12 @@ from typing import Callable, Generator, Optional, TypeVar, Union
 
 from rich.progress import track
 
-from docarray import BaseDocument
-from docarray.array.abstract_array import AnyDocumentArray
+from docarray import BaseDoc
+from docarray.array.abstract_array import AnyDocArray
 from docarray.helper import _is_lambda_or_partial_or_local_function
 
-T = TypeVar('T', bound=AnyDocumentArray)
-T_doc = TypeVar('T_doc', bound=BaseDocument)
+T = TypeVar('T', bound=AnyDocArray)
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def map_docs(
@@ -25,31 +26,39 @@ def map_docs(
     Return an iterator that applies `func` to every Document in `da` in parallel,
     yielding the results.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
-
-        from docarray import DocumentArray
-        from docarray.documents import Image
-        from docarray.utils.map import map_docs
-
-
-        def load_url_to_tensor(img: Image) -> Image:
-            img.tensor = img.url.load()
-            return img
+    ```python
+    from docarray import DocArray
+    from docarray.documents import ImageDoc
+    from docarray.utils.map import map_docs
 
 
-        da = DocumentArray[Image]([Image(url='/path/to/img.png') for _ in range(100)])
-        da = DocumentArray[Image](
-            list(map_docs(da, load_url_to_tensor, backend='thread'))
-        )  # threading is usually a good option for IO-bound tasks such as loading an image from url
+    def load_url_to_tensor(img: ImageDoc) -> ImageDoc:
+        img.tensor = img.url.load()
+        return img
 
-        for doc in da:
-            assert doc.tensor is not None
 
-    :param da: DocumentArray to apply function to
-    :param func: a function that takes a :class:`BaseDocument` as input and outputs
-        a :class:`BaseDocument`.
+    url = (
+        'https://upload.wikimedia.org/wikipedia/commons/8/80/'
+        'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
+    )
+
+    da = DocArray[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
+    da = DocArray[ImageDoc](
+        list(map_docs(da, load_url_to_tensor, backend='thread'))
+    )  # threading is usually a good option for IO-bound tasks such as loading an
+    # ImageDoc from url
+
+    for doc in da:
+        assert doc.tensor is not None
+    ```
+
+    ---
+
+    :param da: DocArray to apply function to
+    :param func: a function that takes a :class:`BaseDoc` as input and outputs
+        a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
@@ -72,7 +81,7 @@ def map_docs(
         be responsible for closing the pool.
     :param show_progress: show a progress bar. Defaults to False.
 
-    :yield: Documents returned from `func`
+    :return: yield Documents returned from `func`
     """
 
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
@@ -94,7 +103,7 @@ def map_docs(
             yield x
 
 
-def map_docs_batch(
+def map_docs_batched(
     da: T,
     func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
@@ -107,43 +116,48 @@ def map_docs_batch(
     """
     Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
     yielding the results.
-    Each element in the returned iterator is an :class:`AnyDocumentArray`.
+    Each element in the returned iterator is an :class:`AnyDocArray`.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
-        from docarray import BaseDocument, DocumentArray
-        from docarray.utils.map import map_docs_batch
-
-
-        class MyDoc(BaseDocument):
-            name: str
+    ```python
+    from docarray import BaseDoc, DocArray
+    from docarray.utils.map import map_docs_batched
 
 
-        def upper_case_name(da: DocumentArray[MyDoc]) -> DocumentArray[MyDoc]:
-            da.name = [n.upper() for n in da.name]
-            return da
+    class MyDoc(BaseDoc):
+        name: str
 
 
-        batch_size = 16
-        da = DocumentArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-        it = map_docs_batch(da, upper_case_name, batch_size=batch_size)
-        for i, d in enumerate(it):
-            da[i * batch_size : (i + 1) * batch_size] = d
+    def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
+        da.name = [n.upper() for n in da.name]
+        return da
 
-        assert len(da) == 100
-        print(da.name[:3])
 
-    .. code-block:: text
+    batch_size = 16
+    da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    it = map_docs_batched(da, upper_case_name, batch_size=batch_size)
+    for i, d in enumerate(it):
+        da[i * batch_size : (i + 1) * batch_size] = d
 
-        ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
+    assert len(da) == 100
+    print(da.name[:3])
+    ```
 
-    :param da: DocumentArray to apply function to
+    ---
+
+    ```
+    ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
+    ```
+
+    ---
+
+    :param da: DocArray to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-    :param func: a function that takes an :class:`AnyDocumentArray` as input and outputs
-        an :class:`AnyDocumentArray` or a :class:`BaseDocument`.
+    :param func: a function that takes an :class:`AnyDocArray` as input and outputs
+        an :class:`AnyDocArray` or a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
@@ -166,7 +180,7 @@ def map_docs_batch(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
 
-    :yield: DocumentArrays returned from `func`
+    :return: yield DocArrays returned from `func`
     """
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(

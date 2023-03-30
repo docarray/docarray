@@ -20,28 +20,36 @@ from typing import (
 import hnswlib
 import numpy as np
 
-import docarray.typing
-from docarray import BaseDocument, DocumentArray
+from docarray import BaseDoc, DocArray
 from docarray.index.abstract import (
-    BaseDocumentIndex,
+    BaseDocIndex,
     _ColumnInfo,
     _FindResultBatched,
     _raise_not_composable,
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import is_np_int, is_tf_available, is_torch_available
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
-from docarray.utils.misc import is_np_int, torch_imported
 
-TSchema = TypeVar('TSchema', bound=BaseDocument)
+TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
 
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-if torch_imported:
+HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
+if is_torch_available():
     import torch
 
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+
+if is_tf_available():
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing import TensorFlowTensor
+
+    HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
+    HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
@@ -58,7 +66,7 @@ def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
     return inner
 
 
-class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
+class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
@@ -84,8 +92,14 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if not col.config:
-                self._logger.warning(
-                    f'No index was created for `{col_name}` as it does not have a config'
+                # non-tensor type; don't create an index
+                continue
+            if not load_existing and (
+                (not col.n_dim and col.config['dim'] < 0) or not col.config['index']
+            ):
+                # tensor type, but don't index
+                self._logger.info(
+                    f'Not indexing column {col_name}; either `index=False` is set or no dimensionality is specified'
                 )
                 continue
             if load_existing:
@@ -108,7 +122,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ###############################################
     # Inner classes for query builder and configs #
     ###############################################
-    class QueryBuilder(BaseDocumentIndex.QueryBuilder):
+    class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
             super().__init__()
             # list of tuples (method name, kwargs)
@@ -125,15 +139,16 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         text_search_batched = _raise_not_supported('text_search')
 
     @dataclass
-    class DBConfig(BaseDocumentIndex.DBConfig):
+    class DBConfig(BaseDocIndex.DBConfig):
         work_dir: str = '.'
 
     @dataclass
-    class RuntimeConfig(BaseDocumentIndex.RuntimeConfig):
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
-                    'dim': 128,
+                    'dim': -1,
+                    'index': True,  # if False, don't index at all
                     'space': 'l2',  # 'l2', 'ip', 'cosine'
                     'max_elements': 1024,
                     'ef_construction': 200,
@@ -157,16 +172,13 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             if issubclass(python_type, allowed_type):
                 return np.ndarray
 
-        if python_type == docarray.typing.ID:
-            return None
-
-        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+        return None  # all types allowed, but no db type needed
 
     def _index(self, column_data_dic, **kwargs):
         # not needed, we implement `index` directly
         ...
 
-    def index(self, docs: Union[BaseDocument, Sequence[BaseDocument]], **kwargs):
+    def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index a document into the store"""
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
@@ -193,11 +205,9 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        ann_docs = DocumentArray.__class_getitem__(
-            cast(Type[BaseDocument], self._schema)
-        )([])
+        ann_docs = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))([])
         filter_conditions = []
-        doc_to_score: Dict[BaseDocument, Any] = {}
+        doc_to_score: Dict[BaseDoc, Any] = {}
         for op, op_kwargs in query:
             if op == 'find':
                 docs, scores = self.find(**op_kwargs)
@@ -209,9 +219,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self._logger.debug(f'Executing query {query}')
         docs_filtered = ann_docs
         for cond in filter_conditions:
-            da_cls = DocumentArray.__class_getitem__(
-                cast(Type[BaseDocument], self._schema)
-            )
+            da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
             docs_filtered = da_cls(filter_docs(docs_filtered, cond))
 
         self._logger.debug(f'{len(docs_filtered)} results found')
@@ -224,12 +232,12 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
 
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(query, k=limit)
+        labels, distances = index.knn_query(queries, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
@@ -243,7 +251,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
-            query=query_batched, limit=limit, search_field=search_field
+            queries=query_batched, limit=limit, search_field=search_field
         )
         return _FindResult(documents=docs[0], scores=scores[0])
 
@@ -251,7 +259,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-    ) -> DocumentArray:
+    ) -> DocArray:
         raise NotImplementedError(
             f'{type(self)} does not support filter-only queries.'
             f' To perform post-filtering on a query, use'
@@ -262,7 +270,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-    ) -> List[DocumentArray]:
+    ) -> List[DocArray]:
         raise NotImplementedError(
             f'{type(self)} does not support filter-only queries.'
             f' To perform post-filtering on a query, use'
@@ -328,16 +336,6 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         index.load_index(self._hnsw_locations[col_name])
         return index
 
-    def _to_numpy(self, val: Any) -> Any:
-        if isinstance(val, np.ndarray):
-            return val
-        elif isinstance(val, (list, tuple)):
-            return np.array(val)
-        elif torch_imported and isinstance(val, torch.Tensor):
-            return val.numpy()
-        else:
-            raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
-
     # HNSWLib helpers
     def _create_index_class(self, col: '_ColumnInfo') -> hnswlib.Index:
         """Create an instance of hnswlib.index without initializing it."""
@@ -363,7 +361,7 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             'CREATE TABLE IF NOT EXISTS docs (doc_id INTEGER PRIMARY KEY, data BLOB)'
         )
 
-    def _send_docs_to_sqlite(self, docs: Sequence[BaseDocument]):
+    def _send_docs_to_sqlite(self, docs: Sequence[BaseDoc]):
         ids = (self._to_hashed_id(doc.id) for doc in docs)
         self._sqlite_cursor.executemany(
             'INSERT INTO docs VALUES (?, ?)',
@@ -380,22 +378,22 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return da_cls([self._doc_from_bytes(row[0]) for row in rows])
 
-    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocumentArray[TSchema]:
+    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocArray[TSchema]:
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return da_cls(sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id)))
 
-    def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocumentArray:
+    def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocArray:
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
 
         def _in_position(doc):
             return hashed_ids.index(self._to_hashed_id(doc.id))
 
-        da_cls = DocumentArray.__class_getitem__(cast(Type[BaseDocument], self._schema))
+        da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return da_cls(sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
@@ -412,9 +410,9 @@ class HnswDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
         return self._sqlite_cursor.fetchone()[0]
 
     # serialization helpers
-    def _doc_to_bytes(self, doc: BaseDocument) -> bytes:
+    def _doc_to_bytes(self, doc: BaseDoc) -> bytes:
         return doc.to_protobuf().SerializeToString()
 
-    def _doc_from_bytes(self, data: bytes) -> BaseDocument:
-        schema_cls = cast(Type[BaseDocument], self._schema)
+    def _doc_from_bytes(self, data: bytes) -> BaseDoc:
+        schema_cls = cast(Type[BaseDoc], self._schema)
         return schema_cls.from_protobuf(DocumentProto.FromString(data))

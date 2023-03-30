@@ -5,10 +5,10 @@ import pytest
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray import BaseDocument
-from docarray.base_document.io.json import orjson_dumps
+from docarray import BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AudioTorchTensor, AudioUrl
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -43,7 +43,7 @@ def test_audio_url(file_url):
     [*AUDIO_FILES, REMOTE_AUDIO_FILE],
 )
 def test_load_audio_url_to_audio_torch_tensor_field(file_url):
-    class MyAudioDoc(BaseDocument):
+    class MyAudioDoc(BaseDoc):
         audio_url: AudioUrl
         tensor: Optional[AudioTorchTensor]
 
@@ -62,7 +62,7 @@ def test_load_audio_url_to_audio_torch_tensor_field(file_url):
     [*AUDIO_FILES, REMOTE_AUDIO_FILE],
 )
 def test_load_audio_url_to_audio_tensorflow_tensor_field(file_url):
-    class MyAudioDoc(BaseDocument):
+    class MyAudioDoc(BaseDoc):
         audio_url: AudioUrl
         tensor: Optional[AudioTensorFlowTensor]
 
