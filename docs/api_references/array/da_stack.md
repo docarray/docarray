@@ -1,3 +1,3 @@
-# DocArrayStacked
+# DocVec
 
-::: docarray.array.array.array.DocArrayStacked
+::: docarray.array.doc_vec.doc_vec.DocVec

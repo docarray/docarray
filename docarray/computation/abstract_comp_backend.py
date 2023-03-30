@@ -16,7 +16,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
     Abstract base class for computational backends.
     Every supported tensor/ML framework (numpy, torch etc.) should define its own
     computational backend exposing common functionality expressed in that framework.
-    That way, DocArray can leverage native implementations from all frameworks.
+    That way, DocList can leverage native implementations from all frameworks.
     """
 
     @classmethod

@@ -3,7 +3,7 @@ from typing import Optional
 
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc
 from tests import TOYDATA_DIR
 
@@ -22,7 +22,7 @@ def nested_doc_cls():
 
 
 def test_to_from_csv(tmpdir, nested_doc_cls):
-    da = DocArray[nested_doc_cls](
+    da = DocList[nested_doc_cls](
         [
             nested_doc_cls(
                 count=0,
@@ -37,13 +37,13 @@ def test_to_from_csv(tmpdir, nested_doc_cls):
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
-    da_from = DocArray[nested_doc_cls].from_csv(tmp_file)
+    da_from = DocList[nested_doc_cls].from_csv(tmp_file)
     for doc1, doc2 in zip(da, da_from):
         assert doc1 == doc2
 
 
 def test_from_csv_nested(nested_doc_cls):
-    da = DocArray[nested_doc_cls].from_csv(
+    da = DocList[nested_doc_cls].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
     )
     assert len(da) == 3
@@ -91,9 +91,9 @@ def nested_doc():
 
 def test_from_csv_without_schema_raise_exception():
     with pytest.raises(TypeError, match='no document schema defined'):
-        DocArray.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
+        DocList.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
 
 
 def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
     with pytest.raises(ValueError, match='Column names do not match the schema'):
-        DocArray[nested_doc.__class__].from_csv(file_path=str(TOYDATA_DIR / 'docs.csv'))
+        DocList[nested_doc.__class__].from_csv(file_path=str(TOYDATA_DIR / 'docs.csv'))

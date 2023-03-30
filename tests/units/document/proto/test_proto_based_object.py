@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray.proto import DocumentProto, NodeProto
+from docarray.proto import DocProto, NodeProto
 from docarray.typing import NdArray
 
 
@@ -32,4 +32,4 @@ def test_document_proto_set():
     data['a'] = nested_item1
     data['b'] = nested_item2
 
-    DocumentProto(data=data)
+    DocProto(data=data)
