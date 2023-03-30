@@ -1,12 +1,15 @@
 import numpy as np
+import pytest
 import torch
 from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.index.elastic.fixture import FlatDoc, SimpleDoc
+from tests.integrations.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
+from tests.integrations.doc_index.elastic.fixture import FlatDoc, SimpleDoc
+
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 def test_find_simple_schema():

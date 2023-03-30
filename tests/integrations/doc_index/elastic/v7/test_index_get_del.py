@@ -7,8 +7,15 @@ from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray
-from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
+from tests.integrations.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
+from tests.integrations.doc_index.elastic.fixture import (
+    DeepNestedDoc,
+    FlatDoc,
+    NestedDoc,
+    SimpleDoc,
+)
+
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 @pytest.fixture
