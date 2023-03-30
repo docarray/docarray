@@ -21,24 +21,23 @@ from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
-
-tf_available = is_tf_available()
-if tf_available:
-    import tensorflow as tf  # type: ignore
-
-    from docarray.typing import TensorFlowTensor
-
-torch_available = is_torch_available()
-if torch_available:
-    import torch
-
-    from docarray.typing import TorchTensor
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import torch
     from pydantic.fields import ModelField
 
     from docarray.proto import DocumentProto, NodeProto
+    from docarray.typing import TensorFlowTensor, TorchTensor
+else:
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
+
+    torch = import_library('torch', raise_error=False)
+    if torch is not None:
+        from docarray.typing import TorchTensor
 
 
 T = TypeVar('T', bound='IOMixin')
@@ -68,12 +67,12 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
         return nested_item
 
     base_node_wrap: BaseNode
-    if torch_available:
+    if torch is not None:
         if isinstance(value, torch.Tensor):
             base_node_wrap = TorchTensor._docarray_from_native(value)
             return base_node_wrap._to_node_protobuf()
 
-    if tf_available:
+    if tf is not None:
         if isinstance(value, tf.Tensor):
             base_node_wrap = TensorFlowTensor._docarray_from_native(value)
             return base_node_wrap._to_node_protobuf()

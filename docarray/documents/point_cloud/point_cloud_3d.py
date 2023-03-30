@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
@@ -6,15 +6,15 @@ from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    import torch
-
-tf_available = is_tf_available()
-if tf_available:
+if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    import torch
+else:
+    tf = import_library('tensorflow', raise_error=False)
+    torch = import_library('torch', raise_error=False)
+
 
 T = TypeVar('T', bound='PointCloud3D')
 
@@ -124,9 +124,9 @@ class PointCloud3D(BaseDoc):
         if isinstance(value, str):
             value = cls(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
-            torch_available
+            torch is not None
             and isinstance(value, torch.Tensor)
-            or (tf_available and isinstance(value, tf.Tensor))
+            or (tf is not None and isinstance(value, tf.Tensor))
         ):
             value = cls(tensors=PointsAndColors(points=value))
 

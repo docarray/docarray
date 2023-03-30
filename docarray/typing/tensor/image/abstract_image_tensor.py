@@ -1,9 +1,10 @@
 import io
 import warnings
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_notebook
+from docarray.utils._internal.misc import import_library, is_notebook
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
@@ -14,7 +15,11 @@ class AbstractImageTensor(AbstractTensor, ABC):
         :param format: the image format use to store the image, can be 'PNG' , 'JPG' ...
         :return: bytes
         """
-        from PIL import Image
+        if TYPE_CHECKING:
+            from PIL import Image as PILImage
+        else:
+            PIL = import_library('PIL', raise_error=True)  # noqa: F841
+            from PIL import Image as PILImage
 
         if format == 'jpg':
             format = 'jpeg'  # unify it to ISO standard
@@ -22,7 +27,7 @@ class AbstractImageTensor(AbstractTensor, ABC):
         tensor = self.get_comp_backend().to_numpy(self)
 
         mode = 'RGB' if tensor.ndim == 3 else 'L'
-        pil_image = Image.fromarray(tensor, mode=mode)
+        pil_image = PILImage.fromarray(tensor, mode=mode)
 
         with io.BytesIO() as buffer:
             pil_image.save(buffer, format=format)
@@ -35,10 +40,14 @@ class AbstractImageTensor(AbstractTensor, ABC):
         Display image data from tensor in notebook.
         """
         if is_notebook():
-            from PIL import Image
+            if TYPE_CHECKING:
+                from PIL import Image as PILImage
+            else:
+                PIL = import_library('PIL', raise_error=True)  # noqa: F841
+                from PIL import Image as PILImage
 
             np_array = self.get_comp_backend().to_numpy(self)
-            img = Image.fromarray(np_array)
+            img = PILImage.fromarray(np_array)
 
             from IPython.display import display
 

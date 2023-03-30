@@ -29,19 +29,20 @@ from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
-from docarray.utils._internal.misc import is_tf_available, torch_imported
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import torch
     from pydantic.fields import ModelField
 
-if torch_imported:
-    import torch
-
-if is_tf_available():
-    import tensorflow as tf  # type: ignore
-
     from docarray.typing import TensorFlowTensor
+else:
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
+    torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
@@ -826,12 +827,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         if isinstance(val, np.ndarray):
             return val
-        if is_tf_available() and isinstance(val, TensorFlowTensor):
+        if tf is not None and isinstance(val, TensorFlowTensor):
             return val.unwrap().numpy()
         if isinstance(val, (list, tuple)):
             return np.array(val)
-        if (torch_imported and isinstance(val, torch.Tensor)) or (
-            is_tf_available() and isinstance(val, tf.Tensor)
+        if (torch is not None and isinstance(val, torch.Tensor)) or (
+            tf is not None and isinstance(val, tf.Tensor)
         ):
             return val.numpy()
         if allow_passthrough:
