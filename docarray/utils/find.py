@@ -265,7 +265,7 @@ def find_batched(
     ):
         query = cast(AnyTensor, query)
         d = DocArray[Doc](Doc() for _ in range(comp_backend.shape(query)[0]))
-        d.embedding = query
+        d.embedding = query # type: ignore
         query = d
 
     it = map_docs_batch(
