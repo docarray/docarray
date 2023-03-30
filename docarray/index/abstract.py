@@ -27,8 +27,8 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
-from docarray.utils._internal._typing import is_tensor_union
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
