@@ -1,9 +1,11 @@
+from typing import List
+
 import numpy as np
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDoc
+from docarray import BaseDoc, DocArray
 from docarray.base_doc import DocResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
@@ -22,8 +24,8 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_model=Mmdoc, response_class=DocResponse)
-    async def create_item(doc: Mmdoc):
+    @app.post("/doc/", response_class=DocResponse)
+    async def create_item(doc: Mmdoc) -> Mmdoc:
         return doc
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -107,3 +109,24 @@ async def test_sentence_to_embeddings():
     assert isinstance(doc, OutputDoc)
     assert doc.embedding_clip.shape == (100, 1)
     assert doc.embedding_bert.shape == (100, 1)
+
+
+@pytest.mark.asyncio
+async def test_docarray():
+    doc = ImageDoc(tensor=np.zeros((3, 224, 224)))
+    docs = DocArray[ImageDoc]([doc, doc])
+
+    app = FastAPI()
+
+    @app.post("/doc/", response_class=DocResponse)
+    async def func(fastapi_docs: List[ImageDoc]) -> List[ImageDoc]:
+        docarray_docs = DocArray[ImageDoc].construct(fastapi_docs)
+        return list(docarray_docs)
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/doc/", data=docs.to_json())
+
+    assert response.status_code == 200
+    docs = DocArray[ImageDoc].from_json(response.content.decode())
+    assert len(docs) == 2
+    assert docs[0].tensor.shape == (3, 224, 224)
