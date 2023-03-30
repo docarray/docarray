@@ -10,6 +10,8 @@ from docarray.typing import NdArray
 from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 from tests.index.elastic.fixture import DeepNestedDoc, FlatDoc, NestedDoc, SimpleDoc
 
+pytestmark = [pytest.mark.slow, pytest.mark.index]
+
 
 @pytest.fixture
 def ten_simple_docs():
