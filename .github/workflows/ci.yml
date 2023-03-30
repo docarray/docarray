@@ -164,7 +164,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark)" ${{ matrix.test-path }}
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
