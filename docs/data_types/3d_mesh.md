@@ -52,7 +52,7 @@ doc.summary()
         ╰───────────────────┴──────────────────────────────────────────────────╯
 ```
 
-## Display 3D mesh
+### Display 3D mesh
 
 You can display your 3D object and interact with from its url as well as from a VerticesAndFaces instance. The latter will always display without color, whereas display from url will show with color if those are stores in the file.
 ```python
@@ -1310,7 +1310,11 @@ init();</script></body>
 
 ## Point cloud representation
 
-A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the surface of the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a point cloud of size `samples` from a PointCloud3DUrl instance. This will give you a PointsAndColors instance, which contains information about the points in 3D space (as a tensor of shape (`samples`, 3)) and optionally colors for those points. By loading them, the colors will always be None. If you have access to colors elsewhere, you can set them manually.
+A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the surface of the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. 
+
+### Load point cloud
+
+In DocArray, you can simply load a point cloud of size `samples` from a PointCloud3DUrl instance. This will give you a PointsAndColors instance, which contains information about the points in 3D space (as a tensor of shape (`samples`, 3)) and optionally colors for those points. By loading them, the colors will always be None. If you have access to colors elsewhere, you can set them manually.
 
 ```python
 from docarray import BaseDoc
@@ -1349,7 +1353,7 @@ doc.summary()
 ```
 
 
-## Display and interact with 3D point cloud
+### Display and interact with 3D point cloud
 You can display your point cloud and interact with it from its url as well as from a PointsAndColors instance. The first will always display without color, whereas display from PointsAndColors will show with color if PointsAndColors.colors is not None.
 ```python
 doc.point_cloud_url.display()
