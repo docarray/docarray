@@ -3,7 +3,18 @@
 ````{tip}
 This requires `Pillow` dependencies. You can install them via `pip install "docarray[image]"`
 ````
-DocArray offers several Image specific types to represent your image data starting with an image url to image bytes to an image tensor.
+DocArray offers several Image specific types to represent your image data from ImageUrl to ImageBytes to an ImageTensor.
+
+```{figure} apple.png
+:align: center
+:scale: 30%
+```
+![Image title](apple.png)
+
+<figure markdown>
+  ![](apple.png){ width="300" }
+</figure>
+
 
 ## Load data
 You can load image data by specifying the image url as an `ImageUrl` and then call .load() on it.
