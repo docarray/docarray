@@ -1,7 +1,6 @@
 import base64
 import csv
 import io
-import json
 import os
 import pathlib
 import pickle
@@ -25,7 +24,10 @@ from typing import (
     Union,
 )
 
+import orjson
+
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
     _all_access_paths_valid,
@@ -41,6 +43,7 @@ if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
@@ -93,9 +96,9 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[BaseDoc]):
-
-    document_type: Type[BaseDoc]
+class IOMixinArray(Iterable[T_doc]):
+    document_type: Type[T_doc]
+    _data: List[T_doc]
 
     @abstractmethod
     def __len__(self):
@@ -251,7 +254,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
 
-        with (file_ctx or io.BytesIO()) as bf:
+        with file_ctx or io.BytesIO() as bf:
             self._write_bytes(
                 bf=bf,
                 protocol=protocol,
@@ -318,14 +321,21 @@ class IOMixinArray(Iterable[BaseDoc]):
         :param file: JSON object from where to deserialize a DocArray
         :return: the deserialized DocArray
         """
-        json_docs = json.loads(file)
-        return cls([cls.document_type.parse_raw(v) for v in json_docs])
+        json_docs = orjson.loads(file)
+        return cls([cls.document_type(**v) for v in json_docs])
 
-    def to_json(self) -> str:
-        """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
+    def to_json(self) -> bytes:
+        """Convert the object into JSON bytes. Can be loaded via :meth:`.from_json`.
         :return: JSON serialization of DocArray
         """
-        return json.dumps([doc.json() for doc in self])
+        return orjson_dumps(self._data)
+
+    def _docarray_to_json_compatible(self) -> List[T_doc]:
+        """
+        Convert itself into a json compatible object
+        :return: A list of documents
+        """
+        return self._data
 
     @classmethod
     def from_csv(
@@ -615,7 +625,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         protocol: str = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
-    ) -> Generator['BaseDoc', None, None]:
+    ) -> Generator['T_doc', None, None]:
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
@@ -672,7 +682,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
         streaming: bool = False,
-    ) -> Union[T, Generator['BaseDoc', None, None]]:
+    ) -> Union[T, Generator['T_doc', None, None]]:
         """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
