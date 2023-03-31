@@ -28,10 +28,10 @@ This will install the main dependencies of `DocArray` and will work will all the
     pip install "docarray"
     ``` 
     
-    If you want to install user protobuf with minimal dependencies you can do
+    If you want to use protobuf and DocArray you can do
 
     ```
-    pip install "docarray[common]"
+    pip install "docarray[proto]"
     ``` 
 
 Depending on your usage you might want to only use `DocArray` with only a couple of specific modalities. 
