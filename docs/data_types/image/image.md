@@ -60,23 +60,25 @@ class MyImage(BaseDoc):
 
 img = MyImage(url='apple.png')
 
-img.bytes_ = img.url.load_bytes()
-img.tensor = img.bytes_.load()
-
-print(f"type(img.bytes_) = {type(img.bytes_)}")
-print(f"type(img.tensor) = {type(img.tensor)}")
-```
-```
-type(img.bytes_) = <class 'docarray.typing.bytes.image_bytes.ImageBytes'>
-type(img.tensor) = <class 'docarray.typing.tensor.image.image_ndarray.ImageNdArray'>
+img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
+img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 ```
 
 ## Display image in notebook
 
 You can display your image data in a notebook from both an url as well as a tensor
 
+
 <figure markdown>
-  ![](display_notebook.png){ width="80%" }
+  ![](display_notebook.jpg){ width="500" }
+</figure>
+
+<figure markdown>
+  ![](display_notebook.jpg){ width="800" }
+</figure>
+
+<figure markdown>
+  ![](display_notebook.jpg){ width="80%" }
 </figure>
 
 ## Predefined ImageDoc
