@@ -310,7 +310,7 @@ class IOMixinArray(Iterable[BaseDoc]):
     @classmethod
     def from_json(
         cls: Type[T],
-        file: Union[str, bytes, bytearray],
+        file: str,
     ) -> T:
         """Deserialize JSON strings or bytes into a DocArray.
 
