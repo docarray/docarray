@@ -48,7 +48,7 @@ class ImageBytes(bytes, AbstractType):
         self,
     ) -> 'PILImage.Image':
         """
-        Load the image from the bytes into a numpy.ndarray image tensor
+        Load the image from the bytes into a `PIL.Image.Image` instance
 
         ---
 
