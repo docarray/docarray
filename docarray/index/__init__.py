@@ -24,14 +24,7 @@ def __getattr__(name: str):
         import docarray.index.backends.elastic as lib
     elif name == 'ElasticV7DocIndex':
         import_library('elasticsearch', raise_error=True)
-        from elasticsearch import __version__ as __es__version__
-
         import docarray.index.backends.elasticv7 as lib
-
-        if __es__version__[0] > 7:
-            raise ImportError(
-                'ElasticV7DocIndex requires the elasticsearch library to be version 7.10.1'
-            )
 
     else:
         raise ImportError(

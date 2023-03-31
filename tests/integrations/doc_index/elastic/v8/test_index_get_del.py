@@ -267,4 +267,6 @@ def test_index_multi_modal_doc():
 
 def test_elasticv7_version_check():
     with pytest.raises(ImportError):
-        from docarray.index import ElasticV7DocIndex  # noqa: F401
+        from docarray.index import ElasticV7DocIndex
+
+        _ = ElasticV7DocIndex[SimpleDoc]()

@@ -14,6 +14,15 @@ T = TypeVar('T', bound='ElasticV7DocIndex')
 
 
 class ElasticV7DocIndex(ElasticDocIndex):
+    def __init__(self, db_config=None, **kwargs):
+        from elasticsearch import __version__ as __es__version__
+
+        if __es__version__[0] > 7:
+            raise ImportError(
+                'ElasticV7DocIndex requires the elasticsearch library to be version 7.10.1'
+            )
+
+        super().__init__(db_config, **kwargs)
 
     ###############################################
     # Inner classes for query builder and configs #
