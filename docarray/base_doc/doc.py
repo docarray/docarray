@@ -1,12 +1,12 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Dict
 
 import orjson
 from pydantic import BaseModel, Field
 from rich.console import Console
 
 from docarray.base_doc.base_node import BaseNode
-from docarray.base_doc.io.json import orjson_dumps, orjson_dumps_and_decode
+from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -29,7 +29,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps_and_decode
-        json_encoders = {dict: orjson_dumps}
+        # `DocArrayResponse` is able to handle tensors by itself.
+        # Therefore, we stop FastAPI from doing any transformations
+        # on tensors by setting an identity function as a custom encoder.
+        json_encoders = {AbstractTensor: lambda x: x}
 
         validate_assignment = True
 
