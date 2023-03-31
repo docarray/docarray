@@ -13,7 +13,7 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.map import map_docs_batch
+from docarray.utils.map import map_docs_batched
 
 
 class FindResult(NamedTuple):
@@ -271,7 +271,7 @@ def find_batched(
         d.embedding = query # type: ignore
         query = d
 
-    it = map_docs_batch(
+    it = map_docs_batched(
         da=query,
         func=_get_result,
         batch_size=batch_size,
