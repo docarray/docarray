@@ -29,6 +29,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps_and_decode
+        # `DocArrayResponse` is able to handle tensors by itself.
+        # Therefore, we stop FastAPI from doing any transformations
+        # on tensors by setting an identity function as a custom encoder.
         json_encoders = {AbstractTensor: lambda x: x}
 
         validate_assignment = True

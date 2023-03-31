@@ -1,7 +1,6 @@
 import base64
 import csv
 import io
-import json
 import os
 import pathlib
 import pickle
@@ -44,6 +43,7 @@ if TYPE_CHECKING:
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
+T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
 SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
@@ -96,15 +96,9 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class ComplexEncoder(json.JSONEncoder):
-    def default(self, val):
-        if isinstance(val, BaseDoc):
-            return dict(val)
-
-
-class IOMixinArray(Iterable[BaseDoc]):
-    document_type: Type[BaseDoc]
-    _data: List[BaseDoc]
+class IOMixinArray(Iterable[T_doc]):
+    document_type: Type[T_doc]
+    _data: List[T_doc]
 
     @abstractmethod
     def __len__(self):
@@ -336,7 +330,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         """
         return orjson_dumps(self._data)
 
-    def _docarray_to_json_compatible(self) -> List[BaseDoc]:
+    def _docarray_to_json_compatible(self) -> List[T_doc]:
         """
         Convert itself into a json compatible object
         :return: A list of documents
@@ -631,7 +625,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         protocol: str = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
-    ) -> Generator['BaseDoc', None, None]:
+    ) -> Generator['T_doc', None, None]:
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
@@ -688,7 +682,7 @@ class IOMixinArray(Iterable[BaseDoc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
         streaming: bool = False,
-    ) -> Union[T, Generator['BaseDoc', None, None]]:
+    ) -> Union[T, Generator['T_doc', None, None]]:
         """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
