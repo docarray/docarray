@@ -20,11 +20,11 @@ def __getattr__(name: str):
         import_library('hnswlib', raise_error=True)
         import docarray.index.backends.hnswlib as lib
     elif name == 'ElasticDocIndex':
-        import_library('elasticsearch==8.6.2', raise_error=True)
-        import docarray.index.backends.elasticv7 as lib
-    elif name == 'ElasticV7DocIndex':
-        import_library('elasticsearch==7.10.1', raise_error=True)
+        import_library('elasticsearch', raise_error=True)
         import docarray.index.backends.elastic as lib
+    elif name == 'ElasticV7DocIndex':
+        import_library('elasticsearch', raise_error=True)
+        import docarray.index.backends.elasticv7 as lib
     else:
         raise ImportError(
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
