@@ -56,7 +56,7 @@ doc.url.display()
     <th>hello.wav</th>
   </tr>
   <tr>
-    <td><audio controls><source src="../../_static/hello.wav" type="audio/wav"></audio></td>
+    <td><audio controls><source src="https://www.kozco.com/tech/piano2.wav" type="audio/wav"></audio></td>
   </tr>
 </table>
 
