@@ -1,4 +1,4 @@
-from docarray.index.backends.elastic import ElasticV7DocIndex
 from docarray.index.backends.hnswlib import HnswDocumentIndex
+from docarray.index.backends.qdrant import QdrantDocumentIndex
 
-__all__ = ['HnswDocumentIndex', 'ElasticV7DocIndex']
+__all__ = ['HnswDocumentIndex', 'QdrantDocumentIndex']
