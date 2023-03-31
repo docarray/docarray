@@ -10,7 +10,7 @@ __all__ = ['AnyDoc', 'BaseDoc', 'BaseNode']
 
 
 def __getattr__(name: str):
-    if name == 'DocResponse':
+    if name == 'DocArrayResponse':
         import_library('fastapi', raise_error=True)
         from docarray.base_doc.docarray_response import DocArrayResponse
 

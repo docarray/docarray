@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray import BaseDoc, DocArray
-from docarray.base_doc.docarray_response import DocArrayResponse
+from docarray.base_doc import DocArrayResponse
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
@@ -24,7 +24,7 @@ async def test_fast_api():
 
     app = FastAPI()
 
-    @app.post("/doc/", response_class=DocArrayResponse)
+    @app.post("/doc/", response_model=Mmdoc, response_class=DocArrayResponse)
     async def create_item(doc: Mmdoc) -> Mmdoc:
         return doc
 
@@ -125,8 +125,12 @@ async def test_docarray():
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/doc/", data=docs.to_json())
+        resp_doc = await ac.get("/docs")
+        resp_redoc = await ac.get("/redoc")
 
     assert response.status_code == 200
+    assert resp_doc.status_code == 200
+    assert resp_redoc.status_code == 200
 
     docs = DocArray[ImageDoc].from_json(response.content.decode())
     assert len(docs) == 2
