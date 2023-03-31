@@ -70,16 +70,9 @@ You can display your image data in a notebook from both an url as well as a tens
 
 
 <figure markdown>
-  ![](display_notebook.jpg){ width="500" }
+  ![](display_notebook.jpg){ width="900" }
 </figure>
 
-<figure markdown>
-  ![](display_notebook.jpg){ width="800" }
-</figure>
-
-<figure markdown>
-  ![](display_notebook.jpg){ width="80%" }
-</figure>
 
 ## Predefined ImageDoc
 

@@ -4,11 +4,11 @@
 This requires a `pydub` dependency. You can install it via `pip install "docarray[audio]"`
 ````
 
-# Load audio file
+## Load audio file
 Load AudioTensor from any AudioUrl including `.wav` and `.mp3` files. 
 
-# Save audio to file
+## Save audio to file
 
-# Play audio
+## Play audio
 
-# Predefined AudioDoc
+## Predefined AudioDoc
