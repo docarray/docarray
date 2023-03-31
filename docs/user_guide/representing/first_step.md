@@ -2,16 +2,16 @@
 
 At the heart of `DocArray` lies the concept of [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
-A [BaseDoc][docarray.base_doc.doc.BaseDoc] is very similar to [Pydantic](https://docs.pydantic.dev/)
-[`BaseModel`](https://docs.pydantic.dev/usage/models). It allows to define custom `Document` schema (or `Model` in
+A [BaseDoc][docarray.base_doc.doc.BaseDoc] is very similar to a [Pydantic](https://docs.pydantic.dev/)
+[`BaseModel`](https://docs.pydantic.dev/usage/models) - in fact it _is_ a specialized Pydantic `BaseModel`. It allows you to define custom `Document` schemas (or `Model` in
 the Pydantic world) to represent your data.
 
 ## Basic `Doc` usage.
 
 Before going in detail about what we can do with [BaseDoc][docarray.base_doc.doc.BaseDoc] and how to use it, let's
-see how it looks like in practice.
+see what it looks like in practice.
 
-The following python code will define a `BannerDoc` class that will be used to represent banner data.
+The following Python code defines a `BannerDoc` class that can be used to represent the data of a website banner.
 
 ```python
 from docarray import BaseDoc
@@ -24,7 +24,7 @@ class BannerDoc(BaseDoc):
     description: str
 ```
 
-you can then instantiate a `BannerDoc` object and access its attributes.
+You can then instantiate a `BannerDoc` object and access its attributes.
 
 ```python
 banner = BannerDoc(
@@ -43,13 +43,13 @@ assert banner.description == "This is a banner"
 
 ## `BaseDoc` is a Pydantic `BaseModel`
 
-The class [BaseDoc][docarray.base_doc.doc.BaseDoc] inherits from pydantic [BaseModel](https://docs.pydantic.dev/usage/models) from Pydantic. So you can use
+The class [BaseDoc][docarray.base_doc.doc.BaseDoc] inherits from pydantic [BaseModel](https://docs.pydantic.dev/usage/models). So you can use
 all the features of `BaseModel` in your `Doc` class. 
 
 This namely means that `BaseDoc`:
 
 * Will perform data validation: `BaseDoc` will check that the data you pass to it is valid. If not, it will raise an
-  error. Data being "valid"  is actually defined by the type used in the docstring itself, but we will come back to this concept later (TODO add typing section)
+  error. Data being "valid"  is actually defined by the type used in the type hint itself, but we will come back to this concept later (TODO add typing section)
 
 * Can be configured using a nested `Config` class, see pydantic [documentation](https://docs.pydantic.dev/usage/model_config/) for more details on what kind of config Pydantic offer.
 
@@ -69,14 +69,14 @@ Another difference is that [BaseDoc][docarray.base_doc.doc.BaseDoc] has a genera
 
 
 
-## `BaseDoc` allows to represent MultiModal and nested Data.
+## `BaseDoc` allows to represent multimodal and nested data.
 
-Let's say you want to represent a Youtube video in your application. Maybe to build a search system for Youtube video.
-A Youtube video is not only composed of a video, but it also has a title, a description, a thumbnail (and more but let's keep it simple).
+Let's say you want to represent a Youtube video in your application, perhaps to build a search system for Youtube videos.
+A Youtube video is not only composed of a video, but it also has a title, a description, a thumbnail (and more, but let's keep it simple).
 
-All of these elements are from different `modalities` LINK TO MODALITIES SECTION (not ready), title and description are text, the thumbnail is an image, and the video in itself is, well, a video.
+All of these elements are from different `modalities` LINK TO MODALITIES SECTION (not ready): title and description are text, the thumbnail is an image, and the video in itself is, well, a video.
 
-DocArray allows to represent all of this Multi Modal data in a single object. 
+DocArray allows to represent all of this multimodal data in a single object. 
 
 Let's first create an `BaseDoc` for each of the elements that compose the Youtube video.
 
