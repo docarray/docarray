@@ -41,7 +41,7 @@ class ImageUrl(AnyUrl):
             )
         return cls(str(url), scheme=None)
 
-    def load_pil(self, timeout: Optional[float] = None) -> 'PILImage':
+    def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':
         """
         Load the image from the bytes into a numpy.ndarray image tensor
 
