@@ -5,10 +5,6 @@ This requires `Pillow` dependencies. You can install them via `pip install "doca
 ````
 DocArray offers several Image specific types to represent your image data from ImageUrl to ImageBytes to an ImageTensor.
 
-```{figure} apple.png
-:align: center
-:scale: 30%
-```
 ![Image title](apple.png)
 
 <figure markdown>
