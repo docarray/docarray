@@ -179,7 +179,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return [self._convert_to_doc(point) for point in response]
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
-        raise NotImplementedError("Not implemented yet")
+        raise NotImplementedError('Not implemented yet')
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
@@ -221,23 +221,63 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
         )
 
-    def _filter(self, filter_query: Any, limit: int) -> Union[DocArray, List[Dict]]:
-        raise NotImplementedError("Not implemented yet")
+    def _filter(self, filter_query: rest.Filter, limit: int) -> Union[DocArray, List[Dict]]:
+        query_batched = [filter_query]
+        docs = self._filter_batched(filter_queries=query_batched, limit=limit)
+        return docs[0]
 
     def _filter_batched(
-        self, filter_queries: Any, limit: int
+        self, filter_queries: Sequence[rest.Filter], limit: int
     ) -> Union[List[DocArray], List[List[Dict]]]:
-        raise NotImplementedError("Not implemented yet")
+        responses = []
+        for filter_query in filter_queries:
+            # There is no batch scroll available in Qdrant client yet, so we need to
+            # perform the queries one by one. It will be changed in the future versions.
+            response, _ = self._client.scroll(
+                collection_name=self._db_config.collection_name,
+                scroll_filter=filter_query,
+                limit=limit,
+                with_payload=True,
+                with_vectors=True,
+            )
+            responses.append(response)
+
+        return [
+            [self._convert_to_doc(point) for point in response]
+            for response in responses
+        ]
 
     def _text_search(
         self, query: str, limit: int, search_field: str = ''
     ) -> _FindResult:
-        raise NotImplementedError("Not implemented yet")
+        query_batched = [query]
+        docs, scores = self._text_search_batched(
+            queries=query_batched, limit=limit, search_field=search_field
+        )
+        return _FindResult(documents=docs[0], scores=scores[0])
 
     def _text_search_batched(
         self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
-        raise NotImplementedError("Not implemented yet")
+        filter_queries = [
+            rest.Filter(
+                must=[
+                    rest.FieldCondition(
+                        key=search_field,
+                        match=rest.MatchText(text=query),
+                    )
+                ]
+            )
+            for query in queries
+        ]
+        documents = self._filter_batched(filter_queries=filter_queries, limit=limit)
+
+        # Qdrant does not return any scores if we just filter the objects, without using
+        # semantic search over vectors. Thus, each document is scored with a value of 1
+        return _FindResultBatched(
+            documents=documents,
+            scores=np.ones((len(queries), limit)),
+        )
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
         point_id = self._to_qdrant_id(row.get('id'))
@@ -268,7 +308,9 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             distance=QDRANT_SPACE_MAPPING[column_info.config.get('space', 'cosine')],
         )
 
-    def _convert_to_doc(self, point: rest.ScoredPoint) -> Dict[str, Any]:
+    def _convert_to_doc(
+        self, point: Union[rest.ScoredPoint, rest.Record]
+    ) -> Dict[str, Any]:
         # TODO: use DocArray structure, not dict
         doc = point.payload
         for vector_name, vector in point.vector.items():
