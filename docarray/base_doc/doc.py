@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Dict
 
 import orjson
 from pydantic import BaseModel, Field
@@ -98,3 +98,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             for key, val in self.__dict__.items():
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
+
+    def _docarray_to_json_compatible(self) -> Dict:
+        """
+        Convert itself into a json compatible object
+        :return: A dictionary of the BaseDoc object
+        """
+        return self.dict()

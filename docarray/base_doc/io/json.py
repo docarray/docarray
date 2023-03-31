@@ -1,8 +1,6 @@
 import orjson
 from pydantic.json import ENCODERS_BY_TYPE
 
-from docarray.typing.abstract_type import AbstractType
-
 
 def _default_orjson(obj):
     """
@@ -10,8 +8,9 @@ def _default_orjson(obj):
     :param obj:
     :return: return a json compatible object
     """
+    from docarray.base_doc import BaseNode
 
-    if isinstance(obj, AbstractType):
+    if isinstance(obj, BaseNode):
         return obj._docarray_to_json_compatible()
     else:
         for cls_, encoder in ENCODERS_BY_TYPE.items():

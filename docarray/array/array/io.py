@@ -25,7 +25,10 @@ from typing import (
     Union,
 )
 
+import orjson
+
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.helper import (
     _access_path_dict_to_nested_dict,
     _all_access_paths_valid,
@@ -93,8 +96,15 @@ class _LazyRequestReader:
         return self.content[item]
 
 
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, val):
+        if isinstance(val, BaseDoc):
+            return dict(val)
+
+
 class IOMixinArray(Iterable[BaseDoc]):
     document_type: Type[BaseDoc]
+    _data: List[BaseDoc]
 
     @abstractmethod
     def __len__(self):
@@ -310,22 +320,28 @@ class IOMixinArray(Iterable[BaseDoc]):
     @classmethod
     def from_json(
         cls: Type[T],
-        file: str,
+        file: Union[str, bytes, bytearray],
     ) -> T:
         """Deserialize JSON strings or bytes into a DocArray.
 
         :param file: JSON object from where to deserialize a DocArray
         :return: the deserialized DocArray
         """
-        json_docs = json.loads(file)
+        json_docs = orjson.loads(file)
         return cls([cls.document_type(**v) for v in json_docs])
 
-    def to_json(self) -> str:
-        """Convert the object into a JSON string. Can be loaded via :meth:`.from_json`.
+    def to_json(self) -> bytes:
+        """Convert the object into a JSON bytes. Can be loaded via :meth:`.from_json`.
         :return: JSON serialization of DocArray
         """
-        doc_jsons = ', '.join([doc.json() for doc in self])
-        return f'[{doc_jsons}]'
+        return orjson_dumps(self._data)
+
+    def _docarray_to_json_compatible(self) -> List[BaseDoc]:
+        """
+        Convert itself into a json compatible object
+        :return: A list of documents
+        """
+        return self._data
 
     @classmethod
     def from_csv(
