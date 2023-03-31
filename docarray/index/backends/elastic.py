@@ -1,4 +1,4 @@
-import os
+# mypy: ignore-errors
 import uuid
 import warnings
 from collections import defaultdict
@@ -21,6 +21,7 @@ from typing import (
 )
 
 import numpy as np
+from elastic_transport import NodeConfig
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
 from pydantic import parse_obj_as
@@ -40,7 +41,7 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 from docarray.utils.find import _FindResult
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
-T = TypeVar('T', bound='ElasticV7DocIndex')
+T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
@@ -58,11 +59,15 @@ if is_tf_available():
     ELASTIC_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
-class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
+# toml
+# elastic-transport = "^8.4.0"
+# elasticsearch = "^8.6.2"
+class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(ElasticV7DocIndex.DBConfig, self._db_config)
+        self._db_config = cast(self.DBConfig, self._db_config)
 
+        # ElasticSearch client creation
         if self._db_config.index_name is None:
             id = uuid.uuid4().hex
             self._db_config.index_name = 'index__' + id
@@ -74,40 +79,32 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             **self._db_config.es_config,
         )
 
-        # compatibility
-        self._server_version = self._client.info()['version']['number']
-        if int(self._server_version.split('.')[0]) >= 8:
-            os.environ['ELASTIC_CLIENT_APIVERSIONING'] = '1'
+        # ElasticSearh index setup
+        self._index_vector_params = ('dims', 'similarity', 'index')
+        self._index_vector_options = ('m', 'ef_construction')
 
-        body: Dict[str, Any] = {
-            'mappings': {
-                'dynamic': True,
-                '_source': {'enabled': 'true'},
-                'properties': {},
-            }
+        mappings: Dict[str, Any] = {
+            'dynamic': True,
+            '_source': {'enabled': 'true'},
+            'properties': {},
         }
 
         for col_name, col in self._column_infos.items():
-            body['mappings']['properties'][col_name] = self._create_index_mapping(col)
+            mappings['properties'][col_name] = self._create_index_mapping(col)
 
         if self._client.indices.exists(index=self._index_name):
-            self._client.indices.put_mapping(
-                index=self._index_name, body=body['mappings']
-            )
+            self._client_put_mapping(mappings)
         else:
-            self._client.indices.create(index=self._index_name, body=body)
+            self._client_create(mappings)
 
         if len(self._db_config.index_settings):
-            self._client.indices.put_settings(
-                index=self._index_name, body=self._db_config.index_settings
-            )
+            self._client_put_settings(self._db_config.index_settings)
 
         self._refresh(self._index_name)
 
     ###############################################
     # Inner classes for query builder and configs #
     ###############################################
-
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, outer_instance, **kwargs):
             super().__init__()
@@ -117,16 +114,11 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             }
 
         def build(self, *args, **kwargs) -> Any:
-            if (
-                'script_score' in self._query['query']
-                and 'bool' in self._query['query']
-                and len(self._query['query']['bool']) > 0
-            ):
-                self._query['query']['script_score']['query'] = {}
-                self._query['query']['script_score']['query']['bool'] = self._query[
-                    'query'
-                ]['bool']
-                del self._query['query']['bool']
+            if len(self._query['query']) == 0:
+                del self._query['query']
+            elif 'knn' in self._query:
+                self._query['knn']['filter'] = self._query['query']
+                del self._query['query']
 
             return self._query
 
@@ -141,13 +133,19 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             else:
                 query_vec = query
             query_vec_np = BaseDocIndex._to_numpy(self._outer_instance, query_vec)
-            self._query['size'] = limit
-            self._query['query']['script_score'] = ElasticV7DocIndex._form_search_body(
-                query_vec_np, limit, search_field
-            )['query']['script_score']
+            self._query['knn'] = ElasticDocIndex._form_search_body(
+                query_vec_np,
+                limit,
+                search_field,
+                self._outer_instance._runtime_config.default_column_config[
+                    'dense_vector'
+                ]['num_candidates'],
+            )['knn']
 
             return self
 
+        # filter accrpts Leaf/Compound query clauses
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
         def filter(self, query: Dict[str, Any], limit: int = 10):
             self._query['size'] = limit
             self._query['query']['bool']['filter'].append(query)
@@ -172,15 +170,20 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        hosts: Union[str, List[str], None] = 'http://localhost:9200'
+        hosts: Union[
+            str, List[Union[str, Mapping[str, Union[str, int]], NodeConfig]], None
+        ] = 'http://localhost:9200'
         index_name: Optional[str] = None
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        default_column_config: Dict[Any, Dict[str, Any]] = field(
-            default_factory=lambda: {
+        default_column_config: Dict[Any, Dict[str, Any]] = field(default_factory=dict)
+        chunk_size: int = 500
+
+        def __post_init__(self):
+            self.default_column_config = {
                 'binary': {},
                 'boolean': {},
                 'keyword': {},
@@ -212,7 +215,6 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
                 'completion': {},
                 'search_as_you_type': {},
                 'token_count': {},
-                'dense_vector': {'dims': 128},
                 'sparse_vector': {},
                 'rank_feature': {},
                 'rank_features': {},
@@ -224,8 +226,19 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
-        )
-        chunk_size: int = 500
+            self.default_column_config['dense_vector'] = self.dense_vector_config()
+
+        def dense_vector_config(self):
+            config = {
+                'index': True,
+                'dims': 128,
+                'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
+                'm': 16,
+                'ef_construction': 100,
+                'num_candidates': 10000,
+            }
+
+            return config
 
     ###############################################
     # Implementation of abstract methods          #
@@ -233,7 +246,6 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type."""
-
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
                 return 'dense_vector'
@@ -312,10 +324,7 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 
-        es_rows = self._client.mget(
-            index=self._index_name,
-            body={'ids': doc_ids},
-        )['docs']
+        es_rows = self._client_mget(doc_ids)['docs']
 
         for row in es_rows:
             if row['found']:
@@ -336,7 +345,7 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        resp = self._client.search(index=self._index_name, body=query)
+        resp = self._client.search(index=self._index_name, **query)
         docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=scores)
@@ -344,17 +353,9 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
-        if int(self._server_version.split('.')[0]) >= 8:
-            warnings.warn(
-                'You are using Elasticsearch 8.0+ and the current client is 7.10.1. HNSW based vector search is not supported and the find method has a default implementation using exhaustive KNN search with cosineSimilarity, which may result in slow performance.'
-            )
-
         body = self._form_search_body(query, limit, search_field)
 
-        resp = self._client.search(
-            index=self._index_name,
-            body=body,
-        )
+        resp = self._client_search(**body)
 
         docs, scores = self._format_response(resp)
 
@@ -372,7 +373,7 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             body = self._form_search_body(query, limit, search_field)
             request.extend([head, body])
 
-        responses = self._client.msearch(body=request)
+        responses = self._client_msearch(request)
 
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
@@ -384,15 +385,7 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Dict[str, Any],
         limit: int,
     ) -> List[Dict]:
-        body = {
-            'size': limit,
-            'query': filter_query,
-        }
-
-        resp = self._client.search(
-            index=self._index_name,
-            body=body,
-        )
+        resp = self._client_search(query=filter_query, size=limit)
 
         docs, _ = self._format_response(resp)
 
@@ -409,7 +402,7 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             body = {'query': query, 'size': limit}
             request.extend([head, body])
 
-        responses = self._client.msearch(body=request)
+        responses = self._client_msearch(request)
         das, _ = zip(*[self._format_response(resp) for resp in responses['responses']])
 
         return list(das)
@@ -422,15 +415,11 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResult:
 
         body = self._form_text_search_body(query, limit, search_field)
-
-        resp = self._client.search(
-            index=self._index_name,
-            body=body,
-        )
+        resp = self._client_search(**body)
 
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=scores)
+        return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
     def _text_search_batched(
         self,
@@ -444,28 +433,32 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
             body = self._form_text_search_body(query, limit, search_field)
             request.extend([head, body])
 
-        responses = self._client.msearch(body=request)
-
+        responses = self._client_msearch(request)
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
         )
-        return _FindResultBatched(documents=list(das), scores=np.array(scores))
+        return _FindResultBatched(
+            documents=list(das), scores=np.array(scores, dtype=object)
+        )
 
     ###############################################
     # Helpers                                     #
     ###############################################
 
-    # ElasticSearch helpers
     def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
 
-        index = col.config.copy()
-        if 'type' not in index:
-            index['type'] = col.db_type
+        index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
 
-        if col.db_type == 'dense_vector' and col.n_dim:
-            index['dims'] = col.n_dim
-
+        if col.db_type == 'dense_vector':
+            for k in self._index_vector_params:
+                index[k] = col.config[k]
+            if col.n_dim:
+                index['dims'] = col.n_dim
+            index['index_options'] = dict(
+                (k, col.config[k]) for k in self._index_vector_options
+            )
+            index['index_options']['type'] = 'hnsw'
         return index
 
     def _send_requests(
@@ -495,18 +488,18 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
 
     @staticmethod
     def _form_search_body(
-        query: np.ndarray, limit: int, search_field: str = ''
+        query: np.ndarray,
+        limit: int,
+        search_field: str = '',
+        num_candidates: int = 10000,
     ) -> Dict[str, Any]:
         body = {
             'size': limit,
-            'query': {
-                'script_score': {
-                    'query': {'match_all': {}},
-                    'script': {
-                        'source': f'cosineSimilarity(params.query_vector, \'{search_field}\') + 1.0',
-                        'params': {'query_vector': query},
-                    },
-                }
+            'knn': {
+                'field': search_field,
+                'query_vector': query,
+                'k': limit,
+                'num_candidates': num_candidates,
             },
         }
         return body
@@ -544,3 +537,27 @@ class ElasticV7DocIndex(BaseDocIndex, Generic[TSchema]):
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
+
+    ###############################################
+    # API Wrappers                                #
+    ###############################################
+
+    def _client_put_mapping(self, mappings: Dict[str, Any]):
+        self._client.indices.put_mapping(
+            index=self._index_name, properties=mappings['properties']
+        )
+
+    def _client_create(self, mappings: Dict[str, Any]):
+        self._client.indices.create(index=self._index_name, mappings=mappings)
+
+    def _client_put_settings(self, settings: Dict[str, Any]):
+        self._client.indices.put_settings(index=self._index_name, settings=settings)
+
+    def _client_mget(self, ids: Sequence[str]):
+        return self._client.mget(index=self._index_name, ids=ids)
+
+    def _client_search(self, **kwargs):
+        return self._client.search(index=self._index_name, **kwargs)
+
+    def _client_msearch(self, request: List[Dict[str, Any]]):
+        return self._client.msearch(index=self._index_name, searches=request)
