@@ -99,7 +99,7 @@ from docarray import BaseDoc
 from docarray.typing import VideoUrl, VideoBytes
 
 
-class ImageDoc(BaseDoc):
+class VideoDoc(BaseDoc):
     url: VideoUrl
     bytes: VideoBytes = (
         None  # bytes are not always loaded in memory, so we make it optional
