@@ -325,7 +325,7 @@ class IOMixinArray(Iterable[T_doc]):
         return cls([cls.document_type(**v) for v in json_docs])
 
     def to_json(self) -> bytes:
-        """Convert the object into a JSON bytes. Can be loaded via :meth:`.from_json`.
+        """Convert the object into JSON bytes. Can be loaded via :meth:`.from_json`.
         :return: JSON serialization of DocArray
         """
         return orjson_dumps(self._data)
