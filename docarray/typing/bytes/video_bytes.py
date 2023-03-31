@@ -8,6 +8,7 @@ from pydantic.validators import bytes_validator
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor import AudioNdArray, NdArray, VideoNdArray
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -84,7 +85,10 @@ class VideoBytes(bytes, AbstractType):
             av.open() as described [here](https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open)
         :return: a VideoLoadResult instance with video, audio and keyframe indices
         """
-        import av
+        if TYPE_CHECKING:
+            import av
+        else:
+            av = import_library('av')
 
         with av.open(BytesIO(self), **kwargs) as container:
             audio_frames = []

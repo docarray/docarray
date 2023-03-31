@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     import trimesh
@@ -55,7 +56,10 @@ class Url3D(AnyUrl, ABC):
         """
         import urllib.parse
 
-        import trimesh
+        if TYPE_CHECKING:
+            import trimesh
+        else:
+            trimesh = import_library('trimesh', raise_error=True)
 
         if not trimesh_args:
             trimesh_args = {}

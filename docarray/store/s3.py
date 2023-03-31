@@ -1,19 +1,22 @@
 import io
 import logging
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Type, TypeVar
-
-import boto3
-import botocore
-from smart_open import open
-from typing_extensions import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type, TypeVar
 
 from docarray.store.abstract_doc_store import AbstractDocStore
 from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils._internal.cache import _get_cache_path
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import BaseDoc, DocArray
+    import boto3
+    import botocore
+    from smart_open import open
+else:
+    open = import_library('smart_open', raise_error=True).open
+    boto3 = import_library('boto3', raise_error=True)
+    botocore = import_library('botocore', raise_error=True)
 
 SelfS3DocStore = TypeVar('SelfS3DocStore', bound='S3DocStore')
 
