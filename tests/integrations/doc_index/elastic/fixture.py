@@ -1,6 +1,7 @@
 import os
 import time
 
+import numpy as np
 import pytest
 from pydantic import Field
 
@@ -8,24 +9,6 @@ from docarray import BaseDoc
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
-
-
-class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dims=1000)
-
-
-class FlatDoc(BaseDoc):
-    tens_one: NdArray = Field(dims=10)
-    tens_two: NdArray = Field(dims=50)
-
-
-class NestedDoc(BaseDoc):
-    d: SimpleDoc
-
-
-class DeepNestedDoc(BaseDoc):
-    d: NestedDoc
-
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 compose_yml_v7 = os.path.abspath(os.path.join(cur_dir, 'v7/docker-compose.yml'))
@@ -56,3 +39,46 @@ def _wait_for_es():
     es = Elasticsearch(hosts='http://localhost:9200/')
     while not es.ping():
         time.sleep(0.5)
+
+
+class SimpleDoc(BaseDoc):
+    tens: NdArray[10] = Field(dims=1000)
+
+
+class FlatDoc(BaseDoc):
+    tens_one: NdArray = Field(dims=10)
+    tens_two: NdArray = Field(dims=50)
+
+
+class NestedDoc(BaseDoc):
+    d: SimpleDoc
+
+
+class DeepNestedDoc(BaseDoc):
+    d: NestedDoc
+
+
+@pytest.fixture(scope='function')
+def ten_simple_docs():
+    return [SimpleDoc(tens=np.random.randn(10)) for _ in range(10)]
+
+
+@pytest.fixture(scope='function')
+def ten_flat_docs():
+    return [
+        FlatDoc(tens_one=np.random.randn(10), tens_two=np.random.randn(50))
+        for _ in range(10)
+    ]
+
+
+@pytest.fixture(scope='function')
+def ten_nested_docs():
+    return [NestedDoc(d=SimpleDoc(tens=np.random.randn(10))) for _ in range(10)]
+
+
+@pytest.fixture(scope='function')
+def ten_deep_nested_docs():
+    return [
+        DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=np.random.randn(10))))
+        for _ in range(10)
+    ]

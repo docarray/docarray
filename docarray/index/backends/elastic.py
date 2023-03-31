@@ -59,9 +59,6 @@ if is_tf_available():
     ELASTIC_PY_VEC_TYPES.append(TensorFlowTensor)
 
 
-# toml
-# elastic-transport = "^8.4.0"
-# elasticsearch = "^8.6.2"
 class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
