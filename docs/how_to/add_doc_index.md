@@ -9,10 +9,11 @@ This document shows how to add a new Document Index to DocArray.
 
 That process can be broken down into a number of basic steps:
 
-1. Create a new class that inherits from `BaseDocIndex`
-2. Declare default configurations for your Document Index
-3. Implement abstract methods for indexing, searching, and deleting
-4. Implement a Query Builder for your Document Index
+1. Installation and user instructions
+2. Create a new class that inherits from `BaseDocIndex`Create a new class that inherits from `BaseDocIndex`
+3. Declare default configurations for your Document Index
+4. Implement abstract methods for indexing, searching, and deleting
+5. Implement a Query Builder for your Document Index
 
 In general, the steps above can be followed in roughly that order.
 
@@ -24,6 +25,46 @@ For an end-to-end example of this process, you can check out the [existing HNSWL
 **Caution**: The HNSWLib Document Index implementation can be used as a reference, but it is special in some key ways.
 For example, HNSWLib can only index vectors, so it uses SQLite to store the rest of the Documents alongside it.
 This is _not_ how you should store Documents in your implementation! You can find guidance on how you _should_ do it below.
+
+
+## Installation and user instructions
+Add the library required for your Index via poetry: `poetry add {my_index_lib}`.
+In the `pyproject.toml` file, it will look like this:
+```
+[tool.poetry.dependencies]
+my_index_lib = ">=123.456.789"
+```
+Mark it as optional and manually create an extra for it:
+```
+[tool.poetry.dependencies]
+my_index_lib = {version = ">=0.6.2", optional = true }
+
+[tool.poetry.extras]
+my_index_extra = ["my_index_lib"]
+```
+
+In case the user tries to use your Index without the correct installs, we want to throw an error with corresponding instructions.
+
+To enable this, first, add instructions to the `INSTALL_INSTRUCTIONS` dictionary in `docarray/utils/misc.py`, such as 
+```python
+{'my_index_lib': '"docarray[my_index_extra]"'}
+```
+Next, ensure to add a case to the `__getattr__()` for your new Index to `docarray/index/__init__.py`. By doing so, the user will be given the instructions, when trying to import `MyIndex` without the correct libraries installed.
+
+```python
+if TYPE_CHECKING:
+    from docarray.index.backends.my_index import MyIndex  # noqa: F401
+
+
+def __getattr__(name: str):
+    if name == 'HnswDocumentIndex':
+        import_library('hnswlib', raise_error=True)
+        from docarray.index.backends.my_index import MyIndex  # noqa
+
+        __all__.append('MyIndex')
+        return MyIndex
+```
+Additionally, wrap the required imports in the file where the `MyIndex` class will be located, such as it was done in `docarray/index/backends/hnswlib.py`.
 
 ## Create a new Document Index class
 
@@ -139,7 +180,7 @@ class _ColumnInfo:
     config: Dict[str, Any]
 ```
 
-- `docarray_type` is the type of the column in DocArray, e.g. `NdArray` or `str`
+- `docarray_type` is the type of the column in DocArray, e.g. `AbstractTensor` or `str`
 - `db_type` is the type of the column in the Document Index, e.g. `np.ndarray` or `str`. You can customize the mapping from `docarray_type` to `db_type`, as we will see later.
 - `config` is a dictionary of configurations for the column. For example, for the `other_tensor` column above, this would contain the `space` and `dim` configurations.
 - `n_dim` is the dimensionality of the column, e.g. `100` for a 100-dimensional vector. See further guidance on this below.
@@ -152,6 +193,9 @@ Again, these are automatically populated for you, so you can just use them in yo
 By default, it holds that `_ColumnInfo.docarray_type == self.python_type_to_db_type(_ColumnInfo.db_type)`, as we will see later.
 However, you should not rely on this, because a user can manually specify a different db_type. 
 Therefore, your implementation should rely on `_ColumnInfo.db_type` and not directly call `python_type_to_db_type()`.
+
+**Caution**
+If a subclass of `AbstractTensor` appears in the Document Index's schema (i.e. `TorchTensor`, `NdArray`, or `TensorFlowTensor`), then `_ColumnInfo.docarray_type` will simply show `AbstractTensor` instead of the specific subclass. This is because the abstract class normalizes all input data of type `AbstractTensor` to `np.ndarray` anyways, which should make your life easier. Just be sure to properly handle `AbstractTensor` as a possible value or `_ColumnInfo.docarray_type`, and you won't have to worry about the differences between torch, tf, and np.
 
 ### Properly handle `n_dim`
 
@@ -296,7 +340,7 @@ The details of each method should become clear from the docstrings and type hint
 
 This method is slightly special, because 1) it is not exposed to the user, and 2) you absolutely have to implement it.
 
-It is intended to do the following: It takes a type of a field in the store's schema (e.g. `NdArray` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
+It is intended to do the following: It takes a type of a field in the store's schema (e.g. `AbstractTensor` for `tensor`), and returns the corresponding type in the database (e.g. `np.ndarray`).
 The `BaseDocIndex` class uses this information to create and populate the `_ColumnInfo`s in `self._column_infos`.
 
 If the user wants to change the default behaviour, one can set the db type by using the `col_type` field:

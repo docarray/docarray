@@ -1,13 +1,13 @@
 import abc
 import warnings
 from io import BytesIO
-from typing import Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, Type, TypeVar, Union
 
 import numpy as np
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
-from docarray.utils._internal.misc import is_notebook
+from docarray.utils._internal.misc import import_library, is_notebook
 
 T = TypeVar('T', bound='VideoTensorMixin')
 
@@ -76,7 +76,10 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         :param audio_format: the name of one of the audio formats supported by PyAV,
             such as 'flt', 'fltp', 's16' or 's16p'.
         """
-        import av
+        if TYPE_CHECKING:
+            import av
+        else:
+            av = import_library('av', raise_error=True)
 
         np_tensor = self.get_comp_backend().to_numpy(array=self)
         video_tensor = np_tensor.astype('uint8')

@@ -5,7 +5,7 @@ import pytest
 from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc
 from docarray.typing import ImageUrl, NdArray
-from docarray.utils.map import map_docs, map_docs_batch
+from docarray.utils.map import map_docs, map_docs_batched
 from tests.units.typing.test_bytes import IMAGE_PATHS
 
 N_DOCS = 2
@@ -73,10 +73,10 @@ class MyImage(BaseDoc):
 @pytest.mark.slow
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_map_docs_batch(n_docs, batch_size, backend):
+def test_map_docs_batched(n_docs, batch_size, backend):
 
     da = DocArray[MyImage]([MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
-    it = map_docs_batch(
+    it = map_docs_batched(
         da=da, func=load_from_da, batch_size=batch_size, backend=backend
     )
     assert isinstance(it, Generator)

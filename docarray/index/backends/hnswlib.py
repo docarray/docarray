@@ -4,6 +4,7 @@ import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generic,
@@ -17,7 +18,6 @@ from typing import (
     cast,
 )
 
-import hnswlib
 import numpy as np
 
 from docarray import BaseDoc, DocArray
@@ -29,26 +29,36 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocumentProto
-from docarray.utils._internal.misc import is_np_int, is_tf_available, is_torch_available
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
 
-TSchema = TypeVar('TSchema', bound=BaseDoc)
-T = TypeVar('T', bound='HnswDocumentIndex')
-
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray]
-if is_torch_available():
+if TYPE_CHECKING:
+    import hnswlib
+    import tensorflow as tf  # type: ignore
     import torch
 
+    from docarray.typing import TensorFlowTensor
+else:
+    hnswlib = import_library('hnswlib', raise_error=False)
+    torch = import_library('torch', raise_error=False)
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
+
+HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
+
+if torch is not None:
     HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
 
-if is_tf_available():
-    import tensorflow as tf  # type: ignore
-
-    from docarray.typing import TensorFlowTensor
-
+if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
     HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
+
+
+TSchema = TypeVar('TSchema', bound=BaseDoc)
+T = TypeVar('T', bound='HnswDocumentIndex')
 
 
 def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
@@ -231,12 +241,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(query, k=limit)
+        labels, distances = index.knn_query(queries, k=limit)
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
@@ -250,7 +260,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
-            query=query_batched, limit=limit, search_field=search_field
+            queries=query_batched, limit=limit, search_field=search_field
         )
         return _FindResult(documents=docs[0], scores=scores[0])
 

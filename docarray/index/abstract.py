@@ -9,6 +9,7 @@ from typing import (
     Generic,
     Iterable,
     List,
+    Mapping,
     NamedTuple,
     Optional,
     Sequence,
@@ -26,20 +27,22 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 from docarray import BaseDoc, DocArray
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
-from docarray.utils._internal._typing import unwrap_optional_type
-from docarray.utils._internal.misc import is_tf_available, torch_imported
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import is_tensor_union
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import torch
     from pydantic.fields import ModelField
 
-if torch_imported:
-    import torch
-
-if is_tf_available():
-    import tensorflow as tf  # type: ignore
-
     from docarray.typing import TensorFlowTensor
+else:
+    tf = import_library('tensorflow', raise_error=False)
+    if tf is not None:
+        from docarray.typing import TensorFlowTensor
+    torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
@@ -232,13 +235,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     @abstractmethod
     def _find_batched(
         self,
-        query: np.ndarray,
+        queries: np.ndarray,
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
         """Find documents in the index
 
-        :param query: query vectors for KNN/ANN search.
+        :param queries: query vectors for KNN/ANN search.
             Has shape (batch_size, vector_dim)
         :param limit: maximum number of documents to return
         :param search_field: name of the field to search on
@@ -592,7 +595,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     @staticmethod
     def _transpose_col_value_dict(
-        col_value_dict: Dict[str, Iterable[Any]]
+        col_value_dict: Mapping[str, Iterable[Any]]
     ) -> Generator[Dict[str, Any], None, None]:
         """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
         Since a generator is returned, this process comes at negligible cost.
@@ -676,21 +679,36 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
             if is_union_type(t_):
                 union_args = get_args(t_)
-                if len(union_args) == 2 and type(None) in union_args:
+
+                if is_tensor_union(t_):
+                    names_types_fields.append(
+                        (name_prefix + field_name, AbstractTensor, field_)
+                    )
+
+                elif len(union_args) == 2 and type(None) in union_args:
                     # simple "Optional" type, treat as special case:
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
-                        if t_arg is type(None):
-                            pass
-                        elif issubclass(t_arg, BaseDoc):
-                            names_types_fields.extend(
-                                cls._flatten_schema(t_arg, name_prefix=inner_prefix)
-                            )
+                        if t_arg is not type(None):
+                            if issubclass(t_arg, BaseDoc):
+                                names_types_fields.extend(
+                                    cls._flatten_schema(t_arg, name_prefix=inner_prefix)
+                                )
+                            else:
+                                names_types_fields.append(
+                                    (name_prefix + field_name, t_arg, field_)
+                                )
                 else:
-                    names_types_fields.append((field_name, t_, field_))
+                    raise ValueError(
+                        f'Union type {t_} is not supported. Only Union of subclasses of AbstractTensor or Union[type, None] are supported.'
+                    )
             elif issubclass(t_, BaseDoc):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)
+                )
+            elif issubclass(t_, AbstractTensor):
+                names_types_fields.append(
+                    (name_prefix + field_name, AbstractTensor, field_)
                 )
             else:
                 names_types_fields.append((name_prefix + field_name, t_, field_))
@@ -705,16 +723,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
-            if is_optional_type(type_):
-                column_infos[field_name] = self._create_single_column(
-                    field_, unwrap_optional_type(type_)
-                )
-            elif is_union_type(type_):
-                raise ValueError(
-                    'Union types are not supported in the schema of a DocumentIndex.'
-                    f' Instead of using type {type_} use a single specific type.'
-                )
-            elif issubclass(type_, AnyDocArray):
+            # Union types are handle in _flatten_schema
+            if issubclass(type_, AnyDocArray):
                 raise ValueError(
                     'Indexing field of DocArray type (=subindex)'
                     'is not yet supported.'
@@ -725,7 +735,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
         custom_config = field.field_info.extra
-
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
@@ -740,13 +749,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (
-            hasattr(type_, '__docarray_target_shape__')
-            and type_.__docarray_target_shape__
+            hasattr(field.type_, '__docarray_target_shape__')
+            and field.type_.__docarray_target_shape__
         ):
-            if len(type_.__docarray_target_shape__) == 1:
-                n_dim = type_.__docarray_target_shape__[0]
+            if len(field.type_.__docarray_target_shape__) == 1:
+                n_dim = field.type_.__docarray_target_shape__[0]
             else:
-                n_dim = type_.__docarray_target_shape__
+                n_dim = field.type_.__docarray_target_shape__
         else:
             n_dim = None
         return _ColumnInfo(
@@ -776,19 +785,23 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
+            try:
+                input_schema_flat = self._flatten_schema(docs.document_type)
+            except ValueError:
+                pass
+            else:
+                input_names = [name for (name, _, _) in input_schema_flat]
+                input_types = [t_ for (_, t_, _) in input_schema_flat]
+                # this could be relaxed in the future,
+                # see schema translation ideas in the design doc
+                names_compatible = reference_names == input_names
+                types_compatible = all(
+                    (issubclass(t2, t1))
+                    for (t1, t2) in zip(reference_types, input_types)
+                )
+                if names_compatible and types_compatible:
+                    return docs
 
-            input_schema_flat = self._flatten_schema(docs.document_type)
-            input_names = [name for (name, _, _) in input_schema_flat]
-            input_types = [t_ for (_, t_, _) in input_schema_flat]
-            # this could be relaxed in the future,
-            # see schema translation ideas in the design doc
-            names_compatible = reference_names == input_names
-            types_compatible = all(
-                (not is_union_type(t2) and issubclass(t1, t2))
-                for (t1, t2) in zip(reference_types, input_types)
-            )
-            if names_compatible and types_compatible:
-                return docs
         out_docs = []
         for i in range(len(docs)):
             # validate the data
@@ -814,12 +827,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         if isinstance(val, np.ndarray):
             return val
-        if is_tf_available() and isinstance(val, TensorFlowTensor):
+        if tf is not None and isinstance(val, TensorFlowTensor):
             return val.unwrap().numpy()
         if isinstance(val, (list, tuple)):
             return np.array(val)
-        if (torch_imported and isinstance(val, torch.Tensor)) or (
-            is_tf_available() and isinstance(val, tf.Tensor)
+        if (torch is not None and isinstance(val, torch.Tensor)) or (
+            tf is not None and isinstance(val, tf.Tensor)
         ):
             return val.numpy()
         if allow_passthrough:
@@ -836,10 +849,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
-
         for field_name, _ in schema.__fields__.items():
-            t_ = unwrap_optional_type(schema._get_field_type(field_name))
-            if issubclass(t_, BaseDoc):
+            t_ = schema._get_field_type(field_name)
+            if is_optional_type(t_):
+                for t_arg in get_args(t_):
+                    if t_arg is not type(None):
+                        t_ = t_arg
+
+            if not is_union_type(t_) and issubclass(t_, BaseDoc):
                 inner_dict = {}
 
                 fields = [
