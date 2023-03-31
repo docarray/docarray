@@ -75,10 +75,9 @@ type(img.tensor) = <class 'docarray.typing.tensor.image.image_ndarray.ImageNdArr
 
 You can display your image data in a notebook from both an url as well as a tensor
 
-```{figure} display_notebook.jpeg
-:align: center
-:width: 80%
-```
+<figure markdown>
+  ![](display_notebook.png){ width="80%" }
+</figure>
 
 ## Predefined ImageDoc
 
