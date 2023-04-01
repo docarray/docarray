@@ -21,6 +21,8 @@ from typing import (
 )
 
 import numpy as np
+import tensorflow as tf
+import torch
 from pydantic.error_wrappers import ValidationError
 from typing_inspect import get_args, is_optional_type, is_union_type
 
@@ -49,7 +51,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class FindResultBatched(NamedTuple):
     documents: List[DocArray]
-    scores: np.ndarray
+    scores: Union[np.ndarray,torch.tensor,tf.Tensor]
 
 
 class _FindResultBatched(NamedTuple):

@@ -2,6 +2,9 @@ __all__ = ['find', 'find_batched']
 
 from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
+import numpy as np
+import tensorflow as tf
+import torch
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
@@ -11,6 +14,11 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+
+
+class FindResultBatched(NamedTuple):
+    documents: List[DocArray]
+    scores: Union[np.ndarray,torch.tensor,tf.Tensor]
 
 
 class FindResult(NamedTuple):
@@ -116,7 +124,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-) -> List[FindResult]:
+) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
     Supports PyTorch and NumPy embeddings.
