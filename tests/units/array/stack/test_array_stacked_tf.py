@@ -13,6 +13,8 @@ if tf_available:
     import tensorflow._api.v2.experimental.numpy as tnp
 
     from docarray.typing import TensorFlowTensor
+else:
+    pytest.skip(allow_module_level=True)
 
 
 @pytest.fixture()

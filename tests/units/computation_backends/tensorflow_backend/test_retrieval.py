@@ -9,6 +9,8 @@ if tf_available:
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.typing import TensorFlowTensor
+else:
+    pytest.skip(allow_module_level=True)
 
 
 @pytest.mark.tensorflow

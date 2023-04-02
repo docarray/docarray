@@ -124,6 +124,7 @@ def test_all_types():
     assert doc.img_bytes == b'img'
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_tensorflow_types():
     class NestedDoc(BaseDoc):

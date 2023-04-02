@@ -33,6 +33,7 @@ def test_set_tensor():
     assert (d.tensor == torch.zeros((3, 224, 224))).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_set_tensor_tensorflow():
     class MyDocument(BaseDoc):

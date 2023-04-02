@@ -39,6 +39,7 @@ def test_point_cloud_torch():
     assert (pc.tensors.points == torch.zeros(10, 3)).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_point_cloud_tensorflow():
     pc = parse_obj_as(PointCloud3D, tf.zeros((10, 3)))

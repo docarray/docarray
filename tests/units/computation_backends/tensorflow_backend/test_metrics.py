@@ -11,6 +11,7 @@ if tf_available:
 
     metrics = TensorFlowCompBackend.Metrics
 else:
+    pytest.skip(allow_module_level=True)
     metrics = None
 
 

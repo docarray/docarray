@@ -9,7 +9,8 @@ from docarray.base_doc import BaseDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
-if is_tf_available():
+tf_available = is_tf_available()
+if tf_available:
     import tensorflow as tf
 
 
@@ -287,6 +288,7 @@ def test_super_complex_nested():
     (doc2.data['hello'][3][0] == torch.ones(55)).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_super_complex_nested_tensorflow():
     class MyDoc(BaseDoc):

@@ -190,6 +190,7 @@ def test_audio_torch():
     assert (audio.tensor == torch.zeros(10, 10, 3)).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_audio_tensorflow():
     audio = parse_obj_as(AudioDoc, tf.zeros((10, 10, 3)))

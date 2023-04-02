@@ -31,6 +31,7 @@ def test_is_type_tensor(type_, is_tensor):
     assert is_type_tensor(type_) == is_tensor
 
 
+@pytest.mark.skipif(not tf_available, reason="TensorFlow not found")
 @pytest.mark.tensorflow
 @pytest.mark.parametrize(
     'type_, is_tensor',
@@ -61,6 +62,7 @@ def test_is_union_type_tensor(type_, is_union_tensor):
     assert is_tensor_union(type_) == is_union_tensor
 
 
+@pytest.mark.skipif(not tf_available, reason="TensorFlow not found")
 @pytest.mark.tensorflow
 @pytest.mark.parametrize(
     'type_, is_union_tensor',

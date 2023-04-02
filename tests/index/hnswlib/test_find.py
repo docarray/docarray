@@ -6,6 +6,9 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, TorchTensor
+from docarray.utils._internal.misc import is_tf_available
+
+tf_available = is_tf_available()
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -79,6 +82,7 @@ def test_find_torch(tmp_path, space):
         assert torch.allclose(result.tens, torch.zeros(10, dtype=torch.float64))
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_find_tensorflow(tmp_path):
     from docarray.typing import TensorFlowTensor

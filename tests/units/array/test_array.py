@@ -209,6 +209,7 @@ def test_get_bulk_attributes_union_type():
         assert text == f'hello{i}'
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_get_bulk_attributes_union_type_nested():
     class MyDoc(BaseDoc):

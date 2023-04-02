@@ -43,6 +43,7 @@ def test_image_torch():
     assert (image.tensor == torch.zeros(10, 10, 3)).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_image_tensorflow():
     image = ImageDoc(tensor=tf.zeros((10, 10, 3)))

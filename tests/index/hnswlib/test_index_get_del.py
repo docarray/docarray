@@ -10,6 +10,9 @@ from docarray import BaseDoc, DocArray
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
+from docarray.utils._internal.misc import is_tf_available
+
+tf_available = is_tf_available()
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -110,6 +113,7 @@ def test_index_torch(tmp_path):
         assert index.get_current_count() == 10
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_index_tf(tmp_path):
     from docarray.typing import TensorFlowTensor

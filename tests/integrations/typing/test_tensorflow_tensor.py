@@ -11,6 +11,7 @@ if tf_available:
     from docarray.typing import TensorFlowEmbedding, TensorFlowTensor
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_set_tensorflow_tensor():
     class MyDocument(BaseDoc):
@@ -23,6 +24,7 @@ def test_set_tensorflow_tensor():
     assert tnp.allclose(doc.t.tensor, tf.zeros((3, 224, 224)))
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_set_tf_embedding():
     class MyDocument(BaseDoc):

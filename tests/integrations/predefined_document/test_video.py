@@ -41,6 +41,7 @@ def test_video_torch():
     assert (video.tensor == torch.zeros(10, 10, 3)).all()
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_video_tensorflow():
     video = parse_obj_as(VideoDoc, tf.zeros((10, 10, 3)))

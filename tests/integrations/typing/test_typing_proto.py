@@ -14,6 +14,9 @@ from docarray.typing import (
     TextUrl,
     TorchTensor,
 )
+from docarray.utils._internal.misc import is_tf_available
+
+tf_available = is_tf_available()
 
 
 @pytest.mark.proto
@@ -49,6 +52,7 @@ def test_proto_all_types():
             assert isinstance(value, doc._get_field_type(field))
 
 
+@pytest.mark.skipif(not tf_available, reason="Tensorflow not found")
 @pytest.mark.tensorflow
 def test_proto_all_types_proto3():
     import tensorflow as tf
