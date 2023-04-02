@@ -1,5 +1,4 @@
 from typing import Optional, TypeVar, Union
-import pytest
 import numpy as np
 import pytest
 import torch
@@ -83,7 +82,7 @@ def test_document_array_fixed_type():
 
 
 def test_ndarray_equality():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         tensor: NdArray
 
     arr1 = Text(tensor=np.zeros(5))
@@ -97,7 +96,7 @@ def test_ndarray_equality():
 
 
 def test_tensor_equality():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         tensor: TorchTensor
 
     torch1 = Text(tensor=torch.zeros(128))
@@ -111,11 +110,11 @@ def test_tensor_equality():
 
 
 def test_documentarray():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         text: str
 
-    da1 = DocumentArray([Text(text='hello')])
-    da2 = DocumentArray([Text(text='hello')])
+    da1 = DocArray([Text(text='hello')])
+    da2 = DocArray([Text(text='hello')])
 
     assert da1 == da2
     assert da1 == [Text(text='hello') for _ in range(len(da1))]
@@ -124,7 +123,7 @@ def test_documentarray():
 
 @pytest.mark.tensorflow
 def test_tensorflowtensor_equality():
-    class Text(BaseDocument):
+    class Text(BaseDoc):
         tensor: TensorFlowTensor
 
     tensor1 = Text(tensor=tf.constant([1, 2, 3, 4, 5, 6]))
@@ -138,10 +137,10 @@ def test_tensorflowtensor_equality():
 
 
 def test_text_tensor():
-    class Text1(BaseDocument):
+    class Text1(BaseDoc):
         tensor: NdArray
 
-    class Text2(BaseDocument):
+    class Text2(BaseDoc):
         tensor: TorchTensor
 
     arr_tensor1 = Text1(tensor=np.zeros(2))
