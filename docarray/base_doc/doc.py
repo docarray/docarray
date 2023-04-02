@@ -102,6 +102,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
 
+
     def __eq__(self, other) -> bool:
         if self.dict().keys() != other.dict().keys():
             return False
@@ -135,3 +136,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     def __ne__(self, other) -> bool:
         return not (self == other)
+
+    def _docarray_to_json_compatible(self) -> Dict:
+        """
+        Convert itself into a json compatible object
+        :return: A dictionary of the BaseDoc object
+        """
+        return self.dict()
+

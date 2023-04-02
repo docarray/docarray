@@ -128,7 +128,7 @@ class DocArray(
         docs: Optional[Iterable[T_doc]] = None,
     ):
         self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
- 
+
     @classmethod
     def construct(
         cls: Type[T],
@@ -144,6 +144,7 @@ class DocArray(
         da._data = docs if isinstance(docs, list) else list(docs)
         return da
 
+
     def __eq__(self, other: Any) -> bool:
         if self.__len__() != other.__len__():
             return False
@@ -151,6 +152,7 @@ class DocArray(
             if doc_self != doc_other:
                 return False
         return True
+
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
