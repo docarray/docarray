@@ -126,21 +126,6 @@ def test_validation(path_to_file):
     assert isinstance(url, str)
 
 
-@pytest.mark.parametrize(
-    'path_to_file',
-    [
-        'illegal',
-        'https://www.google.com',
-        'my/local/text/file.txt',
-        'my/local/text/file.png',
-        'my/local/file.mp3',
-    ],
-)
-def test_illegal_validation(path_to_file):
-    with pytest.raises(ValueError, match='VideoUrl'):
-        parse_obj_as(VideoUrl, path_to_file)
-
-
 @pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet

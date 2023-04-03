@@ -1,42 +1,20 @@
 import warnings
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import Optional, TypeVar
 
 from docarray.typing.bytes.video_bytes import VideoBytes, VideoLoadResult
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils._internal.misc import is_notebook
 
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
 T = TypeVar('T', bound='VideoUrl')
-
-VIDEO_FILE_FORMATS = ['mp4']
 
 
 @_register_proto(proto_type_name='video_url')
 class VideoUrl(AnyUrl):
     """
-    URL to a .wav file.
+    URL to a video file.
     Can be remote (web) URL, or a local file path.
     """
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, str, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        url = super().validate(value, field, config)
-        has_video_extension = any(ext in url for ext in VIDEO_FILE_FORMATS)
-        if not has_video_extension:
-            raise ValueError(
-                f'Video URL must have one of the following extensions:'
-                f'{VIDEO_FILE_FORMATS}'
-            )
-        return cls(str(url), scheme=None)
 
     def load(self: T, **kwargs) -> VideoLoadResult:
         """

@@ -17,7 +17,7 @@ T = TypeVar('T', bound='PointCloud3DUrl')
 @_register_proto(proto_type_name='point_cloud_url')
 class PointCloud3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file containing point cloud information.
+    URL to a file containing point cloud information.
     Can be remote (web) URL, or a local file path.
     """
 
