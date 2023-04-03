@@ -12,7 +12,7 @@ T = TypeVar('T', bound='VideoUrl')
 @_register_proto(proto_type_name='video_url')
 class VideoUrl(AnyUrl):
     """
-    URL to a .wav file.
+    URL to a video file.
     Can be remote (web) URL, or a local file path.
     """
 

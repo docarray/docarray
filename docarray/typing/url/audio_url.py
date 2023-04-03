@@ -13,7 +13,7 @@ T = TypeVar('T', bound='AudioUrl')
 @_register_proto(proto_type_name='audio_url')
 class AudioUrl(AnyUrl):
     """
-    URL to a audio file.
+    URL to an audio file.
     Can be remote (web) URL, or a local file path.
     """
 

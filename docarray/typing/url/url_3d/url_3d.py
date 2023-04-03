@@ -14,7 +14,7 @@ T = TypeVar('T', bound='Url3D')
 @_register_proto(proto_type_name='url3d')
 class Url3D(AnyUrl, ABC):
     """
-    URL to a .obj, .glb, or .ply file containing 3D mesh or point cloud information.
+    URL to a file containing 3D mesh or point cloud information.
     Can be remote (web) URL, or a local file path.
     """
 

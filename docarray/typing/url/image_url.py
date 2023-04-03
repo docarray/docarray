@@ -16,7 +16,7 @@ T = TypeVar('T', bound='ImageUrl')
 @_register_proto(proto_type_name='image_url')
 class ImageUrl(AnyUrl):
     """
-    URL to a .png, .jpeg, or .jpg file.
+    URL to an image file.
     Can be remote (web) URL, or a local file path.
     """
 
