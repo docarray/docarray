@@ -19,7 +19,7 @@ def filter_docs(
     ---
 
     ```python
-    from docarray import DocArray, BaseDoc
+    from docarray import DocList, BaseDoc
     from docarray.documents import TextDoc, ImageDoc
     from docarray.utils.filter import filter_docs
 
@@ -30,7 +30,7 @@ def filter_docs(
         price: int
 
 
-    docs = DocArray[MyDocument](
+    docs = DocList[MyDocument](
         [
             MyDocument(
                 caption='A tiger in the jungle',
@@ -65,9 +65,9 @@ def filter_docs(
 
     ---
 
-    :param docs: the DocArray where to apply the filter
+    :param docs: the DocList where to apply the filter
     :param query: the query to filter by
-    :return: A DocArray containing the Documents
+    :return: A DocList containing the Documents
     in `docs` that fulfill the filter conditions in the `query`
     """
     from docarray.utils._internal.query_language.query_parser import QueryParser

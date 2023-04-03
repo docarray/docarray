@@ -44,7 +44,7 @@ def find(
     ---
 
     ```python
-    from docarray import DocArray, BaseDoc
+    from docarray import DocList, BaseDoc
     from docarray.typing import TorchTensor
     from docarray.utils.find import find
     import torch
@@ -54,9 +54,7 @@ def find(
         embedding: TorchTensor
 
 
-    index = DocArray[MyDocument](
-        [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
-    )
+    index = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(100)])
 
     # use Document as query
     query = MyDocument(embedding=torch.rand(128))
@@ -92,7 +90,7 @@ def find(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: A named tuple of the form (DocArray, AnyTensor),
+    :return: A named tuple of the form (DocList, AnyTensor),
         where the first element contains the closes matches for the query,
         and the second element contains the corresponding scores.
     """
@@ -130,7 +128,7 @@ def find_batched(
     ---
 
     ```python
-    from docarray import DocArray, BaseDoc
+    from docarray import DocList, BaseDoc
     from docarray.typing import TorchTensor
     from docarray.utils.find import find_batched
     import torch
@@ -140,12 +138,10 @@ def find_batched(
         embedding: TorchTensor
 
 
-    index = DocArray[MyDocument](
-        [MyDocument(embedding=torch.rand(128)) for _ in range(100)]
-    )
+    index = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(100)])
 
-    # use DocArray as query
-    query = DocArray[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
+    # use DocList as query
+    query = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
     results = find_batched(
         index=index,
         query=query,
@@ -180,7 +176,7 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocArray, AnyTensor),
+    :return: a list of named tuples of the form (DocList, AnyTensor),
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """

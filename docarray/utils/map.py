@@ -29,7 +29,7 @@ def map_docs(
     ---
 
     ```python
-    from docarray import DocArray
+    from docarray import DocList
     from docarray.documents import ImageDoc
     from docarray.utils.map import map_docs
 
@@ -44,8 +44,8 @@ def map_docs(
         'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
     )
 
-    da = DocArray[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
-    da = DocArray[ImageDoc](
+    da = DocList[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
+    da = DocList[ImageDoc](
         list(map_docs(da, load_url_to_tensor, backend='thread'))
     )  # threading is usually a good option for IO-bound tasks such as loading an
     # ImageDoc from url
@@ -56,7 +56,7 @@ def map_docs(
 
     ---
 
-    :param da: DocArray to apply function to
+    :param da: DocList to apply function to
     :param func: a function that takes a :class:`BaseDoc` as input and outputs
         a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
@@ -121,7 +121,7 @@ def map_docs_batched(
     ---
 
     ```python
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
     from docarray.utils.map import map_docs_batched
 
 
@@ -129,13 +129,13 @@ def map_docs_batched(
         name: str
 
 
-    def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
+    def upper_case_name(da: DocList[MyDoc]) -> DocList[MyDoc]:
         da.name = [n.upper() for n in da.name]
         return da
 
 
     batch_size = 16
-    da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    da = DocList[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
     it = map_docs_batched(da, upper_case_name, batch_size=batch_size)
     for i, d in enumerate(it):
         da[i * batch_size : (i + 1) * batch_size] = d
@@ -152,7 +152,7 @@ def map_docs_batched(
 
     ---
 
-    :param da: DocArray to apply function to
+    :param da: DocList to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
@@ -180,7 +180,7 @@ def map_docs_batched(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
 
-    :return: yield DocArrays returned from `func`
+    :return: yield DocLists returned from `func`
     """
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
