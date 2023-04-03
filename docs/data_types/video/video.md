@@ -7,25 +7,9 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 
 ## Load video data
 
-4
-![type:video](mov_bbb.mp4){: style='width: 700px height: 500px'}
 
-![type:video](mov_bbb.mp4){: style='width: 700px; height: 500px'}
+![type:video](mov_bbb.mp4){: style='width: 700px; height: 330px'}
 
-4
-![type:video](mov_bbb.mp4){: style='width: 600px'}
-
-
-7
-<iframe width="700px" height="500px" object-fit="cover" 
-    src="../mov_bbb.mp4">
-</iframe>
-
-
-7
-<iframe width="600px" object-fit="cover" 
-    src="../mov_bbb.mp4">
-</iframe>
 
 
 ```python
