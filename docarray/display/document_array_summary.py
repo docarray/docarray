@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array import DocArrayStacked
+    from docarray.array import DocVec
     from docarray.array.abstract_array import AnyDocArray
 
 
@@ -21,14 +21,14 @@ class DocArraySummary:
         from rich.panel import Panel
         from rich.table import Table
 
-        from docarray.array import DocArrayStacked
+        from docarray.array import DocVec
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
         table.add_row('Type', self.da.__class__.__name__)
         table.add_row('Length', str(len(self.da)), end_section=True)
 
-        if isinstance(self.da, DocArrayStacked):
+        if isinstance(self.da, DocVec):
             table.add_row('Stacked columns:')
             stacked_fields = self._get_stacked_fields(da=self.da)
             for field_name in stacked_fields:
@@ -54,7 +54,7 @@ class DocArraySummary:
         self.da.document_type.schema_summary()
 
     @staticmethod
-    def _get_stacked_fields(da: 'DocArrayStacked') -> List[str]:  # TODO this might
+    def _get_stacked_fields(da: 'DocVec') -> List[str]:  # TODO this might
         # broken
         """
         Return a list of the field names of a DocArrayStacked instance that are

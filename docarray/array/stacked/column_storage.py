@@ -15,7 +15,7 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.stacked.array_stacked import DocVec
 
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
@@ -38,8 +38,8 @@ class ColumnStorage:
     def __init__(
         self,
         tensor_columns: Dict[str, AbstractTensor],
-        doc_columns: Dict[str, 'DocArrayStacked'],
-        da_columns: Dict[str, ListAdvancedIndexing['DocArrayStacked']],
+        doc_columns: Dict[str, 'DocVec'],
+        da_columns: Dict[str, ListAdvancedIndexing['DocVec']],
         any_columns: Dict[str, ListAdvancedIndexing],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):

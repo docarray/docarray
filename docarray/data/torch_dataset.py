@@ -2,7 +2,7 @@ from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from torch.utils.data import Dataset
 
-from docarray import BaseDoc, DocArrayStacked, DocList
+from docarray import BaseDoc, DocList, DocVec
 from docarray.typing import TorchTensor
 from docarray.utils._internal._typing import change_cls_name
 
@@ -123,12 +123,12 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     def collate_fn(cls, batch: List[T_doc]):
         doc_type = cls.document_type
         if doc_type:
-            batch_da = DocArrayStacked[doc_type](  # type: ignore
+            batch_da = DocVec[doc_type](  # type: ignore
                 batch,
                 tensor_type=TorchTensor,
             )
         else:
-            batch_da = DocArrayStacked(batch, tensor_type=TorchTensor)
+            batch_da = DocVec(batch, tensor_type=TorchTensor)
         return batch_da
 
     @classmethod

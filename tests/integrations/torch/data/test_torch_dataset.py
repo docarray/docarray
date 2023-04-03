@@ -56,11 +56,11 @@ def test_torch_dataset(captions_da: DocList[PairTextImage]):
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )
 
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.stacked.array_stacked import DocVec
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocArrayStacked[PairTextImage])
+        assert isinstance(batch, DocVec[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
@@ -136,11 +136,11 @@ def test_torch_dl_multiprocessing(captions_da: DocList[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.stacked.array_stacked import DocVec
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocArrayStacked[PairTextImage])
+        assert isinstance(batch, DocVec[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
@@ -164,10 +164,10 @@ def test_torch_dl_pin_memory(captions_da: DocList[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.stacked.array_stacked import DocVec
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocArrayStacked[PairTextImage])
+        assert isinstance(batch, DocVec[PairTextImage])
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])

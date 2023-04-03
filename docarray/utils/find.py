@@ -6,7 +6,7 @@ from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocList
-from docarray.array.stacked.array_stacked import DocArrayStacked
+from docarray.array.stacked.array_stacked import DocVec
 from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
@@ -250,7 +250,7 @@ def _extract_embeddings(
     if isinstance(data, DocList):
         emb_list = list(AnyDocArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
-    elif isinstance(data, (DocArrayStacked, BaseDoc)):
+    elif isinstance(data, (DocVec, BaseDoc)):
         emb = next(AnyDocArray._traverse(data, embedding_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)

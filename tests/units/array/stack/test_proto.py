@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import BaseDoc, DocList
-from docarray.array import DocArrayStacked
+from docarray.array import DocVec
 from docarray.typing import NdArray, TorchTensor
 
 
@@ -43,6 +43,6 @@ def test_stacked_proto():
         [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
     ).stack()
 
-    da2 = DocArrayStacked.from_protobuf(da.to_protobuf())
+    da2 = DocVec.from_protobuf(da.to_protobuf())
 
-    assert isinstance(da2, DocArrayStacked)
+    assert isinstance(da2, DocVec)

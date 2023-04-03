@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.stacked.array_stacked import DocVec
     from docarray.proto import DocumentArrayProto
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -253,7 +253,7 @@ class DocList(
     def stack(
         self,
         tensor_type: Type['AbstractTensor'] = NdArray,
-    ) -> 'DocArrayStacked':
+    ) -> 'DocVec':
         """
         Convert the DocArray into a DocArrayStacked. `Self` cannot be used
         afterwards
@@ -261,9 +261,9 @@ class DocList(
         if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
         :return: A DocArrayStacked of the same document type as self
         """
-        from docarray.array.stacked.array_stacked import DocArrayStacked
+        from docarray.array.stacked.array_stacked import DocVec
 
-        return DocArrayStacked.__class_getitem__(self.document_type)(
+        return DocVec.__class_getitem__(self.document_type)(
             self, tensor_type=tensor_type
         )
 
@@ -274,9 +274,9 @@ class DocList(
         field: 'ModelField',
         config: 'BaseConfig',
     ):
-        from docarray.array.stacked.array_stacked import DocArrayStacked
+        from docarray.array.stacked.array_stacked import DocVec
 
-        if isinstance(value, (cls, DocArrayStacked)):
+        if isinstance(value, (cls, DocVec)):
             return value
         elif isinstance(value, Iterable):
             return cls(value)

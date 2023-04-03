@@ -49,39 +49,39 @@ else:
     TensorFlowTensor = None  # type: ignore
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
-T = TypeVar('T', bound='DocArrayStacked')
+T = TypeVar('T', bound='DocVec')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocArrayStacked(AnyDocArray[T_doc]):
+class DocVec(AnyDocArray[T_doc]):
     """
-    DocArrayStacked is a container of Documents appropriates to perform
+    DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
     calculation, deep learning forward pass)
 
-    A DocArrayStacked has a similar interface as
+    A DocVec has a similar interface as
     {class}`~docarray.array.DocArray` but with an underlying implementation that is
     column based instead of row based. Each field
     of the schema of the DocArrayStack
-    (the :attr:`~docarray.array.stacked.DocArrayStacked.document_type` which is a
+    (the :attr:`~docarray.array.stacked.DocVec.document_type` which is a
     `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, stacked (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
     :attr:`~docarray.array.stacked.DocArrayStacked.tensor_type` will be used to determine
     the type of the stacked column.
 
-    If the field is another `BasedDocument` the column will be another DocArrayStacked that follows the
+    If the field is another `BasedDoc` the column will be another DocArrayStacked that follows the
     schema of the nested Document.
     If the field is a `DocArray` or
-    `DocArrayStacked` then the column will be a list of `DocArrayStacked`.
+    `DocVec` then the column will be a list of `DocVec`.
     For any other type the column is a Python list.
 
-    Every `Document` inside a `DocArrayStacked` is a view into the data columns stored at the `DocArrayStacked` level. The `Document`  does
+    Every `Document` inside a `DocArrayStacked` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
      not hold any data itself. The behavior of
      this Document "view" is similar to the behavior of `view = tensor[i]` in
      numpy/PyTorch.
 
-    :param docs: a DocArray
+    :param docs: a homogeneous sequence of BaseDoc
     :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
     if the BaseDoc of this DocArrayStacked has some undefined tensor type like
     AnyTensor or Union of NdArray and TorchTensor
@@ -97,8 +97,8 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         self.tensor_type = tensor_type
 
         tensor_columns: Dict[str, AbstractTensor] = dict()
-        doc_columns: Dict[str, 'DocArrayStacked'] = dict()
-        da_columns: Dict[str, ListAdvancedIndexing['DocArrayStacked']] = dict()
+        doc_columns: Dict[str, 'DocVec'] = dict()
+        da_columns: Dict[str, ListAdvancedIndexing['DocVec']] = dict()
         any_columns: Dict[str, ListAdvancedIndexing] = dict()
 
         if len(docs) == 0:
@@ -260,7 +260,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, 'DocArrayStacked', AbstractTensor]:
+    ) -> Union[MutableSequence, 'DocVec', AbstractTensor]:
         """Return one column of the data
 
         :param field: name of the fields to extract
@@ -328,7 +328,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
                 T, value.stack(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
-        elif isinstance(value, DocArrayStacked):
+        elif isinstance(value, DocVec):
             if not issubclass(value.document_type, self.document_type):
                 raise TypeError(
                     f'{value} schema : {value.document_type} is not compatible with '
@@ -376,7 +376,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         elif field in self._storage.doc_columns.keys():
 
             values_ = parse_obj_as(
-                DocArrayStacked.__class_getitem__(
+                DocVec.__class_getitem__(
                     self._storage.doc_columns[field].document_type
                 ),
                 values,

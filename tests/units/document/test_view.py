@@ -1,7 +1,7 @@
 import numpy as np
 
 from docarray import BaseDoc
-from docarray.array import DocArrayStacked
+from docarray.array import DocVec
 from docarray.array.stacked.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
@@ -13,7 +13,7 @@ def test_document_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = DocArrayStacked[MyDoc](docs)._storage
+    storage = DocVec[MyDoc](docs)._storage
 
     doc = MyDoc.from_view(ColumnStorageView(0, storage))
     assert doc.is_view()
