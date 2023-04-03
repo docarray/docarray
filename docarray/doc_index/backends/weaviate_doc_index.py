@@ -473,10 +473,44 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             ]
 
         def build(self) -> Any:
-            self._queries = [
-                query.with_alias(f'query_{i}') for i, query in enumerate(self._queries)
-            ]
+            num_queries = len(self._queries)
+
+            for i in range(num_queries):
+                q = self._queries[i]
+                if self._is_hybrid_query(q):
+                    self._make_proper_hybrid_query(q)
+                q.with_alias(f'query_{i}')
+
             return self
+
+        def _is_hybrid_query(self, query: weaviate.gql.get.GetBuilder) -> bool:
+            """
+            Checks if a query has been composed with both a with_bm25 and a with_near_vector verb
+            """
+            if not query._near_ask:
+                return False
+            else:
+                return query._bm25 and query._near_ask._content.get("vector", None)
+
+        def _make_proper_hybrid_query(
+            self, query: weaviate.gql.get.GetBuilder
+        ) -> weaviate.gql.get.GetBuilder:
+            """
+            Modifies a query to be a proper hybrid query.
+
+            In weaviate, a query with with_bm25 and with_near_vector verb is not a hybrid query.
+            We need to use the with_hybrid verb to make it a hybrid query.
+            """
+
+            text_query = query._bm25.query
+            vector_query = query._near_ask._content["vector"]
+            hybrid_query = weaviate.gql.get.Hybrid(
+                query=text_query, vector=vector_query, alpha=0.5
+            )
+
+            query._bm25 = None
+            query._near_ask = None
+            query._hybrid = hybrid_query
 
         def _overwrite_id(self, where_filter):
             """

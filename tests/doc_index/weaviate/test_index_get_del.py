@@ -336,3 +336,20 @@ def test_raw_graphql(test_store):
     num_docs = results["data"]["Aggregate"]["Document"][0]["meta"]["count"]
 
     assert num_docs == 3
+
+
+def test_hybrid_query(test_store):
+    query_embedding = [10.25, 10.25]
+    query_text = "ipsum"
+    where_filter = {"path": ["id"], "operator": "Equal", "valueString": "1"}
+
+    q = (
+        test_store.build_query()
+        .find(query=query_embedding)
+        .text_search(query=query_text, search_field="text")
+        .filter(where_filter)
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert len(docs) == 1
