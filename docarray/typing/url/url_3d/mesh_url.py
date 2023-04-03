@@ -33,7 +33,6 @@ class Mesh3DUrl(Url3D):
 
          ```python
          from docarray import BaseDoc
-         import numpy as np
 
          from docarray.typing import Mesh3DUrl, NdArray
 
