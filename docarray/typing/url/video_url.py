@@ -1,7 +1,7 @@
 import warnings
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
-from docarray.typing.bytes.video_bytes import VideoLoadResult
+from docarray.typing.bytes.video_bytes import VideoBytes, VideoLoadResult
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils._internal.misc import is_notebook
@@ -99,10 +99,19 @@ class VideoUrl(AnyUrl):
         :return: AudioNdArray representing the audio content, VideoNdArray representing
             the images of the video, NdArray of the key frame indices.
         """
-        from docarray.typing.bytes.video_bytes import VideoBytes
-
-        buffer = VideoBytes(self.load_bytes(**kwargs))
+        buffer = self.load_bytes(**kwargs)
         return buffer.load()
+
+    def load_bytes(self, timeout: Optional[float] = None) -> VideoBytes:
+        """
+        Convert url to VideoBytes. This will either load or download the file and save
+        it into an VideoBytes object.
+
+        :param timeout: timeout for urlopen. Only relevant if url is not local
+        :return: VideoBytes object
+        """
+        bytes_ = super().load_bytes(timeout=timeout)
+        return VideoBytes(bytes_)
 
     def display(self):
         """

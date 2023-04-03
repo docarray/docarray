@@ -2,6 +2,7 @@ import os
 import urllib
 
 import numpy as np
+import PIL
 import pytest
 from PIL import Image
 from pydantic.tools import parse_obj_as, schema_json_of
@@ -64,6 +65,23 @@ def test_load(image_format, path_to_img):
     url = parse_obj_as(ImageUrl, path_to_img)
     tensor = url.load()
     assert isinstance(tensor, np.ndarray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'image_format,path_to_img',
+    [
+        ('png', IMAGE_PATHS['png']),
+        ('jpg', IMAGE_PATHS['jpg']),
+        ('jpeg', IMAGE_PATHS['jpeg']),
+        ('remote-jpg', REMOTE_JPG),
+    ],
+)
+def test_load_pil(image_format, path_to_img):
+    url = parse_obj_as(ImageUrl, path_to_img)
+    img = url.load_pil()
+    assert isinstance(img, PIL.Image.Image)
 
 
 @pytest.mark.slow

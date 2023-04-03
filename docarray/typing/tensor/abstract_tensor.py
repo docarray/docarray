@@ -305,4 +305,4 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        ...
+        return self

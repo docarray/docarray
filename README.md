@@ -10,7 +10,7 @@
 DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
 **Neural Search**.
 
-This means that DocArray lets you do the following things:
+This means that `DocArray` lets you do the following things:
 
 ## Represent
 
@@ -482,13 +482,13 @@ INFO - docarray - HnswDocumentIndex[SimpleDoc] has been initialized
 To try out the alpha you can install it via git:
 
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[common,torch,image]"
+pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
 ```
 
 ...or from the latest development branch
 
 ```shell
-pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[common,torch,image]"
+pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
 ```
 
 ## See also
