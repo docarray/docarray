@@ -14,12 +14,22 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 
 2
 <figure markdown>
-  ![](mov_bbb.mp4){ width="900" type="video/mp4"}
+  ![type:video](mov_bbb.mp4){ width="900" type="video/mp4"}
+</figure>
+
+2b
+<figure markdown>
+  ![type:video](mov_bbb.mp4){ width="900"}
 </figure>
 
 3
 <figure markdown>
-  ![](../mov_bbb.mp4){ width="900" }
+  ![type:video](../mov_bbb.mp4){ width="900" }
+</figure>
+
+3b
+<figure markdown>
+  ![type:video](../mov_bbb.mp4){ width="900" type="video/mp4"}
 </figure>
 
 4
@@ -30,27 +40,8 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
     <source src="mov_bbb.mp4" type="video/mp4">
 </video>
 
-6
-<iframe width="420" height="315" src="mov_bbb.mp4">
-</iframe>
-
-<iframe width="420" height="315" 
-    src="mov_bbb.mp4">
-</iframe>
-
-
-7
-<iframe width="420" height="315" src="mov_bbb.mp4" type="video/mp4">
-</iframe>
-
-<iframe width="420" height="315" 
-    src="mov_bbb.mp4" type="video/mp4">
-</iframe>
 
 8
-<iframe width="420" height="315" src="../mov_bbb.mp4">
-</iframe>
-
 <iframe width="420" height="315" 
     src="../mov_bbb.mp4">
 </iframe>
