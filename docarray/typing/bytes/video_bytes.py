@@ -101,7 +101,7 @@ class VideoBytes(bytes, AbstractType):
                     video_frames.append(frame.to_ndarray(format='rgb24'))
 
                     if frame.key_frame == 1:
-                        curr_index = len(video_frames)
+                        curr_index = len(video_frames) - 1
                         keyframe_indices.append(curr_index)
 
         if len(audio_frames) == 0:

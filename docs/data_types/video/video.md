@@ -8,10 +8,9 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 ## Load video data
 
 
-<video controls width="60%">
-<source src="mov_bbb.mp4" type="video/mp4">
+<video width="60%" controls>
+    <source src="mov_bbb.mp4" type="video/mp4">
 </video>
-
 
 ```python
 from docarray import BaseDoc
@@ -48,6 +47,19 @@ Additionally, the key frame indices will be stored. A key frame is defined as th
 ## Key frame extraction
 A key frame is defined as the starting point of any smooth transition.
 
+With the key frame indices you acn easily access selected scenes:
+```python
+indices = vid.key_frame_indices
+first_scene = vid.video[indices[0] : indices[1]]
+print(indices)
+print(first_scene.shape)
+```
+```text
+[0, 95]
+(95, 176, 320, 3)
+```
+
+Or you can easily access the first frame of all new scenes. 
 ```python
 key_frames = vid.video[vid.key_frame_indices]
 print(key_frames.shape)
@@ -55,7 +67,7 @@ print(key_frames.shape)
 ```text
 (2, 176, 320, 3)
 ```
-To display them, cast them top ImageNdArrays:
+To display them, cast them to ImageNdArrays:
 ```python
 from pydantic import parse_obj_as
 
@@ -73,17 +85,23 @@ for frame in key_frames:
 
 ## Save video to file
 
+You can easily save your video tensor to a file. In this example we save the video with a framerate of 60, which results in a 4 sec video, instead of the original 10 second video with frame rate 25. and optionally hand over the corresponding audio tensor:
 ```python
 vid.video.save(
-    file_path="/tmp/mp_.mp4",
-    audio_tensor=doc.audio_tensor,
+    file_path="/path/my_audio.mp4",
+    video_frame_rate=60,
 )
 ```
+
+<video width="300" controls>
+    <source src="mov_bbb_framerate_60.mp4" type="video/mp4">
+</video>
+
 
 
 ## Display video 
 
-
+You can display a video from a VideoUrl or a VideoNdArray. For the latter you can optionally give the corresponding AudioTensor as a parameter:
 
 ## Predefined VideoDoc
 
