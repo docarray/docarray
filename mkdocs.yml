@@ -74,7 +74,9 @@ nav:
   - Home: README.md
   - Tutorial - User Guide:
     - user_guide/intro.md
-    - user_guide/first_step.md
+    - user_guide/representing/first_step.md
+    - user_guide/sending/first_step.md
+    - user_guide/storing/first_step.md
 
   - How-to:
     - how_to/add_doc_index.md
