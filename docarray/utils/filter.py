@@ -4,7 +4,7 @@ import json
 from typing import Dict, List, Union
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocList
+from docarray.array.doc_list.array import DocList
 
 
 def filter_docs(

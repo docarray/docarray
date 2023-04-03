@@ -18,9 +18,9 @@ from typing import (
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.io import IOMixinArray
-from docarray.array.array.pushpull import PushPullMixin
-from docarray.array.array.sequence_indexing_mixin import (
+from docarray.array.doc_list.io import IOMixinArray
+from docarray.array.doc_list.pushpull import PushPullMixin
+from docarray.array.doc_list.sequence_indexing_mixin import (
     IndexingSequenceMixin,
     IndexIterType,
 )
@@ -104,7 +104,7 @@ class DocList(
         # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
         #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
 
-    You can index into a DocList like a numpy array or torch tensor:
+    You can index into a DocList like a numpy doc_list or torch tensor:
 
 
         da[0]  # index by position
@@ -213,11 +213,11 @@ class DocList(
         self: T,
         field: str,
     ) -> Union[MutableSequence, T, 'TorchTensor', 'NdArray']:
-        """Return all values of the fields from all docs this array contains
+        """Return all values of the fields from all docs this doc_list contains
 
         :param field: name of the fields to extract
         :return: Returns a list of the field value for each document
-        in the array like container
+        in the doc_list like container
         """
         field_type = self.__class__.document_type._get_field_type(field)
 

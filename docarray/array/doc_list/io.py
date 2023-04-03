@@ -347,7 +347,7 @@ class IOMixinArray(Iterable[T_doc]):
         """
         Load a DocArray from a csv file following the schema defined in the
         :attr:`~docarray.DocArray.document_type` attribute.
-        Every row of the csv file will be mapped to one document in the array.
+        Every row of the csv file will be mapped to one document in the doc_list.
         The column names (defined in the first row) have to match the field names
         of the Document type.
         For nested fields use "__"-separated access paths, such as 'image__url'.
@@ -432,7 +432,7 @@ class IOMixinArray(Iterable[T_doc]):
         """
         Load a DocArray from a `pandas.DataFrame` following the schema
         defined in the :attr:`~docarray.DocArray.document_type` attribute.
-        Every row of the dataframe will be mapped to one Document in the array.
+        Every row of the dataframe will be mapped to one Document in the doc_list.
         The column names of the dataframe have to match the field names of the
         Document type.
         For nested fields use "__"-separated access paths as column names,
@@ -683,7 +683,7 @@ class IOMixinArray(Iterable[T_doc]):
         show_progress: bool = False,
         streaming: bool = False,
     ) -> Union[T, Generator['T_doc', None, None]]:
-        """Load array elements from a compressed binary file.
+        """Load doc_list elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
@@ -741,7 +741,7 @@ class IOMixinArray(Iterable[T_doc]):
         """Save DocArray into a binary file.
 
         It will use the protocol to pick how to save the DocArray.
-        If used 'picke-array` and `protobuf-array` the DocArray will be stored
+        If used 'picke-doc_list` and `protobuf-array` the DocArray will be stored
         and compressed at complete level using `pickle` or `protobuf`.
         When using `protobuf` or `pickle` as protocol each Document in DocArray
         will be stored individually and this would make it available for streaming.

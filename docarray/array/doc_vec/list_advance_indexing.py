@@ -1,6 +1,6 @@
 from typing import Iterator, MutableSequence, TypeVar
 
-from docarray.array.array.sequence_indexing_mixin import IndexingSequenceMixin
+from docarray.array.doc_list.sequence_indexing_mixin import IndexingSequenceMixin
 
 T_item = TypeVar('T_item')
 

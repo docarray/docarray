@@ -39,7 +39,7 @@ class IndexingSequenceMixin(Iterable[T_item]):
     This mixin allow sto extend a list into an object that can be indexed
     a la numpy/pytorch.
 
-    You can index into, delete from, and set items in a IndexingSequenceMixin like a numpy array or torch tensor:
+    You can index into, delete from, and set items in a IndexingSequenceMixin like a numpy doc_list or torch tensor:
 
     .. code-block:: python
         da[0]  # index by position

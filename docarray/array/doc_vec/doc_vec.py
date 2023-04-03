@@ -19,7 +19,7 @@ from typing import (
 from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocList
+from docarray.array.doc_list.array import DocList
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
