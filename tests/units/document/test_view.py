@@ -2,7 +2,7 @@ import numpy as np
 
 from docarray import BaseDoc
 from docarray.array import DocVec
-from docarray.array.stacked.column_storage import ColumnStorageView
+from docarray.array.doc_vec.column_storage import ColumnStorageView
 from docarray.typing import AnyTensor
 
 

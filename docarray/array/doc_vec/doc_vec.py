@@ -20,8 +20,8 @@ from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocList
-from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
-from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
+from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
+from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
@@ -63,12 +63,12 @@ class DocVec(AnyDocArray[T_doc]):
     {class}`~docarray.array.DocArray` but with an underlying implementation that is
     column based instead of row based. Each field
     of the schema of the DocArrayStack
-    (the :attr:`~docarray.array.stacked.DocVec.document_type` which is a
-    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, stacked (torch/np/tf) tensor.
+    (the :attr:`~docarray.array.doc_vec.DocVec.document_type` which is a
+    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
-    :attr:`~docarray.array.stacked.DocArrayStacked.tensor_type` will be used to determine
-    the type of the stacked column.
+    :attr:`~docarray.array.doc_vec.DocArrayStacked.tensor_type` will be used to determine
+    the type of the doc_vec column.
 
     If the field is another `BasedDoc` the column will be another DocArrayStacked that follows the
     schema of the nested Document.
@@ -82,7 +82,7 @@ class DocVec(AnyDocArray[T_doc]):
      numpy/PyTorch.
 
     :param docs: a homogeneous sequence of BaseDoc
-    :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
+    :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
     if the BaseDoc of this DocArrayStacked has some undefined tensor type like
     AnyTensor or Union of NdArray and TorchTensor
     """

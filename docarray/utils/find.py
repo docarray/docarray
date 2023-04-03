@@ -6,7 +6,7 @@ from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
 from docarray.array.array.array import DocList
-from docarray.array.stacked.array_stacked import DocVec
+from docarray.array.doc_vec.doc_vec import DocVec
 from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor

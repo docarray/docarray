@@ -56,7 +56,7 @@ def test_torch_dataset(captions_da: DocList[PairTextImage]):
         dataset, batch_size=BATCH_SIZE, collate_fn=dataset.collate_fn, shuffle=True
     )
 
-    from docarray.array.stacked.array_stacked import DocVec
+    from docarray.array.doc_vec.doc_vec import DocVec
 
     batch_lens = []
     for batch in loader:
@@ -136,7 +136,7 @@ def test_torch_dl_multiprocessing(captions_da: DocList[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocVec
+    from docarray.array.doc_vec.doc_vec import DocVec
 
     batch_lens = []
     for batch in loader:
@@ -164,7 +164,7 @@ def test_torch_dl_pin_memory(captions_da: DocList[PairTextImage]):
         multiprocessing_context='fork',
     )
 
-    from docarray.array.stacked.array_stacked import DocVec
+    from docarray.array.doc_vec.doc_vec import DocVec
 
     batch_lens = []
     for batch in loader:

@@ -58,7 +58,7 @@ class DocArraySummary:
         # broken
         """
         Return a list of the field names of a DocArrayStacked instance that are
-        stacked, i.e. all the fields that are of type AbstractTensor. Nested field
+        doc_vec, i.e. all the fields that are of type AbstractTensor. Nested field
         paths are separated by dot, such as: 'attr.nested_attr'.
         """
         fields = []

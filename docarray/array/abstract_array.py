@@ -212,8 +212,8 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
-        If your DocArray is in stacked mode, and you want to access a field of
-        type AnyTensor, the stacked tensor will be returned instead of a list:
+        If your DocArray is in doc_vec mode, and you want to access a field of
+        type AnyTensor, the doc_vec tensor will be returned instead of a list:
 
         EXAMPLE USAGE
         .. code-block:: python

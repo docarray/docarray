@@ -191,7 +191,7 @@ def test_stack_union():
         tensor_type=TensorFlowTensor,
     )
 
-    # union fields aren't actually stacked
+    # union fields aren't actually doc_vec
     # just checking that there is no error
 
 

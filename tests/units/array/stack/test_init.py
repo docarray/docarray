@@ -1,7 +1,7 @@
 import numpy as np
 
 from docarray import BaseDoc
-from docarray.array.stacked.array_stacked import DocVec
+from docarray.array.doc_vec.doc_vec import DocVec
 from docarray.typing import AnyTensor, NdArray
 
 

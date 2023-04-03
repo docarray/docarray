@@ -250,7 +250,7 @@ def test_stack_union():
     )
     batch[3].tensor = np.zeros((3, 224, 224))
 
-    # union fields aren't actually stacked
+    # union fields aren't actually doc_vec
     # just checking that there is no error
     batch.stack()
 
