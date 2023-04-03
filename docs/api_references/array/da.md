@@ -1,3 +1,3 @@
 # DocList
 
-::: docarray.array.doc_list.doc_list.DocArray
+::: docarray.array.doc_list.doc_list.DocList
