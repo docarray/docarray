@@ -213,12 +213,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 [self._convert_to_doc(point) for point in response]
                 for response in responses
             ],
-            scores=np.array(
-                [
-                    [point.score for point in response]
-                    for response in responses
-                ]
-            )
+            scores=[
+                np.array([point.score for point in response])
+                for response in responses
+            ],
         )
 
     def _filter(self, filter_query: rest.Filter, limit: int) -> Union[DocArray, List[Dict]]:
