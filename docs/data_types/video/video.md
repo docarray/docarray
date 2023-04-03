@@ -1,0 +1,89 @@
+# Video
+
+
+````{tip}
+This requires a `av` dependency. You can install it via `pip install "docarray[video]"`
+````
+
+## Load video data
+
+
+<video controls width="60%">
+<source src="mov_bbb.mp4" type="video/mp4">
+</video>
+
+
+```python
+from docarray import BaseDoc
+from docarray.typing import VideoUrl
+
+
+class MyVideo(BaseDoc):
+    url: VideoUrl
+
+
+doc = MyVideo(
+    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+)
+vid = doc.url.load()
+
+print(type(vid.video), vid.video.shape)
+print(type(vid.audio), vid.audio.shape)
+print(type(vid.key_frame_indices), vid.key_frame_indices.shape)
+```
+```text
+<class 'docarray.typing.tensor.video.video_ndarray.VideoNdArray'> 
+<class 'docarray.typing.tensor.audio.audio_ndarray.AudioNdArray'> 
+<class 'docarray.typing.tensor.ndarray.NdArray'>
+```
+
+Video data is represented as a video tensor, an audio tensor and an array key frame indices. 
+The video tensor is a 4-dim array with shape=(n_frames, height, width, channels). The first dimension represents the frame id. 
+The last three dimensions represent the same thing as in image data. 
+In the given example with vid.video.shape=(250, 176, 320, 3), the video contains 250 frames of size 176x320. 
+Based on the overall length of the video (10s), we can infer the framerate is around 250/10=25fps.
+If the video contains audio, it will be stored as an AudioNdArray in vid.audio.
+Additionally, the key frame indices will be stored. A key frame is defined as the starting point of any smooth transition.
+
+## Key frame extraction
+A key frame is defined as the starting point of any smooth transition.
+
+```python
+key_frames = vid.video[vid.key_frame_indices]
+print(key_frames.shape)
+```
+```text
+(2, 176, 320, 3)
+```
+To display them, cast them top ImageNdArrays:
+```python
+from pydantic import parse_obj_as
+
+for frame in key_frames:
+    img = parse_obj_as(ImageNdArray, frame)
+    img.display()
+```
+
+
+<figure markdown>
+  ![](key_frames.png){ width="400" }
+</figure>
+
+
+
+## Save video to file
+
+```python
+vid.video.save(
+    file_path="/tmp/mp_.mp4",
+    audio_tensor=doc.audio_tensor,
+)
+```
+
+
+## Display video 
+
+
+
+## Predefined VideoDoc
+
