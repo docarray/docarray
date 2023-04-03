@@ -14,13 +14,13 @@ You will first need to install `DocArray` in your Python environment.
 
 ## Install DocArray
 
-To install `DocArray` to follow this user guide, you can use the following command:
+To install `DocArray`, you can use the following command:
 
 ```console
 pip install "docarray[full]"
 ```
 
-This will install the main dependencies of `DocArray` and will work will all the supported data modalities.
+This will install the main dependencies of `DocArray` and will work with all the supported data modalities.
 
 !!! note 
     To install a very light version of `DocArray` with only the core dependencies, you can use the following command:
@@ -28,7 +28,7 @@ This will install the main dependencies of `DocArray` and will work will all the
     pip install "docarray"
     ``` 
     
-    If you want to use protobuf and DocArray you can run:
+    If you want to use `protobuf` and `DocArray`, you can run:
 
     ```
     pip install "docarray[proto]"
