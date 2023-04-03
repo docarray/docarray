@@ -112,6 +112,7 @@ class ImageBytes(bytes, AbstractType):
         img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
         assert img_tensor.shape == (3, 200, 100)
         ```
+
         ---
 
         :param width: width of the image tensor.
