@@ -815,6 +815,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
 
         return DocArray[BaseDoc].construct(out_docs)
+    
+    def _validate_search_field(self, search_field):
+        if search_field in self._column_infos.keys():
+            return True
+        else:
+            raise ValueError(
+                {search_field}
+                + 'is not a valid search field. Valid search fields are: '
+                + {', '.join(self._column_infos.keys())}
+            )
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
