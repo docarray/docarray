@@ -120,8 +120,8 @@ class ImageBytes(bytes, AbstractType):
             'H' = height, 'W' = width, 'C' = color channel
         :return: ImageNdArray representing the image as RGB values
         """
-
         raw_img = self.load_pil()
+
         if width or height:
             new_width = width or raw_img.width
             new_height = height or raw_img.height
