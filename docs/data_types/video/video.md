@@ -8,11 +8,11 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 ## Load video data
 
 
-<video controls="">
+<video controls="" markdown>
     <source src="./mov_bbb.mp4" type="video/mp4">
 </video>
 
-![type:video](mov_bbb.mp4)
+![type:video](mov_bbb.mp4){: style='width: 300'}
 
 
 <video controls="">
