@@ -3,7 +3,7 @@ from typing import Optional
 import pytest
 import torch
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.array.abstract_array import AnyDocArray
 from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
@@ -21,21 +21,21 @@ def multi_model_docs():
 
     class SubDoc(BaseDoc):
         sub_text: TextDoc
-        sub_da: DocArray[SubSubDoc]
+        sub_da: DocList[SubSubDoc]
 
     class MultiModalDoc(BaseDoc):
         mm_text: TextDoc
         mm_tensor: Optional[TorchTensor[3, 2, 2]]
-        mm_da: DocArray[SubDoc]
+        mm_da: DocList[SubDoc]
 
-    docs = DocArray[MultiModalDoc](
+    docs = DocList[MultiModalDoc](
         [
             MultiModalDoc(
                 mm_text=TextDoc(text=f'hello{i}'),
                 mm_da=[
                     SubDoc(
                         sub_text=TextDoc(text=f'sub_{i}_1'),
-                        sub_da=DocArray[SubSubDoc](
+                        sub_da=DocList[SubSubDoc](
                             [
                                 SubSubDoc(
                                     sub_sub_text=TextDoc(text='subsub'),
@@ -81,7 +81,7 @@ def test_traverse_stacked_da():
     class Image(BaseDoc):
         tensor: TorchTensor[3, 224, 224]
 
-    batch = DocArray[Image](
+    batch = DocList[Image](
         [
             Image(
                 tensor=torch.zeros(3, 224, 224),
@@ -112,7 +112,7 @@ def test_flatten_one_level(input_list, output_list):
 
 def test_flatten_one_level_list_of_da():
     doc = BaseDoc()
-    input_list = [DocArray([doc, doc, doc])]
+    input_list = [DocList([doc, doc, doc])]
 
     flattened = AnyDocArray._flatten_one_level(sequence=input_list)
     assert flattened == [doc, doc, doc]

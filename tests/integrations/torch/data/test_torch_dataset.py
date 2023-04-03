@@ -2,7 +2,7 @@ import pytest
 import torch
 from torch.utils.data import DataLoader
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.data import MultiModalDataset
 from docarray.documents import ImageDoc, TextDoc
 
@@ -34,10 +34,10 @@ class Meowification:
 
 
 @pytest.fixture
-def captions_da() -> DocArray[PairTextImage]:
+def captions_da() -> DocList[PairTextImage]:
     with open("tests/toydata/captions.csv", "r") as f:
         f.readline()
-        da = DocArray[PairTextImage](
+        da = DocList[PairTextImage](
             PairTextImage(
                 text=TextDoc(text=i[1]),
                 image=ImageDoc(url=f"tests/toydata/image-data/{i[0]}"),
@@ -47,7 +47,7 @@ def captions_da() -> DocArray[PairTextImage]:
     return da
 
 
-def test_torch_dataset(captions_da: DocArray[PairTextImage]):
+def test_torch_dataset(captions_da: DocList[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
@@ -65,7 +65,7 @@ def test_torch_dataset(captions_da: DocArray[PairTextImage]):
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
 
-def test_primitives(captions_da: DocArray[PairTextImage]):
+def test_primitives(captions_da: DocList[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"text": Meowification()}
@@ -78,7 +78,7 @@ def test_primitives(captions_da: DocArray[PairTextImage]):
     assert all(t.endswith(' meow') for t in batch.text)
 
 
-def test_root_field(captions_da: DocArray[TextDoc]):
+def test_root_field(captions_da: DocList[TextDoc]):
     BATCH_SIZE = 32
 
     preprocessing = {"": TextPreprocess()}
@@ -91,7 +91,7 @@ def test_root_field(captions_da: DocArray[TextDoc]):
     assert batch.embedding.shape[1] == 64
 
 
-def test_nested_field(captions_da: DocArray[PairTextImage]):
+def test_nested_field(captions_da: DocList[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {
@@ -122,7 +122,7 @@ def test_nested_field(captions_da: DocArray[PairTextImage]):
 
 
 @pytest.mark.slow
-def test_torch_dl_multiprocessing(captions_da: DocArray[PairTextImage]):
+def test_torch_dl_multiprocessing(captions_da: DocList[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}
@@ -146,7 +146,7 @@ def test_torch_dl_multiprocessing(captions_da: DocArray[PairTextImage]):
 
 
 @pytest.mark.skip(reason="UNRESOLVED BUG")
-def test_torch_dl_pin_memory(captions_da: DocArray[PairTextImage]):
+def test_torch_dl_pin_memory(captions_da: DocList[PairTextImage]):
     BATCH_SIZE = 32
 
     preprocessing = {"image": ImagePreprocess(), "text": TextPreprocess()}

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import NdArray
 
 
@@ -14,7 +14,7 @@ def test_batch(shuffle, stack, batch_size, n_batches):
         tensor: NdArray
 
     t_shape = (32, 32)
-    da = DocArray[MyDoc](
+    da = DocList[MyDoc](
         [
             MyDoc(
                 id=i,

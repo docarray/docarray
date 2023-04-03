@@ -19,7 +19,7 @@ from typing import (
 from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocArray
+from docarray.array.array.array import DocList
 from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
@@ -105,8 +105,8 @@ class DocArrayStacked(AnyDocArray[T_doc]):
             raise ValueError(f'docs {docs}: should not be empty')
         docs = (
             docs
-            if isinstance(docs, DocArray)
-            else DocArray.__class_getitem__(self.document_type)(docs)
+            if isinstance(docs, DocList)
+            else DocList.__class_getitem__(self.document_type)(docs)
         )
 
         for field_name, field in self.document_type.__fields__.items():
@@ -167,7 +167,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
                     docs_list = list()
                     for doc in docs:
                         da = getattr(doc, field_name)
-                        if isinstance(da, DocArray):
+                        if isinstance(da, DocList):
                             da = da.stack(tensor_type=self.tensor_type)
                         docs_list.append(da)
                     da_columns[field_name] = ListAdvancedIndexing(docs_list)
@@ -209,7 +209,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
-        elif isinstance(value, DocArray.__class_getitem__(cls.document_type)):
+        elif isinstance(value, DocList.__class_getitem__(cls.document_type)):
             return cast(T, value.stack())
         elif isinstance(value, Sequence):
             return cls(value)
@@ -305,7 +305,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     def _set_data_and_columns(
         self: T,
         index_item: Union[Tuple, Iterable, slice],
-        value: Union[T, DocArray[T_doc]],
+        value: Union[T, DocList[T_doc]],
     ) -> None:
         """Delegates the setting to the data and the columns.
 
@@ -318,7 +318,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
 
         # set data and prepare columns
         processed_value: T
-        if isinstance(value, DocArray):
+        if isinstance(value, DocList):
             if not issubclass(value.document_type, self.document_type):
                 raise TypeError(
                     f'{value} schema : {value.document_type} is not compatible with '
@@ -345,10 +345,10 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         self: T,
         field: str,
         values: Union[
-            Sequence[DocArray[T_doc]],
+            Sequence[DocList[T_doc]],
             Sequence[Any],
             T,
-            DocArray,
+            DocList,
             AbstractTensor,
         ],
     ) -> None:
@@ -384,7 +384,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
             self._storage.doc_columns[field] = values_
 
         elif field in self._storage.da_columns.keys():
-            values_ = cast(Sequence[DocArray[T_doc]], values)
+            values_ = cast(Sequence[DocList[T_doc]], values)
             # TODO here we should actually check if this is correct
             self._storage.da_columns[field] = values_
         elif field in self._storage.any_columns.keys():
@@ -474,14 +474,14 @@ class DocArrayStacked(AnyDocArray[T_doc]):
             any_columns=any_columns_proto,
         )
 
-    def unstack(self: T) -> DocArray[T_doc]:
+    def unstack(self: T) -> DocList[T_doc]:
         """Convert DocArrayStacked into a DocArray.
 
         Note this destroys the arguments and returns a new DocArray
         """
 
-        unstacked_doc_column: Dict[str, DocArray] = dict()
-        unstacked_da_column: Dict[str, List[DocArray]] = dict()
+        unstacked_doc_column: Dict[str, DocList] = dict()
+        unstacked_da_column: Dict[str, List[DocList]] = dict()
         unstacked_tensor_column: Dict[str, List[AbstractTensor]] = dict()
         unstacked_any_column = self._storage.any_columns
 
@@ -515,7 +515,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
 
         del self._storage
 
-        return DocArray.__class_getitem__(self.document_type).construct(docs)
+        return DocList.__class_getitem__(self.document_type).construct(docs)
 
     def traverse_flat(
         self,

@@ -4,7 +4,7 @@ from typing import Dict, Iterator, List, Optional, Type
 from typing_extensions import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
 
 class AbstractDocStore(ABC):
@@ -33,7 +33,7 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def push(
-        da: 'DocArray',
+        da: 'DocList',
         name: str,
         public: bool,
         show_progress: bool,
@@ -71,11 +71,11 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def pull(
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """Pull a DocArray from the specified name.
 
         :param da_cls: The DocArray class to instantiate
@@ -89,7 +89,7 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def pull_stream(
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,

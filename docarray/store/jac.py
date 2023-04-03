@@ -26,7 +26,7 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:  # pragma: no cover
     import io
 
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
 if TYPE_CHECKING:
     import hubble
@@ -46,7 +46,7 @@ def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
     raise ValueError('Length not found in summary')
 
 
-def _get_raw_summary(self: 'DocArray') -> List[Dict[str, Any]]:
+def _get_raw_summary(self: 'DocList') -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = [
         dict(
             name='Type',
@@ -152,7 +152,7 @@ class JACDocStore(AbstractDocStore):
     @staticmethod
     @hubble.login_required
     def push(
-        da: 'DocArray',
+        da: 'DocList',
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -258,14 +258,14 @@ class JACDocStore(AbstractDocStore):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
         """
-        from docarray import DocArray
+        from docarray import DocList
 
         # This is a temporary solution to push a stream of documents
         # The memory footprint is not ideal
         # But it must be done this way for now because Hubble expects to know the length of the DocArray
         # before it starts receiving the documents
         first_doc = next(docs)
-        da = DocArray[first_doc.__class__]([first_doc])  # type: ignore
+        da = DocList[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
             da.append(doc)
         return cls.push(da, name, public, show_progress, branding)
@@ -273,11 +273,11 @@ class JACDocStore(AbstractDocStore):
     @staticmethod
     @hubble.login_required
     def pull(
-        cls: Type['DocArray'],
+        cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """Pull a :class:`DocArray` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
@@ -285,16 +285,16 @@ class JACDocStore(AbstractDocStore):
         :param local_cache: store the downloaded DocArray to local folder
         :return: a :class:`DocArray` object
         """
-        from docarray import DocArray
+        from docarray import DocList
 
-        return DocArray[cls.document_type](  # type: ignore
+        return DocList[cls.document_type](  # type: ignore
             JACDocStore.pull_stream(cls, name, show_progress, local_cache)
         )
 
     @staticmethod
     @hubble.login_required
     def pull_stream(
-        cls: Type['DocArray'],
+        cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,

@@ -5,7 +5,7 @@ from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocArray
+from docarray.array.array.array import DocList
 from docarray.array.stacked.array_stacked import DocArrayStacked
 from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
@@ -14,12 +14,12 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 class FindResult(NamedTuple):
-    documents: DocArray
+    documents: DocList
     scores: AnyTensor
 
 
 class _FindResult(NamedTuple):
-    documents: Union[DocArray, List[Dict[str, Any]]]
+    documents: Union[DocList, List[Dict[str, Any]]]
     scores: AnyTensor
 
 
@@ -110,7 +110,7 @@ def find(
 
 def find_batched(
     index: AnyDocArray,
-    query: Union[AnyTensor, DocArray],
+    query: Union[AnyTensor, DocList],
     embedding_field: str = 'embedding',
     metric: str = 'cosine_sim',
     limit: int = 10,
@@ -203,16 +203,16 @@ def find_batched(
 
     results = []
     for indices_per_query, scores_per_query in zip(top_indices, top_scores):
-        docs_per_query: DocArray = DocArray([])
+        docs_per_query: DocList = DocList([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
-        docs_per_query = DocArray(docs_per_query)
+        docs_per_query = DocList(docs_per_query)
         results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
     return results
 
 
 def _extract_embedding_single(
-    data: Union[DocArray, BaseDoc, AnyTensor],
+    data: Union[DocList, BaseDoc, AnyTensor],
     embedding_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
@@ -247,7 +247,7 @@ def _extract_embeddings(
     :return: the embeddings
     """
     emb: AnyTensor
-    if isinstance(data, DocArray):
+    if isinstance(data, DocList):
         emb_list = list(AnyDocArray._traverse(data, embedding_field))
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, (DocArrayStacked, BaseDoc)):

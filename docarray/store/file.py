@@ -10,7 +10,7 @@ from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
 SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
@@ -92,7 +92,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfFileDocStore],
-        da: 'DocArray',
+        da: 'DocList',
         name: str,
         public: bool,
         show_progress: bool,
@@ -145,11 +145,11 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """Pull a :class:`DocArray` from the specified url.
 
         :param name: The file path to pull from.
@@ -167,7 +167,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull_stream(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,

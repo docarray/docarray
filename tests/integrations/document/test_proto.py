@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import (
     AnyEmbedding,
@@ -61,7 +61,7 @@ def test_all_types():
         embedding: AnyEmbedding
         torch_embedding: TorchEmbedding[128]
         np_embedding: NdArrayEmbedding[128]
-        nested_docs: DocArray[NestedDoc]
+        nested_docs: DocList[NestedDoc]
         bytes_: bytes
         img_bytes: ImageBytes
 
@@ -80,7 +80,7 @@ def test_all_types():
         embedding=np.zeros((3, 224, 224)),
         torch_embedding=torch.zeros((128,)),
         np_embedding=np.zeros((128,)),
-        nested_docs=DocArray[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
+        nested_docs=DocList[NestedDoc]([NestedDoc(tensor=np.zeros((128,)))]),
         bytes_=b'hello',
         img_bytes=b'img',
     )
@@ -136,7 +136,7 @@ def test_tensorflow_types():
         generic_tf_tensor: AnyTensor
         embedding: AnyEmbedding
         tf_embedding: TensorFlowEmbedding[128]
-        nested_docs: DocArray[NestedDoc]
+        nested_docs: DocList[NestedDoc]
 
     doc = MyDoc(
         tf_tensor=tf.zeros((3, 224, 224)),
@@ -144,7 +144,7 @@ def test_tensorflow_types():
         generic_tf_tensor=tf.zeros((3, 224, 224)),
         embedding=tf.zeros((3, 224, 224)),
         tf_embedding=tf.zeros((128,)),
-        nested_docs=DocArray[NestedDoc]([NestedDoc(tensor=tf.zeros((128,)))]),
+        nested_docs=DocList[NestedDoc]([NestedDoc(tensor=tf.zeros((128,)))]),
     )
     doc = doc.to_protobuf()
     doc = MyDoc.from_protobuf(doc)

@@ -9,10 +9,11 @@ from docarray.utils._internal.cache import _get_cache_path
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDoc, DocArray
     import boto3
     import botocore
     from smart_open import open
+
+    from docarray import BaseDoc, DocList
 else:
     open = import_library('smart_open', raise_error=True).open
     boto3 = import_library('boto3', raise_error=True)
@@ -118,7 +119,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfS3DocStore],
-        da: 'DocArray',
+        da: 'DocList',
         name: str,
         public: bool = False,
         show_progress: bool = False,
@@ -176,11 +177,11 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """Pull a :class:`DocArray` from the specified bucket and key.
 
         :param name: The bucket and key to pull from. e.g. my_bucket/my_key
@@ -198,7 +199,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull_stream(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocArray'],
+        da_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,

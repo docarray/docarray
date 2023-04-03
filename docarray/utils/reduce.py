@@ -2,12 +2,12 @@ __all__ = ['reduce', 'reduce_all']
 
 from typing import Dict, List, Optional
 
-from docarray import DocArray
+from docarray import DocList
 
 
 def reduce(
-    left: DocArray, right: DocArray, left_id_map: Optional[Dict] = None
-) -> 'DocArray':
+    left: DocList, right: DocList, left_id_map: Optional[Dict] = None
+) -> 'DocList':
     """
     Reduces left and right DocArray into one DocArray in-place.
     Changes are applied to the left DocArray.
@@ -36,7 +36,7 @@ def reduce(
     return left
 
 
-def reduce_all(docarrays: List[DocArray]) -> DocArray:
+def reduce_all(docarrays: List[DocList]) -> DocList:
     """
     Reduces a list of DocArrays into one DocArray.
     Changes are applied to the first DocArray in-place.

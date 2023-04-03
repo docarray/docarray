@@ -4,7 +4,7 @@ import json
 from typing import Dict, List, Union
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocArray
+from docarray.array.array.array import DocList
 
 
 def filter_docs(
@@ -75,7 +75,7 @@ def filter_docs(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocArray.__class_getitem__(docs.document_type)(
+        return DocList.__class_getitem__(docs.document_type)(
             d for d in docs if parser.evaluate(d)
         )
     else:

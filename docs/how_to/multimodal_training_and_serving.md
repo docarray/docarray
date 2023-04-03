@@ -83,7 +83,7 @@ The `BaseDoc` class allows users to define their own (nested, multi-modal) Docum
 Let's start by defining a few Documents to handle the different modalities that we will use during our training:
 
 ```python
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import TorchTensor, ImageUrl
 ```
 
@@ -184,7 +184,7 @@ import pandas as pd
 
 def get_flickr8k_da(file: str = "captions.txt", N: Optional[int] = None):
     df = pd.read_csv(file, nrows=N)
-    da = DocArray[PairTextImage](
+    da = DocList[PairTextImage](
         PairTextImage(text=Text(text=i.caption), image=Image(url=f"Images/{i.image}"))
         for i in df.itertuples()
     )
@@ -289,7 +289,7 @@ def cosine_sim(x_mat: TorchTensor, y_mat: TorchTensor) -> TorchTensor:
 ```
 
 ```python
-def clip_loss(image: DocArray[Image], text: DocArray[Text]) -> TorchTensor:
+def clip_loss(image: DocList[Image], text: DocArray[Text]) -> TorchTensor:
     sims = cosine_sim(image.embedding, text.embedding)
     return torch.norm(sims - torch.eye(sims.shape[0], device=DEVICE))
 ```

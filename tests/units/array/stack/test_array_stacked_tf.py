@@ -2,7 +2,7 @@ from typing import Optional, Union
 
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.array import DocArrayStacked
 from docarray.typing import AnyTensor, NdArray
 from docarray.utils._internal.misc import is_tf_available
@@ -22,7 +22,7 @@ def batch():
 
     import tensorflow as tf
 
-    batch = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
+    batch = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     return batch.stack()
 
@@ -33,14 +33,14 @@ def nested_batch():
         tensor: TensorFlowTensor[3, 224, 224]
 
     class MMdoc(BaseDoc):
-        img: DocArray[Image]
+        img: DocList[Image]
 
     import tensorflow as tf
 
     batch = DocArrayStacked[MMdoc](
         [
             MMdoc(
-                img=DocArray[Image](
+                img=DocList[Image](
                     [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
                 )
             )
@@ -109,7 +109,7 @@ def test_stack_mod_nested_document():
     class MMdoc(BaseDoc):
         img: Image
 
-    batch = DocArray[MMdoc](
+    batch = DocList[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     ).stack()
 
@@ -164,7 +164,7 @@ def test_unstack_nested_document():
 def test_unstack_nested_DocArray(nested_batch):
     batch = nested_batch.unstack()
     for i in range(len(batch)):
-        assert isinstance(batch[i].img, DocArray)
+        assert isinstance(batch[i].img, DocList)
         for doc in batch[i].img:
             assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
 
@@ -174,7 +174,7 @@ def test_stack_call():
     class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    da = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
+    da = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     da = da.stack()
 
@@ -283,7 +283,7 @@ def test_keep_dtype_tf():
     class MyDoc(BaseDoc):
         tensor: TensorFlowTensor
 
-    da = DocArray[MyDoc](
+    da = DocList[MyDoc](
         [MyDoc(tensor=tf.zeros([2, 4], dtype=tf.int32)) for _ in range(3)]
     )
     assert da[0].tensor.tensor.dtype == tf.int32

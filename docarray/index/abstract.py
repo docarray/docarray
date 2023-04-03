@@ -24,7 +24,7 @@ import numpy as np
 from pydantic.error_wrappers import ValidationError
 from typing_inspect import get_args, is_optional_type, is_union_type
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.array.abstract_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -48,12 +48,12 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
 class FindResultBatched(NamedTuple):
-    documents: List[DocArray]
+    documents: List[DocList]
     scores: np.ndarray
 
 
 class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocArray], List[List[Dict[str, Any]]]]
+    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
     scores: np.ndarray
 
 
@@ -254,7 +254,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self,
         filter_query: Any,
         limit: int,
-    ) -> Union[DocArray, List[Dict]]:
+    ) -> Union[DocList, List[Dict]]:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
@@ -268,7 +268,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self,
         filter_queries: Any,
         limit: int,
-    ) -> Union[List[DocArray], List[List[Dict]]]:
+    ) -> Union[List[DocList], List[List[Dict]]]:
         """Find documents in the index based on multiple filter queries.
         Each query is considered individually, and results are returned per query.
 
@@ -322,7 +322,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def __getitem__(
         self, key: Union[str, Sequence[str]]
-    ) -> Union[TSchema, DocArray[TSchema]]:
+    ) -> Union[TSchema, DocList[TSchema]]:
         """Get one or multiple Documents into the index, by `id`.
         If no document is found, a KeyError is raised.
 
@@ -341,12 +341,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             raise KeyError(f'No document with id {key} found')
 
         # cast output
-        if isinstance(doc_sequence, DocArray):
-            out_da: DocArray[TSchema] = doc_sequence
+        if isinstance(doc_sequence, DocList):
+            out_da: DocList[TSchema] = doc_sequence
         elif isinstance(doc_sequence[0], Dict):
             out_da = self._dict_list_to_docarray(doc_sequence)  # type: ignore
         else:
-            da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
+            da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
             out_da = da_cls(doc_sequence)
 
         return out_da[0] if return_singleton else out_da
@@ -385,7 +385,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index.
         """
-        if not isinstance(docs, (BaseDoc, DocArray)):
+        if not isinstance(docs, (BaseDoc, DocList)):
             self._logger.warning(
                 'Passing a sequence of Documents that is not a DocArray comes at '
                 'a performance penalty, since compatibility with the schema of Index '
@@ -431,7 +431,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def find_batched(
         self,
-        queries: Union[AnyTensor, DocArray],
+        queries: Union[AnyTensor, DocList],
         search_field: str = 'embedding',
         limit: int = 10,
         **kwargs,
@@ -471,7 +471,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         filter_query: Any,
         limit: int = 10,
         **kwargs,
-    ) -> DocArray:
+    ) -> DocList:
         """Find documents in the index based on a filter query
 
         :param filter_query: the DB specific filter query to execute
@@ -491,7 +491,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         filter_queries: Any,
         limit: int = 10,
         **kwargs,
-    ) -> List[DocArray]:
+    ) -> List[DocList]:
         """Find documents in the index based on multiple filter queries.
 
         :param filter_queries: the DB specific filter query to execute
@@ -764,7 +764,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def _validate_docs(
         self, docs: Union[BaseDoc, Sequence[BaseDoc]]
-    ) -> DocArray[BaseDoc]:
+    ) -> DocList[BaseDoc]:
         """Validates Document against the schema of the Document Index.
         For validation to pass, the schema of `docs` and the schema of the Document
         Index need to evaluate to the same flattened columns.
@@ -778,7 +778,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         if isinstance(docs, BaseDoc):
             docs = [docs]
-        if isinstance(docs, DocArray):
+        if isinstance(docs, DocList):
             # validation shortcut for DocArray; only look at the schema
             reference_schema_flat = self._flatten_schema(
                 cast(Type[BaseDoc], self._schema)
@@ -814,7 +814,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     ' and that the types of your data match the types of the Document Index schema.'
                 )
 
-        return DocArray[BaseDoc].construct(out_docs)
+        return DocList[BaseDoc].construct(out_docs)
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
@@ -871,9 +871,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         schema_cls = cast(Type[BaseDoc], schema)
         return schema_cls(**doc_dict)
 
-    def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocArray:
+    def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocArray of the schema type."""
 
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        da_cls = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return da_cls(doc_list)

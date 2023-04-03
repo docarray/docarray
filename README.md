@@ -77,9 +77,10 @@ doc = MultiModalDocument(
 )
 ```
 
-### Collect multiple `Documents` into a `DocArray`:
+### Collect multiple `Documents` into a `DocList`:
+
 ```python
-from docarray import DocArray, BaseDoc
+from docarray import DocList, BaseDoc
 from docarray.typing import AnyTensor, ImageUrl
 import numpy as np
 
@@ -90,9 +91,9 @@ class Image(BaseDoc):
 ```
 
 ```python
-from docarray import DocArray
+from docarray import DocList
 
-da = DocArray[Image](
+da = DocList[Image](
     [
         Image(
             url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
@@ -150,16 +151,16 @@ Image.from_protobuf(doc.to_protobuf())
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocArray
+from docarray import DocList
 from docarray.documents import ImageDoc
 from docarray.stores import DocumentStore
 import numpy as np
 
-da = DocArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
+da = DocList([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
 store = DocumentStore[ImageDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocArray into the DocumentStore
+store.insert(da)  # insert the DocList into the DocumentStore
 # find the 10 most similar images based on the 'embedding' field
 match = store.find(ImageDoc(embedding=np.zeros((128,))), field='embedding', top_k=10)
 ```
@@ -233,7 +234,7 @@ Not very easy on the eyes if you ask us. And even worse, if you need to add one 
 So, now let's see what the same code looks like with DocArray:
 
 ```python
-from docarray import DocArray, BaseDoc
+from docarray import DocList, BaseDoc
 from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
 
@@ -258,14 +259,14 @@ class MyPodcastModel(nn.Module):
         self.image_encoder = ImageEncoder()
         self.text_encoder = TextEncoder()
 
-    def forward_podcast(self, da: DocArray[Podcast]) -> DocArray[Podcast]:
+    def forward_podcast(self, da: DocList[Podcast]) -> DocList[Podcast]:
         da.audio.embedding = self.audio_encoder(da.audio.tensor)
         da.text.embedding = self.text_encoder(da.text.tensor)
         da.image.embedding = self.image_encoder(da.image.tensor)
 
         return da
 
-    def forward(self, da: DocArray[PairPodcast]) -> DocArray[PairPodcast]:
+    def forward(self, da: DocList[PairPodcast]) -> DocList[PairPodcast]:
         da.left = self.forward_podcast(da.left)
         da.right = self.forward_podcast(da.right)
 
@@ -297,7 +298,7 @@ This would look like the following:
 ```python
 from typing import Optional
 
-from docarray import DocArray, BaseDoc
+from docarray import DocList, BaseDoc
 
 import tensorflow as tf
 
@@ -312,7 +313,7 @@ class MyPodcastModel(tf.keras.Model):
         super().__init__()
         self.audio_encoder = AudioEncoder()
 
-    def call(self, inputs: DocArray[Podcast]) -> DocArray[Podcast]:
+    def call(self, inputs: DocList[Podcast]) -> DocList[Podcast]:
         inputs.audio_tensor.embedding = self.audio_encoder(
             inputs.audio_tensor.tensor
         )  # access audio_tensor's .tensor attribute
@@ -407,7 +408,7 @@ store it there, and thus make it searchable:
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocArray, BaseDoc
+from docarray import DocList, BaseDoc
 from docarray.stores import DocumentStore
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
@@ -427,7 +428,7 @@ def _random_my_doc():
     )
 
 
-da = DocArray([_random_my_doc() for _ in range(1000)])  # create some data
+da = DocList([_random_my_doc() for _ in range(1000)])  # create some data
 store = DocumentStore[MyDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend

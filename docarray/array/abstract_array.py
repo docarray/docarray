@@ -121,10 +121,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this DocArray using the passed values
+        """Set all Documents in this DocList using the passed values
 
         :param field: name of the fields to extract
-        :values: the values to set at the DocArray level
+        :values: the values to set at the DocList level
         """
         ...
 
@@ -136,12 +136,12 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     @abstractmethod
     def to_protobuf(self) -> 'DocumentArrayProto':
-        """Convert DocArray into a Protobuf message"""
+        """Convert DocList into a Protobuf message"""
         ...
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert a DocArray into a NodeProto protobuf message.
-         This function should be called when a DocArray
+        """Convert a DocList into a NodeProto protobuf message.
+         This function should be called when a DocList
         is nested into another Document that need to be converted into a protobuf
 
         :return: the nested item protobuf message
@@ -157,7 +157,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     ) -> Union[List[Any], 'AbstractTensor']:
         """
         Return a List of the accessed objects when applying the `access_path`. If this
-        results in a nested list or list of DocArrays, the list will be flattened
+        results in a nested list or list of DocLists, the list will be flattened
         on the first level. The access path is a string that consists of attribute
         names, concatenated and "__"-separated. It describes the path from the first
         level to an arbitrary one, e.g. 'content__image__url'.
@@ -243,9 +243,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         if access_path:
             curr_attr, _, path_attrs = access_path.partition('__')
 
-            from docarray.array import DocArray
+            from docarray.array import DocList
 
-            if isinstance(node, (DocArray, list)):
+            if isinstance(node, (DocList, list)):
                 for n in node:
                     x = getattr(n, curr_attr)
                     yield from AnyDocArray._traverse(x, path_attrs)
@@ -257,9 +257,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     @staticmethod
     def _flatten_one_level(sequence: List[Any]) -> List[Any]:
-        from docarray import DocArray
+        from docarray import DocList
 
-        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocArray)):
+        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocList)):
             return sequence
         else:
             return [item for sublist in sequence for item in sublist]

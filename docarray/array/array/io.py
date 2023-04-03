@@ -39,7 +39,7 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
-    from docarray import DocArray
+    from docarray import DocList
     from docarray.proto import DocumentArrayProto
 
 T = TypeVar('T', bound='IOMixinArray')
@@ -343,7 +343,7 @@ class IOMixinArray(Iterable[T_doc]):
         file_path: str,
         encoding: str = 'utf-8',
         dialect: Union[str, csv.Dialect] = 'excel',
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """
         Load a DocArray from a csv file following the schema defined in the
         :attr:`~docarray.DocArray.document_type` attribute.
@@ -363,7 +363,7 @@ class IOMixinArray(Iterable[T_doc]):
             'unix' (for csv file generated on UNIX systems).
         :return: DocArray
         """
-        from docarray import DocArray
+        from docarray import DocList
 
         if cls.document_type == AnyDoc:
             raise TypeError(
@@ -372,7 +372,7 @@ class IOMixinArray(Iterable[T_doc]):
             )
 
         doc_type = cls.document_type
-        da = DocArray.__class_getitem__(doc_type)()
+        da = DocList.__class_getitem__(doc_type)()
 
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
@@ -428,7 +428,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocArray':
+    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocList':
         """
         Load a DocArray from a `pandas.DataFrame` following the schema
         defined in the :attr:`~docarray.DocArray.document_type` attribute.
@@ -468,7 +468,7 @@ class IOMixinArray(Iterable[T_doc]):
         :return: DocArray where each Document contains the information of one
             corresponding row of the `pandas.DataFrame`.
         """
-        from docarray import DocArray
+        from docarray import DocList
 
         if cls.document_type == AnyDoc:
             raise TypeError(
@@ -477,7 +477,7 @@ class IOMixinArray(Iterable[T_doc]):
             )
 
         doc_type = cls.document_type
-        da = DocArray.__class_getitem__(doc_type)()
+        da = DocList.__class_getitem__(doc_type)()
         field_names = df.columns.tolist()
 
         if field_names is None or len(field_names) == 0:

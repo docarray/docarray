@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from docarray.typing import TorchTensor
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-T = TypeVar('T', bound='DocArray')
+T = TypeVar('T', bound='DocList')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
@@ -57,7 +57,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
     return _delegate_meth
 
 
-class DocArray(
+class DocList(
     IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
 ):
     """
@@ -229,7 +229,7 @@ class DocArray(
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
-            return DocArray.__class_getitem__(field_type)(
+            return DocList.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self),
             )
         else:
@@ -284,7 +284,7 @@ class DocArray(
             raise TypeError(f'Expecting an Iterable of {cls.document_type}')
 
     def traverse_flat(
-        self: 'DocArray',
+        self: 'DocList',
         access_path: str,
     ) -> List[Any]:
         nodes = list(AnyDocArray._traverse(node=self, access_path=access_path))

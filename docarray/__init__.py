@@ -2,10 +2,10 @@ __version__ = '0.30.0a3'
 
 import logging
 
-from docarray.array import DocArray, DocArrayStacked
+from docarray.array import DocArrayStacked, DocList
 from docarray.base_doc.doc import BaseDoc
 
-__all__ = ['BaseDoc', 'DocArray', 'DocArrayStacked']
+__all__ = ['BaseDoc', 'DocList', 'DocArrayStacked']
 
 logger = logging.getLogger('docarray')
 

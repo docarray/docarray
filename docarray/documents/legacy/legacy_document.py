@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import AnyEmbedding, AnyTensor
 
 
@@ -34,8 +34,8 @@ class LegacyDocument(BaseDoc):
     """
 
     tensor: Optional[AnyTensor]
-    chunks: Optional[DocArray[LegacyDocument]]
-    matches: Optional[DocArray[LegacyDocument]]
+    chunks: Optional[DocList[LegacyDocument]]
+    matches: Optional[DocList[LegacyDocument]]
     blob: Optional[bytes]
     text: Optional[str]
     url: Optional[str]

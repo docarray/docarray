@@ -19,7 +19,7 @@ PUSH_PULL_PROTOCOL = Literal['jac', 's3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
     from docarray.store.abstract_doc_store import AbstractDocStore
 
 
@@ -129,7 +129,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         url: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ) -> 'DocArray':
+    ) -> 'DocList':
         """Pull a :class:`DocArray` from the specified url.
 
         :param url: url specifying the protocol and save name of the DocArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
