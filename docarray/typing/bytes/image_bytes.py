@@ -10,6 +10,7 @@ from docarray.typing.proto_register import _register_proto
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    from PIL import Image as PILImage
     from pydantic.fields import BaseConfig, ModelField
 
     from docarray.proto import NodeProto
@@ -42,6 +43,38 @@ class ImageBytes(bytes, AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(blob=self, type=self._proto_type_name)
+
+    def load_pil(
+        self,
+    ) -> 'PILImage.Image':
+        """
+        Load the image from the bytes into a `PIL.Image.Image` instance
+
+        ---
+
+        ```python
+        from pydantic import parse_obj_as
+
+        from docarray import BaseDoc
+        from docarray.typing import ImageUrl
+
+        img_url = "https://upload.wikimedia.org/wikipedia/commons/8/80/Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+
+        img_url = parse_obj_as(ImageUrl, img_url)
+        img = img_url.load_pil()
+
+        from PIL.Image import Image
+
+        assert isinstance(img, Image)
+        ```
+
+        ---
+        :return: a Pillow image
+        """
+        PIL = import_library('PIL', raise_error=True)  # noqa: F841
+        from PIL import Image as PILImage
+
+        return PILImage.open(BytesIO(self))
 
     def load(
         self,
@@ -89,13 +122,7 @@ class ImageBytes(bytes, AbstractType):
         :return: np.ndarray representing the image as RGB values
         """
 
-        if TYPE_CHECKING:
-            from PIL import Image as PILImage
-        else:
-            PIL = import_library('PIL', raise_error=True)  # noqa: F841
-            from PIL import Image as PILImage
-
-        raw_img = PILImage.open(BytesIO(self))
+        raw_img = self.load_pil()
         if width or height:
             new_width = width or raw_img.width
             new_height = height or raw_img.height

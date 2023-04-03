@@ -8,8 +8,10 @@ from docarray.typing.url.any_url import AnyUrl
 from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
+    from PIL import Image as PILImage
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
+
 
 T = TypeVar('T', bound='ImageUrl')
 
@@ -38,6 +40,35 @@ class ImageUrl(AnyUrl):
                 f'{IMAGE_FILE_FORMATS}'
             )
         return cls(str(url), scheme=None)
+
+    def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':
+        """
+        Load the image from the bytes into a `PIL.Image.Image` instance
+
+        ---
+
+        ```python
+        from pydantic import parse_obj_as
+
+        from docarray import BaseDoc
+        from docarray.typing import ImageUrl
+
+        img_url = "https://upload.wikimedia.org/wikipedia/commons/8/80/Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+
+        img_url = parse_obj_as(ImageUrl, img_url)
+        img = img_url.load_pil()
+
+        from PIL.Image import Image
+
+        assert isinstance(img, Image)
+        ```
+
+        ---
+        :return: a Pillow image
+        """
+        from docarray.typing.bytes.image_bytes import ImageBytes
+
+        return ImageBytes(self.load_bytes(timeout=timeout)).load_pil()
 
     def load(
         self,
