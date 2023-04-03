@@ -81,7 +81,7 @@ class AudioUrl(AnyUrl):
         it into an AudioBytes object.
 
         :param timeout: timeout for urlopen. Only relevant if url is not local
-        :return: AudioBytes object.
+        :return: AudioBytes object
         """
         bytes_ = super().load_bytes(timeout=timeout)
         return AudioBytes(bytes_)

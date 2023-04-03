@@ -7,6 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.image import ImageNdArray
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -81,16 +82,15 @@ class ImageBytes(bytes, AbstractType):
         width: Optional[int] = None,
         height: Optional[int] = None,
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
-    ) -> np.ndarray:
+    ) -> ImageNdArray:
         """
-        Load the image from the bytes into a numpy.ndarray image tensor
+        Load the image from the ImageBytes into an ImageNdArray
 
         ---
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import ImageUrl
-        import numpy as np
+        from docarray.typing import ImageUrl, ImageNdArray
 
 
         class MyDoc(BaseDoc):
@@ -103,7 +103,7 @@ class ImageBytes(bytes, AbstractType):
         )
 
         img_tensor = doc.img_url.load()
-        assert isinstance(img_tensor, np.ndarray)
+        assert isinstance(img_tensor, ImageNdArray)
 
         img_tensor = doc.img_url.load(height=224, width=224)
         assert img_tensor.shape == (224, 224, 3)
@@ -112,14 +112,13 @@ class ImageBytes(bytes, AbstractType):
         img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
         assert img_tensor.shape == (3, 200, 100)
         ```
-
         ---
 
         :param width: width of the image tensor.
         :param height: height of the image tensor.
         :param axis_layout: ordering of the different image axes.
             'H' = height, 'W' = width, 'C' = color channel
-        :return: np.ndarray representing the image as RGB values
+        :return: ImageNdArray representing the image as RGB values
         """
 
         raw_img = self.load_pil()
@@ -132,7 +131,8 @@ class ImageBytes(bytes, AbstractType):
         except Exception:
             tensor = np.array(raw_img)
 
-        return self._move_channel_axis(tensor, axis_layout=axis_layout)
+        img = self._move_channel_axis(tensor, axis_layout=axis_layout)
+        return parse_obj_as(ImageNdArray, img)
 
     @staticmethod
     def _move_channel_axis(
