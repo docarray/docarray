@@ -438,6 +438,10 @@ class WeaviateDocumentIndex(BaseDocumentIndex, Generic[TSchema]):
             ]
             return results if len(results) > 1 else results[0]
 
+        # TODO: validate graphql query string before sending it to weaviate
+        if isinstance(query, str):
+            return self._client.query.raw(query)
+
     def num_docs(self) -> int:
         index_name = self._db_config.index_name
         result = self._client.query.aggregate(index_name).with_meta_count().do()

@@ -14,7 +14,7 @@ from docarray.typing import NdArray
 
 
 class SimpleDoc(BaseDocument):
-    tens: NdArray[10] = Field(dim=1000, is_embedding=True)
+    tens: NdArray[10] = Field(dim=1000, is_embedding=True, db_type="vector")
 
 
 class Document(BaseDocument):
@@ -317,3 +317,22 @@ def test_batched_query_builder(test_store):
     docs = test_store.execute_query(q)
     assert len(docs[0]) == 1
     assert len(docs[1]) == 0
+
+
+def test_raw_graphql(test_store):
+    graphql_query = """
+    {
+     Aggregate {
+      Document {
+       meta {
+        count
+       }
+      }
+     }
+    }
+    """
+
+    results = test_store.execute_query(graphql_query)
+    num_docs = results["data"]["Aggregate"]["Document"][0]["meta"]["count"]
+
+    assert num_docs == 3
