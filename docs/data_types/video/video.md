@@ -33,7 +33,7 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 </figure>
 
 4
-![type:video](mov_bbb.mp4){: style='width: 500'}
+![type:video](mov_bbb.mp4){: style='width: 500px'}
 
 
 
@@ -43,7 +43,7 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 </iframe>
 
 7
-<iframe width="500" height="200" object-fit="cover" 
+<iframe width="500px" object-fit="cover" 
     src="../mov_bbb.mp4">
 </iframe>
 
