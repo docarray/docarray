@@ -12,6 +12,7 @@ theme:
   features:
 #    - navigation.sections
     - navigation.indexes
+    - content.code.copy
   palette:
     # Palette toggle for light mode
     - scheme: default
