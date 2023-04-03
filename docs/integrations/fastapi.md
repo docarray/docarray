@@ -1,6 +1,6 @@
 # Use Docarray with FastAPI
 
-You might already know that Docarray documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI:
+You might already know that `DocArray` documents are Pydantic Models (with a twist) [Reference relevant part], and as such they are fully compatible with `FastAPI`:
 
 ```python
 import numpy as np
@@ -38,8 +38,8 @@ async def create_item(doc: InputDoc) -> OutputDoc:
 
 async with AsyncClient(app=app, base_url="http://test") as ac:
     response = await ac.post("/doc/", data=input_doc.json())
-    resp_doc = await ac.get("/docs")
-    resp_redoc = await ac.get("/redoc")
+
+doc = OutputDoc.parse_raw(response.content.decode())
 ```
 
 The big advantage here is **first-class support for ML centric data**, such as {Torch, TF, ...}Tensor, Embedding, etc.
@@ -80,9 +80,9 @@ Image(
 
 Further, you can send and receive lists of documents represented as a `DocArray` object:
 > **Note**
-> Currently, FastAPI receives DocArray objects as lists, so you have to construct a DocArray inside the function.
-> Also, if you want to return DocArray, first you have to convert it to a list. 
-> (shown in the example below)
+> Currently, `FastAPI` receives `DocArray` objects as lists, so you have to construct a DocArray inside the function.
+> Also, if you want to return a `DocArray` object, first you have to convert it to a list. 
+> (Shown in the example below)
 
 ```python
 from typing import List
