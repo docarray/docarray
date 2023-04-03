@@ -47,6 +47,7 @@ markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
+  - mkdocs-video
 
 extra:
 #  analytics:
