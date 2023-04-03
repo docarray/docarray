@@ -61,19 +61,19 @@ class DocList(
     IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
 ):
     """
-     DocArray is a container of Documents.
+     DocList is a container of Documents.
 
-    A DocArray is a list of Documents of any schema. However, many
+    A DocList is a list of Documents of any schema. However, many
     DocArray features are only available if these Documents are
     homogeneous and follow the same schema. To precise this schema you can use
     the `DocArray[MyDocument]` syntax where MyDocument is a Document class
-    (i.e. schema). This creates a DocArray that can only contains Documents of
+    (i.e. schema). This creates a DocList that can only contains Documents of
     the type 'MyDocument'.
 
     ---
 
     ```python
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
     from docarray.typing import NdArray, ImageUrl
     from typing import Optional
 
@@ -83,7 +83,7 @@ class DocList(
         url: ImageUrl
 
 
-    da = DocArray[Image](
+    da = DocList[Image](
         Image(url='http://url.com/foo.png') for _ in range(10)
     )  # noqa: E510
     ```
@@ -91,7 +91,7 @@ class DocList(
     ---
 
 
-    If your DocArray is homogeneous (i.e. follows the same schema), you can access
+    If your DocList is homogeneous (i.e. follows the same schema), you can access
     fields at the DocArray level (for example `da.tensor` or `da.url`).
     You can also set fields, with `da.tensor = np.random.random([10, 100])`:
 
@@ -104,7 +104,7 @@ class DocList(
         # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
         #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
 
-    You can index into a DocArray like a numpy array or torch tensor:
+    You can index into a DocList like a numpy array or torch tensor:
 
 
         da[0]  # index by position
@@ -112,7 +112,7 @@ class DocList(
         da[[0, 2, 3]]  # index by list of indices
         da[True, False, True, True, ...]  # index by boolean mask
 
-    You can delete items from a DocArray like a Python List
+    You can delete items from a DocList like a Python List
 
         del da[0]  # remove first element from DocArray
         del da[0:5]  # remove elements for 0 to 5 from DocArray
