@@ -75,7 +75,7 @@ def filter_docs(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocList.__class_getitem__(docs.document_type)(
+        return DocList.__class_getitem__(docs.doc_type)(
             d for d in docs if parser.evaluate(d)
         )
     else:

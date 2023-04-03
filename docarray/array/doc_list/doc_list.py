@@ -121,7 +121,7 @@ class DocList(
 
     """
 
-    document_type: Type[BaseDoc] = AnyDoc
+    doc_type: Type[BaseDoc] = AnyDoc
 
     def __init__(
         self,
@@ -161,10 +161,8 @@ class DocList(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this DocArray"""
-        if not issubclass(self.document_type, AnyDoc) and not isinstance(
-            doc, self.document_type
-        ):
-            raise ValueError(f'{doc} is not a {self.document_type}')
+        if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
+            raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
 
     def __len__(self):
@@ -181,7 +179,7 @@ class DocList(
     def append(self, doc: T_doc):
         """
         Append a Document to the DocArray. The Document must be from the same class
-        as the document_type of this DocArray otherwise it will fail.
+        as the doc_type of this DocArray otherwise it will fail.
         :param doc: A Document
         """
         self._data.append(self._validate_one_doc(doc))
@@ -189,7 +187,7 @@ class DocList(
     def extend(self, docs: Iterable[T_doc]):
         """
         Extend a DocArray with an Iterable of Document. The Documents must be from
-        the same class as the document_type of this DocArray otherwise it will
+        the same class as the doc_type of this DocArray otherwise it will
         fail.
         :param docs: Iterable of Documents
         """
@@ -198,7 +196,7 @@ class DocList(
     def insert(self, i: int, doc: T_doc):
         """
         Insert a Document to the DocArray. The Document must be from the same
-        class as the document_type of this DocArray otherwise it will fail.
+        class as the doc_type of this DocArray otherwise it will fail.
         :param i: index to insert
         :param doc: A Document
         """
@@ -219,7 +217,7 @@ class DocList(
         :return: Returns a list of the field value for each document
         in the doc_list like container
         """
-        field_type = self.__class__.document_type._get_field_type(field)
+        field_type = self.__class__.doc_type._get_field_type(field)
 
         if (
             not is_union_type(field_type)
@@ -263,9 +261,7 @@ class DocList(
         """
         from docarray.array.doc_vec.doc_vec import DocVec
 
-        return DocVec.__class_getitem__(self.document_type)(
-            self, tensor_type=tensor_type
-        )
+        return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
     def validate(
@@ -281,7 +277,7 @@ class DocList(
         elif isinstance(value, Iterable):
             return cls(value)
         else:
-            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+            raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
     def traverse_flat(
         self: 'DocList',

@@ -30,7 +30,7 @@ class PushPullMixin(Iterable['BaseDoc']):
     """Mixin class for push/pull functionality."""
 
     __backends__: Dict[str, Type['AbstractDocStore']] = {}
-    document_type: Type['BaseDoc']
+    doc_type: Type['BaseDoc']
 
     @abstractmethod
     def __len__(self) -> int:
@@ -139,7 +139,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
@@ -167,7 +167,7 @@ class PushPullMixin(Iterable['BaseDoc']):
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'

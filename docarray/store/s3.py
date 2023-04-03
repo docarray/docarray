@@ -235,7 +235,7 @@ class S3DocStore(AbstractDocStore):
                     source = open(cache_path, 'rb')
 
         return _from_binary_stream(
-            da_cls.document_type,
+            da_cls.doc_type,
             source,
             protocol='pickle',
             compress=None,

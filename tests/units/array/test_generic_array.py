@@ -7,13 +7,13 @@ def test_generic_init():
         text: str
 
     da = DocList[Text]([])
-    da.document_type == Text
+    da.doc_type == Text
 
     assert isinstance(da, DocList)
 
 
 def test_normal_access_init():
     da = DocList([])
-    da.document_type == AnyDoc
+    da.doc_type == AnyDoc
 
     assert isinstance(da, DocList)

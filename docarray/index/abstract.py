@@ -786,7 +786,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             reference_names = [name for (name, _, _) in reference_schema_flat]
             reference_types = [t_ for (_, t_, _) in reference_schema_flat]
             try:
-                input_schema_flat = self._flatten_schema(docs.document_type)
+                input_schema_flat = self._flatten_schema(docs.doc_type)
             except ValueError:
                 pass
             else:

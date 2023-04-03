@@ -51,7 +51,7 @@ class DocArraySummary:
                     table.add_row(f'  • {field_name}:', col_2)
 
         Console().print(Panel(table, title='DocArray Summary', expand=False))
-        self.da.document_type.schema_summary()
+        self.da.doc_type.schema_summary()
 
     @staticmethod
     def _get_stacked_fields(da: 'DocVec') -> List[str]:  # TODO this might

@@ -97,7 +97,7 @@ class _LazyRequestReader:
 
 
 class IOMixinArray(Iterable[T_doc]):
-    document_type: Type[T_doc]
+    doc_type: Type[T_doc]
     _data: List[T_doc]
 
     @abstractmethod
@@ -116,9 +116,7 @@ class IOMixinArray(Iterable[T_doc]):
         """create a Document from a protobuf message
         :param pb_msg: The protobuf message from where to construct the DocArray
         """
-        return cls(
-            cls.document_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs
-        )
+        return cls(cls.doc_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs)
 
     def to_protobuf(self) -> 'DocListProto':
         """Convert DocArray into a Protobuf message"""
@@ -322,7 +320,7 @@ class IOMixinArray(Iterable[T_doc]):
         :return: the deserialized DocArray
         """
         json_docs = orjson.loads(file)
-        return cls([cls.document_type(**v) for v in json_docs])
+        return cls([cls.doc_type(**v) for v in json_docs])
 
     def to_json(self) -> bytes:
         """Convert the object into JSON bytes. Can be loaded via :meth:`.from_json`.
@@ -346,7 +344,7 @@ class IOMixinArray(Iterable[T_doc]):
     ) -> 'DocList':
         """
         Load a DocArray from a csv file following the schema defined in the
-        :attr:`~docarray.DocArray.document_type` attribute.
+        :attr:`~docarray.DocArray.doc_type` attribute.
         Every row of the csv file will be mapped to one document in the doc_list.
         The column names (defined in the first row) have to match the field names
         of the Document type.
@@ -365,13 +363,13 @@ class IOMixinArray(Iterable[T_doc]):
         """
         from docarray import DocList
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
             )
 
-        doc_type = cls.document_type
+        doc_type = cls.doc_type
         da = DocList.__class_getitem__(doc_type)()
 
         with open(file_path, 'r', encoding=encoding) as fp:
@@ -388,7 +386,7 @@ class IOMixinArray(Iterable[T_doc]):
             if not all(valid_paths):
                 raise ValueError(
                     f'Column names do not match the schema of the DocArray\'s '
-                    f'document type ({cls.document_type.__name__}): '
+                    f'document type ({cls.doc_type.__name__}): '
                     f'{list(compress(field_names, [not v for v in valid_paths]))}'
                 )
 
@@ -417,7 +415,7 @@ class IOMixinArray(Iterable[T_doc]):
             'excel-tab' (for tab separated values),
             'unix' (for csv file generated on UNIX systems).
         """
-        fields = self.document_type._get_access_paths()
+        fields = self.doc_type._get_access_paths()
 
         with open(file_path, 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fields, dialect=dialect)
@@ -431,7 +429,7 @@ class IOMixinArray(Iterable[T_doc]):
     def from_pandas(cls, df: 'pd.DataFrame') -> 'DocList':
         """
         Load a DocArray from a `pandas.DataFrame` following the schema
-        defined in the :attr:`~docarray.DocArray.document_type` attribute.
+        defined in the :attr:`~docarray.DocArray.doc_type` attribute.
         Every row of the dataframe will be mapped to one Document in the doc_list.
         The column names of the dataframe have to match the field names of the
         Document type.
@@ -470,13 +468,13 @@ class IOMixinArray(Iterable[T_doc]):
         """
         from docarray import DocList
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
             )
 
-        doc_type = cls.document_type
+        doc_type = cls.doc_type
         da = DocList.__class_getitem__(doc_type)()
         field_names = df.columns.tolist()
 
@@ -489,7 +487,7 @@ class IOMixinArray(Iterable[T_doc]):
         if not all(valid_paths):
             raise ValueError(
                 f'Column names do not match the schema of the DocArray\'s '
-                f'document type ({cls.document_type.__name__}): '
+                f'document type ({cls.doc_type.__name__}): '
                 f'{list(compress(field_names, [not v for v in valid_paths]))}'
             )
 
@@ -516,7 +514,7 @@ class IOMixinArray(Iterable[T_doc]):
         else:
             pd = import_library('pandas', raise_error=True)
 
-        fields = self.document_type._get_access_paths()
+        fields = self.doc_type._get_access_paths()
         df = pd.DataFrame(columns=fields)
 
         for doc in self:
@@ -606,7 +604,7 @@ class IOMixinArray(Iterable[T_doc]):
 
                     # variable length bytes doc
                     load_protocol: str = protocol or 'protobuf'
-                    doc = cls.document_type.from_bytes(
+                    doc = cls.doc_type.from_bytes(
                         d[start_doc_pos:end_doc_pos],
                         protocol=load_protocol,
                         compress=compress,
@@ -663,7 +661,7 @@ class IOMixinArray(Iterable[T_doc]):
                         f.read(4), 'big', signed=False
                     )
                     load_protocol: str = protocol
-                    yield cls.document_type.from_bytes(
+                    yield cls.doc_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
                         compress=compress,

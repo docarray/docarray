@@ -146,7 +146,7 @@ def _get_field_type_by_access_path(
         else:
             d = doc_type._get_field_type(field)
             if issubclass(d, DocList):
-                return _get_field_type_by_access_path(d.document_type, remaining)
+                return _get_field_type_by_access_path(d.doc_type, remaining)
             elif issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:

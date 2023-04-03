@@ -34,7 +34,7 @@ IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
-    document_type: Type[BaseDoc]
+    doc_type: Type[BaseDoc]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDoc], Type]] = {}
 
     def __repr__(self):
@@ -58,9 +58,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             global _DocArrayTyped
 
             class _DocArrayTyped(cls):  # type: ignore
-                document_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
+                doc_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
 
-            for field in _DocArrayTyped.document_type.__fields__.keys():
+            for field in _DocArrayTyped.doc_type.__fields__.keys():
 
                 def _property_generator(val: str):
                     def _getter(self):

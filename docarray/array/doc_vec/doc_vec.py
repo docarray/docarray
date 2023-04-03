@@ -63,7 +63,7 @@ class DocVec(AnyDocArray[T_doc]):
     {class}`~docarray.array.DocArray` but with an underlying implementation that is
     column based instead of row based. Each field
     of the schema of the DocArrayStack
-    (the :attr:`~docarray.array.doc_vec.DocVec.document_type` which is a
+    (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
     `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
@@ -87,7 +87,7 @@ class DocVec(AnyDocArray[T_doc]):
     AnyTensor or Union of NdArray and TorchTensor
     """
 
-    document_type: Type[T_doc]
+    doc_type: Type[T_doc]
 
     def __init__(
         self: T,
@@ -106,13 +106,13 @@ class DocVec(AnyDocArray[T_doc]):
         docs = (
             docs
             if isinstance(docs, DocList)
-            else DocList.__class_getitem__(self.document_type)(docs)
+            else DocList.__class_getitem__(self.doc_type)(docs)
         )
 
-        for field_name, field in self.document_type.__fields__.items():
+        for field_name, field in self.doc_type.__fields__.items():
             # here we iterate over the field of the da schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type = self.document_type._get_field_type(field_name)
+            field_type = self.doc_type._get_field_type(field_name)
 
             if is_tensor_union(field_type):
                 field_type = tensor_type
@@ -209,14 +209,14 @@ class DocVec(AnyDocArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
-        elif isinstance(value, DocList.__class_getitem__(cls.document_type)):
+        elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
             return cast(T, value.stack())
         elif isinstance(value, Sequence):
             return cls(value)
         elif isinstance(value, Iterable):
             return cls(list(value))
         else:
-            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+            raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
     def to(self: T, device: str) -> T:
         """Move all tensors of this DocArrayStacked to the given device
@@ -255,7 +255,7 @@ class DocVec(AnyDocArray[T_doc]):
         if isinstance(item, (slice, Iterable)):
             return self.__class__.from_columns_storage(self._storage[item])
         # single doc case
-        return self.document_type.from_view(ColumnStorageView(item, self._storage))
+        return self.doc_type.from_view(ColumnStorageView(item, self._storage))
 
     def _get_data_column(
         self: T,
@@ -292,8 +292,8 @@ class DocVec(AnyDocArray[T_doc]):
     def __setitem__(self: T, key, value):
         # single doc case
         if not isinstance(key, (slice, Iterable)):
-            if not isinstance(value, self.document_type):
-                raise ValueError(f'{value} is not a {self.document_type}')
+            if not isinstance(value, self.doc_type):
+                raise ValueError(f'{value} is not a {self.doc_type}')
 
             for field, value in value.dict().items():
                 self._storage.columns[field][key] = value  # todo we might want to
@@ -319,20 +319,20 @@ class DocVec(AnyDocArray[T_doc]):
         # set data and prepare columns
         processed_value: T
         if isinstance(value, DocList):
-            if not issubclass(value.document_type, self.document_type):
+            if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
-                    f'{value} schema : {value.document_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.document_type}'
+                    f'{value} schema : {value.doc_type} is not compatible with '
+                    f'this DocArrayStacked schema : {self.doc_type}'
                 )
             processed_value = cast(
                 T, value.stack(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
-            if not issubclass(value.document_type, self.document_type):
+            if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
-                    f'{value} schema : {value.document_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.document_type}'
+                    f'{value} schema : {value.doc_type} is not compatible with '
+                    f'this DocArrayStacked schema : {self.doc_type}'
                 )
             processed_value = value
         else:
@@ -376,9 +376,7 @@ class DocVec(AnyDocArray[T_doc]):
         elif field in self._storage.doc_columns.keys():
 
             values_ = parse_obj_as(
-                DocVec.__class_getitem__(
-                    self._storage.doc_columns[field].document_type
-                ),
+                DocVec.__class_getitem__(self._storage.doc_columns[field].doc_type),
                 values,
             )
             self._storage.doc_columns[field] = values_
@@ -511,11 +509,11 @@ class DocVec(AnyDocArray[T_doc]):
 
         for i in range(len(self)):
             data = {field: col[i] for field, col in unstacked_column.items()}
-            docs.append(self.document_type.construct(**data))
+            docs.append(self.doc_type.construct(**data))
 
         del self._storage
 
-        return DocList.__class_getitem__(self.document_type).construct(docs)
+        return DocList.__class_getitem__(self.doc_type).construct(docs)
 
     def traverse_flat(
         self,

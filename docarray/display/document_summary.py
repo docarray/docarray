@@ -77,9 +77,7 @@ class DocumentSummary:
                         if issubclass(arg, BaseDoc):
                             sub_tree.add(DocumentSummary._get_schema(cls=arg))
                         elif issubclass(arg, DocList):
-                            sub_tree.add(
-                                DocumentSummary._get_schema(cls=arg.document_type)
-                            )
+                            sub_tree.add(DocumentSummary._get_schema(cls=arg.doc_type))
                     tree.add(sub_tree)
 
                 elif issubclass(field_type, BaseDoc):
@@ -89,9 +87,7 @@ class DocumentSummary:
 
                 elif issubclass(field_type, DocList):
                     sub_tree = Tree(node_name, highlight=True)
-                    sub_tree.add(
-                        DocumentSummary._get_schema(cls=field_type.document_type)
-                    )
+                    sub_tree.add(DocumentSummary._get_schema(cls=field_type.doc_type))
                     tree.add(sub_tree)
 
                 else:

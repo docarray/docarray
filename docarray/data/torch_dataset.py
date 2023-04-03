@@ -92,7 +92,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         print(batch.thesis.title.embedding)
     """
 
-    document_type: Optional[Type[BaseDoc]] = None
+    doc_type: Optional[Type[BaseDoc]] = None
     __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(
@@ -121,7 +121,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     @classmethod
     def collate_fn(cls, batch: List[T_doc]):
-        doc_type = cls.document_type
+        doc_type = cls.doc_type
         if doc_type:
             batch_da = DocVec[doc_type](  # type: ignore
                 batch,
@@ -142,7 +142,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             global _TypedDataset
 
             class _TypedDataset(cls):  # type: ignore
-                document_type = item
+                doc_type = item
 
             change_cls_name(
                 _TypedDataset, f'{cls.__name__}[{item.__name__}]', globals()
