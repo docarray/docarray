@@ -47,7 +47,6 @@ markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
-  - mkdocs-video
 
 extra:
 #  analytics:
@@ -64,6 +63,7 @@ extra:
 plugins:
   - search
   - awesome-pages
+  - mkdocs-video
   - mkdocstrings:
       handlers:
         python:
