@@ -46,6 +46,35 @@ def test_text_search(qdrant_config, qdrant):
     docs, scores = store.text_search(query, search_field='text', limit=5)
 
     assert len(docs) == 1
-    assert len(scores) >= 1  # TODO: that should be == 1
+    assert len(scores) == 1
     assert docs[0].id == index_docs[2].id
     assert scores[0] > 0.0
+
+
+def test_text_search_batched(qdrant_config, qdrant):
+    class SimpleSchema(BaseDoc):
+        embedding: NdArray[10] = Field(space='cosine')
+        text: str
+
+    store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
+
+    index_docs = [
+        SimpleDoc(
+            embedding=np.zeros(10),
+            text=f'Lorem ipsum {i}',
+        )
+        for i in range(10)
+    ]
+    store.index(index_docs)
+
+    queries = ['ipsum 2', 'ipsum 4', 'Lorem']
+    docs, scores = store.text_search_batched(queries, search_field='text', limit=5)
+
+    assert len(docs) == 3
+    assert len(docs[0]) == 1
+    assert len(docs[1]) == 1
+    assert len(docs[2]) == 5
+    assert len(scores) == 3
+    assert len(scores[0]) == 1
+    assert len(scores[1]) == 1
+    assert len(scores[2]) == 5

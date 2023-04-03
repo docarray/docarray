@@ -270,13 +270,13 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
             for query in queries
         ]
-        documents = self._filter_batched(filter_queries=filter_queries, limit=limit)
+        documents_batched = self._filter_batched(filter_queries=filter_queries, limit=limit)
 
         # Qdrant does not return any scores if we just filter the objects, without using
         # semantic search over vectors. Thus, each document is scored with a value of 1
         return _FindResultBatched(
-            documents=documents,
-            scores=np.ones((len(queries), limit)),
+            documents=documents_batched,
+            scores=[np.array([1.0] * len(docs)) for docs in documents_batched],
         )
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:

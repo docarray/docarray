@@ -49,12 +49,12 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class FindResultBatched(NamedTuple):
     documents: List[DocArray]
-    scores: np.ndarray
+    scores: List[np.ndarray]
 
 
 class _FindResultBatched(NamedTuple):
     documents: Union[List[DocArray], List[List[Dict[str, Any]]]]
-    scores: np.ndarray
+    scores: List[np.ndarray]
 
 
 def _raise_not_composable(name):
