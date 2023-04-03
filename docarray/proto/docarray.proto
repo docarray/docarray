@@ -53,9 +53,9 @@ message NodeProto {
     // the ndarray of the image/audio/video document
     NdArrayProto ndarray = 6;
     // a sub Document
-    DocProto document = 7;
+    DocProto doc = 7;
     // a sub DocArray
-    DocListProto document_array = 8;
+    DocListProto doc_array = 8;
     //any list
     ListOfAnyProto list = 9;
     //any set

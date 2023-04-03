@@ -148,7 +148,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(document_array=self.to_protobuf())
+        return NodeProto(doc_array=self.to_protobuf())
 
     @abstractmethod
     def traverse_flat(

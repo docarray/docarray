@@ -254,7 +254,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
             )
-        elif content_key in ['document', 'document_array']:
+        elif content_key in ['doc', 'doc_array']:
             if field_name is None:
                 raise ValueError(
                     'field_name cannot be None when trying to deseriliaze a Document or a DocArray'
@@ -335,7 +335,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(document=self.to_protobuf())
+        return NodeProto(doc=self.to_protobuf())
 
     @classmethod
     def _get_access_paths(cls) -> List[str]:
