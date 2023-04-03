@@ -5,6 +5,7 @@ from pydantic import parse_obj_as
 
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
+from docarray.typing import ImageBytes
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -71,6 +72,7 @@ def test_byte():
 
     img = ImageDoc(url=REMOTE_JPG)
     img.bytes_ = img.url.load_bytes()
+    assert isinstance(img.bytes_, ImageBytes)
 
 
 @pytest.mark.slow

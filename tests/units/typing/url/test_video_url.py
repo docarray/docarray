@@ -10,6 +10,7 @@ from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import (
     AudioNdArray,
     NdArray,
+    VideoBytes,
     VideoNdArray,
     VideoTorchTensor,
     VideoUrl,
@@ -158,4 +159,5 @@ def test_load_bytes():
     uri = parse_obj_as(VideoUrl, file_url)
     video_bytes = uri.load_bytes()
     assert isinstance(video_bytes, bytes)
+    assert isinstance(video_bytes, VideoBytes)
     assert len(video_bytes) > 0
