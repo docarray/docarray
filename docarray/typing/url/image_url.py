@@ -1,5 +1,5 @@
 import warnings
-from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, Tuple, TypeVar
 
 from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
@@ -9,13 +9,8 @@ from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
     from PIL import Image as PILImage
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
 
 T = TypeVar('T', bound='ImageUrl')
-
-IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
 
 @_register_proto(proto_type_name='image_url')
@@ -24,22 +19,6 @@ class ImageUrl(AnyUrl):
     URL to a .png, .jpeg, or .jpg file.
     Can be remote (web) URL, or a local file path.
     """
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, str, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        url = super().validate(value, field, config)  # basic url validation
-        has_image_extension = any(url.endswith(ext) for ext in IMAGE_FILE_FORMATS)
-        if not has_image_extension:
-            raise ValueError(
-                f'Image URL must have one of the following extensions:'
-                f'{IMAGE_FILE_FORMATS}'
-            )
-        return cls(str(url), scheme=None)
 
     def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':
         """

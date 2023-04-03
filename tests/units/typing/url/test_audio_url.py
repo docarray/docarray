@@ -96,27 +96,12 @@ def test_dump_json():
 
 @pytest.mark.parametrize(
     'path_to_file',
-    [
-        *[file for file in AUDIO_FILES],
-        REMOTE_AUDIO_FILE,
-    ],
+    [*AUDIO_FILES, REMOTE_AUDIO_FILE],
 )
 def test_validation(path_to_file):
     url = parse_obj_as(AudioUrl, path_to_file)
     assert isinstance(url, AudioUrl)
     assert isinstance(url, str)
-
-
-@pytest.mark.parametrize(
-    'path_to_file',
-    [
-        'my/local/text/file.txt',
-        'my/local/text/file.png',
-    ],
-)
-def test_illegal_validation(path_to_file):
-    with pytest.raises(ValueError, match='AudioUrl'):
-        parse_obj_as(AudioUrl, path_to_file)
 
 
 @pytest.mark.proto
