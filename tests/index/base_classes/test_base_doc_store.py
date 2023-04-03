@@ -558,3 +558,17 @@ def test_convert_dict_to_doc():
     doc = store._convert_dict_to_doc(doc_dict, store._schema)
     assert doc.id == doc_dict_copy['id']
     assert np.all(doc.tens == doc_dict_copy['tens'])
+
+
+def test_validate_search_fields():
+    store = DummyDocIndex[SimpleDoc]()
+    assert list(store._column_infos.keys()) == ['id', 'tens']
+
+    # 'tens' is a valid field
+    assert store._validate_search_field(search_field='tens')
+    # should not fail when an empty string or None is passed
+    assert store._validate_search_field(search_field='')
+    store._validate_search_field(search_field=None)
+    # 'ten' is not a valid field
+    with pytest.raises(ValueError):
+        store._validate_search_field('ten')
