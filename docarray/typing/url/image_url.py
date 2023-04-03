@@ -1,9 +1,9 @@
 import warnings
 from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
-import numpy as np
-
+from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.image import ImageNdArray
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils._internal.misc import is_notebook
 
@@ -76,16 +76,15 @@ class ImageUrl(AnyUrl):
         height: Optional[int] = None,
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
         timeout: Optional[float] = None,
-    ) -> np.ndarray:
+    ) -> ImageNdArray:
         """
-        Load the data from the url into a numpy.ndarray image tensor
+        Load the data from the url into an ImageNdArray
 
         ---
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import ImageUrl
-        import numpy as np
+        from docarray.typing import ImageUrl, ImageNdArray
 
 
         class MyDoc(BaseDoc):
@@ -98,7 +97,7 @@ class ImageUrl(AnyUrl):
         )
 
         img_tensor = doc.img_url.load()
-        assert isinstance(img_tensor, np.ndarray)
+        assert isinstance(img_tensor, ImageNdArray)
 
         img_tensor = doc.img_url.load(height=224, width=224)
         assert img_tensor.shape == (224, 224, 3)
@@ -116,12 +115,23 @@ class ImageUrl(AnyUrl):
             'H' = height, 'W' = width, 'C' = color channel
         :param timeout: timeout (sec) for urlopen network request.
             Only relevant if URL is not local
-        :return: np.ndarray representing the image as RGB values
+        :return: ImageNdArray representing the image as RGB values
         """
         from docarray.typing.bytes.image_bytes import ImageBytes
 
         buffer = ImageBytes(self.load_bytes(timeout=timeout))
         return buffer.load(width, height, axis_layout)
+
+    def load_bytes(self, timeout: Optional[float] = None) -> ImageBytes:
+        """
+        Convert url to ImageBytes. This will either load or download the file and save
+        it into an ImageBytes object.
+
+        :param timeout: timeout for urlopen. Only relevant if url is not local
+        :return: ImageBytes object
+        """
+        bytes_ = super().load_bytes(timeout=timeout)
+        return ImageBytes(bytes_)
 
     def display(self) -> None:
         """

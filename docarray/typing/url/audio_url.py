@@ -1,8 +1,7 @@
 import warnings
-from typing import TYPE_CHECKING, Any, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
-import numpy as np
-
+from docarray.typing import AudioNdArray
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -44,19 +43,17 @@ class AudioUrl(AnyUrl):
             raise ValueError('Audio URL must have a valid extension')
         return cls(str(url), scheme=None)
 
-    def load(self: T) -> Tuple[np.ndarray, int]:
+    def load(self: T) -> Tuple[AudioNdArray, int]:
         """
-        Load the data from the url into an AudioNdArray.
-
+        Load the data from the url into an AudioNdArray and the frame rate.
 
         ---
 
         ```python
         from typing import Optional
-        from docarray import BaseDoc
-        import numpy as np
 
-        from docarray.typing import AudioUrl, AudioNdArray
+        from docarray import BaseDoc
+        from docarray.typing import AudioNdArray, AudioUrl
 
 
         class MyDoc(BaseDoc):
@@ -66,15 +63,28 @@ class AudioUrl(AnyUrl):
 
         doc = MyDoc(audio_url='https://www.kozco.com/tech/piano2.wav')
         doc.audio_tensor, _ = doc.audio_url.load()
-        assert isinstance(doc.audio_tensor, np.ndarray)
+        assert isinstance(doc.audio_tensor, AudioNdArray)
         ```
 
         ---
 
-        :return: AudioNdArray representing the audio file content.
+        :return: tuple of an AudioNdArray representing the Audio file content,
+            and an integer representing the frame rate.
+
         """
-        bytes_ = AudioBytes(self.load_bytes())
+        bytes_ = self.load_bytes()
         return bytes_.load()
+
+    def load_bytes(self, timeout: Optional[float] = None) -> AudioBytes:
+        """
+        Convert url to AudioBytes. This will either load or download the file and save
+        it into an AudioBytes object.
+
+        :param timeout: timeout for urlopen. Only relevant if url is not local
+        :return: AudioBytes object
+        """
+        bytes_ = super().load_bytes(timeout=timeout)
+        return AudioBytes(bytes_)
 
     def display(self):
         """

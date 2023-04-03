@@ -122,6 +122,7 @@ def test_all_types():
 
     assert doc.bytes_ == b'hello'
     assert doc.img_bytes == b'img'
+    assert isinstance(doc.img_bytes, ImageBytes)
 
 
 @pytest.mark.tensorflow
