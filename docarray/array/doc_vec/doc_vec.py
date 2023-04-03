@@ -32,7 +32,7 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocArrayStackedProto
+    from docarray.proto import DocVecProto
 
 torch_available = is_torch_available()
 if torch_available:
@@ -422,7 +422,7 @@ class DocVec(AnyDocArray[T_doc]):
     ####################
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayStackedProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
         """create a Document from a protobuf message"""
         storage = ColumnStorage(
             pb_msg.tensor_columns,
@@ -433,21 +433,21 @@ class DocVec(AnyDocArray[T_doc]):
 
         return cls.from_columns_storage(storage)
 
-    def to_protobuf(self) -> 'DocArrayStackedProto':
+    def to_protobuf(self) -> 'DocVecProto':
         """Convert DocArray into a Protobuf message"""
         from docarray.proto import (
-            DocArrayStackedProto,
-            DocumentArrayProto,
+            DocListProto,
+            DocVecProto,
             ListOfAnyProto,
             ListOfDocArrayProto,
             NdArrayProto,
         )
 
-        da_proto = DocumentArrayProto()
+        da_proto = DocListProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
-        doc_columns_proto: Dict[str, DocArrayStackedProto] = dict()
+        doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
         da_columns_proto: Dict[str, ListOfDocArrayProto] = dict()
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
@@ -467,7 +467,7 @@ class DocVec(AnyDocArray[T_doc]):
                 list_proto.data.append(_type_to_protobuf(data))
             any_columns_proto[field] = list_proto
 
-        return DocArrayStackedProto(
+        return DocVecProto(
             doc_columns=doc_columns_proto,
             tensor_columns=tensor_columns_proto,
             da_columns=da_columns_proto,

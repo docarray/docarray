@@ -28,7 +28,7 @@ from docarray.index.abstract import (
     _raise_not_composable,
     _raise_not_supported,
 )
-from docarray.proto import DocumentProto
+from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
@@ -424,4 +424,4 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _doc_from_bytes(self, data: bytes) -> BaseDoc:
         schema_cls = cast(Type[BaseDoc], self._schema)
-        return schema_cls.from_protobuf(DocumentProto.FromString(data))
+        return schema_cls.from_protobuf(DocProto.FromString(data))

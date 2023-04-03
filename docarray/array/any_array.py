@@ -25,7 +25,7 @@ from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
-    from docarray.proto import DocumentArrayProto, NodeProto
+    from docarray.proto import DocListProto, NodeProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocArray')
@@ -130,12 +130,12 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     @classmethod
     @abstractmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
         """create a Document from a protobuf message"""
         ...
 
     @abstractmethod
-    def to_protobuf(self) -> 'DocumentArrayProto':
+    def to_protobuf(self) -> 'DocListProto':
         """Convert DocList into a Protobuf message"""
         ...
 
