@@ -10,7 +10,7 @@
 DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
 **Neural Search**.
 
-This means that `DocArray` lets you do the following things:
+This means that DocArray lets you do the following things:
 
 ## Represent
 

@@ -102,7 +102,6 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
 
-
     def __eq__(self, other) -> bool:
         if self.dict().keys() != other.dict().keys():
             return False
@@ -117,7 +116,6 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             if isinstance(value1, AbstractTensor) and isinstance(
                 value2, AbstractTensor
             ):
-
                 comp_be1 = value1.get_comp_backend()
                 comp_be2 = value2.get_comp_backend()
 
@@ -143,4 +141,3 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :return: A dictionary of the BaseDoc object
         """
         return self.dict()
-
