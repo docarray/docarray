@@ -9,7 +9,7 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 
 1
 <video markdown controls="">
-    <source src="./mov_bbb.mp4" type="video/mp4">
+    <source src="../mov_bbb.mp4" type="video/mp4">
 </video>
 
 2
@@ -19,7 +19,7 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 
 3
 <figure markdown>
-  ![](./mov_bbb.mp4){ width="900" }
+  ![](../mov_bbb.mp4){ width="900" }
 </figure>
 
 4
@@ -31,18 +31,28 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 </video>
 
 6
-<iframe width="420" height="315"
-  src="mov_bbb.mp4"
+<iframe width="420" height="315" src="mov_bbb.mp4">
 </iframe>
 
+<iframe width="420" height="315" 
+    src="mov_bbb.mp4">
+</iframe>
+
+
 7
-<iframe width="420" height="315"
-  src="mov_bbb.mp4" type="video/mp4"
+<iframe width="420" height="315" src="mov_bbb.mp4" type="video/mp4">
+</iframe>
+
+<iframe width="420" height="315" 
+    src="mov_bbb.mp4" type="video/mp4">
 </iframe>
 
 8
-<iframe width="420" height="315"
-  src="./mov_bbb.mp4"
+<iframe width="420" height="315" src="../mov_bbb.mp4">
+</iframe>
+
+<iframe width="420" height="315" 
+    src="../mov_bbb.mp4">
 </iframe>
 
 ```python
