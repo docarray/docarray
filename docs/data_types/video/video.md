@@ -7,50 +7,26 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 
 ## Load video data
 
-1
-<video markdown controls="">
-    <source src="../mov_bbb.mp4" type="video/mp4">
-</video>
+4
+![type:video](mov_bbb.mp4){: style='width: 700px height: 500px'}
 
-2
-<figure markdown>
-  ![type:video](mov_bbb.mp4){ width="900" type="video/mp4"}
-</figure>
-
-2b
-<figure markdown>
-  ![type:video](mov_bbb.mp4){ width="900"}
-</figure>
-
-3
-<figure markdown>
-  ![type:video](../mov_bbb.mp4){ width="900" }
-</figure>
-
-3b
-<figure markdown>
-  ![type:video](../mov_bbb.mp4){ width="900" type="video/mp4"}
-</figure>
+![type:video](mov_bbb.mp4){: style='width: 700px; height: 500px'}
 
 4
-![type:video](mov_bbb.mp4){: style='width: 500px'}
+![type:video](mov_bbb.mp4){: style='width: 600px'}
 
-
-
-6
-<iframe width="200%"
-    src="../mov_bbb.mp4">
-</iframe>
 
 7
-<iframe width="500px" object-fit="cover" 
+<iframe width="700px" height="500px" object-fit="cover" 
     src="../mov_bbb.mp4">
 </iframe>
 
-8
-<iframe width="200%"
+
+7
+<iframe width="600px" object-fit="cover" 
     src="../mov_bbb.mp4">
 </iframe>
+
 
 ```python
 from docarray import BaseDoc
