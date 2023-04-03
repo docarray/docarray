@@ -5,7 +5,7 @@ from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 from typing_inspect import is_union_type
 
 from docarray.array.abstract_array import AnyDocArray
-from docarray.array.doc_list.array import DocList
+from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.doc_vec import DocVec
 from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path

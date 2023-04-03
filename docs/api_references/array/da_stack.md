@@ -1,3 +1,3 @@
-# DocVeced
+# DocVec
 
-::: docarray.array.array.array.DocVeced
+::: docarray.array.doc_vec.doc_vec.DocVec
