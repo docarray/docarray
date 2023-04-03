@@ -17,7 +17,7 @@ from typing import (
 
 from typing_inspect import is_union_type
 
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinArray
 from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.doc_list.sequence_indexing_mixin import (

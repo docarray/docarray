@@ -7,7 +7,7 @@ from typing import Callable, Generator, Optional, TypeVar, Union
 from rich.progress import track
 
 from docarray import BaseDoc
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.helper import _is_lambda_or_partial_or_local_function
 
 T = TypeVar('T', bound=AnyDocArray)

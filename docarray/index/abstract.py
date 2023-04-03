@@ -25,7 +25,7 @@ from pydantic.error_wrappers import ValidationError
 from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDoc, DocList
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union

@@ -4,7 +4,7 @@ import pytest
 import torch
 
 from docarray import BaseDoc, DocList
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.documents import TextDoc
 from docarray.typing import TorchTensor
 

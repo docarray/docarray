@@ -3,7 +3,7 @@ __all__ = ['filter_docs']
 import json
 from typing import Dict, List, Union
 
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 
 

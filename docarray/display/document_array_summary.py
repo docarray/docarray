@@ -4,7 +4,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array import DocVec
-    from docarray.array.abstract_array import AnyDocArray
+    from docarray.array.any_array import AnyDocArray
 
 
 class DocArraySummary:
