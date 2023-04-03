@@ -90,7 +90,7 @@ class ImageBytes(bytes, AbstractType):
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import ImageUrl, ImageNdArray
+        from docarray.typing import ImageNdArray, ImageUrl
 
 
         class MyDoc(BaseDoc):

@@ -60,8 +60,7 @@ class VideoBytes(bytes, AbstractType):
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import VideoUrl
-        import numpy as np
+        from docarray.typing import AudioNdArray, NdArray, VideoNdArray, VideoUrl
 
 
         class MyDoc(BaseDoc):
@@ -73,9 +72,9 @@ class VideoBytes(bytes, AbstractType):
         )
 
         video, audio, key_frame_indices = doc.video_url.load()
-        assert isinstance(video, np.ndarray)
-        assert isinstance(audio, np.ndarray)
-        assert isinstance(key_frame_indices, np.ndarray)
+        assert isinstance(video, VideoNdArray)
+        assert isinstance(audio, AudioNdArray)
+        assert isinstance(key_frame_indices, NdArray)
         ```
 
         ---

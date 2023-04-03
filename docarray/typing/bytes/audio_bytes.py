@@ -53,7 +53,7 @@ class AudioBytes(bytes, AbstractType):
         ```python
         from typing import Optional
         from docarray import BaseDoc
-        from docarray.typing import AudioUrl, AudioBytes
+        from docarray.typing import AudioBytes, AudioNdArray, AudioUrl
 
 
         class MyAudio(BaseDoc):
