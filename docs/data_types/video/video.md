@@ -35,14 +35,20 @@ This requires a `av` dependency. You can install it via `pip install "docarray[v
 4
 ![type:video](mov_bbb.mp4){: style='width: 300'}
 
-5
-<video markdown controls="">
-    <source src="mov_bbb.mp4" type="video/mp4">
-</video>
 
+
+6
+<iframe width="200%" height="200%" 
+    src="../mov_bbb.mp4">
+</iframe>
+
+7
+<iframe width="300"" height="200" object-fit="cover" 
+    src="../mov_bbb.mp4">
+</iframe>
 
 8
-<iframe width="420" height="315" 
+<iframe width="200%" height="200%" 
     src="../mov_bbb.mp4">
 </iframe>
 
