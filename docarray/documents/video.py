@@ -55,8 +55,8 @@ class VideoDoc(BaseDoc):
 
 
         # extend it
-        class MyVideo(Video):
-            name: Optional[Text]
+        class MyVideo(VideoDoc):
+            name: Optional[TextDoc]
 
 
         video = MyVideo(
@@ -65,7 +65,7 @@ class VideoDoc(BaseDoc):
         video.video_tensor = video.url.load().video
         model = MyEmbeddingModel()
         video.embedding = model(video.tensor)
-        video.name = Text(text='my first video')
+        video.name = TextDoc(text='my first video')
 
     You can use this Document for composition:
 

@@ -67,7 +67,7 @@ DocArray offers several AudioTensors to store your data to:
 
 If you specify the type of your tensor to one of the above, it will be cast to that automatically:
 
-```python hl_lines="7 8 13 14"
+```python hl_lines="7 8 15 16"
 from docarray import BaseDoc
 from docarray.typing import AudioTensorFlowTensor, AudioTorchTensor, AudioUrl
 
@@ -82,8 +82,8 @@ doc = MyAudio(
     url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
 )
 
-doc.tf_tensor = doc.url.load().tensor
-doc.torch_tensor = doc.url.load().tensor
+doc.tf_tensor, _ = doc.url.load()
+doc.torch_tensor, _ = doc.url.load()
 
 assert isinstance(doc.tf_tensor, AudioTensorFlowTensor)
 assert isinstance(doc.torch_tensor, AudioTorchTensor)
@@ -94,7 +94,7 @@ assert isinstance(doc.torch_tensor, AudioTorchTensor)
 
 Alternatively, you can load your [`AudioUrl`][docarray.typing.url.AudioUrl] instance to [`AudioBytes`][docarray.typing.bytes.AudioBytes], and your [`AudioBytes`][docarray.typing.bytes.AudioBytes] instance to an `AudioTensor` of your choice:
 
-```python hl_lines="13 14"
+```python hl_lines="15 16"
 from docarray import BaseDoc
 from docarray.typing import AudioBytes, AudioTensor, AudioUrl
 
@@ -166,10 +166,10 @@ tensor_reversed.display()
 
 ## Get started - Predefined AudioDoc
 
-To get started and play around with you audio data, DocArray provides a predefined [`AudioDoc`][docarray.documents.audio.AudioDoc], which includes all of the previously mentioned functionalities:
+To get started and play around with your audio data, DocArray provides a predefined [`AudioDoc`][docarray.documents.audio.AudioDoc], which includes all of the previously mentioned functionalities:
 
 ```python
-class AudioDocDoc(BaseDoc):
+class AudioDoc(BaseDoc):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
     embedding: Optional[AnyEmbedding]
@@ -191,7 +191,7 @@ class MyAudio(AudioDoc):
 audio = MyAudio(
     url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
 )
-audio.name = 'my first audio'
+audio.name = 'My first audio doc!'
 audio.tensor, audio.frame_rate = audio.url.load()
 model = MyEmbeddingModel()
 audio.embedding = model(audio.tensor)
