@@ -1,5 +1,4 @@
 from typing import Optional, TypeVar, Union
-
 import numpy as np
 import pytest
 import torch
@@ -10,6 +9,8 @@ from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
+    import tensorflow as tf
+
     from docarray.typing import TensorFlowTensor
 
 
@@ -78,6 +79,74 @@ def test_document_array_fixed_type():
     da = DocArray[Text]([Text(text='hello') for _ in range(10)])
 
     assert len(da) == 10
+
+
+def test_ndarray_equality():
+    class Text(BaseDoc):
+        tensor: NdArray
+
+    arr1 = Text(tensor=np.zeros(5))
+    arr2 = Text(tensor=np.zeros(5))
+    arr3 = Text(tensor=np.ones(5))
+    arr4 = Text(tensor=np.zeros(4))
+
+    assert arr1 == arr2
+    assert arr1 != arr3
+    assert arr1 != arr4
+
+
+def test_tensor_equality():
+    class Text(BaseDoc):
+        tensor: TorchTensor
+
+    torch1 = Text(tensor=torch.zeros(128))
+    torch2 = Text(tensor=torch.zeros(128))
+    torch3 = Text(tensor=torch.zeros(126))
+    torch4 = Text(tensor=torch.ones(128))
+
+    assert torch1 == torch2
+    assert torch1 != torch3
+    assert torch1 != torch4
+
+
+def test_documentarray():
+    class Text(BaseDoc):
+        text: str
+
+    da1 = DocArray([Text(text='hello')])
+    da2 = DocArray([Text(text='hello')])
+
+    assert da1 == da2
+    assert da1 == [Text(text='hello') for _ in range(len(da1))]
+    assert da2 == [Text(text='hello') for _ in range(len(da2))]
+
+
+@pytest.mark.tensorflow
+def test_tensorflowtensor_equality():
+    class Text(BaseDoc):
+        tensor: TensorFlowTensor
+
+    tensor1 = Text(tensor=tf.constant([1, 2, 3, 4, 5, 6]))
+    tensor2 = Text(tensor=tf.constant([1, 2, 3, 4, 5, 6]))
+    tensor3 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 5.0]]))
+    tensor4 = Text(tensor=tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]))
+
+    assert tensor1 == tensor2
+    assert tensor1 != tensor3
+    assert tensor1 != tensor4
+
+
+def test_text_tensor():
+    class Text1(BaseDoc):
+        tensor: NdArray
+
+    class Text2(BaseDoc):
+        tensor: TorchTensor
+
+    arr_tensor1 = Text1(tensor=np.zeros(2))
+    arr_tensor2 = Text2(tensor=torch.zeros(2))
+
+    assert arr_tensor1 == arr_tensor2
 
 
 def test_get_bulk_attributes_function():

@@ -142,7 +142,6 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     def load_bytes(self, timeout: Optional[float] = None) -> bytes:
         """Convert url to bytes. This will either load or download the file and save
         it into a bytes object.
-        :param uri: the URI of Document. Can be a local file path or a (remote) URL
         :param timeout: timeout for urlopen. Only relevant if URI is not local
         :return: bytes.
         """

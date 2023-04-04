@@ -1,43 +1,53 @@
 import warnings
-from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, Tuple, TypeVar
 
-import numpy as np
-
+from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.image import ImageNdArray
 from docarray.typing.url.any_url import AnyUrl
 from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
+    from PIL import Image as PILImage
 
 T = TypeVar('T', bound='ImageUrl')
-
-IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
 
 @_register_proto(proto_type_name='image_url')
 class ImageUrl(AnyUrl):
     """
-    URL to a .png, .jpeg, or .jpg file.
+    URL to an image file.
     Can be remote (web) URL, or a local file path.
     """
 
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, str, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        url = super().validate(value, field, config)  # basic url validation
-        has_image_extension = any(url.endswith(ext) for ext in IMAGE_FILE_FORMATS)
-        if not has_image_extension:
-            raise ValueError(
-                f'Image URL must have one of the following extensions:'
-                f'{IMAGE_FILE_FORMATS}'
-            )
-        return cls(str(url), scheme=None)
+    def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':
+        """
+        Load the image from the bytes into a `PIL.Image.Image` instance
+
+        ---
+
+        ```python
+        from pydantic import parse_obj_as
+
+        from docarray import BaseDoc
+        from docarray.typing import ImageUrl
+
+        img_url = "https://upload.wikimedia.org/wikipedia/commons/8/80/Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+
+        img_url = parse_obj_as(ImageUrl, img_url)
+        img = img_url.load_pil()
+
+        from PIL.Image import Image
+
+        assert isinstance(img, Image)
+        ```
+
+        ---
+        :return: a Pillow image
+        """
+        from docarray.typing.bytes.image_bytes import ImageBytes
+
+        return ImageBytes(self.load_bytes(timeout=timeout)).load_pil()
 
     def load(
         self,
@@ -45,16 +55,15 @@ class ImageUrl(AnyUrl):
         height: Optional[int] = None,
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
         timeout: Optional[float] = None,
-    ) -> np.ndarray:
+    ) -> ImageNdArray:
         """
-        Load the data from the url into a numpy.ndarray image tensor
+        Load the data from the url into an ImageNdArray
 
         ---
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import ImageUrl
-        import numpy as np
+        from docarray.typing import ImageUrl, ImageNdArray
 
 
         class MyDoc(BaseDoc):
@@ -67,7 +76,7 @@ class ImageUrl(AnyUrl):
         )
 
         img_tensor = doc.img_url.load()
-        assert isinstance(img_tensor, np.ndarray)
+        assert isinstance(img_tensor, ImageNdArray)
 
         img_tensor = doc.img_url.load(height=224, width=224)
         assert img_tensor.shape == (224, 224, 3)
@@ -85,12 +94,23 @@ class ImageUrl(AnyUrl):
             'H' = height, 'W' = width, 'C' = color channel
         :param timeout: timeout (sec) for urlopen network request.
             Only relevant if URL is not local
-        :return: np.ndarray representing the image as RGB values
+        :return: ImageNdArray representing the image as RGB values
         """
         from docarray.typing.bytes.image_bytes import ImageBytes
 
         buffer = ImageBytes(self.load_bytes(timeout=timeout))
         return buffer.load(width, height, axis_layout)
+
+    def load_bytes(self, timeout: Optional[float] = None) -> ImageBytes:
+        """
+        Convert url to ImageBytes. This will either load or download the file and save
+        it into an ImageBytes object.
+
+        :param timeout: timeout for urlopen. Only relevant if url is not local
+        :return: ImageBytes object
+        """
+        bytes_ = super().load_bytes(timeout=timeout)
+        return ImageBytes(bytes_)
 
     def display(self) -> None:
         """
