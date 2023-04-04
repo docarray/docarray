@@ -166,10 +166,12 @@ class DocVec(AnyDocArray[T_doc]):
                 elif issubclass(field_type, AnyDocArray):
                     docs_list = list()
                     for doc in docs:
-                        docs = getattr(doc, field_name)
-                        if isinstance(docs, DocList):
-                            docs = docs.stack(tensor_type=self.tensor_type)
-                        docs_list.append(docs)
+                        docs_nested = getattr(doc, field_name)
+                        if isinstance(docs_nested, DocList):
+                            docs_nested = docs_nested.stack(
+                                tensor_type=self.tensor_type
+                            )
+                        docs_list.append(docs_nested)
                     docs_vec_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
