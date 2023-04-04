@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field
@@ -12,7 +12,7 @@ from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.column_storage import ColumnStorageView
+    from docarray.array.doc_vec.column_storage import ColumnStorageView
 
 _console: Console = Console()
 
@@ -79,7 +79,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        from docarray.array.stacked.column_storage import ColumnStorageView
+        from docarray.array.doc_vec.column_storage import ColumnStorageView
 
         return isinstance(self.__dict__, ColumnStorageView)
 

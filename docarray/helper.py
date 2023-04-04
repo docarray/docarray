@@ -135,7 +135,7 @@ def _get_field_type_by_access_path(
     :param access_path: "__"-separated access path
     :return: field type of accessed attribute. If access path is invalid, return None.
     """
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
     field, _, remaining = access_path.partition('__')
     field_valid = field in doc_type.__fields__.keys()
@@ -145,8 +145,8 @@ def _get_field_type_by_access_path(
             return doc_type._get_field_type(field)
         else:
             d = doc_type._get_field_type(field)
-            if issubclass(d, DocArray):
-                return _get_field_type_by_access_path(d.document_type, remaining)
+            if issubclass(d, DocList):
+                return _get_field_type_by_access_path(d.doc_type, remaining)
             elif issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:
@@ -180,7 +180,7 @@ def get_paths(
     .. code-block:: python
 
         from typing import Optional
-        from docarray import BaseDoc, DocArray
+        from docarray import BaseDoc, DocList
         from docarray.helper import get_paths
         from docarray.typing import TextUrl, ImageUrl
 
@@ -191,12 +191,12 @@ def get_paths(
 
 
         # you can call it in the constructor
-        da = DocArray[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
+        docs = DocList[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
 
         # and call it after construction to set the urls
-        da.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
+        docs.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
 
-        for doc in da:
+        for doc in docs:
             assert doc.image_url.endswith('.txt')
             assert doc.text_url.endswith('.jpg')
 

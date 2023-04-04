@@ -6,7 +6,7 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
@@ -57,7 +57,7 @@ def ten_nested_docs():
 def test_index_simple_schema(ten_simple_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_simple_docs = DocArray[SimpleDoc](ten_simple_docs)
+        ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
     store.index(ten_simple_docs)
     assert store.num_docs() == 10
@@ -77,7 +77,7 @@ def test_schema_with_user_defined_mapping(tmp_path):
 def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[FlatDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_flat_docs = DocArray[FlatDoc](ten_flat_docs)
+        ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
     store.index(ten_flat_docs)
     assert store.num_docs() == 10
@@ -89,7 +89,7 @@ def test_index_flat_schema(ten_flat_docs, tmp_path, use_docarray):
 def test_index_nested_schema(ten_nested_docs, tmp_path, use_docarray):
     store = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
     if use_docarray:
-        ten_nested_docs = DocArray[NestedDoc](ten_nested_docs)
+        ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
     assert store.num_docs() == 10
@@ -137,7 +137,7 @@ def test_index_builtin_docs(tmp_path):
     store = HnswDocumentIndex[TextSchema](work_dir=str(tmp_path))
 
     store.index(
-        DocArray[TextDoc](
+        DocList[TextDoc](
             [TextDoc(embedding=np.random.randn(10), text=f'{i}') for i in range(10)]
         )
     )
@@ -154,7 +154,7 @@ def test_index_builtin_docs(tmp_path):
     )
 
     store.index(
-        DocArray[ImageDoc](
+        DocList[ImageDoc](
             [
                 ImageDoc(
                     embedding=np.random.randn(10), tensor=np.random.randn(3, 224, 224)

@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Set
 
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc
 
 
@@ -16,8 +16,8 @@ class MMDoc(BaseDoc):
     price: int = 0
     categories: Optional[List[str]] = None
     image: Optional[ImageDoc] = None
-    matches: Optional[DocArray] = None
-    matches_with_same_id: Optional[DocArray] = None
+    matches: Optional[DocList] = None
+    matches_with_same_id: Optional[DocList] = None
     opt_int: Optional[int] = None
     test_set: Optional[Set] = None
     inner_doc: Optional[InnerDoc] = None
@@ -30,9 +30,9 @@ def doc1():
         text='hey here',
         categories=['a', 'b', 'c'],
         price=10,
-        matches=DocArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocArray[MMDoc](
-            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
+        matches=DocList[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocList[MMDoc](
+            [MMDoc(id='a', matches=DocList[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'a'},
         inner_doc=InnerDoc(integer=2, inner_list=['c', 'd']),
@@ -48,9 +48,9 @@ def doc2(doc1):
         categories=['d', 'e', 'f'],
         price=5,
         opt_int=5,
-        matches=DocArray[MMDoc]([MMDoc()]),
-        matches_with_same_id=DocArray[MMDoc](
-            [MMDoc(id='a', matches=DocArray[MMDoc]([MMDoc()]))]
+        matches=DocList[MMDoc]([MMDoc()]),
+        matches_with_same_id=DocList[MMDoc](
+            [MMDoc(id='a', matches=DocList[MMDoc]([MMDoc()]))]
         ),
         test_set={'a', 'b'},
         inner_doc=InnerDoc(integer=3, inner_list=['a', 'b']),

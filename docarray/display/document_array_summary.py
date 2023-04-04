@@ -3,17 +3,17 @@ from typing import TYPE_CHECKING, List
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array import DocArrayStacked
-    from docarray.array.abstract_array import AnyDocArray
+    from docarray.array import DocVec
+    from docarray.array.any_array import AnyDocArray
 
 
 class DocArraySummary:
-    def __init__(self, da: 'AnyDocArray'):
-        self.da = da
+    def __init__(self, docs: 'AnyDocArray'):
+        self.docs = docs
 
     def summary(self) -> None:
         """
-        Print a summary of this DocArray object and a summary of the schema of its
+        Print a summary of this DocList object and a summary of the schema of its
         Document type.
         """
         from rich import box
@@ -21,18 +21,18 @@ class DocArraySummary:
         from rich.panel import Panel
         from rich.table import Table
 
-        from docarray.array import DocArrayStacked
+        from docarray.array import DocVec
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
-        table.add_row('Type', self.da.__class__.__name__)
-        table.add_row('Length', str(len(self.da)), end_section=True)
+        table.add_row('Type', self.docs.__class__.__name__)
+        table.add_row('Length', str(len(self.docs)), end_section=True)
 
-        if isinstance(self.da, DocArrayStacked):
+        if isinstance(self.docs, DocVec):
             table.add_row('Stacked columns:')
-            stacked_fields = self._get_stacked_fields(da=self.da)
+            stacked_fields = self._get_stacked_fields(docs=self.docs)
             for field_name in stacked_fields:
-                val = self.da
+                val = self.docs
                 for attr in field_name.split('.'):
                     val = getattr(val, attr)
 
@@ -50,25 +50,25 @@ class DocArraySummary:
 
                     table.add_row(f'  • {field_name}:', col_2)
 
-        Console().print(Panel(table, title='DocArray Summary', expand=False))
-        self.da.document_type.schema_summary()
+        Console().print(Panel(table, title='DocList Summary', expand=False))
+        self.docs.doc_type.schema_summary()
 
     @staticmethod
-    def _get_stacked_fields(da: 'DocArrayStacked') -> List[str]:  # TODO this might
+    def _get_stacked_fields(docs: 'DocVec') -> List[str]:  # TODO this might
         # broken
         """
-        Return a list of the field names of a DocArrayStacked instance that are
-        stacked, i.e. all the fields that are of type AbstractTensor. Nested field
+        Return a list of the field names of a DocVec instance that are
+        doc_vec, i.e. all the fields that are of type AbstractTensor. Nested field
         paths are separated by dot, such as: 'attr.nested_attr'.
         """
         fields = []
-        for field_name, value_tens in da._storage.tensor_columns.items():
+        for field_name, value_tens in docs._storage.tensor_columns.items():
             fields.append(field_name)
-        for field_name, value_doc in da._storage.doc_columns.items():
+        for field_name, value_doc in docs._storage.doc_columns.items():
             fields.extend(
                 [
                     f'{field_name}.{x}'
-                    for x in DocArraySummary._get_stacked_fields(da=value_doc)
+                    for x in DocArraySummary._get_stacked_fields(docs=value_doc)
                 ]
             )
 

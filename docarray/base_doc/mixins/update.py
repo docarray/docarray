@@ -74,7 +74,7 @@ class UpdateMixin:
             )
         from collections import namedtuple
 
-        from docarray import DocArray
+        from docarray import DocList
         from docarray.utils.reduce import reduce
 
         # Declaring namedtuple()
@@ -104,9 +104,7 @@ class UpdateMixin:
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_type(field_name)
 
-                    if isinstance(field_type, type) and issubclass(
-                        field_type, DocArray
-                    ):
+                    if isinstance(field_type, type) and issubclass(field_type, DocList):
                         nested_docarray_fields.append(field_name)
                     else:
                         origin = get_origin(field_type)

@@ -55,7 +55,7 @@ class DocumentSummary:
 
         from rich.tree import Tree
 
-        from docarray import BaseDoc, DocArray
+        from docarray import BaseDoc, DocList
 
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
@@ -76,10 +76,8 @@ class DocumentSummary:
                     for arg in field_type.__args__:
                         if issubclass(arg, BaseDoc):
                             sub_tree.add(DocumentSummary._get_schema(cls=arg))
-                        elif issubclass(arg, DocArray):
-                            sub_tree.add(
-                                DocumentSummary._get_schema(cls=arg.document_type)
-                            )
+                        elif issubclass(arg, DocList):
+                            sub_tree.add(DocumentSummary._get_schema(cls=arg.doc_type))
                     tree.add(sub_tree)
 
                 elif issubclass(field_type, BaseDoc):
@@ -87,11 +85,9 @@ class DocumentSummary:
                         DocumentSummary._get_schema(cls=field_type, doc_name=field_name)
                     )
 
-                elif issubclass(field_type, DocArray):
+                elif issubclass(field_type, DocList):
                     sub_tree = Tree(node_name, highlight=True)
-                    sub_tree.add(
-                        DocumentSummary._get_schema(cls=field_type.document_type)
-                    )
+                    sub_tree.add(DocumentSummary._get_schema(cls=field_type.doc_type))
                     tree.add(sub_tree)
 
                 else:
@@ -112,7 +108,7 @@ class DocumentSummary:
         from rich import box, text
         from rich.table import Table
 
-        from docarray import BaseDoc, DocArray
+        from docarray import BaseDoc, DocList
 
         table = Table(
             'Attribute',
@@ -125,7 +121,7 @@ class DocumentSummary:
         for field_name, value in self.doc.__dict__.items():
             col_1 = f'{field_name}: {value.__class__.__name__}'
             if (
-                isinstance(value, (ID, DocArray, BaseDoc))
+                isinstance(value, (ID, DocList, BaseDoc))
                 or field_name.startswith('_')
                 or value is None
             ):
@@ -177,7 +173,7 @@ class DocumentSummary:
         :return: Tree with all children.
 
         """
-        from docarray import BaseDoc, DocArray
+        from docarray import BaseDoc, DocList
 
         tree = Tree(node) if tree is None else tree.add(node)  # type: ignore
 
@@ -185,7 +181,7 @@ class DocumentSummary:
             nested_attrs = [
                 k
                 for k, v in node.doc.__dict__.items()
-                if isinstance(v, (DocArray, BaseDoc))
+                if isinstance(v, (DocList, BaseDoc))
             ]
             for attr in nested_attrs:
                 value = getattr(node.doc, attr)
