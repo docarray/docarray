@@ -112,7 +112,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 "name": column_name
                 if column_name != 'id'
                 else DOCUMENTID,  # in weaviate, id and _id is a reserved keyword
-                "dataType": column_info.config["dataType"],
+                "dataType": [column_info.db_type],
             }
             properties.append(prop)
 
@@ -139,18 +139,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        default_column_config: Dict[Type, Dict[str, Any]] = field(
+        default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
-                np.ndarray: {
-                    'dataType': ['number[]'],
-                },
-                docarray.typing.ID: {'dataType': ['string']},
-                bool: {'dataType': ['boolean']},
-                int: {'dataType': ['int']},
-                float: {'dataType': ['number']},
-                str: {'dataType': ['text']},
-                # `None` is not a Type, but we allow it here anyway
-                None: {},  # type: ignore
+                np.ndarray: {},
+                docarray.typing.ID: {},
+                'string': {},
+                'text': {},
+                'int': {},
+                'number': {},
+                'boolean': {},
+                'number[]': {},
             }
         )
 
@@ -451,8 +449,18 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if issubclass(python_type, allowed_type):
                 return np.ndarray
 
-        if python_type in WEAVIATE_PY_TYPES:
-            return python_type
+        py_weaviate_type_map = {
+            docarray.typing.ID: 'string',
+            str: 'text',
+            int: 'int',
+            float: 'number',
+            bool: 'boolean',
+            np.ndarray: 'number[]',
+        }
+
+        for py_type, weaviate_type in py_weaviate_type_map.items():
+            if issubclass(python_type, py_type):
+                return weaviate_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
