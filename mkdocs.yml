@@ -60,6 +60,8 @@ extra:
   - icon: fontawesome/brands/twitter
     link: https://twitter.com/docarray
 
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
   - search
