@@ -11,7 +11,7 @@ from docarray.typing import NdArray
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dim=1000, is_embedding=True, db_type="vector")
+    tens: NdArray[10] = Field(dim=1000, is_embedding=True)
 
 
 class Document(BaseDoc):
