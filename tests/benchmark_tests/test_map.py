@@ -70,7 +70,7 @@ def test_map_docs_batched_multiprocessing():
             start_time = time()
             list(
                 map_docs_batched(
-                    da=da,
+                    docs=da,
                     func=cpu_intensive_batch,
                     batch_size=8,
                     backend='process',
