@@ -32,12 +32,14 @@ ShapeT = TypeVar('ShapeT')
 
 class _ParametrizedMeta(type):
     """
-    This metaclass ensures that instance and subclass checks on parametrized Tensors
+    This metaclass ensures that instance, subclass and equality checks on parametrized Tensors
     are handled as expected:
 
     assert issubclass(TorchTensor[128], TorchTensor[128])
     t = parse_obj_as(TorchTensor[128], torch.zeros(128))
     assert isinstance(t, TorchTensor[128])
+    TorchTensor[128] == TorchTensor[128]
+    hash(TorchTensor[128]) == hash(TorchTensor[128])
     etc.
 
     This special handling is needed because every call to `AbstractTensor.__getitem__`
@@ -45,11 +47,12 @@ class _ParametrizedMeta(type):
     We want technically distinct but identical classes to be considered equal.
     """
 
-    def __subclasscheck__(cls, subclass):
-        is_tensor = AbstractTensor in subclass.mro()
-        same_parents = is_tensor and cls.mro()[1:] == subclass.mro()[1:]
+    def _equals_special_case(cls, other):
+        is_type = isinstance(other, type)
+        is_tensor = is_type and AbstractTensor in other.mro()
+        same_parents = is_tensor and cls.mro()[1:] == other.mro()[1:]
 
-        subclass_target_shape = getattr(subclass, '__docarray_target_shape__', False)
+        subclass_target_shape = getattr(other, '__docarray_target_shape__', False)
         self_target_shape = getattr(cls, '__docarray_target_shape__', False)
         same_shape = (
             same_parents
@@ -58,7 +61,10 @@ class _ParametrizedMeta(type):
             and subclass_target_shape == self_target_shape
         )
 
-        if same_shape:
+        return same_shape
+
+    def __subclasscheck__(cls, subclass):
+        if cls._equals_special_case(subclass):
             return True
         return super().__subclasscheck__(subclass)
 
@@ -80,6 +86,22 @@ class _ParametrizedMeta(type):
                 )
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())
         return super().__instancecheck__(instance)
+
+    def __eq__(cls, other):
+        if cls._equals_special_case(other):
+            return True
+        return NotImplemented
+
+    def __hash__(cls):
+        try:
+            cls_ = cast(AbstractTensor, cls)
+            return hash((cls_.__docarray_target_shape__, cls_.__unparametrizedcls__))
+        except AttributeError:
+            raise NotImplementedError(
+                '`hash()` is not implemented for this class. The `_ParametrizedMeta` '
+                'metaclass should only be used for `AbstractTensor` subclasses. '
+                'Otherwise, you have to implement `__hash__` for your class yourself.'
+            )
 
 
 class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
@@ -271,7 +293,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
     @abc.abstractmethod
     def to_protobuf(self) -> 'NdArrayProto':
-        """Convert DocumentArray into a Protobuf message"""
+        """Convert DocArray into a Protobuf message"""
         ...
 
     def unwrap(self):
@@ -283,4 +305,4 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         Convert tensor into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        ...
+        return self

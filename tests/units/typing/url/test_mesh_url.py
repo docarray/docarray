@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import Mesh3DUrl, NdArray
 from tests import TOYDATA_DIR
 
@@ -62,26 +62,13 @@ def test_dump_json():
 
 
 @pytest.mark.parametrize(
-    'file_format,path_to_file',
-    [
-        ('obj', MESH_FILES['obj']),
-        ('glb', MESH_FILES['glb']),
-        ('ply', MESH_FILES['ply']),
-        ('obj', REMOTE_OBJ_FILE),
-        ('illegal', 'illegal'),
-        ('illegal', 'https://www.google.com'),
-        ('illegal', 'my/local/text/file.txt'),
-        ('illegal', 'my/local/text/file.png'),
-    ],
+    'path_to_file',
+    [*MESH_FILES.values(), REMOTE_OBJ_FILE],
 )
-def test_validation(file_format, path_to_file):
-    if file_format == 'illegal':
-        with pytest.raises(ValueError, match='Mesh3DUrl'):
-            parse_obj_as(Mesh3DUrl, path_to_file)
-    else:
-        url = parse_obj_as(Mesh3DUrl, path_to_file)
-        assert isinstance(url, Mesh3DUrl)
-        assert isinstance(url, str)
+def test_validation(path_to_file):
+    url = parse_obj_as(Mesh3DUrl, path_to_file)
+    assert isinstance(url, Mesh3DUrl)
+    assert isinstance(url, str)
 
 
 @pytest.mark.proto

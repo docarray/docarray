@@ -16,7 +16,7 @@ T = TypeVar('T', bound='Mesh3DUrl')
 @_register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file containing 3D mesh information.
+    URL to a file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
 
@@ -26,33 +26,33 @@ class Mesh3DUrl(Url3D):
         trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'VerticesAndFaces':
         """
-        Load the data from the url into a VerticesAndFaces object containing
-        vertices and faces information.
+         Load the data from the url into a VerticesAndFaces object containing
+         vertices and faces information.
 
-        EXAMPLE USAGE
+        ---
 
-        .. code-block:: python
+         ```python
+         from docarray import BaseDoc
 
-            from docarray import BaseDocument
-            import numpy as np
-
-            from docarray.typing import Mesh3DUrl, NdArray
+         from docarray.typing import Mesh3DUrl, NdArray
 
 
-            class MyDoc(BaseDocument):
-                mesh_url: Mesh3DUrl
+         class MyDoc(BaseDoc):
+             mesh_url: Mesh3DUrl
 
 
-            doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
+         doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
 
-            tensors = doc.mesh_url.load()
-            assert isinstance(tensors.vertices, NdArray)
-            assert isinstance(tensors.faces, NdArray)
+         tensors = doc.mesh_url.load()
+         assert isinstance(tensors.vertices, NdArray)
+         assert isinstance(tensors.faces, NdArray)
+         ```
 
-        :param skip_materials: Skip materials if True, else skip.
-        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
-            or `trimesh.load_remote()`.
-        :return: VerticesAndFaces object containing vertices and faces information.
+         ---
+         :param skip_materials: Skip materials if True, else skip.
+         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+             or `trimesh.load_remote()`.
+         :return: VerticesAndFaces object containing vertices and faces information.
         """
         from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 
@@ -71,7 +71,6 @@ class Mesh3DUrl(Url3D):
         """
         Plot mesh from url.
         This loads the Trimesh instance of the 3D mesh, and then displays it.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
         from IPython.display import display
 

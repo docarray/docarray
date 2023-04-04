@@ -1,11 +1,11 @@
 import pytest
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     embedding: NdArray
     text: str
     image: ImageDoc

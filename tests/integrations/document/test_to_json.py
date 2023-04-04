@@ -2,14 +2,14 @@ import numpy as np
 import pytest
 import torch
 
-from docarray.base_document import BaseDocument
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc import BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AnyUrl, NdArray, TorchTensor
 
 
 @pytest.fixture()
 def doc_and_class():
-    class Mmdoc(BaseDocument):
+    class Mmdoc(BaseDoc):
         img: NdArray
         url: AnyUrl
         txt: str

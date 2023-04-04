@@ -4,9 +4,8 @@ import urllib
 import pytest
 from pydantic import parse_obj_as, schema_json_of
 
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import TextUrl
-
 from tests import TOYDATA_DIR
 
 REMOTE_TEXT_FILE = 'https://de.wikipedia.org/wiki/Brixen'
@@ -84,11 +83,9 @@ def test_dump_json():
 
 @pytest.mark.parametrize(
     'path_to_file',
-    [
-        'my/local/text/file.mp3',
-        'my/local/text/file.png',
-    ],
+    [REMOTE_TEXT_FILE, *LOCAL_TEXT_FILES],
 )
-def test_illegal_validation(path_to_file):
-    with pytest.raises(ValueError, match='TextUrl'):
-        parse_obj_as(TextUrl, path_to_file)
+def test_validation(path_to_file):
+    url = parse_obj_as(TextUrl, path_to_file)
+    assert isinstance(url, TextUrl)
+    assert isinstance(url, str)

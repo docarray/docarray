@@ -1,13 +1,13 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
 
 T = TypeVar('T', bound='TextDoc')
 
 
-class TextDoc(BaseDocument):
+class TextDoc(BaseDoc):
     """
     Document for handling text.
     It can contain a TextUrl (`TextDoc.url`), a str (`TextDoc.text`),
@@ -43,6 +43,7 @@ class TextDoc(BaseDocument):
         from docarray.typing import AnyEmbedding
         from typing import Optional
 
+
         # extend it
         class MyText(Text):
             second_embedding: Optional[AnyEmbedding]
@@ -59,11 +60,12 @@ class TextDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import ImageDoc, TextDoc
 
+
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             image_doc: Image
             text_doc: Text
 
@@ -76,7 +78,7 @@ class TextDoc(BaseDocument):
 
         # or
 
-        mmdoc.text_doc.bytes = mmdoc.text_doc.url.load_bytes()
+        mmdoc.text_doc.bytes_ = mmdoc.text_doc.url.load_bytes()
 
 
     This Document can be compared against another Document of the same type or a string.
@@ -96,10 +98,10 @@ class TextDoc(BaseDocument):
         doc == doc2  # False, their ids are not equivalent
     """
 
-    text: Optional[str] = None
-    url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes: Optional[bytes] = None
+    text: Optional[str]
+    url: Optional[TextUrl]
+    embedding: Optional[AnyEmbedding]
+    bytes_: Optional[bytes]
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:

@@ -1,0 +1,86 @@
+site_name: DocArray Documentation
+site_description: DocArray, DocArray is a library for representing, sending and storing multi-modal data, with a focus on applications in ML and Neural Search.
+site_url: https://docs.docarray.org/
+repo_name: docarray/docarray
+repo_url: https://github.com/docarray/docarray
+edit_uri: ''
+theme:
+  logo: assets/logo-light.svg
+
+  favicon: assets/favicon.png
+  name: material
+  features:
+#    - navigation.sections
+    - navigation.indexes
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+#        logo: assets/docarray-light.svg
+
+    #primary: teal
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - attr_list
+  - md_in_html
+
+extra:
+#  analytics:
+#    provider: google
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/docarray/docarray
+  - icon: fontawesome/brands/discord
+    link: https://discord.com/invite/WaMp6PVPgR
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/docarray
+
+
+plugins:
+  - search
+  - awesome-pages
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
+            inherited_members: true
+
+nav:
+  - Home: README.md
+  - Tutorial - User Guide:
+    - user_guide/intro.md
+    - user_guide/representing/first_step.md
+    - user_guide/sending/first_step.md
+    - user_guide/storing/first_step.md
+
+  - How-to:
+    - how_to/add_doc_index.md
+    - how_to/multimodal_training_and_serving.md
+    - how_to/optimize_performance_with_id_generation.md
+  - ...
+  - Contributing: CONTRIBUTING.md

@@ -1,12 +1,13 @@
-from typing import Any, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.typing.tensor.tensor import AnyTensor
+from docarray.utils._internal.misc import import_library
 
 T = TypeVar('T', bound='VerticesAndFaces')
 
 
-class VerticesAndFaces(BaseDocument):
+class VerticesAndFaces(BaseDoc):
     """
     Document for handling 3D mesh tensor data.
 
@@ -28,9 +29,12 @@ class VerticesAndFaces(BaseDocument):
     def display(self) -> None:
         """
         Plot mesh consisting of vertices and faces.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
         """
-        import trimesh
+        if TYPE_CHECKING:
+            import trimesh
+        else:
+            trimesh = import_library('trimesh', raise_error=True)
+
         from IPython.display import display
 
         if self.vertices is None or self.faces is None:

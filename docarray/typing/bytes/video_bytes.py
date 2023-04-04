@@ -5,9 +5,10 @@ import numpy as np
 from pydantic import parse_obj_as
 from pydantic.validators import bytes_validator
 
-from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor import AudioNdArray, NdArray, VideoNdArray
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -55,32 +56,38 @@ class VideoBytes(bytes, AbstractType):
         (`VideoLoadResult.audio`) and an NdArray containing the key frame indices
         (`VideoLoadResult.key_frame_indices`).
 
-        EXAMPLE USAGE
+        ---
 
-        .. code-block:: python
-
-            from docarray import BaseDocument
-            from docarray.typing import VideoUrl
-            import numpy as np
+        ```python
+        from docarray import BaseDoc
+        from docarray.typing import AudioNdArray, NdArray, VideoNdArray, VideoUrl
 
 
-            class MyDoc(BaseDocument):
-                video_url: VideoUrl
+        class MyDoc(BaseDoc):
+            video_url: VideoUrl
 
 
-            doc = MyDoc(video_url="toydata/mp_.mp4")
+        doc = MyDoc(
+            video_url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+        )
 
-            video, audio, key_frame_indices = doc.video_url.load()
-            assert isinstance(video, np.ndarray)
-            assert isinstance(audio, np.ndarray)
-            assert isinstance(key_frame_indices, np.ndarray)
+        video, audio, key_frame_indices = doc.video_url.load()
+        assert isinstance(video, VideoNdArray)
+        assert isinstance(audio, AudioNdArray)
+        assert isinstance(key_frame_indices, NdArray)
+        ```
+
+        ---
+
 
         :param kwargs: supports all keyword arguments that are being supported by
-            av.open() as described in:
-            https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
+            av.open() as described [here](https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open)
         :return: a VideoLoadResult instance with video, audio and keyframe indices
         """
-        import av
+        if TYPE_CHECKING:
+            import av
+        else:
+            av = import_library('av')
 
         with av.open(BytesIO(self), **kwargs) as container:
             audio_frames = []

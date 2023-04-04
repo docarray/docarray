@@ -3,9 +3,10 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc
-from docarray.utils.misc import is_tf_available
+from docarray.typing import ImageBytes
+from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
 if tf_available:
@@ -50,7 +51,7 @@ def test_image_tensorflow():
 
 
 def test_image_shortcut_doc():
-    class MyDoc(BaseDocument):
+    class MyDoc(BaseDoc):
         image: ImageDoc
         image2: ImageDoc
         image3: ImageDoc
@@ -70,7 +71,8 @@ def test_image_shortcut_doc():
 def test_byte():
 
     img = ImageDoc(url=REMOTE_JPG)
-    img.bytes = img.url.load_bytes()
+    img.bytes_ = img.url.load_bytes()
+    assert isinstance(img.bytes_, ImageBytes)
 
 
 @pytest.mark.slow
@@ -79,7 +81,7 @@ def test_byte_from_tensor():
 
     img = ImageDoc(url=REMOTE_JPG)
     img.tensor = img.url.load()
-    img.bytes = img.tensor.to_bytes()
+    img.bytes_ = img.tensor.to_bytes()
 
-    assert isinstance(img.bytes, bytes)
-    assert len(img.bytes) > 0
+    assert isinstance(img.bytes_, bytes)
+    assert len(img.bytes_) > 0

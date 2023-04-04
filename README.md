@@ -1,10 +1,11 @@
 # DocArray - Version 2
 
-_**NOTE**: This introduction refers to version 2 of DocArray, a rewrite that is currently at alpha stage.
-Not all features that are mentioned here are already implemented.
-If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
-for the (already released) version 1 of DocArray
-see [here](https://github.com/docarray/docarray)._
+> **Note**
+> This introduction refers to version 2 of DocArray, a rewrite that is currently at the alpha stage.
+> Not all features that are mentioned here are implemented yet.
+> If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
+> for the (already released) version 1 of DocArray
+> see [here](https://github.com/docarray/docarray)._
 
 DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
 **Neural Search**.
@@ -14,12 +15,12 @@ This means that DocArray lets you do the following things:
 ## Represent
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 
 
-class MyDocument(BaseDocument):
+class MyDocument(BaseDoc):
     description: str
     image_url: ImageUrl
     image_tensor: Optional[TorchTensor[1704, 2272, 3]]
@@ -42,8 +43,8 @@ doc.embedding = clip_image_encoder(
 print(doc.embedding.shape)
 ```
 
-- **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a single, unified data structure, the `Document`
-  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focussed features 
+- **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a Document, a single, unified data structure.
+  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focused features.
 
 ### Use pre-defined `Document`s for common use cases:
 
@@ -61,12 +62,12 @@ doc.embedding = clip_image_encoder(
 ### Compose nested Documents:
 
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MultiModalDocument(BaseDocument):
+class MultiModalDocument(BaseDoc):
     image_doc: ImageDoc
     text_doc: TextDoc
 
@@ -76,22 +77,22 @@ doc = MultiModalDocument(
 )
 ```
 
-### Collect multiple `Documents` into a `DocumentArray`:
+### Collect multiple `Documents` into a `DocArray`:
 ```python
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.typing import AnyTensor, ImageUrl
 import numpy as np
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     url: ImageUrl
     tensor: AnyTensor
 ```
 
 ```python
-from docarray import DocumentArray
+from docarray import DocArray
 
-da = DocumentArray[Image](
+da = DocArray[Image](
     [
         Image(
             url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
@@ -102,8 +103,7 @@ da = DocumentArray[Image](
 )
 ```
 
-
-Access fields at the DocumentArray level:
+Access fields at the DocArray level:
 
 ```python
 print(len(da.tensor))
@@ -122,9 +122,9 @@ print(da.tensor.shape)
 ```
 
 ## Send
-- **Serialize** any `Document` or `DocumentArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
+- **Serialize** any `Document` or `DocArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
 - Use in **microservice** architecture: Send over **HTTP** or **gRPC**
-- Integrate seamlessly with **FastAPI** and **Jina**
+- Integrate seamlessly with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
 
 ```python
 from docarray.documents import ImageDoc
@@ -144,22 +144,22 @@ Image.from_protobuf(doc.to_protobuf())
 ```
 
 ## Store
-- Persist and `DocumentArray` using a **`DocumentStore`**
+- Persist a `DocArray` using a **`DocumentStore`**
 - Store your Documents in any supported (vector) database: **Elasticsearch**, **Qdrant**, **Weaviate**, **Redis**, **Milvus**, **ANNLite** or **SQLite**
 - Leverage DocumentStores to **perform vector search on your multi-modal data**
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray
+from docarray import DocArray
 from docarray.documents import ImageDoc
 from docarray.stores import DocumentStore
 import numpy as np
 
-da = DocumentArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
+da = DocArray([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
 store = DocumentStore[ImageDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocumentArray into the DocumentStore
+store.insert(da)  # insert the DocArray into the DocumentStore
 # find the 10 most similar images based on the 'embedding' field
 match = store.find(ImageDoc(embedding=np.zeros((128,))), field='embedding', top_k=10)
 ```
@@ -175,7 +175,7 @@ _DocArray v2 is that idea, taken seriously._ Every `Document` is created through
 courtesy of [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/).
 
 This gives the following advantages:
-- **Flexibility:** No need to conform to a fixed set of fields, your data defines the schema
+- **Flexibility:** No need to conform to a fixed set of fields -- your data defines the schema
 - **Multi-modality:** Easily store multiple modalities and multiple embeddings in the same Document
 - **Language agnostic:** At its core, Documents are just dictionaries. This makes it easy to create and send them from any language, not just Python.
 
@@ -183,16 +183,16 @@ This gives the following advantages:
 
 If you come from Pydantic, you can see Documents as juiced up models, and DocArray as a collection of goodies around them.
 
-- **ML focussed types**: Tensor, TorchTensor, TFTensor, Embedding, ...
+- **ML focused types**: Tensor, TorchTensor, TFTensor, Embedding, ...
 - **Types that are alive**: ImageUrl can `.load()` a URL to image tensor, TextUrl can load and tokenize text documents, etc.
-- **Pre-built Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio, ... Note that all of these will be valid Pydantic models!
-- The concepts of **DocumentArray and DocumentStore**
-- Cloud ready: Serialization to **Protobuf** for use with microservices and **gRPC**
+- **Pre-built Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio and more. Note that all of these will be valid Pydantic models!
+- The concepts of **DocArray and DocumentStore**
+- Cloud-ready: Serialization to **Protobuf** for use with microservices and **gRPC**
 - Support for **vector search functionalities**, such as `find()` and `embed()`
 
 ## Coming from PyTorch
 
-DocArray can be used directly inside ML models to handle and represent multi-modal data. This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`, and provides a (FastAPI compatible) schema that eases the transition between model training and model serving.
+DocArray can be used directly inside ML models to handle and represent multi-modal data. This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`, and provides a (FastAPI-compatible) schema that eases the transition between model training and model serving.
 
 To see the effect of this, let's first observe a vanilla PyTorch implementation of a tri-modal ML model:
 
@@ -228,25 +228,25 @@ class MyMultiModalModel(nn.Module):
         )
 ```
 
-Not very easy on the eyes if you ask us. And even worse, if you need to add one more modality you have to touch every part of your code base, changing the `forward()` return type and make a whole lot of changes downstream from that.
+Not very easy on the eyes if you ask us. And even worse, if you need to add one more modality you have to touch every part of your code base, changing the `forward()` return type and making a whole lot of changes downstream from that.
 
-So now let's see what the same code looks like with DocArray:
+So, now let's see what the same code looks like with DocArray:
 
 ```python
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
 
 import torch
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     text: TextDoc
     image: ImageDoc
     audio: AudioDoc
 
 
-class PairPodcast(BaseDocument):
+class PairPodcast(BaseDoc):
     left: Podcast
     right: Podcast
 
@@ -258,14 +258,14 @@ class MyPodcastModel(nn.Module):
         self.image_encoder = ImageEncoder()
         self.text_encoder = TextEncoder()
 
-    def forward_podcast(self, da: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+    def forward_podcast(self, da: DocArray[Podcast]) -> DocArray[Podcast]:
         da.audio.embedding = self.audio_encoder(da.audio.tensor)
         da.text.embedding = self.text_encoder(da.text.tensor)
         da.image.embedding = self.image_encoder(da.image.tensor)
 
         return da
 
-    def forward(self, da: DocumentArray[PairPodcast]) -> DocumentArray[PairPodcast]:
+    def forward(self, da: DocArray[PairPodcast]) -> DocArray[PairPodcast]:
         da.left = self.forward_podcast(da.left)
         da.right = self.forward_podcast(da.right)
 
@@ -274,35 +274,35 @@ class MyPodcastModel(nn.Module):
 
 Looks much better, doesn't it?
 You instantly win in code readability and maintainability. And for the same price you can turn your PyTorch model into a FastAPI app and reuse your Document
-schema definition (see below). Everything handles in a pythonic manner by relying on type hints.
-
+schema definition (see below). Everything is handled in a pythonic manner by relying on type hints.
 
 ## Coming from TensorFlow
 
 Similar to the PyTorch approach, you can also use DocArray with TensorFlow to handle and represent multi-modal data inside your ML model.
 
 First off, to use DocArray with TensorFlow we first need to install it as follows:
+
 ```
 pip install tensorflow==2.11.0
 pip install protobuf==3.19.0
 ```
 
 Compared to using DocArray with PyTorch, there is one main difference when using it with TensorFlow:\
-While DocArray's `TorchTensor` is a subclass of `torch.Tensor`, this is not the case for the `TensorFlowTensor`: Due to technical limitations on `tf.Tensor`, docarray's `TensorFlowTensor` is not a subclass of `tf.Tensor` but instead stores a `tf.Tensor` in its `.tensor` attribute. 
+While DocArray's `TorchTensor` is a subclass of `torch.Tensor`, this is not the case for the `TensorFlowTensor`: Due to some technical limitations of `tf.Tensor`, DocArray's `TensorFlowTensor` is not a subclass of `tf.Tensor` but rather stores a `tf.Tensor` in its `.tensor` attribute. 
 
-How does this effect you? Whenever you want to access the tensor data to e.g. do operations with it or hand it to your ML model, instead of handing over your `TensorFlowTensor` instance, you need to access its `.tensor` attribute.
+How does this affect you? Whenever you want to access the tensor data to, let's say, do operations with it or hand it to your ML model, instead of handing over your `TensorFlowTensor` instance, you need to access its `.tensor` attribute.
 
 This would look like the following:
 
 ```python
 from typing import Optional
 
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 
 import tensorflow as tf
 
 
-class Podcast(BaseDocument):
+class Podcast(BaseDoc):
     audio_tensor: Optional[AudioTensorFlowTensor]
     embedding: Optional[AudioTensorFlowTensor]
 
@@ -312,14 +312,12 @@ class MyPodcastModel(tf.keras.Model):
         super().__init__()
         self.audio_encoder = AudioEncoder()
 
-    def call(self, inputs: DocumentArray[Podcast]) -> DocumentArray[Podcast]:
+    def call(self, inputs: DocArray[Podcast]) -> DocArray[Podcast]:
         inputs.audio_tensor.embedding = self.audio_encoder(
             inputs.audio_tensor.tensor
         )  # access audio_tensor's .tensor attribute
         return inputs
 ```
-
-
 
 ## Coming from FastAPI
 
@@ -330,17 +328,17 @@ import numpy as np
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_document import DocumentResponse
+from docarray.base_doc import DocumentResponse
 
 
-class InputDoc(BaseDocument):
+class InputDoc(BaseDoc):
     img: ImageDoc
 
 
-class OutputDoc(BaseDocument):
+class OutputDoc(BaseDoc):
     embedding_clip: NdArray
     embedding_bert: NdArray
 
@@ -368,13 +366,14 @@ async with AsyncClient(app=app, base_url="http://test") as ac:
 The big advantage here is **first-class support for ML centric data**, such as {Torch, TF, ...}Tensor, Embedding, etc.
 
 This includes handy features such as validating the shape of a tensor:
+
 ```python
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.typing import TorchTensor
 import torch
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tensor: TorchTensor[3, 224, 224]
 
 
@@ -383,7 +382,7 @@ doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
 doc = MyDoc(tensor=torch.zeros(224))  # fails validation
 
 
-class Image(BaseDocument):
+class Image(BaseDoc):
     tensor: TorchTensor[3, 'x', 'x']
 
 
@@ -401,20 +400,20 @@ Image(
 
 ## Coming from a vector database
 
-If you came across docarray as a universal vector DB client, you can best think of it as **a new kind of ORM for vector databases**.
+If you came across DocArray as a universal vector database client, you can best think of it as **a new kind of ORM for vector databases**.
 
 DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
 store it there, and thus make it searchable:
 
 ```python
 # NOTE: DocumentStores are not yet implemented in version 2
-from docarray import DocumentArray, BaseDocument
+from docarray import DocArray, BaseDoc
 from docarray.stores import DocumentStore
 from docarray.documents import ImageDoc, TextDoc
 import numpy as np
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     image: ImageDoc
     text: TextDoc
     description: str
@@ -428,11 +427,11 @@ def _random_my_doc():
     )
 
 
-da = DocumentArray([_random_my_doc() for _ in range(1000)])  # create some data
+da = DocArray([_random_my_doc() for _ in range(1000)])  # create some data
 store = DocumentStore[MyDoc](
     storage='qdrant'
 )  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocumentArray into the DocumentStore
+store.insert(da)  # insert the DocArray into the DocumentStore
 
 # find the 10 most similar images based on the image embedding field
 match = store.find(
@@ -444,18 +443,55 @@ match = store.find(
 )
 ```
 
+## Enable logging
+
+You can see more logs by setting the log level to `DEBUG` or `INFO`:
+
+```python
+from pydantic import Field
+from docarray import BaseDoc
+from docarray.index import HnswDocumentIndex
+from docarray.typing import NdArray
+import logging
+
+# get the logger and set the log level to DEBUG
+logging.getLogger('docarray').setLevel(logging.DEBUG)
+
+
+# define a simple document and create a document index
+class SimpleDoc(BaseDoc):
+    vector: NdArray = Field(dim=10)
+
+
+doc_store = HnswDocumentIndex[SimpleDoc](work_dir='temp_path/')
+```
+
+```console
+INFO - docarray - DB config created
+INFO - docarray - Runtime config created
+DEBUG - docarray - Working directory set to temp_path/
+WARNING - docarray - No index was created for `id` as it does not have a config
+INFO - docarray - Created a new index for column `vector`
+DEBUG - docarray - DB path set to temp_path/docs_sqlite.db
+INFO - docarray - Connection to DB has been established
+INFO - docarray - HnswDocumentIndex[SimpleDoc] has been initialized
+```
+
 ## Install the alpha
 
-to try out the alpha you can install it via git:
+To try out the alpha you can install it via git:
+
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[common,torch,image]"
-```
-or from the latest development branch
-```shell
-pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[common,torch,image]"
+pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
 ```
 
-## Further reading
+...or from the latest development branch
+
+```shell
+pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
+```
+
+## See also
 
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
@@ -464,4 +500,3 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 - [v2 Documentation](https://docarray-v2--jina-docs.netlify.app/)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
-

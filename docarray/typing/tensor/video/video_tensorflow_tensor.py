@@ -30,11 +30,11 @@ class VideoTensorFlowTensor(
         import tensorflow as tf
         from pydantic import parse_obj_as
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import VideoTensorFlowTensor, VideoUrl
 
 
-        class MyVideoDoc(BaseDocument):
+        class MyVideoDoc(BaseDoc):
             title: str
             url: Optional[VideoUrl]
             video_tensor: Optional[VideoTensorFlowTensor]

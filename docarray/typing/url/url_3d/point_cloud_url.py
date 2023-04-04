@@ -17,7 +17,7 @@ T = TypeVar('T', bound='PointCloud3DUrl')
 @_register_proto(proto_type_name='point_cloud_url')
 class PointCloud3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file containing point cloud information.
+    URL to a file containing point cloud information.
     Can be remote (web) URL, or a local file path.
     """
 
@@ -31,26 +31,29 @@ class PointCloud3DUrl(Url3D):
         """
         Load the data from the url into an NdArray containing point cloud information.
 
-        EXAMPLE USAGE
 
-        .. code-block:: python
+        ---
 
-            import numpy as np
-            from docarray import BaseDocument
+        ```python
+        import numpy as np
+        from docarray import BaseDoc
 
-            from docarray.typing import PointCloud3DUrl
-
-
-            class MyDoc(BaseDocument):
-                point_cloud_url: PointCloud3DUrl
+        from docarray.typing import PointCloud3DUrl
 
 
-            doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+        class MyDoc(BaseDoc):
+            point_cloud_url: PointCloud3DUrl
 
-            point_cloud = doc.point_cloud_url.load(samples=100)
 
-            assert isinstance(point_cloud, np.ndarray)
-            assert point_cloud.shape == (100, 3)
+        doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+
+        # point_cloud = doc.point_cloud_url.load(samples=100)
+
+        # assert isinstance(point_cloud, np.ndarray)
+        # assert point_cloud.shape == (100, 3)
+        ```
+
+        ---
 
         :param samples: number of points to sample from the mesh
         :param multiple_geometries: if False, store point cloud in 2D np.ndarray.
@@ -89,7 +92,6 @@ class PointCloud3DUrl(Url3D):
     ) -> None:
         """
         Plot point cloud from url.
-        To use this you need to install trimesh[easy]: `pip install 'trimesh[easy]'`.
 
         First, it loads the point cloud into a :class:`PointsAndColors` object, and then
         calls display on it. The following is therefore equivalent:
@@ -97,7 +99,7 @@ class PointCloud3DUrl(Url3D):
         .. code-block:: python
 
             import numpy as np
-            from docarray import BaseDocument
+            from docarray import BaseDoc
 
             from docarray.documents import PointCloud3D
 

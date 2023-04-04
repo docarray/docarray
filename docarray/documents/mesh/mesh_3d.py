@@ -1,6 +1,6 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing.tensor.embedding import AnyEmbedding
 from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
@@ -8,7 +8,7 @@ from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
 T = TypeVar('T', bound='Mesh3D')
 
 
-class Mesh3D(BaseDocument):
+class Mesh3D(BaseDoc):
     """
     Document for handling meshes for 3D data representation.
 
@@ -63,12 +63,12 @@ class Mesh3D(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import Mesh3D, Text
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             mesh: Mesh3D
             text: Text
 
@@ -80,7 +80,7 @@ class Mesh3D(BaseDocument):
         mmdoc.mesh.tensors = mmdoc.mesh.url.load()
 
         # or
-        mmdoc.mesh.bytes = mmdoc.mesh.url.load_bytes()
+        mmdoc.mesh.bytes_ = mmdoc.mesh.url.load_bytes()
 
 
     You can display your 3D mesh in a notebook from either its url, or its tensors:
@@ -104,7 +104,7 @@ class Mesh3D(BaseDocument):
     url: Optional[Mesh3DUrl]
     tensors: Optional[VerticesAndFaces]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes]
+    bytes_: Optional[bytes]
 
     @classmethod
     def validate(

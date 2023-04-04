@@ -35,7 +35,8 @@ message GenericDictValue {
   repeated KeyValuePair entries = 1;
 }
 
-//
+
+
 message NodeProto {
 
   oneof content {
@@ -53,16 +54,16 @@ message NodeProto {
     NdArrayProto ndarray = 6;
     // a sub Document
     DocumentProto document = 7;
-    // a sub DocumentArray
+    // a sub DocArray
     DocumentArrayProto document_array = 8;
     //any list
-    google.protobuf.ListValue list = 9;
+    ListOfAnyProto list = 9;
     //any set
-    google.protobuf.ListValue set = 10;
+    ListOfAnyProto set = 10;
     //any tuple
-    google.protobuf.ListValue tuple = 11;
+    ListOfAnyProto tuple = 11;
     // dictionary with string as keys
-    google.protobuf.Struct dict = 12;
+    DictOfAnyProto dict = 12;
   }
 
   oneof docarray_type {
@@ -80,21 +81,28 @@ message DocumentProto {
 
 }
 
-message DocumentArrayProto {
-    repeated DocumentProto docs = 1; // a list of Documents
-}
+message DictOfAnyProto {
 
-message ListOfDocumentArrayProto {
-  repeated DocumentArrayProto data = 1;
+  map<string, NodeProto> data = 1;
+
 }
 
 message ListOfAnyProto {
   repeated NodeProto data = 1;
 }
 
-message DocumentArrayStackedProto{
+message DocumentArrayProto {
+    repeated DocumentProto docs = 1; // a list of Documents
+}
+
+
+message ListOfDocArrayProto {
+  repeated DocumentArrayProto data = 1;
+}
+
+message DocArrayStackedProto{
   map<string, NdArrayProto> tensor_columns = 1; // a dict of document columns
-  map<string, DocumentArrayStackedProto> doc_columns = 2; // a dict of tensor columns
-  map<string, ListOfDocumentArrayProto> da_columns = 3; // a dict of document array columns
+  map<string, DocArrayStackedProto> doc_columns = 2; // a dict of tensor columns
+  map<string, ListOfDocArrayProto> da_columns = 3; // a dict of document array columns
   map<string, ListOfAnyProto> any_columns = 4; // a dict of any columns. Used for the rest of the data
 }

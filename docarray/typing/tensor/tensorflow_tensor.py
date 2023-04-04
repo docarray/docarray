@@ -1,18 +1,22 @@
 from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
-import tensorflow as tf  # type: ignore
 
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
+    import tensorflow as tf  # type: ignore
     from pydantic import BaseConfig
-    from docarray.proto import NdArrayProto
-    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+    from pydantic.fields import ModelField
 
-from docarray.base_document.base_node import BaseNode
+    from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+    from docarray.proto import NdArrayProto
+else:
+    tf = import_library('tensorflow', raise_error=True)
+
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
@@ -94,16 +98,18 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.typing import TensorFlowTensor
         import tensorflow as tf
 
 
-        class MyDoc(BaseDocument):
+        class MyDoc(BaseDoc):
             tensor: TensorFlowTensor
             image_tensor: TensorFlowTensor[3, 224, 224]
             square_crop: TensorFlowTensor[3, 'x', 'x']
-            random_image: TensorFlowTensor[3, ...] # first dimension is fixed, can have arbitrary shape
+            random_image: TensorFlowTensor[
+                3, ...
+            ]  # first dimension is fixed, can have arbitrary shape
 
 
         # create a document with tensors

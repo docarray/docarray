@@ -1,29 +1,27 @@
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.base_document import BaseDocument
+from docarray.base_doc import BaseDoc
 from docarray.documents import AudioDoc
 from docarray.typing import AnyEmbedding, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
-from docarray.utils.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 
-torch_available = is_torch_available()
-if torch_available:
-    import torch
-
-
-tf_available = is_tf_available()
-if tf_available:
+if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
+    import torch
+else:
+    tf = import_library('tensorflow', raise_error=False)
+    torch = import_library('torch', raise_error=False)
 
 
 T = TypeVar('T', bound='VideoDoc')
 
 
-class VideoDoc(BaseDocument):
+class VideoDoc(BaseDoc):
     """
     Document for handling video.
     The Video Document can contain a VideoUrl (`VideoDoc.url`), an Audio Document
@@ -73,12 +71,12 @@ class VideoDoc(BaseDocument):
 
     .. code-block:: python
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import TextDoc, VideoDoc
 
 
         # compose it
-        class MultiModalDoc(BaseDocument):
+        class MultiModalDoc(BaseDoc):
             video: Video
             text: Text
 
@@ -93,7 +91,7 @@ class VideoDoc(BaseDocument):
 
         # or
 
-        mmdoc.video.bytes = mmdoc.video.url.load_bytes()
+        mmdoc.video.bytes_ = mmdoc.video.url.load_bytes()
 
     """
 
@@ -102,7 +100,7 @@ class VideoDoc(BaseDocument):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
-    bytes: Optional[bytes] = None
+    bytes_: Optional[bytes]
 
     @classmethod
     def validate(
@@ -112,9 +110,9 @@ class VideoDoc(BaseDocument):
         if isinstance(value, str):
             value = cls(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
-            torch_available
+            torch is not None
             and isinstance(value, torch.Tensor)
-            or (tf_available and isinstance(value, tf.Tensor))
+            or (tf is not None and isinstance(value, tf.Tensor))
         ):
             value = cls(tensor=value)
 

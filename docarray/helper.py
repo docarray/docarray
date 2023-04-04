@@ -1,11 +1,25 @@
+import glob
+import itertools
+import os
+import re
 from types import LambdaType
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Type,
+    Union,
+)
 
 if TYPE_CHECKING:
-    from docarray import BaseDocument
+    from docarray import BaseDoc
 
 
-def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> bool:
+def _is_access_path_valid(doc_type: Type['BaseDoc'], access_path: str) -> bool:
     """
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
@@ -15,7 +29,7 @@ def _is_access_path_valid(doc_type: Type['BaseDocument'], access_path: str) -> b
 
 
 def _all_access_paths_valid(
-    doc_type: Type['BaseDocument'], access_paths: List[str]
+    doc_type: Type['BaseDoc'], access_paths: List[str]
 ) -> List[bool]:
     """
     Check if all access paths ("__"-separated) are valid for a given Document class.
@@ -113,7 +127,7 @@ def _update_nested_dicts(
 
 
 def _get_field_type_by_access_path(
-    doc_type: Type['BaseDocument'], access_path: str
+    doc_type: Type['BaseDoc'], access_path: str
 ) -> Optional[Type]:
     """
     Get field type by "__"-separated access path.
@@ -121,7 +135,7 @@ def _get_field_type_by_access_path(
     :param access_path: "__"-separated access path
     :return: field type of accessed attribute. If access path is invalid, return None.
     """
-    from docarray import BaseDocument, DocumentArray
+    from docarray import BaseDoc, DocArray
 
     field, _, remaining = access_path.partition('__')
     field_valid = field in doc_type.__fields__.keys()
@@ -131,9 +145,9 @@ def _get_field_type_by_access_path(
             return doc_type._get_field_type(field)
         else:
             d = doc_type._get_field_type(field)
-            if issubclass(d, DocumentArray):
+            if issubclass(d, DocArray):
                 return _get_field_type_by_access_path(d.document_type, remaining)
-            elif issubclass(d, BaseDocument):
+            elif issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:
                 return None
@@ -150,3 +164,75 @@ def _is_lambda_or_partial_or_local_function(func: Callable[[Any], Any]) -> bool:
         or not hasattr(func, '__qualname__')
         or ('<locals>' in func.__qualname__)
     )
+
+
+def get_paths(
+    patterns: Union[str, List[str]],
+    recursive: bool = True,
+    size: Optional[int] = None,
+    exclude_regex: Optional[str] = None,
+) -> Generator[str, None, None]:
+    """
+    Yield file paths described by `patterns`.
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from typing import Optional
+        from docarray import BaseDoc, DocArray
+        from docarray.helper import get_paths
+        from docarray.typing import TextUrl, ImageUrl
+
+
+        class Banner(BaseDoc):
+            text_url: TextUrl
+            image_url: Optional[ImageUrl]
+
+
+        # you can call it in the constructor
+        da = DocArray[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
+
+        # and call it after construction to set the urls
+        da.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
+
+        for doc in da:
+            assert doc.image_url.endswith('.txt')
+            assert doc.text_url.endswith('.jpg')
+
+    :param patterns: The pattern may contain simple shell-style wildcards,
+        e.g. '\*.py', '[\*.zip, \*.gz]'
+    :param recursive: If recursive is true, the pattern '**' will match any
+        files and zero or more directories and subdirectories
+    :param size: the maximum number of the files
+    :param exclude_regex: if set, then filenames that match to this pattern
+        are not included.
+    :yield: file paths
+
+    """
+
+    if isinstance(patterns, str):
+        patterns = [patterns]
+
+    regex_to_exclude = None
+    if exclude_regex:
+        try:
+            regex_to_exclude = re.compile(exclude_regex)
+        except re.error:
+            raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+
+    def _iter_file_extensions(ps):
+        return itertools.chain.from_iterable(
+            glob.iglob(os.path.expanduser(p), recursive=recursive) for p in ps
+        )
+
+    num_docs = 0
+    for file_path in _iter_file_extensions(patterns):
+        if regex_to_exclude and regex_to_exclude.match(file_path):
+            continue
+
+        yield file_path
+
+        num_docs += 1
+        if size is not None and num_docs >= size:
+            break

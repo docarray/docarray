@@ -1,15 +1,16 @@
-from typing import Optional, List
-from docarray.base_document.document import BaseDocument
+from typing import List, Optional
+
+from docarray.base_doc.doc import BaseDoc
 
 
 def test_base_document_init():
-    doc = BaseDocument()
+    doc = BaseDoc()
 
     assert doc.id is not None
 
 
 def test_update():
-    class MyDocument(BaseDocument):
+    class MyDocument(BaseDoc):
         content: str
         title: Optional[str] = None
         tags_: List

@@ -1,5 +1,6 @@
 import abc
 from typing import (
+    TYPE_CHECKING,
     Any,
     Iterable,
     MutableSequence,
@@ -14,7 +15,7 @@ from typing import (
 
 import numpy as np
 
-from docarray.utils.misc import is_torch_available
+from docarray.utils._internal.misc import import_library
 
 T_item = TypeVar('T_item')
 T = TypeVar('T', bound='IndexingSequenceMixin')
@@ -85,11 +86,11 @@ class IndexingSequenceMixin(Iterable[T_item]):
             return item.tolist()
 
         # torch index types
-        torch_available = is_torch_available()
-        if torch_available:
+        if TYPE_CHECKING:
             import torch
         else:
-            raise ValueError(f'Invalid index type {type(item)}')
+            torch = import_library('torch', raise_error=True)
+
         allowed_torch_dtypes = [
             torch.bool,
             torch.int64,

@@ -7,6 +7,8 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.audio import AudioNdArray
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
     from pydantic.fields import BaseConfig, ModelField
@@ -42,40 +44,42 @@ class AudioBytes(bytes, AbstractType):
 
         return NodeProto(blob=self, type=self._proto_type_name)
 
-    def load(self) -> Tuple[np.ndarray, int]:
+    def load(self) -> Tuple[AudioNdArray, int]:
         """
-        Load the Audio from the bytes into a numpy.ndarray Audio tensor
+        Load the Audio from the AudioBytes into an AudioNdArray
 
-        EXAMPLE USAGE
+        ---
 
-        .. code-block:: python
-
-            from docarray import BaseDocument
-            import numpy as np
-
-            from docarray.typing import AudioUrl
+        ```python
+        from typing import Optional
+        from docarray import BaseDoc
+        from docarray.typing import AudioBytes, AudioNdArray, AudioUrl
 
 
-            class MyAudio(Document):
-                url: AudioUrl
-                tensor: Optional[NdArray]
-                bytes: Optional[bytes]
+        class MyAudio(BaseDoc):
+            url: AudioUrl
+            tensor: Optional[AudioNdArray]
+            bytes_: Optional[AudioBytes]
+            frame_rate: Optional[float]
 
 
-            doc = MyAudio(url="toydata/hello.wav")
-            doc.bytes = doc.url.load_bytes()
-            doc.tensor, doc.frame_rate = doc.bytes.load()
+        doc = MyAudio(url='https://www.kozco.com/tech/piano2.wav')
+        doc.bytes_ = doc.url.load_bytes()
+        doc.tensor, doc.frame_rate = doc.bytes_.load()
 
-            # Note this is equivalent to do
+        # Note this is equivalent to do
 
-            doc.tensor, doc.frame_rate = doc.url.load()
+        doc.tensor, doc.frame_rate = doc.url.load()
 
-            assert isinstance(doc.audio_tensor, np.ndarray)
+        assert isinstance(doc.tensor, AudioNdArray)
+        ```
 
-        :return: np.ndarray representing the Audio as RGB values
+        ---
+        :return: tuple of an AudioNdArray representing the audio bytes content,
+            and an integer representing the frame rate.
         """
-
-        from pydub import AudioSegment  # type: ignore
+        pydub = import_library('pydub', raise_error=True)  # noqa: F841
+        from pydub import AudioSegment
 
         segment = AudioSegment.from_file(io.BytesIO(self))
 
@@ -84,4 +88,4 @@ class AudioBytes(bytes, AbstractType):
 
         # Normalise float32 array so that values are between -1.0 and +1.0
         samples_norm = samples / 2 ** (segment.sample_width * 8 - 1)
-        return samples_norm, segment.frame_rate
+        return parse_obj_as(AudioNdArray, samples_norm), segment.frame_rate

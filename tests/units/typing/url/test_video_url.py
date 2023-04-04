@@ -5,16 +5,17 @@ import pytest
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray import BaseDocument
-from docarray.base_document.io.json import orjson_dumps
+from docarray import BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import (
     AudioNdArray,
     NdArray,
+    VideoBytes,
     VideoNdArray,
     VideoTorchTensor,
     VideoUrl,
 )
-from docarray.utils.misc import is_tf_available
+from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -76,7 +77,7 @@ def test_load_one_of_named_tuple_results(file_url, field, attr_cls):
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
 def test_load_video_url_to_video_torch_tensor_field(file_url):
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
         tensor: Optional[VideoTorchTensor]
 
@@ -95,7 +96,7 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
     [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE],
 )
 def test_load_video_url_to_video_tensorflow_tensor_field(file_url):
-    class MyVideoDoc(BaseDocument):
+    class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
         tensor: Optional[VideoTensorFlowTensor]
 
@@ -125,21 +126,6 @@ def test_validation(path_to_file):
     assert isinstance(url, str)
 
 
-@pytest.mark.parametrize(
-    'path_to_file',
-    [
-        'illegal',
-        'https://www.google.com',
-        'my/local/text/file.txt',
-        'my/local/text/file.png',
-        'my/local/file.mp3',
-    ],
-)
-def test_illegal_validation(path_to_file):
-    with pytest.raises(ValueError, match='VideoUrl'):
-        parse_obj_as(VideoUrl, path_to_file)
-
-
 @pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet
@@ -158,4 +144,5 @@ def test_load_bytes():
     uri = parse_obj_as(VideoUrl, file_url)
     video_bytes = uri.load_bytes()
     assert isinstance(video_bytes, bytes)
+    assert isinstance(video_bytes, VideoBytes)
     assert len(video_bytes) > 0

@@ -2,11 +2,12 @@ import os
 import urllib
 
 import numpy as np
+import PIL
 import pytest
 from PIL import Image
 from pydantic.tools import parse_obj_as, schema_json_of
 
-from docarray.base_document.io.json import orjson_dumps
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import ImageUrl
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +35,6 @@ def test_image_url():
 
 @pytest.mark.proto
 def test_proto_image_url():
-
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)
 
     uri._to_node_protobuf()
@@ -64,6 +64,23 @@ def test_load(image_format, path_to_img):
     url = parse_obj_as(ImageUrl, path_to_img)
     tensor = url.load()
     assert isinstance(tensor, np.ndarray)
+
+
+@pytest.mark.slow
+@pytest.mark.internet
+@pytest.mark.parametrize(
+    'image_format,path_to_img',
+    [
+        ('png', IMAGE_PATHS['png']),
+        ('jpg', IMAGE_PATHS['jpg']),
+        ('jpeg', IMAGE_PATHS['jpeg']),
+        ('remote-jpg', REMOTE_JPG),
+    ],
+)
+def test_load_pil(image_format, path_to_img):
+    url = parse_obj_as(ImageUrl, path_to_img)
+    img = url.load_pil()
+    assert isinstance(img, PIL.Image.Image)
 
 
 @pytest.mark.slow
@@ -150,22 +167,10 @@ def test_load_to_bytes(image_format, path_to_img):
 
 
 @pytest.mark.parametrize(
-    'image_format,path_to_img',
-    [
-        ('png', IMAGE_PATHS['png']),
-        ('jpg', IMAGE_PATHS['jpg']),
-        ('jpeg', IMAGE_PATHS['jpeg']),
-        ('jpg', REMOTE_JPG),
-        ('illegal', 'illegal'),
-        ('illegal', 'https://www.google.com'),
-        ('illegal', 'my/local/text/file.txt'),
-    ],
+    'path_to_img',
+    [*IMAGE_PATHS.values(), REMOTE_JPG],
 )
-def test_validation(image_format, path_to_img):
-    if image_format == 'illegal':
-        with pytest.raises(ValueError):
-            parse_obj_as(ImageUrl, path_to_img)
-    else:
-        url = parse_obj_as(ImageUrl, path_to_img)
-        assert isinstance(url, ImageUrl)
-        assert isinstance(url, str)
+def test_validation(path_to_img):
+    url = parse_obj_as(ImageUrl, path_to_img)
+    assert isinstance(url, ImageUrl)
+    assert isinstance(url, str)
