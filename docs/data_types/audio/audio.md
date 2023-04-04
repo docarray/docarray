@@ -78,7 +78,9 @@ class MyAudio(BaseDoc):
     torch_tensor: AudioTorchTensor = None
 
 
-doc = MyAudio(url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true')
+doc = MyAudio(
+    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+)
 
 doc.tf_tensor = doc.url.load().tensor
 doc.torch_tensor = doc.url.load().tensor
@@ -103,7 +105,9 @@ class MyAudio(BaseDoc):
     tensor: AudioTensor = None
 
 
-doc = MyAudio(url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true')
+doc = MyAudio(
+    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+)
 
 doc.bytes_, _ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
 doc.tensor, _ = doc.bytes_.load()  # type(doc.tensor) = AudioNdarray
