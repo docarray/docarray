@@ -77,7 +77,7 @@ def test_map_docs_batched(n_docs, batch_size, backend):
 
     da = DocList[MyImage]([MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     it = map_docs_batched(
-        da=da, func=load_from_da, batch_size=batch_size, backend=backend
+        docs=da, func=load_from_da, batch_size=batch_size, backend=backend
     )
     assert isinstance(it, Generator)
 

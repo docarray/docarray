@@ -7,7 +7,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.typing import NdArray
 
-pytestmark = [pytest.mark.slow, pytest.mark.index]
+pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
 
 
 class SimpleDoc(BaseDoc):
