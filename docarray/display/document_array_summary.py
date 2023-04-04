@@ -57,7 +57,7 @@ class DocArraySummary:
     def _get_stacked_fields(da: 'DocVec') -> List[str]:  # TODO this might
         # broken
         """
-        Return a list of the field names of a DocArrayStacked instance that are
+        Return a list of the field names of a DocVec instance that are
         doc_vec, i.e. all the fields that are of type AbstractTensor. Nested field
         paths are separated by dot, such as: 'attr.nested_attr'.
         """

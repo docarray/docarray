@@ -253,11 +253,11 @@ class DocList(
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'DocVec':
         """
-        Convert the DocArray into a DocArrayStacked. `Self` cannot be used
+        Convert the DocArray into a DocVec. `Self` cannot be used
         afterwards
         :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
         if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
-        :return: A DocArrayStacked of the same document type as self
+        :return: A DocVec of the same document type as self
         """
         from docarray.array.doc_vec.doc_vec import DocVec
 

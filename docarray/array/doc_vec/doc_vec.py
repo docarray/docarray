@@ -67,23 +67,23 @@ class DocVec(AnyDocArray[T_doc]):
     `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
-    :attr:`~docarray.array.doc_vec.DocArrayStacked.tensor_type` will be used to determine
+    :attr:`~docarray.array.doc_vec.DocVec.tensor_type` will be used to determine
     the type of the doc_vec column.
 
-    If the field is another `BasedDoc` the column will be another DocArrayStacked that follows the
+    If the field is another `BasedDoc` the column will be another DocVec that follows the
     schema of the nested Document.
     If the field is a `DocArray` or
     `DocVec` then the column will be a list of `DocVec`.
     For any other type the column is a Python list.
 
-    Every `Document` inside a `DocArrayStacked` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
+    Every `Document` inside a `DocVec` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
      not hold any data itself. The behavior of
      this Document "view" is similar to the behavior of `view = tensor[i]` in
      numpy/PyTorch.
 
     :param docs: a homogeneous sequence of BaseDoc
     :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
-    if the BaseDoc of this DocArrayStacked has some undefined tensor type like
+    if the BaseDoc of this DocVec has some undefined tensor type like
     AnyTensor or Union of NdArray and TorchTensor
     """
 
@@ -191,7 +191,7 @@ class DocVec(AnyDocArray[T_doc]):
     @classmethod
     def from_columns_storage(cls: Type[T], storage: ColumnStorage) -> T:
         """
-        Create a DocArrayStacked directly from a storage object
+        Create a DocVec directly from a storage object
         :param storage: the underlying storage.
         :return: a DocArrayStack
         """
@@ -219,7 +219,7 @@ class DocVec(AnyDocArray[T_doc]):
             raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
     def to(self: T, device: str) -> T:
-        """Move all tensors of this DocArrayStacked to the given device
+        """Move all tensors of this DocVec to the given device
 
         :param device: the device to move the data to
         """
@@ -322,7 +322,7 @@ class DocVec(AnyDocArray[T_doc]):
             if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.doc_type}'
+                    f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = cast(
                 T, value.stack(tensor_type=self.tensor_type)
@@ -332,11 +332,11 @@ class DocVec(AnyDocArray[T_doc]):
             if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.doc_type}'
+                    f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = value
         else:
-            raise TypeError(f'Can not set a DocArrayStacked with {type(value)}')
+            raise TypeError(f'Can not set a DocVec with {type(value)}')
 
         for field, col in self._storage.columns.items():
             col[index_item] = processed_value._storage.columns[field]
@@ -473,7 +473,7 @@ class DocVec(AnyDocArray[T_doc]):
         )
 
     def unstack(self: T) -> DocList[T_doc]:
-        """Convert DocArrayStacked into a DocArray.
+        """Convert DocVec into a DocArray.
 
         Note this destroys the arguments and returns a new DocArray
         """
