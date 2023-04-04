@@ -1,22 +1,27 @@
 # Image
 
+DocArray supports many different modalities including the widely used `Image` modality.
+This section will show you how to use DocArray to load and handle image data in DocArray.
+
+Moreover, we will introduce DocArray's image specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] to [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+
 !!! note
-    This requires `Pillow` dependency. You can install all necessary dependencies via
-    ```python 
+    This requires `Pillow` dependency. You can install all necessary dependencies via:
+    ```cmd 
     pip install "docarray[image]"
     ```
-
-DocArray offers several Image specific types to represent your image data from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] to [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
 <figure markdown>
   ![](apple.png){ width="220" }
 </figure>
 
-## Load data
-You can load image data by specifying your local or remote url as an [`ImageUrl`][docarray.typing.url.ImageUrl] 
-and then call [`.load()`][docarray.typing.url.ImageUrl.load] on it. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an instance of [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+## Load image
 
-```python hl_lines="11"
+First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], and an optional `tensor` attribute of type `ImageTensor`.
+
+Next, let's instantiate a `MyImage` object with a local or remote url. 
+
+```python
 from docarray.typing import ImageTensor, ImageUrl
 from docarray import BaseDoc
 
@@ -27,20 +32,25 @@ class MyImage(BaseDoc):
 
 
 img = MyImage(url='apple.png')
+```
+
+To load the image data you can simply call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an instance of [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+
+```python
+from docarray.typing import ImageNdArray
+
 img.tensor = img.url.load()
 
-print(img.tensor.__class__.__name__)
-```
-```text
-ImageNdArray
+assert isinstance(img.tensor, ImageNdArray)
 ```
 
 ## ImageTensor
+
 DocArray offers several ImageTensors to store your data to:
 
-1. [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray]
-2. [`ImageTorchTensor`][docarray.typing.tensor.image.image_torch_tensor.ImageTorchTensor]
-3. [`ImageTensorFlowTensor`][docarray.typing.tensor.image.image_tensorflow_tensor.ImageTensorFlowTensor]
+- [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray]
+- `ImageTorchTensor`
+- `ImageTensorFlowTensor`
 
 If you specify the type of your tensor to one of the above, it will be cast to that automatically:
 
@@ -59,16 +69,24 @@ img = MyImage(url='apple.png')
 img.tf_tensor = img.url.load()
 img.torch_tensor = img.url.load()
 
-print(img.tf_tensor.__class__.__name__)
-print(img.torch_tensor.__class__.__name__)
+assert isinstance(img.tf_tensor, ImageTensorFlowTensor)
+assert isinstance(img.torch_tensor, ImageTorchTensor)
 ```
-```text
-ImageTensorFlowTensor
-ImageTorchTensor
+
+You can also load the url content as a [`PIL.Image.Image`](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image) instance using [`ImageUrl.load_pil()`][docarray.typing.url.ImageUrl.load_pil]:
+
+```python
+from PIL.Image import Image as PILImage
+
+img = MyImage(url='apple.png')
+pil_img = img.url.load_pil()
+
+assert isinstance(pil_img, PILImage)
 ```
 
 ## ImageBytes
-Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an [`ImageTensor`][docarray.typing.tensor.image.image_tensor.ImageTensor] of your choice:
+
+Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an `ImageTensor` of your choice:
 
 ```python hl_lines="13 14"
 from docarray.typing import ImageBytes, ImageTensor, ImageUrl
@@ -86,10 +104,18 @@ img = MyImage(url='apple.png')
 img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
 img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 ```
+ 
+Vice versa, you can also transform an ImageTensor to ImageBytes:
+
+```python
+bytes_from_tensor = img.tensor.to_bytes()
+
+assert isinstance(bytes_from_tensor, ImageBytes)
+```
 
 ## Display image in notebook
 
-You can display your image data in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
+You can display your image in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
 [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] instance.
 
 
@@ -99,9 +125,9 @@ You can display your image data in a notebook from both an [`ImageUrl`][docarray
 </figure>
 
 
-## Get started: Predefined ImageDoc
+## Get started - Predefined ImageDoc
 
-To get started and play around with the image modality we provide a predefined ImageDoc, which includes all of the previously mentioned functionalities:
+To get started and play around with the image modality DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
 ```python
 class ImageDoc(BaseDoc):
@@ -124,7 +150,10 @@ class MyImage(ImageDoc):
     second_embedding: Optional[AnyEmbedding]
 
 
-image = MyImage(image_title='My first image', url='http://www.jina.ai/image.jpg')
+image = MyImage(
+    image_title='My first image',
+    url='http://www.jina.ai/image.jpg',
+)
 image.tensor = image.url.load()
 model = MyEmbeddingModel()
 image.embedding = model(image.tensor)
