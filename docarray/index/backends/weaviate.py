@@ -21,7 +21,7 @@ import numpy as np
 import weaviate
 
 import docarray
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _FindResultBatched
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.find import _FindResult
@@ -179,7 +179,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             has_matches = results["results"]["matches"]
 
-    def _filter(self, filter_query: Any, limit: int) -> Union[DocArray, List[Dict]]:
+    def _filter(self, filter_query: Any, limit: int) -> Union[DocList, List[Dict]]:
         results = (
             self._client.query.get(self._db_config.index_name, self.properties)
             .with_additional("vector")
@@ -194,7 +194,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _filter_batched(
         self, filter_queries: Any, limit: int
-    ) -> Union[List[DocArray], List[List[Dict]]]:
+    ) -> Union[List[DocList], List[List[Dict]]]:
         qs = [
             self._client.query.get(self._db_config.index_name, self.properties)
             .with_additional("vector")
@@ -244,11 +244,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _format_response(
         self, results, score_name
-    ) -> Tuple[List[DocArray], List[float]]:
+    ) -> Tuple[List[DocList], List[float]]:
         """
-        Format the response from Weaviate into a Tuple of DocArray and scores
+        Format the response from Weaviate into a Tuple of DocList and scores
         """
-        da_class = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
 
         documents = []
         scores = []
@@ -416,7 +416,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return list(docs), list(scores)
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
-        da_class = DocArray.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
 
         if isinstance(query, self.QueryBuilder):
             batched_results = self._client.query.multi_get(query._queries).do()
