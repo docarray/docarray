@@ -1,8 +1,9 @@
 # Audio
 
-````{tip}
-This requires a `pydub` dependency. You can install it via `pip install "docarray[audio]"`
-````
+
+!!! note
+    This requires a `pydub` dependency. You can install it via `pip install "docarray[audio]"`
+
 
 ## Load audio file
 You can store the url of any audio file as an AudioUrl instance. Loading the content of the audio file is as easy as calling `.load()` on this AudioUrl instance. This will give you a numpy.ndarray representing the audio file content and an integer of the corresponding frame rate, which describes the number of signals for a certain period of time.

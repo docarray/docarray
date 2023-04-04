@@ -1,53 +1,76 @@
 # Image
 
-````{tip}
-This requires `Pillow` dependencies. You can install them via `pip install "docarray[image]"`
-````
-DocArray offers several Image specific types to represent your image data from ImageUrl to ImageBytes to an ImageTensor.
+!!! note
+    This requires `Pillow` dependency. You can install all necessary dependencies via
+    ```python 
+    pip install "docarray[image]"
+    ```
+
+DocArray offers several Image specific types to represent your image data from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] to [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
 <figure markdown>
-  ![](apple.png){ width="280" }
+  ![](apple.png){ width="220" }
 </figure>
 
-
 ## Load data
-You can load image data by specifying the image url as an `ImageUrl` and then call .load() on it.
+You can load image data by specifying your local or remote url as an [`ImageUrl`][docarray.typing.url.ImageUrl] 
+and then call [`.load()`][docarray.typing.url.ImageUrl.load] on it. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an instance of [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
-You can store your image data in an ImageTensor, which can be an:
-- ImageNdArray
-- ImageTorchTensor
-- ImageTensorFlowTensor.
+```python hl_lines="11"
+from docarray.typing import ImageTensor, ImageUrl
+from docarray import BaseDoc
 
-By default, Loading the image data from your ImageUrl instance returns an ImageNdArray instance. 
 
-```python
-from docarray.typing import ImageTensorFlowTensor, ImageTensor, ImageUrl
+class MyImage(BaseDoc):
+    url: ImageUrl
+    tensor: ImageTensor = None
+
+
+img = MyImage(url='apple.png')
+img.tensor = img.url.load()
+
+print(img.tensor.__class__.__name__)
+```
+```text
+ImageNdArray
+```
+
+## ImageTensor
+DocArray offers several ImageTensors to store your data to:
+
+1. [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray]
+2. [`ImageTorchTensor`][docarray.typing.tensor.image.image_torch_tensor.ImageTorchTensor]
+3. [`ImageTensorFlowTensor`][docarray.typing.tensor.image.image_tensorflow_tensor.ImageTensorFlowTensor]
+
+If you specify the type of your tensor to one of the above, it will be cast to that automatically:
+
+```python hl_lines="7 8 12 13" 
+from docarray.typing import ImageTensorFlowTensor, ImageTorchTensor, ImageUrl
 from docarray import BaseDoc
 
 
 class MyImage(BaseDoc):
     url: ImageUrl = None
-    tensor: ImageTensor = None
     tf_tensor: ImageTensorFlowTensor = None
+    torch_tensor: ImageTorchTensor = None
 
 
 img = MyImage(url='apple.png')
-
-img.tensor = img.url.load()
 img.tf_tensor = img.url.load()
+img.torch_tensor = img.url.load()
 
-print(type(img.tensor), type(img.tf_tensor))
+print(img.tf_tensor.__class__.__name__)
+print(img.torch_tensor.__class__.__name__)
 ```
 ```text
-<class 'docarray.typing.tensor.image.image_tensorflow_tensor.ImageTensorFlowTensor'>
-<class 'docarray.typing.tensor.image.image_torch_tensor.ImageTorchTensor'>
+ImageTensorFlowTensor
+ImageTorchTensor
 ```
-The load() method by default outputs an ImageNdArray. If you specify the type of your tensor to ImageTensorFlowTensor or ImageTorchTensor, it will be cast to that automatically:
 
 ## ImageBytes
+Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an [`ImageTensor`][docarray.typing.tensor.image.image_tensor.ImageTensor] of your choice:
 
-You can also load your image data into ImageBytes and the load the tensor data from the ImageBytes instance:
-```python
+```python hl_lines="13 14"
 from docarray.typing import ImageBytes, ImageTensor, ImageUrl
 from docarray import BaseDoc
 
@@ -66,7 +89,9 @@ img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 
 ## Display image in notebook
 
-You can display your image data in a notebook from both an url as well as a tensor
+You can display your image data in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
+[`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] instance.
+
 
 
 <figure markdown>
@@ -74,9 +99,10 @@ You can display your image data in a notebook from both an url as well as a tens
 </figure>
 
 
-## Predefined ImageDoc
+## Get started: Predefined ImageDoc
 
 To get started and play around with the image modality we provide a predefined ImageDoc, which includes all of the previously mentioned functionalities:
+
 ```python
 class ImageDoc(BaseDoc):
     url: Optional[ImageUrl]
@@ -85,7 +111,22 @@ class ImageDoc(BaseDoc):
     bytes_: Optional[ImageBytes]
 ```
 
-You can use this class directly:
+You can use this class directly or extend it to your preference:
+```python
+from docarray.documents import ImageDoc
+from docarray.typing import AnyEmbedding
+from typing import Optional
 
 
-Or extend it:
+# extending ImageDoc
+class MyImage(ImageDoc):
+    image_title: str
+    second_embedding: Optional[AnyEmbedding]
+
+
+image = MyImage(image_title='My first image', url='http://www.jina.ai/image.jpg')
+image.tensor = image.url.load()
+model = MyEmbeddingModel()
+image.embedding = model(image.tensor)
+image.second_embedding = model(image.tensor)
+```

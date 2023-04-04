@@ -1,39 +1,38 @@
 # Video
 
-
-````{tip}
-This requires a `av` dependency. You can install it via `pip install "docarray[video]"`
-````
+!!! note
+    This requires a `av` dependency. You can install it via 
+    ```python 
+    pip install "docarray[video]"
+    ```
 
 ## Load video data
 
+![type:video](mov_bbb.mp4){: style='width: 600px; height: 330px'}
 
-![type:video](mov_bbb.mp4){: style='width: 700px; height: 330px'}
-
-
-
-```python
+```python hl_lines="15"
 from docarray import BaseDoc
-from docarray.typing import VideoUrl
+from docarray.typing import AudioNdArray, NdArray, VideoNdArray, VideoUrl
 
 
 class MyVideo(BaseDoc):
     url: VideoUrl
+    video: VideoNdArray = None
+    audio: AudioNdArray = None
+    key_frame_indices: NdArray = None
 
 
 doc = MyVideo(
     url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
 )
-vid = doc.url.load()
+doc.video, doc.audio, doc.key_frame_indices = doc.url.load()
 
 print(type(vid.video), vid.video.shape)
-print(type(vid.audio), vid.audio.shape)
-print(type(vid.key_frame_indices), vid.key_frame_indices.shape)
+
 ```
 ```text
 <class 'docarray.typing.tensor.video.video_ndarray.VideoNdArray'> 
-<class 'docarray.typing.tensor.audio.audio_ndarray.AudioNdArray'> 
-<class 'docarray.typing.tensor.ndarray.NdArray'>
+(250, 176, 320, 3)
 ```
 
 Video data is represented as a video tensor, an audio tensor and an array key frame indices. 
@@ -93,10 +92,8 @@ vid.video.save(
 )
 ```
 
-<video width="300" controls>
-    <source src="mov_bbb_framerate_60.mp4" type="video/mp4">
-</video>
 
+![type:video](mov_bbb_framerate_60.mp4){: style='width: 600px; height: 330px'}
 
 
 ## Display video 
