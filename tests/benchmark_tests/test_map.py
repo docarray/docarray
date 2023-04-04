@@ -127,7 +127,7 @@ def test_map_docs_batched_multithreading():
         start_time = time()
         list(
             map_docs_batched(
-                da=da,
+                docs=da,
                 func=io_intensive_batch,
                 backend='thread',
                 num_worker=num_workers,
