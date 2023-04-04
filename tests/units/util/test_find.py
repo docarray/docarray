@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils.find import find, find_batched
 
@@ -24,7 +24,7 @@ def random_torch_query():
 
 @pytest.fixture()
 def random_torch_batch_query():
-    return DocArray[TorchDoc]([TorchDoc(tensor=torch.rand(128)) for _ in range(5)])
+    return DocList[TorchDoc]([TorchDoc(tensor=torch.rand(128)) for _ in range(5)])
 
 
 @pytest.fixture()
@@ -34,17 +34,17 @@ def random_nd_query():
 
 @pytest.fixture()
 def random_nd_batch_query():
-    return DocArray[NdDoc]([NdDoc(tensor=np.random.rand(128)) for _ in range(5)])
+    return DocList[NdDoc]([NdDoc(tensor=np.random.rand(128)) for _ in range(5)])
 
 
 @pytest.fixture()
 def random_torch_index():
-    return DocArray[TorchDoc](TorchDoc(tensor=torch.rand(128)) for _ in range(10))
+    return DocList[TorchDoc](TorchDoc(tensor=torch.rand(128)) for _ in range(10))
 
 
 @pytest.fixture()
 def random_nd_index():
-    return DocArray[NdDoc](NdDoc(tensor=np.random.rand(128)) for _ in range(10))
+    return DocList[NdDoc](NdDoc(tensor=np.random.rand(128)) for _ in range(10))
 
 
 @pytest.mark.parametrize('metric', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
@@ -261,7 +261,7 @@ def test_find_optional():
         embedding: Optional[TorchTensor]
 
     query = MyDoc(embedding=torch.rand(10))
-    index = DocArray[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
+    index = DocList[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
 
     top_k, scores = find(
         index,
@@ -279,7 +279,7 @@ def test_find_union():
         embedding: Union[TorchTensor, NdArray]
 
     query = MyDoc(embedding=torch.rand(10))
-    index = DocArray[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
+    index = DocList[MyDoc]([MyDoc(embedding=torch.rand(10)) for _ in range(10)])
 
     top_k, scores = find(
         index,
@@ -302,7 +302,7 @@ def test_find_nested(stack):
         inner: InnerDoc
 
     query = MyDoc(inner=InnerDoc(title='query', embedding=torch.rand(2)))
-    index = DocArray[MyDoc](
+    index = DocList[MyDoc](
         [
             MyDoc(inner=InnerDoc(title=f'doc {i}', embedding=torch.rand(2)))
             for i in range(10)
@@ -335,7 +335,7 @@ def test_find_nested_union_optional():
         embedding3=torch.rand(10),
         embedding4=torch.rand(10),
     )
-    index = DocArray[MyDoc](
+    index = DocList[MyDoc](
         [
             MyDoc(
                 embedding=torch.rand(10),

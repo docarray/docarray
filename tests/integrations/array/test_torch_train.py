@@ -2,7 +2,7 @@ from typing import Optional
 
 import torch
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import TorchTensor
 
 
@@ -13,7 +13,7 @@ def test_torch_train():
 
     N = 10
 
-    batch = DocArray[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
+    batch = DocList[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
     batch.tensor = torch.zeros(N, 3, 224, 224)
 
     batch = batch.stack()

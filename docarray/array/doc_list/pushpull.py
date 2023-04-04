@@ -19,7 +19,7 @@ PUSH_PULL_PROTOCOL = Literal['jac', 's3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
     from docarray.store.abstract_doc_store import AbstractDocStore
 
 
@@ -30,7 +30,7 @@ class PushPullMixin(Iterable['BaseDoc']):
     """Mixin class for push/pull functionality."""
 
     __backends__: Dict[str, Type['AbstractDocStore']] = {}
-    document_type: Type['BaseDoc']
+    doc_type: Type['BaseDoc']
 
     @abstractmethod
     def __len__(self) -> int:
@@ -86,10 +86,10 @@ class PushPullMixin(Iterable['BaseDoc']):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocArray object to the specified url.
+        """Push this DocList object to the specified url.
 
-        :param url: url specifying the protocol and save name of the DocArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocArray if they know its name.
+        :param url: url specifying the protocol and save name of the DocList. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocList if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
@@ -112,8 +112,8 @@ class PushPullMixin(Iterable['BaseDoc']):
         """Push a stream of documents to the specified url.
 
         :param docs: a stream of documents
-        :param url: url specifying the protocol and save name of the DocArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocArray if they know its name.
+        :param url: url specifying the protocol and save name of the DocList. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a DocList if they know its name.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
@@ -129,20 +129,20 @@ class PushPullMixin(Iterable['BaseDoc']):
         url: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ) -> 'DocArray':
-        """Pull a :class:`DocArray` from the specified url.
+    ) -> 'DocList':
+        """Pull a :class:`DocList` from the specified url.
 
-        :param url: url specifying the protocol and save name of the DocArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param url: url specifying the protocol and save name of the DocList. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
-        :return: a :class:`DocArray` object
+        :param local_cache: store the downloaded DocList to local folder
+        :return: a :class:`DocList` object
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
             )
 
         logging.info(f'Pulling {url}')
@@ -160,17 +160,17 @@ class PushPullMixin(Iterable['BaseDoc']):
     ) -> Iterator['BaseDoc']:
         """Pull a stream of Documents from the specified url.
 
-        :param url: url specifying the protocol and save name of the DocArray. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
+        :param url: url specifying the protocol and save name of the DocList. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
+        :param local_cache: store the downloaded DocList to local folder
         :return: Iterator of Documents
         """
         from docarray.base_doc import AnyDoc
 
-        if cls.document_type == AnyDoc:
+        if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocArray\'s Document type using `DocArray[MyDoc]`.'
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
             )
 
         logging.info(f'Pulling Document stream from {url}')

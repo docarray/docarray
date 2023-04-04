@@ -10,12 +10,12 @@ from typing import (
     Union,
 )
 
-from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
+from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.array_stacked import DocArrayStacked
+    from docarray.array.doc_vec.doc_vec import DocVec
 
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
@@ -26,26 +26,26 @@ T = TypeVar('T', bound='ColumnStorage')
 class ColumnStorage:
     """
     ColumnStorage is a container to store the columns of the
-    :class:`~docarray.array.stacked.DocArrayStacked`.
+    :class:`~docarray.array.doc_vec.DocVec`.
 
     :param tensor_columns: a Dict of AbstractTensor
-    :param doc_columns: a Dict of :class:`~docarray.array.stacked.DocArrayStacked`
-    :param da_columns: a Dict of List of :class:`~docarray.array.stacked.DocArrayStacked`
+    :param doc_columns: a Dict of :class:`~docarray.array.doc_vec.DocVec`
+    :param docs_vec_columns: a Dict of List of :class:`~docarray.array.doc_vec.DocVec`
     :param any_columns: a Dict of List
-    :param tensor_type: Class used to wrap the stacked tensors
+    :param tensor_type: Class used to wrap the doc_vec tensors
     """
 
     def __init__(
         self,
         tensor_columns: Dict[str, AbstractTensor],
-        doc_columns: Dict[str, 'DocArrayStacked'],
-        da_columns: Dict[str, ListAdvancedIndexing['DocArrayStacked']],
+        doc_columns: Dict[str, 'DocVec'],
+        docs_vec_columns: Dict[str, ListAdvancedIndexing['DocVec']],
         any_columns: Dict[str, ListAdvancedIndexing],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):
         self.tensor_columns = tensor_columns
         self.doc_columns = doc_columns
-        self.da_columns = da_columns
+        self.docs_vec_columns = docs_vec_columns
         self.any_columns = any_columns
 
         self.tensor_type = tensor_type
@@ -53,7 +53,7 @@ class ColumnStorage:
         self.columns = ChainMap(  # type: ignore
             self.tensor_columns,  # type: ignore
             self.doc_columns,  # type: ignore
-            self.da_columns,  # type: ignore
+            self.docs_vec_columns,  # type: ignore
             self.any_columns,  # type: ignore
         )  # type: ignore
 
@@ -65,13 +65,15 @@ class ColumnStorage:
             item = list(item)
         tensor_columns = {key: col[item] for key, col in self.tensor_columns.items()}
         doc_columns = {key: col[item] for key, col in self.doc_columns.items()}
-        da_columns = {key: col[item] for key, col in self.da_columns.items()}
+        docs_vec_columns = {
+            key: col[item] for key, col in self.docs_vec_columns.items()
+        }
         any_columns = {key: col[item] for key, col in self.any_columns.items()}
 
         return self.__class__(
             tensor_columns,
             doc_columns,
-            da_columns,
+            docs_vec_columns,
             any_columns,
             self.tensor_type,
         )
