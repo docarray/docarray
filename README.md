@@ -259,18 +259,18 @@ class MyPodcastModel(nn.Module):
         self.image_encoder = ImageEncoder()
         self.text_encoder = TextEncoder()
 
-    def forward_podcast(self, da: DocList[Podcast]) -> DocList[Podcast]:
-        da.audio.embedding = self.audio_encoder(da.audio.tensor)
-        da.text.embedding = self.text_encoder(da.text.tensor)
-        da.image.embedding = self.image_encoder(da.image.tensor)
+    def forward_podcast(self, docs: DocList[Podcast]) -> DocList[Podcast]:
+        docs.audio.embedding = self.audio_encoder(docs.audio.tensor)
+        docs.text.embedding = self.text_encoder(docs.text.tensor)
+        docs.image.embedding = self.image_encoder(docs.image.tensor)
 
-        return da
+        return docs
 
-    def forward(self, da: DocList[PairPodcast]) -> DocList[PairPodcast]:
-        da.left = self.forward_podcast(da.left)
-        da.right = self.forward_podcast(da.right)
+    def forward(self, docs: DocList[PairPodcast]) -> DocList[PairPodcast]:
+        docs.left = self.forward_podcast(docs.left)
+        docs.right = self.forward_podcast(docs.right)
 
-        return da
+        return docs
 ```
 
 Looks much better, doesn't it?
