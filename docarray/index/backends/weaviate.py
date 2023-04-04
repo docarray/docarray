@@ -79,7 +79,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         for column_name, column_info in self._column_infos.items():
             if column_info.config.get('is_embedding', False):
                 num_embedding_columns += 1
-                if column_info.db_type not in WEAVIATE_PY_VEC_TYPES:
+                # if db_type is not 'number[]', then that means the type of the column in
+                # the given schema is not one of WEAVIATE_PY_VEC_TYPES
+                # note: the mapping between a column's type in the schema to a weaviate type
+                # is handled by the python_type_to_db_type method
+                if column_info.db_type != 'number[]':
                     raise ValueError(
                         f'Column {column_name} is marked as embedding but is not of type {WEAVIATE_PY_VEC_TYPES}'
                     )
@@ -447,7 +451,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """Map python type to database type."""
         for allowed_type in WEAVIATE_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
-                return np.ndarray
+                return 'number[]'
 
         py_weaviate_type_map = {
             docarray.typing.ID: 'string',
