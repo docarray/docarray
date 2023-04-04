@@ -342,14 +342,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         # cast output
         if isinstance(doc_sequence, DocList):
-            out_da: DocList[TSchema] = doc_sequence
+            out_docs: DocList[TSchema] = doc_sequence
         elif isinstance(doc_sequence[0], Dict):
-            out_da = self._dict_list_to_docarray(doc_sequence)  # type: ignore
+            out_docs = self._dict_list_to_docarray(doc_sequence)  # type: ignore
         else:
             da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-            out_da = da_cls(doc_sequence)
+            out_docs = da_cls(doc_sequence)
 
-        return out_da[0] if return_singleton else out_da
+        return out_docs[0] if return_singleton else out_docs
 
     def __delitem__(self, key: Union[str, Sequence[str]]):
         """Delete one or multiple Documents from the index, by `id`.
