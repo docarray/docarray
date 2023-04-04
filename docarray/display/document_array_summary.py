@@ -13,7 +13,7 @@ class DocArraySummary:
 
     def summary(self) -> None:
         """
-        Print a summary of this DocArray object and a summary of the schema of its
+        Print a summary of this DocList object and a summary of the schema of its
         Document type.
         """
         from rich import box
@@ -50,7 +50,7 @@ class DocArraySummary:
 
                     table.add_row(f'  • {field_name}:', col_2)
 
-        Console().print(Panel(table, title='DocArray Summary', expand=False))
+        Console().print(Panel(table, title='DocList Summary', expand=False))
         self.da.doc_type.schema_summary()
 
     @staticmethod

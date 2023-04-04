@@ -60,7 +60,7 @@ class DocVec(AnyDocArray[T_doc]):
     calculation, deep learning forward pass)
 
     A DocVec has a similar interface as
-    {class}`~docarray.array.DocArray` but with an underlying implementation that is
+    {class}`~docarray.array.DocList` but with an underlying implementation that is
     column based instead of row based. Each field
     of the schema of the DocArrayStack
     (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
@@ -72,7 +72,7 @@ class DocVec(AnyDocArray[T_doc]):
 
     If the field is another `BasedDoc` the column will be another DocVec that follows the
     schema of the nested Document.
-    If the field is a `DocArray` or
+    If the field is a `DocList` or
     `DocVec` then the column will be a list of `DocVec`.
     For any other type the column is a Python list.
 
@@ -310,7 +310,7 @@ class DocVec(AnyDocArray[T_doc]):
         """Delegates the setting to the data and the columns.
 
         :param index_item: the key used as index. Needs to be a valid index for both
-            DocArray (data) and column types (torch/tensorflow/numpy tensors)
+            DocList (data) and column types (torch/tensorflow/numpy tensors)
         :value: the value to set at the `key` location
         """
         if isinstance(index_item, tuple):
@@ -352,10 +352,10 @@ class DocVec(AnyDocArray[T_doc]):
             AbstractTensor,
         ],
     ) -> None:
-        """Set all Documents in this DocArray using the passed values
+        """Set all Documents in this DocList using the passed values
 
         :param field: name of the fields to set
-        :values: the values to set at the DocArray level
+        :values: the values to set at the DocList level
         """
 
         if len(values) != len(self._storage):
@@ -390,7 +390,7 @@ class DocVec(AnyDocArray[T_doc]):
             values_ = cast(Sequence, values)
             self._storage.any_columns[field] = values_
         else:
-            raise KeyError(f'{field} is not a valid field for this DocArray')
+            raise KeyError(f'{field} is not a valid field for this DocList')
 
     ####################
     # Deleting data    #
@@ -432,7 +432,7 @@ class DocVec(AnyDocArray[T_doc]):
         return cls.from_columns_storage(storage)
 
     def to_protobuf(self) -> 'DocVecProto':
-        """Convert DocArray into a Protobuf message"""
+        """Convert DocList into a Protobuf message"""
         from docarray.proto import (
             DocListProto,
             DocVecProto,
@@ -473,9 +473,9 @@ class DocVec(AnyDocArray[T_doc]):
         )
 
     def unstack(self: T) -> DocList[T_doc]:
-        """Convert DocVec into a DocArray.
+        """Convert DocVec into a DocList.
 
-        Note this destroys the arguments and returns a new DocArray
+        Note this destroys the arguments and returns a new DocList
         """
 
         unstacked_doc_column: Dict[str, DocList] = dict()

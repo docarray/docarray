@@ -78,7 +78,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         )
 
 
-    da = DocArray[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
+    da = DocList[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
     ds = MultiModalDataset[Student](
         da,
         preprocessing={

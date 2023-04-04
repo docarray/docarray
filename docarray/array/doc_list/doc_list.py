@@ -43,7 +43,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 def _delegate_meth_to_data(meth_name: str) -> Callable:
     """
     create a function that mimic a function call to the data attribute of the
-    DocArray
+    DocList
 
     :param meth_name: name of the method
     :return: a method that mimic the meth_name
@@ -64,9 +64,9 @@ class DocList(
      DocList is a container of Documents.
 
     A DocList is a list of Documents of any schema. However, many
-    DocArray features are only available if these Documents are
+    DocList features are only available if these Documents are
     homogeneous and follow the same schema. To precise this schema you can use
-    the `DocArray[MyDocument]` syntax where MyDocument is a Document class
+    the `DocList[MyDocument]` syntax where MyDocument is a Document class
     (i.e. schema). This creates a DocList that can only contains Documents of
     the type 'MyDocument'.
 
@@ -92,7 +92,7 @@ class DocList(
 
 
     If your DocList is homogeneous (i.e. follows the same schema), you can access
-    fields at the DocArray level (for example `da.tensor` or `da.url`).
+    fields at the DocList level (for example `da.tensor` or `da.url`).
     You can also set fields, with `da.tensor = np.random.random([10, 100])`:
 
         print(da.url)
@@ -114,8 +114,8 @@ class DocList(
 
     You can delete items from a DocList like a Python List
 
-        del da[0]  # remove first element from DocArray
-        del da[0:5]  # remove elements for 0 to 5 from DocArray
+        del da[0]  # remove first element from DocList
+        del da[0:5]  # remove elements for 0 to 5 from DocList
 
     :param docs: iterable of Document
 
@@ -135,7 +135,7 @@ class DocList(
         docs: Sequence[T_doc],
     ) -> T:
         """
-        Create a DocArray without validation any data. The data must come from a
+        Create a DocList without validation any data. The data must come from a
         trusted source
         :param docs: a Sequence (list) of Document with the same schema
         :return:
@@ -154,13 +154,13 @@ class DocList(
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
-        Validate if an Iterable of Document are compatible with this DocArray
+        Validate if an Iterable of Document are compatible with this DocList
         """
         for doc in docs:
             yield self._validate_one_doc(doc)
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
-        """Validate if a Document is compatible with this DocArray"""
+        """Validate if a Document is compatible with this DocList"""
         if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
@@ -178,16 +178,16 @@ class DocList(
 
     def append(self, doc: T_doc):
         """
-        Append a Document to the DocArray. The Document must be from the same class
-        as the doc_type of this DocArray otherwise it will fail.
+        Append a Document to the DocList. The Document must be from the same class
+        as the doc_type of this DocList otherwise it will fail.
         :param doc: A Document
         """
         self._data.append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
-        Extend a DocArray with an Iterable of Document. The Documents must be from
-        the same class as the doc_type of this DocArray otherwise it will
+        Extend a DocList with an Iterable of Document. The Documents must be from
+        the same class as the doc_type of this DocList otherwise it will
         fail.
         :param docs: Iterable of Documents
         """
@@ -195,8 +195,8 @@ class DocList(
 
     def insert(self, i: int, doc: T_doc):
         """
-        Insert a Document to the DocArray. The Document must be from the same
-        class as the doc_type of this DocArray otherwise it will fail.
+        Insert a Document to the DocList. The Document must be from the same
+        class as the doc_type of this DocList otherwise it will fail.
         :param i: index to insert
         :param doc: A Document
         """
@@ -238,10 +238,10 @@ class DocList(
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this DocArray using the passed values
+        """Set all Documents in this DocList using the passed values
 
         :param field: name of the fields to set
-        :values: the values to set at the DocArray level
+        :values: the values to set at the DocList level
         """
         ...
 
@@ -253,7 +253,7 @@ class DocList(
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'DocVec':
         """
-        Convert the DocArray into a DocVec. `Self` cannot be used
+        Convert the DocList into a DocVec. `Self` cannot be used
         afterwards
         :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
         if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
@@ -291,7 +291,7 @@ class DocList(
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
         """create a Document from a protobuf message
-        :param pb_msg: The protobuf message from where to construct the DocArray
+        :param pb_msg: The protobuf message from where to construct the DocList
         """
         return super().from_protobuf(pb_msg)
 

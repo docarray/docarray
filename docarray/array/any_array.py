@@ -167,7 +167,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import BaseDoc, DocArray, Text
+            from docarray import BaseDoc, DocList, Text
 
 
             class Author(BaseDoc):
@@ -179,7 +179,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 content: Text
 
 
-            da = DocArray[Book](
+            da = DocList[Book](
                 Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
                 for i in range(10)  # noqa: E501
             )
@@ -192,7 +192,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import BaseDoc, DocArray
+            from docarray import BaseDoc, DocList
 
 
             class Chapter(BaseDoc):
@@ -200,19 +200,17 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
 
             class Book(BaseDoc):
-                chapters: DocArray[Chapter]
+                chapters: DocList[Chapter]
 
 
-            da = DocArray[Book](
-                Book(
-                    chapters=DocArray[Chapter]([Chapter(content='some_content') for _ in range(3)])
-                )
+            da = DocList[Book](
+                Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
                 for _ in range(10)
             )
 
             chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
 
-        If your DocArray is in doc_vec mode, and you want to access a field of
+        If your DocList is in doc_vec mode, and you want to access a field of
         type AnyTensor, the doc_vec tensor will be returned instead of a list:
 
         EXAMPLE USAGE
@@ -221,7 +219,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 tensor: TorchTensor[3, 224, 224]
 
 
-            batch = DocArray[Image](
+            batch = DocList[Image](
                 [
                     Image(
                         tensor=torch.zeros(3, 224, 224),
@@ -266,7 +264,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     def summary(self):
         """
-        Print a summary of this DocArray object and a summary of the schema of its
+        Print a summary of this DocList object and a summary of the schema of its
         Document type.
         """
         DocArraySummary(self).summary()
@@ -278,13 +276,13 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         show_progress: bool = False,
     ) -> Generator[T, None, None]:
         """
-        Creates a `Generator` that yields `DocArray` of size `batch_size`.
+        Creates a `Generator` that yields `DocList` of size `batch_size`.
         Note, that the last batch might be smaller than `batch_size`.
 
         :param batch_size: Size of each generated batch.
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: if set, show a progress bar when batching documents.
-        :yield: a Generator of `DocArray`, each in the length of `batch_size`
+        :yield: a Generator of `DocList`, each in the length of `batch_size`
         """
         from rich.progress import track
 

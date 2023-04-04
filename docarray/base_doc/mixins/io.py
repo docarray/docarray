@@ -257,7 +257,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         elif content_key in ['doc', 'doc_array']:
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a Document or a DocArray'
+                    'field_name cannot be None when trying to deseriliaze a Document or a DocList'
                 )
             return_field = cls._get_field_type(field_name).from_protobuf(
                 getattr(value, content_key)

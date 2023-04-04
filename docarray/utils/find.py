@@ -258,9 +258,9 @@ def _extract_embeddings(
 
 def _da_attr_type(da: AnyDocArray, access_path: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
-    (schema) of the DocArray.
+    (schema) of the DocList.
 
-    :param da: the DocArray
+    :param da: the DocList
     :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """

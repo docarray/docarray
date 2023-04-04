@@ -259,7 +259,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocArray containing the documents that match the filter query
+        :return: a DocList containing the documents that match the filter query
         """
         ...
 
@@ -387,7 +387,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         if not isinstance(docs, (BaseDoc, DocList)):
             self._logger.warning(
-                'Passing a sequence of Documents that is not a DocArray comes at '
+                'Passing a sequence of Documents that is not a DocList comes at '
                 'a performance penalty, since compatibility with the schema of Index '
                 'needs to be checked for every Document individually.'
             )
@@ -440,7 +440,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param queries: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
-            or a DocArray.
+            or a DocList.
             If a tensor-like is passed, it should have shape (batch_size, vector_dim)
         :param search_field: name of the field to search on.
             Documents in the index are retrieved based on this similarity
@@ -476,7 +476,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param filter_query: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocArray containing the documents that match the filter query
+        :return: a DocList containing the documents that match the filter query
         """
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
@@ -496,7 +496,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param filter_queries: the DB specific filter query to execute
         :param limit: maximum number of documents to return
-        :return: a DocArray containing the documents that match the filter query
+        :return: a DocList containing the documents that match the filter query
         """
         self._logger.debug(
             f'Executing `filter_batched` for the queries {filter_queries}'
@@ -577,7 +577,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def _get_values_by_column(docs: Sequence[BaseDoc], col_name: str) -> List[Any]:
         """Get the value of a column of a document.
 
-        :param docs: The DocArray to get the values from
+        :param docs: The DocList to get the values from
         :param col_name: The name of the column, e.g. 'text' or 'image__tensor'
         :return: The value of the column of `doc`
         """
@@ -600,7 +600,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """'Transpose' the output of `_get_col_value_dict()`: Yield rows of columns, where each row represent one Document.
         Since a generator is returned, this process comes at negligible cost.
 
-        :param docs: The DocArray to get the values from
+        :param docs: The DocList to get the values from
         :return: The `docs` flattened out as rows. Each row is a dictionary mapping from column name to value
         """
         return (dict(zip(col_value_dict, row)) for row in zip(*col_value_dict.values()))
@@ -726,8 +726,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             # Union types are handle in _flatten_schema
             if issubclass(type_, AnyDocArray):
                 raise ValueError(
-                    'Indexing field of DocArray type (=subindex)'
-                    'is not yet supported.'
+                    'Indexing field of DocList type (=subindex)' 'is not yet supported.'
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
@@ -770,16 +769,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         Index need to evaluate to the same flattened columns.
         If Validation fails, a ValueError is raised.
 
-        :param docs: Document to evaluate. If this is a DocArray, validation is
+        :param docs: Document to evaluate. If this is a DocList, validation is
             performed using its `doc_type` (parametrization), without having to check
             ever Document in `docs`. If this check fails, or if `docs` is not a
-            DocArray, evaluation is performed for every Document in `docs`.
-        :return: A DocArray containing the Documents in `docs`
+            DocList, evaluation is performed for every Document in `docs`.
+        :return: A DocList containing the Documents in `docs`
         """
         if isinstance(docs, BaseDoc):
             docs = [docs]
         if isinstance(docs, DocList):
-            # validation shortcut for DocArray; only look at the schema
+            # validation shortcut for DocList; only look at the schema
             reference_schema_flat = self._flatten_schema(
                 cast(Type[BaseDoc], self._schema)
             )
@@ -872,7 +871,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return schema_cls(**doc_dict)
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
-        """Convert a list of docs in dict type to a DocArray of the schema type."""
+        """Convert a list of docs in dict type to a DocList of the schema type."""
 
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))

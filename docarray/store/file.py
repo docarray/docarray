@@ -74,9 +74,9 @@ class FileDocStore(AbstractDocStore):
     def delete(
         cls: Type[SelfFileDocStore], name: str, missing_ok: bool = False
     ) -> bool:
-        """Delete a DocArray from the local filesystem.
+        """Delete a DocList from the local filesystem.
 
-        :param name: The name of the DocArray to delete.
+        :param name: The name of the DocList to delete.
         :param missing_ok: If True, do not raise an exception if the file does not exist. Defaults to False.
         :return: True if the file was deleted, False if it did not exist.
         """
@@ -98,7 +98,7 @@ class FileDocStore(AbstractDocStore):
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        """Push this DocArray object to the specified file path.
+        """Push this DocList object to the specified file path.
 
         :param name: The file path to push to.
         :param public: Not used by the ``file`` protocol.
@@ -150,12 +150,12 @@ class FileDocStore(AbstractDocStore):
         show_progress: bool,
         local_cache: bool,
     ) -> 'DocList':
-        """Pull a :class:`DocArray` from the specified url.
+        """Pull a :class:`DocList` from the specified url.
 
         :param name: The file path to pull from.
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
-        :return: a :class:`DocArray` object
+        :param local_cache: store the downloaded DocList to local folder
+        :return: a :class:`DocList` object
         """
 
         return da_cls(

@@ -265,7 +265,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
     @abc.abstractmethod
     def _docarray_from_native(cls: Type[T], value: Any) -> T:
         """
-        Create a DocArray tensor from a tensor that is native to the given framework,
+        Create a DocList tensor from a tensor that is native to the given framework,
         e.g. from numpy.ndarray or torch.Tensor.
         """
         ...
@@ -293,11 +293,11 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
     @abc.abstractmethod
     def to_protobuf(self) -> 'NdArrayProto':
-        """Convert DocArray into a Protobuf message"""
+        """Convert DocList into a Protobuf message"""
         ...
 
     def unwrap(self):
-        """Return the native tensor object that this DocArray tensor wraps."""
+        """Return the native tensor object that this DocList tensor wraps."""
 
     @abc.abstractmethod
     def _docarray_to_json_compatible(self):
