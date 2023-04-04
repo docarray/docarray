@@ -5,24 +5,21 @@ import pytest
 import weaviate
 from pydantic import Field
 
-from docarray import BaseDocument
-from docarray.doc_index.backends.weaviate_doc_index import (
-    DOCUMENTID,
-    WeaviateDocumentIndex,
-)
+from docarray import BaseDoc
+from docarray.index.backends.weaviate import DOCUMENTID, WeaviateDocumentIndex
 from docarray.typing import NdArray
 
 
-class SimpleDoc(BaseDocument):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000, is_embedding=True, db_type="vector")
 
 
-class Document(BaseDocument):
+class Document(BaseDoc):
     embedding: NdArray[2] = Field(dim=2, is_embedding=True)
     text: str = Field()
 
 
-class NestedDocument(BaseDocument):
+class NestedDocument(BaseDoc):
     text: str = Field()
     child: Document
 
@@ -87,11 +84,11 @@ def test_index_simple_schema(weaviate_client, ten_simple_docs):
 def test_validate_columns(weaviate_client):
     dbconfig = WeaviateDocumentIndex.DBConfig(host="http://weaviate:8080")
 
-    class InvalidDoc1(BaseDocument):
+    class InvalidDoc1(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, is_embedding=True)
         tens2: NdArray[10] = Field(dim=1000, is_embedding=True)
 
-    class InvalidDoc2(BaseDocument):
+    class InvalidDoc2(BaseDoc):
         tens: int = Field(dim=1000, is_embedding=True)
 
     with pytest.raises(ValueError, match=r"Only one column can be marked as embedding"):
@@ -102,7 +99,7 @@ def test_validate_columns(weaviate_client):
 
 
 def test_find(weaviate_client, caplog):
-    class Document(BaseDocument):
+    class Document(BaseDoc):
         embedding: NdArray[2] = Field(dim=2, is_embedding=True)
 
     vectors = [[10, 10], [10.5, 10.5], [-100, -100]]
@@ -130,7 +127,7 @@ def test_find(weaviate_client, caplog):
 
 
 def test_find_batched(weaviate_client, caplog):
-    class Document(BaseDocument):
+    class Document(BaseDoc):
         embedding: NdArray[2] = Field(dim=2, is_embedding=True)
 
     vectors = [[10, 10], [10.5, 10.5], [-100, -100]]
