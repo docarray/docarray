@@ -23,7 +23,7 @@ def map_docs(
     show_progress: bool = False,
 ) -> Generator[T_doc, None, None]:
     """
-    Return an iterator that applies `func` to every Document in `da` in parallel,
+    Return an iterator that applies `func` to every Document in `docs` in parallel,
     yielding the results.
 
     ---
@@ -44,13 +44,13 @@ def map_docs(
         'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
     )
 
-    da = DocList[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
-    da = DocList[ImageDoc](
-        list(map_docs(da, load_url_to_tensor, backend='thread'))
+    docs = DocList[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
+    docs = DocList[ImageDoc](
+        list(map_docs(docs, load_url_to_tensor, backend='thread'))
     )  # threading is usually a good option for IO-bound tasks such as loading an
     # ImageDoc from url
 
-    for doc in da:
+    for doc in docs:
         assert doc.tensor is not None
     ```
 
@@ -104,7 +104,7 @@ def map_docs(
 
 
 def map_docs_batched(
-    da: T,
+    docs: T,
     func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
     backend: str = 'thread',
@@ -129,19 +129,19 @@ def map_docs_batched(
         name: str
 
 
-    def upper_case_name(da: DocList[MyDoc]) -> DocList[MyDoc]:
-        da.name = [n.upper() for n in da.name]
-        return da
+    def upper_case_name(docs: DocList[MyDoc]) -> DocList[MyDoc]:
+        docs.name = [n.upper() for n in docs.name]
+        return docs
 
 
     batch_size = 16
-    da = DocList[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-    it = map_docs_batched(da, upper_case_name, batch_size=batch_size)
+    docs = DocList[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    it = map_docs_batched(docs, upper_case_name, batch_size=batch_size)
     for i, d in enumerate(it):
-        da[i * batch_size : (i + 1) * batch_size] = d
+        docs[i * batch_size : (i + 1) * batch_size] = d
 
-    assert len(da) == 100
-    print(da.name[:3])
+    assert len(docs) == 100
+    print(docs.name[:3])
     ```
 
     ---
@@ -152,7 +152,7 @@ def map_docs_batched(
 
     ---
 
-    :param da: DocList to apply function to
+    :param docs: DocList to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
@@ -196,9 +196,9 @@ def map_docs_batched(
         context_pool = p
 
     with context_pool:
-        imap = p.imap(func, da._batch(batch_size=batch_size, shuffle=shuffle))
+        imap = p.imap(func, docs._batch(batch_size=batch_size, shuffle=shuffle))
         for x in track(
-            imap, total=ceil(len(da) / batch_size), disable=not show_progress
+            imap, total=ceil(len(docs) / batch_size), disable=not show_progress
         ):
             yield x
 

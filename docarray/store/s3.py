@@ -43,7 +43,7 @@ class _BufferedCachingReader:
 
     def close(self):
         if not self.closed and self._cache:
-            self._cache_path.rename(self._cache_path.with_suffix('.da'))
+            self._cache_path.rename(self._cache_path.with_suffix('.docs'))
             self._cache.close()
 
 
@@ -64,7 +64,7 @@ class S3DocStore(AbstractDocStore):
         da_files = [
             obj
             for obj in s3_bucket.objects.all()
-            if obj.key.startswith(namespace) and obj.key.endswith('.da')
+            if obj.key.startswith(namespace) and obj.key.endswith('.docs')
         ]
         da_names = [f.key.split('/')[-1].split('.')[0] for f in da_files]
 
@@ -102,7 +102,7 @@ class S3DocStore(AbstractDocStore):
         """
         bucket, name = name.split('/', 1)
         s3 = boto3.resource('s3')
-        object = s3.Object(bucket, name + '.da')
+        object = s3.Object(bucket, name + '.docs')
         try:
             object.load()
         except botocore.exceptions.ClientError as e:
@@ -119,7 +119,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfS3DocStore],
-        da: 'DocList',
+        docs: 'DocList',
         name: str,
         public: bool = False,
         show_progress: bool = False,
@@ -127,13 +127,13 @@ class S3DocStore(AbstractDocStore):
     ) -> Dict:
         """Push this DocList object to the specified bucket and key.
 
-        :param da: The DocList to push.
+        :param docs: The DocList to push.
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
         :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Not used by the ``s3`` protocol.
         """
-        return cls.push_stream(iter(da), name, public, show_progress, branding)
+        return cls.push_stream(iter(docs), name, public, show_progress, branding)
 
     @staticmethod
     def push_stream(
@@ -161,7 +161,7 @@ class S3DocStore(AbstractDocStore):
 
         # Upload to S3
         with open(
-            f"s3://{bucket}/{name}.da",
+            f"s3://{bucket}/{name}.docs",
             'wb',
             compression='.gz',
             transport_params={'multipart_upload': False},
@@ -189,12 +189,12 @@ class S3DocStore(AbstractDocStore):
         :param local_cache: store the downloaded DocList to local cache
         :return: a :class:`DocList` object
         """
-        da = da_cls(  # type: ignore
+        docs = da_cls(  # type: ignore
             cls.pull_stream(
                 da_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
-        return da
+        return docs
 
     @classmethod
     def pull_stream(
@@ -216,17 +216,17 @@ class S3DocStore(AbstractDocStore):
         bucket, name = name.split('/', 1)
 
         save_name = name.replace('/', '_')
-        cache_path = _get_cache_path() / f'{save_name}.da'
+        cache_path = _get_cache_path() / f'{save_name}.docs'
 
         source = _BufferedCachingReader(
-            open(f"s3://{bucket}/{name}.da", 'rb', compression='.gz'),
+            open(f"s3://{bucket}/{name}.docs", 'rb', compression='.gz'),
             cache_path=cache_path if local_cache else None,
         )
 
         if local_cache:
             if cache_path.exists():
                 object_header = boto3.client('s3').head_object(
-                    Bucket=bucket, Key=name + '.da'
+                    Bucket=bucket, Key=name + '.docs'
                 )
                 if cache_path.stat().st_size == object_header['ContentLength']:
                     logging.info(

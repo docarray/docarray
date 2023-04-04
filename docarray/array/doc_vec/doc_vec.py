@@ -110,7 +110,7 @@ class DocVec(AnyDocArray[T_doc]):
         )
 
         for field_name, field in self.doc_type.__fields__.items():
-            # here we iterate over the field of the da schema, and we collect the data
+            # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
             field_type = self.doc_type._get_field_type(field_name)
 
@@ -166,10 +166,10 @@ class DocVec(AnyDocArray[T_doc]):
                 elif issubclass(field_type, AnyDocArray):
                     docs_list = list()
                     for doc in docs:
-                        da = getattr(doc, field_name)
-                        if isinstance(da, DocList):
-                            da = da.stack(tensor_type=self.tensor_type)
-                        docs_list.append(da)
+                        docs = getattr(doc, field_name)
+                        if isinstance(docs, DocList):
+                            docs = docs.stack(tensor_type=self.tensor_type)
+                        docs_list.append(docs)
                     da_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
@@ -195,10 +195,10 @@ class DocVec(AnyDocArray[T_doc]):
         :param storage: the underlying storage.
         :return: a DocArrayStack
         """
-        da = cls.__new__(cls)
-        da.tensor_type = storage.tensor_type
-        da._storage = storage
-        return da
+        docs = cls.__new__(cls)
+        docs.tensor_type = storage.tensor_type
+        docs._storage = storage
+        return docs
 
     @classmethod
     def validate(
@@ -231,8 +231,8 @@ class DocVec(AnyDocArray[T_doc]):
         for field, col_doc in self._storage.doc_columns.items():
             self._storage.doc_columns[field] = col_doc.to(device)
         for _, col_da in self._storage.da_columns.items():
-            for da in col_da:
-                da.to(device)
+            for docs in col_da:
+                docs.to(device)
 
         return self
 
@@ -456,8 +456,8 @@ class DocVec(AnyDocArray[T_doc]):
             tensor_columns_proto[field] = col_tens.to_protobuf()
         for field, col_da in self._storage.da_columns.items():
             list_proto = ListOfDocArrayProto()
-            for da in col_da:
-                list_proto.data.append(da.to_protobuf())
+            for docs in col_da:
+                list_proto.data.append(docs.to_protobuf())
             da_columns_proto[field] = list_proto
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
@@ -487,7 +487,7 @@ class DocVec(AnyDocArray[T_doc]):
             unstacked_doc_column[field] = doc_col.unstack()
 
         for field, da_col in self._storage.da_columns.items():
-            unstacked_da_column[field] = [da.unstack() for da in da_col]
+            unstacked_da_column[field] = [docs.unstack() for docs in da_col]
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
             # list is needed here otherwise we cannot delete the column

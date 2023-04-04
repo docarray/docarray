@@ -256,23 +256,23 @@ def _extract_embeddings(
     return emb
 
 
-def _da_attr_type(da: AnyDocArray, access_path: str) -> Type[AnyTensor]:
+def _da_attr_type(docs: AnyDocArray, access_path: str) -> Type[AnyTensor]:
     """Get the type of the attribute according to the Document type
     (schema) of the DocList.
 
-    :param da: the DocList
+    :param docs: the DocList
     :param access_path: the "__"-separated access path
     :return: the type of the attribute
     """
     field_type: Optional[Type] = _get_field_type_by_access_path(
-        da.doc_type, access_path
+        docs.doc_type, access_path
     )
     if field_type is None:
         raise ValueError(f"Access path is not valid: {access_path}")
 
     if is_union_type(field_type):
         # determine type based on the fist element
-        field_type = type(next(AnyDocArray._traverse(da[0], access_path)))
+        field_type = type(next(AnyDocArray._traverse(docs[0], access_path)))
 
     if not issubclass(field_type, AbstractTensor):
         raise ValueError(

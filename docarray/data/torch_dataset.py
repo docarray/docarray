@@ -14,7 +14,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     A dataset that can be used inside a PyTorch DataLoader.
     In other words, it implements the PyTorch Dataset interface.
 
-    :param da: the DocList to be used as the dataset
+    :param docs: the DocList to be used as the dataset
     :param preprocessing: a dictionary of field names and preprocessing functions
 
     The preprocessing dictionary passed to the constructor consists of keys that are
@@ -33,8 +33,8 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         return f"Number {text}"
 
 
-    da = DocList[Text](Text(text=str(i)) for i in range(16))
-    ds = MultiModalDataset[Text](da, preprocessing={'text': prepend_number})
+    docs = DocList[Text](Text(text=str(i)) for i in range(16))
+    ds = MultiModalDataset[Text](docs, preprocessing={'text': prepend_number})
     loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[Text].collate_fn)
     for batch in loader:
         print(batch.text)
@@ -78,9 +78,9 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         )
 
 
-    da = DocList[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
+    docs = DocList[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
     ds = MultiModalDataset[Student](
-        da,
+        docs,
         preprocessing={
             "thesis.title": embed_title,
             "thesis": normalize_embedding,
@@ -96,16 +96,16 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(
-        self, da: 'DocList[T_doc]', preprocessing: Dict[str, Callable]
+        self, docs: 'DocList[T_doc]', preprocessing: Dict[str, Callable]
     ) -> None:
-        self.da = da
+        self.docs = docs
         self._preprocessing = preprocessing
 
     def __len__(self):
-        return len(self.da)
+        return len(self.docs)
 
     def __getitem__(self, item: int):
-        doc = self.da[item].copy(deep=True)
+        doc = self.docs[item].copy(deep=True)
         for field, preprocess in self._preprocessing.items():
             if len(field) == 0:
                 doc = preprocess(doc) or doc

@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 
 
 class DocArraySummary:
-    def __init__(self, da: 'AnyDocArray'):
-        self.da = da
+    def __init__(self, docs: 'AnyDocArray'):
+        self.docs = docs
 
     def summary(self) -> None:
         """
@@ -25,14 +25,14 @@ class DocArraySummary:
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
-        table.add_row('Type', self.da.__class__.__name__)
-        table.add_row('Length', str(len(self.da)), end_section=True)
+        table.add_row('Type', self.docs.__class__.__name__)
+        table.add_row('Length', str(len(self.docs)), end_section=True)
 
-        if isinstance(self.da, DocVec):
+        if isinstance(self.docs, DocVec):
             table.add_row('Stacked columns:')
-            stacked_fields = self._get_stacked_fields(da=self.da)
+            stacked_fields = self._get_stacked_fields(docs=self.docs)
             for field_name in stacked_fields:
-                val = self.da
+                val = self.docs
                 for attr in field_name.split('.'):
                     val = getattr(val, attr)
 
@@ -51,10 +51,10 @@ class DocArraySummary:
                     table.add_row(f'  • {field_name}:', col_2)
 
         Console().print(Panel(table, title='DocList Summary', expand=False))
-        self.da.doc_type.schema_summary()
+        self.docs.doc_type.schema_summary()
 
     @staticmethod
-    def _get_stacked_fields(da: 'DocVec') -> List[str]:  # TODO this might
+    def _get_stacked_fields(docs: 'DocVec') -> List[str]:  # TODO this might
         # broken
         """
         Return a list of the field names of a DocVec instance that are
@@ -62,13 +62,13 @@ class DocArraySummary:
         paths are separated by dot, such as: 'attr.nested_attr'.
         """
         fields = []
-        for field_name, value_tens in da._storage.tensor_columns.items():
+        for field_name, value_tens in docs._storage.tensor_columns.items():
             fields.append(field_name)
-        for field_name, value_doc in da._storage.doc_columns.items():
+        for field_name, value_doc in docs._storage.doc_columns.items():
             fields.extend(
                 [
                     f'{field_name}.{x}'
-                    for x in DocArraySummary._get_stacked_fields(da=value_doc)
+                    for x in DocArraySummary._get_stacked_fields(docs=value_doc)
                 ]
             )
 

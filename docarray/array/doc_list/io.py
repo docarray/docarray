@@ -370,7 +370,7 @@ class IOMixinArray(Iterable[T_doc]):
             )
 
         doc_type = cls.doc_type
-        da = DocList.__class_getitem__(doc_type)()
+        docs = DocList.__class_getitem__(doc_type)()
 
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
@@ -394,9 +394,9 @@ class IOMixinArray(Iterable[T_doc]):
                 doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(
                     access_path2val
                 )
-                da.append(doc_type.parse_obj(doc_dict))
+                docs.append(doc_type.parse_obj(doc_dict))
 
-        return da
+        return docs
 
     def to_csv(
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
@@ -456,10 +456,10 @@ class IOMixinArray(Iterable[T_doc]):
                 data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
             )
 
-            da = DocList[Person].from_pandas(df)
+            docs = DocList[Person].from_pandas(df)
 
-            assert da.name == ['Maria', 'Jake']
-            assert da.follower == [12345, 54321]
+            assert docs.name == ['Maria', 'Jake']
+            assert docs.follower == [12345, 54321]
 
 
         :param df: pandas.DataFrame to extract Document's information from
@@ -475,7 +475,7 @@ class IOMixinArray(Iterable[T_doc]):
             )
 
         doc_type = cls.doc_type
-        da = DocList.__class_getitem__(doc_type)()
+        docs = DocList.__class_getitem__(doc_type)()
         field_names = df.columns.tolist()
 
         if field_names is None or len(field_names) == 0:
@@ -495,9 +495,9 @@ class IOMixinArray(Iterable[T_doc]):
             access_path2val = row._asdict()
             access_path2val.pop('index', None)
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
-            da.append(doc_type.parse_obj(doc_dict))
+            docs.append(doc_type.parse_obj(doc_dict))
 
-        return da
+        return docs
 
     def to_pandas(self) -> 'pd.DataFrame':
         """

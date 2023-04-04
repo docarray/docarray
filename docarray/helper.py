@@ -191,12 +191,12 @@ def get_paths(
 
 
         # you can call it in the constructor
-        da = DocList[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
+        docs = DocList[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
 
         # and call it after construction to set the urls
-        da.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
+        docs.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
 
-        for doc in da:
+        for doc in docs:
             assert doc.image_url.endswith('.txt')
             assert doc.text_url.endswith('.jpg')
 

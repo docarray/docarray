@@ -41,7 +41,7 @@ class FileDocStore(AbstractDocStore):
         namespace_dir = cls._abs_filepath(namespace)
         if not namespace_dir.exists():
             raise FileNotFoundError(f'Directory {namespace} does not exist')
-        da_files = [dafile for dafile in namespace_dir.glob('*.da')]
+        da_files = [dafile for dafile in namespace_dir.glob('*.docs')]
 
         if show_table:
             from datetime import datetime
@@ -82,7 +82,7 @@ class FileDocStore(AbstractDocStore):
         """
         path = cls._abs_filepath(name)
         try:
-            path.with_suffix('.da').unlink()
+            path.with_suffix('.docs').unlink()
             return True
         except FileNotFoundError:
             if not missing_ok:
@@ -92,7 +92,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfFileDocStore],
-        da: 'DocList',
+        docs: 'DocList',
         name: str,
         public: bool,
         show_progress: bool,
@@ -105,7 +105,7 @@ class FileDocStore(AbstractDocStore):
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Not used by the ``file`` protocol.
         """
-        return cls.push_stream(iter(da), name, public, show_progress, branding)
+        return cls.push_stream(iter(docs), name, public, show_progress, branding)
 
     @classmethod
     def push_stream(
@@ -130,7 +130,7 @@ class FileDocStore(AbstractDocStore):
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
-        path = cls._abs_filepath(name).with_suffix('.da.tmp')
+        path = cls._abs_filepath(name).with_suffix('.docs.tmp')
         if path.exists():
             raise ConcurrentPushException(f'File {path} already exists.')
         with open(path, 'wb') as f:
@@ -183,7 +183,7 @@ class FileDocStore(AbstractDocStore):
         if local_cache:
             logging.warning('local_cache is not supported for "file" protocol')
 
-        path = cls._abs_filepath(name).with_suffix('.da')
+        path = cls._abs_filepath(name).with_suffix('.docs')
         source = open(path, 'rb')
         return _from_binary_stream(
             da_cls.doc_type,

@@ -179,14 +179,14 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 content: Text
 
 
-            da = DocList[Book](
+            docs = DocList[Book](
                 Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
                 for i in range(10)  # noqa: E501
             )
 
-            books = da.traverse_flat(access_path='content')  # list of 10 Text objs
+            books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
 
-            authors = da.traverse_flat(access_path='author__name')  # list of 10 strings
+            authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
 
         If the resulting list is a nested list, it will be flattened:
 
@@ -203,12 +203,12 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 chapters: DocList[Chapter]
 
 
-            da = DocList[Book](
+            docs = DocList[Book](
                 Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
                 for _ in range(10)
             )
 
-            chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
+            chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
 
         If your DocList is in doc_vec mode, and you want to access a field of
         type AnyTensor, the doc_vec tensor will be returned instead of a list:

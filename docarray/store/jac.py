@@ -116,15 +116,15 @@ class JACDocStore(AbstractDocStore):
         table.add_column('Created at', justify='center')
         table.add_column('Updated at', justify='center')
 
-        for da in resp['data']:
-            result.append(da['name'])
+        for docs in resp['data']:
+            result.append(docs['name'])
 
             table.add_row(
-                da['name'],
-                str(_get_length_from_summary(da['metaData'].get('summary', []))),
-                da['visibility'],
-                da['createdAt'],
-                da['updatedAt'],
+                docs['name'],
+                str(_get_length_from_summary(docs['metaData'].get('summary', []))),
+                docs['visibility'],
+                docs['createdAt'],
+                docs['updatedAt'],
             )
 
         if show_table:
@@ -152,7 +152,7 @@ class JACDocStore(AbstractDocStore):
     @staticmethod
     @hubble.login_required
     def push(
-        da: 'DocList',
+        docs: 'DocList',
         name: str,
         public: bool = True,
         show_progress: bool = False,
@@ -189,7 +189,7 @@ class JACDocStore(AbstractDocStore):
                 'public': public,
                 'metaData': json.dumps(
                     {
-                        'summary': _get_raw_summary(da),
+                        'summary': _get_raw_summary(docs),
                         'branding': branding,
                         'version': get_version_info(),
                     },
@@ -210,7 +210,7 @@ class JACDocStore(AbstractDocStore):
 
         def gen():
             yield _head
-            binary_stream = da.to_binary_stream(
+            binary_stream = docs.to_binary_stream(
                 protocol='protobuf', compress='gzip', show_progress=show_progress
             )
             while True:
@@ -265,10 +265,10 @@ class JACDocStore(AbstractDocStore):
         # But it must be done this way for now because Hubble expects to know the length of the DocList
         # before it starts receiving the documents
         first_doc = next(docs)
-        da = DocList[first_doc.__class__]([first_doc])  # type: ignore
+        docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
-            da.append(doc)
-        return cls.push(da, name, public, show_progress, branding)
+            docs.append(doc)
+        return cls.push(docs, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
@@ -332,12 +332,12 @@ class JACDocStore(AbstractDocStore):
             r.raise_for_status()
             save_name = name.replace('/', '_')
 
-            tmp_cache_file = Path(f'/tmp/{save_name}.da')
+            tmp_cache_file = Path(f'/tmp/{save_name}.docs')
             _source: Union[
                 _BufferedCachingRequestReader, io.BufferedReader
             ] = _BufferedCachingRequestReader(r, tmp_cache_file)
 
-            cache_file = _get_cache_path() / f'{save_name}.da'
+            cache_file = _get_cache_path() / f'{save_name}.docs'
             if local_cache and cache_file.exists():
                 _cache_len = cache_file.stat().st_size
                 if _cache_len == int(r.headers['Content-length']):

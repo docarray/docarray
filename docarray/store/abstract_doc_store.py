@@ -33,7 +33,7 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def push(
-        da: 'DocList',
+        docs: 'DocList',
         name: str,
         public: bool,
         show_progress: bool,
@@ -41,7 +41,7 @@ class AbstractDocStore(ABC):
     ) -> Dict:
         """Push this DocList to the specified name.
 
-        :param da: The DocList to push
+        :param docs: The DocList to push
         :param name: The name to push to
         :param public: Whether the DocList should be publicly accessible
         :param show_progress: If true, a progress bar will be displayed.

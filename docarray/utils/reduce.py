@@ -65,6 +65,6 @@ def reduce_all(docarrays: List[DocList]) -> DocList:
     left = docarrays[0]
     others = docarrays[1:]
     left_id_map = {doc.id: i for i, doc in enumerate(left)}
-    for da in others:
-        reduce(left, da, left_id_map)
+    for docs in others:
+        reduce(left, docs, left_id_map)
     return left

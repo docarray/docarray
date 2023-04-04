@@ -83,7 +83,7 @@ class DocList(
         url: ImageUrl
 
 
-    da = DocList[Image](
+    docs = DocList[Image](
         Image(url='http://url.com/foo.png') for _ in range(10)
     )  # noqa: E510
     ```
@@ -92,30 +92,30 @@ class DocList(
 
 
     If your DocList is homogeneous (i.e. follows the same schema), you can access
-    fields at the DocList level (for example `da.tensor` or `da.url`).
-    You can also set fields, with `da.tensor = np.random.random([10, 100])`:
+    fields at the DocList level (for example `docs.tensor` or `docs.url`).
+    You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
 
-        print(da.url)
+        print(docs.url)
         # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
         import numpy as np
 
-        da.tensor = np.random.random([10, 100])
-        print(da.tensor)
+        docs.tensor = np.random.random([10, 100])
+        print(docs.tensor)
         # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
         #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
 
     You can index into a DocList like a numpy doc_list or torch tensor:
 
 
-        da[0]  # index by position
-        da[0:5:2]  # index by slice
-        da[[0, 2, 3]]  # index by list of indices
-        da[True, False, True, True, ...]  # index by boolean mask
+        docs[0]  # index by position
+        docs[0:5:2]  # index by slice
+        docs[[0, 2, 3]]  # index by list of indices
+        docs[True, False, True, True, ...]  # index by boolean mask
 
     You can delete items from a DocList like a Python List
 
-        del da[0]  # remove first element from DocList
-        del da[0:5]  # remove elements for 0 to 5 from DocList
+        del docs[0]  # remove first element from DocList
+        del docs[0:5]  # remove elements for 0 to 5 from DocList
 
     :param docs: iterable of Document
 
@@ -140,9 +140,9 @@ class DocList(
         :param docs: a Sequence (list) of Document with the same schema
         :return:
         """
-        da = cls.__new__(cls)
-        da._data = docs if isinstance(docs, list) else list(docs)
-        return da
+        new_docs = cls.__new__(cls)
+        new_docs._data = docs if isinstance(docs, list) else list(docs)
+        return new_docs
 
     def __eq__(self, other: Any) -> bool:
         if self.__len__() != other.__len__():
