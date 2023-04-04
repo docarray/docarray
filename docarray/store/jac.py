@@ -102,7 +102,7 @@ class JACDocStore(AbstractDocStore):
         from rich.table import Table
 
         resp = HubbleClient(jsonify=True).list_artifacts(
-            filter={'type': 'DocArray'}, sort={'createdAt': 1}
+            filter={'type': 'DocumentArray'}, sort={'createdAt': 1}
         )
 
         table = Table(
@@ -181,11 +181,11 @@ class JACDocStore(AbstractDocStore):
         data, ctype = urllib3.filepost.encode_multipart_formdata(
             {
                 'file': (
-                    'DocArray',
+                    'DocumentArray',
                     delimiter,
                 ),
                 'name': name,
-                'type': 'DocArray',
+                'type': 'DocumentArray',
                 'public': public,
                 'metaData': json.dumps(
                     {
