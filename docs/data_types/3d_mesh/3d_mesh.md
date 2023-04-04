@@ -2,7 +2,10 @@
 
 
 !!! note
-    This feature requires `trimesh`. You can install it via `pip install "docarray[mesh]".`
+    This feature requires `trimesh`. You can install all necessary dependencies via:
+    ```cm 
+    pip install "docarray[mesh]".
+    ```
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 

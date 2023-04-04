@@ -2,7 +2,10 @@
 
 
 !!! note
-    This requires a `pydub` dependency. You can install it via `pip install "docarray[audio]"`
+    This requires a `pydub` dependency. You can install all necessary dependencies via:
+    ```cmd 
+    pip install "docarray[audio]"
+    ```
 
 
 ## Load audio file

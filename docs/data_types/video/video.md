@@ -1,8 +1,8 @@
 # Video
 
 !!! note
-    This requires a `av` dependency. You can install it via 
-    ```python 
+    This requires a `av` dependency. You can install all necessary dependencies via:
+    ```cmd 
     pip install "docarray[video]"
     ```
 
