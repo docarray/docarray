@@ -30,7 +30,7 @@ jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 qdrant-client = {version = ">=1.1.0", python = "<3.12", optional = true }
 
 [tool.poetry.extras]
-common = ["protobuf", "lz4"]
+proto = ["protobuf", "lz4"]
 pandas = ["pandas"]
 image = ["pillow", "types-pillow"]
 video = ["av"]

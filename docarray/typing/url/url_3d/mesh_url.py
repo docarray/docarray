@@ -16,7 +16,7 @@ T = TypeVar('T', bound='Mesh3DUrl')
 @_register_proto(proto_type_name='mesh_url')
 class Mesh3DUrl(Url3D):
     """
-    URL to a .obj, .glb, or .ply file containing 3D mesh information.
+    URL to a file containing 3D mesh information.
     Can be remote (web) URL, or a local file path.
     """
 
@@ -33,7 +33,6 @@ class Mesh3DUrl(Url3D):
 
          ```python
          from docarray import BaseDoc
-         import numpy as np
 
          from docarray.typing import Mesh3DUrl, NdArray
 

@@ -10,7 +10,7 @@ from docarray.store.helpers import _from_binary_stream, _to_binary_stream
 from docarray.utils._internal.cache import _get_cache_path
 
 if TYPE_CHECKING:
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
 SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
@@ -41,7 +41,7 @@ class FileDocStore(AbstractDocStore):
         namespace_dir = cls._abs_filepath(namespace)
         if not namespace_dir.exists():
             raise FileNotFoundError(f'Directory {namespace} does not exist')
-        da_files = [dafile for dafile in namespace_dir.glob('*.da')]
+        da_files = [dafile for dafile in namespace_dir.glob('*.docs')]
 
         if show_table:
             from datetime import datetime
@@ -74,15 +74,15 @@ class FileDocStore(AbstractDocStore):
     def delete(
         cls: Type[SelfFileDocStore], name: str, missing_ok: bool = False
     ) -> bool:
-        """Delete a DocArray from the local filesystem.
+        """Delete a DocList from the local filesystem.
 
-        :param name: The name of the DocArray to delete.
+        :param name: The name of the DocList to delete.
         :param missing_ok: If True, do not raise an exception if the file does not exist. Defaults to False.
         :return: True if the file was deleted, False if it did not exist.
         """
         path = cls._abs_filepath(name)
         try:
-            path.with_suffix('.da').unlink()
+            path.with_suffix('.docs').unlink()
             return True
         except FileNotFoundError:
             if not missing_ok:
@@ -92,20 +92,20 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def push(
         cls: Type[SelfFileDocStore],
-        da: 'DocArray',
+        docs: 'DocList',
         name: str,
         public: bool,
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        """Push this DocArray object to the specified file path.
+        """Push this DocList object to the specified file path.
 
         :param name: The file path to push to.
         :param public: Not used by the ``file`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: Not used by the ``file`` protocol.
         """
-        return cls.push_stream(iter(da), name, public, show_progress, branding)
+        return cls.push_stream(iter(docs), name, public, show_progress, branding)
 
     @classmethod
     def push_stream(
@@ -130,7 +130,7 @@ class FileDocStore(AbstractDocStore):
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
-        path = cls._abs_filepath(name).with_suffix('.da.tmp')
+        path = cls._abs_filepath(name).with_suffix('.docs.tmp')
         if path.exists():
             raise ConcurrentPushException(f'File {path} already exists.')
         with open(path, 'wb') as f:
@@ -145,29 +145,29 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocArray'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
-    ) -> 'DocArray':
-        """Pull a :class:`DocArray` from the specified url.
+    ) -> 'DocList':
+        """Pull a :class:`DocList` from the specified url.
 
         :param name: The file path to pull from.
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
-        :return: a :class:`DocArray` object
+        :param local_cache: store the downloaded DocList to local folder
+        :return: a :class:`DocList` object
         """
 
-        return da_cls(
+        return docs_cls(
             cls.pull_stream(
-                da_cls, name, show_progress=show_progress, local_cache=local_cache
+                docs_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
 
     @classmethod
     def pull_stream(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocArray'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -183,10 +183,10 @@ class FileDocStore(AbstractDocStore):
         if local_cache:
             logging.warning('local_cache is not supported for "file" protocol')
 
-        path = cls._abs_filepath(name).with_suffix('.da')
+        path = cls._abs_filepath(name).with_suffix('.docs')
         source = open(path, 'rb')
         return _from_binary_stream(
-            da_cls.document_type,
+            docs_cls.doc_type,
             source,
             protocol='protobuf',
             compress='gzip',

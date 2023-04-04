@@ -2,7 +2,7 @@ from typing import Generator, Optional
 
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc
 from docarray.typing import ImageUrl, NdArray
 from docarray.utils.map import map_docs, map_docs_batched
@@ -19,7 +19,7 @@ def load_from_doc(d: ImageDoc) -> ImageDoc:
 
 @pytest.fixture()
 def da():
-    da = DocArray[ImageDoc]([ImageDoc(url=IMAGE_PATHS['png']) for _ in range(N_DOCS)])
+    da = DocList[ImageDoc]([ImageDoc(url=IMAGE_PATHS['png']) for _ in range(N_DOCS)])
     return da
 
 
@@ -28,7 +28,7 @@ def test_map(da, backend):
     for tensor in da.tensor:
         assert tensor is None
 
-    docs = list(map_docs(da=da, func=load_from_doc, backend=backend))
+    docs = list(map_docs(docs=da, func=load_from_doc, backend=backend))
 
     assert len(docs) == N_DOCS
     for doc in docs:
@@ -37,7 +37,7 @@ def test_map(da, backend):
 
 def test_map_multiprocessing_lambda_func_raise_exception(da):
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        list(map_docs(da=da, func=lambda x: x, backend='process'))
+        list(map_docs(docs=da, func=lambda x: x, backend='process'))
 
 
 def test_map_multiprocessing_local_func_raise_exception(da):
@@ -45,21 +45,21 @@ def test_map_multiprocessing_local_func_raise_exception(da):
         return x
 
     with pytest.raises(ValueError, match='Multiprocessing does not allow'):
-        list(map_docs(da=da, func=local_func, backend='process'))
+        list(map_docs(docs=da, func=local_func, backend='process'))
 
 
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_check_order(backend):
-    da = DocArray[ImageDoc]([ImageDoc(id=i) for i in range(N_DOCS)])
+    da = DocList[ImageDoc]([ImageDoc(id=i) for i in range(N_DOCS)])
 
-    docs = list(map_docs(da=da, func=load_from_doc, backend=backend))
+    docs = list(map_docs(docs=da, func=load_from_doc, backend=backend))
 
     assert len(docs) == N_DOCS
     for i, doc in enumerate(docs):
         assert doc.id == str(i)
 
 
-def load_from_da(da: DocArray) -> DocArray:
+def load_from_da(da: DocList) -> DocList:
     for doc in da:
         doc.tensor = doc.url.load()
     return da
@@ -75,11 +75,11 @@ class MyImage(BaseDoc):
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_docs_batched(n_docs, batch_size, backend):
 
-    da = DocArray[MyImage]([MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
+    da = DocList[MyImage]([MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     it = map_docs_batched(
-        da=da, func=load_from_da, batch_size=batch_size, backend=backend
+        docs=da, func=load_from_da, batch_size=batch_size, backend=backend
     )
     assert isinstance(it, Generator)
 
     for batch in it:
-        assert isinstance(batch, DocArray[MyImage])
+        assert isinstance(batch, DocList[MyImage])

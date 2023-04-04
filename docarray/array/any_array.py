@@ -25,7 +25,7 @@ from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
-    from docarray.proto import DocumentArrayProto, NodeProto
+    from docarray.proto import DocListProto, NodeProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocArray')
@@ -34,7 +34,7 @@ IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
-    document_type: Type[BaseDoc]
+    doc_type: Type[BaseDoc]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDoc], Type]] = {}
 
     def __repr__(self):
@@ -58,9 +58,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             global _DocArrayTyped
 
             class _DocArrayTyped(cls):  # type: ignore
-                document_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
+                doc_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
 
-            for field in _DocArrayTyped.document_type.__fields__.keys():
+            for field in _DocArrayTyped.doc_type.__fields__.keys():
 
                 def _property_generator(val: str):
                     def _getter(self):
@@ -121,34 +121,34 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this DocArray using the passed values
+        """Set all Documents in this DocList using the passed values
 
         :param field: name of the fields to extract
-        :values: the values to set at the DocArray level
+        :values: the values to set at the DocList level
         """
         ...
 
     @classmethod
     @abstractmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentArrayProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
         """create a Document from a protobuf message"""
         ...
 
     @abstractmethod
-    def to_protobuf(self) -> 'DocumentArrayProto':
-        """Convert DocArray into a Protobuf message"""
+    def to_protobuf(self) -> 'DocListProto':
+        """Convert DocList into a Protobuf message"""
         ...
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert a DocArray into a NodeProto protobuf message.
-         This function should be called when a DocArray
+        """Convert a DocList into a NodeProto protobuf message.
+         This function should be called when a DocList
         is nested into another Document that need to be converted into a protobuf
 
         :return: the nested item protobuf message
         """
         from docarray.proto import NodeProto
 
-        return NodeProto(document_array=self.to_protobuf())
+        return NodeProto(doc_array=self.to_protobuf())
 
     @abstractmethod
     def traverse_flat(
@@ -157,7 +157,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     ) -> Union[List[Any], 'AbstractTensor']:
         """
         Return a List of the accessed objects when applying the `access_path`. If this
-        results in a nested list or list of DocArrays, the list will be flattened
+        results in a nested list or list of DocLists, the list will be flattened
         on the first level. The access path is a string that consists of attribute
         names, concatenated and "__"-separated. It describes the path from the first
         level to an arbitrary one, e.g. 'content__image__url'.
@@ -167,7 +167,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import BaseDoc, DocArray, Text
+            from docarray import BaseDoc, DocList, Text
 
 
             class Author(BaseDoc):
@@ -179,20 +179,20 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 content: Text
 
 
-            da = DocArray[Book](
+            docs = DocList[Book](
                 Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
                 for i in range(10)  # noqa: E501
             )
 
-            books = da.traverse_flat(access_path='content')  # list of 10 Text objs
+            books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
 
-            authors = da.traverse_flat(access_path='author__name')  # list of 10 strings
+            authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
 
         If the resulting list is a nested list, it will be flattened:
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray import BaseDoc, DocArray
+            from docarray import BaseDoc, DocList
 
 
             class Chapter(BaseDoc):
@@ -200,20 +200,18 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
 
             class Book(BaseDoc):
-                chapters: DocArray[Chapter]
+                chapters: DocList[Chapter]
 
 
-            da = DocArray[Book](
-                Book(
-                    chapters=DocArray[Chapter]([Chapter(content='some_content') for _ in range(3)])
-                )
+            docs = DocList[Book](
+                Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
                 for _ in range(10)
             )
 
-            chapters = da.traverse_flat(access_path='chapters')  # list of 30 strings
+            chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
 
-        If your DocArray is in stacked mode, and you want to access a field of
-        type AnyTensor, the stacked tensor will be returned instead of a list:
+        If your DocList is in doc_vec mode, and you want to access a field of
+        type AnyTensor, the doc_vec tensor will be returned instead of a list:
 
         EXAMPLE USAGE
         .. code-block:: python
@@ -221,7 +219,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 tensor: TorchTensor[3, 224, 224]
 
 
-            batch = DocArray[Image](
+            batch = DocList[Image](
                 [
                     Image(
                         tensor=torch.zeros(3, 224, 224),
@@ -243,9 +241,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         if access_path:
             curr_attr, _, path_attrs = access_path.partition('__')
 
-            from docarray.array import DocArray
+            from docarray.array import DocList
 
-            if isinstance(node, (DocArray, list)):
+            if isinstance(node, (DocList, list)):
                 for n in node:
                     x = getattr(n, curr_attr)
                     yield from AnyDocArray._traverse(x, path_attrs)
@@ -257,16 +255,16 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     @staticmethod
     def _flatten_one_level(sequence: List[Any]) -> List[Any]:
-        from docarray import DocArray
+        from docarray import DocList
 
-        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocArray)):
+        if len(sequence) == 0 or not isinstance(sequence[0], (list, DocList)):
             return sequence
         else:
             return [item for sublist in sequence for item in sublist]
 
     def summary(self):
         """
-        Print a summary of this DocArray object and a summary of the schema of its
+        Print a summary of this DocList object and a summary of the schema of its
         Document type.
         """
         DocArraySummary(self).summary()
@@ -278,13 +276,13 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         show_progress: bool = False,
     ) -> Generator[T, None, None]:
         """
-        Creates a `Generator` that yields `DocArray` of size `batch_size`.
+        Creates a `Generator` that yields `DocList` of size `batch_size`.
         Note, that the last batch might be smaller than `batch_size`.
 
         :param batch_size: Size of each generated batch.
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: if set, show a progress bar when batching documents.
-        :yield: a Generator of `DocArray`, each in the length of `batch_size`
+        :yield: a Generator of `DocList`, each in the length of `batch_size`
         """
         from rich.progress import track
 

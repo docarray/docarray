@@ -5,7 +5,7 @@ import pytest
 from pydantic import BaseModel, ValidationError
 from typing_extensions import TypedDict
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import AudioDoc, ImageDoc, TextDoc
 from docarray.documents.helper import (
     create_doc,
@@ -35,14 +35,14 @@ def test_multi_modal_doc():
 def test_nested_chunks_document():
     class ChunksDocument(BaseDoc):
         text: str
-        images: DocArray[ImageDoc]
+        images: DocList[ImageDoc]
 
     doc = ChunksDocument(
         text='hello',
-        images=DocArray[ImageDoc]([ImageDoc() for _ in range(10)]),
+        images=DocList[ImageDoc]([ImageDoc() for _ in range(10)]),
     )
 
-    assert isinstance(doc.images, DocArray)
+    assert isinstance(doc.images, DocList)
 
 
 def test_create_doc():
