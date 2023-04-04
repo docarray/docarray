@@ -1,14 +1,11 @@
 import io
 import warnings
 from abc import ABC
-from typing import TypeVar
 
 import numpy as np
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_notebook
-
-T = TypeVar('T', bound='AbstractImageTensor')
 
 
 class AbstractImageTensor(AbstractTensor, ABC):
@@ -36,7 +33,7 @@ class AbstractImageTensor(AbstractTensor, ABC):
 
         return img_byte_arr
 
-    def save(self: 'T', file_path: str) -> None:
+    def save(self, file_path: str) -> None:
         """
         Save image tensor to an image file.
 
