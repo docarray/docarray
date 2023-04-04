@@ -353,3 +353,21 @@ def test_hybrid_query(test_store):
 
     docs = test_store.execute_query(q)
     assert len(docs) == 1
+
+
+def test_hybrid_query_batched(test_store):
+    query_embeddings = [[10.25, 10.25], [-100, -100]]
+    query_texts = ["dolor", "elit"]
+
+    q = (
+        test_store.build_query()
+        .find_batched(
+            queries=query_embeddings, score_name="certainty", score_threshold=0.99
+        )
+        .text_search_batched(queries=query_texts, search_field="text")
+        .build()
+    )
+
+    docs = test_store.execute_query(q)
+    assert docs[0][0].id == '1'
+    assert docs[1][0].id == '2'
