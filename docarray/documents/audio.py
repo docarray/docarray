@@ -52,8 +52,8 @@ class AudioDoc(BaseDoc):
 
 
         # extend it
-        class MyAudio(Audio):
-            name: Optional[Text]
+        class MyAudio(AudioDoc):
+            name: Optional[TextDoc]
 
 
         audio = MyAudio(
@@ -62,7 +62,7 @@ class AudioDoc(BaseDoc):
         audio.tensor, audio.frame_rate = audio.url.load()
         model = MyEmbeddingModel()
         audio.embedding = model(audio.tensor)
-        audio.name = Text(text='my first audio')
+        audio.name = TextDoc(text='my first audio')
 
 
     You can use this Document for composition:

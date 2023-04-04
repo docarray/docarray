@@ -3,11 +3,11 @@ from typing_extensions import TYPE_CHECKING
 from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
 from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
-from docarray.typing.tensor.audio import AudioNdArray
+from docarray.typing.tensor.audio import AudioNdArray, AudioTensor
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.typing.tensor.video import VideoNdArray
+from docarray.typing.tensor.video import VideoNdArray, VideoTensor
 from docarray.typing.url import (
     AnyUrl,
     AudioUrl,
@@ -50,6 +50,8 @@ __all__ = [
     'ID',
     'AnyTensor',
     'ImageTensor',
+    'AudioTensor',
+    'VideoTensor',
     'ImageNdArray',
     'ImageBytes',
     'VideoBytes',
