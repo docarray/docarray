@@ -103,6 +103,6 @@ message ListOfDocArrayProto {
 message DocVecProto{
   map<string, NdArrayProto> tensor_columns = 1; // a dict of document columns
   map<string, DocVecProto> doc_columns = 2; // a dict of tensor columns
-  map<string, ListOfDocArrayProto> da_columns = 3; // a dict of document array columns
+  map<string, ListOfDocArrayProto> docs_vec_columns = 3; // a dict of document array columns
   map<string, ListOfAnyProto> any_columns = 4; // a dict of any columns. Used for the rest of the data
 }

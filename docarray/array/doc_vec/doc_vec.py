@@ -98,7 +98,7 @@ class DocVec(AnyDocArray[T_doc]):
 
         tensor_columns: Dict[str, AbstractTensor] = dict()
         doc_columns: Dict[str, 'DocVec'] = dict()
-        da_columns: Dict[str, ListAdvancedIndexing['DocVec']] = dict()
+        docs_vec_columns: Dict[str, ListAdvancedIndexing['DocVec']] = dict()
         any_columns: Dict[str, ListAdvancedIndexing] = dict()
 
         if len(docs) == 0:
@@ -170,7 +170,7 @@ class DocVec(AnyDocArray[T_doc]):
                         if isinstance(docs, DocList):
                             docs = docs.stack(tensor_type=self.tensor_type)
                         docs_list.append(docs)
-                    da_columns[field_name] = ListAdvancedIndexing(docs_list)
+                    docs_vec_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
                         getattr(docs, field_name)
@@ -183,7 +183,7 @@ class DocVec(AnyDocArray[T_doc]):
         self._storage = ColumnStorage(
             tensor_columns,
             doc_columns,
-            da_columns,
+            docs_vec_columns,
             any_columns,
             tensor_type,
         )
@@ -230,7 +230,7 @@ class DocVec(AnyDocArray[T_doc]):
 
         for field, col_doc in self._storage.doc_columns.items():
             self._storage.doc_columns[field] = col_doc.to(device)
-        for _, col_da in self._storage.da_columns.items():
+        for _, col_da in self._storage.docs_vec_columns.items():
             for docs in col_da:
                 docs.to(device)
 
@@ -269,8 +269,8 @@ class DocVec(AnyDocArray[T_doc]):
         """
         if field in self._storage.any_columns.keys():
             return self._storage.any_columns[field].data
-        elif field in self._storage.da_columns.keys():
-            return self._storage.da_columns[field].data
+        elif field in self._storage.docs_vec_columns.keys():
+            return self._storage.docs_vec_columns[field].data
         elif field in self._storage.columns.keys():
             return self._storage.columns[field]
         else:
@@ -381,10 +381,10 @@ class DocVec(AnyDocArray[T_doc]):
             )
             self._storage.doc_columns[field] = values_
 
-        elif field in self._storage.da_columns.keys():
+        elif field in self._storage.docs_vec_columns.keys():
             values_ = cast(Sequence[DocList[T_doc]], values)
             # TODO here we should actually check if this is correct
-            self._storage.da_columns[field] = values_
+            self._storage.docs_vec_columns[field] = values_
         elif field in self._storage.any_columns.keys():
             # TODO here we should actually check if this is correct
             values_ = cast(Sequence, values)
@@ -425,7 +425,7 @@ class DocVec(AnyDocArray[T_doc]):
         storage = ColumnStorage(
             pb_msg.tensor_columns,
             pb_msg.doc_columns,
-            pb_msg.da_columns,
+            pb_msg.docs_vec_columns,
             pb_msg.any_columns,
         )
 
@@ -454,7 +454,7 @@ class DocVec(AnyDocArray[T_doc]):
             doc_columns_proto[field] = col_doc.to_protobuf()
         for field, col_tens in self._storage.tensor_columns.items():
             tensor_columns_proto[field] = col_tens.to_protobuf()
-        for field, col_da in self._storage.da_columns.items():
+        for field, col_da in self._storage.docs_vec_columns.items():
             list_proto = ListOfDocArrayProto()
             for docs in col_da:
                 list_proto.data.append(docs.to_protobuf())
@@ -468,7 +468,7 @@ class DocVec(AnyDocArray[T_doc]):
         return DocVecProto(
             doc_columns=doc_columns_proto,
             tensor_columns=tensor_columns_proto,
-            da_columns=da_columns_proto,
+            docs_vec_columns=da_columns_proto,
             any_columns=any_columns_proto,
         )
 
@@ -486,7 +486,7 @@ class DocVec(AnyDocArray[T_doc]):
         for field, doc_col in self._storage.doc_columns.items():
             unstacked_doc_column[field] = doc_col.unstack()
 
-        for field, da_col in self._storage.da_columns.items():
+        for field, da_col in self._storage.docs_vec_columns.items():
             unstacked_da_column[field] = [docs.unstack() for docs in da_col]
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
