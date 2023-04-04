@@ -15,7 +15,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def map_docs(
-    da: T,
+    docs: T,
     func: Callable[[T_doc], T_doc],
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -56,7 +56,7 @@ def map_docs(
 
     ---
 
-    :param da: DocList to apply function to
+    :param docs: DocList to apply function to
     :param func: a function that takes a :class:`BaseDoc` as input and outputs
         a :class:`BaseDoc`.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
@@ -98,8 +98,8 @@ def map_docs(
         context_pool = p
 
     with context_pool:
-        imap = p.imap(func, da)
-        for x in track(imap, total=len(da), disable=not show_progress):
+        imap = p.imap(func, docs)
+        for x in track(imap, total=len(docs), disable=not show_progress):
             yield x
 
 

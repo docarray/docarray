@@ -36,7 +36,10 @@ def test_map_docs_multiprocessing():
             start_time = time()
             list(
                 map_docs(
-                    da=da, func=cpu_intensive, backend='process', num_worker=num_workers
+                    docs=da,
+                    func=cpu_intensive,
+                    backend='process',
+                    num_worker=num_workers,
                 )
             )
             return time() - start_time
@@ -96,7 +99,9 @@ def test_map_docs_multithreading():
         )
         start_time = time()
         list(
-            map_docs(da=da, func=io_intensive, backend='thread', num_worker=num_workers)
+            map_docs(
+                docs=da, func=io_intensive, backend='thread', num_worker=num_workers
+            )
         )
         return time() - start_time
 
