@@ -2,6 +2,8 @@ import io
 import warnings
 from abc import ABC
 
+import numpy as np
+
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_notebook
 
@@ -30,6 +32,22 @@ class AbstractImageTensor(AbstractTensor, ABC):
             img_byte_arr = buffer.getvalue()
 
         return img_byte_arr
+
+    def save(self, file_path: str) -> None:
+        """
+        Save image tensor to an image file.
+
+        :param file_path: path to an image file. If file is a string, open the file by
+            that name, otherwise treat it as a file-like object.
+        """
+        PIL = import_library('PIL', raise_error=True)  # noqa: F841
+        from PIL import Image as PILImage
+
+        comp_backend = self.get_comp_backend()
+        np_img = comp_backend.to_numpy(self).astype(np.uint8)
+
+        pil_img = PILImage.fromarray(np_img)
+        pil_img.save(file_path)
 
     def display(self) -> None:
         """
