@@ -71,14 +71,14 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def pull(
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
     ) -> 'DocList':
         """Pull a DocList from the specified name.
 
-        :param da_cls: The DocList class to instantiate
+        :param docs_cls: The DocList class to instantiate
         :param name: The name to pull from
         :param show_progress: If true, a progress bar will be displayed.
         :param local_cache: If true, the DocList will be cached locally
@@ -89,14 +89,14 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def pull_stream(
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
     ) -> Iterator['BaseDoc']:
         """Pull a stream of documents from the specified name.
 
-        :param da_cls: The DocList class to instantiate
+        :param docs_cls: The DocList class to instantiate
         :param name: The name to pull from
         :param show_progress: If true, a progress bar will be displayed.
         :param local_cache: If true, the DocList will be cached locally

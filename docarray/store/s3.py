@@ -177,7 +177,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
@@ -189,9 +189,9 @@ class S3DocStore(AbstractDocStore):
         :param local_cache: store the downloaded DocList to local cache
         :return: a :class:`DocList` object
         """
-        docs = da_cls(  # type: ignore
+        docs = docs_cls(  # type: ignore
             cls.pull_stream(
-                da_cls, name, show_progress=show_progress, local_cache=local_cache
+                docs_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
         return docs
@@ -199,7 +199,7 @@ class S3DocStore(AbstractDocStore):
     @classmethod
     def pull_stream(
         cls: Type[SelfS3DocStore],
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -235,7 +235,7 @@ class S3DocStore(AbstractDocStore):
                     source = open(cache_path, 'rb')
 
         return _from_binary_stream(
-            da_cls.doc_type,
+            docs_cls.doc_type,
             source,
             protocol='pickle',
             compress=None,

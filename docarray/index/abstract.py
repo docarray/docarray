@@ -346,8 +346,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         elif isinstance(doc_sequence[0], Dict):
             out_docs = self._dict_list_to_docarray(doc_sequence)  # type: ignore
         else:
-            da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-            out_docs = da_cls(doc_sequence)
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+            out_docs = docs_cls(doc_sequence)
 
         return out_docs[0] if return_singleton else out_docs
 
@@ -874,5 +874,5 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """Convert a list of docs in dict type to a DocList of the schema type."""
 
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        da_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-        return da_cls(doc_list)
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        return docs_cls(doc_list)

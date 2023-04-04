@@ -145,7 +145,7 @@ class FileDocStore(AbstractDocStore):
     @classmethod
     def pull(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -158,16 +158,16 @@ class FileDocStore(AbstractDocStore):
         :return: a :class:`DocList` object
         """
 
-        return da_cls(
+        return docs_cls(
             cls.pull_stream(
-                da_cls, name, show_progress=show_progress, local_cache=local_cache
+                docs_cls, name, show_progress=show_progress, local_cache=local_cache
             )
         )
 
     @classmethod
     def pull_stream(
         cls: Type[SelfFileDocStore],
-        da_cls: Type['DocList'],
+        docs_cls: Type['DocList'],
         name: str,
         show_progress: bool,
         local_cache: bool,
@@ -186,7 +186,7 @@ class FileDocStore(AbstractDocStore):
         path = cls._abs_filepath(name).with_suffix('.docs')
         source = open(path, 'rb')
         return _from_binary_stream(
-            da_cls.doc_type,
+            docs_cls.doc_type,
             source,
             protocol='protobuf',
             compress='gzip',
