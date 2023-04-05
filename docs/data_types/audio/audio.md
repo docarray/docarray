@@ -1,4 +1,4 @@
-# Audio
+# 🔊 Audio
 
 DocArray supports many different modalities including `Audio`.
 This section will show you how to load and handle audio data in DocArray.

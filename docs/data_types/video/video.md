@@ -1,4 +1,4 @@
-# Video
+# 🎥 Video
 
 DocArray supports many modalities including `Video`.
 This section will show you how to load and handle video data in DocArray.
@@ -177,7 +177,7 @@ doc.video.save(
 
 ## Display video in notebook
 
-You can play a video in a notebook from its url as well as its tensor, by calling [`.display()`][docarray.typing.url.audio_url.AudioUrl.display()] on either one: For the latter you can optionally give the corresponding AudioTensor as a parameter.
+You can play a video in a notebook from its url as well as its tensor, by calling [`.display()`][docarray.typing.url.audio_url.AudioUrl.display] on either one: For the latter you can optionally give the corresponding AudioTensor as a parameter.
 
 ```python
 doc_fast = MyAudio(url="/path/my_video.mp4")

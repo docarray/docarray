@@ -1,4 +1,4 @@
-# 3D Mesh
+# 🧬 3D Mesh
 
 DocArray supports many different modalities including `3D Mesh`.
 This section will show you how to load and handle 3D data in DocArray.
@@ -1345,7 +1345,7 @@ class MyPointCloud(BaseDoc):
 doc = MyPointCloud(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 ```
 
-Next, we can load a pointcloud of size `samples` by simply calling [`.load()`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl.load] on the [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance:
+Next, we can load a point cloud of size `samples` by simply calling [`.load()`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl.load] on the [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance:
 
 ```python
 doc.tensors = doc.url.load(samples=1000)
@@ -1356,7 +1356,7 @@ doc.summary()
 ╭──────────────────────────────────┬───────────────────────────────────────────╮
 │ Attribute                        │ Value                                     │
 ├──────────────────────────────────┼───────────────────────────────────────────┤
-│ url: PointCloud3DUrl │ https://people.sc.fsu.edu/~jburkardt/dat… │
+│ url: PointCloud3DUrl             │ https://people.sc.fsu.edu/~jburkardt/dat… │
 │                                  │ ... (length: 52)                          │
 ╰──────────────────────────────────┴───────────────────────────────────────────╯
 └── 🔶 tensors: PointsAndColors
@@ -2623,13 +2623,18 @@ function onWindowResize(){camera.aspect=window.innerWidth/window.innerHeight;cam
 function animate(){requestAnimationFrame(animate);controls.update();}
 function render(){tracklight.position.copy(camera.position);renderer.render(scene,camera);}
 init();</script></body>
-</html>" width="100%" height="500px" style="border:none;"></iframe
+</html>" width="100%" height="500px" style="border:none;"></iframe>
 
-## Get started - Predefined Mesh3D and PointCloudDoc
-To get started and play around with the 3D modalities DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which include all of the previously mentioned functionalities.
 
-### Mesh3D
+
+
+
+## Get started - Predefined Documents
+To get started and play around with the 3D modalities, DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which include all of the previously mentioned functionalities.
+
+### `Mesh3D`
 The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a `Mesh3DUrl` field as wells as a `VerticesAndFaces` field.
+
 
 ```python
 class Mesh3D(BaseDoc):
@@ -2639,3 +2644,38 @@ class Mesh3D(BaseDoc):
     bytes_: Optional[bytes]
 ```
 
+### `PointCloud3D`
+
+```python
+class PointCloud3D(BaseDoc):
+    url: Optional[PointCloud3DUrl]
+    tensors: Optional[PointsAndColors]
+    embedding: Optional[AnyEmbedding]
+    bytes_: Optional[bytes]
+```
+
+You can use them directly, extend or compose them.
+
+```python
+from docarray import BaseDoc
+from docarray.documents import Mesh3D, PointCloud3D
+
+
+class My3DObject(BaseDoc):
+    title: str
+    mesh: Mesh3D
+    pc: PointCloud3D
+
+
+obj_file = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
+
+doc = My3DObject(
+    title='My first 3D object!',
+    mesh_representation=Mesh3D(url=obj_file),
+    pc_representation=PointCloud3D(url=obj_file),
+)
+
+
+doc.mesh.tensors = doc.mesh.url.load()
+doc.pc.tensors = doc.pc.url.load(samples=100)
+```

@@ -1,4 +1,4 @@
-# Image
+# 🖼️ Image
 
 DocArray supports many different modalities including the widely used `Image` modality.
 This section will show you how to load and handle image data in DocArray.

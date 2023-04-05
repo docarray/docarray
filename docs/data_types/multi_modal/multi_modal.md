@@ -1,7 +1,7 @@
-# Multi modal
+# 🗃 Multi modal
 
 !!! note
-    This requires `` dependencies. You can install them via 
-    ```python 
+    This requires dependencies for all modalities. You can install them via 
+    ```cmd 
     pip install "docarray[full]"
     ```
