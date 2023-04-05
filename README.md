@@ -72,11 +72,11 @@ vec = DocVec[MyDocument](
     ]
     * 1000
 )
-print(vec.image_tensor)
+print(vec.image_tensor.shape)  # (1000, 1704, 2272, 3)
 ```
 
 <details>
-  <summary>Click for more details</summary>
+  <summary>**Click for more details**</summary>
 
 So let's take a closer look at how you can represent your data with DocArray:
 
