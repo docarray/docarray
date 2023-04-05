@@ -1,7 +1,7 @@
 # 3D Mesh
 
 DocArray supports many different modalities including `3D Mesh`.
-This section will show you how to use DocArray to load and handle 3D data in DocArray.
+This section will show you how to load and handle 3D data in DocArray.
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 
@@ -2624,4 +2624,18 @@ function animate(){requestAnimationFrame(animate);controls.update();}
 function render(){tracklight.position.copy(camera.position);renderer.render(scene,camera);}
 init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
+
+## Get started - Predefined Mesh3D and PointCloudDoc
+To get started and play around with the 3D modalities DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which include all of the previously mentioned functionalities.
+
+### Mesh3D
+The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a `Mesh3DUrl` field as wells as a `VerticesAndFaces` field.
+
+```python
+class Mesh3D(BaseDoc):
+    url: Optional[Mesh3DUrl]
+    tensors: Optional[VerticesAndFaces]
+    embedding: Optional[AnyEmbedding]
+    bytes_: Optional[bytes]
+```
 

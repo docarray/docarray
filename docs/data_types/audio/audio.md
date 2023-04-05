@@ -136,26 +136,22 @@ tensor_reversed.save(
 
 You can play your audio sound in a notebook from its url as well as its tensor, by calling `.display()` on either one:
 
+Play from `url`:
 ```python
 doc.url.display()
 ```
 
 <table>
   <tr>
-    <td><b>hello.mp3</b></td>
-  </tr>
-  <tr>
     <td><audio controls><source src="../hello.mp3" type="audio/mp3"></audio></td>
   </tr>
 </table>
 
+Play from `tensor`:
 ```python
 tensor_reversed.display()
 ```
 <table>
-  <tr>
-    <td><b>olleh.mp3</b></td>
-  </tr>
   <tr>
     <td><audio controls><source src="../olleh.mp3" type="audio/mp3"></audio></td>
   </tr>

@@ -1,7 +1,7 @@
 # Video
 
 DocArray supports many modalities including `Video`.
-This section will show you how to use DocArray to load and handle video data in DocArray.
+This section will show you how to load and handle video data in DocArray.
 
 Moreover, we will introduce DocArray's video specific types, to represent your video data ranging from [`VideoUrl`][docarray.typing.url.VideoUrl] to [`VideoBytes`][docarray.typing.bytes.VideoBytes] and [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray].
 

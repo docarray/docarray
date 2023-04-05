@@ -1,7 +1,7 @@
 # Image
 
 DocArray supports many different modalities including the widely used `Image` modality.
-This section will show you how to use DocArray to load and handle image data in DocArray.
+This section will show you how to load and handle image data in DocArray.
 
 Moreover, we will introduce DocArray's image specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] to [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
