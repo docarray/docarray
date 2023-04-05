@@ -36,9 +36,6 @@ With that said, let's dig into the three pillars of DocArray:
 
 ## Represent
 
-<details>
-  <summary>Click to expand</summary>
-
 DocArray allows you to **represent your data**, in a ML-native way.
 This is useful for different use cases:
 - :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
@@ -49,7 +46,62 @@ This is useful for different use cases:
 > that DocArray is built on top of, and fully compatible with, Pydantic!
 > Also, we have [dedicated section](#coming-from-pydantic) just for you!
 
-So let's see how you can represent your data with DocArray:
+Put simply, DocArray lets you represent your data in a dataclass-like way, with ML as a first class citizen:
+
+```python
+from docarray import BaseDoc
+from docarray.typing import TorchTensor, ImageUrl
+
+# Define your data model
+class MyDocument(BaseDoc):
+    description: str
+    image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
+    image_tensor: TorchTensor[1704, 2272, 3]  # you can express tensor shapes!
+
+
+# Stack multiple documents, column-wise
+from docarray import DocVec
+
+vec = DocVec[MyDocument](
+    [
+        MyDocument(
+            description="A cat",
+            image_url="https://example.com/cat.jpg",
+            image_tensor=torch.rand(1704, 2272, 3),
+        ),
+        MyDocument(
+            description="A dog",
+            image_url="https://example.com/dog.jpg",
+            image_tensor=torch.rand(1704, 2272, 3),
+        ),
+    ]
+)
+print(vec.image_tensor)
+
+# Or treat them like a list, row wise
+from docarray import DocList
+
+dl = DocList[MyDocument](
+    [
+        MyDocument(
+            description="A cat",
+            image_url="https://example.com/cat.jpg",
+            image_tensor=torch.rand(1704, 2272, 3),
+        ),
+        MyDocument(
+            description="A dog",
+            image_url="https://example.com/dog.jpg",
+            image_tensor=torch.rand(1704, 2272, 3),
+        ),
+    ]
+)
+print(dl.image_tensor)
+```
+
+<details>
+  <summary>Click for more details</summary>
+
+So let's take a closer look at how you can represent your data with DocArray:
 
 ```python
 from docarray import BaseDoc
