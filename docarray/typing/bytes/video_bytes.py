@@ -98,11 +98,11 @@ class VideoBytes(bytes, AbstractType):
                 if type(frame) == av.audio.frame.AudioFrame:
                     audio_frames.append(frame.to_ndarray())
                 elif type(frame) == av.video.frame.VideoFrame:
-                    video_frames.append(frame.to_ndarray(format='rgb24'))
-
                     if frame.key_frame == 1:
-                        curr_index = len(video_frames) - 1
+                        curr_index = len(video_frames)
                         keyframe_indices.append(curr_index)
+
+                    video_frames.append(frame.to_ndarray(format='rgb24'))
 
         if len(audio_frames) == 0:
             audio = parse_obj_as(AudioNdArray, np.array(audio_frames))
