@@ -12,7 +12,9 @@ First let's install requirements
 ## 💾 Installation
 
 ```bash
-pip install -r requirments.txt
+pip install transformers
+pip install openai-whisper
+pip install jina
 ```
 
 Now let's import necessary libraries
@@ -21,7 +23,7 @@ Now let's import necessary libraries
 ```python
 import whisper
 from jina import Executor, requests, Deployment
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import AudioUrl
 ```
 
@@ -50,8 +52,8 @@ class WhisperExecutor(Executor):
         self.model = whisper.load_model("medium.en", device=device)
 
     @requests
-    def transcribe(self, docs: DocArray[AudioURL], **kwargs) -> DocArray[Response]:
-        response_docs = DocArray[Response]()
+    def transcribe(self, docs: DocList[AudioURL], **kwargs) -> DocList[Response]:
+        response_docs = DocList[Response]()
         for doc in docs:
             transcribed_text = self.model.transcribe(str(doc.audio))['text']
             response_docs.append(Response(text=transcribed_text))
@@ -69,7 +71,7 @@ with Deployment(
     docs = d.post(
         on='/transcribe',
         inputs=[AudioURL(audio='resources/audio.mp3')],
-        return_type=DocArray[Response],
+        return_type=DocList[Response],
     )
     print(docs[0].text)
 ```

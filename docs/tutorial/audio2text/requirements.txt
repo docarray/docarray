@@ -1,1 +1,0 @@
-openai-whisper==20230308
