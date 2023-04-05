@@ -33,6 +33,10 @@ With that said, let's dig into the three pillars of DocArray:
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
 
+
+<details>
+  <summary>Click me</summary>
+
 ## Represent
 
 DocArray allows you to **represent your data**, in a ML-native way.
@@ -206,6 +210,7 @@ dl_2 = vec_2.stack()
 assert isinstance(dl_2, DocList)
 ```
 
+</details>
 
 ## Send
 
