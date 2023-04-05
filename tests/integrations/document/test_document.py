@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 import pytest
 from pydantic import BaseModel, ValidationError
-from typing_extensions import TypedDict
+from typing_extensions import NamedTuple, TypedDict
 
 from docarray import BaseDoc, DocList
 from docarray.documents import AudioDoc, ImageDoc, TextDoc
@@ -11,6 +11,7 @@ from docarray.documents.helper import (
     create_doc,
     create_doc_from_dict,
     create_doc_from_typeddict,
+    create_from_named_tuple,
 )
 from docarray.typing import AudioNdArray
 
@@ -148,3 +149,25 @@ def test_create_doc_from_dict():
     doc2 = MyDoc(text='txt', other='also text')
 
     assert isinstance(doc1, BaseDoc) and isinstance(doc2, BaseDoc)
+
+
+def test_create_from_named_tuple():
+    class MyMultiModalDoc(NamedTuple):
+        image: ImageDoc
+        text: TextDoc
+
+    with pytest.raises(ValueError):
+        _ = create_from_named_tuple(MyMultiModalDoc, __base__=BaseModel)
+
+    Doc = create_from_named_tuple(MyMultiModalDoc)
+
+    assert issubclass(Doc, BaseDoc)
+
+    class MyAudio(NamedTuple):
+        title: str
+        tensor: Optional[AudioNdArray]
+
+    Doc = create_from_named_tuple(MyAudio, __base__=AudioDoc)
+
+    assert issubclass(Doc, BaseDoc)
+    assert issubclass(Doc, AudioDoc)
