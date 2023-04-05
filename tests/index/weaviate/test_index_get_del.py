@@ -6,6 +6,7 @@ import weaviate
 from pydantic import Field
 
 from docarray import BaseDoc
+from docarray.documents import ImageDoc
 from docarray.index.backends.weaviate import DOCUMENTID, WeaviateDocumentIndex
 from docarray.typing import NdArray
 
@@ -374,3 +375,16 @@ def test_hybrid_query_batched(test_store):
     docs = test_store.execute_query(q)
     assert docs[0][0].id == '1'
     assert docs[1][0].id == '2'
+
+
+def test_index_document_with_bytes(weaviate_client):
+    doc = ImageDoc(id="1", url="www.foo.com", bytes_=b"foo")
+
+    store = WeaviateDocumentIndex[ImageDoc]()
+    store.index([doc])
+
+    results = store.filter(
+        filter_query={"path": ["id"], "operator": "Equal", "valueString": "1"}
+    )
+
+    assert doc == results[0]

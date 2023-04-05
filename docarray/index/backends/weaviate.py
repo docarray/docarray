@@ -1,3 +1,4 @@
+import base64
 import copy
 import logging
 from dataclasses import dataclass, field
@@ -52,6 +53,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
         self.embedding_column = None
         self.properties = None
+        # keep track of the column name that contains the bytes
+        # type because we will store them as a base64 encoded string
+        # in weaviate
+        self.bytes_columns = []
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
         self._client = weaviate.Client(self._db_config.host)
@@ -114,6 +119,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             # in weaviate, we do not create a property for the doc's embeddings
             if column_name == self.embedding_column:
                 continue
+            if column_info.db_type == 'blob':
+                self.bytes_columns.append(column_name)
+
             prop = {
                 "name": column_name
                 if column_name != 'id'
@@ -155,6 +163,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'number': {},
                 'boolean': {},
                 'number[]': {},
+                'blob': {},
             }
         )
 
@@ -434,6 +443,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if 'vector' in additional_fields:
                 result[self.embedding_column] = additional_fields['vector']
 
+        # convert any base64 encoded bytes column to bytes
+        self._decode_base64_properties_to_bytes(result)
+
         return result
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
@@ -443,6 +455,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         with self._client.batch as batch:
             for doc in docs:
                 parsed_doc = self._rewrite_documentid(doc)
+                self._encode_bytes_columns_to_base64(parsed_doc)
                 vector = parsed_doc.pop(self.embedding_column)
 
                 batch.add_data_object(
@@ -534,6 +547,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             float: 'number',
             bool: 'boolean',
             np.ndarray: 'number[]',
+            bytes: 'blob',
         }
 
         for py_type, weaviate_type in py_weaviate_type_map.items():
@@ -551,6 +565,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             # is done when the index is created
             if colinfo.config.get('is_embedding', None):
                 return colname
+
+    def _encode_bytes_columns_to_base64(self, doc):
+        for column in self.bytes_columns:
+            doc[column] = base64.b64encode(doc[column]).decode("utf-8")
+
+    def _decode_base64_properties_to_bytes(self, doc):
+        for column in self.bytes_columns:
+            doc[column] = base64.b64decode(doc[column])
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
