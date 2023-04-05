@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from docarray.typing.bytes.video_bytes import VideoBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.utils._internal.misc import import_library, is_notebook
@@ -130,9 +131,9 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         audio_frame_rate: int = 48000,
         audio_codec: str = 'aac',
         audio_format: str = 'fltp',
-    ) -> bytes:
+    ) -> VideoBytes:
         """
-        Convert video tensor to bytes.
+        Convert video tensor to VideoBytes.
 
         :param audio_tensor: AudioTensor containing the video's soundtrack.
         :param video_frame_rate: video frames per second.
@@ -142,7 +143,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         :param audio_format: the name of one of the audio formats supported by PyAV,
             such as 'flt', 'fltp', 's16' or 's16p'.
 
-        :return: bytes
+        :return: a VideoBytes object
         """
         bytes = BytesIO()
         self.save(
@@ -154,7 +155,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
             audio_codec=audio_codec,
             audio_format=audio_format,
         )
-        return bytes.getvalue()
+        return VideoBytes(bytes.getvalue())
 
     def display(self, audio: Optional[AudioTensor] = None) -> None:
         """
