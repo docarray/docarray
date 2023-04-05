@@ -382,7 +382,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
         )
-        return _FindResultBatched(documents=list(das), scores=np.array(scores))
+        return _FindResultBatched(documents=list(das), scores=scores)
 
     def _filter(
         self,
@@ -440,9 +440,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
         )
-        return _FindResultBatched(
-            documents=list(das), scores=np.array(scores, dtype=object)
-        )
+        return _FindResultBatched(documents=list(das), scores=np.array(scores))
 
     ###############################################
     # Helpers                                     #

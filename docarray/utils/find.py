@@ -2,6 +2,7 @@ __all__ = ['find', 'find_batched']
 
 from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
+from pydantic import parse_obj_as
 from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
@@ -187,7 +188,7 @@ def find_batched(
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
     :return: a list of named tuples of the form (DocList, AnyTensor),
-        where the first element contains the closes matches for each query,
+        where the first element contains the closest matches for each query,
         and the second element contains the corresponding scores.
     """
     if descending is None:
@@ -207,14 +208,17 @@ def find_batched(
         dists, k=limit, device=device, descending=descending
     )
 
-    results = []
+    batched_docs: List[DocList] = []
+    scores = []
     for indices_per_query, scores_per_query in zip(top_indices, top_scores):
         docs_per_query: DocList = DocList([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
-        docs_per_query = DocList(docs_per_query)
-        results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
-    return results
+        batched_docs.append(DocList(docs_per_query))
+        scores.append(scores_per_query)
+    return FindResultBatched(
+        documents=batched_docs, scores=parse_obj_as(embedding_type, scores)
+    )
 
 
 def _extract_embedding_single(
