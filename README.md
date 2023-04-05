@@ -59,7 +59,7 @@ class MyDocument(BaseDoc):
     image_tensor: TorchTensor[1704, 2272, 3]  # you can express tensor shapes!
 
 
-# Stack multiple documents, column-wise
+# Stack multiple documents
 from docarray import DocVec
 
 vec = DocVec[MyDocument](
@@ -69,33 +69,10 @@ vec = DocVec[MyDocument](
             image_url="https://example.com/cat.jpg",
             image_tensor=torch.rand(1704, 2272, 3),
         ),
-        MyDocument(
-            description="A dog",
-            image_url="https://example.com/dog.jpg",
-            image_tensor=torch.rand(1704, 2272, 3),
-        ),
     ]
+    * 1000
 )
 print(vec.image_tensor)
-
-# Or treat them like a list, row wise
-from docarray import DocList
-
-dl = DocList[MyDocument](
-    [
-        MyDocument(
-            description="A cat",
-            image_url="https://example.com/cat.jpg",
-            image_tensor=torch.rand(1704, 2272, 3),
-        ),
-        MyDocument(
-            description="A dog",
-            image_url="https://example.com/dog.jpg",
-            image_tensor=torch.rand(1704, 2272, 3),
-        ),
-    ]
-)
-print(dl.image_tensor)
 ```
 
 <details>
