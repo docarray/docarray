@@ -61,7 +61,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
 
@@ -70,7 +70,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
     ```
@@ -145,7 +145,7 @@ def find_batched(
     results = find_batched(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
     top_matches, scores = results[0]
@@ -155,7 +155,7 @@ def find_batched(
     results = find_batched(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
     top_matches, scores = results[0]
@@ -209,18 +209,18 @@ def find_batched(
 
 def _extract_embedding_single(
     data: Union[DocList, BaseDoc, AnyTensor],
-    embedding_field: str,
+    search_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
     and return it in a batched representation.
 
     :param data: the data
-    :param embedding_field: the embedding field
+    :param search_field: the embedding field
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
     if isinstance(data, BaseDoc):
-        emb = next(AnyDocArray._traverse(data, embedding_field))
+        emb = next(AnyDocArray._traverse(data, search_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -232,22 +232,22 @@ def _extract_embedding_single(
 
 def _extract_embeddings(
     data: Union[AnyDocArray, BaseDoc, AnyTensor],
-    embedding_field: str,
+    search_field: str,
     embedding_type: Type,
 ) -> AnyTensor:
     """Extract the embeddings from the data.
 
     :param data: the data
-    :param embedding_field: the embedding field
+    :param search_field: the embedding field
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
     emb: AnyTensor
     if isinstance(data, DocList):
-        emb_list = list(AnyDocArray._traverse(data, embedding_field))
+        emb_list = list(AnyDocArray._traverse(data, search_field))
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, (DocVec, BaseDoc)):
-        emb = next(AnyDocArray._traverse(data, embedding_field))
+        emb = next(AnyDocArray._traverse(data, search_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 
