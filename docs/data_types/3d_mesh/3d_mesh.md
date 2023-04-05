@@ -2629,7 +2629,7 @@ init();</script></body>
 
 
 
-## Get started - Predefined Documents
+## Getting started - Predefined Docs
 To get started and play around with the 3D modalities, DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which include all of the previously mentioned functionalities.
 
 ### `Mesh3D`

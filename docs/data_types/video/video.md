@@ -187,7 +187,7 @@ doc_fast.url.display()
 
 
 
-## Get started - Predefined VideoDoc
+## Getting started - Predefined `VideoDoc`
 
 To get started and play around with your video data, DocArray provides a predefined [`VideoDoc`][docarray.documents.video.VideoDoc], which includes all of the previously mentioned functionalities:
 

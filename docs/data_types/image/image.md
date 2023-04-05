@@ -125,7 +125,7 @@ You can display your image in a notebook from both an [`ImageUrl`][docarray.typi
 </figure>
 
 
-## Get started - Predefined ImageDoc
+## Getting started - Predefined `ImageDoc`
 
 To get started and play around with the image modality DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
