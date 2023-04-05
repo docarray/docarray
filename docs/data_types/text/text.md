@@ -2,9 +2,9 @@
 # 🔤 Text
 
 DocArray supports many different modalities including `Text`.
-This section will show you how to load and handle text data in DocArray.
+This section will show you how to load and handle text data using DocArray.
 
-Storing text in DocArray is as simple as:
+Storing text in DocArray is as simple as this:
 
 ```python
 from docarray import BaseDoc
@@ -25,8 +25,9 @@ doc.text = '👋	नमस्ते दुनिया!	你好世界！こんに
 
 ## Load text file
 
-If your text data is too large to be written inline or if it is stored in a file, you can also define the url as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] first and then load the text data:
-Let's frist define a schema:
+If your text data is too long to be written inline or if it is stored in a file, you can also define the url as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] first and then load the text data.
+
+Let's first define a schema:
 
 ```python
 from docarray import BaseDoc
@@ -37,7 +38,7 @@ class MyText(BaseDoc):
     text: str = None
     url: TextUrl = None
 ```
-Next, we can instantiate a `MyText` object with a `TextUrl` and load the content to the `text` field.
+Next, we can instantiate a `MyText` object with a `url` attribute and load its content to the `text` field.
 ```python
 doc = MyText(
     url='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
@@ -49,8 +50,8 @@ assert doc.text.startswith('<TITLE>Read Me</TITLE>')
 
 ##  Segment long texts
 
-Often times when you index/search text data, you don’t want to consider thousands of words as one huge string. Instead,  
-some finer granularity would be nice. You can do this by leveraging nested field. For example, let’s split some page content into its sentences by `'.'`.
+Often times when you index or search text data, you don’t want to consider thousands of words as one huge string. 
+Instead, some finer granularity would be nice. You can do this by leveraging nested field. For example, let’s split some page content into its sentences by `'.'`.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -69,23 +70,26 @@ page = Page(content=[Sentence(text=t) for t in long_text.split('.')])
 
 page.summary()
 ```
-``` { .text .no-copy }
-📄 Page : 13d909a ...
-└── 💠 content: DocList[Sentence]
-    ├── 📄 Sentence : 6725382 ...
-    │   ╭────────────────┬─────────────────────╮
-    │   │ Attribute      │ Value               │
-    │   ├────────────────┼─────────────────────┤
-    │   │ text: str      │ First sentence      │
-    │   ╰────────────────┴─────────────────────╯
-    ├── 📄 Sentence : 17a934c ...
-    │   ╭───────────────┬──────────────────────╮
-    │   │ Attribute     │ Value                │
-    │   ├───────────────┼──────────────────────┤
-    │   │ text: str     │  Second sentence     │
-    │   ╰───────────────┴──────────────────────╯
-    └── ... 2 more Sentence documents
-```
+<details>
+    <summary>Output</summary>
+    ``` { .text .no-copy }
+    📄 Page : 13d909a ...
+    └── 💠 content: DocList[Sentence]
+        ├── 📄 Sentence : 6725382 ...
+        │   ╭────────────────┬─────────────────────╮
+        │   │ Attribute      │ Value               │
+        │   ├────────────────┼─────────────────────┤
+        │   │ text: str      │ First sentence      │
+        │   ╰────────────────┴─────────────────────╯
+        ├── 📄 Sentence : 17a934c ...
+        │   ╭───────────────┬──────────────────────╮
+        │   │ Attribute     │ Value                │
+        │   ├───────────────┼──────────────────────┤
+        │   │ text: str     │  Second sentence     │
+        │   ╰───────────────┴──────────────────────╯
+        └── ... 2 more Sentence documents
+    ```
+</details>
 
 ## Getting started - Predefined `TextDoc`
 

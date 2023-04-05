@@ -1,7 +1,7 @@
 # 📊 Table
 
 DocArray supports many different modalities including tabular data.
-This section will show you how to load and handle tabular data in DocArray.
+This section will show you how to load and handle tabular data using DocArray.
 
 ## Load CSV table
 

@@ -137,7 +137,7 @@ pages = DocList[Page](
 docarray_daily = Newspaper(
     cover=cover_page,
     pages=pages,
-    metadata={'author': 'DocArray and friends', 'issue': '0.0.30'},
+    metadata={'author': 'DocArray and friends', 'issue': '0.30.0'},
 )
 
 docarray_daily.summary()

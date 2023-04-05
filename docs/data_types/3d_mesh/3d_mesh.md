@@ -1,7 +1,7 @@
 # 🧬 3D Mesh
 
 DocArray supports many different modalities including `3D Mesh`.
-This section will show you how to load and handle 3D data in DocArray.
+This section will show you how to load and handle 3D data using DocArray.
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 

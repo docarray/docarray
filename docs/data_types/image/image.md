@@ -1,9 +1,9 @@
 # 🖼️ Image
 
 DocArray supports many different modalities including the widely used `Image` modality.
-This section will show you how to load and handle image data in DocArray.
+This section will show you how to load and handle image data using DocArray.
 
-Moreover, we will introduce DocArray's image specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] to [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+Moreover, we will introduce DocArray's image specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] and [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
 !!! note
     This requires `Pillow` dependency. You can install all necessary dependencies via:
@@ -11,13 +11,9 @@ Moreover, we will introduce DocArray's image specific types, to represent your i
     pip install "docarray[image]"
     ```
 
-<figure markdown>
-  ![](apple.png){ width="220" }
-</figure>
-
 ## Load image
 
-First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], and an optional `tensor` attribute of type `ImageTensor`.
+First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type `ImageTensor`.
 
 Next, let's instantiate a `MyImage` object with a local or remote url. 
 
@@ -34,7 +30,7 @@ class MyImage(BaseDoc):
 img = MyImage(url='apple.png')
 ```
 
-To load the image data you can simply call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an instance of [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+To load the image data you can simply call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object.
 
 ```python
 from docarray.typing import ImageNdArray
@@ -86,7 +82,7 @@ assert isinstance(pil_img, PILImage)
 
 ## ImageBytes
 
-Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an `ImageTensor` of your choice:
+Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an `ImageTensor` of your choice.
 
 ```python hl_lines="13 14"
 from docarray.typing import ImageBytes, ImageTensor, ImageUrl
@@ -105,7 +101,7 @@ img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
 img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 ```
  
-Vice versa, you can also transform an ImageTensor to ImageBytes:
+Vice versa, you can also transform an [`ImageTensor`] to [`ImageBytes`][docarray.typing.bytes.ImageBytes]:
 
 ```python
 bytes_from_tensor = img.tensor.to_bytes()
@@ -116,8 +112,7 @@ assert isinstance(bytes_from_tensor, ImageBytes)
 ## Display image in notebook
 
 You can display your image in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
-[`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] instance.
-
+[`ImageTensor`] instance.
 
 
 <figure markdown>
@@ -127,7 +122,7 @@ You can display your image in a notebook from both an [`ImageUrl`][docarray.typi
 
 ## Getting started - Predefined `ImageDoc`
 
-To get started and play around with the image modality DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
+To get started and play around with the image modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
 ```python
 class ImageDoc(BaseDoc):

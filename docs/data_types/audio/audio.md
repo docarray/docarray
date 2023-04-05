@@ -1,7 +1,7 @@
 # 🔊 Audio
 
 DocArray supports many different modalities including `Audio`.
-This section will show you how to load and handle audio data in DocArray.
+This section will show you how to load and handle audio data using DocArray.
 
 Moreover, we will introduce DocArray's audio specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
 
@@ -13,9 +13,9 @@ Moreover, we will introduce DocArray's audio specific types, to represent your a
 
 ## Load audio file
 
-First, let's define our class `MyAudio`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`AudioUrl`][docarray.typing.url.AudioUrl], and an optional `tensor` attribute of type `AudioTensor`.
+First, let's define a class, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`AudioUrl`][docarray.typing.url.AudioUrl], and an optional `tensor` attribute of type `AudioTensor`.
 
-Next, we can instantiate a `MyAudio` object with a local or remote url. 
+Next, we can instantiate an object of that class with a local or remote url. 
 
 ```python
 from docarray import BaseDoc
@@ -35,10 +35,10 @@ doc = MyAudio(
 
 Loading the content of the audio file is as easy as calling [`.load()`][docarray.typing.url.AudioUrl] on the [`AudioUrl`][docarray.typing.url.AudioUrl] instance. 
 
-This will return:
+This will return a tuple of:
 
 - an [`AudioNdArray`][docarray.typing.tensor.audio.AudioNdArray] representing the audio file content 
-- the corresponding frame rate, which describes the number of signals for a certain period of time.
+- the corresponding frame rate describing the number of signals for a certain period of time
 
 ```python
 doc.tensor, doc.frame_rate = doc.url.load()
@@ -116,10 +116,11 @@ doc.bytes_, _ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
 doc.tensor, _ = doc.bytes_.load()  # type(doc.tensor) = AudioNdarray
 ```
  
-Vice versa, you can also transform an AudioTensor to AudioBytes:
+Vice versa, you can also transform an [`AudioTensor`] to [`AudioBytes`][docarray.typing.bytes.AudioBytes]:
 
 ```python
 from docarray.typing import AudioBytes
+
 
 bytes_from_tensor = doc.tensor.to_bytes()
 
@@ -137,7 +138,7 @@ tensor_reversed.save(
 ```
 ## Play audio in notebook
 
-You can play your audio sound in a notebook from its url as well as its tensor, by calling `.display()` on either one:
+You can play your audio sound in a notebook from its url as well as its tensor, by calling `.display()` on either one.
 
 Play from `url`:
 ```python
