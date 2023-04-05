@@ -2,19 +2,19 @@ import numpy as np
 import pytest
 from pydantic import Field
 
-from docarray import BaseDocument
+from docarray import BaseDoc
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-class MyDoc(BaseDocument):
+class MyDoc(BaseDoc):
     tens: NdArray
 
 
 def test_configure_dim(tmp_path):
-    class Schema(BaseDocument):
+    class Schema(BaseDoc):
         tens: NdArray = Field(dim=10)
 
     index = HnswDocumentIndex[Schema](work_dir=str(tmp_path))
