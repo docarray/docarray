@@ -12,21 +12,14 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
-> **Note**
-> This introduction refers to version 2 of DocArray, a rewrite that is currently at the alpha stage.
-> Not all features that are mentioned here are implemented yet.
-> If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
-> for the (already released) version 1 of DocArray
-> see [here](https://github.com/docarray/docarray).
-
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
 DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
-- DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
-- DocArray is built on **Pydantic** and out-of-the-box compatible with **FastAPI**
-- DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
-- DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
+- :fire: DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
+- :zap: DocArray is built on **Pydantic** and out-of-the-box compatible with **FastAPI**
+- :package: DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
+- :chains: DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
 
 With that said, let's dig into the three pillars of DocArray:
 1. [Represent](#represent)
@@ -44,9 +37,9 @@ With that said, let's dig into the three pillars of DocArray:
 
 DocArray allows you to **represent your data**, in a ML-native way.
 This is useful for different use cases:
-- You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
-- You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
-- You are **parsing data** for later use in your ML or DS applications
+- :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
+- :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
+- :card_index_dividers: You are **parsing data** for later use in your ML or DS applications
 
 > :bulb: **Coming from Pydantic?**: If you're currently using Pydantic for the use cases above, you should be happy to hear
 > that DocArray is built on top of, and fully compatible with, Pydantic!
@@ -66,7 +59,7 @@ class MyDocument(BaseDoc):
     image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
     image_tensor: Optional[
         TorchTensor[1704, 2272, 3]
-    ]  # could also be NdArray of TensorflowTensor
+    ]  # could also be NdArray or TensorflowTensor
     embedding: Optional[TorchTensor]
 ```
 
@@ -119,8 +112,8 @@ That's why you can easily collect multiple `Documents`:
 When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
 
 DocArray offers two data structures for this:
-- **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. Perfect for batch processing and use inside of ML models.
-- **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. Perfect for streaming, re-ranking, and shuffling of data.
+- **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
+- **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
 
 Let's take a look at them, starting with `DocVec`:
 
@@ -184,13 +177,16 @@ print(dl.url)  # you can bulk access any other field, too
 And you can insert, remove, and append `Documents` to your `DocList`:
 
 ```python
+# append
 dl.append(
     Image(
         url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
         tensor=np.zeros((3, 224, 224)),
     )
 )
+# delete
 del dl[0]
+# insert
 dl.insert(
     0,
     Image(
