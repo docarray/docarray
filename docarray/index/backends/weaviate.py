@@ -438,7 +438,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             result['id'] = result.pop(DOCUMENTID)
 
         # take the vector from the _additional field
-        if '_additional' in result:
+        if '_additional' in result and self.embedding_column:
             additional_fields = result.pop('_additional')
             if 'vector' in additional_fields:
                 result[self.embedding_column] = additional_fields['vector']
@@ -456,7 +456,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for doc in docs:
                 parsed_doc = self._rewrite_documentid(doc)
                 self._encode_bytes_columns_to_base64(parsed_doc)
-                vector = parsed_doc.pop(self.embedding_column)
+                vector = (
+                    parsed_doc.pop(self.embedding_column)
+                    if self.embedding_column
+                    else None
+                )
 
                 batch.add_data_object(
                     uuid=weaviate.util.generate_uuid5(parsed_doc, index_name),
