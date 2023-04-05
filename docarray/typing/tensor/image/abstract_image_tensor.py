@@ -3,18 +3,22 @@ import warnings
 from abc import ABC
 
 import numpy as np
+from typing_extensions import TYPE_CHECKING
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_notebook
 
+if TYPE_CHECKING:
+    from docarray.typing.bytes.image_bytes import ImageBytes
+
 
 class AbstractImageTensor(AbstractTensor, ABC):
-    def to_bytes(self, format: str = 'PNG') -> bytes:
+    def to_bytes(self, format: str = 'PNG') -> 'ImageBytes':
         """
-        Convert image tensor to bytes.
+        Convert image tensor to ImageBytes.
 
         :param format: the image format use to store the image, can be 'PNG' , 'JPG' ...
-        :return: bytes
+        :return: an ImageBytes object
         """
         PIL = import_library('PIL', raise_error=True)  # noqa: F841
         from PIL import Image as PILImage
@@ -31,7 +35,9 @@ class AbstractImageTensor(AbstractTensor, ABC):
             pil_image.save(buffer, format=format)
             img_byte_arr = buffer.getvalue()
 
-        return img_byte_arr
+        from docarray.typing.bytes.image_bytes import ImageBytes
+
+        return ImageBytes(img_byte_arr)
 
     def save(self, file_path: str) -> None:
         """

@@ -24,14 +24,14 @@ class ImageTensorFlowTensor(
     from typing import Optional
 
     from docarray import BaseDoc
-    from docarray.typing import ImageTensorFlowTensor, ImageUrl
+    from docarray.typing import ImageBytes, ImageTensorFlowTensor, ImageUrl
 
 
     class MyImageDoc(BaseDoc):
         title: str
         tensor: Optional[ImageTensorFlowTensor]
         url: Optional[ImageUrl]
-        bytes: Optional[bytes]
+        bytes: Optional[ImageBytes]
 
 
     doc = MyImageDoc(
