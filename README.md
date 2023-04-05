@@ -1,18 +1,58 @@
-# DocArray - Version 2
+<p align="center">
+<img src="https://github.com/docarray/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
+<br>
+<b>The data structure for multimodal data</b>
+</p>
+
+<p align=center>
+<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
+<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
+<a href="https://bestpractices.coreinfrastructure.org/projects/6554"><img src="https://bestpractices.coreinfrastructure.org/projects/6554/badge"></a>
+<a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
+<a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
+</p>
 
 > **Note**
 > This introduction refers to version 2 of DocArray, a rewrite that is currently at the alpha stage.
 > Not all features that are mentioned here are implemented yet.
 > If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
 > for the (already released) version 1 of DocArray
-> see [here](https://github.com/docarray/docarray)._
+> see [here](https://github.com/docarray/docarray).
 
-DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
-**Neural Search**.
+DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
-This means that DocArray lets you do the following things:
+DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
+
+- DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
+- DocArray is built on **Pydantic** and out-of-the-box compatible with **FastAPI**
+- DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
+- DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
+
+With that said, let's dig into the three pillars of DocArray:
+1. [Represent](#represent)
+2. [Send](#send)
+3. [Store](#store)
+
+> :bulb: **Where are you coming from?**: Depending on your use case and background, there are different was to "get" DocArray.
+> You can navigate to the following section for an explanation that should fit your mindest:
+> - [Coming from pure PyTorch or TensorFlow](#coming-from-torch-tf)
+> - [Coming from Pydantic](#coming-from-pydantic)
+> - [Coming from FastAPI](#coming-from-fastapi)
+> - [Coming from a vector database](#coming-from-vector-database)
 
 ## Represent
+
+DocArray allows you to **represent your data**, in a ML-native way.
+This is useful for different use cases:
+- You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
+- You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
+- You are **parsing data** for later use in your ML or DS applications
+
+> :bulb: **Coming from Pydantic?**: If you're currently using Pydantic for the use cases above, you should be happy to hear
+> that DocArray is built on top of, and fully compatible with, Pydantic!
+> Also, we have [dedicated section](#coming-from-pydantic) just for you!
+
+So let's see how you can represent your data with DocArray:
 
 ```python
 from docarray import BaseDoc
@@ -20,46 +60,39 @@ from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 
 
+# Define your data model
 class MyDocument(BaseDoc):
     description: str
-    image_url: ImageUrl
-    image_tensor: Optional[TorchTensor[1704, 2272, 3]]
-    # The field above only work with tensor of shape (1704, 2272, 3)
+    image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
+    image_tensor: Optional[
+        TorchTensor[1704, 2272, 3]
+    ]  # could also be NdArray of TensorflowTensor
     embedding: Optional[TorchTensor]
+```
 
+So not only can you define the types of your data, you can even **specify the shape of your tensors!**
 
+Once you have your model in form of a `Document`, you can work with it!
+
+```python
+# Create a document
 doc = MyDocument(
     description="This is a photo of a mountain",
     image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
 )
-doc.image_tensor = doc.image_url.load()  # load image tensor from URL
-```
 
-```python
-doc.embedding = clip_image_encoder(
-    doc.image_tensor
-)  # create and store embedding using model of your choice
+# Load image tensor from URL
+doc.image_tensor = doc.image_url.load()
+
+# Compute embedding with any model of your choice
+doc.embedding = clip_image_encoder(doc.image_tensor)
 
 print(doc.embedding.shape)
 ```
 
-- **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a Document, a single, unified data structure.
-  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focused features.
+### Compose nested Documents
 
-### Use pre-defined `Document`s for common use cases:
-
-```python
-from docarray.documents import ImageDoc
-
-doc = ImageDoc(
-    url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-)
-doc.tensor = doc.url.load()  # load image tensor from URL
-doc.embedding = clip_image_encoder(
-    doc.tensor
-)  # create and store embedding using model of your choice
-```
-### Compose nested Documents:
+Of course you can compose Documents into a nested structure:
 
 ```python
 from docarray import BaseDoc
@@ -77,23 +110,32 @@ doc = MultiModalDocument(
 )
 ```
 
-### Collect multiple `Documents` into a `DocList`:
+Of course, you rarely work with a single data point at a time, especially in Machine Learning applications.
+
+That's why you can easily collect multiple `Documents`:
+
+### Collect multiple `Documents`
+
+When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
+
+DocArray offers two data structures for this:
+- **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. Perfect for batch processing and use inside of ML models.
+- **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. Perfect for streaming, re-ranking, and shuffling of data.
+
+Let's take a look at them, starting with `DocVec`:
 
 ```python
-from docarray import DocList, BaseDoc
+from docarray import DocVec, BaseDoc
 from docarray.typing import AnyTensor, ImageUrl
 import numpy as np
 
 
 class Image(BaseDoc):
     url: ImageUrl
-    tensor: AnyTensor
-```
+    tensor: AnyTensor  # this allows torch, numpy, and tensorflow tensors
 
-```python
-from docarray import DocList
 
-da = DocList[Image](
+vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
     [
         Image(
             url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
@@ -104,25 +146,73 @@ da = DocList[Image](
 )
 ```
 
-Access fields at the DocArray level:
+As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
+
+This may look slightly weird at first, but we're confident that you'll get used to it quickly!
+Besides, it allows us to do some cool things, like giving you **bulk access to the fields that you defined** in your `Document`:
 
 ```python
-print(len(da.tensor))
-print(da.tensor[0].shape)
+tensor = vec.tensor  # gets all the tensors in the DocVec
+print(tensor.shape)  # which are stacked up into a single tensor!
+print(vec.url)  # you can bulk access any other field, too
 ```
 
-You can stack tensors if you want to perform in batch processing:
-
-```python
-da = da.stack()
-```
+The second data structure, `DocList`, works in a similar way:
 
 ```python
-print(type(da.tensor))
-print(da.tensor.shape)
+from docarray import DocList
+
+dl = DocList[Image](  # the DocList is parametrized by your personal schema!
+    [
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+        for _ in range(100)
+    ]
+)
 ```
+
+You can still bulk access the fields of your `Document`:
+
+```python
+tensors = dl.tensor  # gets all the tensors in the DocVec
+print(type(tensors))  # as a list of tensors
+print(dl.url)  # you can bulk access any other field, too
+```
+
+And you can insert, remove, and append `Documents` to your `DocList`:
+
+```python
+dl.append(
+    Image(
+        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+        tensor=np.zeros((3, 224, 224)),
+    )
+)
+del dl[0]
+dl.insert(
+    0,
+    Image(
+        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+        tensor=np.zeros((3, 224, 224)),
+    ),
+)
+```
+
+And you can seamlessly switch between `DocVec` and `DocList`:
+
+```python
+vec_2 = dl.unstack()
+assert isinstance(vec_2, DocVec)
+
+dl_2 = vec_2.stack()
+assert isinstance(dl_2, DocList)
+```
+
 
 ## Send
+
 - **Serialize** any `Document` or `DocArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
 - Use in **microservice** architecture: Send over **HTTP** or **gRPC**
 - Integrate seamlessly with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
