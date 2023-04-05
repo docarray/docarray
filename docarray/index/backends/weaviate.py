@@ -22,7 +22,7 @@ import weaviate
 
 import docarray
 from docarray import BaseDoc, DocList
-from docarray.index.abstract import BaseDocIndex, _FindResultBatched
+from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResultBatched
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.find import FindResult, _FindResult
@@ -294,6 +294,37 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return documents, scores
 
+    def find_batched(
+        self,
+        queries: Union[AnyTensor, DocList],
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResultBatched:
+        self._logger.debug('Executing `find_batched`')
+        if search_field != '':
+            raise ValueError(
+                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+            )
+        embedding_field = self._get_embedding_field()
+
+        if isinstance(queries, Sequence):
+            query_vec_list = self._get_values_by_column(queries, embedding_field)
+            query_vec_np = np.stack(
+                tuple(self._to_numpy(query_vec) for query_vec in query_vec_list)
+            )
+        else:
+            query_vec_np = self._to_numpy(queries)
+
+        da_list, scores = self._find_batched(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+
+        if len(da_list) > 0 and isinstance(da_list[0], List):
+            da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
+
+        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
+
     def _find_batched(
         self,
         queries: Sequence[np.ndarray],
@@ -302,11 +333,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
-        if search_field != '':
-            logging.warning(
-                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
-            )
-
         qs = []
         for i, query in enumerate(queries):
             near_vector = {"vector": query}

@@ -151,12 +151,11 @@ def test_find_batched(weaviate_client, caplog):
     assert len(results.documents[0]) == 3
     assert len(results.documents[1]) == 3
 
-    with caplog.at_level(logging.DEBUG):
+    with pytest.raises(
+        ValueError,
+        match=r"Argument search_field is not supported for WeaviateDocumentIndex",
+    ):
         store.find_batched(queries, search_field="foo", limit=10)
-        assert (
-            "Argument search_field is not supported for WeaviateDocumentIndex"
-            in caplog.text
-        )
 
 
 @pytest.mark.parametrize(
