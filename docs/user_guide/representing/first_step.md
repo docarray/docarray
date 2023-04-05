@@ -1,4 +1,4 @@
-# Representing
+# Document
 
 At the heart of `DocArray` lies the concept of [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
