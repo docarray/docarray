@@ -1,6 +1,10 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, NamedTuple, Optional, Tuple, Type, TypeVar
 
-from pydantic import create_model, create_model_from_typeddict
+from pydantic import (
+    create_model,
+    create_model_from_namedtuple,
+    create_model_from_typeddict,
+)
 from pydantic.config import BaseConfig
 from typing_extensions import TypedDict
 
@@ -152,3 +156,45 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
         for field, value in data_dict.items()
     }
     return create_doc(__model_name=model_name, **field_types)  # type: ignore
+
+
+def create_from_named_tuple(
+    named_tuple_cls: Type['NamedTuple'],
+    __base__: Type['T_doc'] = BaseDoc,
+    **kwargs: Any,
+) -> Type['T_doc']:
+    """
+    Create a subclass of BaseDocument based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
+    :param named_tuple_cls: NamedTuple class to use for the new Document class
+    :param kwargs: extra arguments to pass to `create_model_from_namedtuple`
+    :return: the new Document class
+
+    Example usage
+
+    .. code-block:: python
+        from typing import NamedTuple
+
+        from docarray import BaseDocument
+        from docarray.documents import Audio
+        from docarray.documents.helper import create_from_named_tuple
+        from docarray.typing.tensor.audio import AudioNdArray
+
+
+        class MyAudio(NamedTuple):
+            title: str
+            tensor: AudioNdArray
+
+
+        Doc = create_from_named_tuple(MyAudio, __base__=Audio)
+
+        assert issubclass(Doc, BaseDocument)
+        assert issubclass(Doc, Audio)
+
+    """
+    if __base__:
+        if not issubclass(__base__, BaseDoc):
+            raise ValueError(f'{__base__} is not a BaseDocument or its subclass')
+    else:
+        __base__ = BaseDoc
+    doc = create_model_from_namedtuple(named_tuple_cls, __base__=__base__, **kwargs)
+    return doc
