@@ -385,10 +385,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index.
 
-        .. warning::
-            Passing a sequence of Documents that is not a DocList comes at
-            a performance penalty, since compatibility with the schema of Index
-            needs to be checked for every Document individually.
+        !!! note
+            Passing a sequence of Documents that is not a DocList
+            (such as a List of Docs) comes at a performance penalty.
+            This is because the Index needs to check compatibility between itself and
+            the data. With a DocList as input this is a single check; for other inputs
+            compatibility needs to be checked for every Document individually.
         """
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
