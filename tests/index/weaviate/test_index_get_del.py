@@ -111,19 +111,18 @@ def test_find(weaviate_client, caplog):
     query = [10.1, 10.1]
 
     results = store.find(
-        query, search_field=None, limit=3, score_name="distance", score_threshold=1e-2
+        query, search_field='', limit=3, score_name="distance", score_threshold=1e-2
     )
     assert len(results) == 2
 
-    results = store.find(query, search_field=None, limit=3, score_threshold=0.99)
+    results = store.find(query, search_field='', limit=3, score_threshold=0.99)
     assert len(results) == 2
 
-    with caplog.at_level(logging.DEBUG):
+    with pytest.raises(
+        ValueError,
+        match=r"Argument search_field is not supported for WeaviateDocumentIndex",
+    ):
         store.find(query, search_field="foo", limit=10)
-        assert (
-            "Argument search_field is not supported for WeaviateDocumentIndex"
-            in caplog.text
-        )
 
 
 def test_find_batched(weaviate_client, caplog):

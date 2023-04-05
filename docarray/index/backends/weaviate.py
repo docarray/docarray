@@ -23,8 +23,9 @@ import weaviate
 import docarray
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _FindResultBatched
+from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.find import _FindResult
+from docarray.utils.find import FindResult, _FindResult
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='WeaviateDocumentIndex')
@@ -215,6 +216,33 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             [self._parse_weaviate_result(doc) for doc in batched_result]
             for batched_result in batched_results["data"]["Get"].values()
         ]
+
+    def find(
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ):
+        self._logger.debug('Executing `find`')
+        if search_field != '':
+            raise ValueError(
+                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+            )
+        embedding_field = self._get_embedding_field()
+        if isinstance(query, BaseDoc):
+            query_vec = self._get_values_by_column([query], embedding_field)[0]
+        else:
+            query_vec = query
+        query_vec_np = self._to_numpy(query_vec)
+        docs, scores = self._find(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+
+        if isinstance(docs, List):
+            docs = self._dict_list_to_docarray(docs)
+
+        return FindResult(documents=docs, scores=scores)
 
     def _find(
         self,
@@ -470,6 +498,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def build_query(self) -> BaseDocIndex.QueryBuilder:
         return self.QueryBuilder(self)
+
+    def _get_embedding_field(self) -> str:
+        for colname, colinfo in self._column_infos.items():
+            # no need to check for missing is_embedding attribute because this check
+            # is done when the index is created
+            if colinfo.config.get('is_embedding', None):
+                return colname
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
