@@ -1,6 +1,6 @@
 # Creating an Audio to Text App with Jina and DocArray V2
 
-This is how you can build an Audio to Text app using both Jina and DocarrayV2
+This is how you can build an Audio to Text app using Jina, Docarray and Whisper
 
 We will use: 
 
