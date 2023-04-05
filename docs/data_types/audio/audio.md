@@ -1,7 +1,7 @@
 # Audio
 
 DocArray supports many different modalities including `Audio`.
-This section will show you how to use DocArray to load and handle audio data in DocArray.
+This section will show you how to load and handle audio data in DocArray.
 
 Moreover, we will introduce DocArray's audio specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
 

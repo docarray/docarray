@@ -26,18 +26,18 @@ class Book(BaseDoc):
     author: str
     year: int
 ```
-Next, we can load the content of the csv file to a DocArray instance of `Book`s.
+Next, we can load the content of the csv file to a DocList instance of `Book`s.
 ```python
-from docarray import DocArray
+from docarray import DocList
 
 
-docs = DocArray[Book].from_csv(file_path='books.csv')
+docs = DocList[Book].from_csv(file_path='books.csv')
 docs.summary()
 ```
 ``` { .text .no-copy }
-╭───── DocArray Summary ──────╮
+╭────── DocList Summary ──────╮
 │                             │
-│   Type     DocArray[Book]   │
+│   Type     DocList[Book]    │
 │   Length   3                │
 │                             │
 ╰─────────────────────────────╯
@@ -50,12 +50,12 @@ docs.summary()
 │                     │
 ╰─────────────────────╯
 ```
-The resulting DocArray contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
+The resulting DocList contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
 
 
 ## Save to CSV file
 
-Vice versa, you can also store your DocArray data to a `.csv` file.
+Vice versa, you can also store your DocList data to a `.csv` file.
 ```python
 docs.to_csv(file_path='/path/to/my_file.csv')
 ```
@@ -71,15 +71,15 @@ class BookReview(BaseDoc):
     stars: float
 
 
-review_docs = DocArray[BookReview](
+review_docs = DocList[BookReview](
     [BookReview(book=book, n_ratings=12345, stars=5) for book in docs]
 )
 review_docs.summary()
 ```
 ``` { .text .no-copy}
-╭──────── DocArray Summary ─────────╮
+╭───────── DocList Summary ─────────╮
 │                                   │
-│   Type     DocArray[BookReview]   │
+│   Type     DocList[BookReview]    │
 │   Length   3                      │
 │                                   │
 ╰───────────────────────────────────╯
