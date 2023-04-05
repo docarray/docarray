@@ -186,6 +186,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             has_matches = results["results"]["matches"]
 
     def _filter(self, filter_query: Any, limit: int) -> Union[DocList, List[Dict]]:
+        self._overwrite_id(filter_query)
+
         results = (
             self._client.query.get(self._db_config.index_name, self.properties)
             .with_additional("vector")
@@ -201,6 +203,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _filter_batched(
         self, filter_queries: Any, limit: int
     ) -> Union[List[DocList], List[List[Dict]]]:
+        for filter_query in filter_queries:
+            self._overwrite_id(filter_query)
+
         qs = [
             self._client.query.get(self._db_config.index_name, self.properties)
             .with_additional("vector")
@@ -243,6 +248,21 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
+
+    def _overwrite_id(self, where_filter):
+        """
+        Overwrite the id field in the where filter to DOCUMENTID
+        if the "id" field is present in the path
+        """
+        for key, value in where_filter.items():
+            if key == "path" and value == ["id"]:
+                where_filter[key] = [DOCUMENTID]
+            elif isinstance(value, dict):
+                self._overwrite_id(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        self._overwrite_id(item)
 
     def _find(
         self,

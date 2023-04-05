@@ -163,6 +163,7 @@ def test_find_batched(weaviate_client, caplog):
     [
         ({"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"}, 1),
         ({"path": ["text"], "operator": "Equal", "valueText": "foo"}, 0),
+        ({"path": ["id"], "operator": "Equal", "valueString": "1"}, 1),
     ],
 )
 def test_filter(test_store, filter_query, expected_num_docs):
@@ -179,6 +180,13 @@ def test_filter(test_store, filter_query, expected_num_docs):
             [
                 {"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"},
                 {"path": ["text"], "operator": "Equal", "valueText": "foo"},
+            ],
+            [1, 0],
+        ),
+        (
+            [
+                {"path": ["id"], "operator": "Equal", "valueString": "1"},
+                {"path": ["id"], "operator": "Equal", "valueString": "2"},
             ],
             [1, 0],
         ),
