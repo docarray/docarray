@@ -252,7 +252,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Format the response from Weaviate into a Tuple of DocList and scores
         """
-        da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
 
         documents = []
         scores = []
@@ -262,9 +261,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             scores.append(score)
 
             document = self._parse_weaviate_result(result)
-            documents.append(self._schema.from_view(document))
+            documents.append(document)
 
-        return da_class(documents), scores
+        return documents, scores
 
     def _find_batched(
         self,
