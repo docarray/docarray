@@ -7,9 +7,11 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
+from docarray.typing.tensor.image import ImageNdArray
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    from PIL import Image as PILImage
     from pydantic.fields import BaseConfig, ModelField
 
     from docarray.proto import NodeProto
@@ -43,21 +45,52 @@ class ImageBytes(bytes, AbstractType):
 
         return NodeProto(blob=self, type=self._proto_type_name)
 
+    def load_pil(
+        self,
+    ) -> 'PILImage.Image':
+        """
+        Load the image from the bytes into a `PIL.Image.Image` instance
+
+        ---
+
+        ```python
+        from pydantic import parse_obj_as
+
+        from docarray import BaseDoc
+        from docarray.typing import ImageUrl
+
+        img_url = "https://upload.wikimedia.org/wikipedia/commons/8/80/Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+
+        img_url = parse_obj_as(ImageUrl, img_url)
+        img = img_url.load_pil()
+
+        from PIL.Image import Image
+
+        assert isinstance(img, Image)
+        ```
+
+        ---
+        :return: a Pillow image
+        """
+        PIL = import_library('PIL', raise_error=True)  # noqa: F841
+        from PIL import Image as PILImage
+
+        return PILImage.open(BytesIO(self))
+
     def load(
         self,
         width: Optional[int] = None,
         height: Optional[int] = None,
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
-    ) -> np.ndarray:
+    ) -> ImageNdArray:
         """
-        Load the image from the bytes into a numpy.ndarray image tensor
+        Load the image from the ImageBytes into an ImageNdArray
 
         ---
 
         ```python
         from docarray import BaseDoc
-        from docarray.typing import ImageUrl
-        import numpy as np
+        from docarray.typing import ImageNdArray, ImageUrl
 
 
         class MyDoc(BaseDoc):
@@ -70,7 +103,7 @@ class ImageBytes(bytes, AbstractType):
         )
 
         img_tensor = doc.img_url.load()
-        assert isinstance(img_tensor, np.ndarray)
+        assert isinstance(img_tensor, ImageNdArray)
 
         img_tensor = doc.img_url.load(height=224, width=224)
         assert img_tensor.shape == (224, 224, 3)
@@ -86,16 +119,10 @@ class ImageBytes(bytes, AbstractType):
         :param height: height of the image tensor.
         :param axis_layout: ordering of the different image axes.
             'H' = height, 'W' = width, 'C' = color channel
-        :return: np.ndarray representing the image as RGB values
+        :return: ImageNdArray representing the image as RGB values
         """
+        raw_img = self.load_pil()
 
-        if TYPE_CHECKING:
-            from PIL import Image as PILImage
-        else:
-            PIL = import_library('PIL', raise_error=True)  # noqa: F841
-            from PIL import Image as PILImage
-
-        raw_img = PILImage.open(BytesIO(self))
         if width or height:
             new_width = width or raw_img.width
             new_height = height or raw_img.height
@@ -105,7 +132,8 @@ class ImageBytes(bytes, AbstractType):
         except Exception:
             tensor = np.array(raw_img)
 
-        return self._move_channel_axis(tensor, axis_layout=axis_layout)
+        img = self._move_channel_axis(tensor, axis_layout=axis_layout)
+        return parse_obj_as(ImageNdArray, img)
 
     @staticmethod
     def _move_channel_axis(

@@ -2,8 +2,8 @@ from typing import Optional, Union
 
 import pytest
 
-from docarray import BaseDoc, DocArray
-from docarray.array import DocArrayStacked
+from docarray import BaseDoc, DocList
+from docarray.array import DocVec
 from docarray.typing import AnyTensor, NdArray
 from docarray.utils._internal.misc import is_tf_available
 
@@ -22,7 +22,7 @@ def batch():
 
     import tensorflow as tf
 
-    batch = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
+    batch = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     return batch.stack()
 
@@ -33,14 +33,14 @@ def nested_batch():
         tensor: TensorFlowTensor[3, 224, 224]
 
     class MMdoc(BaseDoc):
-        img: DocArray[Image]
+        img: DocList[Image]
 
     import tensorflow as tf
 
-    batch = DocArrayStacked[MMdoc](
+    batch = DocVec[MMdoc](
         [
             MMdoc(
-                img=DocArray[Image](
+                img=DocList[Image](
                     [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
                 )
             )
@@ -67,7 +67,7 @@ def test_getitem(batch):
 @pytest.mark.tensorflow
 def test_get_slice(batch):
     sliced = batch[0:2]
-    assert isinstance(sliced, DocArrayStacked)
+    assert isinstance(sliced, DocVec)
     assert len(sliced) == 2
 
 
@@ -82,9 +82,7 @@ def test_set_after_stacking():
     class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    batch = DocArrayStacked[Image](
-        [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)]
-    )
+    batch = DocVec[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     batch.tensor = tf.ones((10, 3, 224, 224))
     assert tnp.allclose(batch.tensor.tensor, tf.ones((10, 3, 224, 224)))
@@ -109,7 +107,7 @@ def test_stack_mod_nested_document():
     class MMdoc(BaseDoc):
         img: Image
 
-    batch = DocArray[MMdoc](
+    batch = DocList[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     ).stack()
 
@@ -150,7 +148,7 @@ def test_unstack_nested_document():
     class MMdoc(BaseDoc):
         img: Image
 
-    batch = DocArrayStacked[MMdoc](
+    batch = DocVec[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
     assert isinstance(batch.img._storage.tensor_columns['tensor'], TensorFlowTensor)
@@ -164,7 +162,7 @@ def test_unstack_nested_document():
 def test_unstack_nested_DocArray(nested_batch):
     batch = nested_batch.unstack()
     for i in range(len(batch)):
-        assert isinstance(batch[i].img, DocArray)
+        assert isinstance(batch[i].img, DocList)
         for doc in batch[i].img:
             assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
 
@@ -174,7 +172,7 @@ def test_stack_call():
     class Image(BaseDoc):
         tensor: TensorFlowTensor[3, 224, 224]
 
-    da = DocArray[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
+    da = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
     da = da.stack()
 
@@ -188,12 +186,12 @@ def test_stack_union():
     class Image(BaseDoc):
         tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
 
-    DocArrayStacked[Image](
+    DocVec[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
 
-    # union fields aren't actually stacked
+    # union fields aren't actually doc_vec
     # just checking that there is no error
 
 
@@ -215,7 +213,7 @@ def test_any_tensor_with_tf():
     class Image(BaseDoc):
         tensor: AnyTensor
 
-    da = DocArrayStacked[Image](
+    da = DocVec[Image](
         [Image(tensor=tensor) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
@@ -237,7 +235,7 @@ def test_any_tensor_with_optional():
     class TopDoc(BaseDoc):
         img: Image
 
-    da = DocArrayStacked[TopDoc](
+    da = DocVec[TopDoc](
         [TopDoc(img=Image(tensor=tensor)) for _ in range(10)],
         tensor_type=TensorFlowTensor,
     )
@@ -256,12 +254,12 @@ def test_get_from_slice_stacked():
         text: str
         tensor: TensorFlowTensor
 
-    da = DocArrayStacked[Doc](
+    da = DocVec[Doc](
         [Doc(text=f'hello{i}', tensor=tf.zeros((3, 224, 224))) for i in range(10)]
     )
 
     da_sliced = da[0:10:2]
-    assert isinstance(da_sliced, DocArrayStacked)
+    assert isinstance(da_sliced, DocVec)
 
     tensors = da_sliced.tensor.tensor
     assert tensors.shape == (5, 3, 224, 224)
@@ -272,7 +270,7 @@ def test_stack_none():
     class MyDoc(BaseDoc):
         tensor: Optional[AnyTensor]
 
-    da = DocArrayStacked[MyDoc](
+    da = DocVec[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor
     )
     assert 'tensor' in da._storage.tensor_columns.keys()
@@ -283,7 +281,7 @@ def test_keep_dtype_tf():
     class MyDoc(BaseDoc):
         tensor: TensorFlowTensor
 
-    da = DocArray[MyDoc](
+    da = DocList[MyDoc](
         [MyDoc(tensor=tf.zeros([2, 4], dtype=tf.int32)) for _ in range(3)]
     )
     assert da[0].tensor.tensor.dtype == tf.int32

@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     import torch
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocumentProto, NodeProto
+    from docarray.proto import DocProto, NodeProto
     from docarray.typing import TensorFlowTensor, TorchTensor
 else:
     tf = import_library('tensorflow', raise_error=False)
@@ -171,9 +171,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         if protocol == 'pickle':
             return pickle.loads(bstr)
         elif protocol == 'protobuf':
-            from docarray.proto import DocumentProto
+            from docarray.proto import DocProto
 
-            pb_msg = DocumentProto()
+            pb_msg = DocProto()
             pb_msg.ParseFromString(bstr)
             return cls.from_protobuf(pb_msg)
         else:
@@ -209,7 +209,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return cls.from_bytes(base64.b64decode(data), protocol, compress)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocProto') -> T:
         """create a Document from a protobuf message
 
         :param pb_msg: the proto message of the Document
@@ -254,10 +254,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
             )
-        elif content_key in ['document', 'document_array']:
+        elif content_key in ['doc', 'doc_array']:
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a Document or a DocArray'
+                    'field_name cannot be None when trying to deseriliaze a Document or a DocList'
                 )
             return_field = cls._get_field_type(field_name).from_protobuf(
                 getattr(value, content_key)
@@ -299,12 +299,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         return return_field
 
-    def to_protobuf(self: T) -> 'DocumentProto':
+    def to_protobuf(self: T) -> 'DocProto':
         """Convert Document into a Protobuf message.
 
         :return: the protobuf message
         """
-        from docarray.proto import DocumentProto
+        from docarray.proto import DocProto
 
         data = {}
         for field, value in self:
@@ -324,7 +324,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                     ex.args = (f'Field `{field}` is problematic',) + ex.args
                 raise ex
 
-        return DocumentProto(data=data)
+        return DocProto(data=data)
 
     def _to_node_protobuf(self) -> 'NodeProto':
         from docarray.proto import NodeProto
@@ -335,7 +335,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(document=self.to_protobuf())
+        return NodeProto(doc=self.to_protobuf())
 
     @classmethod
     def _get_access_paths(cls) -> List[str]:

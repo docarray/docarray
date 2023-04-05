@@ -7,7 +7,7 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
-from docarray.typing import AudioTorchTensor, AudioUrl
+from docarray.typing import AudioBytes, AudioTorchTensor, AudioUrl
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
@@ -96,27 +96,12 @@ def test_dump_json():
 
 @pytest.mark.parametrize(
     'path_to_file',
-    [
-        *[file for file in AUDIO_FILES],
-        REMOTE_AUDIO_FILE,
-    ],
+    [*AUDIO_FILES, REMOTE_AUDIO_FILE],
 )
 def test_validation(path_to_file):
     url = parse_obj_as(AudioUrl, path_to_file)
     assert isinstance(url, AudioUrl)
     assert isinstance(url, str)
-
-
-@pytest.mark.parametrize(
-    'path_to_file',
-    [
-        'my/local/text/file.txt',
-        'my/local/text/file.png',
-    ],
-)
-def test_illegal_validation(path_to_file):
-    with pytest.raises(ValueError, match='AudioUrl'):
-        parse_obj_as(AudioUrl, path_to_file)
 
 
 @pytest.mark.proto
@@ -130,3 +115,11 @@ def test_proto_audio_url(file_url):
     uri = parse_obj_as(AudioUrl, file_url)
     proto = uri._to_node_protobuf()
     assert 'audio_url' in str(proto)
+
+
+def test_load_bytes():
+    uri = parse_obj_as(AudioUrl, REMOTE_AUDIO_FILE)
+    audio_bytes = uri.load_bytes()
+    assert isinstance(audio_bytes, bytes)
+    assert isinstance(audio_bytes, AudioBytes)
+    assert len(audio_bytes) > 0

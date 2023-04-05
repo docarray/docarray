@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar
 
 import orjson
 from pydantic import BaseModel, Field
@@ -12,7 +12,7 @@ from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
-    from docarray.array.stacked.column_storage import ColumnStorageView
+    from docarray.array.doc_vec.column_storage import ColumnStorageView
 
 _console: Console = Console()
 
@@ -79,7 +79,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self.summary()
 
     def is_view(self) -> bool:
-        from docarray.array.stacked.column_storage import ColumnStorageView
+        from docarray.array.doc_vec.column_storage import ColumnStorageView
 
         return isinstance(self.__dict__, ColumnStorageView)
 
@@ -101,6 +101,39 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             for key, val in self.__dict__.items():
                 dict_ref[key] = val
             object.__setattr__(self, '__dict__', dict_ref)
+
+    def __eq__(self, other) -> bool:
+        if self.dict().keys() != other.dict().keys():
+            return False
+
+        for field_name in self.__fields__:
+            value1 = getattr(self, field_name)
+            value2 = getattr(other, field_name)
+
+            if field_name == 'id':
+                continue
+
+            if isinstance(value1, AbstractTensor) and isinstance(
+                value2, AbstractTensor
+            ):
+                comp_be1 = value1.get_comp_backend()
+                comp_be2 = value2.get_comp_backend()
+
+                if comp_be1.shape(value1) != comp_be2.shape(value2):
+                    return False
+                if (
+                    not (comp_be1.to_numpy(value1) == comp_be2.to_numpy(value2))
+                    .all()
+                    .item()
+                ):
+                    return False
+            else:
+                if value1 != value2:
+                    return False
+        return True
+
+    def __ne__(self, other) -> bool:
+        return not (self == other)
 
     def _docarray_to_json_compatible(self) -> Dict:
         """

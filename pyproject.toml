@@ -29,7 +29,7 @@ smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 
 [tool.poetry.extras]
-common = ["protobuf", "lz4"]
+proto = ["protobuf", "lz4"]
 pandas = ["pandas"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
