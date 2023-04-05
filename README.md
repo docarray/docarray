@@ -34,10 +34,10 @@ With that said, let's dig into the three pillars of DocArray:
 > - [Coming from a vector database](#coming-from-vector-database)
 
 
-<details>
-  <summary>Click me</summary>
-
 ## Represent
+
+<details>
+  <summary>Click to expand</summary>
 
 DocArray allows you to **represent your data**, in a ML-native way.
 This is useful for different use cases:
