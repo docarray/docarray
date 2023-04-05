@@ -34,22 +34,26 @@ from docarray import DocList
 docs = DocList[Book].from_csv(file_path='books.csv')
 docs.summary()
 ```
-``` { .text .no-copy }
-╭────── DocList Summary ──────╮
-│                             │
-│   Type     DocList[Book]    │
-│   Length   3                │
-│                             │
-╰─────────────────────────────╯
-╭── Document Schema ──╮
-│                     │
-│   Book              │
-│   ├── title: str    │
-│   ├── author: str   │
-│   └── year: int     │
-│                     │
-╰─────────────────────╯
-```
+<details>
+    <summary>Output</summary>
+    ``` { .text .no-copy }
+    ╭────── DocList Summary ──────╮
+    │                             │
+    │   Type     DocList[Book]    │
+    │   Length   3                │
+    │                             │
+    ╰─────────────────────────────╯
+    ╭── Document Schema ──╮
+    │                     │
+    │   Book              │
+    │   ├── title: str    │
+    │   ├── author: str   │
+    │   └── year: int     │
+    │                     │
+    ╰─────────────────────╯
+    ```
+</details>
+
 The resulting DocList contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
 
 
@@ -76,25 +80,29 @@ review_docs = DocList[BookReview](
 )
 review_docs.summary()
 ```
-``` { .text .no-copy}
-╭───────── DocList Summary ─────────╮
-│                                   │
-│   Type     DocList[BookReview]    │
-│   Length   3                      │
-│                                   │
-╰───────────────────────────────────╯
-╭──── Document Schema ────╮
-│                         │
-│   BookReview            │
-│   ├── book: Book        │
-│   │   ├── title: str    │
-│   │   ├── author: str   │
-│   │   └── year: int     │
-│   ├── n_ratings: int    │
-│   └── stars: float      │
-│                         │
-╰─────────────────────────╯
-```
+<details>
+    <summary>Output</summary>
+    ``` { .text .no-copy}
+    ╭───────── DocList Summary ─────────╮
+    │                                   │
+    │   Type     DocList[BookReview]    │
+    │   Length   3                      │
+    │                                   │
+    ╰───────────────────────────────────╯
+    ╭──── Document Schema ────╮
+    │                         │
+    │   BookReview            │
+    │   ├── book: Book        │
+    │   │   ├── title: str    │
+    │   │   ├── author: str   │
+    │   │   └── year: int     │
+    │   ├── n_ratings: int    │
+    │   └── stars: float      │
+    │                         │
+    ╰─────────────────────────╯
+    ```
+</details>
+
 As expected all nested attributes will be stored by there access path.
 ```python
 review_docs.to_csv(file_path='/path/to/nested_documents.csv')
