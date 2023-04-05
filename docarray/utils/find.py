@@ -23,6 +23,16 @@ class _FindResult(NamedTuple):
     scores: AnyTensor
 
 
+class FindResultBatched(NamedTuple):
+    documents: List[DocList]
+    scores: AnyTensor
+
+
+class _FindResultBatched(NamedTuple):
+    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
+    scores: AnyTensor
+
+
 def find(
     index: AnyDocArray,
     query: Union[AnyTensor, BaseDoc],
@@ -114,7 +124,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-) -> List[FindResult]:
+) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
     Supports PyTorch and NumPy embeddings.

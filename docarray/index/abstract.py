@@ -10,7 +10,6 @@ from typing import (
     Iterable,
     List,
     Mapping,
-    NamedTuple,
     Optional,
     Sequence,
     Tuple,
@@ -30,7 +29,12 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
-from docarray.utils.find import FindResult, _FindResult
+from docarray.utils.find import (
+    FindResult,
+    FindResultBatched,
+    _FindResult,
+    _FindResultBatched,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
