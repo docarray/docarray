@@ -1,28 +1,34 @@
 # 3D Mesh
 
-
-!!! note
-    This feature requires `trimesh`. You can install all necessary dependencies via:
-    ```cm 
-    pip install "docarray[mesh]".
-    ```
+DocArray supports many different modalities including `3D Mesh`.
+This section will show you how to use DocArray to load and handle 3D data in DocArray.
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 
 
+!!! note
+    This feature requires `trimesh`. You can install all necessary dependencies via:
+    ```cm 
+    pip install "docarray[mesh]"
+    ```
+
 ## Vertices and Faces representation
 
+A 3D mesh can be represented by its vertices and faces:
 
-A 3D mesh can be represented by its vertices and faces. Vertices are points in a 3D space, represented as a tensor of shape (n_points, 3). Faces are triangular surfaces that can be defined by three points in 3D space, corresponding to the three vertices of a triangle. Faces can be represented as a tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a vertex in the tensor of vertices.
+- **Vertices** are points in a 3D space, represented as a tensor of shape `(n_points, 3)`. 
+- **Faces** are triangular surfaces that are defined by three points in 3D space, corresponding to the three vertices of a triangle. They can be represented as a tensor of shape `(n_faces, 3)`. Each number in that tensor refers to an index of a vertex in the tensor of vertices.
 
 ### Load vertices and faces
 
-You can store your url as a Mesh3DUrl and then call `.load()` on it. This will return a `VerticesAndFaces` object, that contains the vertices and faces information in two corresponding tensors.
+First, let's define our class `MyMesh3D`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides  attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the `VerticesAndFaces` class, that has a `vertices` attribute and a `faces` attribute, both of type `AnyTensor`. This especially comes in handy later when we want to display our 3D mesh.
+
+But for now, let's create a `MyMesh3D` instance with an url to a remote `.obj` file:
+
 
 ```python
 from docarray import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
-
 from docarray.typing import Mesh3DUrl
 
 
@@ -32,11 +38,15 @@ class MyMesh3D(BaseDoc):
 
 
 doc = MyMesh3D(mesh_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
-doc.tensors = doc.mesh_url.load()
+```
 
+To load the vertices and faces information, you can simply call [`.load()`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl.load] on the [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl] instance. This will return a `VerticesAndFaces` object.
+
+```python
+doc.tensors = doc.mesh_url.load()
 doc.summary()
 ```
-```text
+``` { .text .no-copy }
 📄 MyMesh3D : 9d8c26f ...
 ╭─────────────────────┬────────────────────────────────────────────────────────╮
 │ Attribute           │ Value                                                  │
@@ -54,9 +64,10 @@ doc.summary()
         ╰───────────────────┴──────────────────────────────────────────────────╯
 ```
 
-### Display 3D mesh
+### Display 3D mesh in notebook
 
-You can display your 3D object and interact with from its url as well as from a VerticesAndFaces instance. The latter will always display without color, whereas display from url will show with color if those are stores in the file.
+You can display your 3D mesh interactively from its url as well as a `VerticesAndFaces` instance, by calling [`.display()`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl.display] on either one. The latter will always display without color, whereas display from url will show with color if this information is included in the file content.
+
 ```python
 doc.url.display()
 ```
@@ -1316,32 +1327,36 @@ A point cloud is a representation of a 3D mesh. It is made by repeatedly and uni
 
 ### Load point cloud
 
-In DocArray, you can simply load a point cloud of size `samples` from a PointCloud3DUrl instance. This will give you a PointsAndColors instance, which contains information about the points in 3D space (as a tensor of shape (`samples`, 3)) and optionally colors for those points. By loading them, the colors will always be None. If you have access to colors elsewhere, you can set them manually.
+In DocArray, loading a point cloud from a [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance will return a `PointsAndColors` instance. Such an object has a `points` attribute containing the information about the points in 3D space as well as an optional `colors` attribute.
+
+First, let's define our class `MyPointCloud`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides attributes to store the point cloud information.
 
 ```python
 from docarray import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
-
 from docarray.typing import PointCloud3DUrl
 
 
-class MyDoc(BaseDoc):
-    point_cloud_url: PointCloud3DUrl
+class MyPointCloud(BaseDoc):
+    url: PointCloud3DUrl
     tensors: PointsAndColors = None
 
 
-doc = MyDoc(point_cloud_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
-doc.tensors = doc.point_cloud_url.load(samples=1000)
-
-doc.summary()
+doc = MyPointCloud(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 ```
 
-```text
-📄 MyDoc : a63374d ...
+Next, we can load a pointcloud of size `samples` by simply calling [`.load()`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl.load] on the [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance:
+
+```python
+doc.tensors = doc.url.load(samples=1000)
+doc.summary()
+```
+``` { .text .no-copy }
+📄 MyPointCloud : a63374d ...
 ╭──────────────────────────────────┬───────────────────────────────────────────╮
 │ Attribute                        │ Value                                     │
 ├──────────────────────────────────┼───────────────────────────────────────────┤
-│ point_cloud_url: PointCloud3DUrl │ https://people.sc.fsu.edu/~jburkardt/dat… │
+│ url: PointCloud3DUrl │ https://people.sc.fsu.edu/~jburkardt/dat… │
 │                                  │ ... (length: 52)                          │
 ╰──────────────────────────────────┴───────────────────────────────────────────╯
 └── 🔶 tensors: PointsAndColors
@@ -1355,10 +1370,11 @@ doc.summary()
 ```
 
 
-### Display and interact with 3D point cloud
-You can display your point cloud and interact with it from its url as well as from a PointsAndColors instance. The first will always display without color, whereas display from PointsAndColors will show with color if PointsAndColors.colors is not None.
+### Display 3D point cloud in notebook
+You can display your point cloud and interact with it from its url as well as from a PointsAndColors instance. The first will always display without color, whereas display from PointsAndColors will show with color if `PointsAndColors.colors` is not None.
+
 ```python
-doc.point_cloud_url.display()
+doc.url.display()
 ```
 
 <iframe srcdoc="<!DOCTYPE html>
