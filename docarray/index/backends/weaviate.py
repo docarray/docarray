@@ -59,7 +59,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self.bytes_columns = []
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
-        self._client = weaviate.Client(self._db_config.host)
+        self._client = weaviate.Client(
+            self._db_config.host, auth_client_secret=self._build_auth_credentials()
+        )
         self._configure_client()
         self._validate_columns()
         self._set_embedding_column()
@@ -109,6 +111,18 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _configure_client(self) -> None:
         self._client.batch.configure(**self._runtime_config.batch_config)
 
+    def _build_auth_credentials(self):
+        dbconfig = self._db_config
+
+        if dbconfig.auth_api_key:
+            return weaviate.auth.AuthApiKey(api_key=dbconfig.auth_api_key)
+        elif dbconfig.username and dbconfig.password:
+            return weaviate.auth.AuthClientPassword(
+                dbconfig.username, dbconfig.password, dbconfig.scopes
+            )
+        else:
+            return None
+
     def _create_schema(self) -> None:
         schema = {}
 
@@ -150,6 +164,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         host: str = 'http://weaviate:8080'
         index_name: str = 'Document'
+        username: str = None
+        password: str = None
+        scopes: str = None
+        auth_api_key: str = None
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
