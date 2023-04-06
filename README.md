@@ -36,7 +36,8 @@ With that said, let's dig into the three pillars of DocArray:
 
 ## Represent
 
-DocArray allows you to **represent your data**, in a ML-native way.
+DocArray allows you to **represent your data**, in an ML-native way.
+
 This is useful for different use cases:
 - :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
 - :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
@@ -76,7 +77,7 @@ print(vec.image_tensor.shape)  # (1000, 1704, 2272, 3)
 ```
 
 <details>
-  <summary>**Click for more details**</summary>
+  <summary>Click for more details</summary>
 
 So let's take a closer look at how you can represent your data with DocArray:
 
@@ -243,50 +244,139 @@ assert isinstance(dl_2, DocList)
 
 ## Send
 
-- **Serialize** any `Document` or `DocArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
-- Use in **microservice** architecture: Send over **HTTP** or **gRPC**
-- Integrate seamlessly with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
+DocArray allows you to **send your data**, in an ML-native way.
+
+This means there is native support for **Protobuf and gRPC**, in top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
+
+This is useful for different use cases:
+- :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
+- :spider_web: You **distribute your model** across machines and need to send your data between nodes
+- :gear: You are building a **microservice** architecture and need to send your data between microservices
+
+> :bulb: **Coming from FatAPI?**: If you're currently using FatAPI for the use cases above, you should be happy to hear
+> that DocArray is fully compatible with FatAPI!
+> Also, we have [dedicated section](#coming-from-fastapi) just for you!
+
+Whenever you want to send your data you need to serialize it, so let's take a look at how that works with DocArray:
 
 ```python
-from docarray.documents import ImageDoc
-from httpx import AsyncClient
-import numpy as np
+from docarray import BaseDoc
+from docarray.typing import ImageTorchTensor
 
-doc = ImageDoc(tensor=np.zeros((3, 224, 224)))
+# model your data
+class MyDocument(BaseDoc):
+    description: str
+    image: ImageTorchTensor[3, 224, 224]
 
-# JSON over HTTP
-async with AsyncClient(app=app, base_url="http://test") as ac:
-    response = await ac.post("/doc/", data=input_doc.json())
+
+# create a Document
+doc = MyDocument(
+    description="This is a description",
+    image=torch.zeros((3, 224, 224)),
+)
+
+# serialize it!
+proto = doc.to_protobuf()
+base64 = doc.to_base64()
+bytes_ = doc.to_bytes()
+json = doc.json()
+jsonschema = doc.jsonschema()
+
+# deserialize it!
+doc_2 = MyDocument.from_protobuf(proto)
+doc_3 = MyDocument.from_base64(base64)
+doc_4 = MyDocument.from_bytes(bytes_)
+doc_5 = MyDocument.parse_raw(json)
 ```
 
-```python
-# (de)serialize from/to protobuf
-Image.from_protobuf(doc.to_protobuf())
-```
+Of course, serialization is not all you need.
+So check out how DocArray integrates with FatAPI and Jina. TODO link to doc sections
+
 
 ## Store
-- Persist a `DocArray` using a **`DocumentStore`**
-- Store your Documents in any supported (vector) database: **Elasticsearch**, **Qdrant**, **Weaviate**, **Redis**, **Milvus**, **ANNLite** or **SQLite**
-- Leverage DocumentStores to **perform vector search on your multi-modal data**
+
+Once you've modelled your data, and maybe sent it around, usually you want to **store it** somewhere.
+But fret not! DocArray has you covered!
+
+**Document Stores** let you, well, store your Documents, locally or remotely, all with the same user interface:
+- :cd: **On disk** as a file in your local file system
+- :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
+- :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
+
+<details>
+  <summary>See Document Store usage</summary>
+
+The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
+
+As an example, let's take a look at how that would work with AWS S3 storage:
 
 ```python
-# NOTE: DocumentStores are not yet implemented in version 2
 from docarray import DocList
 from docarray.documents import ImageDoc
-from docarray.stores import DocumentStore
-import numpy as np
 
-da = DocList([ImageDoc(embedding=np.zeros((128,))) for _ in range(1000)])
-store = DocumentStore[ImageDoc](
-    storage='qdrant'
-)  # create a DocumentStore with Qdrant as backend
-store.insert(da)  # insert the DocList into the DocumentStore
-# find the 10 most similar images based on the 'embedding' field
-match = store.find(ImageDoc(embedding=np.zeros((128,))), field='embedding', top_k=10)
+dl = DocList[ImageDoc](
+    [
+        ImageDoc(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+        for _ in range(100)
+    ]
+)
+
+# push the DocList to S3
+dl.push('s3://my-bucket/my-documents', show_progress=True)
+
+# pull the DocList from S3
+dl_2 = DocList[ImageDoc].pull('s3://my-bucket/my-documents', show_progress=True)
+```
+</details>
+
+**Document Indexes** let you index your Documents into a **vector database**, for efficient similarity-based retrieval.
+
+This is useful for:
+- :left_speech_bubble: Augmenting **LLMs and Chatbots** with domain knowledge ([Retrieval Augmented Generation](https://arxiv.org/abs/2005.11401))
+- :mag: **Neural search** applications
+- :bulb: **Recommender systems**
+
+Currently, DocArray Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!.
+
+<details>
+  <summary>See Document Index usage</summary>
+
+The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
+
+It supports ANN vector search, text search, filtering, and hybrid search.
+
+```python
+from docarray import DocList
+from docarray.documents import ImageDoc
+from docarray.index import HnswDocumentIndex
+
+# create some data
+dl = DocList[ImageDoc](
+    [
+        ImageDoc(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+            embedding=np.random.random((128,)),
+        )
+        for _ in range(100)
+    ]
+)
+
+# create a Document Index
+index = HnswDocumentIndex(work_dir='.')
+
+# index your data
+index.index(dl)
+
+# find similar Document
+query = dl[0]
+results, scores = index.find(query, top_k=10, search_field='embedding')
 ```
 
-If you want to get a deeper understanding of DocArray v2, it is best to do so on the basis of your
-use case and background:
+</details>
 
 ## Coming from DocArray
 
