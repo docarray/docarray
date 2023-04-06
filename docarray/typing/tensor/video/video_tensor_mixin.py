@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING, Optional, Type, TypeVar, Union
 
 import numpy as np
 
-from docarray.typing.bytes.video_bytes import VideoBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.utils._internal.misc import import_library, is_notebook
+
+if TYPE_CHECKING:
+    from docarray.typing.bytes.video_bytes import VideoBytes
 
 T = TypeVar('T', bound='VideoTensorMixin')
 
@@ -131,7 +133,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         audio_frame_rate: int = 48000,
         audio_codec: str = 'aac',
         audio_format: str = 'fltp',
-    ) -> VideoBytes:
+    ) -> 'VideoBytes':
         """
         Convert video tensor to VideoBytes.
 
@@ -145,6 +147,8 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
 
         :return: a VideoBytes object
         """
+        from docarray.typing.bytes.video_bytes import VideoBytes
+
         bytes = BytesIO()
         self.save(
             file_path=bytes,
