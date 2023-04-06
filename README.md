@@ -205,7 +205,7 @@ dl = DocList[Image](  # the DocList is parametrized by your personal schema!
 You can still bulk access the fields of your `Document`:
 
 ```python
-tensors = dl.tensor  # gets all the tensors in the DocVec
+tensors = dl.tensor  # gets all the tensors in the DocList
 print(type(tensors))  # as a list of tensors
 print(dl.url)  # you can bulk access any other field, too
 ```
