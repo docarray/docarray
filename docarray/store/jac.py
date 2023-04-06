@@ -26,7 +26,7 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:  # pragma: no cover
     import io
 
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
 
 if TYPE_CHECKING:
     import hubble
@@ -46,17 +46,17 @@ def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
     raise ValueError('Length not found in summary')
 
 
-def _get_raw_summary(self: 'DocArray') -> List[Dict[str, Any]]:
+def _get_raw_summary(self: 'DocList') -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = [
         dict(
             name='Type',
             value=self.__class__.__name__,
-            description='The type of the DocArray',
+            description='The type of the DocList',
         ),
         dict(
             name='Length',
             value=len(self),
-            description='The length of the DocArray',
+            description='The length of the DocList',
         ),
         dict(
             name='Homogenous Documents',
@@ -82,7 +82,7 @@ SelfJACDocStore = TypeVar('SelfJACDocStore', bound='JACDocStore')
 
 
 class JACDocStore(AbstractDocStore):
-    """Class to push and pull DocArray to and from Jina AI Cloud."""
+    """Class to push and pull DocList to and from Jina AI Cloud."""
 
     @staticmethod
     @hubble.login_required
@@ -91,7 +91,7 @@ class JACDocStore(AbstractDocStore):
 
         :param namespace: Not supported for Jina AI Cloud.
         :param show_table: if true, show the table of the arrays.
-        :returns: List of available DocArray's names.
+        :returns: List of available DocList's names.
         """
         if len(namespace) > 0:
             logging.warning('Namespace is not supported for Jina AI Cloud.')
@@ -102,11 +102,11 @@ class JACDocStore(AbstractDocStore):
         from rich.table import Table
 
         resp = HubbleClient(jsonify=True).list_artifacts(
-            filter={'type': 'DocArray'}, sort={'createdAt': 1}
+            filter={'type': 'DocumentArray'}, sort={'createdAt': 1}
         )
 
         table = Table(
-            title=f'You have {resp["meta"]["total"]} DocArray on the cloud',
+            title=f'You have {resp["meta"]["total"]} DocList on the cloud',
             box=box.SIMPLE,
             highlight=True,
         )
@@ -116,15 +116,15 @@ class JACDocStore(AbstractDocStore):
         table.add_column('Created at', justify='center')
         table.add_column('Updated at', justify='center')
 
-        for da in resp['data']:
-            result.append(da['name'])
+        for docs in resp['data']:
+            result.append(docs['name'])
 
             table.add_row(
-                da['name'],
-                str(_get_length_from_summary(da['metaData'].get('summary', []))),
-                da['visibility'],
-                da['createdAt'],
-                da['updatedAt'],
+                docs['name'],
+                str(_get_length_from_summary(docs['metaData'].get('summary', []))),
+                docs['visibility'],
+                docs['createdAt'],
+                docs['updatedAt'],
             )
 
         if show_table:
@@ -135,10 +135,10 @@ class JACDocStore(AbstractDocStore):
     @hubble.login_required
     def delete(name: str, missing_ok: bool = True) -> bool:
         """
-        Delete a DocArray from the cloud.
-        :param name: the name of the DocArray to delete.
-        :param missing_ok: if true, do not raise an error if the DocArray does not exist.
-        :return: True if the DocArray was deleted, False if it did not exist.
+        Delete a DocList from the cloud.
+        :param name: the name of the DocList to delete.
+        :param missing_ok: if true, do not raise an error if the DocList does not exist.
+        :return: True if the DocList was deleted, False if it did not exist.
         """
         try:
             HubbleClient(jsonify=True).delete_artifact(name=name)
@@ -152,13 +152,13 @@ class JACDocStore(AbstractDocStore):
     @staticmethod
     @hubble.login_required
     def push(
-        da: 'DocArray',
+        docs: 'DocList',
         name: str,
         public: bool = True,
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocArray object to Jina AI Cloud
+        """Push this DocList object to Jina AI Cloud
 
         .. note::
             - Push with the same ``name`` will override the existing content.
@@ -167,8 +167,8 @@ class JACDocStore(AbstractDocStore):
             - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
               persistence. Only use this full temporary transmission/storage/clipboard.
 
-        :param name: A name that can later be used to retrieve this :class:`DocArray`.
-        :param public: By default, anyone can pull a DocArray if they know its name.
+        :param name: A name that can later be used to retrieve this :class:`DocList`.
+        :param public: By default, anyone can pull a DocList if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
@@ -181,15 +181,15 @@ class JACDocStore(AbstractDocStore):
         data, ctype = urllib3.filepost.encode_multipart_formdata(
             {
                 'file': (
-                    'DocArray',
+                    'DocumentArray',
                     delimiter,
                 ),
                 'name': name,
-                'type': 'DocArray',
+                'type': 'DocumentArray',
                 'public': public,
                 'metaData': json.dumps(
                     {
-                        'summary': _get_raw_summary(da),
+                        'summary': _get_raw_summary(docs),
                         'branding': branding,
                         'version': get_version_info(),
                     },
@@ -210,7 +210,7 @@ class JACDocStore(AbstractDocStore):
 
         def gen():
             yield _head
-            binary_stream = da.to_binary_stream(
+            binary_stream = docs.to_binary_stream(
                 protocol='protobuf', compress='gzip', show_progress=show_progress
             )
             while True:
@@ -252,58 +252,58 @@ class JACDocStore(AbstractDocStore):
             - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
               persistence. Only use this full temporary transmission/storage/clipboard.
 
-        :param name: A name that can later be used to retrieve this :class:`DocArray`.
-        :param public: By default, anyone can pull a DocArray if they know its name.
+        :param name: A name that can later be used to retrieve this :class:`DocList`.
+        :param public: By default, anyone can pull a DocList if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
         """
-        from docarray import DocArray
+        from docarray import DocList
 
         # This is a temporary solution to push a stream of documents
         # The memory footprint is not ideal
-        # But it must be done this way for now because Hubble expects to know the length of the DocArray
+        # But it must be done this way for now because Hubble expects to know the length of the DocList
         # before it starts receiving the documents
         first_doc = next(docs)
-        da = DocArray[first_doc.__class__]([first_doc])  # type: ignore
+        docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
-            da.append(doc)
-        return cls.push(da, name, public, show_progress, branding)
+            docs.append(doc)
+        return cls.push(docs, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
     def pull(
-        cls: Type['DocArray'],
+        cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = True,
-    ) -> 'DocArray':
-        """Pull a :class:`DocArray` from Jina AI Cloud to local.
+    ) -> 'DocList':
+        """Pull a :class:`DocList` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
-        :return: a :class:`DocArray` object
+        :param local_cache: store the downloaded DocList to local folder
+        :return: a :class:`DocList` object
         """
-        from docarray import DocArray
+        from docarray import DocList
 
-        return DocArray[cls.document_type](  # type: ignore
+        return DocList[cls.doc_type](  # type: ignore
             JACDocStore.pull_stream(cls, name, show_progress, local_cache)
         )
 
     @staticmethod
     @hubble.login_required
     def pull_stream(
-        cls: Type['DocArray'],
+        cls: Type['DocList'],
         name: str,
         show_progress: bool = False,
         local_cache: bool = False,
     ) -> Iterator['BaseDoc']:
-        """Pull a :class:`DocArray` from Jina AI Cloud to local.
+        """Pull a :class:`DocList` from Jina AI Cloud to local.
 
         :param name: the upload name set during :meth:`.push`
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocArray to local folder
+        :param local_cache: store the downloaded DocList to local folder
         :return: An iterator of Documents
         """
         import requests
@@ -332,12 +332,12 @@ class JACDocStore(AbstractDocStore):
             r.raise_for_status()
             save_name = name.replace('/', '_')
 
-            tmp_cache_file = Path(f'/tmp/{save_name}.da')
+            tmp_cache_file = Path(f'/tmp/{save_name}.docs')
             _source: Union[
                 _BufferedCachingRequestReader, io.BufferedReader
             ] = _BufferedCachingRequestReader(r, tmp_cache_file)
 
-            cache_file = _get_cache_path() / f'{save_name}.da'
+            cache_file = _get_cache_path() / f'{save_name}.docs'
             if local_cache and cache_file.exists():
                 _cache_len = cache_file.stat().st_size
                 if _cache_len == int(r.headers['Content-length']):

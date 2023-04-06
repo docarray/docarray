@@ -3,7 +3,7 @@ from typing import Union
 import numpy as np
 import pytest
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import ElasticDocIndex
 from docarray.typing import NdArray
@@ -26,7 +26,7 @@ pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
     store = ElasticDocIndex[SimpleDoc]()
     if use_docarray:
-        ten_simple_docs = DocArray[SimpleDoc](ten_simple_docs)
+        ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
     store.index(ten_simple_docs)
     assert store.num_docs() == 10
@@ -36,7 +36,7 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
 def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
     store = ElasticDocIndex[FlatDoc]()
     if use_docarray:
-        ten_flat_docs = DocArray[FlatDoc](ten_flat_docs)
+        ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
     store.index(ten_flat_docs)
     assert store.num_docs() == 10
@@ -46,7 +46,7 @@ def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
 def test_index_nested_schema(ten_nested_docs, use_docarray):  # noqa: F811
     store = ElasticDocIndex[NestedDoc]()
     if use_docarray:
-        ten_nested_docs = DocArray[NestedDoc](ten_nested_docs)
+        ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
     assert store.num_docs() == 10
@@ -56,7 +56,7 @@ def test_index_nested_schema(ten_nested_docs, use_docarray):  # noqa: F811
 def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):  # noqa: F811
     store = ElasticDocIndex[DeepNestedDoc]()
     if use_docarray:
-        ten_deep_nested_docs = DocArray[DeepNestedDoc](ten_deep_nested_docs)
+        ten_deep_nested_docs = DocList[DeepNestedDoc](ten_deep_nested_docs)
 
     store.index(ten_deep_nested_docs)
     assert store.num_docs() == 10

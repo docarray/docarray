@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -9,7 +10,7 @@ else:
     JSONResponse = fastapi.responses.JSONResponse
 
 
-class DocResponse(JSONResponse):
+class DocArrayResponse(JSONResponse):
     """
     This is a custom Response class for FastAPI and starlette. This is needed
     to handle serialization of the Document types when using FastAPI
@@ -26,7 +27,4 @@ class DocResponse(JSONResponse):
     """
 
     def render(self, content: Any) -> bytes:
-        if isinstance(content, bytes):
-            return content
-        else:
-            raise ValueError(f'{self.__class__} only work with json bytes content')
+        return orjson_dumps(content)

@@ -3,8 +3,8 @@ __all__ = ['filter_docs']
 import json
 from typing import Dict, List, Union
 
-from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocArray
+from docarray.array.any_array import AnyDocArray
+from docarray.array.doc_list.doc_list import DocList
 
 
 def filter_docs(
@@ -19,7 +19,7 @@ def filter_docs(
     ---
 
     ```python
-    from docarray import DocArray, BaseDoc
+    from docarray import DocList, BaseDoc
     from docarray.documents import TextDoc, ImageDoc
     from docarray.utils.filter import filter_docs
 
@@ -30,7 +30,7 @@ def filter_docs(
         price: int
 
 
-    docs = DocArray[MyDocument](
+    docs = DocList[MyDocument](
         [
             MyDocument(
                 caption='A tiger in the jungle',
@@ -65,9 +65,9 @@ def filter_docs(
 
     ---
 
-    :param docs: the DocArray where to apply the filter
+    :param docs: the DocList where to apply the filter
     :param query: the query to filter by
-    :return: A DocArray containing the Documents
+    :return: A DocList containing the Documents
     in `docs` that fulfill the filter conditions in the `query`
     """
     from docarray.utils._internal.query_language.query_parser import QueryParser
@@ -75,7 +75,7 @@ def filter_docs(
     if query:
         query = query if not isinstance(query, str) else json.loads(query)
         parser = QueryParser(query)
-        return DocArray.__class_getitem__(docs.document_type)(
+        return DocList.__class_getitem__(docs.doc_type)(
             d for d in docs if parser.evaluate(d)
         )
     else:

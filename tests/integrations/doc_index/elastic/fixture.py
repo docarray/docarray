@@ -8,7 +8,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.typing import NdArray
 
-pytestmark = [pytest.mark.slow, pytest.mark.doc_index]
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 compose_yml_v7 = os.path.abspath(os.path.join(cur_dir, 'v7/docker-compose.yml'))

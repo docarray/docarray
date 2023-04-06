@@ -30,7 +30,7 @@ jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 elastic-transport = {version ="^8.4.0", optional = true }
 
 [tool.poetry.extras]
-common = ["protobuf", "lz4"]
+proto = ["protobuf", "lz4"]
 pandas = ["pandas"]
 image = ["pillow", "types-pillow"]
 video = ["av"]
