@@ -18,7 +18,7 @@ class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbeddin
 
     def new_empty(self, *args, **kwargs):
         """
-        This method enables the deepcopy of TorchEmbedding by returning another instance of this subclass.
+        This method enables the deepcopy of `TorchEmbedding` by returning another instance of this subclass.
         If this function is not implemented, the deepcopy will throw an RuntimeError from Torch.
         """
         return self.__class__(TorchTensor.new_empty(self, *args, **kwargs))

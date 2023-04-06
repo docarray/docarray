@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @_register_proto(proto_type_name='video_ndarray')
 class VideoNdArray(NdArray, VideoTensorMixin):
     """
-    Subclass of NdArray, to represent a video tensor.
+    Subclass of [`NdArray`][docarray.typing.NdArray], to represent a video tensor.
     Adds video-specific features to the tensor.
 
     ---

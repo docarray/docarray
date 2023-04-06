@@ -6,7 +6,7 @@ from docarray.typing.tensor.ndarray import NdArray
 @_register_proto(proto_type_name='audio_ndarray')
 class AudioNdArray(AbstractAudioTensor, NdArray):
     """
-    Subclass of NdArray, to represent an audio tensor.
+    Subclass of [`NdArray`][docarray.typing.NdArray], to represent an audio tensor.
     Adds audio-specific features to the tensor.
 
 

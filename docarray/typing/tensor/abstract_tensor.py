@@ -127,12 +127,15 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         enable syntax of the form AnyTensor[shape].
         It is called when a tensor is assigned to a field of this type.
         i.e. when a tensor is passed to a Document field of type AnyTensor[shape].
+
         The intended behaviour is as follows:
+
         - If the shape of `t` is equal to `shape`, return `t`.
         - If the shape of `t` is not equal to `shape`,
             but can be reshaped to `shape`, return `t` reshaped to `shape`.
         - If the shape of `t` is not equal to `shape`
             and cannot be reshaped to `shape`, raise a ValueError.
+
         :param t: The tensor to validate.
         :param shape: The shape to validate against.
         :return: The validated tensor.
@@ -196,7 +199,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
     @classmethod
     def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
-        """This method validates the input to __class_getitem__.
+        """This method validates the input to `AbstractTensor.__class_getitem__`.
 
         It is called at "class creation time",
         i.e. when a class is created with syntax of the form AnyTensor[shape].
@@ -211,7 +214,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
         Raises `ValueError` if the input `item` does not pass validation.
 
-        :param item: The item to validate, passed to __class_getitem__ (`Tensor[item]`).
+        :param item: The item to validate, passed to `__class_getitem__` (`Tensor[item]`).
         :return: The validated item == the target shape of this tensor.
         """
         if isinstance(item, int):

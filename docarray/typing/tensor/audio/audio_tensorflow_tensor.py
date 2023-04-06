@@ -12,14 +12,12 @@ class AudioTensorFlowTensor(
     AbstractAudioTensor, TensorFlowTensor, metaclass=metaTensorFlow
 ):
     """
-    Subclass of TensorFlowTensor, to represent an audio tensor.
-    Adds audio-specific features to the tensor.
-
-
-
-    ```
+    Subclass of [`TensorFlowTensor`][docarray.typing.TensorFlowTensor],
+    to represent an audio tensor. Adds audio-specific features to the tensor.
 
     ---
+
+    ```python
     from typing import Optional
 
     import tensorflow as tf
@@ -53,7 +51,6 @@ class AudioTensorFlowTensor(
     doc_2.audio_tensor = doc_2.url.load()
     doc_2.audio_tensor.save(file_path='path/to/file_2.wav')
     doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
-
     ```
 
     ---

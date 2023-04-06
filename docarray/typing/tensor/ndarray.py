@@ -40,9 +40,9 @@ class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ign
 @_register_proto(proto_type_name='ndarray')
 class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
-    Subclass of np.ndarray, intended for use in a Document.
+    Subclass of `np.ndarray`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like torch.Tensor.
+    and coersion from compatible types like `torch.Tensor`.
 
     This type can also be used in a parametrized way, specifying the shape of the array.
 
@@ -143,7 +143,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
-        Convert tensor into a json compatible object
+        Convert `NdArray` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
         return self.unwrap()
@@ -152,8 +152,8 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         """
         Return the original ndarray without any memory copy.
 
-        The original view rest intact and is still a Document NdArray
-        but the return object is a pure np.ndarray but both object share
+        The original view rest intact and is still a Document `NdArray`
+        but the return object is a pure `np.ndarray` but both object share
         the same memory layout.
 
         ---
@@ -171,14 +171,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
         ---
 
-        :return: a numpy ndarray
+        :return: a `numpy.ndarray`
         """
         return self.view(np.ndarray)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
-        read ndarray from a proto msg
+        Read ndarray from a proto msg
         :param pb_msg:
         :return: a numpy array
         """
@@ -193,7 +193,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
     def to_protobuf(self) -> 'NdArrayProto':
         """
-        transform self into a NdArrayProto protobuf message
+        Transform self into a NdArrayProto protobuf message
         """
         from docarray.proto import NdArrayProto
 

@@ -38,8 +38,8 @@ class metaTensorFlow(
 @_register_proto(proto_type_name='tensorflow_tensor')
 class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow):
     """
-    TensorFlowTensor class with a :attr:`~docarray.typing.TensorFlowTensor.tensor`
-    attribute of type :class:`tf.Tensor`, intended for use in a Document.
+    TensorFlowTensor class with a `.tensor` attribute of type `tf.Tensor`,
+    intended for use in a Document.
 
     This enables (de)serialization from/to protobuf and json, data validation,
     and coersion from compatible types like numpy.ndarray.
@@ -47,14 +47,15 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     This type can also be used in a parametrized way, specifying the shape of the
     tensor.
 
-    In comparison to :class:`~docarray.typing.TorchTensor` and
-    :class:`~docarray.typing.NdArray`, :class:`~docarray.typing.TensorFlowTensor` is not
-    a subclass of :class:`tf.Tensor` (or :class:`torch.Tensor`, :class:`np.ndarray`
-    respectively).
-    Instead, the :class:`tf.Tensor` is stored in
-    :attr:`~docarray.typing.TensorFlowTensor.tensor`.
+    In comparison to [`TorchTensor`][docarray.typing.TorchTensor] and
+    [`NdArray`][docarray.typing.tensor.ndarray.NdArray],
+    [`TensorFlowTensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor]
+    is not a subclass of `tf.Tensor` (or `torch.Tensor`, `np.ndarray` respectively).
+    Instead, the `tf.Tensor` is stored in
+    [`TensorFlowTensor.tensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor].
     Therefore, to do operations on the actual tensor data you have to always access the
-    :attr:`~docarray.typing.TensorFlowTensor.tensor` attribute.
+    [`TensorFlowTensor.tensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor]
+    attribute.
 
     ---
 
@@ -78,11 +79,10 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     ---
 
-    The :class:`~docarray.computation.tensorflow_backend.TensorFlowBackend` however,
-    operates on our :class:`~docarray.typing.TensorFlowTensor` instances.
-    Here, you do not have to access the :attr:`~docarray.typing.TensorFlowTensor.tensor`
-    but can instead just hand over your :class:`~docarray.typing.TensorFlowTensor`
-    instance.
+    The [`TensorFlowBackend`][LINK]
+    however, operates on our [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instances.
+    Here, you do not have to access the `.tensor` attribute, but can instead just hand over
+    your [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instance.
 
     ---
 
@@ -100,7 +100,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     ---
 
-    You can use :class:`~docarray.typing.TensorFlowTensor` in a Document as follows:
+    You can use [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] in a Document as follows:
 
     ---
 
@@ -162,7 +162,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         return TensorFlowCompBackend._cast_output(t=tensor)
 
     def __setitem__(self, index, value):
-        """Set a slice of this tensor's tf.Tensor"""
+        """Set a slice of this tensor's `tf.Tensor`"""
         t = self.unwrap()
         value = tf.cast(value, dtype=t.dtype)
         var = tf.Variable(t)
@@ -170,7 +170,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         self.tensor = tf.constant(var)
 
     def __iter__(self):
-        """Iterate over the elements of this tensor's tf.Tensor."""
+        """Iterate over the elements of this tensor's `tf.Tensor`."""
         for i in range(len(self)):
             yield self[i]
 
@@ -205,11 +205,11 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     @classmethod
     def _docarray_from_native(cls: Type[T], value: Union[tf.Tensor, T]) -> T:
         """
-        Create a TensorFlowTensor from a tensorflow.Tensor or TensorFlowTensor
+        Create a `TensorFlowTensor` from a `tf.Tensor` or `TensorFlowTensor`
         instance.
 
-        :param value: instance of tf.Tensor or TensorFlowTensor
-        :return: a TensorFlowTensor
+        :param value: instance of `tf.Tensor` or `TensorFlowTensor`
+        :return: a `TensorFlowTensor`
         """
         if isinstance(value, TensorFlowTensor):
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized
@@ -240,7 +240,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
-        Convert TensorFlowTensor into a json compatible object
+        Convert `TensorFlowTensor` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
         return self.unwrap().numpy()
@@ -266,7 +266,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         """
         Read ndarray from a proto msg.
         :param pb_msg:
-        :return: a TensorFlowTensor
+        :return: a `TensorFlowTensor`
         """
         source = pb_msg.dense
         if source.buffer:
@@ -281,19 +281,19 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
-        """Create a TensorFlowTensor from a numpy array.
+        """Create a `TensorFlowTensor` from a numpy array.
 
         :param value: the numpy array
-        :return: a TensorFlowTensor
+        :return: a `TensorFlowTensor`
         """
         return cls._docarray_from_native(tf.convert_to_tensor(value))
 
     def unwrap(self) -> tf.Tensor:
         """
-        Return the original tensorflow.Tensor without any memory copy.
+        Return the original `tf.Tensor` without any memory copy.
 
-        The original view rest intact and is still a Document TensorFlowTensor
-        but the return object is a pure tf.Tensor but both object share
+        The original view rest intact and is still a Document `TensorFlowTensor`
+        but the return object is a pure `tf.Tensor` but both object share
         the same memory layout.
 
         ---
@@ -309,7 +309,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         ```
 
         ---
-        :return: a tf.Tensor
+        :return: a `tf.Tensor`
         """
         return self.tensor
 

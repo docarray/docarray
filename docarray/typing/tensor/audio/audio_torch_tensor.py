@@ -6,9 +6,8 @@ from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 @_register_proto(proto_type_name='audio_torch_tensor')
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
-    Subclass of TorchTensor, to represent an audio tensor.
+    Subclass of [`TorchTensor`][docarray.typing.TorchTensor], to represent an audio tensor.
     Adds audio-specific features to the tensor.
-
 
     ---
 

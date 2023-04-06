@@ -18,8 +18,8 @@ class VideoTensorFlowTensor(
     TensorFlowTensor, VideoTensorMixin, metaclass=metaTensorFlow
 ):
     """
-    Subclass of TensorFlowTensor, to represent a video tensor.
-    Adds video-specific features to the tensor.
+    Subclass of [`TensorFlowTensor`][docarray.typing.TensorFlowTensor],
+    to represent a video tensor. Adds video-specific features to the tensor.
 
     ---
 
