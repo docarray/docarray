@@ -57,6 +57,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # type because we will store them as a base64 encoded string
         # in weaviate
         self.bytes_columns = []
+        # keep track of the array columns that are not embeddings because we will
+        # convert them to python lists before uploading to weaviate
+        self.nonembedding_array_columns = []
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
         self._client = weaviate.Client(
@@ -135,7 +138,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 continue
             if column_info.db_type == 'blob':
                 self.bytes_columns.append(column_name)
-
+            if column_info.db_type == 'number[]':
+                self.nonembedding_array_columns.append(column_name)
             prop = {
                 "name": column_name
                 if column_name != 'id'
@@ -474,6 +478,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for doc in docs:
                 parsed_doc = self._rewrite_documentid(doc)
                 self._encode_bytes_columns_to_base64(parsed_doc)
+                self._convert_nonembedding_array_to_list(parsed_doc)
                 vector = (
                     parsed_doc.pop(self.embedding_column)
                     if self.embedding_column
@@ -595,6 +600,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _decode_base64_properties_to_bytes(self, doc):
         for column in self.bytes_columns:
             doc[column] = base64.b64decode(doc[column])
+
+    def _convert_nonembedding_array_to_list(self, doc):
+        for column in self.nonembedding_array_columns:
+            if doc[column] is not None:
+                doc[column] = doc[column].tolist()
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):

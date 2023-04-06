@@ -388,3 +388,22 @@ def test_index_document_with_bytes(weaviate_client):
     )
 
     assert doc == results[0]
+
+
+def test_index_document_with_no_embeddings(weaviate_client):
+    # define a document that does not have any field where is_embedding=True
+    class Document(BaseDoc):
+        not_embedding: NdArray[2] = Field(dim=2)
+        text: str
+
+    doc = Document(not_embedding=[2, 5], text="dolor sit amet", id="1")
+
+    store = WeaviateDocumentIndex[Document]()
+
+    store.index([doc])
+
+    results = store.filter(
+        filter_query={"path": ["id"], "operator": "Equal", "valueString": "1"}
+    )
+
+    assert doc == results[0]
