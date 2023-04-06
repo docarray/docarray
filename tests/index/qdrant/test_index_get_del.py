@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
@@ -72,7 +72,7 @@ def ten_nested_docs():
 def test_index_simple_schema(ten_simple_docs, qdrant_config, use_docarray, qdrant):
     store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
     if use_docarray:
-        ten_simple_docs = DocArray[SimpleDoc](ten_simple_docs)
+        ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
     store.index(ten_simple_docs)
     assert store.num_docs() == 10
@@ -90,7 +90,7 @@ def test_schema_with_user_defined_mapping(qdrant_config, qdrant):
 def test_index_flat_schema(ten_flat_docs, qdrant_config, use_docarray, qdrant):
     store = QdrantDocumentIndex[FlatDoc](db_config=qdrant_config)
     if use_docarray:
-        ten_flat_docs = DocArray[FlatDoc](ten_flat_docs)
+        ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
     store.index(ten_flat_docs)
     assert store.num_docs() == 10
@@ -100,7 +100,7 @@ def test_index_flat_schema(ten_flat_docs, qdrant_config, use_docarray, qdrant):
 def test_index_nested_schema(ten_nested_docs, qdrant_config, use_docarray, qdrant):
     store = QdrantDocumentIndex[NestedDoc](db_config=qdrant_config)
     if use_docarray:
-        ten_nested_docs = DocArray[NestedDoc](ten_nested_docs)
+        ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
 
     store.index(ten_nested_docs)
     assert store.num_docs() == 10
@@ -126,7 +126,7 @@ def test_index_builtin_docs(qdrant_config, qdrant):
     store = QdrantDocumentIndex[TextSchema](db_config=qdrant_config)
 
     store.index(
-        DocArray[TextDoc](
+        DocList[TextDoc](
             [TextDoc(embedding=np.random.randn(10), text=f'{i}') for i in range(10)]
         )
     )
@@ -139,7 +139,7 @@ def test_index_builtin_docs(qdrant_config, qdrant):
     store = QdrantDocumentIndex[ImageSchema](collection_name='images')
 
     store.index(
-        DocArray[ImageDoc](
+        DocList[ImageDoc](
             [
                 ImageDoc(
                     embedding=np.random.randn(10), tensor=np.random.randn(3, 224, 224)

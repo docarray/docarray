@@ -12,6 +12,7 @@ from typing import (
     Dict,
     Generator,
     Type,
+    Tuple,
 )
 
 import numpy as np
@@ -19,8 +20,13 @@ from grpc._channel import _InactiveRpcError
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
-from docarray import BaseDoc, DocArray
-from docarray.index.abstract import BaseDocIndex, _FindResultBatched, _ColumnInfo
+from docarray import BaseDoc, DocList
+from docarray.index.abstract import (
+    BaseDocIndex,
+    _FindResultBatched,
+    _ColumnInfo,
+    _raise_not_composable,
+)
 
 import qdrant_client
 from qdrant_client.conversions import common_types as types
@@ -36,6 +42,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 QDRANT_PY_VEC_TYPES: List[Any] = [np.ndarray, AbstractTensor]
 if torch_imported:
     import torch
+
     QDRANT_PY_VEC_TYPES.append(torch.Tensor)
 
 QDRANT_SPACE_MAPPING = {
@@ -46,13 +53,13 @@ QDRANT_SPACE_MAPPING = {
 
 
 class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
-
     UUID_NAMESPACE = uuid.UUID('3896d314-1e95-4a3a-b45a-945f9f0b541d')
 
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(QdrantDocumentIndex.DBConfig, self._db_config)
         self._client = qdrant_client.QdrantClient(
+            location=self._db_config.location,
             url=self._db_config.url,
             port=self._db_config.port,
             grpc_port=self._db_config.grpc_port,
@@ -62,12 +69,101 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             prefix=self._db_config.prefix,
             timeout=self._db_config.timeout,
             host=self._db_config.host,
+            path=self._db_config.path,
         )
         self._initialize_collection()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @dataclass
+    class Query:
+        vector_field: Optional[str]
+        vector_query: Optional[np.array]
+        filter: Optional[rest.Filter]
+        limit: int
+
+    class QueryBuilder(BaseDocIndex.QueryBuilder):
+        def __init__(
+            self,
+            vector_search_field: Optional[str] = None,
+            vector_filters: Optional[List[np.array]] = None,
+            payload_filters: Optional[List[rest.Filter]] = None,
+            text_search_filters: Optional[List[Tuple[str, str]]] = None,
+        ):
+            self._vector_search_field: Optional[str] = vector_search_field
+            self._vector_filters: List[np.array] = vector_filters or []
+            self._payload_filters: List[rest.Filter] = payload_filters or []
+            self._text_search_filters: List[Tuple[str, str]] = text_search_filters or []
+
+        def build(self, limit: int) -> 'QdrantDocumentIndex.Query':
+            vector_query = None
+            if len(self._vector_filters) > 0:
+                # If there are multiple vector queries applied, we can average them and
+                # perform semantic search on a single vector instead
+                vector_query = np.average(self._vector_filters, axis=0)
+            merged_filter = None
+            if len(self._payload_filters) > 0:
+                merged_filter = rest.Filter(must=self._payload_filters)
+            if len(self._text_search_filters) > 0:
+                # Text search is just a special case of payload filtering, so the
+                # payload filter is simply extended
+                merged_filter = merged_filter or rest.Filter(must=[])
+                for search_field, query in self._text_search_filters:
+                    merged_filter.must.append(
+                        rest.FieldCondition(
+                            key=search_field,
+                            match=rest.MatchText(text=query),
+                        )
+                    )
+            return QdrantDocumentIndex.Query(
+                vector_field=self._vector_search_field,
+                vector_query=vector_query,
+                filter=merged_filter,
+                limit=limit
+            )
+
+        def find(
+            self, query: np.ndarray, search_field: str = ''
+        ) -> 'QdrantDocumentIndex.QueryBuilder':
+            if self._vector_search_field and self._vector_search_field != search_field:
+                raise ValueError(
+                    f'Trying to call .find for search_field = {search_field}, but '
+                    f'previously {self._vector_search_field} was used. Only a single '
+                    f'field might be used in chained calls.'
+                )
+            return QdrantDocumentIndex.QueryBuilder(
+                vector_search_field=search_field,
+                vector_filters=self._vector_filters + [query],
+                payload_filters=self._payload_filters,
+                text_search_filters=self._text_search_filters,
+            )
+
+        def filter(
+            self, filter_query: rest.Filter
+        ) -> 'QdrantDocumentIndex.QueryBuilder':
+            return QdrantDocumentIndex.QueryBuilder(
+                vector_search_field=self._vector_search_field,
+                vector_filters=self._vector_filters,
+                payload_filters=self._payload_filters + [filter_query],
+                text_search_filters=self._text_search_filters,
+            )
+
+        def text_search(
+            self, query: str, search_field: str = ''
+        ) -> 'QdrantDocumentIndex.QueryBuilder':
+            return QdrantDocumentIndex.QueryBuilder(
+                vector_search_field=self._vector_search_field,
+                vector_filters=self._vector_filters,
+                payload_filters=self._payload_filters,
+                text_search_filters=self._text_search_filters + [(search_field, query)],
+            )
+
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('find_batched')
+        text_search_batched = _raise_not_composable('text_search')
+
+    @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        location: Optional[str] = None
         url: Optional[str] = None
         port: Optional[int] = 6333
         grpc_port: int = 6334
@@ -77,6 +173,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         prefix: Optional[str] = None
         timeout: Optional[float] = None
         host: Optional[str] = None
+        path: Optional[str] = None
         collection_name: str = 'documents'
         shard_number: Optional[int] = None
         replication_factor: Optional[int] = None
@@ -97,6 +194,16 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 np.ndarray: {},
             }
         )
+
+    def python_type_to_db_type(self, python_type: Type) -> Any:
+        for vector_type in QDRANT_PY_VEC_TYPES:
+            if issubclass(python_type, vector_type):
+                return 'vector'
+
+        if issubclass(python_type, docarray.typing.id.ID):
+            return 'id'
+
+        return 'payload'
 
     def _initialize_collection(self):
         try:
@@ -121,23 +228,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 quantization_config=self._db_config.quantization_config,
             )
 
-    def python_type_to_db_type(self, python_type: Type) -> Any:
-        for vector_type in QDRANT_PY_VEC_TYPES:
-            if issubclass(python_type, vector_type):
-                return 'vector'
-
-        if issubclass(python_type, docarray.typing.id.ID):
-            return 'id'
-
-        return 'payload'
-
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         rows = self._transpose_col_value_dict(column_to_data)
         # TODO: add batching the documents to avoid timeouts
-        points = [
-            self._build_point_from_row(row)
-            for row in rows
-        ]
+        points = [self._build_point_from_row(row) for row in rows]
         self._client.upsert(
             collection_name=self._db_config.collection_name,
             points=points,
@@ -178,8 +272,30 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         return [self._convert_to_doc(point) for point in response]
 
-    def execute_query(self, query: Any, *args, **kwargs) -> Any:
-        raise NotImplementedError('Not implemented yet')
+    def execute_query(self, query: Query, *args, **kwargs) -> DocList:
+        if query.vector_field:
+            # We perform semantic search with some vectors with Qdrant's search metho
+            # should be called
+            points = self._client.search(
+                collection_name=self._db_config.collection_name,
+                query_vector=(query.vector_field, query.vector_query),
+                query_filter=query.filter,
+                limit=query.limit,
+                with_payload=True,
+                with_vectors=True,
+            )
+        else:
+            # Just filtering, so Qdrant's scroll has to be used instead
+            points, _ = self._client.scroll(
+                collection_name=self._db_config.collection_name,
+                scroll_filter=query.filter,
+                limit=query.limit,
+                with_payload=True,
+                with_vectors=True,
+            )
+
+        docs = [self._convert_to_doc(point) for point in points]
+        return self._dict_list_to_docarray(docs)
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
@@ -206,7 +322,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     with_payload=True,
                 )
                 for query in queries
-            ]
+            ],
         )
         return _FindResultBatched(
             documents=[
@@ -214,19 +330,20 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 for response in responses
             ],
             scores=[
-                np.array([point.score for point in response])
-                for response in responses
+                np.array([point.score for point in response]) for response in responses
             ],
         )
 
-    def _filter(self, filter_query: rest.Filter, limit: int) -> Union[DocArray, List[Dict]]:
+    def _filter(
+        self, filter_query: rest.Filter, limit: int
+    ) -> Union[DocList, List[Dict]]:
         query_batched = [filter_query]
         docs = self._filter_batched(filter_queries=query_batched, limit=limit)
         return docs[0]
 
     def _filter_batched(
         self, filter_queries: Sequence[rest.Filter], limit: int
-    ) -> Union[List[DocArray], List[List[Dict]]]:
+    ) -> Union[List[DocList], List[List[Dict]]]:
         responses = []
         for filter_query in filter_queries:
             # There is no batch scroll available in Qdrant client yet, so we need to
@@ -268,13 +385,15 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
             for query in queries
         ]
-        documents_batched = self._filter_batched(filter_queries=filter_queries, limit=limit)
+        documents_batched = self._filter_batched(
+            filter_queries=filter_queries, limit=limit
+        )
 
         # Qdrant does not return any scores if we just filter the objects, without using
         # semantic search over vectors. Thus, each document is scored with a value of 1
         return _FindResultBatched(
             documents=documents_batched,
-            scores=[np.array([1.0] * len(docs)) for docs in documents_batched],
+            scores=[np.ones(len(docs)) for docs in documents_batched],
         )
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
@@ -298,7 +417,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _to_qdrant_id(self, external_id: Optional[str]) -> str:
         if external_id is None:
             return uuid.uuid4().hex
-        return uuid.uuid5(self.UUID_NAMESPACE, external_id).hex
+        return uuid.uuid5(QdrantDocumentIndex.UUID_NAMESPACE, external_id).hex
 
     def _to_qdrant_vector_params(self, column_info: _ColumnInfo) -> rest.VectorParams:
         return rest.VectorParams(
@@ -309,7 +428,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _convert_to_doc(
         self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
-        # TODO: use DocArray structure, not dict
         doc = point.payload
         for vector_name, vector in point.vector.items():
             doc[vector_name] = vector

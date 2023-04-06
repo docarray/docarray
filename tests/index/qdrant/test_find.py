@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pydantic import Field
 
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 import qdrant_client
@@ -190,7 +190,7 @@ def test_find_batched(qdrant_config, space, qdrant):
     index_docs = [SimpleDoc(tens=vector) for vector in np.identity(10)]
     store.index(index_docs)
 
-    queries = DocArray[SimpleDoc]([
+    queries = DocList[SimpleDoc]([
         SimpleDoc(tens=np.array([.1, .0, .0, .0, .0, .0, .0, .0, .0, .0])),
         SimpleDoc(tens=np.array([.0, .0, .0, .0, .0, .0, .0, .0, .0, .1])),
     ])
