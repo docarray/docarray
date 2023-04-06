@@ -2,7 +2,6 @@ __all__ = ['find', 'find_batched']
 
 from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
 
-from pydantic import parse_obj_as
 from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
@@ -153,23 +152,23 @@ def find_batched(
 
     # use DocList as query
     query = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
 
     # use tensor as query
     query = torch.rand(3, 128)
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
     ```
 
     ---
@@ -187,7 +186,7 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocList, AnyTensor),
+    :return: A named tuple of the form (DocList, AnyTensor),
         where the first element contains the closest matches for each query,
         and the second element contains the corresponding scores.
     """
@@ -210,15 +209,15 @@ def find_batched(
 
     batched_docs: List[DocList] = []
     scores = []
-    for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+    for i, (indices_per_query, scores_per_query) in enumerate(
+        zip(top_indices, top_scores)
+    ):
         docs_per_query: DocList = DocList([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
         batched_docs.append(DocList(docs_per_query))
         scores.append(scores_per_query)
-    return FindResultBatched(
-        documents=batched_docs, scores=parse_obj_as(embedding_type, scores)
-    )
+    return FindResultBatched(documents=batched_docs, scores=comp_backend.stack(scores))
 
 
 def _extract_embedding_single(
