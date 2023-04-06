@@ -427,3 +427,11 @@ def test_index_document_with_no_embeddings(weaviate_client):
     )
 
     assert doc == results[0]
+
+
+def test_limit_query_builder(test_store):
+    query_vector = [10.25, 10.25]
+    q = test_store.build_query().find(query=query_vector).limit(2)
+
+    docs = test_store.execute_query(q)
+    assert len(docs) == 2

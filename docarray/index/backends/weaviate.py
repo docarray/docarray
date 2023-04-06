@@ -750,6 +750,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
+        def limit(self, limit: int) -> Any:
+            self._queries = [query.with_limit(limit) for query in self._queries]
+            return self
+
         def _resize_queries_and_clauses(self, queries, clauses):
             """
             Adjust the length and content of queries and clauses so that we can compose
