@@ -39,7 +39,7 @@ def find(
     !!! note
         This is a simple implementation of exact search. If you need to do advance
         search using approximate nearest neighbours search or hybrid search or
-        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
+        multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
     ---
 
@@ -122,7 +122,7 @@ def find_batched(
     !!! note
         This is a simple implementation of exact search. If you need to do advance
         search using approximate nearest neighbours search or hybrid search or
-        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
+        multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
 
 
     ---
