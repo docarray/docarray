@@ -255,8 +255,8 @@ This is useful for different use cases:
 - :spider_web: You **distribute your model** across machines and need to send your data between nodes
 - :gear: You are building a **microservice** architecture and need to send your data between microservices
 
-> :bulb: **Coming from FastAPI?** If you're currently using FatAPI for the use cases above, you should be happy to hear
-> that DocArray is fully compatible with FatAPI!
+> :bulb: **Coming from FastAPI?** If you're currently using FastAPI for the use cases above, you should be happy to hear
+> that DocArray is fully compatible with FastAPI!
 > Also, we have [dedicated section](#coming-from-fastapi) just for you!
 
 Whenever you want to send your data you need to serialize it, so let's take a look at how that works with DocArray:
