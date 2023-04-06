@@ -27,7 +27,7 @@ class _FindResult(NamedTuple):
 
 
 class Doc(BaseDoc):
-    embedding: AnyTensor
+    embedding: Optional[AnyTensor]
 
 
 def find(
@@ -251,12 +251,10 @@ def find_batched(
             res.append(FindResult(scores=scores_per_query, documents=docs_per_query))
         return res
 
-    if not (
-        isinstance(query, DocList) or isinstance(query, (DocVec, BaseDoc))
-    ):
+    if not (isinstance(query, DocList) or isinstance(query, (DocVec, BaseDoc))):
         query = cast(AnyTensor, query)
         d = DocList[Doc](Doc() for _ in range(comp_backend.shape(query)[0]))
-        d.embedding = query # type: ignore
+        d.embedding = query  # type: ignore
         query = d
 
     it = map_docs_batched(
@@ -271,7 +269,7 @@ def find_batched(
     )
 
     for indices_per_query, scores_per_query in it:
-        docs_per_query: DocList = DocList([])   #type: ignore
+        docs_per_query: DocList = DocList([])  # type: ignore
         for idx, scores in zip(
             indices_per_query, scores_per_query
         ):  # workaround until #930 is fixed
