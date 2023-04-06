@@ -226,6 +226,177 @@ print(page1.banner.image)
 'https://example.com/image1.png'
 ```
 
-### Custom syntax and in depth understanding of `AnyDocArray`
+### `DocList[DocType]` syntax
+
+As you have seen in the previous section, `AnyDocArray` will expose the same attribute as the `BaseDoc` it contains.
+
+But this concept only work if and only if all of the `BaseDoc` in the `AnyDocArray` have the same schema.
+
+Indeed, if one of your `BaseDoc` have an attribute that the other don't, you will get an error if you try to acces it at
+the array level.
+
+
+!!! note
+    To be able to extend Pydantic API to the Array level, `AnyDocArray` need to contain homogenous Document.
+
+This is where the custom syntax `DocList[DocType]` come into play.
+
+!!!
+    `DocList[DocType]` create a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Document.
+
+This syntax is inspired by more statically typed language, and even though it might offend python purist and go against 
+python list principle we believe that it is actually a good user experience to think of Array of `BaseDoc` rather than
+just a collection of non-homogenous `BaseDoc`.
+
+
+That being said `AnyDocArray` can be used to create a non-homogenous `AnyDocArray`:
+
+!!! note
+    The default `DocList` can be used to create a non-homogenous list of `BaseDoc`.
+
+!!! warning
+    `DocVec` cannot store non-homogenous `BaseDoc` and always need the `DocVec[DocType]` syntax.
+
+The usage if non-homogenous `DocList` is really similar to a normal Python list but still offer DocArray functionality
+like serialization and send over the wire (LINK). But it won't be able to extend the Pydantic API to the Array level.
+
+
+Here is how you can instantiate a non-homogenous `DocList`:
+
+```python
+from docarray import BaseDoc, DocList
+from docarray.typing import ImageUrl, AudioUrl
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+
+
+class AudioDoc(BaseDoc):
+    url: AudioUrl
+
+
+docs = DocList(
+    [
+        ImageDoc(url='https://example.com/image1.png'),
+        AudioDoc(url='https://example.com/audio1.mp3'),
+    ]
+)
+``` 
+
+But you will not have been able to do 
+
+```python
+try:
+    docs = DocList[ImageDoc](
+        [
+            ImageDoc(url='https://example.com/image1.png'),
+            AudioDoc(url='https://example.com/audio1.mp3'),
+        ]
+    )
+except ValueError as e:
+    print(e)
+```
+
+```cmd
+ValueError: AudioDoc(
+    id='e286b10f58533f48a0928460f0206441',
+    url=AudioUrl('https://example.com/audio1.mp3', host_type='domain')
+) is not a <class '__main__.ImageDoc'>
+```
+
+### `DocList` vs `DocVec`
+
+[`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] are both
+[`AnyDocArray`][docarray.array.doc_array.doc_array.AnyDocArray] but they have different use case, and they differ in how
+they store the data in memory.
+
+They share almost everything that as been said in the previous section, but they have some conceptual differences.
+
+[`DocList`][docarray.array.doc_list.doc_list.DocList] is based on Python List.
+You can, append, extend, insert, pop , ... on it. In DocList, the data is individually owned by each `BaseDoc` collect just
+different Document reference. You want to use [`DocList`][docarray.array.doc_list.doc_list.DocList] when you want to be able
+to rearrange or rerank you data. One flaw of `DocList` is that none of the data is contiguous in memory. So you cannot 
+leverage function that require contiguous data like without first copying the data in a continuous array.
+
+[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] is a columnar data structure. DocVec is always a collection
+of homogeneous Documents. The idea is that every attribute of the `BaseDoc` will be stored in a contiguous array: a column.
+
+This mean that when you access the attribute of a `BaseDoc` at the Array level, we don't collect under the hood the data
+from all the documents (like `DocList`) before giving it back to you. We just return the column that is store in memory.
+
+This really matter when you need to handle multi-modal data that you will feed into algorithm that require contiguous data, like matrix multiplication
+which is at the heart of Machine Learning especially in Deep Learning.
+
+let's take an example to illustrate the difference
+
+
+let's say you want to work with Image:
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+
+
+class ImageDoc(BaseDoc):
+    image: NdArray[
+        3, 224, 224
+    ] = None  # [3, 224, 224] this just mean we know in advance the shape of the tensor
+``` 
+
+and that you have a function that take a contiguous array of image as input (like a deep learning model)
+
+```python
+def predict(image: NdArray['batch_size', 3, 224, 224]):
+    ...
+``` 
+
+let's create a `DocList` of `ImageDoc` and pass it to the function
+
+```python hl_lines="5 7"
+from docarray import DocList
+import numpy as np
+
+docs = DocList[ImageDoc]([ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)])
+
+predict(np.stack(docs.image))
+...
+predict(np.stack(docs.image))
+
+```
+
+When you call `docs.image` DocList loop over the 10 documents and collect the image attribute of each document in a list
+
+it is similar to do
+
+```python
+images = []
+for doc in docs:
+    images.append(doc.image)
+```
+
+this means that if you need to call `docs.image` multiple time, you will have to stack in the array in a contiguous batch array
+multiple time. This is not optimal.
+
+Let's see how it will work with `DocVec`
+
+```python hl_lines="5 7"
+from docarray import DocList
+import numpy as np
+
+docs = DocList[ImageDoc]([ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)])
+
+predict(docs.image)
+...
+predict(docs.image)
+``` 
+
+First difference is that you don't need to call `np.stack` on `docs.image` because `docs.image` is already a contiguous array.
+Second difference is that you just get the column and don't need to create it at each call.
+
+
+
+!!! Note
+    You should use `DocVec` when you need to work with contiguous data and you should use `DocList` when you need to rearrange
+    or extend your data.
 
 
