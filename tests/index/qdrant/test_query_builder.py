@@ -12,13 +12,13 @@ from qdrant_client.http import models as rest
 
 
 class SimpleDoc(BaseDoc):
-    embedding: NdArray[10] = Field(dim=1000)
+    embedding: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
     number: int
     text: str
 
 
 class SimpleSchema(BaseDoc):
-    embedding: NdArray[10] = Field(space='cosine')
+    embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
     number: int
     text: str
 
@@ -38,12 +38,7 @@ def qdrant():
 def test_find_uses_provided_vector(qdrant_config, qdrant):
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
-    query = (
-        store
-            .build_query()
-            .find(np.ones(10), 'embedding')
-            .build(7)
-    )
+    query = store.build_query().find(np.ones(10), 'embedding').build(7)  # type: ignore[attr-defined]
 
     assert query.vector_field == 'embedding'
     assert np.allclose(query.vector_query, np.ones(10))
@@ -55,11 +50,10 @@ def test_multiple_find_returns_averaged_vector(qdrant_config, qdrant):
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
     query = (
-        store
-            .build_query()
-            .find(np.ones(10), 'embedding')
-            .find(np.zeros(10), 'embedding')
-            .build(5)
+        store.build_query()  # type: ignore[attr-defined]
+        .find(np.ones(10), 'embedding')
+        .find(np.zeros(10), 'embedding')
+        .build(5)
     )
 
     assert query.vector_field == 'embedding'
@@ -73,27 +67,17 @@ def test_multiple_find_different_field_raises_error(qdrant_config, qdrant):
 
     with pytest.raises(ValueError):
         (
-            store
-                .build_query()
-                .find(np.ones(10), 'embedding_1')
-                .find(np.zeros(10), 'embedding_2')
+            store.build_query()  # type: ignore[attr-defined]
+            .find(np.ones(10), 'embedding_1')
+            .find(np.zeros(10), 'embedding_2')
         )
 
 
 def test_filter_passes_qdrant_filter(qdrant_config, qdrant):
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
-    qdrant_filter = rest.Filter(
-        should=[
-            rest.HasIdCondition(has_id=[1, 2, 3])
-        ]
-    )
-    query = (
-        store
-            .build_query()
-            .filter(qdrant_filter)
-            .build(11)
-    )
+    qdrant_filter = rest.Filter(should=[rest.HasIdCondition(has_id=[1, 2, 3])])
+    query = store.build_query().filter(qdrant_filter).build(11)  # type: ignore[attr-defined]
 
     assert query.vector_field is None
     assert query.vector_query is None
@@ -104,20 +88,15 @@ def test_filter_passes_qdrant_filter(qdrant_config, qdrant):
 def test_text_search_creates_qdrant_filter(qdrant_config, qdrant):
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
-    query = (
-        store
-            .build_query()
-            .text_search('lorem ipsum', 'text')
-            .build(3)
-    )
+    query = store.build_query().text_search('lorem ipsum', 'text').build(3)  # type: ignore[attr-defined]
 
     assert query.vector_field is None
     assert query.vector_query is None
     assert isinstance(query.filter, rest.Filter)
-    assert len(query.filter.must) == 1
-    assert isinstance(query.filter.must[0], rest.FieldCondition)
-    assert query.filter.must[0].key == 'text'
-    assert query.filter.must[0].match.text == 'lorem ipsum'
+    assert len(query.filter.must) == 1  # type: ignore[arg-type]
+    assert isinstance(query.filter.must[0], rest.FieldCondition)  # type: ignore[index]
+    assert query.filter.must[0].key == 'text'  # type: ignore[index]
+    assert query.filter.must[0].match.text == 'lorem ipsum'  # type: ignore[index, union-attr]
     assert query.limit == 3
 
 
@@ -143,17 +122,16 @@ def test_query_builder_execute_query_find_text_search_filter(qdrant_config, qdra
                 range=rest.Range(
                     gte=12,
                     lt=18,
-                )
+                ),
             )
         ]
     )
     query = (
-        store
-            .build_query()
-            .find(find_query, search_field='embedding')
-            .text_search(text_search_query, search_field='text')
-            .filter(filter_query)
-            .build(limit=5)
+        store.build_query()  # type: ignore[attr-defined]
+        .find(find_query, search_field='embedding')
+        .text_search(text_search_query, search_field='text')
+        .filter(filter_query)
+        .build(limit=5)
     )
     docs = store.execute_query(query)
 

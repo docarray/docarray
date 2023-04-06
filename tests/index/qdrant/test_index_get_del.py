@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 from pydantic import Field
-from scipy.spatial.distance import cosine
+from scipy.spatial.distance import cosine  # type: ignore[import]
 
 from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
@@ -17,7 +17,7 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dim=1000)
+    tens: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
 
 
 class FlatDoc(BaseDoc):
@@ -34,7 +34,7 @@ class DeepNestedDoc(BaseDoc):
 
 
 class TorchDoc(BaseDoc):
-    tens: TorchTensor[10]
+    tens: TorchTensor[10]  # type: ignore[valid-type]
 
 
 @pytest.fixture
@@ -81,7 +81,7 @@ def test_index_simple_schema(ten_simple_docs, qdrant_config, use_docarray, qdran
 
 def test_schema_with_user_defined_mapping(qdrant_config, qdrant):
     class MyDoc(BaseDoc):
-        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)
+        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)  # type: ignore[valid-type]
 
     store = QdrantDocumentIndex[MyDoc](db_config=qdrant_config)
     assert store._column_infos['tens'].db_type == np.ndarray
@@ -137,7 +137,7 @@ def test_index_builtin_docs(qdrant_config, qdrant):
     class ImageSchema(ImageDoc):
         embedding: Optional[NdArrayEmbedding] = Field(dim=10)
 
-    store = QdrantDocumentIndex[ImageSchema](collection_name='images')
+    store = QdrantDocumentIndex[ImageSchema](collection_name='images')  # type: ignore[assignment]
 
     store.index(
         DocList[ImageDoc](
@@ -152,7 +152,9 @@ def test_index_builtin_docs(qdrant_config, qdrant):
     assert store.num_docs() == 10
 
 
-def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant):
+def test_get_key_error(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant
+):
     store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
     store.index(ten_simple_docs)
 
@@ -160,7 +162,9 @@ def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_c
         store['not_a_real_id']
 
 
-def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant):
+def test_del_single(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant
+):
     store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
     store.index(ten_simple_docs)
     # delete once
@@ -186,7 +190,9 @@ def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_conf
             assert store[id_].id == id_
 
 
-def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant):
+def test_del_multiple(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant
+):
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
     store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
@@ -204,7 +210,9 @@ def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_co
             assert store[doc.id].id == doc.id
 
 
-def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant):
+def test_del_key_error(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, qdrant_config, qdrant
+):
     store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
     store.index(ten_simple_docs)
 
@@ -228,7 +236,7 @@ def test_num_docs(ten_simple_docs, qdrant_config, qdrant):
     store.index(more_docs)
     assert store.num_docs() == 12
 
-    del store[more_docs[2].id, ten_simple_docs[7].id]
+    del store[more_docs[2].id, ten_simple_docs[7].id]  # type: ignore[arg-type]
     assert store.num_docs() == 10
 
 
@@ -247,6 +255,8 @@ def test_multimodal_doc(qdrant_config, qdrant):
     store.index(doc)
 
     id_ = doc[0].id
-    assert store[id_].id == id_
-    assert cosine(store[id_].image.embedding, doc[0].image.embedding) == pytest.approx(0.0)
+    assert store[id_].id == id_  # type: ignore[index]
+    assert cosine(store[id_].image.embedding, doc[0].image.embedding) == pytest.approx(
+        0.0
+    )
     assert store[id_].text.text == doc[0].text.text

@@ -10,7 +10,7 @@ from docarray.typing import NdArray
 
 
 class SimpleDoc(BaseDoc):
-    embedding: NdArray[10] = Field(dim=1000)
+    embedding: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
     text: str
 
 
@@ -28,7 +28,7 @@ def qdrant():
 
 def test_text_search(qdrant_config, qdrant):
     class SimpleSchema(BaseDoc):
-        embedding: NdArray[10] = Field(space='cosine')
+        embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
         text: str
 
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
@@ -53,7 +53,7 @@ def test_text_search(qdrant_config, qdrant):
 
 def test_text_search_batched(qdrant_config, qdrant):
     class SimpleSchema(BaseDoc):
-        embedding: NdArray[10] = Field(space='cosine')
+        embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
         text: str
 
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)

@@ -12,12 +12,12 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dim=1000)
+    tens: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
 
 
 class NestedDoc(BaseDoc):
     d: SimpleDoc
-    tens: NdArray[50]
+    tens: NdArray[50]  # type: ignore[valid-type]
 
 
 @pytest.fixture

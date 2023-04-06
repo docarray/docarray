@@ -16,7 +16,7 @@ from typing import (
 )
 
 import numpy as np
-from grpc._channel import _InactiveRpcError
+from grpc._channel import _InactiveRpcError  # type: ignore[import]
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
@@ -32,6 +32,7 @@ import qdrant_client
 from qdrant_client.conversions import common_types as types
 from qdrant_client.http import models as rest
 
+from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import torch_imported
 from docarray.utils.find import _FindResult
@@ -57,7 +58,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(QdrantDocumentIndex.DBConfig, self._db_config)
+        self._db_config: QdrantDocumentIndex.DBConfig = cast(QdrantDocumentIndex.DBConfig, self._db_config)
         self._client = qdrant_client.QdrantClient(
             location=self._db_config.location,
             url=self._db_config.url,
@@ -77,7 +78,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @dataclass
     class Query:
         vector_field: Optional[str]
-        vector_query: Optional[np.array]
+        vector_query: Optional[NdArray]
         filter: Optional[rest.Filter]
         limit: int
 
@@ -85,12 +86,12 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def __init__(
             self,
             vector_search_field: Optional[str] = None,
-            vector_filters: Optional[List[np.array]] = None,
+            vector_filters: Optional[List[NdArray]] = None,
             payload_filters: Optional[List[rest.Filter]] = None,
             text_search_filters: Optional[List[Tuple[str, str]]] = None,
         ):
             self._vector_search_field: Optional[str] = vector_search_field
-            self._vector_filters: List[np.array] = vector_filters or []
+            self._vector_filters: List[NdArray] = vector_filters or []
             self._payload_filters: List[rest.Filter] = payload_filters or []
             self._text_search_filters: List[Tuple[str, str]] = text_search_filters or []
 
@@ -108,7 +109,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 # payload filter is simply extended
                 merged_filter = merged_filter or rest.Filter(must=[])
                 for search_field, query in self._text_search_filters:
-                    merged_filter.must.append(
+                    merged_filter.must.append(  # type: ignore[union-attr]
                         rest.FieldCondition(
                             key=search_field,
                             match=rest.MatchText(text=query),
@@ -118,11 +119,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 vector_field=self._vector_search_field,
                 vector_query=vector_query,
                 filter=merged_filter,
-                limit=limit
+                limit=limit,
             )
 
-        def find(
-            self, query: np.ndarray, search_field: str = ''
+        def find(  # type: ignore[override]
+            self, query: NdArray, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             if self._vector_search_field and self._vector_search_field != search_field:
                 raise ValueError(
@@ -137,7 +138,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 text_search_filters=self._text_search_filters,
             )
 
-        def filter(
+        def filter(  # type: ignore[override]
             self, filter_query: rest.Filter
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             return QdrantDocumentIndex.QueryBuilder(
@@ -147,7 +148,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 text_search_filters=self._text_search_filters,
             )
 
-        def text_search(
+        def text_search(  # type: ignore[override]
             self, query: str, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             return QdrantDocumentIndex.QueryBuilder(
@@ -188,10 +189,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
-                'id': {},
-                'vector': {'dim': 128},
-                'payload': {},
-                np.ndarray: {},
+                'id': {},  # type: ignore[dict-item]
+                'vector': {'dim': 128},  # type: ignore[dict-item]
+                'payload': {},  # type: ignore[dict-item]
+                np.ndarray: {},  # type: ignore[dict-item]
             }
         )
 
@@ -246,7 +247,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)
         if len(items) < len(doc_ids):
-            found_keys = set(item['id'] for item in items)
+            found_keys = set(item['id'] for item in items)  # type: ignore[index]
             missing_keys = set(doc_ids) - found_keys
             raise KeyError('Document keys could not found: %s' % ','.join(missing_keys))
 
@@ -281,7 +282,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             # should be called
             points = self._client.search(
                 collection_name=self._db_config.collection_name,
-                query_vector=(query.vector_field, query.vector_query),
+                query_vector=(query.vector_field, query.vector_query),  # type: ignore[arg-type]
                 query_filter=rest.Filter(
                     must=[query.filter],
                     # The following filter takes care of using only those points which
@@ -292,7 +293,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                             key='__generated_vectors',
                             match=rest.MatchValue(value=query.vector_field),
                         )
-                    ]
+                    ],
                 ),
                 limit=query.limit,
                 with_payload=True,
@@ -300,7 +301,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
         else:
             # Just filtering, so Qdrant's scroll has to be used instead
-            points, _ = self._client.scroll(
+            points, _ = self._client.scroll(  # type: ignore[assignment]
                 collection_name=self._db_config.collection_name,
                 scroll_filter=query.filter,
                 limit=query.limit,
@@ -318,7 +319,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
         )
-        return _FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _find_batched(
         self, queries: np.ndarray, limit: int, search_field: str = ''
@@ -394,7 +395,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs, scores = self._text_search_batched(
             queries=query_batched, limit=limit, search_field=search_field
         )
-        return _FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _text_search_batched(
         self, queries: Sequence[str], limit: int, search_field: str = ''
@@ -423,7 +424,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
         point_id = self._to_qdrant_id(row.get('id'))
-        vectors, payload = {}, {'__generated_vectors': []}
+        vectors: Dict[str, List[float]] = {}
+        payload: Dict[str, Any] = {'__generated_vectors': []}
         for column_name, column_info in self._column_infos.items():
             if column_info.db_type in ['id', 'payload']:
                 payload[column_name] = row.get(column_name)
@@ -438,7 +440,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 # Thus, we put a fake embedding with the correct dimensionality and mark
                 # such point a point with a boolean flag in the payload.
                 vector_size = column_info.n_dim or column_info.config.get('dim')
-                vectors[column_name] = np.ones(vector_size).tolist()
+                vectors[column_name] = np.ones(vector_size).tolist()  # type: ignore[arg-type]
                 payload['__generated_vectors'].append(column_name)
             else:
                 raise ValueError(
@@ -465,12 +467,12 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _convert_to_doc(
         self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
-        doc = point.payload
-        generated_vectors = doc.pop('__generated_vectors')
-        for vector_name, vector in point.vector.items():
+        document = cast(Dict[str, Any], point.payload)
+        generated_vectors = document.pop('__generated_vectors')
+        for vector_name, vector in point.vector.items():  # type: ignore[union-attr]
             if vector_name in generated_vectors:
                 # That means the vector was generated during the upload, and should not
                 # be returned along the other vectors.
                 pass
-            doc[vector_name] = vector
-        return doc
+            document[vector_name] = vector
+        return document

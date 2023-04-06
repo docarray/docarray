@@ -11,7 +11,7 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dim=1000)
+    tens: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
 
 
 class FlatDoc(BaseDoc):
@@ -28,7 +28,7 @@ class DeepNestedDoc(BaseDoc):
 
 
 class TorchDoc(BaseDoc):
-    tens: TorchTensor[10]
+    tens: TorchTensor[10]  # type: ignore[valid-type]
 
 
 @pytest.fixture
@@ -46,7 +46,7 @@ def qdrant():
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_simple_schema(qdrant_config, space, qdrant):
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[10] = Field(space=space)  # type: ignore[valid-type]
 
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
@@ -91,7 +91,7 @@ def test_find_tensorflow(qdrant_config, space, qdrant):
     from docarray.typing import TensorFlowTensor
 
     class TfDoc(BaseDoc):
-        tens: TensorFlowTensor[10]
+        tens: TensorFlowTensor[10]  # type: ignore[valid-type]
 
     store = QdrantDocumentIndex[TorchDoc](db_config=qdrant_config)
 
@@ -150,11 +150,11 @@ def test_find_flat_schema(qdrant_config, space, qdrant):
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_nested_schema(qdrant_config, space, qdrant):
     class SimpleDoc(BaseDoc):
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[10] = Field(space=space)  # type: ignore[valid-type]
 
     class NestedDoc(BaseDoc):
         d: SimpleDoc
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[10] = Field(space=space)  # type: ignore[valid-type]
 
     class DeepNestedDoc(BaseDoc):
         d: NestedDoc
@@ -215,17 +215,23 @@ def test_find_nested_schema(qdrant_config, space, qdrant):
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_batched(qdrant_config, space, qdrant):
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[10] = Field(space=space)  # type: ignore[valid-type]
 
     store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
     index_docs = [SimpleDoc(tens=vector) for vector in np.identity(10)]
     store.index(index_docs)
 
-    queries = DocList[SimpleDoc]([
-        SimpleDoc(tens=np.array([.1, .0, .0, .0, .0, .0, .0, .0, .0, .0])),
-        SimpleDoc(tens=np.array([.0, .0, .0, .0, .0, .0, .0, .0, .0, .1])),
-    ])
+    queries = DocList[SimpleDoc](
+        [
+            SimpleDoc(
+                tens=np.array([0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            ),
+            SimpleDoc(
+                tens=np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1])
+            ),
+        ]
+    )
 
     docs, scores = store.find_batched(queries, search_field='tens', limit=1)
 
