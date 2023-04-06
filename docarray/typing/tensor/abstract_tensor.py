@@ -114,7 +114,6 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
-        :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
         from docarray.proto import NodeProto
@@ -206,7 +205,9 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         A subclass can override this method to implement custom validation logic.
 
         The output of this is eventually passed to
-        {ref}`AbstractTensor.__validate_shape__` as its `shape` argument.
+        [`AbstractTensor.__docarray_validate_shape__`]
+        [docarray.typing.tensor.abstract_tensor.AbstractTensor.__docarray_validate_shape__]
+        as its `shape` argument.
 
         Raises `ValueError` if the input `item` does not pass validation.
 

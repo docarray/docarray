@@ -156,17 +156,20 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         but the return object is a pure np.ndarray but both object share
         the same memory layout.
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray.typing import NdArray
-            import numpy as np
+        ---
 
-            t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
-            # here t1 is a docarray NdArray
-            t2 = t.unwrap()
-            # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
-            # But both share the same underlying memory
+        ```python
+        from docarray.typing import NdArray
+        import numpy as np
 
+        t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
+        # here t1 is a docarray NdArray
+        t2 = t.unwrap()
+        # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
+        # But both share the same underlying memory
+        ```
+
+        ---
 
         :return: a numpy ndarray
         """

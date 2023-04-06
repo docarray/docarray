@@ -152,17 +152,20 @@ class TorchTensor(
         but the return object is a pure torch Tensor but both object share
         the same memory layout.
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray.typing import TorchTensor
-            import torch
+        ---
 
-            t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
-            # here t is a docarray TorchTensor
-            t2 = t.unwrap()
-            # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
-            # But both share the same underlying memory
+        ```python
+        from docarray.typing import TorchTensor
+        import torch
 
+        t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+        # here t is a docarray TorchTensor
+        t2 = t.unwrap()
+        # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
+        # But both share the same underlying memory
+        ```
+
+        ---
 
         :return: a torch Tensor
         """
