@@ -5,13 +5,13 @@ DocArray could be seen as a `multi-modal extension of Pydantic for Machine Learn
 
 !!! warning
     DocArray is actually more than just a Pydantic extension, it is a general purpose multi-modal Python library. 
-     But it is usefully to see it that way to fully understand the representing ability that DocArray offer.
+     But it can be usefl usefully to see it that way to fully understand the representing ability that DocArray offers.
 
 As you have seen in the last section (LINK), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which allows to represent a *single* document, a *single* datapoint.
 
 In Machine Learning though we often need to work with an *array* of documents, an *array* of datapoints.
 
-This section introduce the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
+This section introducew the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
 name: `DocArray` is actually derive from this concept, and it stands for `DocumentArray`.
 
 
