@@ -14,10 +14,12 @@ MAX_INT_16 = 2**15
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-    def to_bytes(self) -> AudioBytes:
+    def to_bytes(self) -> 'AudioBytes':
         """
         Convert audio tensor to AudioBytes.
         """
+        from docarray.typing.bytes.audio_bytes import AudioBytes
+
         tensor = self.get_comp_backend().to_numpy(self)
         tensor = (tensor * MAX_INT_16).astype('<h')
         return AudioBytes(tensor.tobytes())
