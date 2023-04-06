@@ -9,7 +9,7 @@ DocArray could be seen as a `multi-modal extension of Pydantic for Machine Learn
 
 As you have seen in the last section (LINK), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which allows to represent a *single* document, a *single* datapoint.
 
-In Machine Learning though we often need to work with a *collection* of documents, a *collection* of datapoints.
+In Machine Learning though we often need to work with an *array* of documents, an *array* of datapoints.
 
 This section introduce the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
 name: `DocArray` is actually derive from this concept, and it stands for `DocumentArray`.
@@ -17,7 +17,7 @@ name: `DocArray` is actually derive from this concept, and it stands for `Docume
 
 ## AnyDocArray
 
-`AnyDocArray` is an abstract class that represent a collection of `BaseDoc` which is not meant to be used directly, but to be subclassed.
+`AnyDocArray` is an abstract class that represent an array of `BaseDoc` which is not meant to be used directly, but to be subclassed.
 
 We provide two concrete implementation of `AnyDocArray` :
 
@@ -97,7 +97,31 @@ docs.summary()
 ╰──────────────────────────╯
 ```
 
-`docs` here is a collection of `BannerDoc`. 
+`docs` here is a array-like collection of `BannerDoc`.
+
+You can access document inside it with the usual python array API:
+
+```python
+print(docs[0])
+```
+
+```cmd
+BannerDoc(image='https://example.com/image1.png', title='Hello World', description='This is a banner')
+```
+
+or iterate over it:
+
+```python
+for doc in docs:
+    print(doc)
+```
+
+```cmd
+BannerDoc(image='https://example.com/image1.png', title='Hello World', description='This is a banner')
+BannerDoc(image='https://example.com/image2.png', title='Bye Bye World', description='This is (distopic) banner')
+```
+
+
 
 !!! note
     The syntax `DocList[BannerDoc]` should surprise you in this context,
@@ -246,7 +270,7 @@ This is where the custom syntax `DocList[DocType]` come into play.
 
 This syntax is inspired by more statically typed language, and even though it might offend python purist and go against 
 python list principle we believe that it is actually a good user experience to think of Array of `BaseDoc` rather than
-just a collection of non-homogenous `BaseDoc`.
+just an array of non-homogenous `BaseDoc`.
 
 
 That being said `AnyDocArray` can be used to create a non-homogenous `AnyDocArray`:
@@ -308,7 +332,7 @@ ValueError: AudioDoc(
 ### `DocList` vs `DocVec`
 
 [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] are both
-[`AnyDocArray`][docarray.array.doc_array.doc_array.AnyDocArray] but they have different use case, and they differ in how
+[`AnyDocArray`][docarray.array.any_array.AnyDocArray] but they have different use case, and they differ in how
 they store the data in memory.
 
 They share almost everything that as been said in the previous section, but they have some conceptual differences.
@@ -319,7 +343,7 @@ different Document reference. You want to use [`DocList`][docarray.array.doc_lis
 to rearrange or rerank you data. One flaw of `DocList` is that none of the data is contiguous in memory. So you cannot 
 leverage function that require contiguous data like without first copying the data in a continuous array.
 
-[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] is a columnar data structure. DocVec is always a collection
+[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] is a columnar data structure. DocVec is always an array
 of homogeneous Documents. The idea is that every attribute of the `BaseDoc` will be stored in a contiguous array: a column.
 
 This mean that when you access the attribute of a `BaseDoc` at the Array level, we don't collect under the hood the data
@@ -352,7 +376,7 @@ def predict(image: NdArray['batch_size', 3, 224, 224]):
 
 let's create a `DocList` of `ImageDoc` and pass it to the function
 
-```python hl_lines="5 7"
+```python hl_lines="6 8"
 from docarray import DocList
 import numpy as np
 
@@ -379,7 +403,7 @@ multiple time. This is not optimal.
 
 Let's see how it will work with `DocVec`
 
-```python hl_lines="5 7"
+```python hl_lines="6 8"
 from docarray import DocList
 import numpy as np
 
@@ -393,10 +417,47 @@ predict(docs.image)
 First difference is that you don't need to call `np.stack` on `docs.image` because `docs.image` is already a contiguous array.
 Second difference is that you just get the column and don't need to create it at each call.
 
+One of the other main difference between both of them is how you can access document inside them.
+
+If you access a document inside a `DocList` you will get a `BaseDoc` instance, i.e, a document.
+
+If you access a document inside a `DocVec` you will get a document view. A document view is a view of the columnar data structure but which
+looks and behave like a `BaseDoc` instance. It is actually a `BaseDoc` instance but with a different way access the data.
+
+When you do a change at the view level it will be reflected at the DocVec level.
+
+```python
+docs = DocVec[ImageDoc](
+    [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
+)
+
+my_doc = docs[0]
+
+assert my_doc.is_view()  # True
+``` 
+
+whereas with DocList:
+
+```python
+docs = DocList[ImageDoc](
+    [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
+)
+
+my_doc = docs[0]
+
+assert not my_doc.is_view()  # False
+```
 
 
 !!! Note
-    You should use `DocVec` when you need to work with contiguous data and you should use `DocList` when you need to rearrange
+    to summarize : you should use `DocVec` when you need to work with contiguous data, and you should use `DocList` when you need to rearrange
     or extend your data.
 
 
+See also:
+
+* [`DocList`][docarray.array.doc_list.doc_list.DocList]
+* [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec]
+* REPRESENTING REF
+* STORING REF
+* ...
