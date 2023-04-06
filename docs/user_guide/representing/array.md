@@ -40,9 +40,9 @@ before going into detail lets look at a code example.
 !!! Note
     
     `DocList` and `DocVec` are both `AnyDocArray`. The following section will use `DocList` as an example, but the same 
-    apply to `DocVec`.
+    applies to `DocVec`.
 
-First we need to create a Doc class, our data schema. Let's say we want to represent a banner with an image, a title and a description.
+First you need to create a Doc class, our data schema. Let's say you want to represent a banner with an image, a title and a description.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -55,7 +55,7 @@ class BannerDoc(BaseDoc):
     description: str
 ```
 
-let's instantiate several `BannerDoc`
+Let's instantiate several `BannerDoc`
 
 ```python
 banner1 = BannerDoc(
@@ -71,7 +71,7 @@ banner2 = BannerDoc(
 )
 ```
 
-we can now collect them into a `DocList` of `BannerDoc`
+You can now collect them into a `DocList` of `BannerDoc`:
 
 ```python
 docs = DocList[BannerDoc]([banner1, banner2])
@@ -123,18 +123,18 @@ BannerDoc(image='https://example.com/image2.png', title='Bye Bye World', descrip
 
 
 !!! note
-    The syntax `DocList[BannerDoc]` should surprise you in this context,
+    The syntax `DocList[BannerDoc]` might surprise you in this context,
     it is actually at the heart of DocArray but let's come back to it later LINK TO LATER and continue with the example.
 
-As we said earlier `DocList` or more generaly `AnyDocArray` extend the `BaseDoc` API at the Array level.
+As we said earlier, `DocList` or more generally `AnyDocArray`, extends the `BaseDoc` API at the Array level.
 
-What it means concretely is that the same way you can access with Pydantic at the attribute of your data at the 
+What this means concretely is that the same way you can access your data at the 
 document level, you can do access it  at the Array level.
 
-Let's see how it looks:
+Let's see what that looks like:
 
 
-at the document level:
+At the document level:
 ```python
 print(banner.url)
 ```
@@ -143,7 +143,7 @@ print(banner.url)
 https://example.com/image1.png'
 ```
 
-at the Array level:
+At the Array level:
 ```python
 print(docs.url)
 ```
@@ -153,13 +153,13 @@ print(docs.url)
 ```
 
 !!! Important
-    All the attribute of `BannerDoc` are accessible at the Array level.
+    All the attributes of `BannerDoc` are accessible at the Array level.
 
 !!! Warning
-    Whereas this is true at runtime, static type analyser like Mypy or IDE like PyCharm will not be able to know it.
-    This limitation is know and will be fixed in the future by the introduction of a Mypy, PyCharm, VSCode plugin. 
+    Whereas this is true at runtime, static type analysers like Mypy or IDE like PyCharm will not be able to know it.
+    This limitation is known and will be fixed in the future by the introduction of a Mypy, PyCharm, VSCode plugin. 
 
-This even work when you have a nested `BaseDoc`:
+This even works when you have a nested `BaseDoc`:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -227,7 +227,7 @@ print(docs.banner)
 <DocList[BannerDoc] (length=2)>
 ```
 
-Yes, `docs.banner` return a nested `DocList` of `BannerDoc` ! 
+Yes, `docs.banner` returns a nested `DocList` of `BannerDoc` ! 
 
 You can even access the attribute of the nested `BaseDoc` at the Array level:
 
@@ -239,7 +239,7 @@ print(docs.banner.url)
 ['https://example.com/image1.png', 'https://example.com/image2.png']
 ```
 
-the same way that with Pydantic and DocArray [BaseDoc][docarray.base_doc.doc.BaseDoc] you would have done:
+The same way that with Pydantic and DocArray [BaseDoc][docarray.base_doc.doc.BaseDoc] you would have done:
 
 ```python
 print(page1.banner.image)
@@ -251,37 +251,36 @@ print(page1.banner.image)
 
 ### `DocList[DocType]` syntax
 
-As you have seen in the previous section, `AnyDocArray` will expose the same attribute as the `BaseDoc` it contains.
+As you have seen in the previous section, `AnyDocArray` will expose the same attributes as the `BaseDoc` it contains.
 
-But this concept only work if and only if all of the `BaseDoc` in the `AnyDocArray` have the same schema.
+But this concept only works if and only if all of the `BaseDoc`s in the `AnyDocArray` have the same schema.
 
-Indeed, if one of your `BaseDoc` have an attribute that the other don't, you will get an error if you try to acces it at
+Indeed, if one of your `BaseDoc`s has an attribute that the others don't, you will get an error if you try to access it at
 the array level.
 
 
 !!! note
-    To be able to extend Pydantic API to the Array level, `AnyDocArray` need to contain homogenous Document.
+    To be able to extend your schema to the Array level, `AnyDocArray` needs to contain homogenous Document.
 
-This is where the custom syntax `DocList[DocType]` come into play.
+This is where the custom syntax `DocList[DocType]` comes into play.
 
 !!!
-    `DocList[DocType]` create a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Document.
+    `DocList[DocType]` creates a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Documents.
 
-This syntax is inspired by more statically typed language, and even though it might offend python purist and go against 
-python list principle we believe that it is actually a good user experience to think of Array of `BaseDoc` rather than
+This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is actually a good user experience to think of Array of `BaseDoc` rather than
 just an array of non-homogenous `BaseDoc`.
 
 
-That being said `AnyDocArray` can be used to create a non-homogenous `AnyDocArray`:
+That being said, `AnyDocArray` can also be used to create a non-homogenous `AnyDocArray`:
 
 !!! note
     The default `DocList` can be used to create a non-homogenous list of `BaseDoc`.
 
 !!! warning
-    `DocVec` cannot store non-homogenous `BaseDoc` and always need the `DocVec[DocType]` syntax.
+    `DocVec` cannot store non-homogenous `BaseDoc` and always needs the `DocVec[DocType]` syntax.
 
-The usage if non-homogenous `DocList` is really similar to a normal Python list but still offer DocArray functionality
-like serialization and send over the wire (LINK). But it won't be able to extend the Pydantic API to the Array level.
+The usage of non-homogenous `DocList` is really similar to a normal Python list but still offers DocArray functionality
+like serialization and sending over the wire (LINK). But it won't be able to extend the API of your custom schema to the Array level.
 
 
 Here is how you can instantiate a non-homogenous `DocList`:
@@ -331,16 +330,16 @@ ValueError: AudioDoc(
 ### `DocList` vs `DocVec`
 
 [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] are both
-[`AnyDocArray`][docarray.array.any_array.AnyDocArray] but they have different use case, and they differ in how
+[`AnyDocArray`][docarray.array.any_array.AnyDocArray] but they have different use cases, and they differ in how
 they store the data in memory.
 
-They share almost everything that as been said in the previous section, but they have some conceptual differences.
+They share almost everything that has been said in the previous sections, but they have some conceptual differences.
 
 [`DocList`][docarray.array.doc_list.doc_list.DocList] is based on Python List.
-You can, append, extend, insert, pop , ... on it. In DocList, the data is individually owned by each `BaseDoc` collect just
+You can append, extend, insert, pop , ... on it. In DocList, the data is individually owned by each `BaseDoc` collect just
 different Document reference. You want to use [`DocList`][docarray.array.doc_list.doc_list.DocList] when you want to be able
-to rearrange or rerank you data. One flaw of `DocList` is that none of the data is contiguous in memory. So you cannot 
-leverage function that require contiguous data like without first copying the data in a continuous array.
+to rearrange or re-rank your data. One flaw of `DocList` is that none of the data is contiguous in memory. So you cannot 
+leverage functions that require contiguous data like without first copying the data in a continuous array.
 
 [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] is a columnar data structure. DocVec is always an array
 of homogeneous Documents. The idea is that every attribute of the `BaseDoc` will be stored in a contiguous array: a column.
@@ -351,10 +350,10 @@ from all the documents (like `DocList`) before giving it back to you. We just re
 This really matter when you need to handle multi-modal data that you will feed into algorithm that require contiguous data, like matrix multiplication
 which is at the heart of Machine Learning especially in Deep Learning.
 
-let's take an example to illustrate the difference
+Let's take an example to illustrate the difference
 
 
-let's say you want to work with Image:
+Let's say you want to work with Image:
 ```python
 from docarray import BaseDoc
 from docarray.typing import NdArray
@@ -366,14 +365,14 @@ class ImageDoc(BaseDoc):
     ] = None  # [3, 224, 224] this just mean we know in advance the shape of the tensor
 ``` 
 
-and that you have a function that take a contiguous array of image as input (like a deep learning model)
+And that you have a function that take a contiguous array of image as input (like a deep learning model)
 
 ```python
 def predict(image: NdArray['batch_size', 3, 224, 224]):
     ...
 ``` 
 
-let's create a `DocList` of `ImageDoc` and pass it to the function
+Let's create a `DocList` of `ImageDoc` and pass it to the function
 
 ```python hl_lines="6 8"
 from docarray import DocList
