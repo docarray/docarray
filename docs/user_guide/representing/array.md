@@ -12,7 +12,7 @@ As you have seen in the last section (LINK), the fundamental building block of D
 
 In Machine Learning though we often need to work with an *array* of documents, an *array* of datapoints.
 
-This section introducew the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
+This section introduce the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
 name: `DocArray` is actually derive from this concept, and it stands for `DocumentArray`.
 
 
