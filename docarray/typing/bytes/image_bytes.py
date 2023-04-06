@@ -7,7 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.image import ImageNdArray
+from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
