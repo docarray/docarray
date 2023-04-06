@@ -14,6 +14,12 @@
 
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
+Those are the three pillars of DocArray, and you can check them out individually:
+
+1. [**Represent**](#represent)
+2. [**Send**](#send)
+3. [**Store**](#store)
+
 DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
 - :fire: DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
@@ -21,10 +27,6 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 - :package: DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
 - :chains: DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
 
-With that said, let's dig into the three pillars of DocArray:
-1. [Represent](#represent)
-2. [Send](#send)
-3. [Store](#store)
 
 > :bulb: **Where are you coming from?**: Depending on your use case and background, there are different was to "get" DocArray.
 > You can navigate to the following section for an explanation that should fit your mindest:
@@ -60,7 +62,7 @@ class MyDocument(BaseDoc):
     image_tensor: TorchTensor[1704, 2272, 3]  # you can express tensor shapes!
 
 
-# Stack multiple documents
+# Stack multiple documents in a Document Vector
 from docarray import DocVec
 
 vec = DocVec[MyDocument](
@@ -246,7 +248,7 @@ assert isinstance(dl_2, DocList)
 
 DocArray allows you to **send your data**, in an ML-native way.
 
-This means there is native support for **Protobuf and gRPC**, in top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
+This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
 
 This is useful for different use cases:
 - :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
@@ -339,7 +341,7 @@ This is useful for:
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**
 
-Currently, DocArray Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!.
+Currently, DocArray Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
 
 <details>
   <summary>See Document Index usage</summary>
@@ -371,7 +373,7 @@ index = HnswDocumentIndex(work_dir='.')
 # index your data
 index.index(dl)
 
-# find similar Document
+# find similar Documents
 query = dl[0]
 results, scores = index.find(query, top_k=10, search_field='embedding')
 ```
