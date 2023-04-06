@@ -1,4 +1,4 @@
-# Collection of documents
+# Array of documents
 
 DocArray allows users to represent and manipulate multi-modal data to build AI applications (Generative AI, neural search ...). 
 
