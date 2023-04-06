@@ -22,8 +22,8 @@ class PointsAndColors(BaseDoc):
     """
     Document for handling point clouds tensor data.
 
-    A PointsAndColors Document can contain an AnyTensor containing the points in
-    3D space information (`PointsAndColors.points`), and an AnyTensor containing
+    A PointsAndColors Document can contain an [`AnyTensor`][LINK] containing the points in
+    3D space information (`PointsAndColors.points`), and an [`AnyTensor`][LINK] containing
     the points' color information (`PointsAndColors.colors`).
     """
 

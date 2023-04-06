@@ -4,7 +4,7 @@ import numpy as np
 
 from docarray.base_doc import BaseDoc
 from docarray.documents import AudioDoc
-from docarray.typing import AnyEmbedding, AnyTensor
+from docarray.typing import AnyEmbedding, AnyTensor, VideoBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
@@ -24,75 +24,76 @@ T = TypeVar('T', bound='VideoDoc')
 class VideoDoc(BaseDoc):
     """
     Document for handling video.
-    The Video Document can contain a VideoUrl (`VideoDoc.url`), an Audio Document
-    (`VideoDoc.audio`), a VideoTensor (`VideoDoc.tensor`), an AnyTensor representing
-    the indices of the video's key frames (`VideoDoc.key_frame_indices`) and an
-    AnyEmbedding (`VideoDoc.embedding`).
 
-    EXAMPLE USAGE:
+    The Video Document can contain:
+
+    - a [`VideoUrl`][docarray.typing.url.VideoUrl] (`VideoDoc.url`)
+    - an [`AudioDoc`][docarray.documents.AudioDoc] (`VideoDoc.audio`)
+    - a [`VideoTensor`][LINK] (`VideoDoc.tensor`)
+    - an [`AnyTensor`][LINK] representing the indices of the video's key frames (`VideoDoc.key_frame_indices`)
+    - an [`AnyEmbedding`][LINK] (`VideoDoc.embedding`)
+    - [`VideoBytes`][docarray.typing.bytes.VideoBytes] (`VideoDoc.bytes_`)
 
     You can use this Document directly:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import Video
 
-        from docarray.documents import Video
-
-        # use it directly
-        vid = Video(
-            url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
-        )
-        vid.audio.tensor, vid.tensor, vid.key_frame_indices = vid.url.load()
-        model = MyEmbeddingModel()
-        vid.embedding = model(vid.tensor)
+    # use it directly
+    vid = Video(
+        url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    )
+    vid.audio.tensor, vid.tensor, vid.key_frame_indices = vid.url.load()
+    model = MyEmbeddingModel()
+    vid.embedding = model(vid.tensor)
+    ```
 
     You can extend this Document:
 
-    .. code-block:: python
+    ```python
+    from typing import Optional
 
-        from typing import Optional
-
-        from docarray.documents import TextDoc, VideoDoc
-
-
-        # extend it
-        class MyVideo(VideoDoc):
-            name: Optional[TextDoc]
+    from docarray.documents import TextDoc, VideoDoc
 
 
-        video = MyVideo(
-            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
-        )
-        video.video_tensor = video.url.load().video
-        model = MyEmbeddingModel()
-        video.embedding = model(video.tensor)
-        video.name = TextDoc(text='my first video')
+    # extend it
+    class MyVideo(VideoDoc):
+        name: Optional[TextDoc]
+
+
+    video = MyVideo(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    )
+    video.video_tensor = video.url.load().video
+    model = MyEmbeddingModel()
+    video.embedding = model(video.tensor)
+    video.name = TextDoc(text='my first video')
+    ```
 
     You can use this Document for composition:
 
-    .. code-block:: python
-
-        from docarray import BaseDoc
-        from docarray.documents import TextDoc, VideoDoc
-
-
-        # compose it
-        class MultiModalDoc(BaseDoc):
-            video: Video
-            text: Text
+    ```python
+    from docarray import BaseDoc
+    from docarray.documents import TextDoc, VideoDoc
 
 
-        mmdoc = MultiModalDoc(
-            video=Video(
-                url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
-            ),
-            text=Text(text='hello world, how are you doing?'),
-        )
-        mmdoc.video.video_tensor = mmdoc.video.url.load().video
+    # compose it
+    class MultiModalDoc(BaseDoc):
+        video: Video
+        text: Text
 
-        # or
 
-        mmdoc.video.bytes_ = mmdoc.video.url.load_bytes()
+    mmdoc = MultiModalDoc(
+        video=Video(
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+        ),
+        text=Text(text='hello world, how are you doing?'),
+    )
+    mmdoc.video.video_tensor = mmdoc.video.url.load().video
 
+    # or
+    mmdoc.video.bytes_ = mmdoc.video.url.load_bytes()
+    ```
     """
 
     url: Optional[VideoUrl]
@@ -100,7 +101,7 @@ class VideoDoc(BaseDoc):
     tensor: Optional[VideoTensor]
     key_frame_indices: Optional[AnyTensor]
     embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    bytes_: Optional[VideoBytes]
 
     @classmethod
     def validate(

@@ -25,90 +25,87 @@ class PointCloud3D(BaseDoc):
 
     Point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly
     sampling points within the surface of the 3D body. Compared to the mesh
-    representation, the point cloud is a fixed size ndarray (shape=(n_samples, 3)) and
+    representation, the point cloud is a fixed size ndarray of shape `(n_samples, 3)` and
     hence easier for deep learning algorithms to handle.
 
-    A PointCloud3D Document can contain an PointCloud3DUrl (`PointCloud3D.url`),
-    a PointsAndColors object (`PointCloud3D.tensors`), and an AnyEmbedding
-    (`PointCloud3D.embedding`).
+    A PointCloud3D Document can contain:
 
-    EXAMPLE USAGE:
+    - a [`PointCloud3DUrl`][docarray.typing.url.PointCloud3DUrl] (`PointCloud3D.url`)
+    - a [`PointsAndColors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] object (`PointCloud3D.tensors`)
+    - an [`AnyEmbedding`][LINK] (`PointCloud3D.embedding`)
+    - `bytes` (`PointCloud3D.bytes_`)
 
     You can use this Document directly:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import PointCloud3D
 
-        from docarray.documents import PointCloud3D
-
-        # use it directly
-        pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensors = pc.url.load(samples=100)
-        model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensors.points)
+    # use it directly
+    pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+    pc.tensors = pc.url.load(samples=100)
+    model = MyEmbeddingModel()
+    pc.embedding = model(pc.tensors.points)
+    ```
 
     You can extend this Document:
 
-    .. code-block:: python
-
-        from docarray.documents import PointCloud3D
-        from docarray.typing import AnyEmbedding
-        from typing import Optional
-
-
-        # extend it
-        class MyPointCloud3D(PointCloud3D):
-            second_embedding: Optional[AnyEmbedding]
+    ```python
+    from docarray.documents import PointCloud3D
+    from docarray.typing import AnyEmbedding
+    from typing import Optional
 
 
-        pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.tensors = pc.url.load(samples=100)
-        model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensors.points)
-        pc.second_embedding = model(pc.tensors.colors)
+    # extend it
+    class MyPointCloud3D(PointCloud3D):
+        second_embedding: Optional[AnyEmbedding]
 
+
+    pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+    pc.tensors = pc.url.load(samples=100)
+    model = MyEmbeddingModel()
+    pc.embedding = model(pc.tensors.points)
+    pc.second_embedding = model(pc.tensors.colors)
+    ```
 
     You can use this Document for composition:
 
-    .. code-block:: python
-
-        from docarray import BaseDoc
-        from docarray.documents import PointCloud3D, Text
-
-
-        # compose it
-        class MultiModalDoc(BaseDoc):
-            point_cloud: PointCloud3D
-            text: Text
+    ```python
+    from docarray import BaseDoc
+    from docarray.documents import PointCloud3D, Text
 
 
-        mmdoc = MultiModalDoc(
-            point_cloud=PointCloud3D(
-                url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
-            ),
-            text=Text(text='hello world, how are you doing?'),
-        )
-        mmdoc.point_cloud.tensors = mmdoc.point_cloud.url.load(samples=100)
+    # compose it
+    class MultiModalDoc(BaseDoc):
+        point_cloud: PointCloud3D
+        text: Text
 
-        # or
 
-        mmdoc.point_cloud.bytes_ = mmdoc.point_cloud.url.load_bytes()
+    mmdoc = MultiModalDoc(
+        point_cloud=PointCloud3D(
+            url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
+        ),
+        text=Text(text='hello world, how are you doing?'),
+    )
+    mmdoc.point_cloud.tensors = mmdoc.point_cloud.url.load(samples=100)
 
+    # or
+    mmdoc.point_cloud.bytes_ = mmdoc.point_cloud.url.load_bytes()
+    ```
 
     You can display your point cloud from either its url, or its tensors:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import PointCloud3D
 
-        from docarray.documents import PointCloud3D
+    # display from url
+    pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
+    pc.url.display()
 
-        # display from url
-        pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-        pc.url.display()
-
-        # display from tensors
-        pc.tensors = pc.url.load(samples=10000)
-        model = MyEmbeddingModel()
-        pc.embedding = model(pc.tensors.points)
-
+    # display from tensors
+    pc.tensors = pc.url.load(samples=10000)
+    model = MyEmbeddingModel()
+    pc.embedding = model(pc.tensors.points)
+    ```
     """
 
     url: Optional[PointCloud3DUrl]
