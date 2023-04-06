@@ -85,6 +85,7 @@ def test_find_torch(qdrant_config, space, qdrant):
     assert result_docs[0].id == index_docs[-1].id
 
 
+@pytest.mark.skip('Tensorflow is not listed in the dependencies')
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_tensorflow(qdrant_config, space, qdrant):
     from docarray.typing import TensorFlowTensor

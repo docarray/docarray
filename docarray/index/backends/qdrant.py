@@ -39,11 +39,11 @@ from docarray.utils.find import _FindResult
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-QDRANT_PY_VEC_TYPES: List[Any] = [np.ndarray, AbstractTensor]
+QDRANT_PY_VECTOR_TYPES: List[Any] = [np.ndarray, AbstractTensor]
 if torch_imported:
     import torch
 
-    QDRANT_PY_VEC_TYPES.append(torch.Tensor)
+    QDRANT_PY_VECTOR_TYPES.append(torch.Tensor)
 
 QDRANT_SPACE_MAPPING = {
     'cosine': rest.Distance.COSINE,
@@ -189,16 +189,15 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 'id': {},
-                'vector': {},
+                'vector': {'dim': 128},
                 'payload': {},
                 np.ndarray: {},
             }
         )
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        for vector_type in QDRANT_PY_VEC_TYPES:
-            if issubclass(python_type, vector_type):
-                return 'vector'
+        if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
+            return 'vector'
 
         if issubclass(python_type, docarray.typing.id.ID):
             return 'id'
@@ -208,7 +207,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _initialize_collection(self):
         try:
             self._client.get_collection(self._db_config.collection_name)
-            # TODO: handle different configuration of the collection
         except (UnexpectedResponse, _InactiveRpcError):
             vectors_config = {
                 column_name: self._to_qdrant_vector_params(column_info)
@@ -226,6 +224,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 optimizers_config=self._db_config.optimizers_config,
                 wal_config=self._db_config.wal_config,
                 quantization_config=self._db_config.quantization_config,
+            )
+            self._client.create_payload_index(
+                collection_name=self._db_config.collection_name,
+                field_name='__generated_vectors',
+                field_schema=rest.PayloadSchemaType.KEYWORD,
             )
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
@@ -274,12 +277,23 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def execute_query(self, query: Query, *args, **kwargs) -> DocList:
         if query.vector_field:
-            # We perform semantic search with some vectors with Qdrant's search metho
+            # We perform semantic search with some vectors with Qdrant's search method
             # should be called
             points = self._client.search(
                 collection_name=self._db_config.collection_name,
                 query_vector=(query.vector_field, query.vector_query),
-                query_filter=query.filter,
+                query_filter=rest.Filter(
+                    must=[query.filter],
+                    # The following filter takes care of using only those points which
+                    # do not have the vector generated. Those are excluded from the
+                    # search results.
+                    must_not=[
+                        rest.FieldCondition(
+                            key='__generated_vectors',
+                            match=rest.MatchValue(value=query.vector_field),
+                        )
+                    ]
+                ),
                 limit=query.limit,
                 with_payload=True,
                 with_vectors=True,
@@ -316,6 +330,17 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     vector=rest.NamedVector(
                         name=search_field,
                         vector=query.tolist(),  # type: ignore
+                    ),
+                    # The following filter takes care of using only those points which
+                    # do not have the vector generated. Those are excluded from the
+                    # search results.
+                    filter=rest.Filter(
+                        must_not=[
+                            rest.FieldCondition(
+                                key='__generated_vectors',
+                                match=rest.MatchValue(value=search_field),
+                            )
+                        ]
                     ),
                     limit=limit,
                     with_vector=True,
@@ -398,16 +423,28 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
         point_id = self._to_qdrant_id(row.get('id'))
-        vectors = {
-            column_name: row.get(column_name).tolist()
-            for column_name, column_info in self._column_infos.items()
-            if column_info.db_type == 'vector'
-        }
-        payload = {
-            column_name: row.get(column_name)
-            for column_name, column_info in self._column_infos.items()
-            if column_info.db_type in ['id', 'payload']
-        }
+        vectors, payload = {}, {'__generated_vectors': []}
+        for column_name, column_info in self._column_infos.items():
+            if column_info.db_type in ['id', 'payload']:
+                payload[column_name] = row.get(column_name)
+                continue
+
+            vector = row.get(column_name)
+            if column_info.db_type == 'vector' and vector is not None:
+                vectors[column_name] = vector.tolist()
+            elif column_info.db_type == 'vector' and vector is None:
+                # In that case vector was not provided. Qdrant does not support optional
+                # vectors - each point needs to have all the vectors already assigned.
+                # Thus, we put a fake embedding with the correct dimensionality and mark
+                # such point a point with a boolean flag in the payload.
+                vector_size = column_info.n_dim or column_info.config.get('dim')
+                vectors[column_name] = np.ones(vector_size).tolist()
+                payload['__generated_vectors'].append(column_name)
+            else:
+                raise ValueError(
+                    f'Could not handle the conversion for column {column_name}. '
+                    f'Column info: {column_info}'
+                )
         return rest.PointStruct(
             id=point_id,
             vector=vectors,
@@ -429,6 +466,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
         doc = point.payload
+        generated_vectors = doc.pop('__generated_vectors')
         for vector_name, vector in point.vector.items():
+            if vector_name in generated_vectors:
+                # That means the vector was generated during the upload, and should not
+                # be returned along the other vectors.
+                pass
             doc[vector_name] = vector
         return doc

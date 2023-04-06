@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 import torch
 from pydantic import Field
+from scipy.spatial.distance import cosine
 
 from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
@@ -229,3 +230,23 @@ def test_num_docs(ten_simple_docs, qdrant_config, qdrant):
 
     del store[more_docs[2].id, ten_simple_docs[7].id]
     assert store.num_docs() == 10
+
+
+def test_multimodal_doc(qdrant_config, qdrant):
+    class MyMultiModalDoc(BaseDoc):
+        image: ImageDoc
+        text: TextDoc
+
+    store = QdrantDocumentIndex[MyMultiModalDoc](db_config=qdrant_config)
+
+    doc = [
+        MyMultiModalDoc(
+            image=ImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
+        )
+    ]
+    store.index(doc)
+
+    id_ = doc[0].id
+    assert store[id_].id == id_
+    assert cosine(store[id_].image.embedding, doc[0].image.embedding) == pytest.approx(0.0)
+    assert store[id_].text.text == doc[0].text.text
