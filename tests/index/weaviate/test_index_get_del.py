@@ -6,7 +6,7 @@ import weaviate
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.documents import ImageDoc
+from docarray.documents import ImageDoc, TextDoc
 from docarray.index.backends.weaviate import DOCUMENTID, WeaviateDocumentIndex
 from docarray.typing import NdArray
 
@@ -375,6 +375,26 @@ def test_hybrid_query_batched(test_store):
     docs = test_store.execute_query(q)
     assert docs[0][0].id == '1'
     assert docs[1][0].id == '2'
+
+
+def test_index_multi_modal_doc():
+    class MyMultiModalDoc(BaseDoc):
+        image: ImageDoc
+        text: TextDoc
+
+    store = WeaviateDocumentIndex[MyMultiModalDoc]()
+
+    doc = [
+        MyMultiModalDoc(
+            image=ImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
+        )
+    ]
+    store.index(doc)
+
+    id_ = doc[0].id
+    assert store[id_].id == id_
+    assert np.all(store[id_].image.embedding == doc[0].image.embedding)
+    assert store[id_].text.text == doc[0].text.text
 
 
 def test_index_document_with_bytes(weaviate_client):
