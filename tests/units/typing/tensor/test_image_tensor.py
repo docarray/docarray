@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray.typing import ImageNdArray, ImageTorchTensor
+from docarray.typing import ImageBytes, ImageNdArray, ImageTorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -35,3 +35,16 @@ def test_save_image_tensorflow_tensor_to_file(tmpdir):
     image_tensor = parse_obj_as(ImageTensorFlowTensor, tf.zeros((224, 224, 3)))
     image_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.parametrize(
+    'image_tensor',
+    [
+        parse_obj_as(ImageTorchTensor, torch.zeros(224, 224, 3)),
+        parse_obj_as(ImageNdArray, np.zeros((224, 224, 3))),
+    ],
+)
+def test_save_image_tensor_to_bytes(image_tensor):
+    b = image_tensor.to_bytes()
+    isinstance(b, bytes)
+    isinstance(b, ImageBytes)

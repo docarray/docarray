@@ -9,6 +9,7 @@ from docarray import BaseDoc
 from docarray.typing import (
     AudioNdArray,
     AudioTorchTensor,
+    VideoBytes,
     VideoNdArray,
     VideoTorchTensor,
 )
@@ -137,9 +138,10 @@ def test_save_video_tensor_to_file(video_tensor, tmpdir):
         parse_obj_as(VideoNdArray, np.zeros((1, 224, 224, 3))),
     ],
 )
-def test_save_video_tensor_to_bytes(video_tensor, tmpdir):
+def test_save_video_tensor_to_bytes(video_tensor):
     b = video_tensor.to_bytes()
     isinstance(b, bytes)
+    isinstance(b, VideoBytes)
 
 
 @pytest.mark.tensorflow
