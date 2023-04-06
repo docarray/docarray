@@ -16,7 +16,7 @@ Klara and the sun,Kazuo Ishiguro,2020
 A little life,Hanya Yanagihara,2015
 ```
 
-First we have to define the Document schema describing our data.
+First, you have to define the Document schema describing our data.
 ```python
 from docarray import BaseDoc
 
@@ -26,7 +26,7 @@ class Book(BaseDoc):
     author: str
     year: int
 ```
-Next, we can load the content of the csv file to a DocList instance of `Book`s.
+Next, you can load the content of the csv file to a DocList instance of `Book`s.
 ```python
 from docarray import DocList
 

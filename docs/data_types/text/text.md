@@ -4,7 +4,7 @@
 DocArray supports many different modalities including `Text`.
 This section will show you how to load and handle text data using DocArray.
 
-Storing text in DocArray is as simple as this:
+You can store text in DocArray like this:
 
 ```python
 from docarray import BaseDoc
@@ -38,7 +38,7 @@ class MyText(BaseDoc):
     text: str = None
     url: TextUrl = None
 ```
-Next, we can instantiate a `MyText` object with a `url` attribute and load its content to the `text` field.
+Next, you can instantiate a `MyText` object with a `url` attribute and load its content to the `text` field.
 ```python
 doc = MyText(
     url='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
@@ -51,7 +51,7 @@ assert doc.text.startswith('<TITLE>Read Me</TITLE>')
 ##  Segment long texts
 
 Often times when you index or search text data, you don’t want to consider thousands of words as one huge string. 
-Instead, some finer granularity would be nice. You can do this by leveraging nested field. For example, let’s split some page content into its sentences by `'.'`.
+Instead, some finer granularity would be nice. You can do this by leveraging nested fields. For example, let’s split some page content into its sentences by `'.'`.
 
 ```python
 from docarray import BaseDoc, DocList

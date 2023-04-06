@@ -3,7 +3,7 @@
 DocArray supports many modalities including `Video`.
 This section will show you how to load and handle video data using DocArray.
 
-Moreover, we will introduce DocArray's video specific types, to represent your video data ranging from [`VideoUrl`][docarray.typing.url.VideoUrl] to [`VideoBytes`][docarray.typing.bytes.VideoBytes] and [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray].
+Moreover, you will learn about DocArray's video specific types, to represent your video data ranging from [`VideoUrl`][docarray.typing.url.VideoUrl] to [`VideoBytes`][docarray.typing.bytes.VideoBytes] and [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray].
 
 !!! note
     This requires a `av` dependency. You can install all necessary dependencies via:
@@ -36,7 +36,7 @@ doc = MyVideo(
 )
 ```
 
-Now we can load the video file content by simply calling [`.load()`][docarray.typing.url.audio_url.AudioUrl.load] on our [`AudioUrl`][docarray.typing.url.audio_url.AudioUrl] instance.
+Now you can load the video file content by simply calling [`.load()`][docarray.typing.url.audio_url.AudioUrl.load] on your [`AudioUrl`][docarray.typing.url.audio_url.AudioUrl] instance.
 This will return a [NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple) of a **video tensor**, an **audio tensor** and the **key frame indices**:
 
 - The video tensor is a 4-dim array of shape `(n_frames, height, width, channels)`. <br>The first dimension represents the frame id. 
@@ -59,8 +59,8 @@ print(doc.video.shape)
 ``` { .text .no-copy }
 (250, 176, 320, 3)
 ```
-For the given example we can infer from `doc.video`'s shape, that the video contains 250 frames of size 176x320 in RGB mode. 
-Based on the overall length of the video (10s), we can infer the framerate is approximately 250/10 = 25 frames per second (fps).
+For the given example you can infer from `doc.video`'s shape, that the video contains 250 frames of size 176x320 in RGB mode. 
+Based on the overall length of the video (10s), you can infer the framerate is approximately 250/10 = 25 frames per second (fps).
 
 
 ## VideoTensor
@@ -134,7 +134,7 @@ assert isinstance(bytes_from_tensor, VideoBytes)
 ## Key frame extraction
 
 A key frame is defined as the starting point of any smooth transition.
-Given the key frame indices you can easily access selected scenes.
+Given the key frame indices you can access selected scenes.
 
 ```python
 indices = doc.key_frame_indices
@@ -144,7 +144,7 @@ assert (indices == [0, 95]).all()
 assert first_scene.shape == (95, 176, 320, 3)
 ```
 
-Or you can easily access the first frame of all new scenes and display them in a notebook:
+Or you can access the first frame of all new scenes and display them in a notebook:
 
 ```python
 from docarray.typing import ImageNdArray
@@ -165,7 +165,7 @@ for frame in key_frames:
 
 ## Save video to file
 
-You can easily save your video tensor to a file. In the example below we save the video with a framerate of 60 fps, which results in a 4 sec video, instead of the original 10 second video with a frame rate of 25 fps. 
+You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4 sec video, instead of the original 10 second video with a frame rate of 25 fps. 
 ```python
 doc.video.save(
     file_path="/path/my_video.mp4",
@@ -175,7 +175,7 @@ doc.video.save(
 
 ## Display video in notebook
 
-You can play a video in a notebook from its url as well as its tensor, by calling [`.display()`][docarray.typing.url.audio_url.AudioUrl.display] on either one. For the latter you can optionally give the corresponding AudioTensor as a parameter.
+You can play a video in a notebook from its URL as well as its tensor, by calling [`.display()`][docarray.typing.url.audio_url.AudioUrl.display] on either one. For the latter you can optionally give the corresponding AudioTensor as a parameter.
 
 ```python
 doc_fast = MyAudio(url="/path/my_video.mp4")

@@ -30,7 +30,7 @@ class MyImage(BaseDoc):
 img = MyImage(url='apple.png')
 ```
 
-To load the image data you can simply call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object.
+To load the image data you can call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object.
 
 ```python
 from docarray.typing import ImageNdArray

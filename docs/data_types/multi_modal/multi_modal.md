@@ -93,7 +93,7 @@ For this example, let's try to define a schema to represent a newspaper. The new
 any number of following pages, and some metadata. Further, each page contains a main text, and can contain and image 
 and an image description.
 
-To implement this we can simply add a `Newspaper` class to our previous implementation. The newspaper has a required 
+To implement this you can simply add a `Newspaper` class to our previous implementation. The newspaper has a required 
 `cover_page` attribute of type `Page` as well as a `pages` attribute, which is a `DocList` of `Page`'s.
 
 ```python

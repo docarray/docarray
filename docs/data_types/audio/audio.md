@@ -3,7 +3,7 @@
 DocArray supports many different modalities including `Audio`.
 This section will show you how to load and handle audio data using DocArray.
 
-Moreover, we will introduce DocArray's audio specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
+Moreover, you will learn about DocArray's audio specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
 
 !!! note
     This requires a `pydub` dependency. You can install all necessary dependencies via:
@@ -15,7 +15,7 @@ Moreover, we will introduce DocArray's audio specific types, to represent your a
 
 First, let's define a class, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`AudioUrl`][docarray.typing.url.AudioUrl], and an optional `tensor` attribute of type `AudioTensor`.
 
-Next, we can instantiate an object of that class with a local or remote url. 
+Next, you can instantiate an object of that class with a local or remote URL. 
 
 ```python
 from docarray import BaseDoc
