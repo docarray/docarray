@@ -6,6 +6,7 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
+from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
 from docarray.utils._internal.misc import is_tf_available
@@ -120,3 +121,16 @@ def test_save_audio_tensorflow_tensor_to_wav_file(tmpdir):
     audio_tensor = parse_obj_as(AudioTensorFlowTensor, tf.zeros((1000, 2)))
     audio_tensor.save(tmp_file)
     assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.parametrize(
+    'audio_tensor',
+    [
+        parse_obj_as(AudioTorchTensor, torch.zeros(1000, 2)),
+        parse_obj_as(AudioNdArray, np.zeros((1000, 2))),
+    ],
+)
+def test_save_audio_tensor_to_bytes(audio_tensor):
+    b = audio_tensor.to_bytes()
+    isinstance(b, bytes)
+    isinstance(b, AudioBytes)
