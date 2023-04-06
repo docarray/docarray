@@ -86,4 +86,5 @@ nav:
     - how_to/optimize_performance_with_id_generation.md
     - how_to/audio2text.md
   - ...
+  - Glossary: glossary.md
   - Contributing: CONTRIBUTING.md
