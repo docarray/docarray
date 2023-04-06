@@ -3,7 +3,8 @@
 DocArray allows users to represent and manipulate multi-modal data to build AI applications (Generative AI, neural search ...). 
 DocArray could be seen as a `multi-modal extension of Pydantic for Machine Learning use cases`. 
 
-!!! warning
+
+!!! note
     DocArray is actually more than just a Pydantic extension, it is a general purpose multi-modal Python library. 
      But it can be usefl usefully to see it that way to fully understand the representing ability that DocArray offers.
 
@@ -29,9 +30,6 @@ We will go into the difference between `DocList` and `DocVec` in the next sectio
 
 `AnyDocArray`s spirit is to extend the `BaseDoc` and `BaseModel` concept to the Array level in a *seamless* way.
 
-!!! important
-    `AnyDocArray` is the Array equivalent of a Pydantic `BaseModel`or a DocArray [`BaseDoc`][docarray.base_doc.doc.BaseDoc]. 
-    It extends the `BaseDoc` API at the Array level.
 
 ### Example
 
