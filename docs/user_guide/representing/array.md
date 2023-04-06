@@ -17,17 +17,17 @@ name: `DocArray` is actually derive from this concept, and it stands for `Docume
 
 ## AnyDocArray
 
-`AnyDocArray` is an abstract class that represent an array of `BaseDoc` which is not meant to be used directly, but to be subclassed.
+`AnyDocArray` is an abstract class that represents an array of `BaseDoc` which is not meant to be used directly, but to be subclassed.
 
 We provide two concrete implementation of `AnyDocArray` :
 
-- [`DocList`][docarray.array.doc_list.doc_list.DocList] which is a python list of `BaseDoc`
+- [`DocList`][docarray.array.doc_list.doc_list.DocList] which is a Python list of `BaseDoc`
 - [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] which is a column based representation of `BaseDoc`
 
 We will go into the difference between `DocList` and `DocVec` in the next section but let's first focus on what they have in common.
 
 
-`AnyDocArray` spirit is to extend the `BaseDoc` and `BaseModel` concept to the Array level in a *seamless* way
+`AnyDocArray`s spirit is to extend the `BaseDoc` and `BaseModel` concept to the Array level in a *seamless* way.
 
 !!! important
     `AnyDocArray` is the Array equivalent of a Pydantic `BaseModel`or a DocArray [`BaseDoc`][docarray.base_doc.doc.BaseDoc]. 
@@ -35,8 +35,7 @@ We will go into the difference between `DocList` and `DocVec` in the next sectio
 
 ### Example
 
-before going into detail lets look at a code example. After all it all a question of API and code 
-example is the best way to visualize an API.
+before going into detail lets look at a code example.
 
 !!! Note
     
