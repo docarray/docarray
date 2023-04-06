@@ -82,5 +82,6 @@ nav:
     - how_to/add_doc_index.md
     - how_to/multimodal_training_and_serving.md
     - how_to/optimize_performance_with_id_generation.md
+    - how_to/audio2text.md
   - ...
   - Contributing: CONTRIBUTING.md
