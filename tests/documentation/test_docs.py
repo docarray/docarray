@@ -11,3 +11,7 @@ from mktestdocs import check_md_file
 )
 def test_files_good(fpath):
     check_md_file(fpath=fpath, memory=True)
+
+
+def test_readme():
+    check_md_file(fpath='README.md', memory=True)
