@@ -170,7 +170,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_name: str = 'Document'
         username: str = None
         password: str = None
-        scopes: str = None
+        scopes: List[str] = field(default_factory=lambda: ["offline_access"])
         auth_api_key: str = None
 
     @dataclass
