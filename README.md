@@ -28,7 +28,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 - :chains: DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
 
 
-> :bulb: **Where are you coming from?**: Depending on your use case and background, there are different was to "get" DocArray.
+> :bulb: **Where are you coming from?** Depending on your use case and background, there are different was to "get" DocArray.
 > You can navigate to the following section for an explanation that should fit your mindest:
 > - [Coming from pure PyTorch or TensorFlow](#coming-from-torch-tf)
 > - [Coming from Pydantic](#coming-from-pydantic)
@@ -45,7 +45,7 @@ This is useful for different use cases:
 - :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
 - :card_index_dividers: You are **parsing data** for later use in your ML or DS applications
 
-> :bulb: **Coming from Pydantic?**: If you're currently using Pydantic for the use cases above, you should be happy to hear
+> :bulb: **Coming from Pydantic?** If you're currently using Pydantic for the use cases above, you should be happy to hear
 > that DocArray is built on top of, and fully compatible with, Pydantic!
 > Also, we have [dedicated section](#coming-from-pydantic) just for you!
 
@@ -255,7 +255,7 @@ This is useful for different use cases:
 - :spider_web: You **distribute your model** across machines and need to send your data between nodes
 - :gear: You are building a **microservice** architecture and need to send your data between microservices
 
-> :bulb: **Coming from FatAPI?**: If you're currently using FatAPI for the use cases above, you should be happy to hear
+> :bulb: **Coming from FastAPI?** If you're currently using FatAPI for the use cases above, you should be happy to hear
 > that DocArray is fully compatible with FatAPI!
 > Also, we have [dedicated section](#coming-from-fastapi) just for you!
 
