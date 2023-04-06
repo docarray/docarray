@@ -595,11 +595,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _encode_bytes_columns_to_base64(self, doc):
         for column in self.bytes_columns:
-            doc[column] = base64.b64encode(doc[column]).decode("utf-8")
+            if doc[column] is not None:
+                doc[column] = base64.b64encode(doc[column]).decode("utf-8")
 
     def _decode_base64_properties_to_bytes(self, doc):
         for column in self.bytes_columns:
-            doc[column] = base64.b64decode(doc[column])
+            if doc[column] is not None:
+                doc[column] = base64.b64decode(doc[column])
 
     def _convert_nonembedding_array_to_list(self, doc):
         for column in self.nonembedding_array_columns:
