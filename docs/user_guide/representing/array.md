@@ -1,10 +1,10 @@
 # Collection of documents
 
-DocArray allow users to represent and manipulate multi-modal data to build AI application (Generative AI, neural search ...). 
-DocArray could be seen as a `multi-modal extension of Pydantic for Machine Learning use case`. 
+DocArray allows users to represent and manipulate multi-modal data to build AI applications (Generative AI, neural search ...). 
+DocArray could be seen as a `multi-modal extension of Pydantic for Machine Learning use cases`. 
 
 !!! warning
-    DocArray is actually more than just a Pydantic extension, it is a general purpose multi-modal python libraries. 
+    DocArray is actually more than just a Pydantic extension, it is a general purpose multi-modal Python library. 
      But it is usefully to see it that way to fully understand the representing ability that DocArray offer.
 
 As you have seen in the last section (LINK), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which allows to represent a *single* document, a *single* datapoint.
