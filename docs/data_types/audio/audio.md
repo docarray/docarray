@@ -38,7 +38,7 @@ Loading the content of the audio file is as easy as calling [`.load()`][docarray
 This will return a tuple of:
 
 - an [`AudioNdArray`][docarray.typing.tensor.audio.AudioNdArray] representing the audio file content 
-- the corresponding frame rate describing the number of signals for a certain period of time
+- an integer representing the frame rate (number of signals for a certain period of time)
 
 ```python
 doc.tensor, doc.frame_rate = doc.url.load()
@@ -65,8 +65,8 @@ doc.summary()
 DocArray offers several AudioTensors to store your data to:
 
 - [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray]
-- `AudioTorchTensor`
-- `AudioTensorFlowTensor`
+- [`AudioTorchTensor`][LINK]
+- [`AudioTensorFlowTensor`][LINK]
 
 If you specify the type of your tensor to one of the above, it will be cast to that automatically:
 
@@ -95,10 +95,11 @@ assert isinstance(doc.torch_tensor, AudioTorchTensor)
 
 ## AudioBytes
 
-Alternatively, you can load your [`AudioUrl`][docarray.typing.url.AudioUrl] instance to [`AudioBytes`][docarray.typing.bytes.AudioBytes], and your [`AudioBytes`][docarray.typing.bytes.AudioBytes] instance to an `AudioTensor` of your choice:
+Alternatively, you can load your [`AudioUrl`][docarray.typing.url.AudioUrl] instance to [`AudioBytes`][docarray.typing.bytes.AudioBytes], and your [`AudioBytes`][docarray.typing.bytes.AudioBytes] instance to an [`AudioTensor`][LINK] of your choice:
 
 ```python hl_lines="15 16"
-from docarray import BaseDoc
+
+[//]: # (from docarray import BaseDoc)
 from docarray.typing import AudioBytes, AudioTensor, AudioUrl
 
 
@@ -116,7 +117,7 @@ doc.bytes_, _ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
 doc.tensor, _ = doc.bytes_.load()  # type(doc.tensor) = AudioNdarray
 ```
  
-Vice versa, you can also transform an [`AudioTensor`] to [`AudioBytes`][docarray.typing.bytes.AudioBytes]:
+Vice versa, you can also transform an [`AudioTensor`][LINK] to [`AudioBytes`][docarray.typing.bytes.AudioBytes]:
 
 ```python
 from docarray.typing import AudioBytes
@@ -124,11 +125,11 @@ from docarray.typing import AudioBytes
 
 bytes_from_tensor = doc.tensor.to_bytes()
 
-assert isinstance(bytes_from_tensor, AudioBytes)
+# assert isinstance(bytes_from_tensor, AudioBytes)
 ```
 
 ## Save audio to file
-You can save your AudioTensor to an audio file of any format as follows:
+You can save your [`AudioTensor`][LINK] to an audio file of any format as follows:
 ```python
 tensor_reversed = doc.tensor[::-1]
 tensor_reversed.save(

@@ -31,7 +31,9 @@ Next, you can load the content of the csv file to a DocList instance of `Book`s.
 from docarray import DocList
 
 
-docs = DocList[Book].from_csv(file_path='books.csv')
+docs = DocList[Book].from_csv(
+    file_path='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/books.csv?raw=true'
+)
 docs.summary()
 ```
 <details>

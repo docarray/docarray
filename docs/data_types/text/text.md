@@ -96,6 +96,11 @@ page.summary()
 To get started and play around with your text data, DocArray provides a predefined [`TextDoc`][docarray.documents.text.TextDoc], which includes all of the previously mentioned functionalities:
 
 ```python
+from docarray import BaseDoc
+from docarray.typing import AnyEmbedding, TextUrl
+from typing import Optional
+
+
 class TextDoc(BaseDoc):
     text: Optional[str]
     url: Optional[TextUrl]

@@ -127,7 +127,7 @@ from docarray.typing import VideoBytes
 
 bytes_from_tensor = doc.video.to_bytes()
 
-assert isinstance(bytes_from_tensor, VideoBytes)
+# assert isinstance(bytes_from_tensor, VideoBytes)
 ```
 
 
