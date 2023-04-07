@@ -24,12 +24,54 @@ from docarray.typing import NdArray
 
 
 class SimpleSchema(BaseDoc):
-    tens: NdArray[10] = Field(dim=128, space='cosine')
+    tensor: NdArray[128] = Field(dim=128, space='cosine')
 
 
 doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp')
 ```
 
 ### Index
+Use `.index()` to add `Doc` into the index. You need to define the `Doc` following the schema of the index.
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+import numpy as np
+
+class SimpleDoc(BaseDoc):
+    tensor: NdArray[128]
+
+index_docs = [SimpleDoc(tensor=np.zeros(128)) for _ in range(64)]
+
+doc_index.index(index_docs)
+```
+
+### Access
+To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple `Doc`.
+
+```python
+# access a single Doc
+doc_index[index_docs[16].id]
+
+# access multiple Docs
+doc_index[index_docs[16].id, index_docs[17].id]
+```
+
+### Delete
+To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` to be deleted. You can also pass a list of `id` to delete multiple `Doc`.
+
+```python
+# delete a single Doc
+del doc_index[index_docs[16].id]
+
+# delete multiple Docs
+del doc_index[index_docs[16].id, index_docs[17].id]
+```
+
+### Find nearest neighbors
+
+#### Find by a field
+
+#### Find a nested Doc
 
 ## ElasticSearch
