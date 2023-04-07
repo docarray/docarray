@@ -37,7 +37,7 @@ def find(
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
-    descending: bool = False,
+    descending: Optional[bool] = None,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -119,7 +119,7 @@ def find_batched(
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
-    descending: bool = False,
+    descending: Optional[bool] = None,
     shuffle: bool = False,
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -228,7 +228,7 @@ def find_batched(
         q_embed = _extract_embeddings(query, embedding_field, embedding_type)
         dists = metric_fn(q_embed, index_embeddings, device=device)
         top_scores, top_indices = comp_backend.Retrieval.top_k(
-            dists, k=limit, device=device, descending=descending
+            dists, k=limit, device=device, descending=descending #type: ignore
         )
         return top_indices, top_scores
 
@@ -244,7 +244,7 @@ def find_batched(
         res = []
         for indices_per_query, scores_per_query in zip(top_indices, top_scores):
             docs_per_query: DocList = DocList([])
-            for idx in indices_per_query:  # workaround until #930 is fixed
+            for idx in indices_per_query:  
                 docs_per_query.append(index[idx])
             docs_per_query = DocList(docs_per_query)
             res.append(FindResult(scores=scores_per_query, documents=docs_per_query))
@@ -268,12 +268,12 @@ def find_batched(
     )
 
     for indices_per_query, scores_per_query in it:
-        docs_per_query: DocList = DocList([])  # type: ignore
+        per_query_docs: DocList = DocList([])  
         for idx, scores in zip(
             indices_per_query, scores_per_query
         ):  # workaround until #930 is fixed
-            docs_per_query = index[idx]
-            results.append(FindResult(scores=scores, documents=docs_per_query))
+            per_query_docs = index[idx]
+            results.append(FindResult(scores=scores, documents=per_query_docs))
 
     return results
 
