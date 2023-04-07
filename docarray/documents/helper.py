@@ -164,7 +164,7 @@ def create_from_named_tuple(
     **kwargs: Any,
 ) -> Type['T_doc']:
     """
-    Create a subclass of BaseDocument based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
+    Create a subclass of BaseDoc based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
     :param named_tuple_cls: NamedTuple class to use for the new Document class
     :param kwargs: extra arguments to pass to `create_model_from_namedtuple`
     :return: the new Document class
@@ -174,7 +174,7 @@ def create_from_named_tuple(
     .. code-block:: python
         from typing import NamedTuple
 
-        from docarray import BaseDocument
+        from docarray import BaseDoc
         from docarray.documents import Audio
         from docarray.documents.helper import create_from_named_tuple
         from docarray.typing.tensor.audio import AudioNdArray
@@ -187,13 +187,13 @@ def create_from_named_tuple(
 
         Doc = create_from_named_tuple(MyAudio, __base__=Audio)
 
-        assert issubclass(Doc, BaseDocument)
+        assert issubclass(Doc, BaseDoc)
         assert issubclass(Doc, Audio)
 
     """
     if __base__:
         if not issubclass(__base__, BaseDoc):
-            raise ValueError(f'{__base__} is not a BaseDocument or its subclass')
+            raise ValueError(f'{__base__} is not a BaseDoc or its subclass')
     else:
         __base__ = BaseDoc
     doc = create_model_from_namedtuple(named_tuple_cls, __base__=__base__, **kwargs)
