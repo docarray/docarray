@@ -15,6 +15,8 @@ This section show you how to use the `DocArray.index` module. `DocArray.index` m
 ### Construct
 To construct an index, you need to define the schema first. You can define the schema in the same way as define a `Doc`. The only difference is that you need to define the dimensionality of the vector space by `dim` and the name of the space by `space`. The `dim` argument must be an integer. The `space` argument can be one of `l2`, `ip` or `cosine`. TODO: add links to the detailed explaination
 
+`work_dir` is the directory for storing the index. If there is an index in the directory, it will be automatically loaded. When the schema of the saved and the defined index do not match, an exception will be raised.
+
 ```python
 from pydantic import Field
 
@@ -31,7 +33,7 @@ doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp')
 ```
 
 ### Index
-Use `.index()` to add `Doc` into the index. You need to define the `Doc` following the schema of the index.
+Use `.index()` to add `Doc` into the index. You need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
 
 ```python
 from docarray import BaseDoc
@@ -44,6 +46,7 @@ class SimpleDoc(BaseDoc):
 index_docs = [SimpleDoc(tensor=np.zeros(128)) for _ in range(64)]
 
 doc_index.index(index_docs)
+print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
 ### Access
@@ -69,9 +72,29 @@ del doc_index[index_docs[16].id, index_docs[17].id]
 ```
 
 ### Find nearest neighbors
+Use `.find()` to find the nearest neighbors. You can use `limit` argument to configurate how much `Doc` to return.
 
-#### Find by a field
+```python
+query = SimpleDoc(tensor=np.ones(10))
 
-#### Find a nested Doc
+docs, scores = doc_index.find(query, limit=5)
+```
 
-## ElasticSearch
+### Nested index
+When using the index, you can define multiple fields as well as the nested structure. 
+
+```python
+# example of construct nested and flat index
+```
+
+Use the `search_field` to specify which field to be used when performing the vector search. You can use the dunder operator to specify the field defined in the nested data.
+
+```python
+# example of find nested and flat index
+```
+
+To delete a nested data, ...
+
+```python
+# example of delete nested and flat index
+```
