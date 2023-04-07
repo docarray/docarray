@@ -198,7 +198,7 @@ def find_batched(
         you should always use `thread` backend.
         Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
         falls under the "IO-bound" category.
-        .. warning::
+        !!! warning
             When using `process` backend, your `func` should not modify elements in-place.
             This is because the multiprocessing backend passes the variable via pickle
             and works in another process.
@@ -209,7 +209,6 @@ def find_batched(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
     :return: a list of named tuples of the form (DocList, AnyTensor),
-
         where the first element contains the closes matches for each query,
         and the second element contains the corresponding scores.
     """
