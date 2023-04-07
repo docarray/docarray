@@ -5,19 +5,24 @@ from typing import TYPE_CHECKING, Any, BinaryIO, Dict, TypeVar, Union
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_notebook
 
+if TYPE_CHECKING:
+    from docarray.typing.bytes.audio_bytes import AudioBytes
+
 T = TypeVar('T', bound='AbstractAudioTensor')
 
 MAX_INT_16 = 2**15
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-    def to_bytes(self):
+    def to_bytes(self) -> 'AudioBytes':
         """
-        Convert audio tensor to bytes.
+        Convert audio tensor to AudioBytes.
         """
+        from docarray.typing.bytes.audio_bytes import AudioBytes
+
         tensor = self.get_comp_backend().to_numpy(self)
         tensor = (tensor * MAX_INT_16).astype('<h')
-        return tensor.tobytes()
+        return AudioBytes(tensor.tobytes())
 
     def save(
         self: 'T',
