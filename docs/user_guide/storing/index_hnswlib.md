@@ -26,7 +26,7 @@ from docarray.typing import NdArray
 
 
 class SimpleSchema(BaseDoc):
-    tensor: NdArray[128] = Field(dim=128, space='cosine')
+    tensor: NdArray = Field(dim=128, space='cosine')
 
 
 doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp')
@@ -41,7 +41,7 @@ from docarray.typing import NdArray
 import numpy as np
 
 class SimpleDoc(BaseDoc):
-    tensor: NdArray[128]
+    tensor: NdArray
 
 index_docs = [SimpleDoc(tensor=np.zeros(128)) for _ in range(64)]
 
@@ -81,20 +81,83 @@ docs, scores = doc_index.find(query, limit=5)
 ```
 
 ### Nested index
-When using the index, you can define multiple fields as well as the nested structure. 
+When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
-# example of construct nested and flat index
+from docarray import BaseDoc
+from docarray.typing import ImageUrl, VideoUrl, AnyTensor
+from docarray.index import HnswDocumentIndex
+import numpy as np
+from pydantic import Field
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: AnyTensor = Field(space='cosine', dim=64)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    tensor: AnyTensor = Field(space='cosine', dim=128)
+
+
+class YouTubeVideoDoc(BaseDoc):
+    title: str
+    description: str
+    thumbnail: ImageDoc
+    video: VideoDoc
+    tensor: AnyTensor = Field(space='cosine', dim=256)
+
+
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp')
+index_docs = [
+    YouTubeVideoDoc(
+        title=f'video {i+1}',
+        description=f'this is video from author {10*i}',
+        thumbnail=ImageDoc(
+            url=f'http://example.ai/images/{i}',
+            tensor=np.ones(64)),
+        video=VideoDoc(
+            url=f'http://example.ai/videos/{i}',
+            tensor=np.ones(128)
+        ),
+        tensor=np.ones(256)
+    ) for i in range(8)
+]
+doc_index.index(index_docs)
 ```
 
-Use the `search_field` to specify which field to be used when performing the vector search. You can use the dunder operator to specify the field defined in the nested data.
+Use the `search_field` to specify which field to be used when performing the vector search. You can use the dunder operator to specify the field defined in the nested data. In the following codes, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field. 
 
 ```python
 # example of find nested and flat index
+query_doc = YouTubeVideoDoc(
+    title=f'video query',
+    description=f'this is a query video',
+    thumbnail=ImageDoc(
+        url=f'http://example.ai/images/1024',
+        tensor=np.ones(64)
+    ),
+    video=VideoDoc(
+        url=f'http://example.ai/videos/1024',
+        tensor=np.ones(128)
+    ),
+    tensor=np.ones(256)
+)
+# find by the youtubevideo tensor
+docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
+# find by the thumbnail tensor
+docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit=3)
+# find by the video tensor
+docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 ```
 
-To delete a nested data, ...
+To delete a nested data, you need to specify the `id`. 
+
+!!! note
+    You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower level is not supported yet.
 
 ```python
 # example of delete nested and flat index
+del doc_index[index_docs[16].id, index_docs[32].id]
 ```
