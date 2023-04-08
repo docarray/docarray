@@ -1,7 +1,4 @@
-# Index
-This section show you how to use the `DocArray.index` module. `DocArray.index` module is used to create index for the tensors so that one can search the document based on the vector similarity. `DocArray.index` implements the following index.
-
-## Hnswlib
+# Hnswlib
 
 [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implement the index based on [hnswlib](https://github.com/nmslib/hnswlib). This is a lightweight implementation with vectors stored in memory.
 
@@ -12,7 +9,7 @@ This section show you how to use the `DocArray.index` module. `DocArray.index` m
     pip install "docarray[hnswlib]"
     ```
 
-### Construct
+## Construct
 To construct an index, you need to define the schema first. You can define the schema in the same way as define a `Doc`. The only difference is that you need to define the dimensionality of the vector space by `dim` and the name of the space by `space`. The `dim` argument must be an integer. The `space` argument can be one of `l2`, `ip` or `cosine`. TODO: add links to the detailed explaination
 
 `work_dir` is the directory for storing the index. If there is an index in the directory, it will be automatically loaded. When the schema of the saved and the defined index do not match, an exception will be raised.
@@ -32,7 +29,7 @@ class SimpleSchema(BaseDoc):
 doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp')
 ```
 
-### Index
+## Index
 Use `.index()` to add `Doc` into the index. You need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
 
 ```python
@@ -49,7 +46,7 @@ doc_index.index(index_docs)
 print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
-### Access
+## Access
 To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple `Doc`.
 
 ```python
@@ -60,7 +57,7 @@ doc_index[index_docs[16].id]
 doc_index[index_docs[16].id, index_docs[17].id]
 ```
 
-### Delete
+## Delete
 To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` to be deleted. You can also pass a list of `id` to delete multiple `Doc`.
 
 ```python
@@ -80,7 +77,7 @@ query = SimpleDoc(tensor=np.ones(10))
 docs, scores = doc_index.find(query, limit=5)
 ```
 
-### Nested index
+## Nested index
 When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
