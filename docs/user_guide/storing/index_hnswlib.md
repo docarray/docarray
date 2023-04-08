@@ -68,7 +68,7 @@ del doc_index[index_docs[16].id]
 del doc_index[index_docs[16].id, index_docs[17].id]
 ```
 
-### Find nearest neighbors
+## Find Nearest Neighbors
 Use `.find()` to find the nearest neighbors. You can use `limit` argument to configurate how much `Doc` to return.
 
 ```python
@@ -77,7 +77,7 @@ query = SimpleDoc(tensor=np.ones(10))
 docs, scores = doc_index.find(query, limit=5)
 ```
 
-## Nested index
+## Nested Index
 When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
