@@ -245,8 +245,44 @@ query_filter = {'terms': {'category': ['sport']}}
 docs = doc_index.filter(query_filter)
 ```
 
-#### Range filter
-To filter the docs, you can use `col_type='range'` to configurate the keyword search for the fields.
-
 #### Geolocation filter
-To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields.
+To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields. You need to construct the query and use `execute_query()` to perform the query.
+
+```python
+from pydantic import Field
+
+from docarray import BaseDoc
+from docarray.index import ElasticV7DocIndex
+
+
+class NewsDoc(BaseDoc):
+    text: str
+    location: dict = Field(col_type='geo_point')
+
+doc_index = ElasticV7DocIndex[NewsDoc]()
+index_docs = [
+    NewsDoc(text='this is from Berlin', location={'lon': 13.24, 'lat': 50.31}),
+    NewsDoc(text='this is from Beijing', location={'lon': 116.22, 'lat': 39.55}),
+    NewsDoc(text='this is from San Jose', location={'lon': -121.89, 'lat': 37.34}),
+]
+doc_index.index(index_docs)
+
+# filter the eastern hemisphere
+query = {
+    'query': {
+        'geo_bounding_box': {
+            'location': {
+                'top_left': {'lon': 0, 'lat': 90},
+                'bottom_right': {'lon': 180, 'lat': 0},
+            }
+        }
+    }
+}
+
+docs, _ = doc_index.execute_query(query)
+```
+
+#### Range filter
+You can use `col_type='date_range'` is used to filter the docs based on the range of the date. TODO: find a use case.
+
+
