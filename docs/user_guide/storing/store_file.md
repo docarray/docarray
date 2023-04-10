@@ -16,10 +16,7 @@ class SimpleDoc(BaseDoc):
     text: str
 
 
-store_docs = [SimpleDoc(text=f'doc {i}') for i in range(8)]
-
-dl = DocList[SimpleDoc]()
-dl.extend([SimpleDoc(text=f'doc {i}') for i in range(8)])
+dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
 dl.push('file:///Users/docarray/tmp/simple_dl')
 
 dl_pull = DocList[SimpleDoc].pull('file:///Users/docarray/tmp/simple_dl')

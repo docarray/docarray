@@ -85,3 +85,13 @@ Under the bucket `tmp_bucket`, there is a file with the name of `simple_dl.docs`
 
 ## Push & Pull with streaming
 When you have a large amount of `Doc` to push and pull, you could use the streaming function. `push_stream()` and `pull_stream()` can help you to stream the `DocList` in order to save the memory usage. You set multiple `DocList` to pull from the same source as well. The usage is the same as using streaming with local files. Please refer to [Push & Pull with streaming with local files][TODO_add_internal_link]
+
+
+## Delete
+To delete the store, you need to use the static method `delete()` of `JACDocStore` class.
+
+```python
+from docarray.store import S3DocStore
+
+success = S3DocStore.delete(f's3://{BUCKET}/simple_dl')
+```
