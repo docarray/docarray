@@ -119,6 +119,22 @@ dl_from_bytes = DocList[SimpleDoc].from_bytes(bytes_dl, compress=None, protocol=
 
 
 ## CSV
+You can use `from_csv()` and `to_csv()` to de-/serializae and deserialize the `DocList` from/to a CSV file. Use the `dialect` parameter to choose the dialect of the CSV format. Check more details in the API doc. TODO: Add api doc here.
+
+```python
+from docarray import BaseDoc, DocList
+
+
+class SimpleDoc(BaseDoc):
+    text: str
+
+
+dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(2)])
+
+dl.to_csv('simple-dl.csv')
+dl_from_csv = DocList[SimpleDoc].from_csv('simple-dl.csv')
+print(dl_from_csv)
+```
 
 
 ## Pandas.Dataframe
