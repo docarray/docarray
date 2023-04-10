@@ -138,3 +138,19 @@ print(dl_from_csv)
 
 
 ## Pandas.Dataframe
+You can use `from_pandas()` and `to_pandas()` to load/save the `DocList` from/to a pandas DataFrame.
+
+```python
+from docarray import BaseDoc, DocList
+
+
+class SimpleDoc(BaseDoc):
+    text: str
+
+
+dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(2)])
+
+df = dl.to_pandas()
+dl_from_dataframe = DocList[SimpleDoc].from_pandas(df)
+print(dl_from_dataframe)
+```
