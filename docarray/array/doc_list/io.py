@@ -6,6 +6,7 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
+from io import StringIO
 from itertools import compress
 from typing import (
     TYPE_CHECKING,
@@ -361,49 +362,52 @@ class IOMixinArray(Iterable[T_doc]):
             'unix' (for csv file generated on UNIX systems).
         :return: DocList
         """
-        from docarray import DocList
-
         if cls.doc_type == AnyDoc:
             raise TypeError(
                 'There is no document schema defined. '
                 'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
             )
 
+        if file_path.startswith('http'):
+            import urllib.request
+
+            with urllib.request.urlopen(file_path) as f:
+                file_as_string = StringIO(f.read().decode(encoding))
+                rows = csv.DictReader(file_as_string, dialect=dialect)
+                docs = cls._from_csv_dict_reader(rows)
+        else:
+            with open(file_path, 'r', encoding=encoding) as fp:
+                rows = csv.DictReader(fp, dialect=dialect)
+                docs = cls._from_csv_dict_reader(rows)
+
+        return docs
+
+    @classmethod
+    def _from_csv_dict_reader(cls, rows: csv.DictReader) -> 'DocList':
+        from docarray import DocList
+
         doc_type = cls.doc_type
         docs = DocList.__class_getitem__(doc_type)()
 
-        if file_path.startswith('http'):
-            import urllib3
+        field_names: List[str] = (
+            [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
+        )
+        if field_names is None or len(field_names) == 0:
+            raise TypeError("No field names are given.")
 
-            http = urllib3.PoolManager()
-
-            response = http.request('GET', file_path)
-            print(f"response.data = {response.data}")
-            file_path = response.data
-
-        with open(file_path, 'r', encoding=encoding) as fp:
-            rows = csv.DictReader(fp, dialect=dialect)
-            field_names: List[str] = (
-                [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
+        valid_paths = _all_access_paths_valid(
+            doc_type=doc_type, access_paths=field_names
+        )
+        if not all(valid_paths):
+            raise ValueError(
+                f'Column names do not match the schema of the DocList\'s '
+                f'document type ({cls.doc_type.__name__}): '
+                f'{list(compress(field_names, [not v for v in valid_paths]))}'
             )
-            if field_names is None or len(field_names) == 0:
-                raise TypeError("No field names are given.")
 
-            valid_paths = _all_access_paths_valid(
-                doc_type=doc_type, access_paths=field_names
-            )
-            if not all(valid_paths):
-                raise ValueError(
-                    f'Column names do not match the schema of the DocList\'s '
-                    f'document type ({cls.doc_type.__name__}): '
-                    f'{list(compress(field_names, [not v for v in valid_paths]))}'
-                )
-
-            for access_path2val in rows:
-                doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(
-                    access_path2val
-                )
-                docs.append(doc_type.parse_obj(doc_dict))
+        for access_path2val in rows:
+            doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(access_path2val)
+            docs.append(doc_type.parse_obj(doc_dict))
 
         return docs
 
