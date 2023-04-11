@@ -67,6 +67,6 @@ def reduce_all(docs: List[DocList]) -> DocList:
     left = docs[0]
     others = docs[1:]
     left_id_map = {doc.id: i for i, doc in enumerate(left)}
-    for docs in others:
-        reduce(left, docs, left_id_map)
+    for other_docs in others:
+        reduce(left, other_docs, left_id_map)
     return left
