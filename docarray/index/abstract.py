@@ -416,6 +416,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
@@ -450,6 +451,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
@@ -524,6 +526,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `text_search` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
@@ -554,6 +557,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.debug(
             f'Executing `text_search_batched` for search field {search_field}'
         )
+        self._validate_search_field(search_field)
         if isinstance(queries[0], BaseDoc):
             query_docs: Sequence[BaseDoc] = cast(Sequence[BaseDoc], queries)
             query_texts: Sequence[str] = self._get_values_by_column(
@@ -815,6 +819,27 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
 
         return DocList[BaseDoc].construct(out_docs)
+
+    def _validate_search_field(self, search_field: Union[str, None]) -> bool:
+        """
+        Validate if the given `search_field` corresponds to one of the
+        columns that was parsed from the schema.
+
+        Some backends, like weaviate, don't use search fields, so the function
+        returns True if `search_field` is empty or None.
+
+        :param search_field: search field to validate.
+        :return: True if the field exists, False otherwise.
+        """
+        if not search_field or search_field in self._column_infos.keys():
+            if not search_field:
+                self._logger.info('Empty search field was passed')
+            return True
+        else:
+            valid_search_fields = ', '.join(self._column_infos.keys())
+            raise ValueError(
+                f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
+            )
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
