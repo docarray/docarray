@@ -78,7 +78,9 @@ nav:
   - Home: README.md
   - Tutorial - User Guide:
     - user_guide/intro.md
-    - user_guide/representing/first_step.md
+    - Representing:
+      - user_guide/representing/first_step.md
+      - user_guide/representing/array.md
     - user_guide/sending/first_step.md
     - user_guide/storing/first_step.md
 
@@ -97,4 +99,5 @@ nav:
     - data_types/table/table.md
     - data_types/multimodal/multimodal.md
   - ...
+  - Glossary: glossary.md
   - Contributing: CONTRIBUTING.md
