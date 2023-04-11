@@ -168,7 +168,7 @@ import numpy as np
 
 class Image(BaseDoc):
     url: ImageUrl
-    tensor: AnyTensor  # this allows torch, numpy, and tensorflow tensors
+    tensor: AnyTensor  # this allows torch, numpy, and tensor flow tensors
 
 
 vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
@@ -757,7 +757,7 @@ dl = DocList[ImageDoc](
 )
 
 # create a Document Index
-index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index')
+index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index2')
 
 
 # index your data
