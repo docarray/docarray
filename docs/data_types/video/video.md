@@ -17,7 +17,10 @@ In DocArray video data is represented by a video tensor, an audio tensor and the
 
 ![type:video](mov_bbb.mp4){: style='width: 600px; height: 330px'}
 
-First let's define a `MyVideo` class with all of those attributes and instantiate an object with a local or remote url:
+!!! tip
+    Check out our predefined [`VideoDoc`](#getting-started-predefined-videodoc) to get started and play around with our video features.
+
+First, let's define a `MyVideo` class with all of those attributes and instantiate an object with a local or remote url:
 
 ```python
 from docarray import BaseDoc

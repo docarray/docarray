@@ -13,6 +13,9 @@ Moreover, we will introduce DocArray's image specific types, to represent your i
 
 ## Load image
 
+!!! tip
+    Check out our predefined [`ImageDoc`](#getting-started-predefined-imagedoc) to get started and play around with our image features.
+
 First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type [`ImageTensor`](../../../../api_references/typing/tensor/image).
 
 Next, let's instantiate a `MyImage` object with a local or remote url. 
@@ -79,6 +82,10 @@ pil_img = img.url.load_pil()
 
 assert isinstance(pil_img, PILImage)
 ```
+
+Additionally, you can specify the size of the images you are working with. Let's say for instance, all your images are of size (200, 300, 3). 
+
+
 
 ## ImageBytes
 

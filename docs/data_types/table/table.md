@@ -5,8 +5,8 @@ This section will show you how to load and handle tabular data using DocArray.
 
 ## Load CSV table
 
-A common way to store tabular data is via `.csv` files.
-You can easily load such data from a given `.csv` file into a DocumentArray. 
+A common way to store tabular data is via `csv` (comma-separated values) files.
+You can easily load such data from a given `csv` file into a [`DocList`][docarray.DocList]. 
 Let's take a look at the following example file, which includes data about book and their authors and publishing year.
 
 ```text
@@ -16,7 +16,7 @@ Klara and the sun,Kazuo Ishiguro,2020
 A little life,Hanya Yanagihara,2015
 ```
 
-First, you have to define the Document schema describing our data.
+First, you have to define the Document schema describing the data.
 ```python
 from docarray import BaseDoc
 
@@ -26,7 +26,7 @@ class Book(BaseDoc):
     author: str
     year: int
 ```
-Next, you can load the content of the csv file to a DocList instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.from_csv].
+Next, you can load the content of the csv file to a [`DocList`][docarray.DocList] instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv].
 ```python
 from docarray import DocList
 
@@ -56,19 +56,19 @@ docs.summary()
     ```
 </details>
 
-The resulting DocList contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
+The resulting [`DocList`][docarray.DocList] object contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
 
 
 ## Save to CSV file
 
-Vice versa, you can also store your DocList data to a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.to_csv].
+Vice versa, you can also store your [`DocList`][docarray.DocList] data to a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
 ```python
 docs.to_csv(file_path='/path/to/my_file.csv')
 ```
 
 Tabular data is often not the best choice to represent nested Documents. Hence, nested Documents will be stored flattened and can be accessed by their `'__'`-separated access paths.
 
-Let's look at an example. We now want to store not only the book data, but moreover book review data. Our `BookReview` class has a nested `book` attribute as well as the non-nested attributes `n_ratings` and `stars`.
+Let's take a look at an example. We now want to store not only the book data, but moreover book review data. To do so, we define a `BookReview` class that has a nested `book` attribute as well as the non-nested attributes `n_ratings` and `stars`.
 
 ```python
 class BookReview(BaseDoc):
@@ -117,7 +117,107 @@ addca0475756fc12cdec8faf8fb10d71,03194cec1b75927c2259b3c0fff1ab6f,A little life,
 
 ```
 
-## Handle TSV table and other separators
+## Handle TSV tables
 
-Not only can you load and save comma-separated values (CSV), 
+Not only can you load and save comma-separated values (`CSV`) data, but also tab-separated values (`TSV`), 
+by adjusting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] 
+and [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
 
+The dialect defaults to `'excel'`, which refers to comma-separated values. For tab-separated values you can use 
+`'excel-tab'`.
+
+Let's take a look at what this would look like with a tab-separated file:
+
+```text
+title	author	year
+Title1	author1	2020
+Title2	author2	1234
+```
+
+```python
+docs = DocList[Book].from_csv(
+    file_path='books.tsv',
+    dialect='excel-tab',
+)
+for doc in docs:
+    doc.summary()
+```
+<details>
+    <summary>Output</summary>
+    ```text
+    📄 Book : c1ac9d4 ...
+    ╭──────────────────────┬───────────────╮
+    │ Attribute            │ Value         │
+    ├──────────────────────┼───────────────┤
+    │ title: str           │ Title1        │
+    │ author: str          │ author1       │
+    │ year: int            │ 2020          │
+    ╰──────────────────────┴───────────────╯
+    📄 Book : c1ac9d4 ...
+    ╭──────────────────────┬───────────────╮
+    │ Attribute            │ Value         │
+    ├──────────────────────┼───────────────┤
+    │ title: str           │ Title1        │
+    │ author: str          │ author1       │
+    │ year: int            │ 2020          │
+    ╰──────────────────────┴───────────────╯
+    ```
+</details>
+
+Great! All the data is correctly read and stored in `Book` instances.
+## Other separators
+
+If your values are separated by yet another separator, you can create your own `csv.Dialect` class. 
+To do so you can create a class, that inherits from `csv.Dialect`.
+Within this class you can define your dialects behaviour by setting the provided [formatting parameters](https://docs.python.org/3/library/csv.html#dialects-and-formatting-parameters).
+
+For instance, let's assume you have a semicolon-separated table:
+
+```text
+first_name;last_name;year
+Jane;Austin;2020
+John;Doe;1234
+```
+
+Now, let's define our `SemicolonSeparator` class. Next to the `delimiter` parameter, we have to set some more formatting parameters such as `doublequote` and `lineterminator`.
+```python
+import csv
+
+
+class SemicolonSeparator(csv.Dialect):
+    delimiter = ';'
+    doublequote = True
+    lineterminator = '\r\n'
+    quotechar = '"'
+    quoting = csv.QUOTE_MINIMAL
+```
+Finally, you can read in your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
+```python
+docs = DocList[Book].from_csv(
+    file_path='books_semicolon_sep.csv',
+    dialect=SemicolonSeparator(),
+)
+for doc in docs:
+    doc.summary()
+```
+<details>
+    <summary>Output</summary>
+    ```text
+    📄 Book : 321e9fd ...
+    ╭──────────────────────┬───────────────╮
+    │ Attribute            │ Value         │
+    ├──────────────────────┼───────────────┤
+    │ title: str           │ Title1        │
+    │ author: str          │ author1       │
+    │ year: int            │ 2020          │
+    ╰──────────────────────┴───────────────╯
+    📄 Book : 16d2097 ...
+    ╭──────────────────────┬───────────────╮
+    │ Attribute            │ Value         │
+    ├──────────────────────┼───────────────┤
+    │ title: str           │ Title2        │
+    │ author: str          │ author2       │
+    │ year: int            │ 1234          │
+    ╰──────────────────────┴───────────────╯
+    ```
+</details>

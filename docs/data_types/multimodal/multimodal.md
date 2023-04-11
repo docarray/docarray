@@ -1,4 +1,4 @@
-# 🗃 Multi modal
+# 🗃 Multimodal
 
 In this section we will walk through how to use DocArray to process multiple data modalities in tandem. 
 

@@ -95,6 +95,6 @@ nav:
     - data_types/video/video.md
     - data_types/3d_mesh/3d_mesh.md
     - data_types/table/table.md
-    - data_types/multi_modal/multi_modal.md
+    - data_types/multimodal/multimodal.md
   - ...
   - Contributing: CONTRIBUTING.md

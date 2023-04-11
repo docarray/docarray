@@ -22,7 +22,7 @@ A 3D mesh can be represented by its vertices and faces:
 ### Load vertices and faces
 
 First, let's define our class `MyMesh3D`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides  attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] class, that has a `vertices` attribute and a `faces` attribute, both of type [`AnyTensor`](../../../../api_references/typing/tensor/tensor). This especially comes in handy later when we want to display our 3D mesh.
-
+ 
 But for now, let's create a `MyMesh3D` instance with an url to a remote `.obj` file:
 
 
@@ -1330,6 +1330,9 @@ init();</script></body>
 A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the surface of the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. 
 
 ### Load point cloud
+
+!!! tip
+    Check out our predefined [`PointCloud3D`](#getting-started-predefined-docs) to get started and play around with our 3D features.
 
 In DocArray, loading a point cloud from a [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance will return a [`PointsAndColors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] instance. Such an object has a `points` attribute containing the information about the points in 3D space as well as an optional `colors` attribute.
 

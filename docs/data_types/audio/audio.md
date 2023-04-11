@@ -10,10 +10,23 @@ Moreover, you will learn about DocArray's audio specific types, to represent you
     ```cmd 
     pip install "docarray[audio]"
     ```
+    Additionally, you have to install `ffmpeg` (see more infos [here](https://github.com/jiaaro/pydub#getting-ffmpeg-set-up)):
+    ```cmd 
+    # on Mac with brew:
+    brew install ffmpeg
+    ```
+    ```cmd
+    # on linux with apt-get
+    apt-get install ffmpeg libavcodec-extra
+    ```
+    
 
 ## Load audio file
 
 First, let's define a class, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`AudioUrl`][docarray.typing.url.AudioUrl], and an optional `tensor` attribute of type [`AudioTensor`](../../../../api_references/typing/tensor/audio).
+
+!!! tip
+    Check out our predefined [`AudioDoc`](#getting-started-predefined-audiodoc) to get started and play around with our audio features.
 
 Next, you can instantiate an object of that class with a local or remote URL. 
 
