@@ -381,7 +381,7 @@ for doc in docs:
     images.append(doc.image)
 ```
 
-this means that if you need to call `docs.image` multiple time under the  hood you will collect the image from each document and stack them several times. This is not optimal.
+this means that if you call `docs.image` multiple times, under the hood you will collect the image from each document and stack them several times. This is not optimal.
 
 Let's see how it will work with `DocVec`:
 
