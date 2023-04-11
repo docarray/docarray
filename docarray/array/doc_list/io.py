@@ -456,7 +456,7 @@ class IOMixinArray(Iterable[T_doc]):
                 data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
             )
 
-            docs = DocList[Person].from_pandas(df)
+            docs = DocList[Person].from_dataframe(df)
 
             assert docs.name == ['Maria', 'Jake']
             assert docs.follower == [12345, 54321]
