@@ -36,7 +36,7 @@ def reduce(
     return left
 
 
-def reduce_all(docarrays: List[DocList]) -> DocList:
+def reduce_all(docs: List[DocList]) -> DocList:
     """
     Reduces a list of DocLists into one DocList.
     Changes are applied to the first DocList in-place.
@@ -49,22 +49,24 @@ def reduce_all(docarrays: List[DocList]) -> DocList:
      DocList is kept).
     Nested DocLists belonging to many DocLists
      are also reduced in the same way.
-    .. note::
+
+    !!! note
+
         - Nested DocLists order does not follow any specific rule.
         You might want to re-sort them in a later step.
         - The final result depends on the order of DocLists
         when applying reduction.
 
-    :param docarrays: List of DocLists to be reduced
+    :param docs: List of DocLists to be reduced
     :return: the resulting DocList
     """
-    if len(docarrays) <= 1:
+    if len(docs) <= 1:
         raise Exception(
             'In order to reduce DocLists' ' we should have more than one DocList'
         )
-    left = docarrays[0]
-    others = docarrays[1:]
+    left = docs[0]
+    others = docs[1:]
     left_id_map = {doc.id: i for i, doc in enumerate(left)}
-    for docs in others:
-        reduce(left, docs, left_id_map)
+    for other_docs in others:
+        reduce(left, other_docs, left_id_map)
     return left

@@ -51,10 +51,11 @@ class VideoBytes(bytes, AbstractType):
 
     def load(self, **kwargs) -> VideoLoadResult:
         """
-        Load the video from the bytes into a VideoLoadResult object consisting of a
-        VideoNdArray (`VideoLoadResult.video`), an AudioNdArray
-        (`VideoLoadResult.audio`) and an NdArray containing the key frame indices
-        (`VideoLoadResult.key_frame_indices`).
+        Load the video from the bytes into a VideoLoadResult object consisting of:
+
+        - a [`VideoNdArray`][docarray.typing.VideoNdArray] (`VideoLoadResult.video`)
+        - an [`AudioNdArray`][docarray.typing.AudioNdArray] (`VideoLoadResult.audio`)
+        - an [`NdArray`][docarray.typing.NdArray] containing the key frame indices (`VideoLoadResult.key_frame_indices`).
 
         ---
 
@@ -82,7 +83,7 @@ class VideoBytes(bytes, AbstractType):
 
         :param kwargs: supports all keyword arguments that are being supported by
             av.open() as described [here](https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open)
-        :return: a VideoLoadResult instance with video, audio and keyframe indices
+        :return: a `VideoLoadResult` instance with video, audio and keyframe indices
         """
         if TYPE_CHECKING:
             import av

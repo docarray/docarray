@@ -1,7 +1,6 @@
 # find
 
-::: docarray.utils.find.find
-::: docarray.utils.find.find_batched
+::: docarray.utils.find
 
 
 

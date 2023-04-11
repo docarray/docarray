@@ -46,7 +46,7 @@ class TorchTensor(
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
     """
-    Subclass of torch.Tensor, intended for use in a Document.
+    Subclass of `torch.Tensor`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
     and coersion from compatible types like numpy.ndarray.
 
@@ -139,32 +139,35 @@ class TorchTensor(
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
-        Convert torchTensor into a json compatible object
+        Convert `TorchTensor` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
         return self.numpy()  ## might need to check device later
 
     def unwrap(self) -> torch.Tensor:
         """
-        Return the original torch.Tensor without any memory copy.
+        Return the original `torch.Tensor` without any memory copy.
 
-        The original view rest intact and is still a Document TorchTensor
-        but the return object is a pure torch Tensor but both object share
+        The original view rest intact and is still a Document `TorchTensor`
+        but the return object is a pure `torch.Tensor` but both object share
         the same memory layout.
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray.typing import TorchTensor
-            import torch
+        ---
 
-            t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
-            # here t is a docarray TorchTensor
-            t2 = t.unwrap()
-            # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
-            # But both share the same underlying memory
+        ```python
+        from docarray.typing import TorchTensor
+        import torch
 
+        t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+        # here t is a docarray TorchTensor
+        t2 = t.unwrap()
+        # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
+        # But both share the same underlying memory
+        ```
 
-        :return: a torch Tensor
+        ---
+
+        :return: a `torch.Tensor`
         """
         value = copy(self)  # as unintuitive as it sounds, this
         # does not do any relevant memory copying, just shallow
@@ -174,10 +177,10 @@ class TorchTensor(
 
     @classmethod
     def _docarray_from_native(cls: Type[T], value: torch.Tensor) -> T:
-        """Create a TorchTensor from a native torch.Tensor
+        """Create a `TorchTensor` from a native `torch.Tensor`
 
-        :param value: the native torch.Tensor
-        :return: a TorchTensor
+        :param value: the native `torch.Tensor`
+        :return: a `TorchTensor`
         """
         if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
             value.__class__ = cls.__unparametrizedcls__  # type: ignore
@@ -187,19 +190,19 @@ class TorchTensor(
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
-        """Create a TorchTensor from a numpy array
+        """Create a `TorchTensor` from a numpy array
 
         :param value: the numpy array
-        :return: a TorchTensor
+        :return: a `TorchTensor`
         """
         return cls._docarray_from_native(torch.from_numpy(value))
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
-        read ndarray from a proto msg
+        Read ndarray from a proto msg
         :param pb_msg:
-        :return: a torch tensor
+        :return: a `TorchTensor`
         """
         source = pb_msg.dense
         if source.buffer:
@@ -212,7 +215,7 @@ class TorchTensor(
 
     def to_protobuf(self) -> 'NdArrayProto':
         """
-        transform self into a NdArrayProto protobuf message
+        Transform self into a `NdArrayProto` protobuf message
         """
         from docarray.proto import NdArrayProto
 

@@ -57,7 +57,7 @@ class ImageUrl(AnyUrl):
         timeout: Optional[float] = None,
     ) -> ImageNdArray:
         """
-        Load the data from the url into an ImageNdArray
+        Load the data from the url into an [`ImageNdArray`][docarray.typing.ImageNdArray]
 
         ---
 
@@ -94,7 +94,7 @@ class ImageUrl(AnyUrl):
             'H' = height, 'W' = width, 'C' = color channel
         :param timeout: timeout (sec) for urlopen network request.
             Only relevant if URL is not local
-        :return: ImageNdArray representing the image as RGB values
+        :return: [`ImageNdArray`][docarray.typing.ImageNdArray] representing the image as RGB values
         """
         from docarray.typing.bytes.image_bytes import ImageBytes
 
@@ -103,11 +103,11 @@ class ImageUrl(AnyUrl):
 
     def load_bytes(self, timeout: Optional[float] = None) -> ImageBytes:
         """
-        Convert url to ImageBytes. This will either load or download the file and save
-        it into an ImageBytes object.
+        Convert url to [`ImageBytes`][docarray.typing.ImageBytes]. This will either load or
+        download the file and save it into an [`ImageBytes`][docarray.typing.ImageBytes] object.
 
         :param timeout: timeout for urlopen. Only relevant if url is not local
-        :return: ImageBytes object
+        :return: [`ImageBytes`][docarray.typing.ImageBytes] object
         """
         bytes_ = super().load_bytes(timeout=timeout)
         return ImageBytes(bytes_)
