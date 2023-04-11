@@ -47,7 +47,7 @@ class VideoTensorFlowTensor(
     doc_1.video_tensor.save(file_path='file_1.wav')
 
 
-    doc_2 = MyVideoDoc(
+    doc_2 = MyVideoTESTDoc(
         title='my_second_video_doc',
         url='https://www.kozco.com/tech/piano2.wav',
     )

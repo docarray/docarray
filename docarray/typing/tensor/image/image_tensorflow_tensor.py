@@ -34,7 +34,7 @@ class ImageTensorFlowTensor(
         bytes: Optional[ImageBytes]
 
 
-    doc = MyImageDoc(
+    doc = MyImageDTESToc(
         title='my_second_image_doc',
         url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
         "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg",
