@@ -333,7 +333,7 @@ of homogeneous Documents. The idea is that every attribute of the `BaseDoc` will
 This means that when you access the attribute of a `BaseDoc` at the Array level, we don't collect the data under the hood 
 from all the documents (like `DocList`) before giving it back to you. We just return the column that is stored in memory.
 
-This really matters when you need to handle multi-modal data that you will feed into an algorithm that requires contiguous data, like matrix multiplication
+This really matters when you need to handle multimodal data that you will feed into an algorithm that requires contiguous data, like matrix multiplication
 which is at the heart of Machine Learning, especially in Deep Learning.
 
 Let's take an example to illustrate the difference:
