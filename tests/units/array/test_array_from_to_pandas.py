@@ -30,7 +30,7 @@ def test_to_from_pandas_df(nested_doc_cls):
             nested_doc_cls(text='hello world', image=ImageDoc()),
         ]
     )
-    df = da.to_pandas()
+    df = da.to_dataframe()
     assert isinstance(df, pd.DataFrame)
     assert len(df) == 2
     assert (

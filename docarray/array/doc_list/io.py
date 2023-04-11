@@ -499,7 +499,7 @@ class IOMixinArray(Iterable[T_doc]):
 
         return docs
 
-    def to_pandas(self) -> 'pd.DataFrame':
+    def to_dataframe(self) -> 'pd.DataFrame':
         """
         Save a DocList to a `pandas.DataFrame`.
         The field names will be stored as column names. Each row of the dataframe corresponds
