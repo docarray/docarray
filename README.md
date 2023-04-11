@@ -523,14 +523,19 @@ To see the effect of this, let's first observe a vanilla PyTorch implementation 
 ```python
 import torch
 from torch import nn
+import torch
+
+
+def encoder(x):
+    return torch.rand(512)
 
 
 class MyMultiModalModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.audio_encoder = AudioEncoder()
-        self.image_encoder = ImageEncoder()
-        self.text_encoder = TextEncoder()
+        self.audio_encoder = encoder()
+        self.image_encoder = encoder()
+        self.text_encoder = encoder()
 
     def forward(self, text_1, text_2, image_1, image_2, audio_1, audio_2):
         embedding_text_1 = self.text_encoder(text_1)
@@ -560,8 +565,12 @@ So, now let's see what the same code looks like with DocArray:
 from docarray import DocList, BaseDoc
 from docarray.documents import ImageDoc, TextDoc, AudioDoc
 from docarray.typing import TorchTensor
-
+from torch import nn
 import torch
+
+
+def encoder(x):
+    return torch.rand(512)
 
 
 class Podcast(BaseDoc):
@@ -578,9 +587,9 @@ class PairPodcast(BaseDoc):
 class MyPodcastModel(nn.Module):
     def __init__(self):
         super().__init__()
-        self.audio_encoder = AudioEncoder()
-        self.image_encoder = ImageEncoder()
-        self.text_encoder = TextEncoder()
+        self.audio_encoder = encoder()
+        self.image_encoder = encoder()
+        self.text_encoder = encoder()
 
     def forward_podcast(self, docs: DocList[Podcast]) -> DocList[Podcast]:
         docs.audio.embedding = self.audio_encoder(docs.audio.tensor)
@@ -674,7 +683,7 @@ from httpx import AsyncClient
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_doc import DocumentResponse
+from docarray.base_doc import DocArrayResponse
 
 
 class InputDoc(BaseDoc):
@@ -691,7 +700,7 @@ input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
 app = FastAPI()
 
 
-@app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
+@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
     ## call my fancy model to generate the embeddings
     doc = OutputDoc(
