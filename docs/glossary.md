@@ -28,6 +28,7 @@ a requirement to build a strong AI system as argued by Yann Lecun in [this artic
 Generative AI is also in the epicenter of the latest AI revolution. These tools allow us to *generate* data.
 
 * [StableDiffusion](https://stability.ai/blog/stable-diffusion-public-release), [MidJourney](https://www.midjourney.com/home/?callbackUrl=%2Fapp%2F), [Dalle-2](https://openai.com/product/dall-e-2) generate *images* from *text*.
+* LLM: Large Language Model, (GPT, Flan, LLama, Bloom). These models generate *text*.
 
 ### `Neural Search`
 
