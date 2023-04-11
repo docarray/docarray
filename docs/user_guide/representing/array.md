@@ -441,8 +441,9 @@ assert not my_doc.is_view()  # False
 
 See also:
 
-* [`DocList`][docarray.array.doc_list.doc_list.DocList]
-* [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec]
-* REPRESENTING REF
-* STORING REF
-* ...
+
+* [First step](./first_step.md) of the representing section
+* API Reference for the [`DocList`][docarray.array.doc_list.doc_list.DocList] class
+* API Reference for the [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] class
+* The [Storing](../storing/first_step.md) section on how to store your data 
+* The [Sending](../sending/first_step.md) section on how to send your data

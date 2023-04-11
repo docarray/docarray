@@ -133,8 +133,8 @@ This representation can now be used to send (LINK) or to store (LINK) data. You 
 
 See also:
 
-* [BaseDoc][docarray.base_doc.doc.BaseDoc] API Reference
-* DOCUMENT_ARARY REF
-* DOCUMENT INDEX REF
-* DOCUMENT STORE REF
-* ...
+* The [next section](./array.md) of the representing section
+* API Reference for the [BaseDoc][docarray.base_doc.doc.BaseDoc] class
+* The [Storing](../storing/first_step.md) section on how to store your data 
+* The [Sending](../sending/first_step.md) section on how to send your data
+
