@@ -133,7 +133,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
         """
-        read url from a proto msg
+        Read url from a proto msg.
         :param pb_msg:
         :return: url
         """

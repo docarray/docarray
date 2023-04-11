@@ -1,6 +1,6 @@
 # filter
 
-::: docarray.utils.filter.filter_docs
+::: docarray.utils.filter
 
 
 

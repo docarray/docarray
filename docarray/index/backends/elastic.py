@@ -127,6 +127,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             limit: int = 10,
             num_candidates: Optional[int] = None,
         ):
+            self._outer_instance._validate_search_field(search_field)
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
             else:
@@ -149,6 +150,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def text_search(self, query: str, search_field: str = 'text', limit: int = 10):
+            self._outer_instance._validate_search_field(search_field)
             self._query['size'] = limit
             self._query['query']['bool']['must'].append(
                 {'match': {search_field: query}}
@@ -271,7 +273,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
-
         data = self._transpose_col_value_dict(column_to_data)
         requests = []
 
@@ -411,7 +412,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-
         body = self._form_text_search_body(query, limit, search_field)
         resp = self._client_search(**body)
 
