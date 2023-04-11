@@ -71,7 +71,7 @@ _tf_tensors = [
     'AudioTensorFlowTensor',
     'VideoTensorFlowTensor',
 ]
-__all_test__ = __all__ + _torch_tensors + _tf_tensors
+__all_test__ = __all__ + _torch_tensors
 
 
 def __getattr__(name: str):
