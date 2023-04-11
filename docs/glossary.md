@@ -1,7 +1,6 @@
 # Glossary
 
-DocArray scope is a edge of different field, from AI to web app. To make it easier to understand, we have created a glossary of terms used in the documentation. 
-
+DocArray scope is at the edge of different fields, from AI to web apps. To make it easier to understand, we have created a glossary of terms used in the documentation. 
 
 ## Concept
 
@@ -9,32 +8,32 @@ DocArray scope is a edge of different field, from AI to web app. To make it easi
 Multi Modal data is data that is composed of different modalities, Image, Text, Video, Audio, etc.
 For example, a YouTube video is composed of a video, a title, a description, a thumbnail, etc. 
 
-Actually most of the data we have in the world is multi-modal.
+Actually, most of the data we have in the world is multi-modal.
 
 ### `Multi Modal AI`
 
-Multi Modal AI is the field of AI that focus on multi-modal data. 
+Multi Modal AI is the field of AI that focuses on multi-modal data. 
 
-Most of the recent breakthrough in AI are actually multi-modal AI. 
+Most of the recent breakthroughs in AI are multi-modal AI. 
 
 * [StableDiffusion](https://stability.ai/blog/stable-diffusion-public-release), [MidJourney](https://www.midjourney.com/home/?callbackUrl=%2Fapp%2F), [Dalle-2](https://openai.com/product/dall-e-2) generate *image* from *text*.
 * [Whisper](https://openai.com/research/whisper) can generate *text* from *speech* 
-* [GPT4](https://openai.com/product/gpt-4), [Flamingo](https://www.deepmind.com/blog/tackling-multiple-tasks-with-a-single-visual-language-model) are MLLM (Multi Modal Large language Model) that can undersrtand both *text* and *image*.
+* [GPT4](https://openai.com/product/gpt-4), [Flamingo](https://www.deepmind.com/blog/tackling-multiple-tasks-with-a-single-visual-language-model) are MLLM (Multi Modal Large Language Model) that can understand both *text* and *image*.
 * ...
 
-One of the reason that AI lab are focusing on multi-modal AI is that is can solve a lot of practical problem and that is actually might be
-a requirement to build strong AI system as argued by Yann Lecun in [this article](https://www.noemamag.com/ai-and-the-limits-of-language/) where he said that `A system trained on language alone will never approximate human intelligence`.
+One of the reasons that AI labs are focusing on multi-modal AI is that it can solve a lot of practical problems and that it actually might be
+a requirement to build a strong AI system as argued by Yann Lecun in [this article](https://www.noemamag.com/ai-and-the-limits-of-language/) where he said that `A system trained on language alone will never approximate human intelligence`.
 
 ### `Generative AI`
 
-Generative AI is as well in the epicenter of the latest AI revolution. These tool allow to *generate* data.
+Generative AI is as well in the epicenter of the latest AI revolution. These tools allow us to *generate* data.
 
 * [StableDiffusion](https://stability.ai/blog/stable-diffusion-public-release), [MidJourney](https://www.midjourney.com/home/?callbackUrl=%2Fapp%2F), [Dalle-2](https://openai.com/product/dall-e-2) generate *image* from *text*.
 
 
 ### `Neural Search`
 
-Neural search is search powered by neural network.  Unlike traditional keyword-based search methods, neural search can understand the context and semantic meaning of the query, allowing it to find relevant results even when the exact keywords are not present
+Neural search is a search powered by neural networks.  Unlike traditional keyword-based search methods, neural search can understand the context and semantic meaning of the query, allowing it to find relevant results even when the exact keywords are not present
 
 
 ### `Vector Database`
@@ -52,14 +51,14 @@ Originally DocArray was part of Jina but it became a standalone project that is 
 
 ### `Pydantic`
 
-[Pydantic](https://github.com/pydantic/pydantic/) is a python library that allow to data validation using Python type hints. 
+[Pydantic](https://github.com/pydantic/pydantic/) is a Python library that allows data validation using Python type hints. 
 DocArray relies on Pydantic.
 
 ### `FastAPI`
 
-[FastAPI](https://fastapi.tiangolo.com/) is a python library that allow to build API using Python type hints.
+[FastAPI](https://fastapi.tiangolo.com/) is a Python library that allows building API using Python type hints.
 
-It is build on top of Pydantic and nicely extend to DocArray
+It is built on top of Pydantic and nicely extends to DocArray
 
 ### `Weaviate`
 
