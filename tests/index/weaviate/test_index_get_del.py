@@ -7,7 +7,11 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.documents import ImageDoc, TextDoc
-from docarray.index.backends.weaviate import DOCUMENTID, WeaviateDocumentIndex
+from docarray.index.backends.weaviate import (
+    DOCUMENTID,
+    EmbeddedOptions,
+    WeaviateDocumentIndex,
+)
 from docarray.typing import NdArray
 
 
@@ -435,3 +439,15 @@ def test_limit_query_builder(test_store):
 
     docs = test_store.execute_query(q)
     assert len(docs) == 2
+
+
+@pytest.mark.linux
+def test_embedded_weaviate():
+    class Document(BaseDoc):
+        text: str
+
+    embedded_options = EmbeddedOptions()
+    db_config = WeaviateDocumentIndex.DBConfig(embedded_options=embedded_options)
+    store = WeaviateDocumentIndex[Document](db_config=db_config)
+
+    assert store._client._connection.embedded_db

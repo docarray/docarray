@@ -1,7 +1,9 @@
 import base64
 import copy
 import logging
+import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import (
     Any,
     Dict,
@@ -39,6 +41,22 @@ DEFAULT_BATCH_CONFIG = {
     "num_workers": 1,
 }
 
+DEFAULT_BINARY_PATH = str(Path.home() / ".cache/weaviate-embedded/")
+DEFAULT_PERSISTENCE_DATA_PATH = str(Path.home() / ".local/share/weaviate")
+
+
+@dataclass
+class EmbeddedOptions:
+    persistence_data_path: str = os.environ.get(
+        "XDG_DATA_HOME", DEFAULT_PERSISTENCE_DATA_PATH
+    )
+    binary_path: str = os.environ.get("XDG_CACHE_HOME", DEFAULT_BINARY_PATH)
+    version: str = "latest"
+    port: int = 6666
+    hostname: str = "127.0.0.1"
+    additional_env_vars: Optional[Dict[str, str]] = None
+
+
 # TODO: add more types and figure out how to handle text vs string type
 # see https://weaviate.io/developers/weaviate/configuration/datatypes
 WEAVIATE_PY_VEC_TYPES = [list, np.ndarray, AbstractTensor]
@@ -62,9 +80,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self.nonembedding_array_columns = []
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
-        self._client = weaviate.Client(
-            self._db_config.host, auth_client_secret=self._build_auth_credentials()
-        )
+
+        if self._db_config.embedded_options:
+            self._client = weaviate.Client(
+                embedded_options=self._db_config.embedded_options
+            )
+        else:
+            self._client = weaviate.Client(
+                self._db_config.host, auth_client_secret=self._build_auth_credentials()
+            )
+
         self._configure_client()
         self._validate_columns()
         self._set_embedding_column()
@@ -166,12 +191,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        host: str = 'http://localhost:8080'
+        host: str = 'http://weaviate:8080'
         index_name: str = 'Document'
         username: str = None
         password: str = None
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
         auth_api_key: str = None
+        embedded_options: Optional[EmbeddedOptions] = None
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
