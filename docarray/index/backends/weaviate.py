@@ -191,7 +191,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        host: str = 'http://weaviate:8080'
+        host: str = 'http://localhost:8080'
         index_name: str = 'Document'
         username: str = None
         password: str = None
