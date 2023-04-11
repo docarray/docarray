@@ -54,6 +54,7 @@ Put simply, DocArray lets you represent your data in a dataclass-like way, with 
 ```python
 from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
+import torch
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -73,9 +74,9 @@ vec = DocVec[MyDocument](
             image_tensor=torch.rand(1704, 2272, 3),
         ),
     ]
-    * 1000
+    * 10
 )
-print(vec.image_tensor.shape)  # (1000, 1704, 2272, 3)
+print(vec.image_tensor.shape)  # (10, 1704, 2272, 3)
 ```
 
 <details>
@@ -87,7 +88,7 @@ So let's take a closer look at how you can represent your data with DocArray:
 from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
-
+import torch
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -114,9 +115,15 @@ doc = MyDocument(
 doc.image_tensor = doc.image_url.load()
 
 # Compute embedding with any model of your choice
+
+
+def clip_image_encoder(image_tensor: TorchTensor) -> TorchTensor:  # dummy function
+    return torch.rand(512)
+
+
 doc.embedding = clip_image_encoder(doc.image_tensor)
 
-print(doc.embedding.shape)
+print(doc.embedding.shape)  # torch.Size([512])
 ```
 
 ### Compose nested Documents
@@ -235,10 +242,10 @@ dl.insert(
 And you can seamlessly switch between `DocVec` and `DocList`:
 
 ```python
-vec_2 = dl.unstack()
+vec_2 = dl.stack()
 assert isinstance(vec_2, DocVec)
 
-dl_2 = vec_2.stack()
+dl_2 = vec_2.unstack()
 assert isinstance(dl_2, DocList)
 ```
 
@@ -264,6 +271,7 @@ Whenever you want to send your data you need to serialize it, so let's take a lo
 ```python
 from docarray import BaseDoc
 from docarray.typing import ImageTorchTensor
+import torch
 
 # model your data
 class MyDocument(BaseDoc):
@@ -279,14 +287,11 @@ doc = MyDocument(
 
 # serialize it!
 proto = doc.to_protobuf()
-base64 = doc.to_base64()
 bytes_ = doc.to_bytes()
 json = doc.json()
-jsonschema = doc.jsonschema()
 
 # deserialize it!
 doc_2 = MyDocument.from_protobuf(proto)
-doc_3 = MyDocument.from_base64(base64)
 doc_4 = MyDocument.from_bytes(bytes_)
 doc_5 = MyDocument.parse_raw(json)
 ```
@@ -315,6 +320,7 @@ As an example, let's take a look at how that would work with AWS S3 storage:
 ```python
 from docarray import DocList
 from docarray.documents import ImageDoc
+import numpy as np
 
 dl = DocList[ImageDoc](
     [
@@ -351,9 +357,18 @@ The Document Index interface lets you index and retrieve Documents from multiple
 It supports ANN vector search, text search, filtering, and hybrid search.
 
 ```python
-from docarray import DocList
-from docarray.documents import ImageDoc
+from docarray import DocList, BaseDoc
 from docarray.index import HnswDocumentIndex
+import numpy as np
+
+from docarray.typing import ImageUrl, ImageTensor, NdArray
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: ImageTensor
+    embedding: NdArray[128]
+
 
 # create some data
 dl = DocList[ImageDoc](
@@ -368,14 +383,15 @@ dl = DocList[ImageDoc](
 )
 
 # create a Document Index
-index = HnswDocumentIndex(work_dir='.')
+index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index')
+
 
 # index your data
 index.index(dl)
 
 # find similar Documents
 query = dl[0]
-results, scores = index.find(query, top_k=10, search_field='embedding')
+results, scores = index.find(query, limit=10, search_field='embedding')
 ```
 
 </details>
@@ -442,7 +458,13 @@ class MyDoc(BaseDoc):
 
 doc = MyDoc(tensor=torch.zeros(3, 224, 224))  # works
 doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
-doc = MyDoc(tensor=torch.zeros(224))  # fails validation
+
+try:
+    doc = MyDoc(tensor=torch.zeros(224))  # fails validation
+except Exception as e:
+    print(e)
+    # tensor
+    # Cannot reshape tensor of shape (224,) to shape (3, 224, 224) (type=value_error)
 
 
 class Image(BaseDoc):
@@ -450,15 +472,30 @@ class Image(BaseDoc):
 
 
 Image(tensor=torch.zeros(3, 224, 224))  # works
-Image(
-    tensor=torch.zeros(3, 64, 128)
-)  # fails validation because second dimension does not match third
-Image(
-    tensor=torch.zeros(4, 224, 224)
-)  # fails validation because of the first dimension
-Image(
-    tensor=torch.zeros(3, 64)
-)  # fails validation because it does not have enough dimensions
+
+try:
+    Image(
+        tensor=torch.zeros(3, 64, 128)
+    )  # fails validation because second dimension does not match third
+except Exception as e:
+    print()
+
+
+try:
+    Image(
+        tensor=torch.zeros(4, 224, 224)
+    )  # fails validation because of the first dimension
+except Exception as e:
+    print(e)
+    # Tensor shape mismatch. Expected(3, 'x', 'x'), got(4, 224, 224)(type=value_error)
+
+try:
+    Image(
+        tensor=torch.zeros(3, 64)
+    )  # fails validation because it does not have enough dimensions
+except Exception as e:
+    print(e)
+    # Tensor shape mismatch. Expected (3, 'x', 'x'), got (3, 64) (type=value_error)
 ```
 
 </details>
@@ -685,9 +722,18 @@ DocArray's job is to take multi-modal, nested and domain-specific data and to ma
 store it there, and thus make it searchable:
 
 ```python
-from docarray import DocList
-from docarray.documents import ImageDoc
+from docarray import DocList, BaseDoc
 from docarray.index import HnswDocumentIndex
+import numpy as np
+
+from docarray.typing import ImageUrl, ImageTensor, NdArray
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: ImageTensor
+    embedding: NdArray[128]
+
 
 # create some data
 dl = DocList[ImageDoc](
@@ -702,14 +748,15 @@ dl = DocList[ImageDoc](
 )
 
 # create a Document Index
-index = HnswDocumentIndex(work_dir='.')
+index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index')
+
 
 # index your data
 index.index(dl)
 
 # find similar Documents
 query = dl[0]
-results, scores = index.find(query, top_k=10, search_field='embedding')
+results, scores = index.find(query, limit=10, search_field='embedding')
 ```
 
 Currently, DocArray supports the following vector databases:
