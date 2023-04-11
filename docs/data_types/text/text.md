@@ -5,7 +5,7 @@ DocArray supports many different modalities including `Text`.
 This section will show you how to load and handle text data using DocArray.
 
 !!! tip
-    Check out our predefined [`TextDoc`](#getting-started-predefined-textdoc) to get started and play around with our imagtexte features.
+    Check out our predefined [`TextDoc`](#getting-started-predefined-textdoc) to get started and play around with our text features.
 
 You can store text in DocArray like this:
 

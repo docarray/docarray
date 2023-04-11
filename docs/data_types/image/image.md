@@ -83,7 +83,42 @@ pil_img = img.url.load_pil()
 assert isinstance(pil_img, PILImage)
 ```
 
-Additionally, you can specify the size of the images you are working with. Let's say for instance, all your images are of size (200, 300, 3). 
+## Parameterized ImageTensor
+
+Like all of our tensors, the [`ImageTensor`'s](../../../../api_references/typing/tensor/image) can be used in a parametrized way, specifying the shape of the images.
+Let's say for instance, all your images are of size `(200, 300, 3)`. 
+
+```python
+import numpy as np
+from docarray import BaseDoc
+from docarray.typing import ImageNdArray
+
+
+class MyImage(BaseDoc):
+    tensor: ImageNdArray[200, 300, 3]
+
+
+img = MyImage(tensor=np.ones(shape=(200, 300, 3)))
+
+# this would fail:
+# img = MyImage(tensor=np.ones(shape=(224, 224, 3)))
+```
+
+If you have RGB images of different shapes, you could specify only the dimension as well as the number of channels:
+
+```python
+import numpy as np
+from docarray import BaseDoc
+from docarray.typing import ImageNdArray
+
+
+class MyFlexibleImage(BaseDoc):
+    tensor: ImageNdArray['h', 'w', 3]
+
+
+img_1 = MyFlexibleImage(tensor=np.zeros(shape=(200, 300, 3)))
+img_2 = MyFlexibleImage(tensor=np.ones(shape=(224, 224, 3)))
+```
 
 
 
