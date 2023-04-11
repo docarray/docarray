@@ -52,7 +52,7 @@ def test_find_torch(random_torch_query, random_torch_index, metric):
     top_k, scores = find(
         random_torch_index,
         random_torch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric=metric,
     )
@@ -69,7 +69,7 @@ def test_find_torch_tensor_query(random_torch_query, random_torch_index):
     top_k, scores = find(
         random_torch_index,
         query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -83,7 +83,7 @@ def test_find_torch_stacked(random_torch_query, random_torch_index):
     top_k, scores = find(
         random_torch_index,
         random_torch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -97,7 +97,7 @@ def test_find_np(random_nd_query, random_nd_index, metric):
     top_k, scores = find(
         random_nd_index,
         random_nd_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric=metric,
     )
@@ -114,7 +114,7 @@ def test_find_np_tensor_query(random_nd_query, random_nd_index):
     top_k, scores = find(
         random_nd_index,
         query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -128,7 +128,7 @@ def test_find_np_stacked(random_nd_query, random_nd_index):
     top_k, scores = find(
         random_nd_index,
         random_nd_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -142,7 +142,7 @@ def test_find_batched_torch(random_torch_batch_query, random_torch_index, metric
     results = find_batched(
         random_torch_index,
         random_torch_batch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric=metric,
     )
@@ -162,7 +162,7 @@ def test_find_batched_torch_tensor_query(random_torch_batch_query, random_torch_
     results = find_batched(
         random_torch_index,
         query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -186,7 +186,7 @@ def test_find_batched_torch_stacked(
     results = find_batched(
         random_torch_index,
         random_torch_batch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -203,7 +203,7 @@ def test_find_batched_np(random_nd_batch_query, random_nd_index, metric):
     results = find_batched(
         random_nd_index,
         random_nd_batch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric=metric,
     )
@@ -223,7 +223,7 @@ def test_find_batched_np_tensor_query(random_nd_batch_query, random_nd_index):
     results = find_batched(
         random_nd_index,
         query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -244,7 +244,7 @@ def test_find_batched_np_stacked(random_nd_batch_query, random_nd_index, stack_w
     results = find_batched(
         random_nd_index,
         random_nd_batch_query,
-        embedding_field='tensor',
+        search_field='tensor',
         limit=7,
         metric='cosine_sim',
     )
@@ -266,7 +266,7 @@ def test_find_optional():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding',
+        search_field='embedding',
         limit=7,
     )
     assert len(top_k) == 7
@@ -284,7 +284,7 @@ def test_find_union():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding',
+        search_field='embedding',
         limit=7,
     )
     assert len(top_k) == 7
@@ -314,7 +314,7 @@ def test_find_nested(stack):
     top_k, scores = find(
         index,
         query,
-        embedding_field='inner__embedding',
+        search_field='inner__embedding',
         limit=7,
     )
     assert len(top_k) == 7
@@ -350,7 +350,7 @@ def test_find_nested_union_optional():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding',
+        search_field='embedding',
         limit=7,
     )
     assert len(top_k) == 7
@@ -360,7 +360,7 @@ def test_find_nested_union_optional():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding2',
+        search_field='embedding2',
         limit=7,
     )
     assert len(top_k) == 7
@@ -370,7 +370,7 @@ def test_find_nested_union_optional():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding3',
+        search_field='embedding3',
         limit=7,
     )
     assert len(top_k) == 7
@@ -380,7 +380,7 @@ def test_find_nested_union_optional():
     top_k, scores = find(
         index,
         query,
-        embedding_field='embedding4',
+        search_field='embedding4',
         limit=7,
     )
     assert len(top_k) == 7

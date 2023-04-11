@@ -62,7 +62,7 @@ class DocVec(AnyDocArray[T_doc]):
     A DocVec has a similar interface as
     {class}`~docarray.array.DocList` but with an underlying implementation that is
     column based instead of row based. Each field
-    of the schema of the DocArrayStack
+    of the schema of the DocVec
     (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
     `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
     If the tensor field
@@ -195,7 +195,7 @@ class DocVec(AnyDocArray[T_doc]):
         """
         Create a DocVec directly from a storage object
         :param storage: the underlying storage.
-        :return: a DocArrayStack
+        :return: a DocVec
         """
         docs = cls.__new__(cls)
         docs.tensor_type = storage.tensor_type

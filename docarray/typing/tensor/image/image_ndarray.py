@@ -8,10 +8,10 @@ MAX_INT_16 = 2**15
 @_register_proto(proto_type_name='image_ndarray')
 class ImageNdArray(AbstractImageTensor, NdArray):
     """
-    Subclass of NdArray, to represent an image tensor.
+    Subclass of [`NdArray`][docarray.typing.NdArray], to represent an image tensor.
     Adds image-specific features to the tensor.
     For instance the ability convert the tensor back to image bytes which are
-    optimized to send over the wire
+    optimized to send over the wire.
 
 
     ---

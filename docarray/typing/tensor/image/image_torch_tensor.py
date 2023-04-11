@@ -10,10 +10,10 @@ T = TypeVar('T', bound='ImageTorchTensor')
 @_register_proto(proto_type_name='image_torch_tensor')
 class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
-    Subclass of TorchTensor, to represent an image tensor.
+    Subclass of [`TorchTensor`][docarray.typing.TorchTensor], to represent an image tensor.
     Adds image-specific features to the tensor.
     For instance the ability convert the tensor back to image bytes which are
-    optimized to send over the wire
+    optimized to send over the wire.
 
 
     ---
