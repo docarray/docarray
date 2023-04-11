@@ -35,7 +35,7 @@ def get_obj_to_check(lib):
     all_test = getattr(lib, '__all__')
     try:
         all_test = getattr(lib, '__all_test__')
-    except ImportError:
+    except (AttributeError, ImportError):
         pass
     for obj in all_test:
         obj_to_check.append(getattr(lib, obj))
