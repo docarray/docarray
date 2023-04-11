@@ -32,7 +32,12 @@ SUB_MODULE_TO_CHECK = [
 
 def get_obj_to_check(lib):
     obj_to_check = []
-    for obj in lib.__all__:
+    all_test = getattr(lib, '__all__')
+    try:
+        all_test = getattr(lib, '__all_test__')
+    except (AttributeError, ImportError):
+        pass
+    for obj in all_test:
         obj_to_check.append(getattr(lib, obj))
     return obj_to_check
 
