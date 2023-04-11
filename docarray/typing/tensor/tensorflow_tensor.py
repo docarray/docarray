@@ -69,12 +69,16 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     # tensorflow functions
     broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
     broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
-    broadcasted = tf.broadcast_to(t, (3, 224, 224))  # this will fail
+
+    # this will fail:
+    # broadcasted = tf.broadcast_to(t, (3, 224, 224))
 
     # tensorflow.Tensor methods:
     arr = t.tensor.numpy()
     arr = t.unwrap().numpy()
-    arr = t.numpy()  # this will fail
+
+    # this will fail:
+    # arr = t.numpy()
     ```
 
     ---
@@ -125,7 +129,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         tensor=tf.zeros((128,)),
         image_tensor=tf.zeros((3, 224, 224)),
         square_crop=tf.zeros((3, 64, 64)),
-        random_image=tf.zeros(3, 128, 256),
+        random_image=tf.zeros((3, 128, 256)),
     )
 
     # automatic shape conversion
@@ -133,16 +137,16 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         tensor=tf.zeros((128,)),
         image_tensor=tf.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
         square_crop=tf.zeros((3, 128, 128)),
-        random_image=tf.zeros(3, 64, 128),
+        random_image=tf.zeros((3, 64, 128)),
     )
 
     # !! The following will raise an error due to shape mismatch !!
-    doc = MyDoc(
-        tensor=tf.zeros((128,)),
-        image_tensor=tf.zeros((224, 224)),  # this will fail validation
-        square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
-        random_image=tf.zeros(4, 64, 128),  # this will also fail validation
-    )
+    # doc = MyDoc(
+    #     tensor=tf.zeros((128,)),
+    #     image_tensor=tf.zeros((224, 224)),  # this will fail validation
+    #     square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
+    #     random_image=tf.zeros(4, 64, 128),  # this will also fail validation
+    # )
     ```
 
     ---
@@ -305,7 +309,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
         t1 = TensorFlowTensor.validate(tf.zeros((3, 224, 224)), None, None)
         # here t1 is a docarray TensorFlowTensor
-        t2 = t.unwrap()
+        t2 = t1.unwrap()
         # here t2 is a pure tf.Tensor but t1 is still a Docarray TensorFlowTensor
         ```
 
