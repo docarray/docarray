@@ -79,7 +79,7 @@ class TorchTensor(
     )
 
     # automatic shape conversion
-    doc = MyTESTDoc(
+    doc = MyDoc(
         tensor=torch.zeros(128),
         image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
         square_crop=torch.zeros(3, 128, 128),

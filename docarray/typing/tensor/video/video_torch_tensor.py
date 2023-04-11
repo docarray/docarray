@@ -25,7 +25,6 @@ class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode
     from typing import Optional
 
     import torch
-    from pydantic import parse_obj_as
 
     from docarray import BaseDoc
     from docarray.typing import VideoTorchTensor, VideoUrl
@@ -41,17 +40,15 @@ class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode
         title='my_first_video_doc',
         video_tensor=torch.randn(size=(100, 224, 224, 3)),
     )
-
-    doc_1.video_tensor.save(file_path='file_1.wav')
-
+    # doc_1.video_tensor.save(file_path='file_1.mp4')
 
     doc_2 = MyVideoDoc(
         title='my_second_video_doc',
-        url='https://www.kozco.com/tech/piano2.wav',
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true',
     )
 
-    doc_2.video_tensor = parse_obj_as(VideoTorchTensor, doc_2.url.load())
-    doc_2.video_tensor.save(file_path='file_2.wav')
+    doc_2.video_tensor = doc_2.url.load().video
+    # doc_2.video_tensor.save(file_path='file_2.wav')
     ```
 
     ---

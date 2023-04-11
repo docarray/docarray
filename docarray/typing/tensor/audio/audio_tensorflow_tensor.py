@@ -21,7 +21,6 @@ class AudioTensorFlowTensor(
     from typing import Optional
 
     import tensorflow as tf
-    from pydantic import parse_obj_as
 
     from docarray import BaseDoc
     from docarray.typing import AudioBytes, AudioTensorFlowTensor, AudioUrl
@@ -39,17 +38,15 @@ class AudioTensorFlowTensor(
         audio_tensor=tf.random.normal((1000, 2)),
     )
 
-    doc_1.audio_tensor.save(file_path='path/to/file_1.wav')
+    # doc_1.audio_tensor.save(file_path='file_1.wav')
     doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
-
 
     doc_2 = MyAudioDoc(
         title='my_second_audio_doc',
         url='https://www.kozco.com/tech/piano2.wav',
     )
 
-    doc_2.audio_tensor = doc_2.url.load()
-    doc_2.audio_tensor.save(file_path='path/to/file_2.wav')
+    doc_2.audio_tensor, _ = doc_2.url.load()
     doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
     ```
 

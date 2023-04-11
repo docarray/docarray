@@ -64,8 +64,6 @@ _torch_tensors = [
     'AudioTorchTensor',
     'VideoTorchTensor',
 ]
-__all__.extend(_torch_tensors)
-
 _tf_tensors = [
     'TensorFlowTensor',
     'TensorFlowEmbedding',
@@ -73,7 +71,7 @@ _tf_tensors = [
     'AudioTensorFlowTensor',
     'VideoTensorFlowTensor',
 ]
-__all__.extend(_tf_tensors)
+__all_test__ = __all__ + _torch_tensors + _tf_tensors
 
 
 def __getattr__(name: str):
@@ -89,5 +87,7 @@ def __getattr__(name: str):
     import docarray.typing.tensor
 
     tensor_cls = getattr(docarray.typing.tensor, name)
+    if name not in __all__:
+        __all__.append(name)
 
     return tensor_cls
