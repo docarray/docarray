@@ -68,8 +68,8 @@ Based on the overall length of the video (10s), you can infer the framerate is a
 DocArray offers several [`VideoTensor`'s](../../../../api_references/typing/tensor/video) to store your data to:
 
 - [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray]
-- `VideoTorchTensor`
-- `VideoTensorFlowTensor`
+- [`VideoTorchTensor`][docarray.typing.tensor.video.VideoTorchTensor]
+- [`VideoTensorFlowTensor`][docarray.typing.tensor.video.VideoTensorFlowTensor]
 
 If you specify the type of your tensor to one of the above, it will be cast to that automatically:
 
