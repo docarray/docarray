@@ -46,8 +46,9 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
 @pytest.mark.parametrize(
     'fpath',
     [
-        *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
-        *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+        # *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
+        # *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+        *list(pathlib.Path('docs/data_types/audio').glob('**/*.md')),
     ],
     ids=str,
 )

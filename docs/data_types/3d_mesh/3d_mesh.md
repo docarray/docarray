@@ -30,6 +30,8 @@ But for now, let's create a `MyMesh3D` instance with an url to a remote `.obj` f
 
 
 ```python
+from typing import Optional
+
 from docarray import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing import Mesh3DUrl
@@ -37,7 +39,7 @@ from docarray.typing import Mesh3DUrl
 
 class MyMesh3D(BaseDoc):
     mesh_url: Mesh3DUrl
-    tensors: VerticesAndFaces = None
+    tensors: Optional[VerticesAndFaces]
 
 
 doc = MyMesh3D(mesh_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
@@ -75,8 +77,8 @@ doc.summary()
 
 You can display your 3D mesh interactively from its url as well as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] instance, by calling `.display()` on either one. The latter will always display without color, whereas display from url will show with color if this information is included in the file content.
 
-```python
-doc.url.display()
+``` { .python }
+doc.mesh_url.display()
 ```
 
 <iframe srcdoc="<!DOCTYPE html>
@@ -1342,6 +1344,8 @@ In DocArray, loading a point cloud from a [`PointCloud3DUrl`][docarray.typing.ur
 First, let's define our class `MyPointCloud`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides attributes to store the point cloud information.
 
 ```python
+from typing import Optional
+
 from docarray import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import PointCloud3DUrl
@@ -1349,7 +1353,7 @@ from docarray.typing import PointCloud3DUrl
 
 class MyPointCloud(BaseDoc):
     url: PointCloud3DUrl
-    tensors: PointsAndColors = None
+    tensors: Optional[PointsAndColors]
 
 
 doc = MyPointCloud(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
@@ -1386,7 +1390,7 @@ doc.summary()
 ### Display 3D point cloud in notebook
 You can display your point cloud and interact with it from its url as well as from a PointsAndColors instance. The first will always display without color, whereas display from PointsAndColors will show with color if [`PointsAndColors.colors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] is not None.
 
-```python
+``` { .python}
 doc.url.display()
 ```
 
@@ -2650,6 +2654,9 @@ The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a [`M
 
 
 ```python
+from docarray.typing import AnyEmbedding
+
+
 class Mesh3D(BaseDoc):
     url: Optional[Mesh3DUrl]
     tensors: Optional[VerticesAndFaces]
@@ -2684,8 +2691,8 @@ obj_file = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 
 doc = My3DObject(
     title='My first 3D object!',
-    mesh_representation=Mesh3D(url=obj_file),
-    pc_representation=PointCloud3D(url=obj_file),
+    mesh=Mesh3D(url=obj_file),
+    pc=PointCloud3D(url=obj_file),
 )
 
 

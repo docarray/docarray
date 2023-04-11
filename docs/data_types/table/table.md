@@ -62,7 +62,7 @@ The resulting [`DocList`][docarray.DocList] object contains three `Book`s, since
 ## Save to CSV file
 
 Vice versa, you can also store your [`DocList`][docarray.DocList] data to a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
-```python
+``` { .python }
 docs.to_csv(file_path='/path/to/my_file.csv')
 ```
 
@@ -106,7 +106,7 @@ review_docs.summary()
 </details>
 
 As expected all nested attributes will be stored by there access path.
-```python
+``` { .python }
 review_docs.to_csv(file_path='/path/to/nested_documents.csv')
 ```
 ``` { .text .no-copy hl_lines="1" }
@@ -136,7 +136,7 @@ Title2	author2	1234
 
 ```python
 docs = DocList[Book].from_csv(
-    file_path='books.tsv',
+    file_path='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/books.tsv?raw=true',
     dialect='excel-tab',
 )
 for doc in docs:
@@ -194,7 +194,7 @@ class SemicolonSeparator(csv.Dialect):
 Finally, you can read in your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
 ```python
 docs = DocList[Book].from_csv(
-    file_path='books_semicolon_sep.csv',
+    file_path='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/books_semicolon_sep.csv?raw=true',
     dialect=SemicolonSeparator(),
 )
 for doc in docs:

@@ -112,7 +112,7 @@ Alternatively, you can load your [`AudioUrl`][docarray.typing.url.AudioUrl] inst
 
 ```python hl_lines="15 16"
 
-[//]: # (from docarray import BaseDoc)
+from docarray import BaseDoc
 from docarray.typing import AudioBytes, AudioTensor, AudioUrl
 
 
@@ -126,7 +126,7 @@ doc = MyAudio(
     url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
 )
 
-doc.bytes_, _ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
+doc.bytes_ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
 doc.tensor, _ = doc.bytes_.load()  # type(doc.tensor) = AudioNdarray
 ```
  
@@ -138,12 +138,12 @@ from docarray.typing import AudioBytes
 
 bytes_from_tensor = doc.tensor.to_bytes()
 
-# assert isinstance(bytes_from_tensor, AudioBytes)
+assert isinstance(bytes_from_tensor, AudioBytes)
 ```
 
 ## Save audio to file
 You can save your [`AudioTensor`](../../../../api_references/typing/tensor/audio) to an audio file of any format as follows:
-```python
+``` { .python }
 tensor_reversed = doc.tensor[::-1]
 tensor_reversed.save(
     file_path='olleh.mp3',
@@ -183,6 +183,11 @@ tensor_reversed.display()
 To get started and play around with your audio data, DocArray provides a predefined [`AudioDoc`][docarray.documents.audio.AudioDoc], which includes all of the previously mentioned functionalities:
 
 ```python
+from typing import Optional
+
+from docarray.typing import AnyEmbedding
+
+
 class AudioDoc(BaseDoc):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]
