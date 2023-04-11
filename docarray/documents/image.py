@@ -25,8 +25,8 @@ class ImageDoc(BaseDoc):
     It can contain:
 
     - an [`ImageUrl`][docarray.typing.url.ImageUrl] (`Image.url`)
-    - an [`AnyTensor`][LINK] (`Image.tensor`)
-    - an [`AnyEmbedding`][LINK] (`Image.embedding`)
+    - an [`AnyTensor`] (`Image.tensor`)
+    - an [`AnyEmbedding`] (`Image.embedding`)
     - [`ImageBytes`][docarray.typing.bytes.ImageBytes] (`ImageDoc.bytes_`)
 
     You can use this Document directly:

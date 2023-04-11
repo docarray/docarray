@@ -27,8 +27,8 @@ class AudioDoc(BaseDoc):
     The Audio Document can contain:
 
     - an [`AudioUrl`][docarray.typing.url.AudioUrl] (`AudioDoc.url`)
-    - an [`AudioTensor`][LINK] (`AudioDoc.tensor`)
-    - an [`AnyEmbedding`][LINK] (`AudioDoc.embedding`)
+    - an [`AudioTensor`] (`AudioDoc.tensor`)
+    - an [`AnyEmbedding`] (`AudioDoc.embedding`)
     - [`AudioBytes`][docarray.typing.bytes.AudioBytes] (`AudioDoc.bytes_`)
     - an integer representing the frame_rate (`AudioDoc.frame_rate`)
 

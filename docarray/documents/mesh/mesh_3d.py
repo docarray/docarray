@@ -24,8 +24,8 @@ class Mesh3D(BaseDoc):
     - an [`Mesh3DUrl`][docarray.typing.url.Mesh3DUrl] (`Mesh3D.url`)
     - a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces]
     object containing an `AnyTensor` of vertices (`Mesh3D.tensors.vertices)
-    - an [`AnyTensor`][LINK] of faces (`Mesh3D.tensors.faces)
-    - an [`AnyEmbedding`][LINK] (`Mesh3D.embedding`)
+    - an [`AnyTensor`] of faces (`Mesh3D.tensors.faces)
+    - an [`AnyEmbedding`] (`Mesh3D.embedding`)
     - `bytes` (`Mesh3D.bytes_`).
 
     You can use this Document directly:

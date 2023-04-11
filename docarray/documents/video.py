@@ -29,9 +29,9 @@ class VideoDoc(BaseDoc):
 
     - a [`VideoUrl`][docarray.typing.url.VideoUrl] (`VideoDoc.url`)
     - an [`AudioDoc`][docarray.documents.AudioDoc] (`VideoDoc.audio`)
-    - a [`VideoTensor`][LINK] (`VideoDoc.tensor`)
-    - an [`AnyTensor`][LINK] representing the indices of the video's key frames (`VideoDoc.key_frame_indices`)
-    - an [`AnyEmbedding`][LINK] (`VideoDoc.embedding`)
+    - a [`VideoTensor`] (`VideoDoc.tensor`)
+    - an [`AnyTensor`] representing the indices of the video's key frames (`VideoDoc.key_frame_indices`)
+    - an [`AnyEmbedding`] (`VideoDoc.embedding`)
     - [`VideoBytes`][docarray.typing.bytes.VideoBytes] (`VideoDoc.bytes_`)
 
     You can use this Document directly:
