@@ -32,8 +32,8 @@ class PointCloud3D(BaseDoc):
 
     - a [`PointCloud3DUrl`][docarray.typing.url.PointCloud3DUrl] (`PointCloud3D.url`)
     - a [`PointsAndColors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] object (`PointCloud3D.tensors`)
-    - an [`AnyEmbedding`] (`PointCloud3D.embedding`)
-    - `bytes` (`PointCloud3D.bytes_`)
+    - an [`AnyEmbedding`](../../../../api_references/typing/tensor/embedding) (`PointCloud3D.embedding`)
+    - a `bytes` object (`PointCloud3D.bytes_`)
 
     You can use this Document directly:
 

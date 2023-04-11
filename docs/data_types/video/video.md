@@ -65,7 +65,7 @@ Based on the overall length of the video (10s), you can infer the framerate is a
 
 ## VideoTensor
 
-DocArray offers several VideoTensors to store your data to:
+DocArray offers several [`VideoTensor`'s](../../../../api_references/typing/tensor/video) to store your data to:
 
 - [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray]
 - `VideoTorchTensor`
@@ -99,7 +99,7 @@ assert isinstance(doc.torch_tensor, VideoTorchTensor)
 
 ## VideoBytes
 
-Alternatively, you can load your [`VideoUrl`][docarray.typing.url.VideoUrl] instance to [`VideoBytes`][docarray.typing.bytes.VideoBytes], and your [`VideoBytes`][docarray.typing.bytes.VideoBytes] instance to a `VideoTensor` of your choice:
+Alternatively, you can load your [`VideoUrl`][docarray.typing.url.VideoUrl] instance to [`VideoBytes`][docarray.typing.bytes.VideoBytes], and your [`VideoBytes`][docarray.typing.bytes.VideoBytes] instance to a [`VideoTensor`](../../../../api_references/typing/tensor/video) of your choice:
 
 ```python hl_lines="15 16"
 from docarray import BaseDoc
@@ -120,7 +120,7 @@ doc.bytes_ = doc.url.load_bytes()
 doc.video = doc.url.load().video
 ```
  
-Vice versa, you can also transform a [`VideoTensor`] to  [`VideoBytes`][docarray.typing.bytes.VideoBytes]:
+Vice versa, you can also transform a [`VideoTensor`](../../../../api_references/typing/tensor/video) to  [`VideoBytes`][docarray.typing.bytes.VideoBytes]:
 
 ```python
 from docarray.typing import VideoBytes
@@ -175,7 +175,7 @@ doc.video.save(
 
 ## Display video in notebook
 
-You can play a video in a notebook from its URL as well as its tensor, by calling [`.display()`][docarray.typing.url.audio_url.AudioUrl.display] on either one. For the latter you can optionally give the corresponding AudioTensor as a parameter.
+You can play a video in a notebook from its URL as well as its tensor, by calling `.display()` on either one. For the latter you can optionally give the corresponding [`AudioTensor`](../../../../api_references/typing/tensor/audio) as a parameter.
 
 ```python
 doc_fast = MyAudio(url="/path/my_video.mp4")

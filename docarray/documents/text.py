@@ -15,8 +15,8 @@ class TextDoc(BaseDoc):
 
     - a [`TextUrl`][docarray.typing.url.TextUrl] (`TextDoc.url`)
     - a `str` (`TextDoc.text`)
-    - an `AnyEmbedding` (`TextDoc.embedding`)
-    - `bytes` (`TextDoc.bytes_`)
+    - an [`AnyEmbedding`](../../../api_references/typing/tensor/embedding) (`TextDoc.embedding`)
+    - a `bytes` object (`TextDoc.bytes_`)
 
     You can use this Document directly:
 

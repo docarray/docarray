@@ -13,7 +13,7 @@ Moreover, we will introduce DocArray's image specific types, to represent your i
 
 ## Load image
 
-First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type `ImageTensor`.
+First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type [`ImageTensor`](../../../../api_references/typing/tensor/image).
 
 Next, let's instantiate a `MyImage` object with a local or remote url. 
 
@@ -42,7 +42,7 @@ assert isinstance(img.tensor, ImageNdArray)
 
 ## ImageTensor
 
-DocArray offers several ImageTensors to store your data to:
+DocArray offers several [`ImageTensor`'s](../../../../api_references/typing/tensor/image) to store your data to:
 
 - [`ImageNdArray`][docarray.typing.ImageNdArray]
 - [`ImageTorchTensor`][docarray.typing.ImageTorchTensor]
@@ -82,7 +82,7 @@ assert isinstance(pil_img, PILImage)
 
 ## ImageBytes
 
-Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an `ImageTensor` of your choice.
+Alternatively, you can load your [`ImageUrl`][docarray.typing.url.ImageUrl] instance to [`ImageBytes`][docarray.typing.bytes.ImageBytes], and your [`ImageBytes`][docarray.typing.bytes.ImageBytes] instance to an [`ImageTensor`](../../../../api_references/typing/tensor/image) of your choice.
 
 ```python hl_lines="13 14"
 from docarray.typing import ImageBytes, ImageTensor, ImageUrl
@@ -101,7 +101,7 @@ img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
 img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 ```
  
-Vice versa, you can also transform an `ImageTensor` to [`ImageBytes`][docarray.typing.bytes.ImageBytes]:
+Vice versa, you can also transform an [`ImageTensor`](../../../../api_references/typing/tensor/image) to [`ImageBytes`][docarray.typing.bytes.ImageBytes]:
 
 ```python
 bytes_from_tensor = img.tensor.to_bytes()
@@ -112,7 +112,7 @@ assert isinstance(bytes_from_tensor, ImageBytes)
 ## Display image in notebook
 
 You can display your image in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
-`ImageTensor` instance.
+[`ImageTensor`](../../../../api_references/typing/tensor/image) instance.
 
 
 <figure markdown>

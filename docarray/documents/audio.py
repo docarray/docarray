@@ -27,9 +27,9 @@ class AudioDoc(BaseDoc):
     The Audio Document can contain:
 
     - an [`AudioUrl`][docarray.typing.url.AudioUrl] (`AudioDoc.url`)
-    - an [`AudioTensor`] (`AudioDoc.tensor`)
-    - an [`AnyEmbedding`] (`AudioDoc.embedding`)
-    - [`AudioBytes`][docarray.typing.bytes.AudioBytes] (`AudioDoc.bytes_`)
+    - an [`AudioTensor`](../../../api_references/typing/tensor/audio) (`AudioDoc.tensor`)
+    - an [`AnyEmbedding`](../../../api_references/typing/tensor/embedding) (`AudioDoc.embedding`)
+    - an [`AudioBytes`][docarray.typing.bytes.AudioBytes] (`AudioDoc.bytes_`) object
     - an integer representing the frame_rate (`AudioDoc.frame_rate`)
 
     You can use this Document directly:

@@ -20,11 +20,14 @@ T = TypeVar('T', bound='PointsAndColors')
 
 class PointsAndColors(BaseDoc):
     """
-    Document for handling point clouds tensor data.
+    Document for handling the tensor data of a [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D] object.
 
-    A PointsAndColors Document can contain an [`AnyTensor`] containing the points in
-    3D space information (`PointsAndColors.points`), and an [`AnyTensor`] containing
-    the points' color information (`PointsAndColors.colors`).
+    A PointsAndColors Document can contain:
+
+    - an [`AnyTensor`](../../../../api_references/typing/tensor/tensor)
+    containing the points in 3D space information (`PointsAndColors.points`)
+    - an [`AnyTensor`](../../../../api_references/typing/tensor/tensor)
+    containing the points' color information (`PointsAndColors.colors`)
     """
 
     points: AnyTensor

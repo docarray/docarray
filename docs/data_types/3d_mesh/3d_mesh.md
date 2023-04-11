@@ -21,7 +21,7 @@ A 3D mesh can be represented by its vertices and faces:
 
 ### Load vertices and faces
 
-First, let's define our class `MyMesh3D`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides  attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the `VerticesAndFaces` class, that has a `vertices` attribute and a `faces` attribute, both of type `AnyTensor`. This especially comes in handy later when we want to display our 3D mesh.
+First, let's define our class `MyMesh3D`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides  attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the `VerticesAndFaces` class, that has a `vertices` attribute and a `faces` attribute, both of type [`AnyTensor`](../../../../api_references/typing/tensor/tensor). This especially comes in handy later when we want to display our 3D mesh.
 
 But for now, let's create a `MyMesh3D` instance with an url to a remote `.obj` file:
 
@@ -70,7 +70,7 @@ doc.summary()
 
 ### Display 3D mesh in notebook
 
-You can display your 3D mesh interactively from its url as well as a `VerticesAndFaces` instance, by calling [`.display()`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl.display] on either one. The latter will always display without color, whereas display from url will show with color if this information is included in the file content.
+You can display your 3D mesh interactively from its url as well as a `VerticesAndFaces` instance, by calling `.display()` on either one. The latter will always display without color, whereas display from url will show with color if this information is included in the file content.
 
 ```python
 doc.url.display()
