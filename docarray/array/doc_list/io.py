@@ -372,6 +372,15 @@ class IOMixinArray(Iterable[T_doc]):
         doc_type = cls.doc_type
         docs = DocList.__class_getitem__(doc_type)()
 
+        if file_path.startswith('http'):
+            import urllib3
+
+            http = urllib3.PoolManager()
+
+            response = http.request('GET', file_path)
+            print(f"response.data = {response.data}")
+            file_path = response.data
+
         with open(file_path, 'r', encoding=encoding) as fp:
             rows = csv.DictReader(fp, dialect=dialect)
             field_names: List[str] = (
