@@ -297,7 +297,7 @@ doc_5 = MyDocument.parse_raw(json)
 ```
 
 Of course, serialization is not all you need.
-So check out how DocArray integrates with FatAPI and Jina. TODO link to doc sections
+So check out how DocArray integrates with FatAPI and Jina.
 
 
 ## Store
