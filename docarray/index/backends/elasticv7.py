@@ -1,5 +1,6 @@
+import warnings
 from dataclasses import dataclass
-from typing import Any, Dict, List, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 import numpy as np
 
@@ -48,16 +49,26 @@ class ElasticV7DocIndex(ElasticDocIndex):
             query: Union[AnyTensor, BaseDoc],
             search_field: str = 'embedding',
             limit: int = 10,
+            num_candidates: Optional[int] = None,
         ):
+            if num_candidates:
+                warnings.warn('`num_candidates` is not supported in ElasticV7DocIndex')
+
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
             else:
                 query_vec = query
             query_vec_np = BaseDocIndex._to_numpy(self._outer_instance, query_vec)
             self._query['size'] = limit
-            self._query['query']['script_score'] = ElasticV7DocIndex._form_search_body(
+            self._query['query'][
+                'script_score'
+            ] = self._outer_instance._form_search_body(
                 query_vec_np, limit, search_field
-            )['query']['script_score']
+            )[
+                'query'
+            ][
+                'script_score'
+            ]
 
             return self
 
@@ -102,8 +113,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
         return index
 
-    @staticmethod
-    def _form_search_body(query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
+    def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
         body = {
             'size': limit,
             'query': {

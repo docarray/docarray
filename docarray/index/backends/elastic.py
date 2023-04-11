@@ -85,6 +85,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             '_source': {'enabled': 'true'},
             'properties': {},
         }
+        mappings.update(self._db_config.index_mappings)
 
         for col_name, col in self._column_infos.items():
             mappings['properties'][col_name] = self._create_index_mapping(col)
@@ -124,24 +125,23 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             query: Union[AnyTensor, BaseDoc],
             search_field: str = 'embedding',
             limit: int = 10,
+            num_candidates: Optional[int] = None,
         ):
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
             else:
                 query_vec = query
             query_vec_np = BaseDocIndex._to_numpy(self._outer_instance, query_vec)
-            self._query['knn'] = ElasticDocIndex._form_search_body(
+            self._query['knn'] = self._outer_instance._form_search_body(
                 query_vec_np,
                 limit,
                 search_field,
-                self._outer_instance._runtime_config.default_column_config[
-                    'dense_vector'
-                ]['num_candidates'],
+                num_candidates,
             )['knn']
 
             return self
 
-        # filter accrpts Leaf/Compound query clauses
+        # filter accepts Leaf/Compound query clauses
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
         def filter(self, query: Dict[str, Any], limit: int = 10):
             self._query['size'] = limit
@@ -156,8 +156,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         find_batched = _raise_not_composable('find_batched')
-        filter_batched = _raise_not_composable('find_batched')
-        text_search_batched = _raise_not_composable('text_search')
+        filter_batched = _raise_not_composable('filter_batched')
+        text_search_batched = _raise_not_composable('text_search_batched')
 
     def build_query(self, **kwargs) -> QueryBuilder:
         """
@@ -173,6 +173,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         index_name: Optional[str] = None
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
+        index_mappings: Dict[str, Any] = field(default_factory=dict)
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
@@ -483,13 +484,17 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         return accumulated_info, warning_info
 
-    @staticmethod
     def _form_search_body(
+        self,
         query: np.ndarray,
         limit: int,
         search_field: str = '',
-        num_candidates: int = 10000,
+        num_candidates: Optional[int] = None,
     ) -> Dict[str, Any]:
+        if not num_candidates:
+            num_candidates = self._runtime_config.default_column_config['dense_vector'][
+                'num_candidates'
+            ]
         body = {
             'size': limit,
             'knn': {
@@ -501,9 +506,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         }
         return body
 
-    @staticmethod
     def _form_text_search_body(
-        query: str, limit: int, search_field: str = ''
+        self, query: str, limit: int, search_field: str = ''
     ) -> Dict[str, Any]:
         body = {
             'size': limit,
