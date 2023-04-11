@@ -8,8 +8,8 @@ the Pydantic world) to represent your data.
 
 
 !!! note
-    Naming convention. When we refer to a BaseDoc we refer to a class that inherits from [BaseDoc][docarray.base_doc.doc.BaseDoc]. 
-    When we refer to a `Document` we refer to an instance of a BaseDoc class.
+    Naming convention: When we refer to a `BaseDoc` we refer to a class that inherits from [BaseDoc][docarray.base_doc.doc.BaseDoc]. 
+    When we refer to a `Document` we refer to an instance of a `BaseDoc` class.
 
 ## Basic `Doc` usage.
 
