@@ -161,6 +161,10 @@ def test_create_from_named_tuple():
 
     Doc = create_from_named_tuple(MyMultiModalDoc)
 
+    myDoc1 = Doc(
+        image=ImageDoc(tensor=np.random.rand(3, 224, 224)), text=TextDoc(text='hey')
+    )
+
     assert issubclass(Doc, BaseDoc)
 
     class MyAudio(NamedTuple):
@@ -169,5 +173,8 @@ def test_create_from_named_tuple():
 
     Doc = create_from_named_tuple(MyAudio, __base__=AudioDoc)
 
+    myDoc2 = Doc(title='hello', tensor=np.random.rand(3, 224, 224))
+
     assert issubclass(Doc, BaseDoc)
     assert issubclass(Doc, AudioDoc)
+    assert isinstance(myDoc1, BaseDoc) and isinstance(myDoc2, BaseDoc)
