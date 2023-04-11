@@ -164,7 +164,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
 
         t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
         # here t1 is a docarray NdArray
-        t2 = t.unwrap()
+        t2 = t1.unwrap()
         # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
         # But both share the same underlying memory
         ```
