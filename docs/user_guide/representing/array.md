@@ -4,11 +4,10 @@ DocArray allows users to represent and manipulate multi-modal data to build AI a
 
 As you have seen in the last section (LINK), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which allows to represent a *single* document, a *single* datapoint.
 
-In Machine Learning though we often need to work with an *array* of documents, an *array* of datapoints.
+In Machine Learning though we often need to work with an *array* of documents, and an *array* of data points.
 
-This section introduce the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
-name: `DocArray` is actually derive from this concept, and it stands for `DocumentArray`.
-
+This section introduces the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This library
+name: `DocArray` is derived from this concept, and it stands for `DocumentArray`.
 
 ## AnyDocArray
 
@@ -88,9 +87,9 @@ docs.summary()
 ╰──────────────────────────╯
 ```
 
-`docs` here is a array-like collection of `BannerDoc`.
+`docs` here is an array-like collection of `BannerDoc`.
 
-You can access document inside it with the usual python array API:
+You can access documents inside it with the usual Python array API:
 
 ```python
 print(docs[0])
@@ -121,7 +120,7 @@ BannerDoc(image='https://example.com/image2.png', title='Bye Bye World', descrip
 As we said earlier, `DocList` or more generally `AnyDocArray`, extends the `BaseDoc` API at the Array level.
 
 What this means concretely is that the same way you can access your data at the 
-document level, you can do access it  at the Array level.
+document level, you can access it at the Array level.
 
 Let's see what that looks like:
 
@@ -148,7 +147,7 @@ print(docs.url)
     All the attributes of `BannerDoc` are accessible at the Array level.
 
 !!! Warning
-    Whereas this is true at runtime, static type analysers like Mypy or IDE like PyCharm will not be able to know it.
+    Whereas this is true at runtime, static type analyzers like Mypy or IDE like PyCharm will not be able to know it.
     This limitation is known and will be fixed in the future by the introduction of a Mypy, PyCharm, VSCode plugin. 
 
 This even works when you have a nested `BaseDoc`:
@@ -252,14 +251,14 @@ the array level.
 
 
 !!! note
-    To be able to extend your schema to the Array level, `AnyDocArray` needs to contain homogenous Document.
+    To be able to extend your schema to the Array level, `AnyDocArray` needs to contain a homogenous Document.
 
 This is where the custom syntax `DocList[DocType]` comes into play.
 
 !!!
     `DocList[DocType]` creates a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Documents.
 
-This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is actually a good user experience to think of Array of `BaseDoc` rather than
+This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of `BaseDoc` rather than
 just an array of non-homogenous `BaseDoc`.
 
 
@@ -271,12 +270,11 @@ That being said, `AnyDocArray` can also be used to create a non-homogenous `AnyD
 !!! warning
     `DocVec` cannot store non-homogenous `BaseDoc` and always needs the `DocVec[DocType]` syntax.
 
-The usage of non-homogenous `DocList` is really similar to a normal Python list but still offers DocArray functionality
+The usage of non-homogenous `DocList` is similar to a normal Python list but still offers DocArray functionality
 like serialization and sending over the wire (LINK). But it won't be able to extend the API of your custom schema to the Array level.
 
 
 Here is how you can instantiate a non-homogenous `DocList`:
-
 ```python
 from docarray import BaseDoc, DocList
 from docarray.typing import ImageUrl, AudioUrl
@@ -329,18 +327,18 @@ They share almost everything that has been said in the previous sections, but th
 
 [`DocList`][docarray.array.doc_list.doc_list.DocList] is based on Python List.
 You can append, extend, insert, pop , ... on it. In DocList, the data is individually owned by each `BaseDoc` collect just
-different Document reference. You want to use [`DocList`][docarray.array.doc_list.doc_list.DocList] when you want to be able
+different Document references. You want to use [`DocList`][docarray.array.doc_list.doc_list.DocList] when you want to be able
 to rearrange or re-rank your data. One flaw of `DocList` is that none of the data is contiguous in memory. So you cannot 
-leverage functions that require contiguous data like without first copying the data in a continuous array.
+leverage functions that require contiguous data without first copying the data in a continuous array.
 
 [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] is a columnar data structure. DocVec is always an array
 of homogeneous Documents. The idea is that every attribute of the `BaseDoc` will be stored in a contiguous array: a column.
 
-This mean that when you access the attribute of a `BaseDoc` at the Array level, we don't collect under the hood the data
-from all the documents (like `DocList`) before giving it back to you. We just return the column that is store in memory.
+This means that when you access the attribute of a `BaseDoc` at the Array level, we don't collect under the hood the data
+from all the documents (like `DocList`) before giving it back to you. We just return the column that is stored in memory.
 
-This really matter when you need to handle multi-modal data that you will feed into algorithm that require contiguous data, like matrix multiplication
-which is at the heart of Machine Learning especially in Deep Learning.
+This really matters when you need to handle multi-modal data that you will feed into an algorithm that require contiguous data, like matrix multiplication
+which is at the heart of Machine Learning, especially in Deep Learning.
 
 Let's take an example to illustrate the difference
 
@@ -404,15 +402,15 @@ predict(docs.image)
 predict(docs.image)
 ``` 
 
-First difference is that you don't need to call `np.stack` on `docs.image` because `docs.image` is already a contiguous array.
-Second difference is that you just get the column and don't need to create it at each call.
+The first difference is that you don't need to call `np.stack` on `docs.image` because `docs.image` is already a contiguous array.
+The second difference is that you just get the column and don't need to create it at each call.
 
-One of the other main difference between both of them is how you can access document inside them.
+One of the other main differences between both of them is how you can access documents inside them.
 
-If you access a document inside a `DocList` you will get a `BaseDoc` instance, i.e, a document.
+If you access a document inside a `DocList` you will get a `BaseDoc` instance, i.e., a document.
 
-If you access a document inside a `DocVec` you will get a document view. A document view is a view of the columnar data structure but which
-looks and behave like a `BaseDoc` instance. It is actually a `BaseDoc` instance but with a different way access the data.
+If you access a document inside a `DocVec` you will get a document view. A document view is a view of the columnar data structure which
+looks and behaves like a `BaseDoc` instance. It is a `BaseDoc` instance but with a different way to access the data.
 
 When you do a change at the view level it will be reflected at the DocVec level.
 
@@ -440,9 +438,8 @@ assert not my_doc.is_view()  # False
 
 
 !!! Note
-    to summarize : you should use `DocVec` when you need to work with contiguous data, and you should use `DocList` when you need to rearrange
+    to summarize: you should use `DocVec` when you need to work with contiguous data, and you should use `DocList` when you need to rearrange
     or extend your data.
-
 
 See also:
 
