@@ -384,13 +384,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """index Documents into the index.
 
         :param docs: Documents to index.
+
+        !!! note
+            Passing a sequence of Documents that is not a DocList
+            (such as a List of Docs) comes at a performance penalty.
+            This is because the Index needs to check compatibility between itself and
+            the data. With a DocList as input this is a single check; for other inputs
+            compatibility needs to be checked for every Document individually.
         """
-        if not isinstance(docs, (BaseDoc, DocList)):
-            self._logger.warning(
-                'Passing a sequence of Documents that is not a DocList comes at '
-                'a performance penalty, since compatibility with the schema of Index '
-                'needs to be checked for every Document individually.'
-            )
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
@@ -399,7 +400,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
-        search_field: str = 'embedding',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
@@ -432,7 +433,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def find_batched(
         self,
         queries: Union[AnyTensor, DocList],
-        search_field: str = 'embedding',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
@@ -511,7 +512,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def text_search(
         self,
         query: Union[str, BaseDoc],
-        search_field: str = 'text',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
@@ -539,7 +540,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def text_search_batched(
         self,
         queries: Union[Sequence[str], Sequence[BaseDoc]],
-        search_field: str = 'text',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
