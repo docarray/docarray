@@ -79,10 +79,11 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     ---
 
-    The [`TensorFlowBackend`][LINK]
-    however, operates on our [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instances.
-    Here, you do not have to access the `.tensor` attribute, but can instead just hand over
-    your [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instance.
+    The [`TensorFlowBackend`] however, operates on our
+    [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instances.
+    Here, you do not have to access the `.tensor` attribute,
+    but can instead just hand over your
+    [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instance.
 
     ---
 

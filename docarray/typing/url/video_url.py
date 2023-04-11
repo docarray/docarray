@@ -18,8 +18,10 @@ class VideoUrl(AnyUrl):
 
     def load(self: T, **kwargs) -> VideoLoadResult:
         """
-        Load the data from the url into a named Tuple of VideoNdArray, AudioNdArray and
-        NdArray.
+        Load the data from the url into a `NamedTuple` of
+        [`VideoNdArray`][docarray.typing.VideoNdArray],
+        [`AudioNdArray`][docarray.typing.AudioNdArray]
+        and [`NdArray`][docarray.typing.NdArray].
 
         ---
 
@@ -74,19 +76,20 @@ class VideoUrl(AnyUrl):
             av.open() as described in:
             https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
 
-        :return: AudioNdArray representing the audio content, VideoNdArray representing
-            the images of the video, NdArray of the key frame indices.
+        :return: [`AudioNdArray`][docarray.typing.AudioNdArray] representing the audio content,
+            [`VideoNdArray`][docarray.typing.VideoNdArray] representing the images of the video,
+            [`NdArray`][docarray.typing.NdArray] of the key frame indices.
         """
         buffer = self.load_bytes(**kwargs)
         return buffer.load()
 
     def load_bytes(self, timeout: Optional[float] = None) -> VideoBytes:
         """
-        Convert url to VideoBytes. This will either load or download the file and save
-        it into an VideoBytes object.
+        Convert url to [`VideoBytes`][docarray.typing.VideoBytes]. This will either load or download
+        the file and save it into an [`VideoBytes`][docarray.typing.VideoBytes] object.
 
         :param timeout: timeout for urlopen. Only relevant if url is not local
-        :return: VideoBytes object
+        :return: [`VideoBytes`][docarray.typing.VideoBytes] object
         """
         bytes_ = super().load_bytes(timeout=timeout)
         return VideoBytes(bytes_)
