@@ -47,7 +47,7 @@ def test_to_from_pandas_df(nested_doc_cls):
         ]
     ).all()
 
-    da_from_df = DocList[nested_doc_cls].from_pandas(df)
+    da_from_df = DocList[nested_doc_cls].from_dataframe(df)
     for doc1, doc2 in zip(da, da_from_df):
         assert doc1 == doc2
 
@@ -76,7 +76,7 @@ def test_from_pandas_without_schema_raise_exception():
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocList.from_pandas(df=df)
+        DocList.from_dataframe(df=df)
 
 
 def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
@@ -84,4 +84,4 @@ def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocList[nested_doc.__class__].from_pandas(df=df)
+        DocList[nested_doc.__class__].from_dataframe(df=df)

@@ -426,7 +426,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_pandas(cls, df: 'pd.DataFrame') -> 'DocList':
+    def from_dataframe(cls, df: 'pd.DataFrame') -> 'DocList':
         """
         Load a DocList from a `pandas.DataFrame` following the schema
         defined in the :attr:`~docarray.DocList.doc_type` attribute.
