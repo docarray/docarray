@@ -127,7 +127,7 @@ Let's see what that looks like:
 
 At the document level:
 ```python
-print(banner.url)
+print(banner1.image)
 ```
 
 ```cmd
@@ -136,7 +136,7 @@ https://example.com/image1.png'
 
 At the Array level:
 ```python
-print(docs.url)
+print(docs.image)
 ```
 
 ```cmd
@@ -223,7 +223,7 @@ Yes, `docs.banner` returns a nested `DocList` of `BannerDoc` !
 You can even access the attribute of the nested `BaseDoc` at the Array level:
 
 ```python
-print(docs.banner.url)
+print(docs.banner.image)
 ```
 
 ```cmd
@@ -364,16 +364,17 @@ def predict(image: NdArray['batch_size', 3, 224, 224]):
 
 Let's create a `DocList` of `ImageDoc` and pass it to the function
 
-```python hl_lines="6 8"
+```python
 from docarray import DocList
 import numpy as np
 
-docs = DocList[ImageDoc]([ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)])
+docs = DocList[ImageDoc](
+    [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
+)
 
 predict(np.stack(docs.image))
 ...
 predict(np.stack(docs.image))
-
 ```
 
 When you call `docs.image` DocList loop over the 10 documents and collect the image attribute of each document in a list
@@ -391,11 +392,13 @@ multiple time. This is not optimal.
 
 Let's see how it will work with `DocVec`
 
-```python hl_lines="6 8"
+```python
 from docarray import DocList
 import numpy as np
 
-docs = DocList[ImageDoc]([ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)])
+docs = DocList[ImageDoc](
+    [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
+)
 
 predict(docs.image)
 ...
@@ -415,6 +418,8 @@ looks and behaves like a `BaseDoc` instance. It is a `BaseDoc` instance but with
 When you do a change at the view level it will be reflected at the DocVec level.
 
 ```python
+from docarray import DocVec
+
 docs = DocVec[ImageDoc](
     [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
 )
