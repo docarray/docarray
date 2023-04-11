@@ -141,12 +141,17 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     )
 
     # !! The following will raise an error due to shape mismatch !!
-    # doc = MyDoc(
-    #     tensor=tf.zeros((128,)),
-    #     image_tensor=tf.zeros((224, 224)),  # this will fail validation
-    #     square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
-    #     random_image=tf.zeros(4, 64, 128),  # this will also fail validation
-    # )
+    from pydantic import ValidationError
+
+    try:
+        doc = MyDoc(
+            tensor=tf.zeros((128,)),
+            image_tensor=tf.zeros((224, 224)),  # this will fail validation
+            square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
+            random_image=tf.zeros(4, 64, 128),  # this will also fail validation
+        )
+    except ValidationError as e:
+        pass
     ```
 
     ---
