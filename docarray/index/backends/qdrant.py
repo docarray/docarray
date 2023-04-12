@@ -159,8 +159,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         find_batched = _raise_not_composable('find_batched')
-        filter_batched = _raise_not_composable('find_batched')
-        text_search_batched = _raise_not_composable('text_search')
+        filter_batched = _raise_not_composable('filter_batched')
+        text_search_batched = _raise_not_composable('text_search_batched')
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
