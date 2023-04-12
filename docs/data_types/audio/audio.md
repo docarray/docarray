@@ -182,12 +182,7 @@ tensor_reversed.display()
 
 To get started and play around with your audio data, DocArray provides a predefined [`AudioDoc`][docarray.documents.audio.AudioDoc], which includes all of the previously mentioned functionalities:
 
-```python
-from typing import Optional
-
-from docarray.typing import AnyEmbedding, AudioTensor
-
-
+``` { .python }
 class AudioDoc(BaseDoc):
     url: Optional[AudioUrl]
     tensor: Optional[AudioTensor]

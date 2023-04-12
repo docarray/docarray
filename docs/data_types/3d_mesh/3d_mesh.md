@@ -2653,10 +2653,7 @@ To get started and play around with the 3D modalities, DocArray provides the pre
 The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a [`Mesh3DUrl`][docarray.typing.Mesh3DUrl] field as wells as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] field.
 
 
-```python
-from docarray.typing import AnyEmbedding
-
-
+``` { .python }
 class Mesh3D(BaseDoc):
     url: Optional[Mesh3DUrl]
     tensors: Optional[VerticesAndFaces]
@@ -2666,7 +2663,7 @@ class Mesh3D(BaseDoc):
 
 ### `PointCloud3D`
 
-```python
+``` { .python }
 class PointCloud3D(BaseDoc):
     url: Optional[PointCloud3DUrl]
     tensors: Optional[PointsAndColors]

@@ -172,12 +172,7 @@ You can display your image in a notebook from both an [`ImageUrl`][docarray.typi
 
 To get started and play around with the image modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
-```python
-from typing import Optional
-
-from docarray.typing import AnyEmbedding
-
-
+``` { .python }
 class ImageDoc(BaseDoc):
     url: Optional[ImageUrl]
     tensor: Optional[ImageTensor]

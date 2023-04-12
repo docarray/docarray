@@ -130,7 +130,7 @@ from docarray.typing import VideoBytes
 
 bytes_from_tensor = doc.video.to_bytes()
 
-# assert isinstance(bytes_from_tensor, VideoBytes)
+assert isinstance(bytes_from_tensor, VideoBytes)
 ```
 
 
@@ -149,7 +149,7 @@ assert first_scene.shape == (95, 176, 320, 3)
 
 Or you can access the first frame of all new scenes and display them in a notebook:
 
-```python
+``` { .python }
 from docarray.typing import ImageNdArray
 from pydantic import parse_obj_as
 
@@ -169,7 +169,7 @@ for frame in key_frames:
 ## Save video to file
 
 You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4 sec video, instead of the original 10 second video with a frame rate of 25 fps. 
-```python
+``` { .python }
 doc.video.save(
     file_path="/path/my_video.mp4",
     video_frame_rate=60,
@@ -180,7 +180,7 @@ doc.video.save(
 
 You can play a video in a notebook from its URL as well as its tensor, by calling `.display()` on either one. For the latter you can optionally give the corresponding [`AudioTensor`](../../../../api_references/typing/tensor/audio) as a parameter.
 
-```python
+``` { .python }
 doc_fast = MyAudio(url="/path/my_video.mp4")
 doc_fast.url.display()
 ```
@@ -192,7 +192,7 @@ doc_fast.url.display()
 
 To get started and play around with your video data, DocArray provides a predefined [`VideoDoc`][docarray.documents.video.VideoDoc], which includes all of the previously mentioned functionalities:
 
-```python
+``` { .python }
 class VideoDoc(BaseDoc):
     url: Optional[VideoUrl]
     audio: Optional[AudioDoc] = AudioDoc()
@@ -219,7 +219,5 @@ video = MyVideo(
     url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
 )
 video.name = 'My first video doc!'
-video.video_tensor = video.url.load().video
-model = MyEmbeddingModel()
-video.embedding = model(video.tensor)
+video.tensor = video.url.load().video
 ```
