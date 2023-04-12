@@ -162,77 +162,88 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         names, concatenated and "__"-separated. It describes the path from the first
         level to an arbitrary one, e.g. 'content__image__url'.
 
-        :param access_path: a string that represents the access path ("__"-separated).
-        :return: list of the accessed objects, flattened if nested.
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import BaseDoc, DocList, Text
+        ---
 
-
-            class Author(BaseDoc):
-                name: str
+        ```python
+        from docarray import BaseDoc, DocList, Text
 
 
-            class Book(BaseDoc):
-                author: Author
-                content: Text
+        class Author(BaseDoc):
+            name: str
 
 
-            docs = DocList[Book](
-                Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
-                for i in range(10)  # noqa: E501
-            )
+        class Book(BaseDoc):
+            author: Author
+            content: Text
 
-            books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
 
-            authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
+        docs = DocList[Book](
+            Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
+            for i in range(10)  # noqa: E501
+        )
+
+        books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
+
+        authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
+        ```
+
+        ---
 
         If the resulting list is a nested list, it will be flattened:
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import BaseDoc, DocList
+        ---
+
+        ```python
+        from docarray import BaseDoc, DocList
 
 
-            class Chapter(BaseDoc):
-                content: str
+        class Chapter(BaseDoc):
+            content: str
 
 
-            class Book(BaseDoc):
-                chapters: DocList[Chapter]
+        class Book(BaseDoc):
+            chapters: DocList[Chapter]
 
 
-            docs = DocList[Book](
-                Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
-                for _ in range(10)
-            )
+        docs = DocList[Book](
+            Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
+            for _ in range(10)
+        )
 
-            chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
+        chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
+        ```
 
+        ---
         If your DocList is in doc_vec mode, and you want to access a field of
         type AnyTensor, the doc_vec tensor will be returned instead of a list:
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            class Image(BaseDoc):
-                tensor: TorchTensor[3, 224, 224]
+        ---
+
+        ```python
+        class Image(BaseDoc):
+            tensor: TorchTensor[3, 224, 224]
 
 
-            batch = DocList[Image](
-                [
-                    Image(
-                        tensor=torch.zeros(3, 224, 224),
-                    )
-                    for _ in range(2)
-                ]
-            )
+        batch = DocList[Image](
+            [
+                Image(
+                    tensor=torch.zeros(3, 224, 224),
+                )
+                for _ in range(2)
+            ]
+        )
 
-            batch_stacked = batch.stack()
-            tensors = batch_stacked.traverse_flat(
-                access_path='tensor'
-            )  # tensor of shape (2, 3, 224, 224)
+        batch_stacked = batch.stack()
+        tensors = batch_stacked.traverse_flat(
+            access_path='tensor'
+        )  # tensor of shape (2, 3, 224, 224)
+        ```
 
+        ---
+
+        :param access_path: a string that represents the access path ("__"-separated).
+        :return: list of the accessed objects, flattened if nested.
         """
         ...
 

@@ -491,29 +491,31 @@ class DocList(
 
         List-like fields (including field of type DocList) are not supported.
 
-        EXAMPLE USAGE:
 
-        .. code-block:: python
+        ---
 
-            import pandas as pd
+        ```python
+        import pandas as pd
 
-            from docarray import BaseDoc, DocList
-
-
-            class Person(BaseDoc):
-                name: str
-                follower: int
+        from docarray import BaseDoc, DocList
 
 
-            df = pd.DataFrame(
-                data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
-            )
+        class Person(BaseDoc):
+            name: str
+            follower: int
 
-            docs = DocList[Person].from_dataframe(df)
 
-            assert docs.name == ['Maria', 'Jake']
-            assert docs.follower == [12345, 54321]
+        df = pd.DataFrame(
+            data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
+        )
 
+        docs = DocList[Person].from_dataframe(df)
+
+        assert docs.name == ['Maria', 'Jake']
+        assert docs.follower == [12345, 54321]
+        ```
+
+        ---
 
         :param df: pandas.DataFrame to extract Document's information from
         :return: DocList where each Document contains the information of one
