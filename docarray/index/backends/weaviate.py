@@ -10,7 +10,6 @@ from typing import (
     Generator,
     Generic,
     List,
-    Literal,
     Optional,
     Sequence,
     Tuple,
@@ -22,6 +21,7 @@ from typing import (
 
 import numpy as np
 import weaviate
+from typing_extensions import Literal
 
 import docarray
 from docarray import BaseDoc, DocList
