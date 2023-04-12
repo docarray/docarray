@@ -30,7 +30,9 @@ class MyImage(BaseDoc):
     tensor: ImageTensor = None
 
 
-img = MyImage(url='apple.png')
+img = MyImage(
+    url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true'
+)
 ```
 
 To load the image data you can call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object.
@@ -64,7 +66,7 @@ class MyImage(BaseDoc):
     torch_tensor: ImageTorchTensor = None
 
 
-img = MyImage(url='apple.png')
+img = MyImage(url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true')
 img.tf_tensor = img.url.load()
 img.torch_tensor = img.url.load()
 
@@ -77,7 +79,9 @@ You can also load the url content as a [`PIL.Image.Image`](https://pillow.readth
 ```python
 from PIL.Image import Image as PILImage
 
-img = MyImage(url='apple.png')
+img = MyImage(
+    url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true'
+)
 pil_img = img.url.load_pil()
 
 assert isinstance(pil_img, PILImage)
@@ -137,7 +141,7 @@ class MyImage(BaseDoc):
     tensor: ImageTensor = None
 
 
-img = MyImage(url='apple.png')
+img = MyImage(url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true')
 
 img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
 img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
@@ -146,6 +150,8 @@ img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
 Vice versa, you can also transform an [`ImageTensor`](../../../../api_references/typing/tensor/image) to [`ImageBytes`][docarray.typing.bytes.ImageBytes]:
 
 ```python
+from docarray.typing import ImageBytes
+
 bytes_from_tensor = img.tensor.to_bytes()
 
 assert isinstance(bytes_from_tensor, ImageBytes)
@@ -167,6 +173,11 @@ You can display your image in a notebook from both an [`ImageUrl`][docarray.typi
 To get started and play around with the image modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
 ```python
+from typing import Optional
+
+from docarray.typing import AnyEmbedding
+
+
 class ImageDoc(BaseDoc):
     url: Optional[ImageUrl]
     tensor: Optional[ImageTensor]
@@ -175,7 +186,7 @@ class ImageDoc(BaseDoc):
 ```
 
 You can use this class directly or extend it to your preference:
-```python
+``` { .python }
 from docarray.documents import ImageDoc
 from docarray.typing import AnyEmbedding
 from typing import Optional
@@ -192,7 +203,7 @@ image = MyImage(
     url='http://www.jina.ai/image.jpg',
 )
 image.tensor = image.url.load()
-model = MyEmbeddingModel()
+model = SomeEmbeddingModel()
 image.embedding = model(image.tensor)
 image.second_embedding = model(image.tensor)
 ```
