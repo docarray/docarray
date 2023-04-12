@@ -79,9 +79,13 @@ nav:
       - user_guide/representing/array.md
     - Sending:
       - user_guide/sending/first_step.md
-      - user_guide/sending/send_doc.md
-      - user_guide/sending/send_doclist.md
-      - user_guide/sending/send_docvec.md
+      - Serialization:
+        - user_guide/sending/ser/send_doc.md
+        - user_guide/sending/ser/send_doclist.md
+        - user_guide/sending/ser/send_docvec.md
+      - Building API:
+          - user_guide/sending/api/jina.md
+          - user_guide/sending/api/fastAPI.md
 
     - user_guide/storing/first_step.md
 
