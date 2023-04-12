@@ -151,6 +151,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         else:
             return None
 
+    def configure(self, runtime_config=None, **kwargs) -> None:
+        super().configure(runtime_config, **kwargs)
+        self._configure_client()
+
     def _create_schema(self) -> None:
         schema = {}
 
