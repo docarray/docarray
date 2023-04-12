@@ -101,27 +101,41 @@ class DocList(
     fields at the DocList level (for example `docs.tensor` or `docs.url`).
     You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
 
-        print(docs.url)
-        # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
-        import numpy as np
+    ---
 
-        docs.tensor = np.random.random([10, 100])
-        print(docs.tensor)
-        # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
-        #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
+    ```python
+    print(docs.url)
+    # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
+    import numpy as np
 
+    docs.tensor = np.random.random([10, 100])
+    print(docs.tensor)
+    # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
+    #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
+    ```
+
+    ---
     You can index into a DocList like a numpy doc_list or torch tensor:
 
+    ---
 
-        docs[0]  # index by position
-        docs[0:5:2]  # index by slice
-        docs[[0, 2, 3]]  # index by list of indices
-        docs[True, False, True, True, ...]  # index by boolean mask
+    ```python
+    docs[0]  # index by position
+    docs[0:5:2]  # index by slice
+    docs[[0, 2, 3]]  # index by list of indices
+    docs[True, False, True, True, ...]  # index by boolean mask
+    ```
 
+    ---
     You can delete items from a DocList like a Python List
+    ---
 
-        del docs[0]  # remove first element from DocList
-        del docs[0:5]  # remove elements for 0 to 5 from DocList
+    ```python
+    del docs[0]  # remove first element from DocList
+    del docs[0:5]  # remove elements for 0 to 5 from DocList
+    ```
+
+    ---
 
     :param docs: iterable of Document
 
