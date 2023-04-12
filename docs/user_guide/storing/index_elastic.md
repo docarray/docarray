@@ -1,5 +1,5 @@
 # Elastic
-[ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] implement the index based on [Elasticsearch 7.0](https://github.com/elastic/elasticsearch). This is an implementation with vectors stored and supporting text/range search.
+[ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex) implement the index based on [Elasticsearch 7.10](https://github.com/elastic/elasticsearch). This is an implementation with vectors stored and supporting text/range search.
 
 !!! note
     To use [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex], one need to install the extra dependency with the following command
@@ -8,14 +8,24 @@
     pip install "docarray[elasticsearch]"
     ```
 
+[ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex) is based on [Elasticsearch 8](https://github.com/elastic/elasticsearch) and supports hnsw based vector search as well.
 
-In the following examples, we use docker-compose to create a local elasticsearch service with the following `docker-compose.yml`.
+!!! note
+    To use [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex], one need to install the extra dependency with the following command
+
+    ```console
+    pip install elasticsearch==8.6.2
+    pip install elastic-transport
+    ```
+
+
+The following examples is based on `ElasticDocIndex`. We use docker-compose to create a local elasticsearch service with the following `docker-compose.yml`.
 
 ```yaml
 version: "3.3"
 services:
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
@@ -37,31 +47,32 @@ docker-compose up
 ```
 
 ## Construct
-To construct an index, you need to define the schema first. You can define the schema in the same way as define a `Doc`. The only difference is that you need to define the dimensionality of the vector space by `dims`. The `dims` argument must be an integer. TODO: add links to the detailed explaination
+To construct an index, you need to define the schema first. You can define the schema in the same way as defining a `Doc`. Dimensionality is necessary for vector space, you need to specify the shape or define it by `dims`. TODO: add links to the detailed explaination.
 
-`hosts` is the argument for setting the elasticsearch hosts. By default, it is using `http://localhost:9200`. TODO: add more detailed explaination of the ES-related parameters.
+`hosts` is the argument for setting the elasticsearch hosts. By default, it is `http://localhost:9200`. 
+
 
 ```python
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 from docarray.typing import NdArray
 
 
 class SimpleDoc(BaseDoc):
     tensor: NdArray = Field(dims=128)
+    # tensor: NdArray[128]
 
 
-doc_index = ElasticV7DocIndex[SimpleDoc]()
-
+doc_index = ElasticDocIndex[SimpleDoc]()
 ```
+TODO some common info: specifying col_type, custom_config, Union etc.
 
 ## Index
 Use `.index()` to add `Doc` into the index. You could use the same class as the schema for defining the `Doc`. Alternatively, you need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
 
 ```python
-
 index_docs = [SimpleDoc(tensor=np.ones(128)) for _ in range(64)]
 
 doc_index.index(index_docs)
@@ -79,6 +90,19 @@ doc_index[index_docs[16].id]
 # access multiple Docs
 doc_index[index_docs[16].id, index_docs[17].id]
 ```
+
+### Persistence
+To access a `Doc` formerly persisted, you can specify `index_name` and the `hosts`.
+
+```python
+doc_index = ElasticDocIndex[SimpleDoc](index_name='previously_stored')
+doc_index.index(index_docs)
+
+doc_index2 = ElasticDocIndex[SimpleDoc](index_name='previously_stored')
+
+print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
+```
+
 
 ## Delete
 To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` to be deleted. You can also pass a list of `id` to delete multiple `Doc`.
@@ -101,7 +125,7 @@ docs, scores = doc_index.find(query, limit=5)
 ```
 
 !!! note
-    [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] is using Elasticsearch v7.x which does not support approximate nearest neighbour algorithms as Hnswlib. This could lead to a poor performance when the search involves too many vectors.
+    [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms as Hnswlib. This could lead to a poor performance when the search involves too many vectors.
 
 ## Nested Index
 When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
@@ -137,15 +161,11 @@ index_docs = [
     YouTubeVideoDoc(
         title=f'video {i+1}',
         description=f'this is video from author {10*i}',
-        thumbnail=ImageDoc(
-            url=f'http://example.ai/images/{i}',
-            tensor=np.ones(64)),
-        video=VideoDoc(
-            url=f'http://example.ai/videos/{i}',
-            tensor=np.ones(128)
-        ),
-        tensor=np.ones(256)
-    ) for i in range(8)
+        thumbnail=ImageDoc(url=f'http://example.ai/images/{i}', tensor=np.ones(64)),
+        video=VideoDoc(url=f'http://example.ai/videos/{i}', tensor=np.ones(128)),
+        tensor=np.ones(256),
+    )
+    for i in range(8)
 ]
 doc_index.index(index_docs)
 ```
@@ -157,15 +177,9 @@ Use the `search_field` to specify which field to be used when performing the vec
 query_doc = YouTubeVideoDoc(
     title=f'video query',
     description=f'this is a query video',
-    thumbnail=ImageDoc(
-        url=f'http://example.ai/images/1024',
-        tensor=np.ones(64)
-    ),
-    video=VideoDoc(
-        url=f'http://example.ai/videos/1024',
-        tensor=np.ones(128)
-    ),
-    tensor=np.ones(256)
+    thumbnail=ImageDoc(url=f'http://example.ai/images/1024', tensor=np.ones(64)),
+    video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
+    tensor=np.ones(256),
 )
 # find by the youtubevideo tensor
 docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
@@ -259,6 +273,7 @@ class NewsDoc(BaseDoc):
     text: str
     location: dict = Field(col_type='geo_point')
 
+
 doc_index = ElasticV7DocIndex[NewsDoc]()
 index_docs = [
     NewsDoc(text='this is from Berlin', location={'lon': 13.24, 'lat': 50.31}),
@@ -286,3 +301,15 @@ docs, _ = doc_index.execute_query(query)
 You can use `col_type='date_range'` is used to filter the docs based on the range of the date. TODO: find a use case.
 
 
+
+## Config
+
+The following configs can be set in `DBConfig`:
+
+| Name              | Description                                                                                                                            | Default                 |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| `hosts`           | Hostname of the Elasticsearch server                                                                                                   | `http://localhost:9200` |
+| `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None |
+| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None |
+| `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
+| `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
