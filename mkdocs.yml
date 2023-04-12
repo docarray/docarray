@@ -77,7 +77,10 @@ nav:
     - Representing:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
-    - user_guide/sending/first_step.md
+    - Sending:
+      - user_guide/sending/first_step.md
+      - user_guide/sending/send_doclist.md
+
     - user_guide/storing/first_step.md
 
   - How-to:

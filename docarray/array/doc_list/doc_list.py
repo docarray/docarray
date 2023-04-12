@@ -332,7 +332,7 @@ class DocList(
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
-        :param compress: compress algorithm that was used to serialize
+        :param compress: compress algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocList
         """
@@ -362,7 +362,7 @@ class DocList(
         For more Pythonic code, please use ``bytes(...)``.
 
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param file_ctx: File or filename or serialized bytes where the data is stored.
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
@@ -403,7 +403,7 @@ class DocList(
         """Serialize itself into base64 encoded string.
 
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
@@ -548,7 +548,7 @@ class DocList(
 
         :param file: File or filename or serialized bytes where the data is stored.
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between 'lz4', 'gzip', 'bz2', 'zstd', 'lzma'
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
@@ -580,17 +580,19 @@ class DocList(
         When using `protobuf` or `pickle` as protocol each Document in DocList
         will be stored individually and this would make it available for streaming.
 
-        :param file: File or filename to which the data is saved.
-        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
-        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-
-         .. note::
+        !! note
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
             This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
             string interpolation of the respective `protocol` and `compress` methods.
             For example if `file=my_docarray.protobuf.lz4` then the binary data will be created using `protocol=protobuf`
             and `compress=lz4`.
+
+        :param file: File or filename to which the data is saved.
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use between : `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+
+
         """
         return super().save_binary(
             file, protocol=protocol, compress=compress, show_progress=show_progress

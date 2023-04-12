@@ -141,7 +141,7 @@ class IOMixinArray(Iterable[T_doc]):
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
-        :param compress: compress algorithm that was used to serialize
+        :param compress: compress algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocList
         """
@@ -247,7 +247,7 @@ class IOMixinArray(Iterable[T_doc]):
         For more Pythonic code, please use ``bytes(...)``.
 
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between : `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param file_ctx: File or filename or serialized bytes where the data is stored.
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
@@ -277,7 +277,7 @@ class IOMixinArray(Iterable[T_doc]):
 
         :param data: Base64 string to deserialize
         :param protocol: protocol that was used to serialize
-        :param compress: compress algorithm that was used to serialize
+        :param compress: compress algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocList
         """
@@ -297,7 +297,7 @@ class IOMixinArray(Iterable[T_doc]):
         """Serialize itself into base64 encoded string.
 
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
@@ -562,7 +562,7 @@ class IOMixinArray(Iterable[T_doc]):
     ):
         """Read a `DocList` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a `DocList`
         """
@@ -642,7 +642,7 @@ class IOMixinArray(Iterable[T_doc]):
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a generator of `Document` objects
         """
@@ -700,7 +700,7 @@ class IOMixinArray(Iterable[T_doc]):
 
         :param file: File or filename or serialized bytes where the data is stored.
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
@@ -761,7 +761,7 @@ class IOMixinArray(Iterable[T_doc]):
 
         :param file: File or filename to which the data is saved.
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
 
          .. note::
