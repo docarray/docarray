@@ -37,15 +37,15 @@ class VideoDoc(BaseDoc):
     You can use this Document directly:
 
     ```python
-    from docarray.documents import Video
+    from docarray.documents import VideoDoc
 
     # use it directly
-    vid = Video(
-        url='https://github.com/docarray/docarray/tree/feat-add-video-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    vid = VideoDoc(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
     )
-    vid.audio.tensor, vid.tensor, vid.key_frame_indices = vid.url.load()
-    model = MyEmbeddingModel()
-    vid.embedding = model(vid.tensor)
+    vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
+    # model = MyEmbeddingModel()
+    # vid.embedding = model(vid.tensor)
     ```
 
     You can extend this Document:
@@ -64,10 +64,10 @@ class VideoDoc(BaseDoc):
     video = MyVideo(
         url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
     )
-    video.video_tensor = video.url.load().video
-    model = MyEmbeddingModel()
-    video.embedding = model(video.tensor)
     video.name = TextDoc(text='my first video')
+    video.tensor = video.url.load().video
+    # model = MyEmbeddingModel()
+    # video.embedding = model(video.tensor)
     ```
 
     You can use this Document for composition:
@@ -79,20 +79,21 @@ class VideoDoc(BaseDoc):
 
     # compose it
     class MultiModalDoc(BaseDoc):
-        video: Video
-        text: Text
+        video: VideoDoc
+        text: TextDoc
 
 
     mmdoc = MultiModalDoc(
-        video=Video(
+        video=VideoDoc(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
         ),
-        text=Text(text='hello world, how are you doing?'),
+        text=TextDoc(text='hello world, how are you doing?'),
     )
-    mmdoc.video.video_tensor = mmdoc.video.url.load().video
+    mmdoc.video.tensor = mmdoc.video.url.load().video
 
     # or
     mmdoc.video.bytes_ = mmdoc.video.url.load_bytes()
+    mmdoc.video.tensor = mmdoc.video.bytes_.load().video
     ```
     """
 

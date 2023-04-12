@@ -40,8 +40,8 @@ class Mesh3D(BaseDoc):
     # use it directly
     mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
     mesh.tensors = mesh.url.load()
-    model = MyEmbeddingModel()
-    mesh.embedding = model(mesh.tensors.vertices)
+    # model = MyEmbeddingModel()
+    # mesh.embedding = model(mesh.tensors.vertices)
     ```
 
     You can extend this Document:
@@ -54,32 +54,32 @@ class Mesh3D(BaseDoc):
 
     # extend it
     class MyMesh3D(Mesh3D):
-        name: Optional[Text]
+        name: Optional[str]
 
 
     mesh = MyMesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-    mesh.tensors = mesh.url.load()
-    model = MyEmbeddingModel()
-    mesh.embedding = model(mesh.vertices)
     mesh.name = 'my first mesh'
+    mesh.tensors = mesh.url.load()
+    # model = MyEmbeddingModel()
+    # mesh.embedding = model(mesh.vertices)
     ```
 
     You can use this Document for composition:
 
     ```python
     from docarray import BaseDoc
-    from docarray.documents import Mesh3D, Text
+    from docarray.documents import Mesh3D, TextDoc
 
 
     # compose it
     class MultiModalDoc(BaseDoc):
         mesh: Mesh3D
-        text: Text
+        text: TextDoc
 
 
     mmdoc = MultiModalDoc(
         mesh=Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'),
-        text=Text(text='hello world, how are you doing?'),
+        text=TextDoc(text='hello world, how are you doing?'),
     )
     mmdoc.mesh.tensors = mmdoc.mesh.url.load()
 
@@ -94,12 +94,11 @@ class Mesh3D(BaseDoc):
 
     # display from url
     mesh = Mesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-    mesh.url.display()
+    # mesh.url.display()
 
     # display from tensors
     mesh.tensors = mesh.url.load()
-    model = MyEmbeddingModel()
-    mesh.embedding = model(mesh.tensors.vertices)
+    # mesh.tensors.display()
     ```
 
     """

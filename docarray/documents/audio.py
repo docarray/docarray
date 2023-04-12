@@ -38,12 +38,12 @@ class AudioDoc(BaseDoc):
     from docarray.documents import AudioDoc
 
     # use it directly
-    audio = Audio(
+    audio = AudioDoc(
         url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
     )
     audio.tensor, audio.frame_rate = audio.url.load()
-    model = MyEmbeddingModel()
-    audio.embedding = model(audio.tensor)
+    # model = MyEmbeddingModel()
+    # audio.embedding = model(audio.tensor)
     ```
 
     You can extend this Document:
@@ -61,10 +61,10 @@ class AudioDoc(BaseDoc):
     audio = MyAudio(
         url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
     )
-    audio.tensor, audio.frame_rate = audio.url.load()
-    model = MyEmbeddingModel()
-    audio.embedding = model(audio.tensor)
     audio.name = TextDoc(text='my first audio')
+    audio.tensor, audio.frame_rate = audio.url.load()
+    # model = MyEmbeddingModel()
+    # audio.embedding = model(audio.tensor)
     ```
 
     You can use this Document for composition:
@@ -75,22 +75,22 @@ class AudioDoc(BaseDoc):
 
 
     # compose it
-    class MultiModalDoc(Document):
-        audio: Audio
-        text: Text
+    class MultiModalDoc(BaseDoc):
+        audio: AudioDoc
+        text: TextDoc
 
 
     mmdoc = MultiModalDoc(
-        audio=Audio(
+        audio=AudioDoc(
             url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
         ),
-        text=Text(text='hello world, how are you doing?'),
+        text=TextDoc(text='hello world, how are you doing?'),
     )
     mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.url.load()
 
     # equivalent to
     mmdoc.audio.bytes_ = mmdoc.audio.url.load_bytes()
-    mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes.load()
+    mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes_.load()
     ```
     """
 

@@ -35,10 +35,12 @@ class ImageDoc(BaseDoc):
     from docarray.documents import ImageDoc
 
     # use it directly
-    image = ImageDoc(url='http://www.jina.ai/image.jpg')
+    image = ImageDoc(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
+    )
     image.tensor = image.url.load()
-    model = MyEmbeddingModel()
-    image.embedding = model(image.tensor)
+    # model = MyEmbeddingModel()
+    # image.embedding = model(image.tensor)
     ```
 
     You can extend this Document:
@@ -54,11 +56,13 @@ class ImageDoc(BaseDoc):
         second_embedding: Optional[AnyEmbedding]
 
 
-    image = MyImage(url='http://www.jina.ai/image.jpg')
+    image = MyImage(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
+    )
     image.tensor = image.url.load()
-    model = MyEmbeddingModel()
-    image.embedding = model(image.tensor)
-    image.second_embedding = model(image.tensor)
+    # model = MyEmbeddingModel()
+    # image.embedding = model(image.tensor)
+    # image.second_embedding = model(image.tensor)
     ```
 
     You can use this Document for composition:
@@ -70,19 +74,21 @@ class ImageDoc(BaseDoc):
 
     # compose it
     class MultiModalDoc(BaseDoc):
-        image: Image
-        text: Text
+        image: ImageDoc
+        text: TextDoc
 
 
     mmdoc = MultiModalDoc(
-        image=Image(url="http://www.jina.ai/image.jpg"),
-        text=Text(text="hello world, how are you doing?"),
+        image=ImageDoc(
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
+        ),
+        text=TextDoc(text='hello world, how are you doing?'),
     )
     mmdoc.image.tensor = mmdoc.image.url.load()
 
     # or
     mmdoc.image.bytes_ = mmdoc.image.url.load_bytes()
-    mmdoc.image.tensor = mmdoc.image.bytes.load()
+    mmdoc.image.tensor = mmdoc.image.bytes_.load()
     ```
     """
 

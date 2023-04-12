@@ -70,7 +70,6 @@ class DocList(
     (i.e. schema). This creates a DocList that can only contains Documents of
     the type `MyDocument`.
 
-    ---
 
     ```python
     from docarray import BaseDoc, DocList
@@ -86,38 +85,36 @@ class DocList(
     docs = DocList[Image](
         Image(url='http://url.com/foo.png') for _ in range(10)
     )  # noqa: E510
-    ```
-
-    ---
 
 
-    If your DocList is homogeneous (i.e. follows the same schema), you can access
-    fields at the DocList level (for example `docs.tensor` or `docs.url`).
-    You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
+    # If your DocList is homogeneous (i.e. follows the same schema), you can access
+    # fields at the DocList level (for example `docs.tensor` or `docs.url`).
 
-    ```python
     print(docs.url)
     # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
+
+
+    # You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
+
     import numpy as np
 
     docs.tensor = np.random.random([10, 100])
+
     print(docs.tensor)
     # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
     #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
-    ```
 
-    You can index into a DocList like a numpy doc_list or torch tensor:
 
-    ```python
+    # You can index into a DocList like a numpy doc_list or torch tensor:
+
     docs[0]  # index by position
     docs[0:5:2]  # index by slice
     docs[[0, 2, 3]]  # index by list of indices
     docs[True, False, True, True, ...]  # index by boolean mask
-    ```
 
-    You can delete items from a DocList like a Python List
 
-    ```python
+    # You can delete items from a DocList like a Python List
+
     del docs[0]  # remove first element from DocList
     del docs[0:5]  # remove elements for 0 to 5 from DocList
     ```

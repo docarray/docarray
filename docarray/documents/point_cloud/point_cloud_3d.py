@@ -43,8 +43,8 @@ class PointCloud3D(BaseDoc):
     # use it directly
     pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
     pc.tensors = pc.url.load(samples=100)
-    model = MyEmbeddingModel()
-    pc.embedding = model(pc.tensors.points)
+    # model = MyEmbeddingModel()
+    # pc.embedding = model(pc.tensors.points)
     ```
 
     You can extend this Document:
@@ -62,29 +62,29 @@ class PointCloud3D(BaseDoc):
 
     pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
     pc.tensors = pc.url.load(samples=100)
-    model = MyEmbeddingModel()
-    pc.embedding = model(pc.tensors.points)
-    pc.second_embedding = model(pc.tensors.colors)
+    # model = MyEmbeddingModel()
+    # pc.embedding = model(pc.tensors.points)
+    # pc.second_embedding = model(pc.tensors.colors)
     ```
 
     You can use this Document for composition:
 
     ```python
     from docarray import BaseDoc
-    from docarray.documents import PointCloud3D, Text
+    from docarray.documents import PointCloud3D, TextDoc
 
 
     # compose it
     class MultiModalDoc(BaseDoc):
         point_cloud: PointCloud3D
-        text: Text
+        text: TextDoc
 
 
     mmdoc = MultiModalDoc(
         point_cloud=PointCloud3D(
             url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
         ),
-        text=Text(text='hello world, how are you doing?'),
+        text=TextDoc(text='hello world, how are you doing?'),
     )
     mmdoc.point_cloud.tensors = mmdoc.point_cloud.url.load(samples=100)
 
@@ -99,12 +99,11 @@ class PointCloud3D(BaseDoc):
 
     # display from url
     pc = PointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
-    pc.url.display()
+    # pc.url.display()
 
     # display from tensors
     pc.tensors = pc.url.load(samples=10000)
-    model = MyEmbeddingModel()
-    pc.embedding = model(pc.tensors.points)
+    # pc.tensors.display()
     ```
     """
 
