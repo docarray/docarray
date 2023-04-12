@@ -154,7 +154,7 @@ class SimpleDoc(BaseDoc):
 
 dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(2)])
 
-df = dl.to_pandas()
-dl_from_dataframe = DocList[SimpleDoc].from_pandas(df)
+df = dl.to_dataframe()
+dl_from_dataframe = DocList[SimpleDoc].from_dataframe(df)
 print(dl_from_dataframe)
 ```

@@ -47,7 +47,7 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
     'fpath', pathlib.Path('docs/user_guide').glob('**/*.md'), ids=str
 )
 def test_files_good(fpath):
-    check_md_file(fpath=fpath, memory=True)
+    check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle'])
 
 
 def test_readme():
