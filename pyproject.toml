@@ -69,6 +69,7 @@ mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
 mkdocs-material= ">=9.1.2"
 mkdocs-awesome-pages-plugin = ">=2.8.0"
 mktestdocs= ">=0.2.0"
+mkdocs-video = ">=1.5.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

@@ -24,75 +24,74 @@ class AudioDoc(BaseDoc):
     """
     Document for handling audios.
 
-    The Audio Document can contain an AudioUrl (`AudioDoc.url`), an AudioTensor
-    (`AudioDoc.tensor`), and an AnyEmbedding (`AudioDoc.embedding`).
+    The Audio Document can contain:
 
-    EXAMPLE USAGE:
+    - an [`AudioUrl`][docarray.typing.url.AudioUrl] (`AudioDoc.url`)
+    - an [`AudioTensor`](../../../api_references/typing/tensor/audio) (`AudioDoc.tensor`)
+    - an [`AnyEmbedding`](../../../api_references/typing/tensor/embedding) (`AudioDoc.embedding`)
+    - an [`AudioBytes`][docarray.typing.bytes.AudioBytes] (`AudioDoc.bytes_`) object
+    - an integer representing the frame_rate (`AudioDoc.frame_rate`)
 
     You can use this Document directly:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import AudioDoc
 
-        from docarray.documents import AudioDoc
-
-        # use it directly
-        audio = Audio(
-            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
-        )
-        audio.tensor, audio.frame_rate = audio.url.load()
-        model = MyEmbeddingModel()
-        audio.embedding = model(audio.tensor)
+    # use it directly
+    audio = AudioDoc(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+    )
+    audio.tensor, audio.frame_rate = audio.url.load()
+    # model = MyEmbeddingModel()
+    # audio.embedding = model(audio.tensor)
+    ```
 
     You can extend this Document:
 
-    .. code-block:: python
-
-        from docarray.documents import AudioDoc, TextDoc
-        from typing import Optional
-
-
-        # extend it
-        class MyAudio(Audio):
-            name: Optional[Text]
+    ```python
+    from docarray.documents import AudioDoc, TextDoc
+    from typing import Optional
 
 
-        audio = MyAudio(
-            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
-        )
-        audio.tensor, audio.frame_rate = audio.url.load()
-        model = MyEmbeddingModel()
-        audio.embedding = model(audio.tensor)
-        audio.name = Text(text='my first audio')
+    # extend it
+    class MyAudio(AudioDoc):
+        name: Optional[TextDoc]
 
+
+    audio = MyAudio(
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+    )
+    audio.name = TextDoc(text='my first audio')
+    audio.tensor, audio.frame_rate = audio.url.load()
+    # model = MyEmbeddingModel()
+    # audio.embedding = model(audio.tensor)
+    ```
 
     You can use this Document for composition:
 
-    .. code-block:: python
-
-        from docarray import BaseDoc
-        from docarray.documents import AudioDoc, TextDoc
-
-
-        # compose it
-        class MultiModalDoc(Document):
-            audio: Audio
-            text: Text
+    ```python
+    from docarray import BaseDoc
+    from docarray.documents import AudioDoc, TextDoc
 
 
-        mmdoc = MultiModalDoc(
-            audio=Audio(
-                url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
-            ),
-            text=Text(text='hello world, how are you doing?'),
-        )
-        mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.url.load()
+    # compose it
+    class MultiModalDoc(BaseDoc):
+        audio: AudioDoc
+        text: TextDoc
 
-        # equivalent to
 
-        mmdoc.audio.bytes_ = mmdoc.audio.url.load_bytes()
+    mmdoc = MultiModalDoc(
+        audio=AudioDoc(
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+        ),
+        text=TextDoc(text='hello world, how are you doing?'),
+    )
+    mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.url.load()
 
-        mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes.load()
-
+    # equivalent to
+    mmdoc.audio.bytes_ = mmdoc.audio.url.load_bytes()
+    mmdoc.audio.tensor, mmdoc.audio.frame_rate = mmdoc.audio.bytes_.load()
+    ```
     """
 
     url: Optional[AudioUrl]
