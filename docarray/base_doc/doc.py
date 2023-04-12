@@ -280,7 +280,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         :return: the protobuf message
         """
-        super().to_protobuf()
+        return super().to_protobuf()
 
     def json(
         self,
@@ -315,13 +315,14 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         )
 
     @no_type_check
+    @classmethod
     def parse_raw(
         cls: Type[T],
-        b: StrBytes,
+        b: 'StrBytes',
         *,
         content_type: str = None,
         encoding: str = 'utf8',
-        proto: Protocol = None,
+        proto: 'Protocol' = None,
         allow_pickle: bool = False,
     ) -> T:
         """
