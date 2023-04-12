@@ -155,7 +155,7 @@ tensor_reversed.save(
 You can play your audio sound in a notebook from its url as well as its tensor, by calling `.display()` on either one.
 
 Play from `url`:
-```python
+``` { .python }
 doc.url.display()
 ```
 
@@ -166,7 +166,7 @@ doc.url.display()
 </table>
 
 Play from `tensor`:
-```python
+``` { .python }
 tensor_reversed.display()
 ```
 <table>
@@ -185,7 +185,7 @@ To get started and play around with your audio data, DocArray provides a predefi
 ```python
 from typing import Optional
 
-from docarray.typing import AnyEmbedding
+from docarray.typing import AnyEmbedding, AudioTensor
 
 
 class AudioDoc(BaseDoc):
@@ -212,7 +212,5 @@ audio = MyAudio(
 )
 audio.name = 'My first audio doc!'
 audio.tensor, audio.frame_rate = audio.url.load()
-model = MyEmbeddingModel()
-audio.embedding = model(audio.tensor)
 ```
 

@@ -75,4 +75,4 @@ class AudioUrl(AnyUrl):
             else:
                 display(Audio(filename=self))
         else:
-            warnings.warn('Display of image is only possible in a notebook.')
+            warnings.warn('Display of audio is only possible in a notebook.')
