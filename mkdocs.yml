@@ -80,6 +80,7 @@ nav:
     - Sending:
       - user_guide/sending/first_step.md
       - user_guide/sending/send_doclist.md
+      - user_guide/sending/send_docvec.md
 
     - user_guide/storing/first_step.md
 
