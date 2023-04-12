@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 _console: Console = Console()
 
 T = TypeVar('T', bound='BaseDoc')
+T_update = TypeVar('T_update', bound='UpdateMixin')
 
 
 class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
@@ -212,7 +213,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
         return super(BaseDoc, cls).from_protobuf(pb_msg)
 
-    def update(self, other: T):
+    def update(self, other: T_update):
         """
         Updates self with the content of other. Changes are applied to self.
         Updating one Document with another consists in the following:
