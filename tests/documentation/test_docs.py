@@ -43,14 +43,17 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
         check_raw_file_full(text, lang=lang, keyword_ignore=keyword_ignore)
 
 
-@pytest.mark.parametrize(
-    'fpath',
-    [
-        *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
-        *list(pathlib.Path('docs/data_types').glob('**/*.md')),
-    ],
-    ids=str,
-)
+files_to_check = [
+    *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
+    *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+]
+
+for file in files_to_check:
+    if 'fastAPI' in str(file):  # for now we don't test fastAPI stuff because of async
+        files_to_check.remove(file)
+
+
+@pytest.mark.parametrize('fpath', files_to_check, ids=str)
 def test_files_good(fpath):
     check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle'])
 
