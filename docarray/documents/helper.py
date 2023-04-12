@@ -160,9 +160,8 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 
 def create_from_named_tuple(
     named_tuple_cls: Type['NamedTuple'],
-    __base__: Type['T_doc'] = BaseDoc,
     **kwargs: Any,
-) -> Type['T_doc']:
+):
     """
     Create a subclass of BaseDoc based on the fields of a `NamedTuple`. This is a wrapper around pydantic's create_model_from_namedtuple.
     :param named_tuple_cls: NamedTuple class to use for the new Document class
@@ -191,10 +190,10 @@ def create_from_named_tuple(
         assert issubclass(Doc, Audio)
 
     """
-    if __base__:
-        if not issubclass(__base__, BaseDoc):
-            raise ValueError(f'{__base__} is not a BaseDoc or its subclass')
+    if '__base__' in kwargs:
+        if not issubclass(kwargs["__base__"], BaseDoc):
+            raise ValueError(f'{kwargs["__base__"]} is not a BaseDoc or its subclass')
     else:
-        __base__ = BaseDoc
-    doc = create_model_from_namedtuple(named_tuple_cls, __base__=__base__, **kwargs)
+        kwargs["__base__"] = BaseDoc
+    doc = create_model_from_namedtuple(named_tuple_cls, **kwargs)
     return doc
