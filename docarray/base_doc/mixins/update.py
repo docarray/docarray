@@ -38,30 +38,32 @@ class UpdateMixin:
         so they behave as regular types and the value of `self` is updated
         with the value of `other`
 
-            EXAMPLE USAGE
 
-            .. code-block:: python
+        ---
 
-                from docarray import BaseDoc
-                from docarray.documents import Text
-
-
-                class MyDocument(BaseDoc):
-                    content: str
-                    title: Optional[str] = None
-                    tags_: List
+        ```python
+        from docarray import BaseDoc
+        from docarray.documents import Text
 
 
-                doc1 = MyDocument(
-                    content='Core content of the document', title='Title', tags_=['python', 'AI']
-                )
-                doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+        class MyDocument(BaseDoc):
+            content: str
+            title: Optional[str] = None
+            tags_: List
 
-                doc1.update(doc2)
-                assert doc1.content == 'Core content updated'
-                assert doc1.title == 'Title'
-                assert doc1.tags_ == ['python', 'AI', 'docarray']
 
+        doc1 = MyDocument(
+            content='Core content of the document', title='Title', tags_=['python', 'AI']
+        )
+        doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+
+        doc1.update(doc2)
+        assert doc1.content == 'Core content updated'
+        assert doc1.title == 'Title'
+        assert doc1.tags_ == ['python', 'AI', 'docarray']
+        ```
+
+        ---
         :param other: The Document with which to update the contents of this
         """
         if type(self) != type(other):

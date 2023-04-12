@@ -13,6 +13,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from docarray.array.doc_vec.column_storage import ColumnStorageView
+    from docarray.proto import DocProto
 
 _console: Console = Console()
 
@@ -141,3 +142,120 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :return: A dictionary of the BaseDoc object
         """
         return self.dict()
+
+    ########################################################################################################################################################
+    ### this section is just for documentation purposes will be removed later once https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
+    ########################################################################################################################################################
+
+    def to_bytes(
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
+    ) -> bytes:
+        """Serialize itself into bytes.
+
+        For more Pythonic code, please use ``bytes(...)``.
+
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use
+        :return: the binary serialization in bytes
+        """
+        return super().to_bytes(protocol, compress)
+
+    @classmethod
+    def from_bytes(
+        cls: Type[T],
+        data: bytes,
+        protocol: str = 'protobuf',
+        compress: Optional[str] = None,
+    ) -> T:
+        """Build Document object from binary bytes
+
+        :param data: binary bytes
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        return super(BaseDoc, cls).from_bytes(data, protocol, compress)
+
+    def to_base64(
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
+    ) -> str:
+        """Serialize a Document object into as base64 string
+
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a base64 encoded string
+        """
+        return super().to_base64(protocol, compress)
+
+    @classmethod
+    def from_base64(
+        cls: Type[T],
+        data: str,
+        protocol: str = 'pickle',
+        compress: Optional[str] = None,
+    ) -> T:
+        """Build Document object from binary bytes
+
+        :param data: a base64 encoded string
+        :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        return super(BaseDoc, cls).from_base64(data, protocol, compress)
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'DocProto') -> T:
+        """create a Document from a protobuf message
+
+        :param pb_msg: the proto message of the Document
+        :return: a Document initialize with the proto data
+        """
+        return super(BaseDoc, cls).from_protobuf(pb_msg)
+
+    def update(self, other: T):
+        """
+        Updates self with the content of other. Changes are applied to self.
+        Updating one Document with another consists in the following:
+         - setting data properties of the second Document to the first Document
+         if they are not None
+         - Concatenating lists and updating sets
+         - Updating recursively Documents and DocArrays
+         - Updating Dictionaries of the left with the right
+
+        It behaves as an update operation for Dictionaries, except that since
+        it is applied to a static schema type, the presence of the field is
+        given by the field not having a None value and that DocArrays,
+        lists and sets are concatenated. It is worth mentioning that Tuples
+        are not merged together since they are meant to be inmutable,
+        so they behave as regular types and the value of `self` is updated
+        with the value of `other`
+
+
+        ---
+
+        ```python
+        from docarray import BaseDoc
+        from docarray.documents import Text
+
+
+        class MyDocument(BaseDoc):
+            content: str
+            title: Optional[str] = None
+            tags_: List
+
+
+        doc1 = MyDocument(
+            content='Core content of the document', title='Title', tags_=['python', 'AI']
+        )
+        doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+
+        doc1.update(doc2)
+        assert doc1.content == 'Core content updated'
+        assert doc1.title == 'Title'
+        assert doc1.tags_ == ['python', 'AI', 'docarray']
+        ```
+
+        ---
+        :param other: The Document with which to update the contents of this
+        """
+        super().update(other)
