@@ -144,7 +144,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         import pickle
 
         if protocol == 'pickle':
-            breakpoint()
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
             bstr = self.to_protobuf().SerializePartialToString()
