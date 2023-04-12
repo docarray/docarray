@@ -224,10 +224,10 @@ def test_filter():
         assert doc.A
 
     filter_query = {
-        "bool": {
-            "filter": [
-                {"terms": {"B": [3, 4, 7, 8]}},
-                {"range": {"C": {"gte": 3, "lte": 5}}},
+        'bool': {
+            'filter': [
+                {'terms': {'B': [3, 4, 7, 8]}},
+                {'range': {'C': {'gte': 3, 'lte': 5}}},
             ]
         }
     }
