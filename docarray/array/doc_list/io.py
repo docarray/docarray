@@ -373,13 +373,13 @@ class IOMixinArray(Iterable[T_doc]):
 
             with urllib.request.urlopen(file_path) as f:
                 file = StringIO(f.read().decode(encoding))
-                return cls._from_csv_dict_reader(file, dialect)
+                return cls._from_csv_file(file, dialect)
         else:
             with open(file_path, 'r', encoding=encoding) as fp:
-                return cls._from_csv_dict_reader(fp, dialect)
+                return cls._from_csv_file(fp, dialect)
 
     @classmethod
-    def _from_csv_dict_reader(
+    def _from_csv_file(
         cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
     ) -> 'DocList':
         from docarray import DocList
