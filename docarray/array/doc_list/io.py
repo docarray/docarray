@@ -6,7 +6,7 @@ import pathlib
 import pickle
 from abc import abstractmethod
 from contextlib import nullcontext
-from io import StringIO
+from io import StringIO, TextIOWrapper
 from itertools import compress
 from typing import (
     TYPE_CHECKING,
@@ -373,17 +373,18 @@ class IOMixinArray(Iterable[T_doc]):
 
             with urllib.request.urlopen(file_path) as f:
                 file = StringIO(f.read().decode(encoding))
+                return cls._from_csv_dict_reader(file, dialect)
         else:
-            file = open(file_path, 'r', encoding=encoding)
-
-        rows = csv.DictReader(file, dialect=dialect)
-        docs = cls._from_csv_dict_reader(rows)
-
-        return docs
+            with open(file_path, 'r', encoding=encoding) as fp:
+                return cls._from_csv_dict_reader(fp, dialect)
 
     @classmethod
-    def _from_csv_dict_reader(cls, rows: csv.DictReader) -> 'DocList':
+    def _from_csv_dict_reader(
+        cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
+    ) -> 'DocList':
         from docarray import DocList
+
+        rows = csv.DictReader(file, dialect=dialect)
 
         doc_type = cls.doc_type
         docs = DocList.__class_getitem__(doc_type)()
