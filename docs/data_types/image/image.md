@@ -31,7 +31,7 @@ class MyImage(BaseDoc):
 
 
 img = MyImage(
-    url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true'
+    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
 )
 ```
 
@@ -66,7 +66,7 @@ class MyImage(BaseDoc):
     torch_tensor: ImageTorchTensor = None
 
 
-img = MyImage(url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true')
+img = MyImage(url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true')
 img.tf_tensor = img.url.load()
 img.torch_tensor = img.url.load()
 
@@ -80,7 +80,7 @@ You can also load the url content as a [`PIL.Image.Image`](https://pillow.readth
 from PIL.Image import Image as PILImage
 
 img = MyImage(
-    url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true'
+    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
 )
 pil_img = img.url.load_pil()
 
@@ -141,7 +141,7 @@ class MyImage(BaseDoc):
     tensor: ImageTensor = None
 
 
-img = MyImage(url='https://github.com/docarray/docarray/blob/docs-multi-modalities/tests/toydata/image-data/apple.png?raw=true')
+img = MyImage(url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true')
 
 img.bytes_ = img.url.load_bytes()  # type(img.bytes_) = ImageBytes
 img.tensor = img.bytes_.load()  # type(img.tensor) = ImageNdarray
