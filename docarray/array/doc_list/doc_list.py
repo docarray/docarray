@@ -74,9 +74,8 @@ class DocList(
     homogeneous and follow the same schema. To precise this schema you can use
     the `DocList[MyDocument]` syntax where MyDocument is a Document class
     (i.e. schema). This creates a DocList that can only contains Documents of
-    the type 'MyDocument'.
+    the type `MyDocument`.
 
-    ---
 
     ```python
     from docarray import BaseDoc, DocList
@@ -92,50 +91,40 @@ class DocList(
     docs = DocList[Image](
         Image(url='http://url.com/foo.png') for _ in range(10)
     )  # noqa: E510
-    ```
-
-    ---
 
 
-    If your DocList is homogeneous (i.e. follows the same schema), you can access
-    fields at the DocList level (for example `docs.tensor` or `docs.url`).
-    You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
+    # If your DocList is homogeneous (i.e. follows the same schema), you can access
+    # fields at the DocList level (for example `docs.tensor` or `docs.url`).
 
-    ---
-
-    ```python
     print(docs.url)
     # [ImageUrl('http://url.com/foo.png', host_type='domain'), ...]
+
+
+    # You can also set fields, with `docs.tensor = np.random.random([10, 100])`:
+
+
     import numpy as np
 
     docs.tensor = np.random.random([10, 100])
+
     print(docs.tensor)
     # [NdArray([0.11299577, 0.47206767, 0.481723  , 0.34754724, 0.15016037,
     #          0.88861321, 0.88317666, 0.93845579, 0.60486676, ... ]), ...]
-    ```
 
-    ---
-    You can index into a DocList like a numpy doc_list or torch tensor:
 
-    ---
+    # You can index into a DocList like a numpy doc_list or torch tensor:
 
-    ```python
     docs[0]  # index by position
     docs[0:5:2]  # index by slice
     docs[[0, 2, 3]]  # index by list of indices
     docs[True, False, True, True, ...]  # index by boolean mask
-    ```
 
-    ---
-    You can delete items from a DocList like a Python List
-    ---
 
-    ```python
+    # You can delete items from a DocList like a Python List
+
     del docs[0]  # remove first element from DocList
     del docs[0:5]  # remove elements for 0 to 5 from DocList
     ```
-
-    ---
 
     :param docs: iterable of Document
 
@@ -155,10 +144,10 @@ class DocList(
         docs: Sequence[T_doc],
     ) -> T:
         """
-        Create a DocList without validation any data. The data must come from a
+        Create a `DocList` without validation any data. The data must come from a
         trusted source
         :param docs: a Sequence (list) of Document with the same schema
-        :return:
+        :return: a `DocList` object
         """
         new_docs = cls.__new__(cls)
         new_docs._data = docs if isinstance(docs, list) else list(docs)
@@ -174,13 +163,13 @@ class DocList(
 
     def _validate_docs(self, docs: Iterable[T_doc]) -> Iterable[T_doc]:
         """
-        Validate if an Iterable of Document are compatible with this DocList
+        Validate if an Iterable of Document are compatible with this `DocList`
         """
         for doc in docs:
             yield self._validate_one_doc(doc)
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
-        """Validate if a Document is compatible with this DocList"""
+        """Validate if a Document is compatible with this `DocList`"""
         if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
@@ -198,16 +187,16 @@ class DocList(
 
     def append(self, doc: T_doc):
         """
-        Append a Document to the DocList. The Document must be from the same class
-        as the doc_type of this DocList otherwise it will fail.
+        Append a Document to the `DocList`. The Document must be from the same class
+        as the `.doc_type` of this `DocList` otherwise it will fail.
         :param doc: A Document
         """
         self._data.append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
-        Extend a DocList with an Iterable of Document. The Documents must be from
-        the same class as the doc_type of this DocList otherwise it will
+        Extend a `DocList` with an Iterable of Document. The Documents must be from
+        the same class as the `.doc_type` of this `DocList` otherwise it will
         fail.
         :param docs: Iterable of Documents
         """
@@ -215,8 +204,8 @@ class DocList(
 
     def insert(self, i: int, doc: T_doc):
         """
-        Insert a Document to the DocList. The Document must be from the same
-        class as the doc_type of this DocList otherwise it will fail.
+        Insert a Document to the `DocList`. The Document must be from the same
+        class as the doc_type of this `DocList` otherwise it will fail.
         :param i: index to insert
         :param doc: A Document
         """
@@ -258,10 +247,10 @@ class DocList(
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this DocList using the passed values
+        """Set all Documents in this `DocList` using the passed values
 
         :param field: name of the fields to set
-        :values: the values to set at the DocList level
+        :values: the values to set at the `DocList` level
         """
         ...
 
@@ -273,11 +262,11 @@ class DocList(
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'DocVec':
         """
-        Convert the DocList into a DocVec. `Self` cannot be used
+        Convert the `DocList` into a `DocVec`. `Self` cannot be used
         afterwards
         :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
         if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
-        :return: A DocVec of the same document type as self
+        :return: A `DocVec` of the same document type as self
         """
         from docarray.array.doc_vec.doc_vec import DocVec
 
@@ -311,7 +300,7 @@ class DocList(
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
         """create a Document from a protobuf message
-        :param pb_msg: The protobuf message from where to construct the DocList
+        :param pb_msg: The protobuf message from where to construct the `DocList`
         """
         return super().from_protobuf(pb_msg)
 

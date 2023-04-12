@@ -1,3 +1,3 @@
 # AnyDocArray
 
-::: docarray.array.doc_vec.doc_vec.DocVec
+::: docarray.array.any_array.AnyDocArray

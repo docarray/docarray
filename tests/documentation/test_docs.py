@@ -44,7 +44,12 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
 
 
 @pytest.mark.parametrize(
-    'fpath', pathlib.Path('docs/user_guide').glob('**/*.md'), ids=str
+    'fpath',
+    [
+        *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
+        *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+    ],
+    ids=str,
 )
 def test_files_good(fpath):
     check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle'])
