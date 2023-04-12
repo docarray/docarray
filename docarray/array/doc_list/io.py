@@ -372,13 +372,12 @@ class IOMixinArray(Iterable[T_doc]):
             import urllib.request
 
             with urllib.request.urlopen(file_path) as f:
-                file_as_string = StringIO(f.read().decode(encoding))
-                rows = csv.DictReader(file_as_string, dialect=dialect)
-                docs = cls._from_csv_dict_reader(rows)
+                file = StringIO(f.read().decode(encoding))
         else:
-            with open(file_path, 'r', encoding=encoding) as fp:
-                rows = csv.DictReader(fp, dialect=dialect)
-                docs = cls._from_csv_dict_reader(rows)
+            file = open(file_path, 'r', encoding=encoding)
+
+        rows = csv.DictReader(file, dialect=dialect)
+        docs = cls._from_csv_dict_reader(rows)
 
         return docs
 
