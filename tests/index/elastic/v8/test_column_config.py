@@ -3,7 +3,7 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
-from tests.integrations.doc_index.elastic.fixture import start_storage_v8  # noqa: F401
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 

@@ -7,7 +7,7 @@ from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray
-from tests.integrations.doc_index.elastic.fixture import (  # noqa: F401
+from tests.index.elastic.fixture import (  # noqa: F401
     DeepNestedDoc,
     FlatDoc,
     NestedDoc,
