@@ -116,7 +116,7 @@ del doc_index[index_docs[16].id, index_docs[17].id]
 ```
 
 ## Find Nearest Neighbors
-Use `.find()` to find the nearest neighbors. You can use `limit` argument to configurate how much `Doc` to return.
+Use `.find()` to find the nearest neighbors of a tensor. You can use `limit` argument to configurate how much `Doc` to return, and `search_field` argument to configurate the name of the field to search on.
 
 ```python
 query = SimpleDoc(tensor=np.ones(128))
@@ -133,19 +133,19 @@ When using the index, you can define multiple fields as well as the nested struc
 ```python
 from docarray import BaseDoc
 from docarray.typing import ImageUrl, VideoUrl, AnyTensor
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 import numpy as np
 from pydantic import Field
 
 
 class ImageDoc(BaseDoc):
     url: ImageUrl
-    tensor: AnyTensor = Field(space='cosine', dim=64)
+    tensor: AnyTensor = Field(similarity='cosine', dims=64)
 
 
 class VideoDoc(BaseDoc):
     url: VideoUrl
-    tensor: AnyTensor = Field(space='cosine', dim=128)
+    tensor: AnyTensor = Field(similarity='cosine', dims=128)
 
 
 class YouTubeVideoDoc(BaseDoc):
@@ -153,10 +153,10 @@ class YouTubeVideoDoc(BaseDoc):
     description: str
     thumbnail: ImageDoc
     video: VideoDoc
-    tensor: AnyTensor = Field(space='cosine', dim=256)
+    tensor: AnyTensor = Field(similarity='cosine', dims=256)
 
 
-doc_index = ElasticV7DocIndex[YouTubeVideoDoc]()
+doc_index = ElasticDocIndex[YouTubeVideoDoc]()
 index_docs = [
     YouTubeVideoDoc(
         title=f'video {i+1}',
@@ -199,24 +199,26 @@ You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower l
 del doc_index[index_docs[16].id, index_docs[32].id]
 ```
 
+TODO field_name of nested level
+
 ## Elasticsearch Query
 Besides the vector search, you can also perform other queries supported by Elasticsearch.
 
 ### Text Search
-As in elasticsearch, you could use text search directly on the field of the type `str`. 
+As in elasticsearch, you could use text search directly on the field of type `str`. 
 
 ```python
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 
 
 class NewsDoc(BaseDoc):
     text: str
 
 
-doc_index = ElasticV7DocIndex[NewsDoc]()
+doc_index = ElasticDocIndex[NewsDoc]()
 index_docs = [
     NewsDoc(id='0', text='this is a news for sport'),
     NewsDoc(id='1', text='this is a news for finance'),
@@ -229,7 +231,7 @@ docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
 ### Query Filter
-To filter the docs, you can use `col_type` to configurate the fields.
+To filter the docs, you can use `col_type` to configurate the fields. `filter()` accepts queries that follow [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
 
 #### Keyword filter
 To filter the docs, you can use `col_type='keyword'` to configurate the keyword search for the fields.
@@ -238,7 +240,7 @@ To filter the docs, you can use `col_type='keyword'` to configurate the keyword 
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 
 
 class NewsDoc(BaseDoc):
@@ -246,7 +248,7 @@ class NewsDoc(BaseDoc):
     category: str = Field(col_type='keyword')
 
 
-doc_index = ElasticV7DocIndex[NewsDoc]()
+doc_index = ElasticDocIndex[NewsDoc]()
 index_docs = [
     NewsDoc(id='0', text='this is a news for sport', category='sport'),
     NewsDoc(id='1', text='this is a news for finance', category='finance'),
@@ -260,13 +262,13 @@ docs = doc_index.filter(query_filter)
 ```
 
 #### Geolocation filter
-To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields. You need to construct the query and use `execute_query()` to perform the query.
+To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields.
 
 ```python
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 
 
 class NewsDoc(BaseDoc):
@@ -274,7 +276,7 @@ class NewsDoc(BaseDoc):
     location: dict = Field(col_type='geo_point')
 
 
-doc_index = ElasticV7DocIndex[NewsDoc]()
+doc_index = ElasticDocIndex[NewsDoc]()
 index_docs = [
     NewsDoc(text='this is from Berlin', location={'lon': 13.24, 'lat': 50.31}),
     NewsDoc(text='this is from Beijing', location={'lon': 116.22, 'lat': 39.55}),
@@ -284,26 +286,35 @@ doc_index.index(index_docs)
 
 # filter the eastern hemisphere
 query = {
-    'query': {
-        'geo_bounding_box': {
-            'location': {
-                'top_left': {'lon': 0, 'lat': 90},
-                'bottom_right': {'lon': 180, 'lat': 0},
+    'bool': {
+        'filter': {
+            'geo_bounding_box': {
+                'location': {
+                    'top_left': {'lon': 0, 'lat': 90},
+                    'bottom_right': {'lon': 180, 'lat': 0},
+                }
             }
         }
     }
 }
 
-docs, _ = doc_index.execute_query(query)
+docs = doc_index.filter(query)
 ```
 
 #### Range filter
-You can use `col_type='date_range'` is used to filter the docs based on the range of the date. TODO: find a use case.
+You can use `col_type='date_range'` is used to filter the docs based on the range of the date. 
+TODO: find a use case.
 
+
+### QueryBuilder
+
+
+## Batched Operation
 
 
 ## Config
 
+### DBConfig
 The following configs can be set in `DBConfig`:
 
 | Name              | Description                                                                                                                            | Default                 |
@@ -313,3 +324,5 @@ The following configs can be set in `DBConfig`:
 | `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
+
+### RuntimeConfig
