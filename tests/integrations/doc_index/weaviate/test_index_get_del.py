@@ -16,6 +16,7 @@ from docarray.index.backends.weaviate import (
 )
 from docarray.typing import NdArray
 from tests.integrations.doc_index.weaviate.fixture import (  # noqa: F401
+    HOST,
     start_storage,
     weaviate_client,
 )
@@ -85,7 +86,7 @@ def test_index_simple_schema(weaviate_client, ten_simple_docs):
 
 
 def test_validate_columns(weaviate_client):
-    dbconfig = WeaviateDocumentIndex.DBConfig(host="http://weaviate:8080")
+    dbconfig = WeaviateDocumentIndex.DBConfig(host=HOST)
 
     class InvalidDoc1(BaseDoc):
         tens: NdArray[10] = Field(dim=1000, is_embedding=True)
