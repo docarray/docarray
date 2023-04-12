@@ -207,6 +207,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 'long_range': {},
                 'double_range': {},
                 'date_range': {},
+                'ip_range': {},
                 'ip': {},
                 'version': {},
                 'histogram': {},
