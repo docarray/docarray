@@ -1,13 +1,11 @@
-# Use Docarray with FastAPI
-
-You might already know that `DocArray` documents are Pydantic Models (with a twist) [Reference relevant part], and as such they are fully compatible with `FastAPI`:
+# Use DocArray with FastAPI
 
 FastAPI is a high-performance web framework for building APIs with Python. It's designed to be easy to use and supports asynchronous programming. 
-Since `DocArray` documents are Pydantic Models (with a twist)[Reference relevant part] they can be easily integrated with FastAPI, 
+Since [`DocArray` documents are Pydantic Models (with a twist)](../user_guide/representing/first_step.md) they can be easily integrated with FastAPI, 
 and provide a seamless and efficient way to work with multimodal data in FastAPI-powered APIs.
 
 
-First, you should define document schemas:
+First, you should define schemas for your input and/or output Documents:
 ```python
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
@@ -23,7 +21,7 @@ class OutputDoc(BaseDoc):
     embedding_bert: NdArray
 ```
 
-Afterwards, you can use your documents with FastAPI:
+Afterwards, you can use your Documents with FastAPI:
 ```python
 import numpy as np
 from fastapi import FastAPI
@@ -88,7 +86,7 @@ Image(
 ```
 
 
-Further, you can send and receive lists of documents represented as a `DocArray` object:
+Further, you can send and receive lists of Documents represented as a `DocArray` object:
 
 !!! note
     Currently, `FastAPI` receives `DocArray` objects as lists, so you have to construct a DocArray inside the function.
