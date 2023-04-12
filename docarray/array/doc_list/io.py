@@ -120,7 +120,7 @@ class IOMixinArray(Iterable[T_doc]):
         return cls(cls.doc_type.from_protobuf(doc_proto) for doc_proto in pb_msg.docs)
 
     def to_protobuf(self) -> 'DocListProto':
-        """Convert DocList into a Protobuf message"""
+        """Convert `DocList` into a Protobuf message"""
         from docarray.proto import DocListProto
 
         da_proto = DocListProto()
@@ -137,13 +137,13 @@ class IOMixinArray(Iterable[T_doc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
-        """Deserialize bytes into a DocList.
+        """Deserialize bytes into a `DocList`.
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the deserialized DocList
+        :return: the deserialized `DocList`
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(data),
@@ -242,7 +242,7 @@ class IOMixinArray(Iterable[T_doc]):
         file_ctx: Optional[BinaryIO] = None,
         show_progress: bool = False,
     ) -> Optional[bytes]:
-        """Serialize itself into bytes.
+        """Serialize itself into `bytes`.
 
         For more Pythonic code, please use ``bytes(...)``.
 
@@ -273,13 +273,13 @@ class IOMixinArray(Iterable[T_doc]):
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
-        """Deserialize base64 strings into a DocList.
+        """Deserialize base64 strings into a `DocList`.
 
         :param data: Base64 string to deserialize
         :param protocol: protocol that was used to serialize
         :param compress: compress algorithm that was used to serialize
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :return: the deserialized DocList
+        :return: the deserialized `DocList`
         """
         return cls._load_binary_all(
             file_ctx=nullcontext(base64.b64decode(data)),
@@ -315,17 +315,17 @@ class IOMixinArray(Iterable[T_doc]):
         cls: Type[T],
         file: Union[str, bytes, bytearray],
     ) -> T:
-        """Deserialize JSON strings or bytes into a DocList.
+        """Deserialize JSON strings or bytes into a `DocList`.
 
-        :param file: JSON object from where to deserialize a DocList
-        :return: the deserialized DocList
+        :param file: JSON object from where to deserialize a `DocList`
+        :return: the deserialized `DocList`
         """
         json_docs = orjson.loads(file)
         return cls([cls.doc_type(**v) for v in json_docs])
 
     def to_json(self) -> bytes:
-        """Convert the object into JSON bytes. Can be loaded via :meth:`.from_json`.
-        :return: JSON serialization of DocList
+        """Convert the object into JSON bytes. Can be loaded via `.from_json`.
+        :return: JSON serialization of `DocList`
         """
         return orjson_dumps(self._data)
 
@@ -345,22 +345,25 @@ class IOMixinArray(Iterable[T_doc]):
     ) -> 'DocList':
         """
         Load a DocList from a csv file following the schema defined in the
-        :attr:`~docarray.DocList.doc_type` attribute.
+        [`.doc_type`][docarray.DocList] attribute.
         Every row of the csv file will be mapped to one document in the doc_list.
         The column names (defined in the first row) have to match the field names
         of the Document type.
-        For nested fields use "__"-separated access paths, such as 'image__url'.
+        For nested fields use "__"-separated access paths, such as `'image__url'`.
 
         List-like fields (including field of type DocList) are not supported.
 
         :param file_path: path to csv file to load DocList from.
         :param encoding: encoding used to read the csv file. Defaults to 'utf-8'.
         :param dialect: defines separator and how to handle whitespaces etc.
-            Can be a csv.Dialect instance or one string of:
-            'excel' (for comma seperated values),
-            'excel-tab' (for tab separated values),
-            'unix' (for csv file generated on UNIX systems).
-        :return: DocList
+            Can be a [`csv.Dialect`](https://docs.python.org/3/library/csv.html#csv.Dialect)
+            instance or one string of:
+
+                - 'excel' (for comma separated values),
+                - 'excel-tab' (for tab separated values),
+                - 'unix' (for csv file generated on UNIX systems).
+
+        :return: `DocList` object
         """
         if cls.doc_type == AnyDoc:
             raise TypeError(
@@ -415,18 +418,20 @@ class IOMixinArray(Iterable[T_doc]):
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
     ) -> None:
         """
-        Save a DocList to a csv file.
+        Save a `DocList` to a csv file.
         The field names will be stored in the first row. Each row corresponds to the
         information of one Document.
         Columns for nested fields will be named after the "__"-seperated access paths,
-        such as `"image__url"` for `image.url`.
+        such as `'image__url'` for `image.url`.
 
         :param file_path: path to a csv file.
         :param dialect: defines separator and how to handle whitespaces etc.
-            Can be a csv.Dialect instance or one string of:
-            'excel' (for comma seperated values),
-            'excel-tab' (for tab separated values),
-            'unix' (for csv file generated on UNIX systems).
+            Can be a [`csv.Dialect`](https://docs.python.org/3/library/csv.html#csv.Dialect)
+            instance or one string of:
+
+                - 'excel' (for comma seperated values),
+                - 'excel-tab' (for tab separated values),
+                - 'unix' (for csv file generated on UNIX systems).
         """
         fields = self.doc_type._get_access_paths()
 
@@ -441,42 +446,43 @@ class IOMixinArray(Iterable[T_doc]):
     @classmethod
     def from_dataframe(cls, df: 'pd.DataFrame') -> 'DocList':
         """
-        Load a DocList from a `pandas.DataFrame` following the schema
-        defined in the :attr:`~docarray.DocList.doc_type` attribute.
+        Load a `DocList` from a `pandas.DataFrame` following the schema
+        defined in the [`.doc_type`][docarray.DocList] attribute.
         Every row of the dataframe will be mapped to one Document in the doc_list.
         The column names of the dataframe have to match the field names of the
         Document type.
         For nested fields use "__"-separated access paths as column names,
-        such as 'image__url'.
+        such as `'image__url'`.
 
         List-like fields (including field of type DocList) are not supported.
 
-        EXAMPLE USAGE:
+        ---
 
-        .. code-block:: python
+        ```python
+        import pandas as pd
 
-            import pandas as pd
-
-            from docarray import BaseDoc, DocList
-
-
-            class Person(BaseDoc):
-                name: str
-                follower: int
+        from docarray import BaseDoc, DocList
 
 
-            df = pd.DataFrame(
-                data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
-            )
-
-            docs = DocList[Person].from_dataframe(df)
-
-            assert docs.name == ['Maria', 'Jake']
-            assert docs.follower == [12345, 54321]
+        class Person(BaseDoc):
+            name: str
+            follower: int
 
 
-        :param df: pandas.DataFrame to extract Document's information from
-        :return: DocList where each Document contains the information of one
+        df = pd.DataFrame(
+            data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
+        )
+
+        docs = DocList[Person].from_dataframe(df)
+
+        assert docs.name == ['Maria', 'Jake']
+        assert docs.follower == [12345, 54321]
+        ```
+
+        ---
+
+        :param df: `pandas.DataFrame` to extract Document's information from
+        :return: `DocList` where each Document contains the information of one
             corresponding row of the `pandas.DataFrame`.
         """
         from docarray import DocList
@@ -518,9 +524,9 @@ class IOMixinArray(Iterable[T_doc]):
         The field names will be stored as column names. Each row of the dataframe corresponds
         to the information of one Document.
         Columns for nested fields will be named after the "__"-seperated access paths,
-        such as `"image__url"` for `image.url`.
+        such as `'image__url'` for `image.url`.
 
-        :return: pandas.DataFrame
+        :return: `pandas.DataFrame`
         """
         if TYPE_CHECKING:
             import pandas as pd
@@ -702,9 +708,9 @@ class IOMixinArray(Iterable[T_doc]):
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
-        :return: a DocList object
+        :return: a `DocList` object
 
-        .. note::
+        !!! note
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
             This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
             string interpolation of the respective `protocol` and `compress` methods.
@@ -762,7 +768,7 @@ class IOMixinArray(Iterable[T_doc]):
         :param compress: compress algorithm to use
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
 
-         .. note::
+         !!! note
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
             This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
             string interpolation of the respective `protocol` and `compress` methods.

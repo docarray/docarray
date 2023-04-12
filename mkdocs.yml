@@ -12,6 +12,7 @@ theme:
   features:
 #    - navigation.sections
     - navigation.indexes
+    - content.code.copy
   palette:
     # Palette toggle for light mode
     - scheme: default
@@ -59,10 +60,13 @@ extra:
   - icon: fontawesome/brands/twitter
     link: https://twitter.com/docarray
 
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
   - search
   - awesome-pages
+  - mkdocs-video
   - mkdocstrings:
       handlers:
         python:
@@ -87,6 +91,14 @@ nav:
     - how_to/audio2text.md
   - Integrations:
     - integrations/fastapi.md
+  - Data Types:
+    - data_types/text/text.md
+    - data_types/image/image.md
+    - data_types/audio/audio.md
+    - data_types/video/video.md
+    - data_types/3d_mesh/3d_mesh.md
+    - data_types/table/table.md
+    - data_types/multimodal/multimodal.md
   - ...
   - Glossary: glossary.md
   - Contributing: CONTRIBUTING.md

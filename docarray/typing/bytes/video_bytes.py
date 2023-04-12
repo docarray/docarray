@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, NamedTuple, Type, TypeVar
+from typing import TYPE_CHECKING, Any, List, NamedTuple, Type, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -91,19 +91,19 @@ class VideoBytes(bytes, AbstractType):
             av = import_library('av')
 
         with av.open(BytesIO(self), **kwargs) as container:
-            audio_frames = []
-            video_frames = []
-            keyframe_indices = []
+            audio_frames: List[np.ndarray] = []
+            video_frames: List[np.ndarray] = []
+            keyframe_indices: List[int] = []
 
             for frame in container.decode():
                 if type(frame) == av.audio.frame.AudioFrame:
                     audio_frames.append(frame.to_ndarray())
                 elif type(frame) == av.video.frame.VideoFrame:
-                    video_frames.append(frame.to_ndarray(format='rgb24'))
-
                     if frame.key_frame == 1:
                         curr_index = len(video_frames)
                         keyframe_indices.append(curr_index)
+
+                    video_frames.append(frame.to_ndarray(format='rgb24'))
 
         if len(audio_frames) == 0:
             audio = parse_obj_as(AudioNdArray, np.array(audio_frames))
