@@ -1,10 +1,15 @@
-# Representing
+# Document
 
 At the heart of `DocArray` lies the concept of [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
 A [BaseDoc][docarray.base_doc.doc.BaseDoc] is very similar to a [Pydantic](https://docs.pydantic.dev/)
 [`BaseModel`](https://docs.Pydantic.dev/usage/models) - in fact it _is_ a specialized Pydantic `BaseModel`. It allows you to define custom `Document` schemas (or `Model` in
 the Pydantic world) to represent your data.
+
+
+!!! note
+    Naming convention: When we refer to a `BaseDoc` we refer to a class that inherits from [BaseDoc][docarray.base_doc.doc.BaseDoc]. 
+    When we refer to a `Document` we refer to an instance of a `BaseDoc` class.
 
 ## Basic `Doc` usage.
 
@@ -128,8 +133,8 @@ This representation can now be used to send (LINK) or to store (LINK) data. You 
 
 See also:
 
-* [BaseDoc][docarray.base_doc.doc.BaseDoc] API Reference
-* DOCUMENT_ARARY REF
-* DOCUMENT INDEX REF
-* DOCUMENT STORE REF
-* ...
+* The [next section](./array.md) of the representing section
+* API Reference for the [BaseDoc][docarray.base_doc.doc.BaseDoc] class
+* The [Storing](../storing/first_step.md) section on how to store your data 
+* The [Sending](../sending/first_step.md) section on how to send your data
+

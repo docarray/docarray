@@ -2,7 +2,7 @@ from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
 
 from torch.utils.data import Dataset
 
-from docarray import BaseDoc, DocArray, DocArrayStacked
+from docarray import BaseDoc, DocList, DocVec
 from docarray.typing import TorchTensor
 from docarray.utils._internal._typing import change_cls_name
 
@@ -14,7 +14,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     A dataset that can be used inside a PyTorch DataLoader.
     In other words, it implements the PyTorch Dataset interface.
 
-    :param da: the DocArray to be used as the dataset
+    :param docs: the DocList to be used as the dataset
     :param preprocessing: a dictionary of field names and preprocessing functions
 
     The preprocessing dictionary passed to the constructor consists of keys that are
@@ -24,7 +24,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     EXAMPLE USAGE
     .. code-block:: python
     from torch.utils.data import DataLoader
-    from docarray import DocArray
+    from docarray import DocList
     from docarray.data import MultiModalDataset
     from docarray.documents import Text
 
@@ -33,8 +33,8 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         return f"Number {text}"
 
 
-    da = DocArray[Text](Text(text=str(i)) for i in range(16))
-    ds = MultiModalDataset[Text](da, preprocessing={'text': prepend_number})
+    docs = DocList[Text](Text(text=str(i)) for i in range(16))
+    ds = MultiModalDataset[Text](docs, preprocessing={'text': prepend_number})
     loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[Text].collate_fn)
     for batch in loader:
         print(batch.text)
@@ -51,7 +51,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     .. code-block:: python
     import torch
     from torch.utils.data import DataLoader
-    from docarray import DocArray, BaseDoc
+    from docarray import DocList, BaseDoc
     from docarray.data import MultiModalDataset
     from docarray.documents import Text
 
@@ -78,9 +78,9 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         )
 
 
-    da = DocArray[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
+    docs = DocList[Student](Student(thesis=Thesis(title=str(i))) for i in range(16))
     ds = MultiModalDataset[Student](
-        da,
+        docs,
         preprocessing={
             "thesis.title": embed_title,
             "thesis": normalize_embedding,
@@ -92,20 +92,20 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
         print(batch.thesis.title.embedding)
     """
 
-    document_type: Optional[Type[BaseDoc]] = None
+    doc_type: Optional[Type[BaseDoc]] = None
     __typed_ds__: Dict[Type[BaseDoc], Type['MultiModalDataset']] = {}
 
     def __init__(
-        self, da: 'DocArray[T_doc]', preprocessing: Dict[str, Callable]
+        self, docs: 'DocList[T_doc]', preprocessing: Dict[str, Callable]
     ) -> None:
-        self.da = da
+        self.docs = docs
         self._preprocessing = preprocessing
 
     def __len__(self):
-        return len(self.da)
+        return len(self.docs)
 
     def __getitem__(self, item: int):
-        doc = self.da[item].copy(deep=True)
+        doc = self.docs[item].copy(deep=True)
         for field, preprocess in self._preprocessing.items():
             if len(field) == 0:
                 doc = preprocess(doc) or doc
@@ -121,14 +121,14 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     @classmethod
     def collate_fn(cls, batch: List[T_doc]):
-        doc_type = cls.document_type
+        doc_type = cls.doc_type
         if doc_type:
-            batch_da = DocArrayStacked[doc_type](  # type: ignore
+            batch_da = DocVec[doc_type](  # type: ignore
                 batch,
                 tensor_type=TorchTensor,
             )
         else:
-            batch_da = DocArrayStacked(batch, tensor_type=TorchTensor)
+            batch_da = DocVec(batch, tensor_type=TorchTensor)
         return batch_da
 
     @classmethod
@@ -142,7 +142,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
             global _TypedDataset
 
             class _TypedDataset(cls):  # type: ignore
-                document_type = item
+                doc_type = item
 
             change_cls_name(
                 _TypedDataset, f'{cls.__name__}[{item.__name__}]', globals()

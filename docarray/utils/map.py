@@ -7,7 +7,7 @@ from typing import Callable, Generator, Optional, TypeVar, Union
 from rich.progress import track
 
 from docarray import BaseDoc
-from docarray.array.abstract_array import AnyDocArray
+from docarray.array.any_array import AnyDocArray
 from docarray.helper import _is_lambda_or_partial_or_local_function
 
 T = TypeVar('T', bound=AnyDocArray)
@@ -15,7 +15,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 def map_docs(
-    da: T,
+    docs: T,
     func: Callable[[T_doc], T_doc],
     backend: str = 'thread',
     num_worker: Optional[int] = None,
@@ -23,13 +23,13 @@ def map_docs(
     show_progress: bool = False,
 ) -> Generator[T_doc, None, None]:
     """
-    Return an iterator that applies `func` to every Document in `da` in parallel,
+    Return an iterator that applies `func` to every Document in `docs` in parallel,
     yielding the results.
 
     ---
 
     ```python
-    from docarray import DocArray
+    from docarray import DocList
     from docarray.documents import ImageDoc
     from docarray.utils.map import map_docs
 
@@ -44,21 +44,21 @@ def map_docs(
         'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
     )
 
-    da = DocArray[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
-    da = DocArray[ImageDoc](
-        list(map_docs(da, load_url_to_tensor, backend='thread'))
+    docs = DocList[ImageDoc]([ImageDoc(url=url) for _ in range(100)])
+    docs = DocList[ImageDoc](
+        list(map_docs(docs, load_url_to_tensor, backend='thread'))
     )  # threading is usually a good option for IO-bound tasks such as loading an
     # ImageDoc from url
 
-    for doc in da:
+    for doc in docs:
         assert doc.tensor is not None
     ```
 
     ---
 
-    :param da: DocArray to apply function to
-    :param func: a function that takes a :class:`BaseDoc` as input and outputs
-        a :class:`BaseDoc`.
+    :param docs: DocList to apply function to
+    :param func: a function that takes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
+        as input and outputs a [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
@@ -69,7 +69,7 @@ def map_docs(
         Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
         falls under the "IO-bound" category.
 
-        .. warning::
+        !!! warning
             When using `process` backend, your `func` should not modify elements in-place.
             This is because the multiprocessing backend passes the variable via pickle
             and works in another process.
@@ -98,13 +98,13 @@ def map_docs(
         context_pool = p
 
     with context_pool:
-        imap = p.imap(func, da)
-        for x in track(imap, total=len(da), disable=not show_progress):
+        imap = p.imap(func, docs)
+        for x in track(imap, total=len(docs), disable=not show_progress):
             yield x
 
 
 def map_docs_batched(
-    da: T,
+    docs: T,
     func: Callable[[T], Union[T, T_doc]],
     batch_size: int,
     backend: str = 'thread',
@@ -116,12 +116,12 @@ def map_docs_batched(
     """
     Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
     yielding the results.
-    Each element in the returned iterator is an :class:`AnyDocArray`.
+    Each element in the returned iterator is an `AnyDocArray`.
 
     ---
 
     ```python
-    from docarray import BaseDoc, DocArray
+    from docarray import BaseDoc, DocList
     from docarray.utils.map import map_docs_batched
 
 
@@ -129,19 +129,19 @@ def map_docs_batched(
         name: str
 
 
-    def upper_case_name(da: DocArray[MyDoc]) -> DocArray[MyDoc]:
-        da.name = [n.upper() for n in da.name]
-        return da
+    def upper_case_name(docs: DocList[MyDoc]) -> DocList[MyDoc]:
+        docs.name = [n.upper() for n in docs.name]
+        return docs
 
 
     batch_size = 16
-    da = DocArray[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
-    it = map_docs_batched(da, upper_case_name, batch_size=batch_size)
+    docs = DocList[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    it = map_docs_batched(docs, upper_case_name, batch_size=batch_size)
     for i, d in enumerate(it):
-        da[i * batch_size : (i + 1) * batch_size] = d
+        docs[i * batch_size : (i + 1) * batch_size] = d
 
-    assert len(da) == 100
-    print(da.name[:3])
+    assert len(docs) == 100
+    print(docs.name[:3])
     ```
 
     ---
@@ -152,7 +152,7 @@ def map_docs_batched(
 
     ---
 
-    :param da: DocArray to apply function to
+    :param docs: DocList to apply function to
     :param batch_size: Size of each generated batch (except the last one, which might
         be smaller).
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
@@ -168,7 +168,7 @@ def map_docs_batched(
         Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
         falls under the "IO-bound" category.
 
-        .. warning::
+        !!! warning
             When using `process` backend, your `func` should not modify elements in-place.
             This is because the multiprocessing backend passes the variable via pickle
             and works in another process.
@@ -180,7 +180,7 @@ def map_docs_batched(
     :param pool: use an existing/external pool. If given, `backend` is ignored and you will
         be responsible for closing the pool.
 
-    :return: yield DocArrays returned from `func`
+    :return: yield DocLists returned from `func`
     """
     if backend == 'process' and _is_lambda_or_partial_or_local_function(func):
         raise ValueError(
@@ -196,9 +196,9 @@ def map_docs_batched(
         context_pool = p
 
     with context_pool:
-        imap = p.imap(func, da._batch(batch_size=batch_size, shuffle=shuffle))
+        imap = p.imap(func, docs._batch(batch_size=batch_size, shuffle=shuffle))
         for x in track(
-            imap, total=ceil(len(da) / batch_size), disable=not show_progress
+            imap, total=ceil(len(docs) / batch_size), disable=not show_progress
         ):
             yield x
 

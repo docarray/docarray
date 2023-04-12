@@ -18,10 +18,10 @@ from typing import (
 
 from pydantic import BaseConfig, parse_obj_as
 
-from docarray.array.abstract_array import AnyDocArray
-from docarray.array.array.array import DocArray
-from docarray.array.stacked.column_storage import ColumnStorage, ColumnStorageView
-from docarray.array.stacked.list_advance_indexing import ListAdvancedIndexing
+from docarray.array.any_array import AnyDocArray
+from docarray.array.doc_list.doc_list import DocList
+from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
+from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
@@ -32,7 +32,7 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocArrayStackedProto
+    from docarray.proto import DocVecProto
 
 torch_available = is_torch_available()
 if torch_available:
@@ -49,45 +49,45 @@ else:
     TensorFlowTensor = None  # type: ignore
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
-T = TypeVar('T', bound='DocArrayStacked')
+T = TypeVar('T', bound='DocVec')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocArrayStacked(AnyDocArray[T_doc]):
+class DocVec(AnyDocArray[T_doc]):
     """
-    DocArrayStacked is a container of Documents appropriates to perform
+    DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
     calculation, deep learning forward pass)
 
-    A DocArrayStacked has a similar interface as
-    {class}`~docarray.array.DocArray` but with an underlying implementation that is
+    A DocVec has a similar interface as
+    {class}`~docarray.array.DocList` but with an underlying implementation that is
     column based instead of row based. Each field
-    of the schema of the DocArrayStack
-    (the :attr:`~docarray.array.stacked.DocArrayStacked.document_type` which is a
-    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, stacked (torch/np/tf) tensor.
+    of the schema of the DocVec
+    (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
+    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
     If the tensor field
     is `AnyTensor` or a Union of tensor types, the
-    :attr:`~docarray.array.stacked.DocArrayStacked.tensor_type` will be used to determine
-    the type of the stacked column.
+    :attr:`~docarray.array.doc_vec.DocVec.tensor_type` will be used to determine
+    the type of the doc_vec column.
 
-    If the field is another `BasedDocument` the column will be another DocArrayStacked that follows the
+    If the field is another `BasedDoc` the column will be another DocVec that follows the
     schema of the nested Document.
-    If the field is a `DocArray` or
-    `DocArrayStacked` then the column will be a list of `DocArrayStacked`.
+    If the field is a `DocList` or
+    `DocVec` then the column will be a list of `DocVec`.
     For any other type the column is a Python list.
 
-    Every `Document` inside a `DocArrayStacked` is a view into the data columns stored at the `DocArrayStacked` level. The `Document`  does
+    Every `Document` inside a `DocVec` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
      not hold any data itself. The behavior of
      this Document "view" is similar to the behavior of `view = tensor[i]` in
      numpy/PyTorch.
 
-    :param docs: a DocArray
-    :param tensor_type: Tensor Class used to wrap the stacked tensors. This is useful
-    if the BaseDoc of this DocArrayStacked has some undefined tensor type like
+    :param docs: a homogeneous sequence of BaseDoc
+    :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
+    if the BaseDoc of this DocVec has some undefined tensor type like
     AnyTensor or Union of NdArray and TorchTensor
     """
 
-    document_type: Type[T_doc]
+    doc_type: Type[T_doc]
 
     def __init__(
         self: T,
@@ -97,22 +97,22 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         self.tensor_type = tensor_type
 
         tensor_columns: Dict[str, AbstractTensor] = dict()
-        doc_columns: Dict[str, 'DocArrayStacked'] = dict()
-        da_columns: Dict[str, ListAdvancedIndexing['DocArrayStacked']] = dict()
+        doc_columns: Dict[str, 'DocVec'] = dict()
+        docs_vec_columns: Dict[str, ListAdvancedIndexing['DocVec']] = dict()
         any_columns: Dict[str, ListAdvancedIndexing] = dict()
 
         if len(docs) == 0:
             raise ValueError(f'docs {docs}: should not be empty')
         docs = (
             docs
-            if isinstance(docs, DocArray)
-            else DocArray.__class_getitem__(self.document_type)(docs)
+            if isinstance(docs, DocList)
+            else DocList.__class_getitem__(self.doc_type)(docs)
         )
 
-        for field_name, field in self.document_type.__fields__.items():
-            # here we iterate over the field of the da schema, and we collect the data
+        for field_name, field in self.doc_type.__fields__.items():
+            # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type = self.document_type._get_field_type(field_name)
+            field_type = self.doc_type._get_field_type(field_name)
 
             if is_tensor_union(field_type):
                 field_type = tensor_type
@@ -166,11 +166,13 @@ class DocArrayStacked(AnyDocArray[T_doc]):
                 elif issubclass(field_type, AnyDocArray):
                     docs_list = list()
                     for doc in docs:
-                        da = getattr(doc, field_name)
-                        if isinstance(da, DocArray):
-                            da = da.stack(tensor_type=self.tensor_type)
-                        docs_list.append(da)
-                    da_columns[field_name] = ListAdvancedIndexing(docs_list)
+                        docs_nested = getattr(doc, field_name)
+                        if isinstance(docs_nested, DocList):
+                            docs_nested = docs_nested.stack(
+                                tensor_type=self.tensor_type
+                            )
+                        docs_list.append(docs_nested)
+                    docs_vec_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
                         getattr(docs, field_name)
@@ -183,7 +185,7 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         self._storage = ColumnStorage(
             tensor_columns,
             doc_columns,
-            da_columns,
+            docs_vec_columns,
             any_columns,
             tensor_type,
         )
@@ -191,14 +193,14 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     @classmethod
     def from_columns_storage(cls: Type[T], storage: ColumnStorage) -> T:
         """
-        Create a DocArrayStacked directly from a storage object
+        Create a DocVec directly from a storage object
         :param storage: the underlying storage.
-        :return: a DocArrayStack
+        :return: a DocVec
         """
-        da = cls.__new__(cls)
-        da.tensor_type = storage.tensor_type
-        da._storage = storage
-        return da
+        docs = cls.__new__(cls)
+        docs.tensor_type = storage.tensor_type
+        docs._storage = storage
+        return docs
 
     @classmethod
     def validate(
@@ -209,17 +211,17 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
-        elif isinstance(value, DocArray.__class_getitem__(cls.document_type)):
+        elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
             return cast(T, value.stack())
         elif isinstance(value, Sequence):
             return cls(value)
         elif isinstance(value, Iterable):
             return cls(list(value))
         else:
-            raise TypeError(f'Expecting an Iterable of {cls.document_type}')
+            raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
     def to(self: T, device: str) -> T:
-        """Move all tensors of this DocArrayStacked to the given device
+        """Move all tensors of this DocVec to the given device
 
         :param device: the device to move the data to
         """
@@ -230,9 +232,9 @@ class DocArrayStacked(AnyDocArray[T_doc]):
 
         for field, col_doc in self._storage.doc_columns.items():
             self._storage.doc_columns[field] = col_doc.to(device)
-        for _, col_da in self._storage.da_columns.items():
-            for da in col_da:
-                da.to(device)
+        for _, col_da in self._storage.docs_vec_columns.items():
+            for docs in col_da:
+                docs.to(device)
 
         return self
 
@@ -255,12 +257,12 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         if isinstance(item, (slice, Iterable)):
             return self.__class__.from_columns_storage(self._storage[item])
         # single doc case
-        return self.document_type.from_view(ColumnStorageView(item, self._storage))
+        return self.doc_type.from_view(ColumnStorageView(item, self._storage))
 
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, 'DocArrayStacked', AbstractTensor]:
+    ) -> Union[MutableSequence, 'DocVec', AbstractTensor]:
         """Return one column of the data
 
         :param field: name of the fields to extract
@@ -269,8 +271,8 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         """
         if field in self._storage.any_columns.keys():
             return self._storage.any_columns[field].data
-        elif field in self._storage.da_columns.keys():
-            return self._storage.da_columns[field].data
+        elif field in self._storage.docs_vec_columns.keys():
+            return self._storage.docs_vec_columns[field].data
         elif field in self._storage.columns.keys():
             return self._storage.columns[field]
         else:
@@ -292,8 +294,8 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     def __setitem__(self: T, key, value):
         # single doc case
         if not isinstance(key, (slice, Iterable)):
-            if not isinstance(value, self.document_type):
-                raise ValueError(f'{value} is not a {self.document_type}')
+            if not isinstance(value, self.doc_type):
+                raise ValueError(f'{value} is not a {self.doc_type}')
 
             for field, value in value.dict().items():
                 self._storage.columns[field][key] = value  # todo we might want to
@@ -305,12 +307,12 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     def _set_data_and_columns(
         self: T,
         index_item: Union[Tuple, Iterable, slice],
-        value: Union[T, DocArray[T_doc]],
+        value: Union[T, DocList[T_doc]],
     ) -> None:
         """Delegates the setting to the data and the columns.
 
         :param index_item: the key used as index. Needs to be a valid index for both
-            DocArray (data) and column types (torch/tensorflow/numpy tensors)
+            DocList (data) and column types (torch/tensorflow/numpy tensors)
         :value: the value to set at the `key` location
         """
         if isinstance(index_item, tuple):
@@ -318,25 +320,25 @@ class DocArrayStacked(AnyDocArray[T_doc]):
 
         # set data and prepare columns
         processed_value: T
-        if isinstance(value, DocArray):
-            if not issubclass(value.document_type, self.document_type):
+        if isinstance(value, DocList):
+            if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
-                    f'{value} schema : {value.document_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.document_type}'
+                    f'{value} schema : {value.doc_type} is not compatible with '
+                    f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = cast(
                 T, value.stack(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
-        elif isinstance(value, DocArrayStacked):
-            if not issubclass(value.document_type, self.document_type):
+        elif isinstance(value, DocVec):
+            if not issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
-                    f'{value} schema : {value.document_type} is not compatible with '
-                    f'this DocArrayStacked schema : {self.document_type}'
+                    f'{value} schema : {value.doc_type} is not compatible with '
+                    f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = value
         else:
-            raise TypeError(f'Can not set a DocArrayStacked with {type(value)}')
+            raise TypeError(f'Can not set a DocVec with {type(value)}')
 
         for field, col in self._storage.columns.items():
             col[index_item] = processed_value._storage.columns[field]
@@ -345,17 +347,17 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         self: T,
         field: str,
         values: Union[
-            Sequence[DocArray[T_doc]],
+            Sequence[DocList[T_doc]],
             Sequence[Any],
             T,
-            DocArray,
+            DocList,
             AbstractTensor,
         ],
     ) -> None:
-        """Set all Documents in this DocArray using the passed values
+        """Set all Documents in this DocList using the passed values
 
         :param field: name of the fields to set
-        :values: the values to set at the DocArray level
+        :values: the values to set at the DocList level
         """
 
         if len(values) != len(self._storage):
@@ -376,23 +378,21 @@ class DocArrayStacked(AnyDocArray[T_doc]):
         elif field in self._storage.doc_columns.keys():
 
             values_ = parse_obj_as(
-                DocArrayStacked.__class_getitem__(
-                    self._storage.doc_columns[field].document_type
-                ),
+                DocVec.__class_getitem__(self._storage.doc_columns[field].doc_type),
                 values,
             )
             self._storage.doc_columns[field] = values_
 
-        elif field in self._storage.da_columns.keys():
-            values_ = cast(Sequence[DocArray[T_doc]], values)
+        elif field in self._storage.docs_vec_columns.keys():
+            values_ = cast(Sequence[DocList[T_doc]], values)
             # TODO here we should actually check if this is correct
-            self._storage.da_columns[field] = values_
+            self._storage.docs_vec_columns[field] = values_
         elif field in self._storage.any_columns.keys():
             # TODO here we should actually check if this is correct
             values_ = cast(Sequence, values)
             self._storage.any_columns[field] = values_
         else:
-            raise KeyError(f'{field} is not a valid field for this DocArray')
+            raise KeyError(f'{field} is not a valid field for this DocList')
 
     ####################
     # Deleting data    #
@@ -422,32 +422,32 @@ class DocArrayStacked(AnyDocArray[T_doc]):
     ####################
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocArrayStackedProto') -> T:
+    def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
         """create a Document from a protobuf message"""
         storage = ColumnStorage(
             pb_msg.tensor_columns,
             pb_msg.doc_columns,
-            pb_msg.da_columns,
+            pb_msg.docs_vec_columns,
             pb_msg.any_columns,
         )
 
         return cls.from_columns_storage(storage)
 
-    def to_protobuf(self) -> 'DocArrayStackedProto':
-        """Convert DocArray into a Protobuf message"""
+    def to_protobuf(self) -> 'DocVecProto':
+        """Convert DocList into a Protobuf message"""
         from docarray.proto import (
-            DocArrayStackedProto,
-            DocumentArrayProto,
+            DocListProto,
+            DocVecProto,
             ListOfAnyProto,
             ListOfDocArrayProto,
             NdArrayProto,
         )
 
-        da_proto = DocumentArrayProto()
+        da_proto = DocListProto()
         for doc in self:
             da_proto.docs.append(doc.to_protobuf())
 
-        doc_columns_proto: Dict[str, DocArrayStackedProto] = dict()
+        doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
         da_columns_proto: Dict[str, ListOfDocArrayProto] = dict()
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
@@ -456,10 +456,10 @@ class DocArrayStacked(AnyDocArray[T_doc]):
             doc_columns_proto[field] = col_doc.to_protobuf()
         for field, col_tens in self._storage.tensor_columns.items():
             tensor_columns_proto[field] = col_tens.to_protobuf()
-        for field, col_da in self._storage.da_columns.items():
+        for field, col_da in self._storage.docs_vec_columns.items():
             list_proto = ListOfDocArrayProto()
-            for da in col_da:
-                list_proto.data.append(da.to_protobuf())
+            for docs in col_da:
+                list_proto.data.append(docs.to_protobuf())
             da_columns_proto[field] = list_proto
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
@@ -467,29 +467,29 @@ class DocArrayStacked(AnyDocArray[T_doc]):
                 list_proto.data.append(_type_to_protobuf(data))
             any_columns_proto[field] = list_proto
 
-        return DocArrayStackedProto(
+        return DocVecProto(
             doc_columns=doc_columns_proto,
             tensor_columns=tensor_columns_proto,
-            da_columns=da_columns_proto,
+            docs_vec_columns=da_columns_proto,
             any_columns=any_columns_proto,
         )
 
-    def unstack(self: T) -> DocArray[T_doc]:
-        """Convert DocArrayStacked into a DocArray.
+    def unstack(self: T) -> DocList[T_doc]:
+        """Convert DocVec into a DocList.
 
-        Note this destroys the arguments and returns a new DocArray
+        Note this destroys the arguments and returns a new DocList
         """
 
-        unstacked_doc_column: Dict[str, DocArray] = dict()
-        unstacked_da_column: Dict[str, List[DocArray]] = dict()
+        unstacked_doc_column: Dict[str, DocList] = dict()
+        unstacked_da_column: Dict[str, List[DocList]] = dict()
         unstacked_tensor_column: Dict[str, List[AbstractTensor]] = dict()
         unstacked_any_column = self._storage.any_columns
 
         for field, doc_col in self._storage.doc_columns.items():
             unstacked_doc_column[field] = doc_col.unstack()
 
-        for field, da_col in self._storage.da_columns.items():
-            unstacked_da_column[field] = [da.unstack() for da in da_col]
+        for field, da_col in self._storage.docs_vec_columns.items():
+            unstacked_da_column[field] = [docs.unstack() for docs in da_col]
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
             # list is needed here otherwise we cannot delete the column
@@ -511,11 +511,11 @@ class DocArrayStacked(AnyDocArray[T_doc]):
 
         for i in range(len(self)):
             data = {field: col[i] for field, col in unstacked_column.items()}
-            docs.append(self.document_type.construct(**data))
+            docs.append(self.doc_type.construct(**data))
 
         del self._storage
 
-        return DocArray.__class_getitem__(self.document_type).construct(docs)
+        return DocList.__class_getitem__(self.doc_type).construct(docs)
 
     def traverse_flat(
         self,

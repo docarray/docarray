@@ -2,15 +2,16 @@
 
 You might already know that `DocArray` documents are Pydantic Models (with a twist) [Reference relevant part], and as such they are fully compatible with `FastAPI`:
 
-```python
-import numpy as np
-from fastapi import FastAPI
-from httpx import AsyncClient
+FastAPI is a high-performance web framework for building APIs with Python. It's designed to be easy to use and supports asynchronous programming. 
+Since `DocArray` documents are Pydantic Models (with a twist)[Reference relevant part] they can be easily integrated with FastAPI, 
+and provide a seamless and efficient way to work with multimodal data in FastAPI-powered APIs.
 
+
+First, you should define document schemas:
+```python
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_doc import DocumentResponse
 
 
 class InputDoc(BaseDoc):
@@ -20,7 +21,16 @@ class InputDoc(BaseDoc):
 class OutputDoc(BaseDoc):
     embedding_clip: NdArray
     embedding_bert: NdArray
+```
 
+Afterwards, you can use your documents with FastAPI:
+```python
+import numpy as np
+from fastapi import FastAPI
+from httpx import AsyncClient
+
+from docarray.documents import ImageDoc
+from docarray.base_doc import DocumentResponse
 
 input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
 
@@ -79,10 +89,11 @@ Image(
 
 
 Further, you can send and receive lists of documents represented as a `DocArray` object:
-> **Note**
-> Currently, `FastAPI` receives `DocArray` objects as lists, so you have to construct a DocArray inside the function.
-> Also, if you want to return a `DocArray` object, first you have to convert it to a list. 
-> (Shown in the example below)
+
+!!! note
+    Currently, `FastAPI` receives `DocArray` objects as lists, so you have to construct a DocArray inside the function.
+    Also, if you want to return a `DocArray` object, first you have to convert it to a list. 
+    (Shown in the example below)
 
 ```python
 from typing import List
