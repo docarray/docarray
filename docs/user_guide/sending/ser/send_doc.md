@@ -1,4 +1,4 @@
-# Serialization of BaseDoc
+# BaseDoc
 
 In order to send or store [BaseDoc][docarray.base_doc.doc.BaseDoc] you need to serialize them first. 
 
@@ -46,3 +46,10 @@ json_str = doc.json()
 new_doc = MyDoc.parse_raw(json_str)
 assert doc == new_doc  # True
 ```
+
+See also:
+
+* The serializing [DocList](./send_doclist.md) section
+* The serializing [DocVec](./send_docvec.md) section
+
+

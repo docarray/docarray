@@ -1,4 +1,4 @@
-# Serialization for DocList
+# DocList
 When sending or storing [`DocList`][docarray.array.doc_list.doc_list.DocList], you need to use serialization. [DocList][docarray.array.doc_list.doc_list.DocList] supports multiple ways to serialize the data.
 
 ## JSON
@@ -158,3 +158,8 @@ df = dl.to_dataframe()
 dl_from_dataframe = DocList[SimpleDoc].from_dataframe(df)
 print(dl_from_dataframe)
 ```
+
+See also:
+
+* The serializing [BaseDoc](./send_doc.md) section
+* The serializing [DocVec](./send_docvec.md) section
