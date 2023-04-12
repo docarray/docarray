@@ -1,9 +1,9 @@
 # 🗃 Multimodal
 
-In this section we will walk through how to use DocArray to process multiple data modalities in tandem. 
+In this section, we will walk through how to use DocArray to process multiple data modalities in tandem. 
 
 !!! tip "See also"
-    In this section we will work with image and text data. If you are not yet familiar with how to process these 
+    In this section, we will work with image and text data. If you are not yet familiar with how to process these 
     modalities individually, you may want to check out the respective examples first: [`Image`](../image/image.md) 
     and [`Text`](../text/text.md)
 
@@ -14,8 +14,8 @@ DocArray allows you to model your data and these relationships.
 
 ### Define a schema
 
-Let's suppose you want to model a page of a newspaper that contains a main text, an image url, a corresponding tensor 
-as well as description. You can model this example in the following way:
+Let's suppose you want to model a page of a newspaper that contains a main text, an image URL, a corresponding tensor 
+as well as a description. You can model this example in the following way:
 
 ```python
 from docarray import BaseDoc
@@ -89,12 +89,12 @@ print(page.img_tensor)
 
 If the data you want to model requires a more complex structure, nesting your attributes may be a good solution.
 
-For this example, let's try to define a schema to represent a newspaper. The newspaper should consista of a cover page,
-any number of following pages, and some metadata. Further, each page contains a main text, and can contain and image 
+For this example, let's try to define a schema to represent a newspaper. The newspaper should consist of a cover page,
+any number of following pages, and some metadata. Further, each page contains a main text and can contain an image 
 and an image description.
 
 To implement this you can simply add a `Newspaper` class to our previous implementation. The newspaper has a required 
-`cover_page` attribute of type `Page` as well as a `pages` attribute, which is a `DocList` of `Page`'s.
+`cover_page` attribute of type `Page` as well as a `pages` attribute, which is a `DocList` of `Page`s.
 
 ```python
 from docarray import BaseDoc, DocList

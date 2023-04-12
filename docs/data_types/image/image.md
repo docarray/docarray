@@ -3,7 +3,7 @@
 DocArray supports many different modalities including the widely used `Image` modality.
 This section will show you how to load and handle image data using DocArray.
 
-Moreover, we will introduce DocArray's image specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] and [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
+Moreover, we will introduce DocArray's image-specific types, to represent your image data ranging from [`ImageUrl`][docarray.typing.url.ImageUrl] to [`ImageBytes`][docarray.typing.bytes.ImageBytes] and [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray].
 
 !!! note
     This requires `Pillow` dependency. You can install all necessary dependencies via:
@@ -18,7 +18,7 @@ Moreover, we will introduce DocArray's image specific types, to represent your i
 
 First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type [`ImageTensor`](../../../../api_references/typing/tensor/image).
 
-Next, let's instantiate a `MyImage` object with a local or remote url. 
+Next, let's instantiate a `MyImage` object with a local or remote URL. 
 
 ```python
 from docarray.typing import ImageTensor, ImageUrl
@@ -47,7 +47,7 @@ assert isinstance(img.tensor, ImageNdArray)
 
 ## ImageTensor
 
-DocArray offers several [`ImageTensor`'s](../../../../api_references/typing/tensor/image) to store your data to:
+DocArray offers several [`ImageTensor`s](../../../../api_references/typing/tensor/image) to store your data to:
 
 - [`ImageNdArray`][docarray.typing.ImageNdArray]
 - [`ImageTorchTensor`][docarray.typing.ImageTorchTensor]
@@ -74,7 +74,7 @@ assert isinstance(img.tf_tensor, ImageTensorFlowTensor)
 assert isinstance(img.torch_tensor, ImageTorchTensor)
 ```
 
-You can also load the url content as a [`PIL.Image.Image`](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image) instance using [`ImageUrl.load_pil()`][docarray.typing.url.ImageUrl.load_pil]:
+You can also load the URL content as a [`PIL.Image.Image`](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image) instance using [`ImageUrl.load_pil()`][docarray.typing.url.ImageUrl.load_pil]:
 
 ```python
 from PIL.Image import Image as PILImage
@@ -89,8 +89,8 @@ assert isinstance(pil_img, PILImage)
 
 ## Parameterized ImageTensor
 
-Like all of our tensors, the [`ImageTensor`'s](../../../../api_references/typing/tensor/image) can be used in a parametrized way, specifying the shape of the images.
-Let's say for instance, all your images are of size `(200, 300, 3)`. 
+Like all of our tensors, the [`ImageTensor`s](../../../../api_references/typing/tensor/image) can be used in a parametrized way, specifying the shape of the images.
+Let's say, for instance, all your images are of size `(200, 300, 3)`. 
 
 ```python
 import numpy as np
@@ -157,7 +157,7 @@ bytes_from_tensor = img.tensor.to_bytes()
 assert isinstance(bytes_from_tensor, ImageBytes)
 ```
 
-## Display image in notebook
+## Display image in a notebook
 
 You can display your image in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
 [`ImageTensor`](../../../../api_references/typing/tensor/image) instance.
@@ -170,7 +170,7 @@ You can display your image in a notebook from both an [`ImageUrl`][docarray.typi
 
 ## Getting started - Predefined `ImageDoc`
 
-To get started and play around with the image modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
+To get started and play around with the image-modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
 ``` { .python }
 class ImageDoc(BaseDoc):

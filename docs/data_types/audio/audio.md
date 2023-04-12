@@ -3,20 +3,20 @@
 DocArray supports many different modalities including `Audio`.
 This section will show you how to load and handle audio data using DocArray.
 
-Moreover, you will learn about DocArray's audio specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
+Moreover, you will learn about DocArray's audio-specific types, to represent your audio data ranging from [`AudioUrl`][docarray.typing.url.AudioUrl] to [`AudioBytes`][docarray.typing.bytes.AudioBytes] and [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray].
 
 !!! note
     This requires a `pydub` dependency. You can install all necessary dependencies via:
     ```cmd 
     pip install "docarray[audio]"
     ```
-    Additionally, you have to install `ffmpeg` (see more infos [here](https://github.com/jiaaro/pydub#getting-ffmpeg-set-up)):
+    Additionally, you have to install `ffmpeg` (see more info [here](https://github.com/jiaaro/pydub#getting-ffmpeg-set-up)):
     ```cmd 
     # on Mac with brew:
     brew install ffmpeg
     ```
     ```cmd
-    # on linux with apt-get
+    # on Linux with apt-get
     apt-get install ffmpeg libavcodec-extra
     ```
     
@@ -75,7 +75,7 @@ doc.summary()
 
 ## AudioTensor
 
-DocArray offers several [`AudioTensor`'s](../../../../api_references/typing/tensor/audio) to store your data to:
+DocArray offers several [`AudioTensor`s](../../../../api_references/typing/tensor/audio) to store your data to:
 
 - [`AudioNdArray`][docarray.typing.tensor.audio.audio_ndarray.AudioNdArray]
 - [`AudioTorchTensor`][docarray.typing.AudioTorchTensor]
@@ -150,9 +150,9 @@ tensor_reversed.save(
     format='mp3',
 )
 ```
-## Play audio in notebook
+## Play audio in a notebook
 
-You can play your audio sound in a notebook from its url as well as its tensor, by calling `.display()` on either one.
+You can play your audio sound in a notebook from its URL as well as its tensor, by calling `.display()` on either one.
 
 Play from `url`:
 ``` { .python }

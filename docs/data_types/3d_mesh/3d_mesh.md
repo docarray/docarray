@@ -3,7 +3,7 @@
 DocArray supports many different modalities including `3D Mesh`.
 This section will show you how to load and handle 3D data using DocArray.
 
-A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
+A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open-source Blender 3D.
 
 
 !!! note
@@ -21,12 +21,12 @@ A 3D mesh can be represented by its vertices and faces:
 
 ### Load vertices and faces
 
-First, let's define our class `MyMesh3D`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides  attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] class, that has a `vertices` attribute and a `faces` attribute, both of type [`AnyTensor`](../../../../api_references/typing/tensor/tensor). This especially comes in handy later when we want to display our 3D mesh.
+First, let's define our class `MyMesh3D`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides attributes to store our 3D data. It has an `url` attribute of type [`Mesh3DUrl`][docarray.typing.url.url_3d.mesh_url.Mesh3DUrl]. To store the vertices and faces, DocArray provides the [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] class, which has a `vertices` attribute and a `faces` attribute, both of type [`AnyTensor`](../../../../api_references/typing/tensor/tensor). This especially comes in handy later when we want to display our 3D mesh.
  
 !!! tip
     Check out our predefined [`Mesh3D`](#getting-started-predefined-docs) to get started and play around with our 3D features.
 
-But for now, let's create a `MyMesh3D` instance with an url to a remote `.obj` file:
+But for now, let's create a `MyMesh3D` instance with an URL to a remote `.obj` file:
 
 
 ```python
@@ -75,7 +75,7 @@ doc.summary()
 
 ### Display 3D mesh in notebook
 
-You can display your 3D mesh interactively from its url as well as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] instance, by calling `.display()` on either one. The latter will always display without color, whereas display from url will show with color if this information is included in the file content.
+You can display your 3D mesh interactively from its URL as well as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] instance, by calling `.display()` on either one. The latter will always display without color, whereas the display from the URL will show with color if this information is included in the file content.
 
 ``` { .python }
 doc.mesh_url.display()
@@ -1341,7 +1341,7 @@ A point cloud is a representation of a 3D mesh. It is made by repeatedly and uni
 
 In DocArray, loading a point cloud from a [`PointCloud3DUrl`][docarray.typing.url.url_3d.point_cloud_url.PointCloud3DUrl] instance will return a [`PointsAndColors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] instance. Such an object has a `points` attribute containing the information about the points in 3D space as well as an optional `colors` attribute.
 
-First, let's define our class `MyPointCloud`, that extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides attributes to store the point cloud information.
+First, let's define our class `MyPointCloud`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and provides attributes to store the point cloud information.
 
 ```python
 from typing import Optional
@@ -1388,7 +1388,7 @@ doc.summary()
 
 
 ### Display 3D point cloud in notebook
-You can display your point cloud and interact with it from its url as well as from a PointsAndColors instance. The first will always display without color, whereas display from PointsAndColors will show with color if [`PointsAndColors.colors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] is not None.
+You can display your point cloud and interact with it from its URL as well as from a PointsAndColors instance. The first will always display without color, whereas the display from [`PointsAndColors`][docarray.documents.point_cloud.points_and_colors.PointsAndColors] will show with color if `.colors` is not None.
 
 ``` { .python}
 doc.url.display()
@@ -2647,10 +2647,10 @@ init();</script></body>
 
 
 ## Getting started - Predefined Docs
-To get started and play around with the 3D modalities, DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which include all of the previously mentioned functionalities.
+To get started and play around with the 3D modalities, DocArray provides the predefined documents [`Mesh3D`][docarray.documents.mesh.Mesh3D] and [`PointCloud3D`][docarray.documents.point_cloud.PointCloud3D], which includes all of the previously mentioned functionalities.
 
 ### `Mesh3D`
-The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a [`Mesh3DUrl`][docarray.typing.Mesh3DUrl] field as wells as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] field.
+The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class for instance provides a [`Mesh3DUrl`][docarray.typing.Mesh3DUrl] field as well as a [`VerticesAndFaces`][docarray.documents.mesh.vertices_and_faces.VerticesAndFaces] field.
 
 
 ``` { .python }

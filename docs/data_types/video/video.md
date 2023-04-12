@@ -3,24 +3,24 @@
 DocArray supports many modalities including `Video`.
 This section will show you how to load and handle video data using DocArray.
 
-Moreover, you will learn about DocArray's video specific types, to represent your video data ranging from [`VideoUrl`][docarray.typing.url.VideoUrl] to [`VideoBytes`][docarray.typing.bytes.VideoBytes] and [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray].
+Moreover, you will learn about DocArray's video-specific types, to represent your video data ranging from [`VideoUrl`][docarray.typing.url.VideoUrl] to [`VideoBytes`][docarray.typing.bytes.VideoBytes] and [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray].
 
 !!! note
-    This requires a `av` dependency. You can install all necessary dependencies via:
+    This requires an `av` dependency. You can install all necessary dependencies via:
     ```cmd 
     pip install "docarray[video]"
     ```
 
 ## Load video data
 
-In DocArray video data is represented by a video tensor, an audio tensor and the key frame indices. 
+In DocArray video data is represented by a video tensor, an audio tensor, and the key frame indices. 
 
 ![type:video](mov_bbb.mp4){: style='width: 600px; height: 330px'}
 
 !!! tip
     Check out our predefined [`VideoDoc`](#getting-started-predefined-videodoc) to get started and play around with our video features.
 
-First, let's define a `MyVideo` class with all of those attributes and instantiate an object with a local or remote url:
+First, let's define a `MyVideo` class with all of those attributes and instantiate an object with a local or remote URL:
 
 ```python
 from docarray import BaseDoc
@@ -40,7 +40,7 @@ doc = MyVideo(
 ```
 
 Now you can load the video file content by simply calling [`.load()`][docarray.typing.url.audio_url.AudioUrl.load] on your [`AudioUrl`][docarray.typing.url.audio_url.AudioUrl] instance.
-This will return a [NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple) of a **video tensor**, an **audio tensor** and the **key frame indices**:
+This will return a [NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple) of a **video tensor**, an **audio tensor**, and the **key frame indices**:
 
 - The video tensor is a 4-dim array of shape `(n_frames, height, width, channels)`. <br>The first dimension represents the frame id. 
 The last three dimensions represent the image data of the corresponding frame. 
@@ -68,7 +68,7 @@ Based on the overall length of the video (10s), you can infer the framerate is a
 
 ## VideoTensor
 
-DocArray offers several [`VideoTensor`'s](../../../../api_references/typing/tensor/video) to store your data to:
+DocArray offers several [`VideoTensor`s](../../../../api_references/typing/tensor/video) to store your data to:
 
 - [`VideoNdArray`][docarray.typing.tensor.video.video_ndarray.VideoNdArray]
 - [`VideoTorchTensor`][docarray.typing.tensor.video.VideoTorchTensor]
@@ -137,7 +137,7 @@ assert isinstance(bytes_from_tensor, VideoBytes)
 ## Key frame extraction
 
 A key frame is defined as the starting point of any smooth transition.
-Given the key frame indices you can access selected scenes.
+Given the key frame indices, you can access selected scenes.
 
 ```python
 indices = doc.key_frame_indices
@@ -168,7 +168,7 @@ for frame in key_frames:
 
 ## Save video to file
 
-You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4 sec video, instead of the original 10 second video with a frame rate of 25 fps. 
+You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4-secOND video, instead of the original 10-second video with a frame rate of 25 fps. 
 ``` { .python }
 doc.video.save(
     file_path="/path/my_video.mp4",
@@ -176,9 +176,9 @@ doc.video.save(
 )
 ```
 
-## Display video in notebook
+## Display video in a notebook
 
-You can play a video in a notebook from its URL as well as its tensor, by calling `.display()` on either one. For the latter you can optionally give the corresponding [`AudioTensor`](../../../../api_references/typing/tensor/audio) as a parameter.
+You can play a video in a notebook from its URL as well as its tensor, by calling `.display()` on either one. For the latter, you can optionally give the corresponding [`AudioTensor`](../../../../api_references/typing/tensor/audio) as a parameter.
 
 ``` { .python }
 doc_fast = MyAudio(url="/path/my_video.mp4")

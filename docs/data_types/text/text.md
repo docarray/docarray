@@ -20,7 +20,7 @@ class MyText(BaseDoc):
 doc = MyText(text='Hello world!')
 ```
 
-The text can include any type of characters, including emojis:
+The text can include any type of character, including emojis:
 
 ```python
 doc.text = '👋	नमस्ते दुनिया!	你好世界！こんにちは世界！	Привет мир!'
@@ -28,7 +28,7 @@ doc.text = '👋	नमस्ते दुनिया!	你好世界！こんに
 
 ## Load text file
 
-If your text data is too long to be written inline or if it is stored in a file, you can also define the url as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] first and then load the text data.
+If your text data is too long to be written inline or if it is stored in a file, you can also define the URL as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] first and then load the text data.
 
 Let's first define a schema:
 

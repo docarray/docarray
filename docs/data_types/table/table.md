@@ -5,9 +5,9 @@ This section will show you how to load and handle tabular data using DocArray.
 
 ## Load CSV table
 
-A common way to store tabular data is via `csv` (comma-separated values) files.
-You can easily load such data from a given `csv` file into a [`DocList`][docarray.DocList]. 
-Let's take a look at the following example file, which includes data about book and their authors and publishing year.
+A common way to store tabular data is via `CSV` (comma-separated values) files.
+You can easily load such data from a given `CSV` file into a [`DocList`][docarray.DocList]. 
+Let's take a look at the following example file, which includes data about books and their authors and publishing year.
 
 ```text
 title,author,year
@@ -26,7 +26,7 @@ class Book(BaseDoc):
     author: str
     year: int
 ```
-Next, you can load the content of the csv file to a [`DocList`][docarray.DocList] instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv].
+Next, you can load the content of the CSV file to a [`DocList`][docarray.DocList] instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv].
 ```python
 from docarray import DocList
 
@@ -56,19 +56,19 @@ docs.summary()
     ```
 </details>
 
-The resulting [`DocList`][docarray.DocList] object contains three `Book`s, since each row of the csv file corresponds to one book and is assigned to one `Book` instance.
+The resulting [`DocList`][docarray.DocList] object contains three `Book`s since each row of the CSV file corresponds to one book and is assigned to one `Book` instance.
 
 
 ## Save to CSV file
 
-Vice versa, you can also store your [`DocList`][docarray.DocList] data to a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
+Vice versa, you can also store your [`DocList`][docarray.DocList] data in a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
 ``` { .python }
 docs.to_csv(file_path='/path/to/my_file.csv')
 ```
 
 Tabular data is often not the best choice to represent nested Documents. Hence, nested Documents will be stored flattened and can be accessed by their `'__'`-separated access paths.
 
-Let's take a look at an example. We now want to store not only the book data, but moreover book review data. To do so, we define a `BookReview` class that has a nested `book` attribute as well as the non-nested attributes `n_ratings` and `stars`.
+Let's take a look at an example. We now want to store not only the book data but moreover book review data. To do so, we define a `BookReview` class that has a nested `book` attribute as well as the non-nested attributes `n_ratings` and `stars`.
 
 ```python
 class BookReview(BaseDoc):
@@ -123,7 +123,7 @@ Not only can you load and save comma-separated values (`CSV`) data, but also tab
 by adjusting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] 
 and [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
 
-The dialect defaults to `'excel'`, which refers to comma-separated values. For tab-separated values you can use 
+The dialect defaults to `'excel'`, which refers to comma-separated values. For tab-separated values, you can use 
 `'excel-tab'`.
 
 Let's take a look at what this would look like with a tab-separated file:
@@ -169,7 +169,7 @@ Great! All the data is correctly read and stored in `Book` instances.
 
 If your values are separated by yet another separator, you can create your own `csv.Dialect` class. 
 To do so you can create a class, that inherits from `csv.Dialect`.
-Within this class you can define your dialects behaviour by setting the provided [formatting parameters](https://docs.python.org/3/library/csv.html#dialects-and-formatting-parameters).
+Within this class, you can define your dialect's behavior by setting the provided [formatting parameters](https://docs.python.org/3/library/csv.html#dialects-and-formatting-parameters).
 
 For instance, let's assume you have a semicolon-separated table:
 
@@ -191,7 +191,7 @@ class SemicolonSeparator(csv.Dialect):
     quotechar = '"'
     quoting = csv.QUOTE_MINIMAL
 ```
-Finally, you can read in your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
+Finally, you can load your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
 ```python
 docs = DocList[Book].from_csv(
     file_path='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/books_semicolon_sep.csv?raw=true',
