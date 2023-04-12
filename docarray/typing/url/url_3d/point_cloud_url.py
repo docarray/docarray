@@ -93,7 +93,7 @@ class PointCloud3DUrl(Url3D):
         """
         Plot point cloud from url.
 
-        First, it loads the point cloud into a :class:`PointsAndColors` object, and then
+        First, it loads the point cloud into a `PointsAndColors` object, and then
         calls display on it. The following is therefore equivalent:
 
         .. code-block:: python

@@ -1,3 +1,0 @@
-# Tensor
-
-::: docarray.typing.tensor

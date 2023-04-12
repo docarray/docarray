@@ -6,7 +6,7 @@ from docarray.typing.tensor.ndarray import NdArray
 @_register_proto(proto_type_name='audio_ndarray')
 class AudioNdArray(AbstractAudioTensor, NdArray):
     """
-    Subclass of NdArray, to represent an audio tensor.
+    Subclass of [`NdArray`][docarray.typing.NdArray], to represent an audio tensor.
     Adds audio-specific features to the tensor.
 
 
@@ -33,7 +33,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
         audio_tensor=np.random.rand(1000, 2),
     )
 
-    doc_1.audio_tensor.save(file_path='/tmp/file_1.wav')
+    # doc_1.audio_tensor.save(file_path='/tmp/file_1.wav')
     doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
     # from url
@@ -43,7 +43,7 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
     )
 
     doc_2.audio_tensor, _ = doc_2.url.load()
-    doc_2.audio_tensor.save(file_path='/tmp/file_2.wav')
+    # doc_2.audio_tensor.save(file_path='/tmp/file_2.wav')
     doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
     ```
 

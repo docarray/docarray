@@ -6,9 +6,8 @@ from docarray.typing.tensor.torch_tensor import TorchTensor, metaTorchAndNode
 @_register_proto(proto_type_name='audio_torch_tensor')
 class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndNode):
     """
-    Subclass of TorchTensor, to represent an audio tensor.
+    Subclass of [`TorchTensor`][docarray.typing.TorchTensor], to represent an audio tensor.
     Adds audio-specific features to the tensor.
-
 
     ---
 
@@ -33,7 +32,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
         audio_tensor=torch.zeros(1000, 2),
     )
 
-    doc_1.audio_tensor.save(file_path='/tmp/file_1.wav')
+    # doc_1.audio_tensor.save(file_path='/tmp/file_1.wav')
     doc_1.bytes_ = doc_1.audio_tensor.to_bytes()
 
     doc_2 = MyAudioDoc(
@@ -42,7 +41,7 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
     )
 
     doc_2.audio_tensor, _ = doc_2.url.load()
-    doc_2.audio_tensor.save(file_path='/tmp/file_2.wav')
+    # doc_2.audio_tensor.save(file_path='/tmp/file_2.wav')
     doc_2.bytes_ = doc_1.audio_tensor.to_bytes()
     ```
 
