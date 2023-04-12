@@ -1,5 +1,15 @@
 import os
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    no_type_check,
+)
 
 import orjson
 from pydantic import BaseModel, Field
@@ -12,6 +22,10 @@ from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
+    from pydantic import Protocol
+    from pydantic.types import StrBytes
+    from pydantic.typing import AbstractSetIntStr, MappingIntStrAny
+
     from docarray.array.doc_vec.column_storage import ColumnStorageView
     from docarray.proto import DocProto
 
@@ -260,3 +274,69 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param other: The Document with which to update the contents of this
         """
         super().update(other)
+
+    def to_protobuf(self) -> 'DocProto':
+        """Convert Document into a Protobuf message.
+
+        :return: the protobuf message
+        """
+        super().to_protobuf()
+
+    def json(
+        self,
+        *,
+        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        by_alias: bool = False,
+        skip_defaults: Optional[bool] = None,
+        exclude_unset: bool = False,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False,
+        encoder: Optional[Callable[[Any], Any]] = None,
+        models_as_dict: bool = True,
+        **dumps_kwargs: Any,
+    ) -> str:
+        """
+        Generate a JSON representation of the model, `include` and `exclude` arguments as per `dict()`.
+
+        `encoder` is an optional function to supply as `default` to json.dumps(), other arguments as per `json.dumps()`.
+        """
+        return super().json(
+            include=include,
+            exclude=exclude,
+            by_alias=by_alias,
+            skip_defaults=skip_defaults,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+            encoder=encoder,
+            models_as_dict=models_as_dict,
+            **dumps_kwargs,
+        )
+
+    @no_type_check
+    def parse_raw(
+        cls: Type[T],
+        b: StrBytes,
+        *,
+        content_type: str = None,
+        encoding: str = 'utf8',
+        proto: Protocol = None,
+        allow_pickle: bool = False,
+    ) -> T:
+        """
+        Parse a raw string or bytes into a base doc
+        :param b:
+        :param content_type:
+        :param encoding: the encoding to use when parsing a string, defaults to 'utf8'
+        :param proto: protocol to use.
+        :param allow_pickle: allow pickle protocol
+        :return: a document
+        """
+        return super(BaseDoc, cls).parse_raw(
+            b,
+            content_type=content_type,
+            encoding=encoding,
+            proto=proto,
+            allow_pickle=allow_pickle,
+        )

@@ -79,6 +79,7 @@ nav:
       - user_guide/representing/array.md
     - Sending:
       - user_guide/sending/first_step.md
+      - user_guide/sending/send_doc.md
       - user_guide/sending/send_doclist.md
       - user_guide/sending/send_docvec.md
 
