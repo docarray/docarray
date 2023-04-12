@@ -199,7 +199,7 @@ You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower l
 del doc_index[index_docs[16].id, index_docs[32].id]
 ```
 
-TODO field_name of nested level
+TODO style of field_name of nested level
 
 ## Elasticsearch Query
 Besides the vector search, you can also perform other queries supported by Elasticsearch.
@@ -302,15 +302,79 @@ docs = doc_index.filter(query)
 ```
 
 #### Range filter
-You can use `col_type='date_range'` is used to filter the docs based on the range of the date. 
-TODO: find a use case.
+You can have [range field types](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html) in your `Doc` schema and set `col_type='integer_range'`(or also `date_range`, etc.) to filter the docs based on the range of the field. 
 
+```python
+from pydantic import Field
+
+from docarray import BaseDoc
+from docarray.index import ElasticDocIndex
+
+
+class NewsDoc(BaseDoc):
+    time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+
+doc_index = ElasticDocIndex[NewsDoc]()
+index_docs = [
+    NewsDoc(time_frame={'gte': '2023-01-01', 'lt': '2023-02-01'}),
+    NewsDoc(time_frame={'gte': '2023-02-01', 'lt': '2023-03-01'}),
+    NewsDoc(time_frame={'gte': '2023-03-01', 'lt': '2023-04-01'}),
+]
+doc_index.index(index_docs)
+
+query = {
+    'bool': {
+        'filter': {
+            'range': {
+                'time_frame': {
+                    'gte': '2023-02-05',
+                    'lt': '2023-02-10',
+                    'relation': 'contains',
+                }
+            }
+        }
+    }
+}
+docs = doc_index.filter(query)
+```
 
 ### QueryBuilder
+You can use `QueryBuilder` to build your own query. `find()`, `filter()` and `text_search()` methods and their combination are supported. 
+
+```python
+import numpy as np
+from pydantic import Field
+
+from docarray import BaseDoc
+from docarray.index import ElasticDocIndex
+from docarray.typing import NdArray
 
 
-## Batched Operation
+class MyDoc(BaseDoc):
+    tens: NdArray[10] = Field(similarity='l2_norm')
+    num: int
+    text: str
 
+
+doc_index = ElasticDocIndex[MyDoc]()
+index_docs = [
+    MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
+    for i in range(10)
+]
+doc_index.index(index_docs)
+
+q = (
+    doc_index.build_query()
+    .filter({'range': {'num': {'lte': 3}}})
+    .find(index_docs[-1], search_field='tens')
+    .text_search('0', search_field='text')
+    .build()
+)
+docs, _ = doc_index.execute_query(q)
+```
+
+You can also directly pass a query to `execute_query()` method.
 
 ## Config
 
@@ -326,3 +390,20 @@ The following configs can be set in `DBConfig`:
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
 
 ### RuntimeConfig
+
+The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `default_column_config` and `chunk_size`. You can change `chunk_size` for batch operations.
+
+```python
+doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
+```
+
+`default_column_config` is the default configurations for every column type. Since there are many column types in Elasticsearch, you can also consider changing the column config when defining the schema.
+
+```python
+class SimpleDoc(BaseDoc):
+    tensor: NdArray[128] = Field(similarity='l2_norm', 'm'=32, 'num_candidates'=5000)
+
+
+doc_index = ElasticDocIndex[SimpleDoc]()
+```
