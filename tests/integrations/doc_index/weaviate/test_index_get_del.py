@@ -1,8 +1,10 @@
+# TODO: enable ruff qa on this file when we figure out why it thinks weaviate_client is
+#       redefined at each test that fixture
+# ruff: noqa
 import logging
 
 import numpy as np
 import pytest
-import weaviate
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -13,6 +15,10 @@ from docarray.index.backends.weaviate import (
     WeaviateDocumentIndex,
 )
 from docarray.typing import NdArray
+from tests.integrations.doc_index.weaviate.fixture import (  # noqa: F401
+    start_storage,
+    weaviate_client,
+)
 
 
 class SimpleDoc(BaseDoc):
@@ -32,14 +38,6 @@ class NestedDocument(BaseDoc):
 @pytest.fixture
 def ten_simple_docs():
     return [SimpleDoc(tens=np.random.randn(10)) for _ in range(10)]
-
-
-@pytest.fixture
-def weaviate_client():
-    client = weaviate.Client("http://weaviate:8080")
-    client.schema.delete_all()
-    yield client
-    client.schema.delete_all()
 
 
 @pytest.fixture

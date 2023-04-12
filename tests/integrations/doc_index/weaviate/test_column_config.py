@@ -1,17 +1,14 @@
-import pytest
-import weaviate
+# TODO: enable ruff qa on this file when we figure out why it thinks weaviate_client is
+#       redefined at each test that fixture
+# ruff: noqa
 from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
-
-
-@pytest.fixture
-def weaviate_client():
-    client = weaviate.Client("http://weaviate:8080")
-    client.schema.delete_all()
-    yield client
-    client.schema.delete_all()
+from tests.integrations.doc_index.weaviate.fixture import (  # noqa: F401
+    start_storage,
+    weaviate_client,
+)
 
 
 def test_column_config(weaviate_client):

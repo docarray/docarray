@@ -1,20 +1,17 @@
+# TODO: enable ruff qa on this file when we figure out why it thinks weaviate_client is
+#       redefined at each test that fixture
+# ruff: noqa
 import numpy as np
-import pytest
 import torch
-import weaviate
 from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
 from docarray.typing import TorchTensor
-
-
-@pytest.fixture
-def weaviate_client():
-    client = weaviate.Client("http://weaviate:8080")
-    client.schema.delete_all()
-    yield client
-    client.schema.delete_all()
+from tests.integrations.doc_index.weaviate.fixture import (  # noqa: F401
+    start_storage,
+    weaviate_client,
+)
 
 
 def test_find_torch(weaviate_client):
