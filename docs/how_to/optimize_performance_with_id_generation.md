@@ -1,4 +1,4 @@
-# How to optimize performance
+# Optimize performance
 
 ### `BaseDoc`'s id
 
