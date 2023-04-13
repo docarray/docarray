@@ -27,7 +27,6 @@ if TYPE_CHECKING:
     from pydantic.typing import AbstractSetIntStr, MappingIntStrAny
 
     from docarray.array.doc_vec.column_storage import ColumnStorageView
-    from docarray.proto import DocProto
 
 _console: Console = Console()
 
