@@ -7,8 +7,8 @@ You need to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] before you can 
 
 ## Serialization to protobuf
 
-You can use [`to_protobuf`][docarray.base_doc.doc.BaseDoc.to_protobuf] to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] to a protobuf message object
-and use [`from_protobuf`][docarray.base_doc.doc.BaseDoc.from_protobuf] to deserialize it.
+You can use [`to_protobuf`][docarray.base_doc.mixins.io.IOMixin.to_protobuf] to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] to a protobuf message object
+and use [`from_protobuf`][docarray.base_doc.mixins.io.IOMixin.from_protobuf] to deserialize it.
 
 ```python
 from typing import List
