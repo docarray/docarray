@@ -24,8 +24,8 @@ services:
       - "9005:9000"
     command: server /data
 ```
-Save the above file as `docker-compose.yml` and run the following line in the same folder as the file,
-```bash
+Save the above file as `docker-compose.yml` and run the following line in the same folder as the file.
+```cmd
 docker-compose up
 ```
 
@@ -56,8 +56,8 @@ if __name__ == '__main__':
     s3.create_bucket(Bucket=BUCKET)
 
     store_docs = [SimpleDoc(text=f'doc {i}') for i in range(8)]
-    dl = DocList[SimpleDoc]()
-    dl.extend([SimpleDoc(text=f'doc {i}') for i in range(8)])
+    docs = DocList[SimpleDoc]()
+    docs.extend([SimpleDoc(text=f'doc {i}') for i in range(8)])
 
     # .push() and .pull() use the default boto3 client
     boto3.Session.client.__defaults__ = (
@@ -71,15 +71,15 @@ if __name__ == '__main__':
         None,
         Config(signature_version="s3v4"),
     )
-    dl.push(f's3://{BUCKET}/simple_dl')
-    dl_pull = DocList[SimpleDoc].pull(f's3://{BUCKET}/simple_dl')
+    docs.push(f's3://{BUCKET}/simple_docs')
+    docs_pull = DocList[SimpleDoc].pull(f's3://{BUCKET}/simple_docs')
 
     # delete the bucket
     s3.Bucket(BUCKET).objects.all().delete()
     s3.Bucket(BUCKET).delete()
 ```
 
-Under the bucket `tmp_bucket`, there is a file with the name of `simple_dl.docs` being created to store the `DocList`.
+Under the bucket `tmp_bucket`, there is a file with the name of `simple_docs.docs` being created to store the `DocList`.
 
 !!! note
     When using `.push()` and `.pull()`, `DocList` calls the default boto3 client. Be sure your default session is correctly set up.
@@ -98,5 +98,5 @@ To delete the store, you need to use the static method [`.delete()`][docarray.st
 ```python
 from docarray.store import S3DocStore
 
-success = S3DocStore.delete(f's3://{BUCKET}/simple_dl')
+success = S3DocStore.delete(f's3://{BUCKET}/simple_docs')
 ```

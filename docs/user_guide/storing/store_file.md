@@ -1,12 +1,5 @@
-# Store
-[DocList][docarray.array.doc_list.doc_list.DocList] can be persisted using the
-[`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] and 
-[`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] methods. 
-Under the hood, [DocStore][docarray.store.abstract_doc_store.AbstractDocStore] is used to persist a `DocList`. 
-You can store your `Doc` on-disk. Alternatively, you can upload to [AWS S3](https://aws.amazon.com/s3/), 
-[minio](https://min.io) or [Jina AI Cloud](https://cloud.jina.ai/user/storage). 
+# Store on-disk
 
-## Store on-disk
 When you want to use your [DocList][docarray.array.doc_list.doc_list.DocList] in another place, you can use the 
 [`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] function to push the [DocList][docarray.array.doc_list.doc_list.DocList] 
 to one place and later use the [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] function to pull its content back. 
