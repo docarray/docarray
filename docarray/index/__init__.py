@@ -7,7 +7,8 @@ from docarray.utils._internal.misc import (
 )
 
 if TYPE_CHECKING:
-    from docarray.index.backends.elastic import ElasticV7DocIndex  # noqa: F401
+    from docarray.index.backends.elastic import ElasticDocIndex  # noqa: F401
+    from docarray.index.backends.elasticv7 import ElasticV7DocIndex  # noqa: F401
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
     from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
 
@@ -19,9 +20,12 @@ def __getattr__(name: str):
     if name == 'HnswDocumentIndex':
         import_library('hnswlib', raise_error=True)
         import docarray.index.backends.hnswlib as lib
-    elif name == 'ElasticV7DocIndex':
+    elif name == 'ElasticDocIndex':
         import_library('elasticsearch', raise_error=True)
         import docarray.index.backends.elastic as lib
+    elif name == 'ElasticV7DocIndex':
+        import_library('elasticsearch', raise_error=True)
+        import docarray.index.backends.elasticv7 as lib
     elif name == 'QdrantDocumentIndex':
         import_library('qdrant_client', raise_error=True)
         import docarray.index.backends.qdrant as lib
