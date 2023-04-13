@@ -43,20 +43,15 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
         check_raw_file_full(text, lang=lang, keyword_ignore=keyword_ignore)
 
 
-paths = [
-    *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
-    *list(pathlib.Path('docs/data_types').glob('**/*.md')),
-]
-exclude = [pathlib.Path('docs/user_guide/storing/store_jac.md')]
-
-for path in exclude:
-    if path in paths:
-        paths.remove(path)
-
-
-@pytest.mark.parametrize('fpath', paths, ids=str)
+@pytest.mark.parametrize(
+    'fpath',
+    [
+        *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
+        *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+    ],
+    ids=str,
+)
 def test_files_good(fpath):
-    print(f"fpath = {fpath}")
     check_md_file(fpath=fpath, memory=True)
 
 
