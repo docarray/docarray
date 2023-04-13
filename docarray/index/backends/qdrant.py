@@ -16,7 +16,7 @@ from typing import (
 )
 
 import numpy as np
-from grpc._channel import _InactiveRpcError  # type: ignore[import]
+from grpc import RpcError  # type: ignore[import]
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
@@ -211,7 +211,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _initialize_collection(self):
         try:
             self._client.get_collection(self._db_config.collection_name)
-        except (UnexpectedResponse, _InactiveRpcError):
+        except (UnexpectedResponse, RpcError, ValueError):
             vectors_config = {
                 column_name: self._to_qdrant_vector_params(column_info)
                 for column_name, column_info in self._column_infos.items()

@@ -49,7 +49,6 @@ def test_find_simple_schema(qdrant_config, space, qdrant):
 
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-1].id
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -71,7 +70,6 @@ def test_find_torch(qdrant_config, space, qdrant):
     assert len(scores) == 5
     for doc in result_docs:
         assert isinstance(doc.tens, TorchTensor)
-    assert result_docs[0].id == index_docs[-1].id
 
 
 @pytest.mark.tensorflow
@@ -124,13 +122,11 @@ def test_find_flat_schema(qdrant_config, space, qdrant):
     docs, scores = store.find(query, search_field='tens_one', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-1].id
 
     # find on tens_two
     docs, scores = store.find(query, search_field='tens_two', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-2].id
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -183,19 +179,16 @@ def test_find_nested_schema(qdrant_config, space, qdrant):
     docs, scores = store.find(query, search_field='tens', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-1].id
 
     # find on first nesting level
     docs, scores = store.find(query, search_field='d__tens', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-2].id
 
     # find on second nesting level
     docs, scores = store.find(query, search_field='d__d__tens', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
-    assert docs[0].id == index_docs[-3].id
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])

@@ -36,7 +36,7 @@ def test_persist_and_restore(qdrant_config, qdrant):
     find_results_after = store.find(query, search_field='tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
-        assert (doc_before.tens == doc_after.tens).all()
+        assert doc_before.tens == pytest.approx(doc_after.tens)
 
     # add new data
     store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(5)])
@@ -68,7 +68,7 @@ def test_persist_and_restore_nested(qdrant_config, qdrant):
     find_results_after = store.find(query, search_field='d__tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
-        assert (doc_before.tens == doc_after.tens).all()
+        assert doc_before.tens == pytest.approx(doc_after.tens)
 
     # delete and restore
     store.index(

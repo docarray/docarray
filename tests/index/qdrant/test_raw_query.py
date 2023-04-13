@@ -20,7 +20,6 @@ class SimpleDoc(BaseDoc):
 @pytest.fixture
 def index_docs() -> Sequence[SimpleDoc]:
     index_docs = [SimpleDoc(embedding=np.zeros(4), text=f'Test {i}') for i in range(10)]
-    index_docs.append(SimpleDoc(embedding=np.ones(4)))
     return index_docs
 
 
