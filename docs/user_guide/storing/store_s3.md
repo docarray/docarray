@@ -98,5 +98,6 @@ To delete the store, you need to use the static method [`.delete()`][docarray.st
 ```python
 from docarray.store import S3DocStore
 
+BUCKET = 'tmp_bucket'
 success = S3DocStore.delete(f's3://{BUCKET}/simple_docs')
 ```
