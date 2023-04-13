@@ -43,8 +43,9 @@ class UpdateMixin:
         ---
 
         ```python
+        from typing import List, Optional
+
         from docarray import BaseDoc
-        from docarray.documents import Text
 
 
         class MyDocument(BaseDoc):
