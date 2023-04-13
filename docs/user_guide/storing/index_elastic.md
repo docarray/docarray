@@ -47,7 +47,7 @@ docker-compose up
 ```
 
 ## Construct
-To construct an index, you need to define the schema first. You can define the schema in the same way as defining a `Doc`. Dimensionality is necessary for vector space, you need to specify the shape or define it by `dims`. TODO: add links to the detailed explaination.
+To construct an index, you need to define the schema first. You can define the schema in the same way as defining a `Doc`. Dimensionality is necessary for vector space that you want to perform similarity search in the future. You need to specify the shape or define it by `dims`. You can set `col_type` to configurate [field data types in ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping-types.html).
 
 `hosts` is the argument for setting the elasticsearch hosts. By default, it is `http://localhost:9200`. 
 
@@ -68,7 +68,6 @@ class SimpleDoc(BaseDoc):
 
 doc_index = ElasticDocIndex[SimpleDoc]()
 ```
-TODO some common info: specifying col_type, custom_config, Union etc.
 
 ## Index
 Use `.index()` to add `Doc` into the index. You could use the same class as the schema for defining the `Doc`. Alternatively, you need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
@@ -117,7 +116,7 @@ del doc_index[index_docs[17].id, index_docs[18].id]
 ```
 
 ## Find Nearest Neighbors
-Use `.find()` to find the nearest neighbors of a tensor. You can use `limit` argument to configurate how much `Doc` to return, and `search_field` argument to configurate the name of the field to search on.
+The `.find()` method is used to find the nearest neighbors of a tensor. You need to specify `search_field` that is used when performing the vector search. You can use `limit` argument to configurate how much `Doc` to return.
 
 ```python
 query = SimpleDoc(tensor=np.ones(128))
@@ -167,7 +166,7 @@ index_docs = [
 doc_index.index(index_docs)
 ```
 
-Use the `search_field` to specify which field to be used when performing the vector search. You can use the dunder operator to specify the field defined in the nested data. In the following codes, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field.
+You can use the dunder operator to specify the field defined in the nested data. In the following codes, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field.
 
 ```python
 # example of find nested and flat index
@@ -196,8 +195,6 @@ You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower l
 del doc_index[index_docs[3].id, index_docs[4].id]
 ```
 
-TODO style of field_name of nested level
-
 ## Elasticsearch Query
 Besides the vector search, you can also perform other queries supported by Elasticsearch.
 
@@ -222,7 +219,7 @@ docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
 ### Query Filter
-To filter the docs, you can use `col_type` to configurate the fields. `filter()` accepts queries that follow [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
+`filter()` accepts queries that follow [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
 
 #### Keyword filter
 To filter the docs, you can use `col_type='keyword'` to configurate the keyword search for the fields.
