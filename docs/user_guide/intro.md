@@ -1,4 +1,4 @@
-# User Guide - Introduction
+# Introduction
 
 This user guide shows you how to use `DocArray` with most of its features.
 

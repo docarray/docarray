@@ -10,6 +10,7 @@ from docarray.typing import NdArray
 from tests.index.elastic.fixture import (  # noqa: F401
     DeepNestedDoc,
     FlatDoc,
+    MyImageDoc,
     NestedDoc,
     SimpleDoc,
     start_storage_v7,
@@ -247,7 +248,7 @@ def test_index_union_doc():
 
 def test_index_multi_modal_doc():
     class MyMultiModalDoc(BaseDoc):
-        image: ImageDoc
+        image: MyImageDoc
         text: TextDoc
 
     store = ElasticV7DocIndex[MyMultiModalDoc]()
@@ -263,3 +264,7 @@ def test_index_multi_modal_doc():
     assert store[id_].id == id_
     assert np.all(store[id_].image.embedding == doc[0].image.embedding)
     assert store[id_].text.text == doc[0].text.text
+
+    query = doc[0]
+    docs, _ = store.find(query, limit=10, search_field='image__embedding')
+    assert len(docs) > 0
