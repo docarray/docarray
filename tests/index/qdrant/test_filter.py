@@ -10,22 +10,12 @@ from docarray.typing import NdArray
 
 from qdrant_client.http import models as rest
 
+from .fixtures import qdrant_config, qdrant  # ignore: type[import]
+
 
 class SimpleDoc(BaseDoc):
     embedding: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
     number: int
-
-
-@pytest.fixture
-def qdrant_config():
-    return QdrantDocumentIndex.DBConfig()
-
-
-@pytest.fixture
-def qdrant():
-    """This fixture takes care of removing the collection before each test case"""
-    client = qdrant_client.QdrantClient('http://localhost:6333')
-    client.delete_collection(collection_name='documents')
 
 
 def test_filter_range(qdrant_config, qdrant):

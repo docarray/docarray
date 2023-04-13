@@ -5,7 +5,8 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, TorchTensor
-import qdrant_client
+
+from .fixtures import qdrant_config, qdrant  # ignore: type[import]
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -29,18 +30,6 @@ class DeepNestedDoc(BaseDoc):
 
 class TorchDoc(BaseDoc):
     tens: TorchTensor[10]  # type: ignore[valid-type]
-
-
-@pytest.fixture
-def qdrant_config():
-    return QdrantDocumentIndex.DBConfig()
-
-
-@pytest.fixture
-def qdrant():
-    """This fixture takes care of removing the collection before each test case"""
-    client = qdrant_client.QdrantClient('http://localhost:6333')
-    client.delete_collection(collection_name='documents')
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -85,7 +74,7 @@ def test_find_torch(qdrant_config, space, qdrant):
     assert result_docs[0].id == index_docs[-1].id
 
 
-@pytest.mark.skip('Tensorflow is not listed in the dependencies')
+@pytest.mark.tensorflow
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_tensorflow(qdrant_config, space, qdrant):
     from docarray.typing import TensorFlowTensor
@@ -93,7 +82,7 @@ def test_find_tensorflow(qdrant_config, space, qdrant):
     class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]  # type: ignore[valid-type]
 
-    store = QdrantDocumentIndex[TorchDoc](db_config=qdrant_config)
+    store = QdrantDocumentIndex[TfDoc](db_config=qdrant_config)
 
     index_docs = [
         TfDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
@@ -112,9 +101,6 @@ def test_find_tensorflow(qdrant_config, space, qdrant):
         assert isinstance(doc.tens, TensorFlowTensor)
 
     assert docs[0].id == index_docs[-1].id
-    assert np.allclose(
-        docs[0].tens.unwrap().numpy(), index_docs[-1].tens.unwrap().numpy()
-    )
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])

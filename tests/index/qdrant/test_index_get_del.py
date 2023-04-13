@@ -11,7 +11,7 @@ from docarray.documents import ImageDoc, TextDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
 
-import qdrant_client
+from .fixtures import qdrant_config, qdrant  # ignore: type[import]
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -35,20 +35,6 @@ class DeepNestedDoc(BaseDoc):
 
 class TorchDoc(BaseDoc):
     tens: TorchTensor[10]  # type: ignore[valid-type]
-
-
-@pytest.fixture
-def qdrant_config():
-    return QdrantDocumentIndex.DBConfig(
-        url='http://localhost:6333',
-    )
-
-
-@pytest.fixture
-def qdrant():
-    """This fixture takes care of removing the collection before each test case"""
-    client = qdrant_client.QdrantClient('http://localhost:6333')
-    client.delete_collection(collection_name='documents')
 
 
 @pytest.fixture

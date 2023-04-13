@@ -1,5 +1,4 @@
 import pytest
-import qdrant_client
 import numpy as np
 
 from pydantic import Field
@@ -9,6 +8,8 @@ from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
 
 from qdrant_client.http import models as rest
+
+from .fixtures import qdrant_config, qdrant  # ignore: type[import]
 
 
 class SimpleDoc(BaseDoc):
@@ -21,18 +22,6 @@ class SimpleSchema(BaseDoc):
     embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
     number: int
     text: str
-
-
-@pytest.fixture
-def qdrant_config():
-    return QdrantDocumentIndex.DBConfig()
-
-
-@pytest.fixture
-def qdrant():
-    """This fixture takes care of removing the collection before each test case"""
-    client = qdrant_client.QdrantClient('http://localhost:6333')
-    client.delete_collection(collection_name='documents')
 
 
 def test_find_uses_provided_vector(qdrant_config, qdrant):
