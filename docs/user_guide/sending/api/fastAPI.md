@@ -1,8 +1,14 @@
-# Use DocArray with FastAPI
+# FastAPI
 
-FastAPI is a high-performance web framework for building APIs with Python. It's designed to be easy to use and supports asynchronous programming. 
-Since [`DocArray` documents are Pydantic Models (with a twist)](../user_guide/representing/first_step.md) they can be easily integrated with FastAPI, 
+[FastAPI](https://fastapi.tiangolo.com/) is a high-performance web framework for building APIs with Python based on Python type hints. It's designed to be easy to use and supports asynchronous programming. 
+Since [`DocArray` documents are Pydantic Models (with a twist)](../../representing/first_step.md) they can be easily integrated with FastAPI, 
 and provide a seamless and efficient way to work with multimodal data in FastAPI-powered APIs.
+
+!!! note
+    you need to install FastAPI to follow this section
+    ``` 
+    pip install fastapi
+    ```
 
 
 First, you should define schemas for your input and/or output Documents:

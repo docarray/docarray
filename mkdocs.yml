@@ -81,16 +81,22 @@ nav:
     - Representing data:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
-    - user_guide/sending/first_step.md
+    - Sending:
+      - user_guide/sending/first_step.md
+      - Serialization:
+        - user_guide/sending/ser/send_doc.md
+        - user_guide/sending/ser/send_doclist.md
+        - user_guide/sending/ser/send_docvec.md
+      - Building API:
+          - user_guide/sending/api/jina.md
+          - user_guide/sending/api/fastAPI.md
+
     - user_guide/storing/first_step.md
 
   - How-to:
     - how_to/add_doc_index.md
     - how_to/multimodal_training_and_serving.md
     - how_to/optimize_performance_with_id_generation.md
-    - how_to/audio2text.md
-  - Integrations:
-    - integrations/fastapi.md
   - Data Types:
     - data_types/text/text.md
     - data_types/image/image.md
