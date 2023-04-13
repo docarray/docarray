@@ -79,14 +79,6 @@ def test_index_simple_schema(ten_simple_docs, qdrant_config, use_docarray, qdran
     assert store.num_docs() == 10
 
 
-def test_schema_with_user_defined_mapping(qdrant_config, qdrant):
-    class MyDoc(BaseDoc):
-        tens: NdArray[10] = Field(dim=1000, col_type=np.ndarray)  # type: ignore[valid-type]
-
-    store = QdrantDocumentIndex[MyDoc](db_config=qdrant_config)
-    assert store._column_infos['tens'].db_type == np.ndarray
-
-
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_flat_schema(ten_flat_docs, qdrant_config, use_docarray, qdrant):
     store = QdrantDocumentIndex[FlatDoc](db_config=qdrant_config)

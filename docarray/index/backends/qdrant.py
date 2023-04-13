@@ -192,7 +192,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'id': {},  # type: ignore[dict-item]
                 'vector': {'dim': 128},  # type: ignore[dict-item]
                 'payload': {},  # type: ignore[dict-item]
-                np.ndarray: {},  # type: ignore[dict-item]
             }
         )
 
