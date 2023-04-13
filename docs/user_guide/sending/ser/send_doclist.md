@@ -2,7 +2,7 @@
 When sending or storing [`DocList`][docarray.array.doc_list.doc_list.DocList], you need to use serialization. [DocList][docarray.array.doc_list.doc_list.DocList] supports multiple ways to serialize the data.
 
 ## JSON
-You can use [`to_json()`][docarray.array.doc_list.doc_list.DocList.to_json] and [`from_json()`][docarray.array.doc_list.doc_list.DocList.from_json] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList].
+You can use [`to_json()`][docarray.array.doc_list.doc_list.DocList.to_json] and [`from_json()`][docarray.array.doc_list.doc_list.DocList.from_json] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -31,7 +31,7 @@ b'[{"id":"5540e72d407ae81abb2390e9249ed066","text":"doc 0"},{"id":"fbe9f80d2fa03
 ```
 
 ## Protobuf
-To serialize a DocList with `protobuf`, you can use [`to_protobuf()`][docarray.array.doc_list.doc_list.DocList.to_protobuf]  and [`from_protobuf()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList].
+To serialize a DocList with `protobuf`, you can use [`to_protobuf()`][docarray.array.doc_list.doc_list.DocList.to_protobuf]  and [`from_protobuf()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -55,7 +55,7 @@ print(dl_from_proto)
 When transferring over the network, you can choose `Base64` format to serialize the [`DocList`][docarray.array.doc_list.doc_list.DocList].
 Serializing a [DocList][docarray.array.doc_list.doc_list.DocList] in Base64 supports both `pickle` and `protobuf` protocols. Besides, you can choose different compression methods.
 
-To serialize a [DocList][docarray.array.doc_list.doc_list.DocList] in Base64, you can use [`to_base64()`][docarray.array.doc_list.doc_list.DocList.to_base64]  and [`from_base64()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.from_base64].
+To serialize a [DocList][docarray.array.doc_list.doc_list.DocList] in Base64, you can use [`to_base64()`][docarray.array.doc_list.doc_list.DocList.to_base64]  and [`from_base64()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.from_base64]:
 
 We support multiple compression methods. (namely : `lz4`, `bz2`, `lzma`, `zlib`, `gzip`)
 
@@ -80,7 +80,7 @@ dl_from_base64 = DocList[SimpleDoc].from_base64(
 ## Binary
 Similar to `Base64` serialization, `Binary` serialization also supports different protocols and compression methods.
 
-To save a [DocList][docarray.array.doc_list.doc_list.DocList] into a binary file, you can use [`save_binary()`][docarray.array.doc_list.doc_list.DocList.to_base64]  and [`load_binary()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.from_base64].
+To save a [DocList][docarray.array.doc_list.doc_list.DocList] into a binary file, you can use [`save_binary()`][docarray.array.doc_list.doc_list.DocList.to_base64]  and [`load_binary()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.from_base64]:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -123,7 +123,7 @@ dl_from_bytes = DocList[SimpleDoc].from_bytes(
 
 
 ## CSV
-You can use [`from_csv()`][docarray.array.doc_list.doc_list.DocList.from_csv] and [`to_csv()`][docarray.array.doc_list.doc_list.DocList.to_csv] to de-/serializae and deserialize the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a CSV file. Use the `dialect` parameter to choose the dialect of the CSV format.
+You can use [`from_csv()`][docarray.array.doc_list.doc_list.DocList.from_csv] and [`to_csv()`][docarray.array.doc_list.doc_list.DocList.to_csv] to de-/serializae and deserialize the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a CSV file. Use the `dialect` parameter to choose the dialect of the CSV format:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -142,7 +142,7 @@ print(dl_from_csv)
 
 
 ## Pandas.Dataframe
-You can use [`from_dataframe()`][docarray.array.doc_list.doc_list.DocList.from_dataframe] and [`to_dataframe()`][docarray.array.doc_list.doc_list.DocList.to_dataframe] to load/save the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a pandas DataFrame.
+You can use [`from_dataframe()`][docarray.array.doc_list.doc_list.DocList.from_dataframe] and [`to_dataframe()`][docarray.array.doc_list.doc_list.DocList.to_dataframe] to load/save the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a pandas DataFrame:
 
 ```python
 from docarray import BaseDoc, DocList

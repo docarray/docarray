@@ -26,7 +26,7 @@ new_doc = MyDoc.from_protobuf(proto_message)
 assert doc == new_doc  # True
 ```
 
-## Serialization to json
+## Serialization to JSON
 
 You can use [`json`][docarray.base_doc.doc.BaseDoc.json] to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] to a json string
 and use [`parse_raw`][docarray.base_doc.doc.BaseDoc.parse_raw] to deserialize it.
