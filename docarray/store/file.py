@@ -16,11 +16,15 @@ SelfFileDocStore = TypeVar('SelfFileDocStore', bound='FileDocStore')
 
 
 class FileDocStore(AbstractDocStore):
+    """Class to push and pull [`DocList`][docarray.DocList] on-disk."""
+
     @staticmethod
     def _abs_filepath(name: str) -> Path:
         """Resolve a name to an absolute path.
-        If it is not a path, the cache directoty is prepended.
-        If it is a path, it is resolved to an absolute path.
+
+        :param name: If it is not a path, the cache directory is prepended.
+            If it is a path, it is resolved to an absolute path.
+        :return: Path
         """
         if not (name.startswith('/') or name.startswith('~') or name.startswith('.')):
             name = str(_get_cache_path() / name)
@@ -32,11 +36,11 @@ class FileDocStore(AbstractDocStore):
     def list(
         cls: Type[SelfFileDocStore], namespace: str, show_table: bool
     ) -> List[str]:
-        """List all DocArrays in a directory.
+        """List all [`DocList`s][docarray.DocList] in a directory.
 
         :param namespace: The directory to list.
         :param show_table: If True, print a table of the files in the directory.
-        :return: A list of the names of the DocArrays in the directory.
+        :return: A list of the names of the `DocLists` in the directory.
         """
         namespace_dir = cls._abs_filepath(namespace)
         if not namespace_dir.exists():
@@ -51,7 +55,7 @@ class FileDocStore(AbstractDocStore):
             from rich.table import Table
 
             table = Table(
-                title=f'You have {len(da_files)} DocArrays in file://{namespace_dir}',
+                title=f'You have {len(da_files)} DocLists in file://{namespace_dir}',
                 box=box.SIMPLE,
                 highlight=True,
             )
@@ -74,9 +78,9 @@ class FileDocStore(AbstractDocStore):
     def delete(
         cls: Type[SelfFileDocStore], name: str, missing_ok: bool = False
     ) -> bool:
-        """Delete a DocList from the local filesystem.
+        """Delete a [`DocList`][docarray.DocList] from the local filesystem.
 
-        :param name: The name of the DocList to delete.
+        :param name: The name of the `DocList` to delete.
         :param missing_ok: If True, do not raise an exception if the file does not exist. Defaults to False.
         :return: True if the file was deleted, False if it did not exist.
         """
@@ -98,8 +102,9 @@ class FileDocStore(AbstractDocStore):
         show_progress: bool,
         branding: Optional[Dict],
     ) -> Dict:
-        """Push this DocList object to the specified file path.
+        """Push this [`DocList`][docarray.DocList] object to the specified file path.
 
+        :param docs: The `DocList` to push.
         :param name: The file path to push to.
         :param public: Not used by the ``file`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
@@ -150,12 +155,12 @@ class FileDocStore(AbstractDocStore):
         show_progress: bool,
         local_cache: bool,
     ) -> 'DocList':
-        """Pull a :class:`DocList` from the specified url.
+        """Pull a [`DocList`][docarray.DocList] from the specified url.
 
         :param name: The file path to pull from.
         :param show_progress: if true, display a progress bar.
-        :param local_cache: store the downloaded DocList to local folder
-        :return: a :class:`DocList` object
+        :param local_cache: store the downloaded `DocList` to local folder
+        :return: a `DocList` object
         """
 
         return docs_cls(
