@@ -6,6 +6,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
+from docarray.documents import ImageDoc
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
@@ -56,6 +57,10 @@ class NestedDoc(BaseDoc):
 
 class DeepNestedDoc(BaseDoc):
     d: NestedDoc
+
+
+class MyImageDoc(ImageDoc):
+    embedding: NdArray = Field(dims=128)
 
 
 @pytest.fixture(scope='function')
