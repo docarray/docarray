@@ -170,7 +170,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         For more Pythonic code, please use ``bytes(...)``.
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compression algorithm to use
         :return: the binary serialization in bytes
         """
         return super().to_bytes(protocol, compress)
@@ -186,7 +186,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         :param data: binary bytes
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress method to use
+        :param compress: compression method to use
         :return: a Document object
         """
         return super(BaseDoc, cls).from_bytes(data, protocol, compress)
@@ -197,7 +197,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """Serialize a Document object into as base64 string
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress method to use
+        :param compress: compression method to use
         :return: a base64 encoded string
         """
         return super().to_base64(protocol, compress)
@@ -213,7 +213,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         :param data: a base64 encoded string
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress method to use
+        :param compress: compression method to use
         :return: a Document object
         """
         return super(BaseDoc, cls).from_base64(data, protocol, compress)

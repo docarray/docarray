@@ -335,7 +335,7 @@ class DocList(
 
         :param data: Bytes from which to deserialize
         :param protocol: protocol that was used to serialize
-        :param compress: compress algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
+        :param compress: compression algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the deserialized DocList
         """
