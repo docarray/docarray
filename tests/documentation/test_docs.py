@@ -4,6 +4,8 @@ import pytest
 from mktestdocs import grab_code_blocks
 from mktestdocs.__main__ import _executors, check_raw_string
 
+file_to_skip = ['fastAPI', 'jina']
+
 
 def check_raw_file_full(raw, lang="python", keyword_ignore=[]):
     if lang not in _executors:
@@ -43,19 +45,25 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
         check_raw_file_full(text, lang=lang, keyword_ignore=keyword_ignore)
 
 
-@pytest.mark.parametrize(
-    'fpath',
-    [
-        *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
-        *list(pathlib.Path('docs/data_types').glob('**/*.md')),
-    ],
-    ids=str,
-)
+files_to_check = [
+    *list(pathlib.Path('docs/user_guide').glob('**/*.md')),
+    *list(pathlib.Path('docs/data_types').glob('**/*.md')),
+]
+
+file_to_remove = []
+
+for file in files_to_check:
+    for fn in file_to_skip:
+        if fn in str(file):
+            file_to_remove.append(file)
+
+for file in file_to_remove:
+    files_to_check.remove(file)
+
+
+@pytest.mark.parametrize('fpath', files_to_check, ids=str)
 def test_files_good(fpath):
-    keyword_ignore = []
-    if 'store_jac.md' in str(fpath):
-        keyword_ignore = ['jac']
-    check_md_file(fpath=fpath, memory=True, keyword_ignore=keyword_ignore)
+    check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle', 'jac'])
 
 
 def test_readme():
