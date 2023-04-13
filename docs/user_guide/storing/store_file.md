@@ -16,16 +16,13 @@ class SimpleDoc(BaseDoc):
 
 
 dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
-dl.push('file:///Users/docarray/tmp/simple_dl')
+dl.push('file://simple_dl')
 
-dl_pull = DocList[SimpleDoc].pull('file:///Users/docarray/tmp/simple_dl')
+dl_pull = DocList[SimpleDoc].pull('file://simple_dl')
 ```
 
-Under `/Users/docarray/tmp/`, there is a file with the name of `simple_dl.docs` being created to store the `DocList`.
-``` { .output .no-copy }
-tmp
-└── simple_dl.docs
-```
+A file with the name of `simple_dl.docs` being created to store the `DocList`.
+
 
 ## Push & pull with streaming
 When you have a large amount of documents to push and pull, you could use the streaming function. 
@@ -45,14 +42,10 @@ store_docs = [SimpleDoc(text=f'doc {i}') for i in range(8)]
 
 DocList[SimpleDoc].push_stream(
     iter(store_docs),
-    'file:///Users/docarray/tmp/dl_stream',
+    'file://dl_stream',
 )
-dl_pull_stream_1 = DocList[SimpleDoc].pull_stream(
-    'file:///Users/docarray/tmp/dl_stream'
-)
-dl_pull_stream_2 = DocList[SimpleDoc].pull_stream(
-    'file:///Users/docarray/tmp/dl_stream'
-)
+dl_pull_stream_1 = DocList[SimpleDoc].pull_stream('file://dl_stream')
+dl_pull_stream_2 = DocList[SimpleDoc].pull_stream('file://dl_stream')
 
 for d1, d2 in zip(dl_pull_stream_1, dl_pull_stream_2):
     print(f'get {d1}, get {d2}')
