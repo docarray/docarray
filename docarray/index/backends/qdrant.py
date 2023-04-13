@@ -320,20 +320,28 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _execute_raw_query(
         self, query: RawQuery
     ) -> Sequence[Union[rest.ScoredPoint, rest.Record]]:
+        payload_filter = query.pop('filter', None)
+        if payload_filter:
+            payload_filter = rest.Filter.parse_obj(payload_filter)  # type: ignore[assignment]
+
         if 'vector' in query:
             # We perform semantic search with some vectors with Qdrant's search method
             # should be called
+            search_params = query.pop('params', None)
+            if search_params:
+                search_params = rest.SearchParams.parse_obj(search_params)  # type: ignore[assignment]
             points = self._client.search(  # type: ignore[assignment]
                 collection_name=self._db_config.collection_name,
                 query_vector=query.pop('vector'),
-                query_filter=query.pop('filter', None),
+                query_filter=payload_filter,
+                search_params=search_params,
                 **query,
             )
         else:
             # Just filtering, so Qdrant's scroll has to be used instead
             points, _ = self._client.scroll(  # type: ignore[assignment]
                 collection_name=self._db_config.collection_name,
-                scroll_filter=query.pop('filter', None),
+                scroll_filter=payload_filter,
                 **query,
             )
 
@@ -496,7 +504,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> Dict[str, Any]:
         document = cast(Dict[str, Any], point.payload)
         generated_vectors = document.pop('__generated_vectors')
-        for vector_name, vector in point.vector.items():  # type: ignore[union-attr]
+        vectors = point.vector if point.vector else dict()
+        if not isinstance(vectors, dict):
+            vectors = {'__default__': vectors}
+        for vector_name, vector in vectors.items():
             if vector_name in generated_vectors:
                 # That means the vector was generated during the upload, and should not
                 # be returned along the other vectors.

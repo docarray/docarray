@@ -1,3 +1,8 @@
+import numpy as np
+
+from typing import Optional, Sequence
+
+import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -7,19 +12,72 @@ from docarray.typing import NdArray
 from .fixtures import qdrant_config, qdrant
 
 
-def test_dict_filter_get_passed(qdrant_config, qdrant):
-    class SimpleSchema(BaseDoc):
-        embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
-        text: str
+class SimpleDoc(BaseDoc):
+    embedding: NdArray[4] = Field(space='cosine')  # type: ignore[valid-type]
+    text: Optional[str]
 
-    store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
+@pytest.fixture
+def index_docs() -> Sequence[SimpleDoc]:
+    index_docs = [SimpleDoc(embedding=np.zeros(4), text=f'Test {i}') for i in range(10)]
+    index_docs.append(SimpleDoc(embedding=np.ones(4)))
+    return index_docs
+
+
+@pytest.mark.parametrize('limit', [1, 5, 10])
+def test_dict_limit(qdrant_config, qdrant, index_docs, limit):
+    store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+    store.index(index_docs)
+
+    # Search test
     query = {
-        'filter': {'must': [{'key': 'city', 'match': {'value': 'London'}}]},
-        'params': {'hnsw_ef': 128, 'exact': False},
-        'vector': [0.2, 0.1, 0.9, 0.7],
-        'limit': 3,
+        'vector': ('embedding', [1.0, 0.0, 0.0, 0.0]),
+        'limit': limit,
+        'with_vectors': True,
     }
 
     points = store.execute_query(query=query)
     assert points is not None
+    assert len(points) == limit
+
+    # Scroll test
+    query = {
+        'limit': limit,
+        'with_vectors': True,
+    }
+
+    points = store.execute_query(query=query)
+    assert points is not None
+    assert len(points) == limit
+
+
+def test_dict_full_text_filter(qdrant_config, qdrant, index_docs):
+    store = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+    store.index(index_docs)
+
+    # Search test
+    query = {
+        'filter': {'must': [{'key': 'text', 'match': {'text': '2'}}]},
+        'params': {'hnsw_ef': 128, 'exact': False},
+        'vector': ('embedding', [1.0, 0.0, 0.0, 0.0]),
+        'limit': 3,
+        'with_vectors': True,
+    }
+
+    points = store.execute_query(query=query)
+    assert points is not None
+    assert len(points) == 1
+    assert points[0].id == index_docs[2].id
+
+    # Scroll test
+    query = {
+        'filter': {'must': [{'key': 'text', 'match': {'text': '2'}}]},
+        'params': {'hnsw_ef': 128, 'exact': False},
+        'limit': 3,
+        'with_vectors': True,
+    }
+
+    points = store.execute_query(query=query)
+    assert points is not None
+    assert len(points) == 1
+    assert points[0].id == index_docs[2].id
