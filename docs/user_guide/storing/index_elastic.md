@@ -53,6 +53,7 @@ To construct an index, you need to define the schema first. You can define the s
 
 
 ```python
+import numpy as np
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -112,7 +113,7 @@ To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` 
 del doc_index[index_docs[16].id]
 
 # delete multiple Docs
-del doc_index[index_docs[16].id, index_docs[17].id]
+del doc_index[index_docs[17].id, index_docs[18].id]
 ```
 
 ## Find Nearest Neighbors
@@ -121,7 +122,7 @@ Use `.find()` to find the nearest neighbors of a tensor. You can use `limit` arg
 ```python
 query = SimpleDoc(tensor=np.ones(128))
 
-docs, scores = doc_index.find(query, limit=5)
+docs, scores = doc_index.find(query, limit=5, search_field='tensor')
 ```
 
 !!! note
@@ -131,11 +132,7 @@ docs, scores = doc_index.find(query, limit=5)
 When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
-from docarray import BaseDoc
 from docarray.typing import ImageUrl, VideoUrl, AnyTensor
-from docarray.index import ElasticDocIndex
-import numpy as np
-from pydantic import Field
 
 
 class ImageDoc(BaseDoc):
@@ -196,7 +193,7 @@ You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower l
 
 ```python
 # example of delete nested and flat index
-del doc_index[index_docs[16].id, index_docs[32].id]
+del doc_index[index_docs[3].id, index_docs[4].id]
 ```
 
 TODO style of field_name of nested level
@@ -208,12 +205,6 @@ Besides the vector search, you can also perform other queries supported by Elast
 As in elasticsearch, you could use text search directly on the field of type `str`. 
 
 ```python
-from pydantic import Field
-
-from docarray import BaseDoc
-from docarray.index import ElasticDocIndex
-
-
 class NewsDoc(BaseDoc):
     text: str
 
@@ -237,12 +228,6 @@ To filter the docs, you can use `col_type` to configurate the fields. `filter()`
 To filter the docs, you can use `col_type='keyword'` to configurate the keyword search for the fields.
 
 ```python
-from pydantic import Field
-
-from docarray import BaseDoc
-from docarray.index import ElasticDocIndex
-
-
 class NewsDoc(BaseDoc):
     text: str
     category: str = Field(col_type='keyword')
@@ -265,12 +250,6 @@ docs = doc_index.filter(query_filter)
 To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields.
 
 ```python
-from pydantic import Field
-
-from docarray import BaseDoc
-from docarray.index import ElasticDocIndex
-
-
 class NewsDoc(BaseDoc):
     text: str
     location: dict = Field(col_type='geo_point')
@@ -305,12 +284,6 @@ docs = doc_index.filter(query)
 You can have [range field types](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html) in your `Doc` schema and set `col_type='integer_range'`(or also `date_range`, etc.) to filter the docs based on the range of the field. 
 
 ```python
-from pydantic import Field
-
-from docarray import BaseDoc
-from docarray.index import ElasticDocIndex
-
-
 class NewsDoc(BaseDoc):
     time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
 
@@ -343,14 +316,6 @@ docs = doc_index.filter(query)
 You can use `QueryBuilder` to build your own query. `find()`, `filter()` and `text_search()` methods and their combination are supported. 
 
 ```python
-import numpy as np
-from pydantic import Field
-
-from docarray import BaseDoc
-from docarray.index import ElasticDocIndex
-from docarray.typing import NdArray
-
-
 class MyDoc(BaseDoc):
     tens: NdArray[10] = Field(similarity='l2_norm')
     num: int
@@ -402,7 +367,7 @@ doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
 
 ```python
 class SimpleDoc(BaseDoc):
-    tensor: NdArray[128] = Field(similarity='l2_norm', 'm'=32, 'num_candidates'=5000)
+    tensor: NdArray[128] = Field(similarity='l2_norm', m=32, num_candidates=5000)
 
 
 doc_index = ElasticDocIndex[SimpleDoc]()

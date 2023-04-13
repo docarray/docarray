@@ -97,3 +97,16 @@ def test_from_csv_without_schema_raise_exception():
 def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
     with pytest.raises(ValueError, match='Column names do not match the schema'):
         DocList[nested_doc.__class__].from_csv(file_path=str(TOYDATA_DIR / 'docs.csv'))
+
+
+def test_from_remote_csv_file():
+    remote_url = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/books.csv?raw=true'
+
+    class Book(BaseDoc):
+        title: str
+        author: str
+        year: int
+
+    books = DocList[Book].from_csv(file_path=remote_url)
+
+    assert len(books) == 3
