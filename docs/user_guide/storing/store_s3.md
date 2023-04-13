@@ -1,14 +1,16 @@
 # Store on S3
-When you want to use your `DocList` in another place, you can use the `push()` function to push the `DocList` to S3 and later use the `pull()` function to pull its content back. 
+When you want to use your [`DocList`][docarray.DocList] in another place, you can use the 
+[`.push`][docarray.array.doc_list.pushpull.PushPullMixin.push] method to push the `DocList` to S3 and later use the
+[`.pull`][docarray.array.doc_list.pushpull.PushPullMixin.pull] function to pull its content back. 
 
 !!! note
     To store on S3, you need to install the extra dependency with the following line
-    ```bash
+    ```cmd
     pip install "docarray[aws]"
     ```
 
 ## Push & pull
-To use the store `DocList` on S3, you need to pass an S3 path to the function starting with `s3://`.
+To use the store [`DocList`][docarray.DocList] on S3, you need to pass an S3 path to the function starting with `'s3://'`.
 
 In the following demo, we use `MinIO` as a local S3 service. You could use the following docker-compose file to start the service in a Docker container.
 
@@ -22,7 +24,7 @@ services:
       - "9005:9000"
     command: server /data
 ```
-Save the above file as `dock-compose.yml` and run the following line in the same folder as the file,
+Save the above file as `docker-compose.yml` and run the following line in the same folder as the file,
 ```bash
 docker-compose up
 ```
@@ -83,12 +85,15 @@ Under the bucket `tmp_bucket`, there is a file with the name of `simple_dl.docs`
     When using `.push()` and `.pull()`, `DocList` calls the default boto3 client. Be sure your default session is correctly set up.
 
 
-## Push & Pull with streaming
-When you have a large amount of `Doc` to push and pull, you could use the streaming function. `push_stream()` and `pull_stream()` can help you to stream the `DocList` in order to save the memory usage. You set multiple `DocList` to pull from the same source as well. The usage is the same as using streaming with local files. Please refer to [Push & Pull with streaming with local files][TODO_add_internal_link]
+## Push & pull with streaming
+When you have a large amount of documents to push and pull, you could use the streaming function. 
+[`.push_stream()`][docarray.array.doc_list.pushpull.PushPullMixin.push_stream] and 
+[`.pull_stream()`][docarray.array.doc_list.pushpull.PushPullMixin.pull_stream] can help you to stream the 
+[`DocList`][docarray.DocList] in order to save the memory usage. You set multiple [`DocList`][docarray.DocList] to pull from the same source as well. The usage is the same as using streaming with local files. Please refer to [Push & Pull with streaming with local files](store_file.md#push-pull-with-streaming).
 
 
 ## Delete
-To delete the store, you need to use the static method `delete()` of `JACDocStore` class.
+To delete the store, you need to use the static method [`.delete()`][docarray.store.s3.S3DocStore.delete] of [`S3DocStore`][docarray.store.s3.S3DocStore] class.
 
 ```python
 from docarray.store import S3DocStore
