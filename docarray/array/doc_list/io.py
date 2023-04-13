@@ -702,13 +702,7 @@ class IOMixinArray(Iterable[T_doc]):
     ) -> Union[T, Generator['T_doc', None, None]]:
         """Load doc_list elements from a compressed binary file.
 
-        :param file: File or filename or serialized bytes where the data is stored.
-        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
-        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
-        :return: a `DocList` object
 
         !!! note
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
@@ -716,6 +710,15 @@ class IOMixinArray(Iterable[T_doc]):
             string interpolation of the respective `protocol` and `compress` methods.
             For example if `file=my_docarray.protobuf.lz4` then the binary data will be loaded assuming `protocol=protobuf`
             and `compress=lz4`.
+
+        :param file: File or filename or serialized bytes where the data is stored.
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param streaming: if `True` returns a generator over `Document` objects.
+
+        :return: a `DocList` object
+
         """
         load_protocol: Optional[str] = protocol
         load_compress: Optional[str] = compress
