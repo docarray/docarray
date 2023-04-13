@@ -88,8 +88,17 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         mappings.update(self._db_config.index_mappings)
 
         for col_name, col in self._column_infos.items():
+            if col.db_type == 'dense_vector' and (
+                not col.n_dim and col.config['dims'] < 0
+            ):
+                self._logger.info(
+                    f'Not indexing column {col_name}, the dimensionality is not specified'
+                )
+                continue
+
             mappings['properties'][col_name] = self._create_index_mapping(col)
 
+        # print(mappings['properties'])
         if self._client.indices.exists(index=self._index_name):
             self._client_put_mapping(mappings)
         else:
@@ -231,8 +240,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         def dense_vector_config(self):
             config = {
+                'dims': -1,
                 'index': True,
-                'dims': 128,
                 'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
                 'm': 16,
                 'ef_construction': 100,
