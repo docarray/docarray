@@ -105,7 +105,7 @@ def find(
         and the second element contains the corresponding scores.
     """
     query = _extract_embedding_single(query, search_field)
-    return find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field=search_field,
@@ -113,7 +113,8 @@ def find(
         limit=limit,
         device=device,
         descending=descending,
-    )[0]
+    )
+    return FindResult(documents=docs[0], scores=scores[0])
 
 
 def find_batched(
