@@ -158,6 +158,7 @@ jobs:
           python -m pip install poetry
           rm poetry.lock
           poetry install --all-extras
+          poetry run pip install elasticsearch==8.6.2
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
