@@ -231,10 +231,12 @@ through [build_query()][docarray.index.backends.hnswlib.HnswDocumentIndex.build_
 # prepare a query
 q_doc = MyDoc(embedding=np.random.rand(128), text='query')
 # TODO black doesnt like the code below
-# query = db.build_query() \  # get empty query object
-#     .find(query=q_doc, search_field='embedding') \  # add vector similarity search
-#     .filter(filter_query={'tens': {'$exists': True}}) \  # add filter search
-#     .build()  # build the query
+query = (
+    db.build_query()  # get empty query object
+    .find(query=q_doc, search_field='embedding')  # add vector similarity search
+    .filter(filter_query={'tens': {'$exists': True}})  # add filter search
+    .build()  # build the query
+)
 
 # execute the combined query and return the results
 results = store.execute_query(q)
