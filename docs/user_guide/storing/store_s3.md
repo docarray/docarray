@@ -73,10 +73,6 @@ if __name__ == '__main__':
     )
     docs.push(f's3://{BUCKET}/simple_docs')
     docs_pull = DocList[SimpleDoc].pull(f's3://{BUCKET}/simple_docs')
-
-    # delete the bucket
-    s3.Bucket(BUCKET).objects.all().delete()
-    s3.Bucket(BUCKET).delete()
 ```
 
 Under the bucket `tmp_bucket`, there is a file with the name of `simple_docs.docs` being created to store the `DocList`.
@@ -95,9 +91,52 @@ When you have a large amount of documents to push and pull, you could use the st
 ## Delete
 To delete the store, you need to use the static method [`.delete()`][docarray.store.s3.S3DocStore.delete] of [`S3DocStore`][docarray.store.s3.S3DocStore] class.
 
-```python
-from docarray.store import S3DocStore
+```python hl_lines="44-47"
+from docarray import BaseDoc, DocList
 
-BUCKET = 'tmp_bucket'
-success = S3DocStore.delete(f's3://{BUCKET}/simple_docs')
+
+class SimpleDoc(BaseDoc):
+    text: str
+
+
+if __name__ == '__main__':
+    import boto3
+    from botocore.client import Config
+
+    BUCKET = 'tmp_bucket'
+    my_session = boto3.session.Session()
+    s3 = my_session.resource(
+        service_name='s3',
+        region_name="us-east-1",
+        use_ssl=False,
+        endpoint_url="http://localhost:9005",
+        aws_access_key_id="minioadmin",
+        aws_secret_access_key="minioadmin",
+        config=Config(signature_version="s3v4"),
+    )
+    # make a bucket
+    s3.create_bucket(Bucket=BUCKET)
+
+    store_docs = [SimpleDoc(text=f'doc {i}') for i in range(8)]
+    docs = DocList[SimpleDoc]()
+    docs.extend([SimpleDoc(text=f'doc {i}') for i in range(8)])
+
+    # .push() and .pull() use the default boto3 client
+    boto3.Session.client.__defaults__ = (
+        "us-east-1",
+        None,
+        False,
+        None,
+        "http://localhost:9005",
+        "minioadmin",
+        "minioadmin",
+        None,
+        Config(signature_version="s3v4"),
+    )
+    docs.push(f's3://{BUCKET}/simple_docs')
+
+    # delete bucket
+    from docarray.store import S3DocStore
+
+    success = S3DocStore.delete('{BUCKET}/simple_docs')
 ```

@@ -1,6 +1,6 @@
 # Store on Jina AI Cloud
 When you want to use your [`DocList`][docarray.DocList] in another place, you can use the 
-[`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] method to push the `DocList` to S3 and later use the 
+[`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] method to push the `DocList` to Jina AI Cloud and later use the 
 [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] function to pull its content back. 
 
 !!! note
