@@ -234,7 +234,7 @@ q_doc = MyDoc(embedding=np.random.rand(128), text='query')
 query = (
     db.build_query()  # get empty query object
     .find(query=q_doc, search_field='embedding')  # add vector similarity search
-    .filter(filter_query={'tens': {'$exists': True}})  # add filter search
+    .filter(filter_query={'text': {'$exists': True}})  # add filter search
     .build()  # build the query
 )
 
@@ -309,7 +309,7 @@ Document Indexes differentiate between three different kind of configurations:
 **Database configurations**
 
 _Database configurations_ are configurations that pertain to the entire DB or DB table (as opposed to just a specific column),
-and that you don't dynamically change at runtime.
+and that you _don't_ dynamically change at runtime.
 
 This commonly includes:
 - host and port
@@ -318,7 +318,133 @@ This commonly includes:
 - ...
 
 
-TODO
+For every backend, you can get the full list of configurations, and their defaults, like this:
+
+```python
+from docarray.index import HnswDocumentIndex
+
+
+db_config = HnswDocumentIndex.DBConfig()
+print(db_config)
+
+# > HnswDocumentIndex.DBConfig(work_dir='.')
+```
+
+As you can see, `HnswDocumentIndex.DBConfig` is a dataclass that contains only one possible configuration, `work_dir`,
+that defaults to `.`.
+
+You can customize every field in this configuration:
+
+=== "Pass individual settings"
+
+```python
+db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+
+custom_db_config = db._db_config
+print(custom_db_config)
+
+# > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+```
+
+=== "Pass entire configuration"
+
+```python
+custom_db_config = HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+
+db = HnswDocumentIndex[MyDoc](custom_db_config)
+
+print(db._db_config)
+
+# > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+```
+
+**Runtime configurations**
+
+_Runtime configurations_ are configurations that pertain to the entire DB or DB table (as opposed to just a specific column),
+and that you can dynamically change at runtime.
+
+
+This commonly includes:
+- default batch size for batching operations
+- default mapping from pythong types to DB column types
+- default consistency level for various DB operations
+- ...
+
+
+For every backend, you can get the full list of configurations, and their defaults, like this:
+
+```python
+from docarray.index import HnswDocumentIndex
+
+
+runtime_config = HnswDocumentIndex.RuntimeConfig()
+print(runtime_config)
+
+# > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'l2', 'max_elements': 1024, 'ef_construction': 200, 'ef': 10, 'M': 16, 'allow_replace_deleted': True, 'num_threads': 1}, None: {}})
+```
+
+As you can see, `HnswDocumentIndex.RuntimeConfig` is a dataclass that contains only one configuration:
+`default_column_config`, which is a mapping from python types to database column configurations.
+
+You can customize every field in this configuration using the [configure()][docarray.index.backends.hnswlib.HnswDocumentIndex.configure] method:
+
+=== "Pass individual settings"
+
+```python
+db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+
+db.configure(
+    default_column_config={
+        np.ndarray: {
+            'dim': -1,
+            'index': True,
+            'space': 'ip',
+            'max_elements': 2048,
+            'ef_construction': 100,
+            'ef': 15,
+            'M': 8,
+            'allow_replace_deleted': True,
+            'num_threads': 5,
+        },
+        None: {},
+    }
+)
+
+custom_runtime_config = db._runtime_config
+print(custom_runtime_config)
+
+# > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
+```
+
+=== "Pass entire configuration"
+
+```python
+custom_runtime_config = HnswDocumentIndex.RuntimeConfig(
+    default_column_config={
+        np.ndarray: {
+            'dim': -1,
+            'index': True,
+            'space': 'ip',
+            'max_elements': 2048,
+            'ef_construction': 100,
+            'ef': 15,
+            'M': 8,
+            'allow_replace_deleted': True,
+            'num_threads': 5,
+        },
+        None: {},
+    }
+)
+
+db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+
+db.configure(custom_runtime_config)
+
+print(db._runtime_config)
+
+# > HHnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
+```
+
 
 ## Document Store
 This section show you how to use the `DocArray.store` module. `DocArray.store` module is used to store the `Doc`.
