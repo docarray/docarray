@@ -10,92 +10,96 @@ T = TypeVar('T', bound='TextDoc')
 class TextDoc(BaseDoc):
     """
     Document for handling text.
-    It can contain a TextUrl (`TextDoc.url`), a str (`TextDoc.text`),
-    and an AnyEmbedding (`TextDoc.embedding`).
 
-    EXAMPLE USAGE:
+    It can contain:
+
+    - a [`TextUrl`][docarray.typing.url.TextUrl] (`TextDoc.url`)
+    - a `str` (`TextDoc.text`)
+    - an [`AnyEmbedding`](../../../api_references/typing/tensor/embedding) (`TextDoc.embedding`)
+    - a `bytes` object (`TextDoc.bytes_`)
 
     You can use this Document directly:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import TextDoc
 
-        from docarray.documents import TextDoc
-
-        # use it directly
-        txt_doc = Text(url='http://www.jina.ai/')
-        txt_doc.text = txt_doc.url.load()
-        model = MyEmbeddingModel()
-        txt_doc.embedding = model(txt_doc.text)
+    # use it directly
+    txt_doc = TextDoc(url='http://www.jina.ai/')
+    txt_doc.text = txt_doc.url.load()
+    # model = MyEmbeddingModel()
+    # txt_doc.embedding = model(txt_doc.text)
+    ```
 
     You can initialize directly from a string:
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import TextDoc
 
-        from docarray.documents import TextDoc
-
-        txt_doc = Text('hello world')
+    txt_doc = TextDoc('hello world')
+    ```
 
     You can extend this Document:
 
-    .. code-block:: python
-
-        from docarray.documents import TextDoc
-        from docarray.typing import AnyEmbedding
-        from typing import Optional
-
-
-        # extend it
-        class MyText(Text):
-            second_embedding: Optional[AnyEmbedding]
+    ```python
+    from docarray.documents import TextDoc
+    from docarray.typing import AnyEmbedding
+    from typing import Optional
 
 
-        txt_doc = MyText(url='http://www.jina.ai/')
-        txt_doc.text = txt_doc.url.load()
-        model = MyEmbeddingModel()
-        txt_doc.embedding = model(txt_doc.text)
-        txt_doc.second_embedding = model(txt_doc.text)
+    # extend it
+    class MyText(TextDoc):
+        second_embedding: Optional[AnyEmbedding]
 
+
+    txt_doc = MyText(url='http://www.jina.ai/')
+    txt_doc.text = txt_doc.url.load()
+    # model = MyEmbeddingModel()
+    # txt_doc.embedding = model(txt_doc.text)
+    # txt_doc.second_embedding = model(txt_doc.text)
+    ```
 
     You can use this Document for composition:
 
-    .. code-block:: python
-
-        from docarray import BaseDoc
-        from docarray.documents import ImageDoc, TextDoc
-
-
-        # compose it
-        class MultiModalDoc(BaseDoc):
-            image_doc: Image
-            text_doc: Text
+    ```python
+    from docarray import BaseDoc
+    from docarray.documents import ImageDoc, TextDoc
 
 
-        mmdoc = MultiModalDoc(
-            image_doc=Image(url="http://www.jina.ai/image.jpg"),
-            text_doc=Text(text="hello world, how are you doing?"),
-        )
-        mmdoc.text_doc.text = mmdoc.text_doc.url.load()
+    # compose it
+    class MultiModalDoc(BaseDoc):
+        image_doc: ImageDoc
+        text_doc: TextDoc
 
-        # or
 
-        mmdoc.text_doc.bytes_ = mmdoc.text_doc.url.load_bytes()
+    mmdoc = MultiModalDoc(
+        image_doc=ImageDoc(
+            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
+        ),
+        text_doc=TextDoc(text='hello world, how are you doing?'),
+    )
+    mmdoc.image_doc.tensor = mmdoc.image_doc.url.load()
 
+    # or
+    mmdoc.image_doc.bytes_ = mmdoc.image_doc.url.load_bytes()
+    mmdoc.image_doc.tensor = mmdoc.image_doc.bytes_.load()
+    ```
 
     This Document can be compared against another Document of the same type or a string.
     When compared against another object of the same type, the pydantic BaseModel
     equality check will apply which checks the equality of every attribute,
-    including `id`. When compared against a str, it will check the equality
+    excluding `id`. When compared against a str, it will check the equality
     of the `text` attribute against the given string.
 
-    .. code-block:: python
+    ```python
+    from docarray.documents import TextDoc
 
-        from docarray.documents import TextDoc
+    doc = TextDoc(text='This is the main text', url='exampleurl.com')
+    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')
 
-        doc = Text(text='This is the main text', url='exampleurl.com')
-        doc2 = Text(text='This is the main text', url='exampleurl.com')
+    doc == 'This is the main text'  # True
+    doc == doc2  # True
+    ```
 
-        doc == 'This is the main text'  # True
-        doc == doc2  # False, their ids are not equivalent
     """
 
     text: Optional[str]
@@ -126,18 +130,18 @@ class TextDoc(BaseDoc):
 
     def __contains__(self, item: str) -> bool:
         """
-        This method makes `Text` behave the same as an `str`.
-
-        .. code-block:: python
-
-            from docarray.documents import Text
-
-            t = Text(text='this is my text document')
-            assert 'text' in t
-            assert 'docarray' not in t
+        This method makes `TextDoc` behave the same as an `str`.
 
         :param item: A string to be checked if is a substring of `text` attribute
         :return: A boolean determining the presence of `item` as a substring in `text`
+
+        ```python
+        from docarray.documents import TextDoc
+
+        t = TextDoc(text='this is my text document')
+        assert 'text' in t
+        assert 'docarray' not in t
+        ```
         """
         if self.text is not None:
             return self.text.__contains__(item)

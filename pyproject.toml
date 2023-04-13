@@ -24,9 +24,10 @@ hnswlib = {version = ">=0.6.2", optional = true }
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 pandas = {version = ">=1.1.0", optional = true }
-elasticsearch = {version = "7.10.1", optional = true }
+elasticsearch = {version = ">=7.10.1", optional = true }
 smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
+elastic-transport = {version ="^8.4.0", optional = true }
 
 [tool.poetry.extras]
 proto = ["protobuf", "lz4"]
@@ -36,7 +37,7 @@ video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
 hnswlib = ["hnswlib"]
-elasticsearch = ["elasticsearch"]
+elasticsearch = ["elasticsearch", "elastic-transport"]
 jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]
 torch = ["torch"]
@@ -67,6 +68,7 @@ mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
 mkdocs-material= ">=9.1.2"
 mkdocs-awesome-pages-plugin = ">=2.8.0"
 mktestdocs= ">=0.2.0"
+mkdocs-video = ">=1.5.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -114,4 +116,5 @@ markers = [
     "tensorflow: marks test using tensorflow and proto 3",
     "index: marks test using a document index",
     "benchmark: marks slow benchmarking tests",
+    "elasticv8: marks test that run with ElasticSearch v8",
 ]

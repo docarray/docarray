@@ -7,45 +7,23 @@ from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray
-from tests.integrations.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.integrations.doc_index.elastic.fixture import (
+from tests.index.elastic.fixture import (  # noqa: F401
     DeepNestedDoc,
     FlatDoc,
     NestedDoc,
     SimpleDoc,
+    start_storage_v7,
+    ten_deep_nested_docs,
+    ten_flat_docs,
+    ten_nested_docs,
+    ten_simple_docs,
 )
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
-@pytest.fixture
-def ten_simple_docs():
-    return [SimpleDoc(tens=np.random.randn(10)) for _ in range(10)]
-
-
-@pytest.fixture
-def ten_flat_docs():
-    return [
-        FlatDoc(tens_one=np.random.randn(10), tens_two=np.random.randn(50))
-        for _ in range(10)
-    ]
-
-
-@pytest.fixture
-def ten_nested_docs():
-    return [NestedDoc(d=SimpleDoc(tens=np.random.randn(10))) for _ in range(10)]
-
-
-@pytest.fixture
-def ten_deep_nested_docs():
-    return [
-        DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=np.random.randn(10))))
-        for _ in range(10)
-    ]
-
-
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_simple_schema(ten_simple_docs, use_docarray):
+def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc]()
     if use_docarray:
         ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
@@ -55,7 +33,7 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_flat_schema(ten_flat_docs, use_docarray):
+def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
     store = ElasticV7DocIndex[FlatDoc]()
     if use_docarray:
         ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
@@ -65,7 +43,7 @@ def test_index_flat_schema(ten_flat_docs, use_docarray):
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_nested_schema(ten_nested_docs, use_docarray):
+def test_index_nested_schema(ten_nested_docs, use_docarray):  # noqa: F811
     store = ElasticV7DocIndex[NestedDoc]()
     if use_docarray:
         ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
@@ -75,7 +53,7 @@ def test_index_nested_schema(ten_nested_docs, use_docarray):
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):
+def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):  # noqa: F811
     store = ElasticV7DocIndex[DeepNestedDoc]()
     if use_docarray:
         ten_deep_nested_docs = DocList[DeepNestedDoc](ten_deep_nested_docs)
@@ -84,7 +62,7 @@ def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):
     assert store.num_docs() == 10
 
 
-def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):
+def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
     # simple
     store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
@@ -118,7 +96,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(store[id_].d.tens == d.d.tens)
 
 
-def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
+def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
     docs_to_get_idx = [0, 2, 4, 6, 8]
 
     # simple
@@ -160,7 +138,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):
         assert np.all(d_out.d.tens == d_in.d.tens)
 
 
-def test_get_key_error(ten_simple_docs):
+def test_get_key_error(ten_simple_docs):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
@@ -168,7 +146,7 @@ def test_get_key_error(ten_simple_docs):
         store['not_a_real_id']
 
 
-def test_persisting(ten_simple_docs):
+def test_persisting(ten_simple_docs):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc](index_name='test_persisting')
     store.index(ten_simple_docs)
 
@@ -176,7 +154,7 @@ def test_persisting(ten_simple_docs):
     assert store2.num_docs() == 10
 
 
-def test_del_single(ten_simple_docs):
+def test_del_single(ten_simple_docs):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
     # delete once
@@ -204,7 +182,7 @@ def test_del_single(ten_simple_docs):
             assert np.all(store[id_].tens == d.tens)
 
 
-def test_del_multiple(ten_simple_docs):
+def test_del_multiple(ten_simple_docs):  # noqa: F811
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
     store = ElasticV7DocIndex[SimpleDoc]()
@@ -223,7 +201,7 @@ def test_del_multiple(ten_simple_docs):
             assert np.all(store[doc.id].tens == doc.tens)
 
 
-def test_del_key_error(ten_simple_docs):
+def test_del_key_error(ten_simple_docs):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
@@ -231,7 +209,7 @@ def test_del_key_error(ten_simple_docs):
         del store['not_a_real_id']
 
 
-def test_num_docs(ten_simple_docs):
+def test_num_docs(ten_simple_docs):  # noqa: F811
     store = ElasticV7DocIndex[SimpleDoc]()
     store.index(ten_simple_docs)
 
