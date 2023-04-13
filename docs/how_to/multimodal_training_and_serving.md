@@ -12,7 +12,7 @@ jupyter:
     name: python3
 ---
 
-# Multi-Modal Deep learning with DocList
+# Multimodal deep learning with DocList
 
 DocList is a library for representing, sending, and storing multi-modal data that can be used for a variety of different
 use cases.
