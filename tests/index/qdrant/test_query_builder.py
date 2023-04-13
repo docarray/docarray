@@ -9,7 +9,7 @@ from docarray.typing import NdArray
 
 from qdrant_client.http import models as rest
 
-from .fixtures import qdrant_config, qdrant  # ignore: type[import]
+from .fixtures import qdrant_config, qdrant
 
 
 class SimpleDoc(BaseDoc):

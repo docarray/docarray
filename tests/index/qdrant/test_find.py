@@ -6,7 +6,7 @@ from docarray import BaseDoc, DocList
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 
-from .fixtures import qdrant_config, qdrant  # ignore: type[import]
+from .fixtures import qdrant_config, qdrant
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 

@@ -6,7 +6,7 @@ from docarray import BaseDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import qdrant_config, qdrant  # ignore: type[import]
+from .fixtures import qdrant_config, qdrant
 
 
 class SimpleDoc(BaseDoc):
