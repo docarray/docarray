@@ -21,6 +21,7 @@ from typing import (
 
 import numpy as np
 import weaviate
+from pydantic import parse_obj_as
 from typing_extensions import Literal
 
 import docarray
@@ -28,6 +29,7 @@ from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResultBatched
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import FindResult, _FindResult
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
@@ -69,17 +71,22 @@ DOCUMENTID = "docarrayid"
 
 class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
-        self.embedding_column = None
-        self.properties = None
+        self.embedding_column: Optional[str] = None
+        self.properties: Optional[List[str]] = None
         # keep track of the column name that contains the bytes
         # type because we will store them as a base64 encoded string
         # in weaviate
-        self.bytes_columns = []
+        self.bytes_columns: List[str] = []
         # keep track of the array columns that are not embeddings because we will
         # convert them to python lists before uploading to weaviate
-        self.nonembedding_array_columns = []
+        self.nonembedding_array_columns: List[str] = []
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(WeaviateDocumentIndex.DBConfig, self._db_config)
+        self._db_config: WeaviateDocumentIndex.DBConfig = cast(
+            WeaviateDocumentIndex.DBConfig, self._db_config
+        )
+        self._runtime_config: WeaviateDocumentIndex.RuntimeConfig = cast(
+            WeaviateDocumentIndex.RuntimeConfig, self._runtime_config
+        )
 
         if self._db_config.embedded_options:
             self._client = weaviate.Client(
@@ -156,7 +163,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._configure_client()
 
     def _create_schema(self) -> None:
-        schema = {}
+        schema: Dict[str, Any] = {}
 
         properties = []
         column_infos = self._column_infos
@@ -197,10 +204,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         host: str = 'http://localhost:8080'
         index_name: str = 'Document'
-        username: str = None
-        password: str = None
+        username: Optional[str] = None
+        password: Optional[str] = None
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
-        auth_api_key: str = None
+        auth_api_key: Optional[str] = None
         embedded_options: Optional[EmbeddedOptions] = None
 
     @dataclass
@@ -328,8 +335,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self,
         query: np.ndarray,
-        search_field: str,
         limit: int,
+        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResult:
@@ -338,7 +345,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             logging.warning(
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
             )
-        near_vector = {
+        near_vector: Dict[str, Any] = {
             "vector": query,
         }
         if score_threshold:
@@ -354,11 +361,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             .do()
         )
 
-        return self._format_response(results["data"]["Get"][index_name], score_name)
+        docs, scores = self._format_response(
+            results["data"]["Get"][index_name], score_name
+        )
+        return _FindResult(docs, parse_obj_as(NdArray, scores))
 
     def _format_response(
         self, results, score_name
-    ) -> Tuple[List[DocList], List[float]]:
+    ) -> Tuple[List[Dict[Any, Any]], List[Any]]:
         """
         Format the response from Weaviate into a Tuple of DocList and scores
         """
@@ -408,15 +418,15 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _find_batched(
         self,
-        queries: Sequence[np.ndarray],
-        search_field: str,
+        queries: np.ndarray,
         limit: int,
+        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
         qs = []
         for i, query in enumerate(queries):
-            near_vector = {"vector": query}
+            near_vector: Dict[str, Any] = {"vector": query}
 
             if score_threshold:
                 near_vector[score_name] = score_threshold
@@ -439,7 +449,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
         docs, scores = zip(*docs_and_scores)
-        return list(docs), list(scores)
+        return _FindResultBatched(list(docs), list(scores))
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
         # TODO: warn when doc_ids > QUERY_MAXIMUM_RESULTS after
@@ -522,7 +532,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     vector=vector,
                 )
 
-    def _text_search(self, query: str, search_field: str, limit: int) -> _FindResult:
+    def _text_search(
+        self, query: str, limit: int, search_field: str = ''
+    ) -> _FindResult:
         index_name = self._db_config.index_name
         bm25 = {"query": query, "properties": [search_field]}
 
@@ -534,10 +546,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             .do()
         )
 
-        return self._format_response(results["data"]["Get"][index_name], "score")
+        docs, scores = self._format_response(
+            results["data"]["Get"][index_name], "score"
+        )
+
+        return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     def _text_search_batched(
-        self, queries: Sequence[str], search_field: str, limit: int
+        self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         qs = []
         for i, query in enumerate(queries):
@@ -561,7 +577,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
         docs, scores = zip(*docs_and_scores)
-        return list(docs), list(scores)
+        return _FindResultBatched(list(docs), list(scores))
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
         da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
@@ -571,7 +587,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             batched_docs = batched_results["data"]["Get"].values()
 
             def f(doc):
-                return self._schema.from_view(self._parse_weaviate_result(doc))
+                # TODO: use
+                # return self._schema(**self._parse_weaviate_result(doc))
+                # when https://github.com/weaviate/weaviate/issues/2858
+                # is fixed
+                return self._schema.from_view(self._parse_weaviate_result(doc))  # type: ignore
 
             results = [
                 da_class([f(doc) for doc in batched_doc])
@@ -616,12 +636,15 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def build_query(self) -> BaseDocIndex.QueryBuilder:
         return self.QueryBuilder(self)
 
-    def _get_embedding_field(self) -> str:
+    def _get_embedding_field(self):
         for colname, colinfo in self._column_infos.items():
             # no need to check for missing is_embedding attribute because this check
             # is done when the index is created
             if colinfo.config.get('is_embedding', None):
                 return colname
+
+        # just to pass mypy
+        return ""
 
     def _encode_bytes_columns_to_base64(self, doc):
         for column in self.bytes_columns:
@@ -653,7 +676,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 q = self._queries[i]
                 if self._is_hybrid_query(q):
                     self._make_proper_hybrid_query(q)
-                q.with_alias(f'query_{i}')
+                q.with_additional(["vector"]).with_alias(f'query_{i}')
 
             return self
 

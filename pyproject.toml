@@ -92,6 +92,7 @@ module = [
     "trimesh",
     "pandas",
     "av",
+    "weaviate"
 ]
 ignore_missing_imports = true
 
