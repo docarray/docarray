@@ -43,6 +43,13 @@ because it doesn't require you to launch a database server. Instead, it will sto
 
 ### Create a Document Index
 
+!!! note
+    To use [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex], you need to install extra dependencies with the following command:
+
+    ```console
+    pip install "docarray[hnswlib]"
+    ```
+
 To create a Document Index, your first need a Document that defines the schema of your index.
 
 ```python
@@ -202,17 +209,114 @@ print(f'{scores=}')
 The [find_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.find_batched] method returns a named tuple containing
 a list of `DocList`s, one for each query, containing the closest matching documents; and the associated similarity scores.
 
-### Perform filter search
+### Perform filter search and text search
 
-You can also perform filter search using the [filter()][docarray.index.backends.hnswlib.HnswDocumentIndex.filter] method.
+In addition to vector similarity search, the Document Index interface offers methods for text search and filter search:
+[text_search()][docarray.index.backends.hnswlib.HnswDocumentIndex.text_search] and [filter()][docarray.index.backends.hnswlib.HnswDocumentIndex.filter],
+as well as their batched versions [text_search_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.text_search_batched] and [filter_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.filter_batched]
 
-This method takes in a filter query and returns Documents that fulfill the conditions expressed through that filter:
+The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
+or text search.
+
+To see how to perform these operations, you can check out other backends that do: TODO add link to those
+
+### Perform hybrid search through the query builder
+
+Document Index support atomic operations for vector similarity search, text search and filter search.
+
+In order to combine these operations into a singe, hybrid search query, you can use the query builder that is accessible
+through [build_query()][docarray.index.backends.hnswlib.HnswDocumentIndex.build_query]:
 
 ```python
-# create a filter
+# prepare a query
+q_doc = MyDoc(embedding=np.random.rand(128), text='query')
+# TODO black doesnt like the code below
+# query = db.build_query() \  # get empty query object
+#     .find(query=q_doc, search_field='embedding') \  # add vector similarity search
+#     .filter(filter_query={'tens': {'$exists': True}}) \  # add filter search
+#     .build()  # build the query
+
+# execute the combined query and return the results
+results = store.execute_query(q)
+print(f'{results=}')
 ```
 
-### Delete data
+In the example above you can see how to form a hybrid query that combines vector similarity search and filter search
+to obtain a combined set of results.
+
+What kinds of atomic queries can be combined in this way depends on the backend.
+Some can combine text search and vector search, others can perform filters and vectors search, etc.
+To see what backend can do what, check out the specific docs TODO add links
+
+### Access Documents by id
+
+To retrieve a Document from a Document Index, you don't necessarily need to perform some fancy search.
+
+You can also access data by the id that as assigned to every Document:
+
+```python
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for _ in range(3)
+)
+
+# remember the Document ids and index the data
+ids = data.ids
+db.index(data)
+
+# access the Documents by id
+doc = db[ids[0]]  # get by single id
+docs = db[ids]  # get by list of ids
+```
+
+### Delete Documents
+
+In the same way you can access Documents by id, you can delete them:
+
+```python
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for _ in range(3)
+)
+
+# remember the Document ids and index the data
+ids = data.ids
+db.index(data)
+
+# access the Documents by id
+del db[ids[0]]  # del by single id
+del db[ids[1:]]  # del by list of ids
+```
+
+### Customize configurations
+
+It is DocArray's philosophy that each Document Index should "just work", meaning that it comes with a sane set of default
+settings that can get you most of the way there.
+
+However, there are different configurations that you may want to tweak, including:
+- The [ANN](https://ignite.apache.org/docs/latest/machine-learning/binary-classification/ann) algorithm used, for example [HNSW](https://www.pinecone.io/learn/hnsw/) or [ScaNN](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html)
+- Hyperparameters of the ANN algorithm, such as `ef_construction` for HNSW
+- The distance metric to use, such as cosine or L2 distance
+- The data type of each column in the database
+- ...
+
+The specific configurations that you can tweak depend on the backend, but the interface to do so is universal.
+
+Document Indexes differentiate between three different kind of configurations:
+
+**Database configurations**
+
+_Database configurations_ are configurations that pertain to the entire DB or DB table (as opposed to just a specific column),
+and that you don't dynamically change at runtime.
+
+This commonly includes:
+- host and port
+- index or collection name
+- authentication settings
+- ...
+
+
+TODO
 
 ## Document Store
 This section show you how to use the `DocArray.store` module. `DocArray.store` module is used to store the `Doc`.
