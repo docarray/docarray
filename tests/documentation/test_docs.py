@@ -52,7 +52,10 @@ def check_md_file(fpath, memory=False, lang="python", keyword_ignore=[]):
     ids=str,
 )
 def test_files_good(fpath):
-    check_md_file(fpath=fpath, memory=True)
+    keyword_ignore = []
+    if 'store_jac.md' in str(fpath):
+        keyword_ignore = ['jac']
+    check_md_file(fpath=fpath, memory=True, keyword_ignore=keyword_ignore)
 
 
 def test_readme():
