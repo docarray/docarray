@@ -52,13 +52,17 @@ QDRANT_SPACE_MAPPING = {
     'ip': rest.Distance.DOT,
 }
 
+RawQuery = Dict[str, Any]
+
 
 class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     UUID_NAMESPACE = uuid.UUID('3896d314-1e95-4a3a-b45a-945f9f0b541d')
 
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config: QdrantDocumentIndex.DBConfig = cast(QdrantDocumentIndex.DBConfig, self._db_config)
+        self._db_config: QdrantDocumentIndex.DBConfig = cast(
+            QdrantDocumentIndex.DBConfig, self._db_config
+        )
         self._client = qdrant_client.QdrantClient(
             location=self._db_config.location,
             url=self._db_config.url,
@@ -275,11 +279,13 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         return [self._convert_to_doc(point) for point in response]
 
-    def execute_query(self, query: Query, *args, **kwargs) -> DocList:
-        if query.vector_field:
+    def execute_query(self, query: Union[Query, RawQuery], *args, **kwargs) -> DocList:
+        if not isinstance(query, QdrantDocumentIndex.Query):
+            points = self._execute_raw_query(query.copy())
+        elif query.vector_field:
             # We perform semantic search with some vectors with Qdrant's search method
             # should be called
-            points = self._client.search(
+            points = self._client.search(  # type: ignore[assignment]
                 collection_name=self._db_config.collection_name,
                 query_vector=(query.vector_field, query.vector_query),  # type: ignore[arg-type]
                 query_filter=rest.Filter(
@@ -310,6 +316,28 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         docs = [self._convert_to_doc(point) for point in points]
         return self._dict_list_to_docarray(docs)
+
+    def _execute_raw_query(
+        self, query: RawQuery
+    ) -> Sequence[Union[rest.ScoredPoint, rest.Record]]:
+        if 'vector' in query:
+            # We perform semantic search with some vectors with Qdrant's search method
+            # should be called
+            points = self._client.search(  # type: ignore[assignment]
+                collection_name=self._db_config.collection_name,
+                query_vector=query.pop('vector'),
+                query_filter=query.pop('filter', None),
+                **query,
+            )
+        else:
+            # Just filtering, so Qdrant's scroll has to be used instead
+            points, _ = self._client.scroll(  # type: ignore[assignment]
+                collection_name=self._db_config.collection_name,
+                scroll_filter=query.pop('filter', None),
+                **query,
+            )
+
+        return points
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
