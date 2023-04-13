@@ -15,6 +15,7 @@ To construct an index, you need to define the schema first. You can define the s
 `work_dir` is the directory for storing the index. If there is an index in the directory, it will be automatically loaded. When the schema of the saved and the defined index do not match, an exception will be raised.
 
 ```python
+import numpy as np
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -33,12 +34,9 @@ doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp')
 Use `.index()` to add `Doc` into the index. You need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
 
 ```python
-from docarray import BaseDoc
-from docarray.typing import NdArray
-import numpy as np
-
 class SimpleDoc(BaseDoc):
-    tensor: NdArray
+    tensor: NdArray[128]
+
 
 index_docs = [SimpleDoc(tensor=np.zeros(128)) for _ in range(64)]
 
@@ -65,27 +63,23 @@ To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` 
 del doc_index[index_docs[16].id]
 
 # delete multiple Docs
-del doc_index[index_docs[16].id, index_docs[17].id]
+del doc_index[index_docs[17].id, index_docs[18].id]
 ```
 
 ## Find Nearest Neighbors
 Use `.find()` to find the nearest neighbors. You can use `limit` argument to configurate how much `Doc` to return.
 
 ```python
-query = SimpleDoc(tensor=np.ones(10))
+query = SimpleDoc(tensor=np.ones(128))
 
-docs, scores = doc_index.find(query, limit=5)
+docs, scores = doc_index.find(query, limit=5, search_field='tensor')
 ```
 
 ## Nested Index
 When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
-from docarray import BaseDoc
 from docarray.typing import ImageUrl, VideoUrl, AnyTensor
-from docarray.index import HnswDocumentIndex
-import numpy as np
-from pydantic import Field
 
 
 class ImageDoc(BaseDoc):
@@ -106,20 +100,16 @@ class YouTubeVideoDoc(BaseDoc):
     tensor: AnyTensor = Field(space='cosine', dim=256)
 
 
-doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp')
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp2')
 index_docs = [
     YouTubeVideoDoc(
         title=f'video {i+1}',
         description=f'this is video from author {10*i}',
-        thumbnail=ImageDoc(
-            url=f'http://example.ai/images/{i}',
-            tensor=np.ones(64)),
-        video=VideoDoc(
-            url=f'http://example.ai/videos/{i}',
-            tensor=np.ones(128)
-        ),
-        tensor=np.ones(256)
-    ) for i in range(8)
+        thumbnail=ImageDoc(url=f'http://example.ai/images/{i}', tensor=np.ones(64)),
+        video=VideoDoc(url=f'http://example.ai/videos/{i}', tensor=np.ones(128)),
+        tensor=np.ones(256),
+    )
+    for i in range(8)
 ]
 doc_index.index(index_docs)
 ```
@@ -131,15 +121,9 @@ Use the `search_field` to specify which field to be used when performing the vec
 query_doc = YouTubeVideoDoc(
     title=f'video query',
     description=f'this is a query video',
-    thumbnail=ImageDoc(
-        url=f'http://example.ai/images/1024',
-        tensor=np.ones(64)
-    ),
-    video=VideoDoc(
-        url=f'http://example.ai/videos/1024',
-        tensor=np.ones(128)
-    ),
-    tensor=np.ones(256)
+    thumbnail=ImageDoc(url=f'http://example.ai/images/1024', tensor=np.ones(64)),
+    video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
+    tensor=np.ones(256),
 )
 # find by the youtubevideo tensor
 docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
@@ -156,5 +140,5 @@ To delete a nested data, you need to specify the `id`.
 
 ```python
 # example of delete nested and flat index
-del doc_index[index_docs[16].id, index_docs[32].id]
+del doc_index[index_docs[6].id]
 ```

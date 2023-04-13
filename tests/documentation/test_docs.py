@@ -4,6 +4,8 @@ import pytest
 from mktestdocs import grab_code_blocks
 from mktestdocs.__main__ import _executors, check_raw_string
 
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+
 
 def check_raw_file_full(raw, lang="python", keyword_ignore=[]):
     if lang not in _executors:
