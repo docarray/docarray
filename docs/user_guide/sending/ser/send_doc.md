@@ -1,8 +1,8 @@
 # BaseDoc
 
-In order to send or store [BaseDoc][docarray.base_doc.doc.BaseDoc] you need to serialize them first. 
+You need to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] before you can store or send it.
 
-!! note
+!!! note
     [BaseDoc][docarray.base_doc.doc.BaseDoc] supports serialization to `protobuf` and `json` formats.
 
 ## Serialization to protobuf

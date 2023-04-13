@@ -22,7 +22,7 @@ dv_from_proto = DocVec[SimpleVecDoc].from_protobuf(proto_message_dv)
 ```
 
 !!! note
-    We are planning to add more serilization format in the future, notably JSON.
+    We are planning to add more serialization formats in the future, notably JSON.
 
 [`to_protobuf`][docarray.array.doc_list.doc_list.DocVec.to_protobuf] returns a protobuf object of `docarray_pb2.DocVecProto` class. [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf] accepts a protobuf message object to construct a [DocVec][docarray.array.doc_list.doc_list.DocVec].
 

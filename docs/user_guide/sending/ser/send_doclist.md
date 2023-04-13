@@ -78,7 +78,7 @@ dl_from_base64 = DocList[SimpleDoc].from_base64(
 ```
 
 ## Binary
-Similar as in `Base64` serialization, `Binary` serialization also supports different protocols and compression methods.
+Similar to `Base64` serialization, `Binary` serialization also supports different protocols and compression methods.
 
 To save a [DocList][docarray.array.doc_list.doc_list.DocList] into a binary file, you can use [`save_binary()`][docarray.array.doc_list.doc_list.DocList.to_base64]  and [`load_binary()`][docarray.array.doc_list.doc_list.DocList.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.from_base64].
 

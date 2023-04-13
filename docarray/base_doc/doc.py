@@ -230,8 +230,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     def update(self, other: T_update):
         """
         Updates self with the content of other. Changes are applied to self.
-        Updating one Document with another consists in the following:
-         - setting data properties of the second Document to the first Document
+        Updating one Document with another consists of the following:
+         - Setting data properties of the second Document to the first Document
          if they are not None
          - Concatenating lists and updating sets
          - Updating recursively Documents and DocArrays
@@ -249,8 +249,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         ---
 
         ```python
+        from typing import Optional, List
+        
         from docarray import BaseDoc
-        from docarray.documents import Text
 
 
         class MyDocument(BaseDoc):
@@ -271,7 +272,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         ```
 
         ---
-        :param other: The Document with which to update the contents of this
+        :param other: The Document used to update the contents of this Document
         """
         super().update(other)
 
