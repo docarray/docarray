@@ -1,12 +1,12 @@
 # Jina
 
-# Creating an Audio to Text App with Jina and DocArray V2
+# Create an audio to text app with Jina and DocArray V2
 
-This is how you can build an Audio to Text app using Jina, Docarray and Whisper
+This is how you can build an Audio to Text app using Jina, DocArray and Whisper.
 
 We will use: 
 
-* DocarrayV2: Helps us to load and preprocess multimodal data such as image, text and audio in our case
+* DocArray V2: Helps us to load and preprocess multimodal data such as image, text and audio in our case
 * Jina: Helps us serve the model quickly and create a client
 
 First let's install requirements

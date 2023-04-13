@@ -76,9 +76,9 @@ plugins:
 
 nav:
   - Home: README.md
-  - Tutorial - User Guide:
+  - Tutorial/User Guide:
     - user_guide/intro.md
-    - Representing:
+    - Representing data:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
     - Sending:

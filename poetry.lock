@@ -804,6 +804,25 @@ gmpy = ["gmpy"]
 gmpy2 = ["gmpy2"]
 
 [[package]]
+name = "elastic-transport"
+version = "8.4.0"
+description = "Transport classes and utilities shared among Python Elastic client libraries"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+files = [
+    {file = "elastic-transport-8.4.0.tar.gz", hash = "sha256:b9ad708ceb7fcdbc6b30a96f886609a109f042c0b9d9f2e44403b3133ba7ff10"},
+    {file = "elastic_transport-8.4.0-py3-none-any.whl", hash = "sha256:19db271ab79c9f70f8c43f8f5b5111408781a6176b54ab2e54d713b6d9ceb815"},
+]
+
+[package.dependencies]
+certifi = "*"
+urllib3 = ">=1.26.2,<2"
+
+[package.extras]
+develop = ["aiohttp", "mock", "pytest", "pytest-asyncio", "pytest-cov", "pytest-httpserver", "pytest-mock", "requests", "trustme"]
+
+[[package]]
 name = "elasticsearch"
 version = "7.10.1"
 description = "Python client for Elasticsearch"
@@ -4606,7 +4625,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [extras]
 audio = ["pydub"]
 aws = ["smart-open"]
-elasticsearch = ["elasticsearch"]
+elasticsearch = ["elasticsearch", "elastic-transport"]
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
 hnswlib = ["hnswlib"]
 image = ["pillow", "types-pillow"]
@@ -4621,4 +4640,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4.0"
-content-hash = "61780ee493f649cc3cc164f8a3585083d69aed63831fad3c3cdcf91609804221"
+content-hash = "a5bae8ca8239347d066e7566dfea56f08d42950f7037e50870cee226809f4b01"
