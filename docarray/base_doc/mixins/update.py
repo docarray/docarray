@@ -25,7 +25,8 @@ class UpdateMixin:
         Updates self with the content of other. Changes are applied to self.
         Updating one Document with another consists in the following:
          - setting data properties of the second Document to the first Document
-         if they are not None
+         if they are not None:
+
          - Concatenating lists and updating sets
          - Updating recursively Documents and DocArrays
          - Updating Dictionaries of the left with the right
