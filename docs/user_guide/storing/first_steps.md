@@ -460,6 +460,9 @@ The exact configurations that are available different from backend to backend, b
 directly in the schema of your Document Index, using the `Field()` syntax:
 
 ```python
+from pydantic import Field
+
+
 class Schema(BaseDoc):
     tens: NdArray[100] = Field(max_elements=12, space='cosine')
     tens_two: NdArray[10] = Field(M=4, space='ip')
