@@ -1,170 +1,93 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - main
+      - feat-rewrite-v2
   pull_request:
-
+    types: [opened, synchronize, reopened]
 jobs:
-  commit-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: find the prev warning if exist
-        uses: peter-evans/find-comment@v1
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: "github-actions[bot]"
-          body-includes: "bad commit message"
-      - name: Delete comment if exist
-        if: ${{ steps.fc.outputs.comment-id != 0 }}
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.deleteComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: ${{ steps.fc.outputs.comment-id }},
-            })
-      - uses: actions/checkout@v2.5.0
-        with:
-          fetch-depth: 0
-      - run: 'echo "module.exports = {extends: [''@commitlint/config-conventional'']}" > commitlint.config.js'
-      - uses: wagoid/commitlint-github-action@v1
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: if lint failed
-        if: ${{ failure() }}
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Thanks for your contribution :heart:
-            :broken_heart: Unfortunately, this PR has one ore more **bad commit messages**, it can not be merged. To fix this problem, please refer to:
-            - [Commit Message Guideline for the First Time Contributor](https://github.com/jina-ai/jina/issues/553)
-            - [Contributing Guideline](https://github.com/jina-ai/jina/blob/master/CONTRIBUTING.md)
 
-            Note, other CI tests will *not* *start* until the commit messages get fixed.
-
-            This message will be deleted automatically when the commit messages get fixed.
-          reaction-type: "eyes"
-
-  lint-flake-8:
+  lint-ruff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.5.0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
-      - name: Lint with flake8
+          python-version: 3.7
+      - name: Lint with ruff
         run: |
-          pip install flake8
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install 
+
           # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,tests/,docarray/proto/pb/docarray_pb2.py,docarray/proto/pb2/docarray_pb2.py
+          poetry run ruff docarray
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,tests/,docarray/proto/pb/docarray_pb2.py,docarray/proto/pb2/docarray_pb2.py
+          poetry run ruff docarray
 
   check-black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.5.0
-        with:
-          fetch-depth: 0
-      - name: Set up Python 3.8
+      - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
-      - id: file_changes
-        uses: Ana06/get-changed-files@v1.2
+          python-version: 3.7
       - name: check black
-        run: ./scripts/black.sh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --only dev 
+          poetry run black --check .
+
         env:
           CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
 
-  overload-docstrings:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.5.0
-        if: ${{ !github.event.pull_request.head.repo.fork }}
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v4
-        if: ${{ !github.event.pull_request.head.repo.fork }}
-        with:
-          python-version: 3.8
-      - name: Styling
-        id: styling
-        if: ${{ !github.event.pull_request.head.repo.fork }}
-        run: |
-          git config --local user.email "dev-bot@jina.ai"
-          git config --local user.name "Jina Dev Bot"
-          pip install ".[devel]"
-          pip install black
-          pip install setuptools
-          cd scripts && bash overload_docstrings.sh && cd -
-          if [[ -z $(git status -s) ]]
-          then
-            echo "tree is clean"
-          else
-            git add -u
-            git commit -m "docs: copy overload docstrings to enable rendering in sphinx"
-            echo "IS_CHANGED=YES" >> $GITHUB_OUTPUT
-          fi
-      - name: Push changes to head ref
-        uses: ad-m/github-push-action@v0.6.0
-        if: ${{ !github.event.pull_request.head.repo.fork }}
-        with:
-          github_token: ${{ secrets.JINA_DEV_BOT }}
-          branch: ${{ github.head_ref }}
-      - name: Fail this pipelint
-        if: ${{ steps.styling.outputs.IS_CHANGED == 'YES' && !github.event.pull_request.head.repo.fork }}
-        run: exit 1
-
   import-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-env: ['3.8', '3.9', '3.10', '3.11']
     steps:
       - uses: actions/checkout@v2.5.0
-      - name: Set up Python
+      - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-env }}
-      - name: Prepare enviroment
+          python-version: 3.7
+      - name: Prepare environment
         run: |
           python -m pip install --upgrade pip
-          python -m pip install wheel
-          pip install --no-cache-dir .
+          python -m pip install poetry
+          poetry install --without dev
+          poetry run pip install tensorflow==2.11.0
       - name: Test basic import
-        run: python -c 'from docarray import DocumentArray, Document'
+        run: poetry run python -c 'from docarray import DocList, BaseDoc'
 
-  prep-testbed:
+
+  check-mypy:
     runs-on: ubuntu-latest
-    needs: [lint-flake-8, check-black, import-test]
     steps:
       - uses: actions/checkout@v2.5.0
-      - id: set-matrix
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: check mypy
         run: |
-          sudo apt-get install jq
-          export value=$(bash scripts/get-all-test-paths.sh)
-          echo "matrix=$value" >> $GITHUB_OUTPUT
-          export value=$(bash scripts/get-all-oldproto-test-paths.sh)
-          echo "matrix-oldproto=$value" >> $GITHUB_OUTPUT
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      matrix-oldproto: ${{ steps.set-matrix.outputs.matrix-oldproto }}
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run mypy docarray
+
 
   docarray-test:
-    needs: prep-testbed
+    needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
-        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
+        python-version: [3.7]
+        test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -174,93 +97,213 @@ jobs:
       - name: Prepare environment
         run: |
           python -m pip install --upgrade pip
-          python -m pip install wheel
-          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
-          pip install --no-cache-dir ".[test]"
-          pip install --no-cache-dir ".[qdrant]"
-          pip install --no-cache-dir ".[annlite]"
-          pip install --no-cache-dir ".[weaviate]"
-          pip install --no-cache-dir ".[elasticsearch]"
-          pip install --no-cache-dir ".[redis]"
-          pip install --no-cache-dir ".[full]"
-          sudo apt-get install libsndfile1
+          python -m pip install poetry
+          poetry install --all-extras
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+          
       - name: Test
         id: test
         run: |
-          pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
-            -v -s -m "not gpu" ${{ matrix.test-path }}
-          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
-        timeout-minutes: 60
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+        timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
-      - name: Check codecov file
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "coverage.xml"
-      - name: Upload coverage from test to Codecov
-        uses: codecov/codecov-action@v3.1.1
-        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
-        with:
-          file: coverage.xml
-          flags: ${{ steps.test.outputs.codecov_flag }}
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+#      - name: Check codecov file
+#        id: check_files
+#        uses: andstor/file-existence-action@v1
+#        with:
+#          files: "coverage.xml"
+#      - name: Upload coverage from test to Codecov
+#        uses: codecov/codecov-action@v3.1.1
+#        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
+#        with:
+#          file: coverage.xml
+#          flags: ${{ steps.test.outputs.codecov_flag }}
+#          fail_ci_if_error: false
+#          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
-  docarray-oldproto-test:
-    needs: prep-testbed
+
+
+  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
+    needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
-        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix-oldproto)}}
+        python-version: [3.7]
+        test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Prepare enviroment
+      - name: Prepare environment
         run: |
           python -m pip install --upgrade pip
-          python -m pip install wheel
-          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
-          pip install --no-cache-dir ".[test]"
-          pip install --no-cache-dir ".[qdrant]"
-          pip install --no-cache-dir ".[annlite]"
-          pip install --no-cache-dir ".[weaviate]"
-          pip install --no-cache-dir ".[elasticsearch]"
-          pip install --no-cache-dir ".[redis]"
-          pip install --no-cache-dir ".[full]"
-          pip install --no-cache-dir "protobuf<3.20.0"
-          sudo apt-get install libsndfile1
+          python -m pip install poetry
+          rm poetry.lock
+          poetry install --all-extras
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
       - name: Test
         id: test
         run: |
-          pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
-            -v -s -m "not gpu" ${{ matrix.test-path }}
-          echo "::set-output name=codecov_flag::docarray"
-        timeout-minutes: 70
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+        timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
-      - name: Check codecov file
-        id: check_files
-        uses: andstor/file-existence-action@v1
+
+
+  docarray-test-proto3:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          files: "coverage.xml"
-      - name: Upload coverage from test to Codecov
-        uses: codecov/codecov-action@v2
-        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install protobuf==3.19.0 # we check that we support 3.19
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'proto' tests
+        timeout-minutes: 30
+
+
+  docarray-doc-index:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          file: coverage.xml
-          flags: ${{ steps.test.outputs.codecov_flag }}
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install protobuf==3.19.0
+          poetry run pip install tensorflow==2.11.0
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'index and not elasticv8' tests/index/${{ matrix.db_test_folder }}
+        timeout-minutes: 30
+
+
+  docarray-elastic-v8:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install protobuf==3.19.0
+          poetry run pip install tensorflow==2.11.0
+          poetry run pip install elasticsearch==8.6.2
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'index and elasticv8' tests
+        timeout-minutes: 30
+
+  docarray-test-tensorflow:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install protobuf==3.19.0
+          poetry run pip install tensorflow==2.11.0
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'tensorflow' tests
+        timeout-minutes: 30
+
+  docarray-test-benchmarks:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'benchmark' tests
+        timeout-minutes: 30
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [commit-lint, docarray-test, docarray-oldproto-test]
+    needs: [docarray-test, docarray-test-proto3, docarray-doc-index, docarray-elastic-v8, docarray-test-tensorflow, docarray-test-benchmarks, import-test, check-black, check-mypy, lint-ruff]
     if: always()
     runs-on: ubuntu-latest
     steps:

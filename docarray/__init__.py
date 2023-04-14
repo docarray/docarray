@@ -1,13 +1,15 @@
-__version__ = '0.21.1'
+__version__ = '0.30.0'
 
-import os
+import logging
 
-from docarray.document import Document
-from docarray.array import DocumentArray
-from docarray.dataclasses import dataclass, field
-from docarray.helper import login, logout
+from docarray.array import DocList, DocVec
+from docarray.base_doc.doc import BaseDoc
 
-if 'DA_RICH_HANDLER' in os.environ:
-    from rich.traceback import install
+__all__ = ['BaseDoc', 'DocList', 'DocVec']
 
-    install()
+logger = logging.getLogger('docarray')
+
+handler = logging.StreamHandler()
+formatter = logging.Formatter("%(levelname)s - %(name)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)

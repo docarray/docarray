@@ -35,8 +35,7 @@ function clean_build {
 function pub_pypi {
     # publish to pypi
     clean_build
-    python setup.py sdist
-    twine upload dist/*
+    poetry publish --build
     clean_build
 }
 
