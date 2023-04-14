@@ -210,7 +210,7 @@ def find_batched(
 
     batched_docs: List[DocList] = []
     scores = []
-    for i, (indices_per_query, scores_per_query) in enumerate(
+    for _, (indices_per_query, scores_per_query) in enumerate(
         zip(top_indices, top_scores)
     ):
         docs_per_query: DocList = DocList([])

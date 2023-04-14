@@ -51,16 +51,6 @@ else:
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-class FindResultBatched(NamedTuple):
-    documents: List[DocList]
-    scores: List[np.ndarray]
-
-
-class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: List[np.ndarray]
-
-
 def _raise_not_composable(name):
     def _inner(self, *args, **kwargs):
         raise NotImplementedError(
