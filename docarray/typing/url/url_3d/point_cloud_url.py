@@ -107,10 +107,10 @@ class PointCloud3DUrl(Url3D):
         pc = PointCloud3D(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         # option 1
-        pc.url.display()
+        # pc.url.display()
 
         # option 2 (equivalent)
-        pc.url.load(samples=10000).display()
+        # pc.url.load(samples=10000).display()
         ```
 
         ---
