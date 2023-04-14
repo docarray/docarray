@@ -92,9 +92,11 @@ nav:
           - user_guide/sending/api/fastAPI.md
     - Storing:
       - user_guide/storing/first_step.md
-      - user_guide/storing/store_file.md
-      - user_guide/storing/store_jac.md
-      - user_guide/storing/store_s3.md
+      - DocStore:
+        - user_guide/storing/doc_store/store_file.md
+        - user_guide/storing/doc_store/store_jac.md
+        - user_guide/storing/doc_store/store_s3.md
+
 
   - How-to:
     - how_to/add_doc_index.md
