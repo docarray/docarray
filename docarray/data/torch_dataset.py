@@ -24,16 +24,16 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     from torch.utils.data import DataLoader
     from docarray import DocList
     from docarray.data import MultiModalDataset
-    from docarray.documents import Text
+    from docarray.documents import TextDoc
 
 
     def prepend_number(text: str):
         return f"Number {text}"
 
 
-    docs = DocList[Text](Text(text=str(i)) for i in range(16))
-    ds = MultiModalDataset[Text](docs, preprocessing={'text': prepend_number})
-    loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[Text].collate_fn)
+    docs = DocList[TextDoc](TextDoc(text=str(i)) for i in range(16))
+    ds = MultiModalDataset[TextDoc](docs, preprocessing={'text': prepend_number})
+    loader = DataLoader(ds, batch_size=4, collate_fn=MultiModalDataset[TextDoc].collate_fn)
     for batch in loader:
         print(batch.text)
     ```
@@ -55,18 +55,18 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
     from torch.utils.data import DataLoader
     from docarray import DocList, BaseDoc
     from docarray.data import MultiModalDataset
-    from docarray.documents import Text
+    from docarray.documents import TextDoc
 
 
     class Thesis(BaseDoc):
-        title: Text
+        title: TextDoc
 
 
     class Student(BaseDoc):
         thesis: Thesis
 
 
-    def embed_title(title: Text):
+    def embed_title(title: TextDoc):
         title.embedding = torch.ones(4)
 
 
