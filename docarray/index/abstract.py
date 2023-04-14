@@ -383,14 +383,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
 
-        :param docs: Documents to index.
-
         !!! note
             Passing a sequence of Documents that is not a DocList
             (such as a List of Docs) comes at a performance penalty.
             This is because the Index needs to check compatibility between itself and
             the data. With a DocList as input this is a single check; for other inputs
             compatibility needs to be checked for every Document individually.
+
+        :param docs: Documents to index.
         """
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
