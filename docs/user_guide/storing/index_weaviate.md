@@ -69,21 +69,11 @@ Then you can start up Weaviate by running from a shell:
 docker-compose up -d
 ```
 
-Or running from a jupyter notebook:
-```bash
-docker-compose up -d
-```
-
 #### 1.2.2.2 Shut down Weaviate
 
 Then you can shut down Weaviate by running from a shell:
 
 ```shell
-docker-compose down
-```
-
-Or from a Jupyter notebook:
-```bash
 docker-compose down
 ```
 
