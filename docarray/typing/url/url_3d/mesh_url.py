@@ -41,7 +41,7 @@ class Mesh3DUrl(Url3D):
             mesh_url: Mesh3DUrl
 
 
-        doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
+        doc = MyDoc(mesh_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         tensors = doc.mesh_url.load()
         assert isinstance(tensors.vertices, NdArray)
@@ -51,7 +51,7 @@ class Mesh3DUrl(Url3D):
 
         :param skip_materials: Skip materials if True, else skip.
         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
-            or `trimesh.load_remote()`[LINK].
+            or `trimesh.load_remote()`.
         :return: VerticesAndFaces object containing vertices and faces information.
         """
         from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces

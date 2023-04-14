@@ -45,7 +45,7 @@ class PointCloud3DUrl(Url3D):
             point_cloud_url: PointCloud3DUrl
 
 
-        doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+        doc = MyDoc(point_cloud_url="thttps://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         # point_cloud = doc.point_cloud_url.load(samples=100)
 
@@ -104,7 +104,7 @@ class PointCloud3DUrl(Url3D):
 
         from docarray.documents import PointCloud3D
 
-        pc = PointCloud3D("toydata/tetrahedron.obj")
+        pc = PointCloud3D("https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         # option 1
         pc.url.display()
