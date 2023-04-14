@@ -140,9 +140,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert a [`DocList`][docarray.array.doc_list.doc_list.DocList] into a NodeProto protobuf message.
-        This function should be called when a DocList
-        is nested into another Document that need to be converted into a protobuf
+        """Convert a [`DocList`][docarray.array.doc_list.doc_list.DocList] into a NodeProto
+        protobuf message.
+        This function should be called when a DocList is nested into
+        another Document that need to be converted into a protobuf.
 
         :return: the nested item protobuf message
         """

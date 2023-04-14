@@ -97,7 +97,6 @@ nav:
         - user_guide/storing/doc_store/store_jac.md
         - user_guide/storing/doc_store/store_s3.md
 
-
   - How-to:
     - how_to/add_doc_index.md
     - how_to/multimodal_training_and_serving.md
