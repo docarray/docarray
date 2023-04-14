@@ -85,173 +85,174 @@ print(vec.image_tensor.shape)  # (10, 1704, 2272, 3)
 <details>
   <summary>Click for more details</summary>
 
-So let's take a closer look at how you can represent your data with DocArray:
-
-```python
-from docarray import BaseDoc
-from docarray.typing import TorchTensor, ImageUrl
-from typing import Optional
-import torch
-
-
-# Define your data model
-class MyDocument(BaseDoc):
-    description: str
-    image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
-    image_tensor: Optional[
-        TorchTensor[1704, 2272, 3]
-    ]  # could also be NdArray or TensorflowTensor
-    embedding: Optional[TorchTensor]
-```
-
-So not only can you define the types of your data, you can even **specify the shape of your tensors!**
-
-Once you have your model in form of a `Document`, you can work with it!
-
-```python
-# Create a document
-doc = MyDocument(
-    description="This is a photo of a mountain",
-    image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-)
-
-# Load image tensor from URL
-doc.image_tensor = doc.image_url.load()
-
-# Compute embedding with any model of your choice
+    So let's take a closer look at how you can represent your data with DocArray:
+    
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import TorchTensor, ImageUrl
+    from typing import Optional
+    import torch
 
 
-def clip_image_encoder(image_tensor: TorchTensor) -> TorchTensor:  # dummy function
-    return torch.rand(512)
+    # Define your data model
+    class MyDocument(BaseDoc):
+        description: str
+        image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
+        image_tensor: Optional[
+            TorchTensor[1704, 2272, 3]
+        ]  # could also be NdArray or TensorflowTensor
+        embedding: Optional[TorchTensor]
+    ```
 
-
-doc.embedding = clip_image_encoder(doc.image_tensor)
-
-print(doc.embedding.shape)  # torch.Size([512])
-```
-
-### Compose nested Documents
-
-Of course you can compose Documents into a nested structure:
-
-```python
-from docarray import BaseDoc
-from docarray.documents import ImageDoc, TextDoc
-import numpy as np
-
-
-class MultiModalDocument(BaseDoc):
-    image_doc: ImageDoc
-    text_doc: TextDoc
-
-
-doc = MultiModalDocument(
-    image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=TextDoc(text='hi!')
-)
-```
-
-Of course, you rarely work with a single data point at a time, especially in Machine Learning applications.
-
-That's why you can easily collect multiple `Documents`:
-
-### Collect multiple `Documents`
-
-When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
-
-DocArray offers two data structures for this:
-- **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
-- **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
-
-Let's take a look at them, starting with `DocVec`:
-
-```python
-from docarray import DocVec, BaseDoc
-from docarray.typing import AnyTensor, ImageUrl
-import numpy as np
-
-
-class Image(BaseDoc):
-    url: ImageUrl
-    tensor: AnyTensor  # this allows torch, numpy, and tensor flow tensors
-
-
-vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
-    [
-        Image(
-            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-            tensor=np.zeros((3, 224, 224)),
-        )
-        for _ in range(100)
-    ]
-)
-```
-
-As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
-
-This may look slightly weird at first, but we're confident that you'll get used to it quickly!
-Besides, it allows us to do some cool things, like giving you **bulk access to the fields that you defined** in your `Document`:
-
-```python
-tensor = vec.tensor  # gets all the tensors in the DocVec
-print(tensor.shape)  # which are stacked up into a single tensor!
-print(vec.url)  # you can bulk access any other field, too
-```
-
-The second data structure, `DocList`, works in a similar way:
-
-```python
-from docarray import DocList
-
-dl = DocList[Image](  # the DocList is parametrized by your personal schema!
-    [
-        Image(
-            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-            tensor=np.zeros((3, 224, 224)),
-        )
-        for _ in range(100)
-    ]
-)
-```
-
-You can still bulk access the fields of your `Document`:
-
-```python
-tensors = dl.tensor  # gets all the tensors in the DocList
-print(type(tensors))  # as a list of tensors
-print(dl.url)  # you can bulk access any other field, too
-```
-
-And you can insert, remove, and append `Documents` to your `DocList`:
-
-```python
-# append
-dl.append(
-    Image(
-        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-        tensor=np.zeros((3, 224, 224)),
+    So not only can you define the types of your data, you can even **specify the shape of your tensors!**
+    
+    Once you have your model in form of a `Document`, you can work with it!
+    
+    ```python
+    # Create a document
+    doc = MyDocument(
+        description="This is a photo of a mountain",
+        image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
     )
-)
-# delete
-del dl[0]
-# insert
-dl.insert(
-    0,
-    Image(
-        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-        tensor=np.zeros((3, 224, 224)),
-    ),
-)
-```
 
-And you can seamlessly switch between `DocVec` and `DocList`:
+    # Load image tensor from URL
+    doc.image_tensor = doc.image_url.load()
 
-```python
-vec_2 = dl.stack()
-assert isinstance(vec_2, DocVec)
+    # Compute embedding with any model of your choice
 
-dl_2 = vec_2.unstack()
-assert isinstance(dl_2, DocList)
-```
+
+    def clip_image_encoder(image_tensor: TorchTensor) -> TorchTensor:  # dummy function
+        return torch.rand(512)
+
+
+    doc.embedding = clip_image_encoder(doc.image_tensor)
+
+    print(doc.embedding.shape)  # torch.Size([512])
+    ```
+
+    ### Compose nested Documents
+    
+    Of course you can compose Documents into a nested structure:
+    
+    ```python
+    from docarray import BaseDoc
+    from docarray.documents import ImageDoc, TextDoc
+    import numpy as np
+
+
+    class MultiModalDocument(BaseDoc):
+        image_doc: ImageDoc
+        text_doc: TextDoc
+
+
+    doc = MultiModalDocument(
+        image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=TextDoc(text='hi!')
+    )
+    ```
+
+    Of course, you rarely work with a single data point at a time, especially in Machine Learning applications.
+
+    That's why you can easily collect multiple `Documents`:
+
+    ### Collect multiple `Documents`
+
+    When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
+
+    DocArray offers two data structures for this:
+    
+    - **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
+    - **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
+
+    Let's take a look at them, starting with `DocVec`:
+
+    ```python
+    from docarray import DocVec, BaseDoc
+    from docarray.typing import AnyTensor, ImageUrl
+    import numpy as np
+
+
+    class Image(BaseDoc):
+        url: ImageUrl
+        tensor: AnyTensor  # this allows torch, numpy, and tensor flow tensors
+
+
+    vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
+        [
+            Image(
+                url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+                tensor=np.zeros((3, 224, 224)),
+            )
+            for _ in range(100)
+        ]
+    )
+    ``` 
+
+    As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
+    
+    This may look slightly weird at first, but we're confident that you'll get used to it quickly!
+    Besides, it allows us to do some cool things, like giving you **bulk access to the fields that you defined** in your `Document`:
+    
+    ```python
+    tensor = vec.tensor  # gets all the tensors in the DocVec
+    print(tensor.shape)  # which are stacked up into a single tensor!
+    print(vec.url)  # you can bulk access any other field, too
+    ```
+    
+    The second data structure, `DocList`, works in a similar way:
+    
+    ```python
+    from docarray import DocList
+
+    dl = DocList[Image](  # the DocList is parametrized by your personal schema!
+        [
+            Image(
+                url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+                tensor=np.zeros((3, 224, 224)),
+            )
+            for _ in range(100)
+        ]
+    )
+    ```
+    
+    You can still bulk access the fields of your `Document`:
+    
+    ```python
+    tensors = dl.tensor  # gets all the tensors in the DocList
+    print(type(tensors))  # as a list of tensors
+    print(dl.url)  # you can bulk access any other field, too
+    ```
+    
+    And you can insert, remove, and append `Documents` to your `DocList`:
+    
+    ```python
+    # append
+    dl.append(
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+    )
+    # delete
+    del dl[0]
+    # insert
+    dl.insert(
+        0,
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        ),
+    )
+    ```
+    
+    And you can seamlessly switch between `DocVec` and `DocList`:
+    
+    ```python
+    vec_2 = dl.stack()
+    assert isinstance(vec_2, DocVec)
+
+    dl_2 = vec_2.unstack()
+    assert isinstance(dl_2, DocList)
+    ```
 
 </details>
 
