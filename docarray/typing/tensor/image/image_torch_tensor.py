@@ -12,7 +12,8 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
     """
     Subclass of [`TorchTensor`][docarray.typing.TorchTensor], to represent an image tensor.
     Adds image-specific features to the tensor.
-    For instance the ability convert the tensor back to image bytes which are
+    For instance the ability convert the tensor back to
+    [`ImageBytes`][docarray.typing.ImageBytes] which are
     optimized to send over the wire.
 
 
