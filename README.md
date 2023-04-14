@@ -12,400 +12,802 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
-<!-- start elevator-pitch -->
+> ⬆️ **DocArray v2**: This readme refer to the second version of DocArray (starting at 0.30). If you want to use the old
+> DocArray v1 version (below 0.30) check out the [docarray-v1-fixe](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
 
-> ⬆️ **DocArray v2**: We are currently working on v2 of DocArray. Keep reading here if you are interested in the
-> current (stable) version, or check out the [v2 alpha branch](https://github.com/docarray/docarray/tree/feat-rewrite-v2#readme)
-> and [v2 roadmap](https://github.com/docarray/docarray/issues/780)!
 
-DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer multimodal data with a Pythonic API.
+DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
-🚪 **Door to multimodal world**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data. The foundation data structure of [Jina](https://github.com/jina-ai/jina), [CLIP-as-service](https://github.com/jina-ai/clip-as-service), [DALL·E Flow](https://github.com/jina-ai/dalle-flow), [DiscoArt](https://github.com/jina-ai/discoart) etc.
+Those are the three pillars of DocArray, and you can check them out individually:
 
-🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, k-NN matching, querying, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
+1. [**Represent**](#represent)
+2. [**Send**](#send)
+3. [**Store**](#store)
 
-🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. Perfect for streaming and out-of-memory data.
+DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
-🔎 **One-stop k-NN**: Unified and consistent API for mainstream vector databases that allows nearest neighbor search including Elasticsearch, Redis, AnnLite, Qdrant, Weaviate.
+- :fire: DocArray has native compatibility for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)** and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, including for **model training use cases**
+- :zap: DocArray is built on **[Pydantic](https://github.com/pydantic/pydantic)** and out-of-the-box compatible with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
+- :package: DocArray can index data in vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** as well as **[HNSWLib](https://github.com/nmslib/hnswlib)**
+- :chains: DocArray data can be sent as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
 
-👒 **For modern apps**: GraphQL support makes your server versatile on request and response; built-in data validation and JSON Schema (OpenAPI) help you build reliable web services.
 
-🐍 **Pythonic experience**: as easy as a Python list. If you can Python, you can DocArray. Intuitive idioms and type annotation simplify the code you write.
-
-🛸 **IDE integration**: pretty-print and visualization on Jupyter notebook and Google Colab; comprehensive autocomplete and type hints in PyCharm and VS Code.
-
-Read more on [why should you use DocArray](https://docs.docarray.org/get-started/what-is/) and [comparison to alternatives](https://docs.docarray.org/get-started/what-is/#comparing-to-alternatives).
-
-<!-- end elevator-pitch -->
+> :bulb: **Where are you coming from?** Depending on your use case and background, there are different was to "get" DocArray.
+> You can navigate to the following section for an explanation that should fit your mindest:
+> - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
+> - [Coming from Pydantic](#coming-from-pydantic)
+> - [Coming from FastAPI](#coming-from-fastapi)
+> - [Coming from a vector database](#coming-from-vector-database)
 
 DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
-## [Documentation](https://docs.docarray.org)
+## Represent
 
-## Install 
+DocArray allows you to **represent your data**, in an ML-native way.
 
-Requires Python 3.7+
-```shell
-pip install docarray
-```
-or via Conda:
-```shell
-conda install -c conda-forge docarray
-```
-[Commonly used features](https://docs.docarray.org/#install) can be enabled via `pip install "docarray[common]"`.
+This is useful for different use cases:
+- :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
+- :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
+- :card_index_dividers: You are **parsing data** for later use in your ML or DS applications
 
+> :bulb: **Coming from Pydantic?** If you're currently using Pydantic for the use cases above, you should be happy to hear
+> that DocArray is built on top of, and fully compatible with, Pydantic!
+> Also, we have [dedicated section](#coming-from-pydantic) just for you!
 
-## Get Started
-
-DocArray consists of three simple concepts:
-
-- **Document**: a data structure for easily representing nested, unstructured data.
-- **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
-- **Dataclass**: a high-level API for intuitively representing multimodal data.
-
-Let's see DocArray in action with some examples.
-
-### Example 1: represent multimodal data in a dataclass
-
-You can easily represent the following news article card with `docarray.dataclass` and type annotation:
-
-
-<table>
-<tr>
-<td> 
-
-<img src="https://github.com/docarray/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="300px">
-     
-</td>
-<td>
+Put simply, DocArray lets you represent your data in a dataclass-like way, with ML as a first class citizen:
 
 ```python
-from docarray import dataclass, Document
-from docarray.typing import Image, Text, JSON
-
-
-@dataclass
-class WPArticle:
-    banner: Image
-    headline: Text
-    meta: JSON
-
-
-a = WPArticle(
-    banner='https://.../cat-dog-flight.png',
-    headline='Everything to know about flying with pets, ...',
-    meta={
-        'author': 'Nathan Diller',
-        'Column': 'By the Way - A Post Travel Destination',
-    },
-)
-
-d = Document(a)
-```
-
-</td>
-</tr>
-</table>
-
-
-### Example 2: text matching in 10 lines
-
-Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice":
-
-```python
-from docarray import Document, DocumentArray
-
-d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
-da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
-da.apply(Document.embed_feature_hashing, backend='process')
-
-q = (
-    Document(text='she smiled too much')
-    .embed_feature_hashing()
-    .match(da, metric='jaccard', use_scipy=True)
-)
-
-print(q.matches[:5, ('text', 'scores__jaccard__value')])
-```
-
-```text
-[['but she smiled too much.', 
-  '_little_, she might have fancied too _much_.', 
-  'She perfectly remembered everything that had passed in', 
-  'tolerably detached tone. While she spoke, an involuntary glance', 
-  'much as she chooses.”'], 
-  [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
-```
-
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
-
-### Example 3: external storage for out-of-memory data
-
-When your data is too big, storing in memory is not the best idea. DocArray supports [multiple storage backends](https://docs.docarray.org/advanced/document-store/) such as SQLite, Weaviate, Qdrant and AnnLite. They're all unified under **the exact same user experience and API**. Take the above snippet: you only need to change one line to use SQLite:
-
-```python
-da = DocumentArray(
-    (Document(text=s.strip()) for s in d.text.split('\n') if s.strip()),
-    storage='sqlite',
-)
-```
-
-The code snippet can still run **as-is**. All APIs remain the same, the subsequent code then runs in an "in-database" manner. 
-
-Besides saving memory, you can leverage storage backends for persistence and faster retrieval (e.g. on nearest-neighbor queries).
-
-### Example 4: complete workflow of visual search 
-
-Let's use DocArray and the [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build a simple meme image search. The dataset contains 6,016 image-pairs stored in `/left` and `/right`. Images that share the same filename appear similar to the human eye. For example:
-
-<table>
-<thead>
-  <tr>
-    <th>left/00018.jpg</th>
-    <th>right/00018.jpg</th>
-    <th>left/00131.jpg</th>
-    <th>right/00131.jpg</th>
-  </tr>
-</thead>
-<tbody>
-  <tr align="center">
-    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-  </tr>
-</tbody>
-</table>
-
-Given an image from `/left`, can we find the most-similar image to it in `/right`? (without looking at the filename).
-
-### Load images
-
-First we load images. You *can* go to [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset)'s website, unzip and load images as below:
-
-```python
-from docarray import DocumentArray
-
-left_da = DocumentArray.from_files('left/*.jpg')
-```
-
-Or you can simply pull it from Jina AI Cloud:
-
-```python
-left_da = DocumentArray.pull('jina-ai/demo-leftda', show_progress=True)
-```
-
-**Note**
-If you have more than 15GB of RAM and want to try using the whole dataset instead of just the first 1,000 images, remove `[:1000]` when loading the files into the DocumentArrays `left_da` and `right_da`.
-
-
-You'll see a progress bar to indicate how much has downloaded.
-
-To get a feeling of the data, we can plot them in one sprite image. You need matplotlib and torch installed to run this snippet:
-
-```python
-left_da.plot_image_sprites()
-```
-
-<p align="center">
-<a href="https://docs.docarray.org"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
-</p>
-
-### Apply preprocessing
-
-Let's do some standard computer vision pre-processing:
-
-```python
-from docarray import Document
-
-
-def preproc(d: Document):
-    return (
-        d.load_uri_to_image_tensor()  # load
-        .set_image_tensor_normalization()  # normalize color
-        .set_image_tensor_channel_axis(-1, 0)
-    )  # switch color axis for the PyTorch model later
-
-
-left_da.apply(preproc)
-```
-
-Did I mention `apply` works in parallel?
-
-### Embed images
-
-Now let's convert images into embeddings using a pretrained ResNet50:
-
-```python
-import torchvision
-
-model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
-left_da.embed(model, device='cuda')  # embed via GPU to speed up
-```
-
-This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow, PaddlePaddle, or ONNX models in `.embed(...)`.
-
-### Visualize embeddings
-
-You can visualize the embeddings via tSNE in an interactive embedding projector. You will need to have pydantic, uvicorn and FastAPI installed to run this snippet:
-
-```python
-left_da.plot_embeddings(image_sprites=True)
-```
-
-<p align="center">
-<a href="https://docs.docarray.org"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
-</p>
-
-Fun is fun, but our goal is to match left images against right images, and so far we have only handled the left. Let's repeat the same procedure for the right:
-
-<table>
-<tr>
-<th> Pull from Cloud </th> 
-<th> Download, unzip, load from local </th>
-</tr>
-<tr>
-<td> 
-
-```python
-right_da = (
-    DocumentArray.pull('jina-ai/demo-rightda', show_progress=True)
-    .apply(preproc)
-    .embed(model, device='cuda')[:1000]
-)
-```
-     
-</td>
-<td>
-
-```python
-right_da = (
-    DocumentArray.from_files('right/*.jpg')[:1000]
-    .apply(preproc)
-    .embed(model, device='cuda')
-)
-```
-
-</td>
-</tr>
-</table>
-
-### Match nearest neighbors
-
-Now we can match the left to the right and take the top-9 results.
-
-```python
-left_da.match(right_da, limit=9)
-```
-
-Let's inspect what's inside `left_da` matches now:
-
-```python
-for m in left_da[0].matches:
-    print(d.uri, m.uri, m.scores['cosine'].value)
-```
-
-```text
-left/02262.jpg right/03459.jpg 0.21102
-left/02262.jpg right/02964.jpg 0.13871843
-left/02262.jpg right/02103.jpg 0.18265384
-left/02262.jpg right/04520.jpg 0.16477376
-...
-```
-
-Or shorten the loop to a one-liner using the element and attribute selector:
-
-```python
-print(left_da['@m', ('uri', 'scores__cosine__value')])
-```
-
-Better see it.
-
-```python
-(
-    DocumentArray(left_da[8].matches, copy=True)
-    .apply(
-        lambda d: d.set_image_tensor_channel_axis(
-            0, -1
-        ).set_image_tensor_inv_normalization()
-    )
-    .plot_image_sprites()
-)
-```
-
-<p align="center">
-<a href="https://docs.docarray.org"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-<a href="https://docs.docarray.org"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-</p>
-
-Here we reversed the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so you can visualize them using image sprites.  
-
-### Quantitative evaluation
-
-Serious as you are, visual inspection is surely not enough. Let's calculate the recall@K. First we construct the groundtruth matches:
-
-```python
-groundtruth = DocumentArray(
-    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
-    for d in left_da
-)
-```
-
-Here we created a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
-
-Now let's check recall rate from 1 to 5 over the full dataset:
-
-```python
-for k in range(1, 6):
-    print(
-        f'recall@{k}',
-        left_da.evaluate(
-            groundtruth, hash_fn=lambda d: d.uri, metric='recall_at_k', k=k, max_rel=1
+from docarray import BaseDoc
+from docarray.typing import TorchTensor, ImageUrl
+import torch
+
+# Define your data model
+class MyDocument(BaseDoc):
+    description: str
+    image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
+    image_tensor: TorchTensor[1704, 2272, 3]  # you can express tensor shapes!
+
+
+# Stack multiple documents in a Document Vector
+from docarray import DocVec
+
+vec = DocVec[MyDocument](
+    [
+        MyDocument(
+            description="A cat",
+            image_url="https://example.com/cat.jpg",
+            image_tensor=torch.rand(1704, 2272, 3),
         ),
+    ]
+    * 10
+)
+print(vec.image_tensor.shape)  # (10, 1704, 2272, 3)
+```
+
+<details>
+  <summary>Click for more details</summary>
+
+So let's take a closer look at how you can represent your data with DocArray:
+
+```python
+from docarray import BaseDoc
+from docarray.typing import TorchTensor, ImageUrl
+from typing import Optional
+import torch
+
+# Define your data model
+class MyDocument(BaseDoc):
+    description: str
+    image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
+    image_tensor: Optional[
+        TorchTensor[1704, 2272, 3]
+    ]  # could also be NdArray or TensorflowTensor
+    embedding: Optional[TorchTensor]
+```
+
+So not only can you define the types of your data, you can even **specify the shape of your tensors!**
+
+Once you have your model in form of a `Document`, you can work with it!
+
+```python
+# Create a document
+doc = MyDocument(
+    description="This is a photo of a mountain",
+    image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+)
+
+# Load image tensor from URL
+doc.image_tensor = doc.image_url.load()
+
+# Compute embedding with any model of your choice
+
+
+def clip_image_encoder(image_tensor: TorchTensor) -> TorchTensor:  # dummy function
+    return torch.rand(512)
+
+
+doc.embedding = clip_image_encoder(doc.image_tensor)
+
+print(doc.embedding.shape)  # torch.Size([512])
+```
+
+### Compose nested Documents
+
+Of course you can compose Documents into a nested structure:
+
+```python
+from docarray import BaseDoc
+from docarray.documents import ImageDoc, TextDoc
+import numpy as np
+
+
+class MultiModalDocument(BaseDoc):
+    image_doc: ImageDoc
+    text_doc: TextDoc
+
+
+doc = MultiModalDocument(
+    image_doc=ImageDoc(tensor=np.zeros((3, 224, 224))), text_doc=TextDoc(text='hi!')
+)
+```
+
+Of course, you rarely work with a single data point at a time, especially in Machine Learning applications.
+
+That's why you can easily collect multiple `Documents`:
+
+### Collect multiple `Documents`
+
+When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
+
+DocArray offers two data structures for this:
+- **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
+- **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
+
+Let's take a look at them, starting with `DocVec`:
+
+```python
+from docarray import DocVec, BaseDoc
+from docarray.typing import AnyTensor, ImageUrl
+import numpy as np
+
+
+class Image(BaseDoc):
+    url: ImageUrl
+    tensor: AnyTensor  # this allows torch, numpy, and tensor flow tensors
+
+
+vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
+    [
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+        for _ in range(100)
+    ]
+)
+```
+
+As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
+
+This may look slightly weird at first, but we're confident that you'll get used to it quickly!
+Besides, it allows us to do some cool things, like giving you **bulk access to the fields that you defined** in your `Document`:
+
+```python
+tensor = vec.tensor  # gets all the tensors in the DocVec
+print(tensor.shape)  # which are stacked up into a single tensor!
+print(vec.url)  # you can bulk access any other field, too
+```
+
+The second data structure, `DocList`, works in a similar way:
+
+```python
+from docarray import DocList
+
+dl = DocList[Image](  # the DocList is parametrized by your personal schema!
+    [
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+        for _ in range(100)
+    ]
+)
+```
+
+You can still bulk access the fields of your `Document`:
+
+```python
+tensors = dl.tensor  # gets all the tensors in the DocList
+print(type(tensors))  # as a list of tensors
+print(dl.url)  # you can bulk access any other field, too
+```
+
+And you can insert, remove, and append `Documents` to your `DocList`:
+
+```python
+# append
+dl.append(
+    Image(
+        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+        tensor=np.zeros((3, 224, 224)),
     )
+)
+# delete
+del dl[0]
+# insert
+dl.insert(
+    0,
+    Image(
+        url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+        tensor=np.zeros((3, 224, 224)),
+    ),
+)
 ```
 
-```text
-recall@1 0.02726063829787234
-recall@2 0.03873005319148936
-recall@3 0.04670877659574468
-recall@4 0.052194148936170214
-recall@5 0.0573470744680851
-```
-
-You can also use other metrics like `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
-
-If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) you can do much better with [just another ten lines of code](https://finetuner.jina.ai/notebooks/image_to_image/).
-
-
-### Save results
-
-You can save a DocumentArray to binary, JSON, dict, DataFrame, CSV or Protobuf message with/without compression. In its simplest form:
+And you can seamlessly switch between `DocVec` and `DocList`:
 
 ```python
-left_da.save('left_da.bin')
+vec_2 = dl.to_doc_vec()
+assert isinstance(vec_2, DocVec)
+
+dl_2 = vec_2.to_doc_list()
+assert isinstance(dl_2, DocList)
 ```
 
-To reuse that DocumentArray's data, use `left_da = DocumentArray.load('left_da.bin')`.
+</details>
 
-If you want to transfer a DocumentArray from one machine to another or share it with your colleagues, you can do:
+## Send
+
+DocArray allows you to **send your data**, in an ML-native way.
+
+This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
+
+This is useful for different use cases:
+- :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
+- :spider_web: You **distribute your model** across machines and need to send your data between nodes
+- :gear: You are building a **microservice** architecture and need to send your data between microservices
+
+> :bulb: **Coming from FastAPI?** If you're currently using FastAPI for the use cases above, you should be happy to hear
+> that DocArray is fully compatible with FastAPI!
+> Also, we have [dedicated section](#coming-from-fastapi) just for you!
+
+Whenever you want to send your data you need to serialize it, so let's take a look at how that works with DocArray:
 
 ```python
-left_da.push('my_shared_da')
+from docarray import BaseDoc
+from docarray.typing import ImageTorchTensor
+import torch
+
+# model your data
+class MyDocument(BaseDoc):
+    description: str
+    image: ImageTorchTensor[3, 224, 224]
+
+
+# create a Document
+doc = MyDocument(
+    description="This is a description",
+    image=torch.zeros((3, 224, 224)),
+)
+
+# serialize it!
+proto = doc.to_protobuf()
+bytes_ = doc.to_bytes()
+json = doc.json()
+
+# deserialize it!
+doc_2 = MyDocument.from_protobuf(proto)
+doc_4 = MyDocument.from_bytes(bytes_)
+doc_5 = MyDocument.parse_raw(json)
 ```
 
-Now anyone who knows the token `my_shared_da` can pull and work on it.
+Of course, serialization is not all you need.
+So check out how DocArray integrates with FatAPI and Jina.
+
+
+## Store
+
+Once you've modelled your data, and maybe sent it around, usually you want to **store it** somewhere.
+But fret not! DocArray has you covered!
+
+**Document Stores** let you, well, store your Documents, locally or remotely, all with the same user interface:
+- :cd: **On disk** as a file in your local file system
+- :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
+- :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
+
+<details>
+  <summary>See Document Store usage</summary>
+
+The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
+
+As an example, let's take a look at how that would work with AWS S3 storage:
 
 ```python
-left_da = DocumentArray.pull('<username>/my_shared_da')
+from docarray import DocList
+from docarray.documents import ImageDoc
+import numpy as np
+
+dl = DocList[ImageDoc](
+    [
+        ImageDoc(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+        )
+        for _ in range(100)
+    ]
+)
+
+# push the DocList to S3
+dl.push('s3://my-bucket/my-documents', show_progress=True)
+
+# pull the DocList from S3
+dl_2 = DocList[ImageDoc].pull('s3://my-bucket/my-documents', show_progress=True)
+```
+</details>
+
+**Document Indexes** let you index your Documents into a **vector database**, for efficient similarity-based retrieval.
+
+This is useful for:
+- :left_speech_bubble: Augmenting **LLMs and Chatbots** with domain knowledge ([Retrieval Augmented Generation](https://arxiv.org/abs/2005.11401))
+- :mag: **Neural search** applications
+- :bulb: **Recommender systems**
+
+Currently, DocArray Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
+
+<details>
+  <summary>See Document Index usage</summary>
+
+The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
+
+It supports ANN vector search, text search, filtering, and hybrid search.
+
+```python
+from docarray import DocList, BaseDoc
+from docarray.index import HnswDocumentIndex
+import numpy as np
+
+from docarray.typing import ImageUrl, ImageTensor, NdArray
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: ImageTensor
+    embedding: NdArray[128]
+
+
+# create some data
+dl = DocList[ImageDoc](
+    [
+        ImageDoc(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+            embedding=np.random.random((128,)),
+        )
+        for _ in range(100)
+    ]
+)
+
+# create a Document Index
+index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index')
+
+
+# index your data
+index.index(dl)
+
+# find similar Documents
+query = dl[0]
+results, scores = index.find(query, limit=10, search_field='embedding')
 ```
 
-Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docs.docarray.org).
+</details>
+
+Depending on your background and use case, there are different ways for you to _get_ DocArray.
+Choose your own adventure!
+
+## Coming from old DocArray
+
+<details>
+  <summary>Click to expand</summary>
+
+If you are using DocArray v<0.30.0, you will be familiar with its [dataclass API](https://docarray.jina.ai/fundamentals/dataclass/).
+
+_DocArray v2 is that idea, taken seriously._ Every `Document` is created through dataclass-like interface,
+courtesy of [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/).
+
+This gives the following advantages:
+- **Flexibility:** No need to conform to a fixed set of fields -- your data defines the schema
+- **Multi-modality:** Easily store multiple modalities and multiple embeddings in the same Document
+- **Language agnostic:** At its core, Documents are just dictionaries. This makes it easy to create and send them from any language, not just Python.
+
+You may also be familiar with our old Document Stores for vector DB integration.
+They are now called **Document Indexes** and offer the following improvements (see [here](#store) for the new API):
+- **Hybrid search:** You can now combine vector search with text search, and even filter by arbitrary fields
+- **Production-ready:** The new Document Indexes are a much thinner wrapper around the various vector DB libraries, making them more robust and easier to maintain
+- **Increased flexibility:** We strive to support any configuration or setting that you could perform through the DB's first-party client
+
+For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come.
+
+</details>
+
+## Coming from Pydantic
+
+<details>
+  <summary>Click to expand</summary>
+
+If you come from Pydantic, you can see DocArray Documents as juiced up Pydantic models, and DocArray as a collection of goodies around them.
+
+More specifically, we set out to **make Pydantic fit for the ML world** - not by replacing it, but by building on top of it!
+
+This means that you get the following benefits:
+- **ML focused types**: Tensor, TorchTensor, Embedding, ..., including **tensor shape validation**
+- Full compatibility with **FastAPI**
+- **DocList** and **DocVec** generalize the idea of a model to a _sequence_ or _batch_ of models. Perfect for **use in ML models** and other batch processing tasks.
+- **Types that are alive**: ImageUrl can `.load()` a URL to image tensor, TextUrl can load and tokenize text documents, etc.
+- Cloud-ready: Serialization to **Protobuf** for use with microservices and **gRPC**
+- **Pre-built multi-modal Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio and more. Note that all of these are valid Pydantic models!
+- **Document Stores** and **Document Indexes** let you store your data and retrieve it using **vector search**
+
+The most obvious advantage here is **first-class support for ML centric data**, such as {Torch, TF, ...}Tensor, Embedding, etc.
+
+This includes handy features such as validating the shape of a tensor:
+
+```python
+from docarray import BaseDoc
+from docarray.typing import TorchTensor
+import torch
 
 
-<!-- start support-pitch -->
-## Support & talk to us
-- Join our [Discord server](https://discord.gg/WaMp6PVPgR) and chat with other community members about ideas.
-- Join our [public meetings](https://calendar.google.com/calendar/u/2?cid=Y180NmJjYjQ3ZjEzN2QzOThjZjhjZmM2MzM0YTYyMjRkMjVhMjY1NTBlMGZkNjZkOGFmOWUyNjZiMDU4ODkyYmIxQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20) where we discuss the future of the project.
+class MyDoc(BaseDoc):
+    tensor: TorchTensor[3, 224, 224]
+
+
+doc = MyDoc(tensor=torch.zeros(3, 224, 224))  # works
+doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
+
+try:
+    doc = MyDoc(tensor=torch.zeros(224))  # fails validation
+except Exception as e:
+    print(e)
+    # tensor
+    # Cannot reshape tensor of shape (224,) to shape (3, 224, 224) (type=value_error)
+
+
+class Image(BaseDoc):
+    tensor: TorchTensor[3, 'x', 'x']
+
+
+Image(tensor=torch.zeros(3, 224, 224))  # works
+
+try:
+    Image(
+        tensor=torch.zeros(3, 64, 128)
+    )  # fails validation because second dimension does not match third
+except Exception as e:
+    print()
+
+
+try:
+    Image(
+        tensor=torch.zeros(4, 224, 224)
+    )  # fails validation because of the first dimension
+except Exception as e:
+    print(e)
+    # Tensor shape mismatch. Expected(3, 'x', 'x'), got(4, 224, 224)(type=value_error)
+
+try:
+    Image(
+        tensor=torch.zeros(3, 64)
+    )  # fails validation because it does not have enough dimensions
+except Exception as e:
+    print(e)
+    # Tensor shape mismatch. Expected (3, 'x', 'x'), got (3, 64) (type=value_error)
+```
+
+</details>
+
+
+## Coming from PyTorch
+
+<details>
+  <summary>Click to expand</summary>
+
+If you come from PyTorch, you can see DocArray mainly as a way of _organizing your data as it flows through your model_.
+
+It offers you several advantages:
+- Express **tensors shapes in type hints**
+- **Group tensors that belong to the same object**, e.g. an audio track and an image
+- **Go directly to deployment**, by re-using your data model as a [FastAPI](https://fastapi.tiangolo.com/) or [Jina](https://github.com/jina-ai/jina) API schema
+- Connect model components between **microservices**, using Protobuf and gRPC
+
+DocArray can be used directly inside ML models to handle and represent multi-modal data.
+This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`,
+and provides a (FastAPI-compatible) schema that eases the transition between model training and model serving.
+
+To see the effect of this, let's first observe a vanilla PyTorch implementation of a tri-modal ML model:
+
+```python
+import torch
+from torch import nn
+import torch
+
+
+def encoder(x):
+    return torch.rand(512)
+
+
+class MyMultiModalModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = encoder()
+        self.image_encoder = encoder()
+        self.text_encoder = encoder()
+
+    def forward(self, text_1, text_2, image_1, image_2, audio_1, audio_2):
+        embedding_text_1 = self.text_encoder(text_1)
+        embedding_text_2 = self.text_encoder(text_2)
+
+        embedding_image_1 = self.image_encoder(image_1)
+        embedding_image_2 = self.image_encoder(image_2)
+
+        embedding_audio_1 = self.image_encoder(audio_1)
+        embedding_audio_2 = self.image_encoder(audio_2)
+
+        return (
+            embedding_text_1,
+            embedding_text_2,
+            embedding_image_1,
+            embedding_image_2,
+            embedding_audio_1,
+            embedding_audio_2,
+        )
+```
+
+Not very easy on the eyes if you ask us. And even worse, if you need to add one more modality you have to touch every part of your code base, changing the `forward()` return type and making a whole lot of changes downstream from that.
+
+So, now let's see what the same code looks like with DocArray:
+
+```python
+from docarray import DocList, BaseDoc
+from docarray.documents import ImageDoc, TextDoc, AudioDoc
+from docarray.typing import TorchTensor
+from torch import nn
+import torch
+
+
+def encoder(x):
+    return torch.rand(512)
+
+
+class Podcast(BaseDoc):
+    text: TextDoc
+    image: ImageDoc
+    audio: AudioDoc
+
+
+class PairPodcast(BaseDoc):
+    left: Podcast
+    right: Podcast
+
+
+class MyPodcastModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = encoder()
+        self.image_encoder = encoder()
+        self.text_encoder = encoder()
+
+    def forward_podcast(self, docs: DocList[Podcast]) -> DocList[Podcast]:
+        docs.audio.embedding = self.audio_encoder(docs.audio.tensor)
+        docs.text.embedding = self.text_encoder(docs.text.tensor)
+        docs.image.embedding = self.image_encoder(docs.image.tensor)
+
+        return docs
+
+    def forward(self, docs: DocList[PairPodcast]) -> DocList[PairPodcast]:
+        docs.left = self.forward_podcast(docs.left)
+        docs.right = self.forward_podcast(docs.right)
+
+        return docs
+```
+
+Looks much better, doesn't it?
+You instantly win in code readability and maintainability. And for the same price you can turn your PyTorch model into a FastAPI app and reuse your Document
+schema definition (see [below](#coming-from-fastapi)). Everything is handled in a pythonic manner by relying on type hints.
+
+</details>
+
+
+## Coming from TensorFlow
+
+<details>
+  <summary>Click to expand</summary>
+
+Similar to the [PyTorch approach](#coming-from-pytorch), you can also use DocArray with TensorFlow to handle and represent multi-modal data inside your ML model.
+
+First off, to use DocArray with TensorFlow we first need to install it as follows:
+
+```
+pip install tensorflow==2.11.0
+pip install protobuf==3.19.0
+```
+
+Compared to using DocArray with PyTorch, there is one main difference when using it with TensorFlow:\
+While DocArray's `TorchTensor` is a subclass of `torch.Tensor`, this is not the case for the `TensorFlowTensor`: Due to some technical limitations of `tf.Tensor`, DocArray's `TensorFlowTensor` is not a subclass of `tf.Tensor` but rather stores a `tf.Tensor` in its `.tensor` attribute. 
+
+How does this affect you? Whenever you want to access the tensor data to, let's say, do operations with it or hand it to your ML model, instead of handing over your `TensorFlowTensor` instance, you need to access its `.tensor` attribute.
+
+This would look like the following:
+
+```python
+from typing import Optional
+
+from docarray import DocList, BaseDoc
+
+import tensorflow as tf
+
+
+class Podcast(BaseDoc):
+    audio_tensor: Optional[AudioTensorFlowTensor]
+    embedding: Optional[AudioTensorFlowTensor]
+
+
+class MyPodcastModel(tf.keras.Model):
+    def __init__(self):
+        super().__init__()
+        self.audio_encoder = AudioEncoder()
+
+    def call(self, inputs: DocList[Podcast]) -> DocList[Podcast]:
+        inputs.audio_tensor.embedding = self.audio_encoder(
+            inputs.audio_tensor.tensor
+        )  # access audio_tensor's .tensor attribute
+        return inputs
+```
+
+</details>
+
+
+## Coming from FastAPI
+
+<details>
+  <summary>Click to expand</summary>
+
+Documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI!
+
+But why should you use them, and not the Pydantic models you already know and love?
+Good question!
+- Because of the ML-first features, types and validations, [here](#coming-from-pydantic)
+- Because DocArray can act as an [ORM for vector databases](#coming-from-a-vector-database), similar to what SQLModel does for SQL databases
+
+And to seal the deal, let us show you how easily Documents slot into your FastAPI app:
+
+```python
+import numpy as np
+from fastapi import FastAPI
+from httpx import AsyncClient
+
+from docarray import BaseDoc
+from docarray.documents import ImageDoc
+from docarray.typing import NdArray
+from docarray.base_doc import DocArrayResponse
+
+
+class InputDoc(BaseDoc):
+    img: ImageDoc
+
+
+class OutputDoc(BaseDoc):
+    embedding_clip: NdArray
+    embedding_bert: NdArray
+
+
+input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
+
+app = FastAPI()
+
+
+@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
+async def create_item(doc: InputDoc) -> OutputDoc:
+    ## call my fancy model to generate the embeddings
+    doc = OutputDoc(
+        embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+    )
+    return doc
+
+
+async with AsyncClient(app=app, base_url="http://test") as ac:
+    response = await ac.post("/doc/", data=input_doc.json())
+    resp_doc = await ac.get("/docs")
+    resp_redoc = await ac.get("/redoc")
+```
+
+Just like a vanilla Pydantic model!
+
+</details>
+
+
+## Coming from a vector database
+
+<details>
+  <summary>Click to expand</summary>
+
+If you came across DocArray as a universal vector database client, you can best think of it as **a new kind of ORM for vector databases**.
+
+DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
+store it there, and thus make it searchable:
+
+```python
+from docarray import DocList, BaseDoc
+from docarray.index import HnswDocumentIndex
+import numpy as np
+
+from docarray.typing import ImageUrl, ImageTensor, NdArray
+
+
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: ImageTensor
+    embedding: NdArray[128]
+
+
+# create some data
+dl = DocList[ImageDoc](
+    [
+        ImageDoc(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+            tensor=np.zeros((3, 224, 224)),
+            embedding=np.random.random((128,)),
+        )
+        for _ in range(100)
+    ]
+)
+
+# create a Document Index
+index = HnswDocumentIndex[ImageDoc](work_dir='/tmp/test_index2')
+
+
+# index your data
+index.index(dl)
+
+# find similar Documents
+query = dl[0]
+results, scores = index.find(query, limit=10, search_field='embedding')
+```
+
+Currently, DocArray supports the following vector databases:
+- [Weaviate](https://www.weaviate.io/)
+- [Qdrant](https://qdrant.tech/)
+- [Elasticsearch](https://www.elastic.co/elasticsearch/) v8 and v7
+- [HNSWlib](https://github.com/nmslib/hnswlib) as a local-first alternative
+
+An integration of [OpenSearch](https://opensearch.org/) is currently in progress.
+
+Legacy versions of DocArray also support [Redis](https://redis.io/) and [Milvus](https://milvus.io/), but these are not yet supported in the current version.
+
+Of course this is only one thing that DocArray can do, so we encourage you to check out the rest of this readme!
+
+</details>
+
+
+## Install the alpha
+
+To try out the alpha you can install it via git:
+
+```shell
+pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
+```
+
+...or from the latest development branch
+
+```shell
+pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
+```
+
+## See also
+
+- [Documentation](https://docarray-v2--jina-docs.netlify.app/)
+- [Join our Discord server](https://discord.gg/WaMp6PVPgR)
+- [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
+- ["Legacy" DocArray github page](https://github.com/docarray/docarray)
+- ["Legacy" DocArray documentation](https://docarray.jina.ai/)
 
 > DocArray is a trademark of LF AI Projects, LLC

@@ -8,7 +8,7 @@ set -ex
 #
 # current dir: docarray/docarray
 # run the following in bash:
-# docker run -v $(pwd)/proto:/docarray/proto jinaai/protogen
+# docker run -v $(pwd)/proto:/jina/proto jinaai/protogen
 # finally, set back owner of the generated files using: sudo chown -R $(id -u ${USER}):$(id -g ${USER}) .
 
 SRC_DIR=./
@@ -22,7 +22,7 @@ VER_FILE=../__init__.py
 
 if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
     echo "Error: Please specify the [PATH_TO_GRPC_PYTHON_PLUGIN], refer more details at " \
-      "https://docs.docarray.org/"
+      "https://docarray.jina.ai/"
     printf "\n"
     echo "USAGE:"
     printf "\t"

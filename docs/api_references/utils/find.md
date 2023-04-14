@@ -1,0 +1,7 @@
+# find
+
+::: docarray.utils.find
+
+
+
+

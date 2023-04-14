@@ -1,81 +1,95 @@
-from typing import (
-    Union,
-    TYPE_CHECKING,
-    TypeVar,
-    Sequence,
-    Optional,
-    List,
-    Dict,
-    Generator,
-    Iterable,
-    Tuple,
-    ForwardRef,
+from typing_extensions import TYPE_CHECKING
+
+from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
+from docarray.typing.id import ID
+from docarray.typing.tensor import ImageNdArray, ImageTensor
+from docarray.typing.tensor.audio import AudioNdArray, AudioTensor
+from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
+from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.tensor.tensor import AnyTensor
+from docarray.typing.tensor.video import VideoNdArray, VideoTensor
+from docarray.typing.url import (
+    AnyUrl,
+    AudioUrl,
+    ImageUrl,
+    Mesh3DUrl,
+    PointCloud3DUrl,
+    TextUrl,
+    VideoUrl,
+)
+from docarray.utils._internal.misc import (
+    _get_path_from_docarray_root_level,
+    import_library,
 )
 
-if TYPE_CHECKING:  # pragma: no cover
-    import scipy.sparse
-    import tensorflow
-    import torch
-    import numpy as np
-    from PIL.Image import Image as PILImage
-
-    from docarray import Document
-
-    ArrayType = TypeVar(
-        'ArrayType',
-        np.ndarray,
-        scipy.sparse.spmatrix,
-        tensorflow.SparseTensor,
-        tensorflow.Tensor,
-        torch.Tensor,
-        Sequence[float],
-    )
-
-    DocumentContentType = Union[bytes, str, ArrayType]
-    ProtoValueType = Optional[Union[str, bool, float]]
-    StructValueType = Union[
-        ProtoValueType, List[ProtoValueType], Dict[str, ProtoValueType]
-    ]
-
-    DocumentArraySourceType = Union[
-        Sequence[Document], Document, Generator[Document], Iterable[Document]
-    ]
-    T = TypeVar('T')
-
-    AnyDNN = TypeVar(
-        'AnyDNN'
-    )  #: The type of any implementation of a Deep Neural Network object
-
-    DocumentArraySingletonIndexType = Union[int, str]
-    DocumentArrayMultipleIndexType = Union[
-        slice, Sequence[int], Sequence[str], Sequence[bool], Ellipsis
-    ]
-    DocumentArraySingleAttributeType = Tuple[
-        Union[DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType], str
-    ]
-    DocumentArrayMultipleAttributeType = Tuple[
-        Union[DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType],
-        Sequence[str],
-    ]
-    DocumentArrayIndexType = Union[
-        DocumentArraySingletonIndexType,
-        DocumentArrayMultipleIndexType,
-        DocumentArraySingleAttributeType,
-        DocumentArrayMultipleAttributeType,
-    ]
+if TYPE_CHECKING:
+    from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
+    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
+    from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
+    from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
 
 
-Image = TypeVar(
-    'Image',
-    str,
-    ForwardRef('np.ndarray'),
-    ForwardRef('PILImage'),
-)
-Text = TypeVar('Text', bound=str)
-URI = TypeVar('URI', bound=str)
-Audio = TypeVar('Audio', str, ForwardRef('np.ndarray'))
-Video = TypeVar('Video', str, ForwardRef('np.ndarray'))
-Mesh = TypeVar('Mesh', str, ForwardRef('np.ndarray'))
-Tabular = TypeVar('Tabular', bound=str)
-Blob = TypeVar('Blob', str, bytes)
-JSON = TypeVar('JSON', str, dict)
+__all__ = [
+    'NdArray',
+    'NdArrayEmbedding',
+    'AudioNdArray',
+    'VideoNdArray',
+    'AnyEmbedding',
+    'ImageUrl',
+    'AudioUrl',
+    'TextUrl',
+    'Mesh3DUrl',
+    'PointCloud3DUrl',
+    'VideoUrl',
+    'AnyUrl',
+    'ID',
+    'AnyTensor',
+    'ImageTensor',
+    'AudioTensor',
+    'VideoTensor',
+    'ImageNdArray',
+    'ImageBytes',
+    'VideoBytes',
+    'AudioBytes',
+]
+
+
+_torch_tensors = [
+    'TorchTensor',
+    'TorchEmbedding',
+    'ImageTorchTensor',
+    'AudioTorchTensor',
+    'VideoTorchTensor',
+]
+_tf_tensors = [
+    'TensorFlowTensor',
+    'TensorFlowEmbedding',
+    'ImageTensorFlowTensor',
+    'AudioTensorFlowTensor',
+    'VideoTensorFlowTensor',
+]
+__all_test__ = __all__ + _torch_tensors
+
+
+def __getattr__(name: str):
+    if name in _torch_tensors:
+        import_library('torch', raise_error=True)
+    elif name in _tf_tensors:
+        import_library('tensorflow', raise_error=True)
+    else:
+        raise ImportError(
+            f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
+        )
+
+    import docarray.typing.tensor
+
+    tensor_cls = getattr(docarray.typing.tensor, name)
+    if name not in __all__:
+        __all__.append(name)
+
+    return tensor_cls

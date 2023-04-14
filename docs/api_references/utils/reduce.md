@@ -1,0 +1,7 @@
+# reduce
+
+::: docarray.utils.reduce
+
+
+
+
