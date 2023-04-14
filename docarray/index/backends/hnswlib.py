@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
 
-    from docarray.typing import TensorFlowTensor
+    from docarray.typing import NdArray, TensorFlowTensor
 else:
     hnswlib = import_library('hnswlib', raise_error=False)
     torch = import_library('torch', raise_error=False)
@@ -262,7 +262,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
         )
-        return _FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(
+            documents=docs[0], scores=NdArray._docarray_from_native(scores[0])
+        )
 
     def _filter(
         self,
