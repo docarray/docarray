@@ -537,7 +537,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             docs.append(doc_dict)
             scores.append(result['_score'])
 
-        return docs, [parse_obj_as(NdArray, s) for s in scores]
+        return docs, [parse_obj_as(NdArray, np.array(s)) for s in scores]
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
