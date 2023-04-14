@@ -440,7 +440,6 @@ def test_limit_query_builder(test_store):
     assert len(docs) == 2
 
 
-@pytest.mark.linux
 def test_embedded_weaviate():
     class Document(BaseDoc):
         text: str
