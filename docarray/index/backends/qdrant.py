@@ -1,37 +1,35 @@
 import uuid
 from dataclasses import dataclass, field
 from typing import (
-    TypeVar,
-    Generic,
-    Optional,
-    cast,
-    Sequence,
     Any,
-    Union,
-    List,
     Dict,
     Generator,
-    Type,
+    Generic,
+    List,
+    Optional,
+    Sequence,
     Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
 )
 
 import numpy as np
+import qdrant_client
 from grpc import RpcError  # type: ignore[import]
+from qdrant_client.conversions import common_types as types
+from qdrant_client.http import models as rest
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
     BaseDocIndex,
-    _FindResultBatched,
     _ColumnInfo,
+    _FindResultBatched,
     _raise_not_composable,
 )
-
-import qdrant_client
-from qdrant_client.conversions import common_types as types
-from qdrant_client.http import models as rest
-
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import torch_imported
@@ -59,6 +57,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     UUID_NAMESPACE = uuid.UUID('3896d314-1e95-4a3a-b45a-945f9f0b541d')
 
     def __init__(self, db_config=None, **kwargs):
+        """Initialize WeaviateDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -81,6 +80,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class Query:
+        """Dataclass describing a query."""
+
         vector_field: Optional[str]
         vector_query: Optional[NdArray]
         filter: Optional[rest.Filter]
@@ -100,6 +101,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._text_search_filters: List[Tuple[str, str]] = text_search_filters or []
 
         def build(self, limit: int) -> 'QdrantDocumentIndex.Query':
+            """
+            Build a query object for WeaviateDocumentIndex.
+            :return: QdrantDocumentIndex.Query object
+            """
             vector_query = None
             if len(self._vector_filters) > 0:
                 # If there are multiple vector queries applied, we can average them and
@@ -129,6 +134,13 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def find(  # type: ignore[override]
             self, query: NdArray, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
+            """
+            Find k-nearest neighbors of the query.
+
+            :param query: query vector for search. Has single axis.
+            :param search_field: field to perform search on
+            :return: QueryBuilder object
+            """
             if self._vector_search_field and self._vector_search_field != search_field:
                 raise ValueError(
                     f'Trying to call .find for search_field = {search_field}, but '

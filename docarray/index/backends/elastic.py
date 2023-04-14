@@ -61,6 +61,7 @@ if is_tf_available():
 
 class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
+        """Initialize ElasticDocIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(self.DBConfig, self._db_config)
 
@@ -121,6 +122,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             }
 
         def build(self, *args, **kwargs) -> Any:
+            """Build the elastic search query object."""
             if len(self._query['query']) == 0:
                 del self._query['query']
             elif 'knn' in self._query:
@@ -136,6 +138,15 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             limit: int = 10,
             num_candidates: Optional[int] = None,
         ):
+            """
+            Find k-nearest neighbors of the query.
+
+            :param query: query vector for KNN/ANN search. Has single axis.
+            :param search_field: name of the field to search on
+            :param limit: maximum number of documents to return per query
+            :param num_candidates: number of candidates
+            :return: self
+            """
             self._outer_instance._validate_search_field(search_field)
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
@@ -154,11 +165,24 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         # filter accepts Leaf/Compound query clauses
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
         def filter(self, query: Dict[str, Any], limit: int = 10):
+            """Find documents in the index based on a filter query
+
+            :param query: the query to execute
+            :param limit: maximum number of documents to return
+            :return: self
+            """
             self._query['size'] = limit
             self._query['query']['bool']['filter'].append(query)
             return self
 
         def text_search(self, query: str, search_field: str = 'text', limit: int = 10):
+            """Find documents in the index based on a text search query
+
+            :param query: The text to search for
+            :param search_field: name of the field to search on
+            :param limit: maximum number of documents to find
+            :return: self
+            """
             self._outer_instance._validate_search_field(search_field)
             self._query['size'] = limit
             self._query['query']['bool']['must'].append(
@@ -172,12 +196,16 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     def build_query(self, **kwargs) -> QueryBuilder:
         """
-        Build a query for this DocumentIndex.
+        Build a query for ElasticDocIndex.
+        :param kwargs: parameters to forward to QueryBuilder initialization
+        :return: QueryBuilder object
         """
         return self.QueryBuilder(self, **kwargs)
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of ElasticDocIndex."""
+
         hosts: Union[
             str, List[Union[str, Mapping[str, Union[str, int]], NodeConfig]], None
         ] = 'http://localhost:9200'
@@ -188,6 +216,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
+
         default_column_config: Dict[Any, Dict[str, Any]] = field(default_factory=dict)
         chunk_size: int = 500
 
@@ -239,6 +269,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self.default_column_config['dense_vector'] = self.dense_vector_config()
 
         def dense_vector_config(self):
+            """Get the dense vector config."""
             config = {
                 'dims': -1,
                 'index': True,
@@ -255,7 +286,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ###############################################
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        """Map python type to database type."""
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type,
+            or None if ``python_type`` is not supported.
+        """
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
                 return 'dense_vector'
@@ -307,6 +344,9 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self._refresh(self._index_name)
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         return self._client.count(index=self._index_name)['count']
 
     def _del_items(
@@ -349,6 +389,20 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return accumulated_docs
 
     def execute_query(self, query: Dict[str, Any], *args, **kwargs) -> Any:
+        """
+        Execute a query on the ElasticDocIndex.
+
+        Can take two kinds of inputs:
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index' `QueryBuilder.build()` method.
+
+        :param query: the query to execute
+        :param args: positional arguments to pass to the query
+        :param kwargs: keyword arguments to pass to the query
+        :return: the result of the query
+        """
         if args or kwargs:
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'

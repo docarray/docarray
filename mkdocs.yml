@@ -73,6 +73,9 @@ plugins:
           options:
             docstring_style: sphinx
             inherited_members: true
+            show_root_toc_entry: false
+            show_root_heading: true
+            show_submodules: yes
 
 nav:
   - Home: README.md
