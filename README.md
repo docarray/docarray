@@ -12,6 +12,10 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
+> ⬆️ **DocArray v2**: This readme refer to the second version of DocArray (starting at 0.30). If you want to use the old
+> DocArray v1 version (below 0.30) check out the [docarray-v1-fixe](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
+
+
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
 Those are the three pillars of DocArray, and you can check them out individually:
