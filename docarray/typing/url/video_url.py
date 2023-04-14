@@ -73,8 +73,7 @@ class VideoUrl(AnyUrl):
         ---
 
         :param kwargs: supports all keyword arguments that are being supported by
-            av.open() as described in:
-            https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
+            av.open() as described [here](https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open)
 
         :return: [`AudioNdArray`][docarray.typing.AudioNdArray] representing the audio content,
             [`VideoNdArray`][docarray.typing.VideoNdArray] representing the images of the video,

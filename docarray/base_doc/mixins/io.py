@@ -138,7 +138,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         For more Pythonic code, please use ``bytes(...)``.
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compression algorithm to use
         :return: the binary serialization in bytes
         """
         import pickle

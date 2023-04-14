@@ -135,7 +135,7 @@ class VideoTensorMixin(AbstractTensor, abc.ABC):
         audio_format: str = 'fltp',
     ) -> 'VideoBytes':
         """
-        Convert video tensor to VideoBytes.
+        Convert video tensor to [`VideoBytes`][docarray.typing.VideoBytes].
 
         :param audio_tensor: AudioTensor containing the video's soundtrack.
         :param video_frame_rate: video frames per second.

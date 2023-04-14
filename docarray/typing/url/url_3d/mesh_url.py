@@ -26,33 +26,33 @@ class Mesh3DUrl(Url3D):
         trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'VerticesAndFaces':
         """
-         Load the data from the url into a VerticesAndFaces object containing
-         vertices and faces information.
+        Load the data from the url into a [`VerticesAndFaces`][docarray.documents.VerticesAndFaces]
+        object containing vertices and faces information.
 
         ---
 
-         ```python
-         from docarray import BaseDoc
+        ```python
+        from docarray import BaseDoc
 
-         from docarray.typing import Mesh3DUrl, NdArray
-
-
-         class MyDoc(BaseDoc):
-             mesh_url: Mesh3DUrl
+        from docarray.typing import Mesh3DUrl, NdArray
 
 
-         doc = MyDoc(mesh_url="toydata/tetrahedron.obj")
+        class MyDoc(BaseDoc):
+            mesh_url: Mesh3DUrl
 
-         tensors = doc.mesh_url.load()
-         assert isinstance(tensors.vertices, NdArray)
-         assert isinstance(tensors.faces, NdArray)
-         ```
 
-         ---
-         :param skip_materials: Skip materials if True, else skip.
-         :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
-             or `trimesh.load_remote()`.
-         :return: VerticesAndFaces object containing vertices and faces information.
+        doc = MyDoc(mesh_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
+
+        tensors = doc.mesh_url.load()
+        assert isinstance(tensors.vertices, NdArray)
+        assert isinstance(tensors.faces, NdArray)
+        ```
+
+
+        :param skip_materials: Skip materials if True, else skip.
+        :param trimesh_args: dictionary of additional arguments for `trimesh.load()`
+            or `trimesh.load_remote()`.
+        :return: VerticesAndFaces object containing vertices and faces information.
         """
         from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 
