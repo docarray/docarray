@@ -104,7 +104,7 @@ class PointCloud3DUrl(Url3D):
 
         from docarray.documents import PointCloud3D
 
-        pc = PointCloud3D("https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
+        pc = PointCloud3D(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         # option 1
         pc.url.display()
