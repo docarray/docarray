@@ -24,7 +24,7 @@ def batch():
 
     batch = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
-    return batch.stack()
+    return batch.to_doc_vec()
 
 
 @pytest.fixture()
@@ -108,7 +108,7 @@ def test_stack_mod_nested_document():
 
     batch = DocList[MMdoc](
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
-    ).stack()
+    ).to_doc_vec()
 
     assert tnp.allclose(
         batch._storage.doc_columns['img']._storage.tensor_columns['tensor'].tensor,
@@ -133,7 +133,7 @@ def test_stack_nested_DocArray(nested_batch):
 
 @pytest.mark.tensorflow
 def test_convert_to_da(batch):
-    da = batch.unstack()
+    da = batch.to_doc_list()
 
     for doc in da:
         assert tnp.allclose(doc.tensor.tensor, tf.zeros((3, 224, 224)))
@@ -151,7 +151,7 @@ def test_unstack_nested_document():
         [MMdoc(img=Image(tensor=tf.zeros((3, 224, 224)))) for _ in range(10)]
     )
     assert isinstance(batch.img._storage.tensor_columns['tensor'], TensorFlowTensor)
-    da = batch.unstack()
+    da = batch.to_doc_list()
 
     for doc in da:
         assert tnp.allclose(doc.img.tensor.tensor, tf.zeros((3, 224, 224)))
@@ -159,7 +159,7 @@ def test_unstack_nested_document():
 
 @pytest.mark.tensorflow
 def test_unstack_nested_DocArray(nested_batch):
-    batch = nested_batch.unstack()
+    batch = nested_batch.to_doc_list()
     for i in range(len(batch)):
         assert isinstance(batch[i].img, DocList)
         for doc in batch[i].img:
@@ -173,7 +173,7 @@ def test_stack_call():
 
     da = DocList[Image]([Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)])
 
-    da = da.stack()
+    da = da.to_doc_vec()
 
     assert len(da) == 10
 
@@ -285,6 +285,6 @@ def test_keep_dtype_tf():
     )
     assert da[0].tensor.tensor.dtype == tf.int32
 
-    da = da.stack()
+    da = da.to_doc_vec()
     assert da[0].tensor.tensor.dtype == tf.int32
     assert da.tensor.tensor.dtype == tf.int32

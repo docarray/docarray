@@ -251,13 +251,13 @@ class DocList(
         for doc, value in zip(self, values):
             setattr(doc, field, value)
 
-    def stack(
+    def to_doc_vec(
         self,
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'DocVec':
         """
         Convert the `DocList` into a `DocVec`. `Self` cannot be used
-        afterwards
+        afterward
         :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
         if the BaseDoc has some undefined tensor type like AnyTensor or Union of NdArray and TorchTensor
         :return: A `DocVec` of the same document type as self
