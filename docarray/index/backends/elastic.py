@@ -62,7 +62,7 @@ if is_tf_available():
 class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
-        self._db_config = cast(self.DBConfig, self._db_config)
+        self._db_config = cast(ElasticDocIndex.DBConfig, self._db_config)
 
         # ElasticSearch client creation
         if self._db_config.index_name is None:
@@ -357,7 +357,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         resp = self._client.search(index=self._index_name, **query)
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=scores)
+        return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
@@ -368,7 +368,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=scores)
+        return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     def _find_batched(
         self,
@@ -387,7 +387,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
         )
-        return _FindResultBatched(documents=list(das), scores=np.array(scores))
+        return _FindResultBatched(documents=list(das), scores=list(scores))
 
     def _filter(
         self,
@@ -445,9 +445,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         das, scores = zip(
             *[self._format_response(resp) for resp in responses['responses']]
         )
-        return _FindResultBatched(
-            documents=list(das), scores=np.array(scores, dtype=object)
-        )
+        return _FindResultBatched(documents=list(das), scores=list(scores))
 
     ###############################################
     # Helpers                                     #
@@ -529,7 +527,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         }
         return body
 
-    def _format_response(self, response: Any) -> Tuple[List[Dict], NdArray]:
+    def _format_response(self, response: Any) -> Tuple[List[Dict], List[Any]]:
         docs = []
         scores = []
         for result in response['hits']['hits']:
@@ -544,7 +542,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             docs.append(doc_dict)
             scores.append(result['_score'])
 
-        return docs, parse_obj_as(NdArray, scores)
+        return docs, scores
 
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
