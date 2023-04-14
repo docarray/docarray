@@ -138,7 +138,6 @@ class DocVec(AnyDocArray[T_doc]):
                     tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
-
                     tensor = getattr(docs[0], field_name)
                     column_shape = (
                         (len(docs), *tensor.shape)
@@ -378,7 +377,6 @@ class DocVec(AnyDocArray[T_doc]):
             self._storage.tensor_columns[field] = values
 
         elif field in self._storage.doc_columns.keys():
-
             values_ = parse_obj_as(
                 DocVec.__class_getitem__(self._storage.doc_columns[field].doc_type),
                 values,

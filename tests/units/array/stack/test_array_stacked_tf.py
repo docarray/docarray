@@ -92,7 +92,6 @@ def test_set_after_stacking():
 
 @pytest.mark.tensorflow
 def test_stack_optional(batch):
-
     assert tnp.allclose(
         batch._storage.tensor_columns['tensor'].tensor, tf.zeros((10, 3, 224, 224))
     )
