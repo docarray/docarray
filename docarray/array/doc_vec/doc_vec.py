@@ -59,32 +59,34 @@ class DocVec(AnyDocArray[T_doc]):
     computation that require batches of data (ex: matrix multiplication, distance
     calculation, deep learning forward pass)
 
-    A DocVec has a similar interface as
-    {class}`~docarray.array.DocList` but with an underlying implementation that is
-    column based instead of row based. Each field
-    of the schema of the DocVec
-    (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
-    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
-    If the tensor field
-    is `AnyTensor` or a Union of tensor types, the
-    :attr:`~docarray.array.doc_vec.DocVec.tensor_type` will be used to determine
-    the type of the doc_vec column.
+    A DocVec has a similar interface as [`DocList`][docarray.array.DocList]
+    but with an underlying implementation that is column based instead of row based.
+    Each field of the schema of the `DocVec` (the `.doc_type` which is a
+    [`BaseDoc`][docarray.BaseDoc]) will be stored in a column.
 
-    If the field is another `BasedDoc` the column will be another DocVec that follows the
-    schema of the nested Document.
-    If the field is a `DocList` or
-    `DocVec` then the column will be a list of `DocVec`.
+    If the field is a tensor, the data from all Documents will be stored as a single
+    doc_vec (torch/np/tf) tensor.
+
+    If the tensor field is `AnyTensor` or a Union of tensor types, the
+    `.tensor_type` will be used to determine the type of the doc_vec column.
+
+    If the field is another [`BaseDoc`][docarray.BaseDoc] the column will be another
+    `DocVec` that follows the schema of the nested Document.
+
+    If the field is a [`DocList`][docarray.DocList] or `DocVec` then the column will
+    be a list of `DocVec`.
+
     For any other type the column is a Python list.
 
-    Every `Document` inside a `DocVec` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
-     not hold any data itself. The behavior of
-     this Document "view" is similar to the behavior of `view = tensor[i]` in
-     numpy/PyTorch.
+    Every `Document` inside a `DocVec` is a view into the data columns stored at the
+    `DocVec` level. The `BaseDoc` does not hold any data itself. The behavior of
+    this Document "view" is similar to the behavior of `view = tensor[i]` in
+    numpy/PyTorch.
 
-    :param docs: a homogeneous sequence of BaseDoc
+    :param docs: a homogeneous sequence of `BaseDoc`
     :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
-    if the BaseDoc of this DocVec has some undefined tensor type like
-    AnyTensor or Union of NdArray and TorchTensor
+        if the BaseDoc of this DocVec has some undefined tensor type like
+        AnyTensor or Union of NdArray and TorchTensor
     """
 
     doc_type: Type[T_doc]
