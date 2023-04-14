@@ -12,6 +12,10 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
+> ⬆️ **DocArray v2**: This readme refer to the second version of DocArray (starting at 0.30). If you want to use the old
+> DocArray v1 version (below 0.30) check out the [docarray-v1-fixe](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
+
+
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
 Those are the three pillars of DocArray, and you can check them out individually:
@@ -35,6 +39,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
 
+DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
@@ -804,3 +809,5 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
+
+> DocArray is a trademark of LF AI Projects, LLC
