@@ -160,7 +160,7 @@ class DocVec(AnyDocArray[T_doc]):
                         cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDoc):
-                    doc_columns[field_name] = getattr(docs, field_name).stack(
+                    doc_columns[field_name] = getattr(docs, field_name).to_doc_vec(
                         tensor_type=self.tensor_type
                     )
 
@@ -169,7 +169,7 @@ class DocVec(AnyDocArray[T_doc]):
                     for doc in docs:
                         docs_nested = getattr(doc, field_name)
                         if isinstance(docs_nested, DocList):
-                            docs_nested = docs_nested.stack(
+                            docs_nested = docs_nested.to_doc_vec(
                                 tensor_type=self.tensor_type
                             )
                         docs_list.append(docs_nested)
@@ -213,7 +213,7 @@ class DocVec(AnyDocArray[T_doc]):
         if isinstance(value, cls):
             return value
         elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
-            return cast(T, value.stack())
+            return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
             return cls(value)
         elif isinstance(value, Iterable):
@@ -328,7 +328,7 @@ class DocVec(AnyDocArray[T_doc]):
                     f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = cast(
-                T, value.stack(tensor_type=self.tensor_type)
+                T, value.to_doc_vec(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
@@ -474,7 +474,7 @@ class DocVec(AnyDocArray[T_doc]):
             any_columns=any_columns_proto,
         )
 
-    def unstack(self: T) -> DocList[T_doc]:
+    def to_doc_list(self: T) -> DocList[T_doc]:
         """Convert DocVec into a DocList.
 
         Note this destroys the arguments and returns a new DocList
@@ -486,10 +486,10 @@ class DocVec(AnyDocArray[T_doc]):
         unstacked_any_column = self._storage.any_columns
 
         for field, doc_col in self._storage.doc_columns.items():
-            unstacked_doc_column[field] = doc_col.unstack()
+            unstacked_doc_column[field] = doc_col.to_doc_list()
 
         for field, da_col in self._storage.docs_vec_columns.items():
-            unstacked_da_column[field] = [docs.unstack() for docs in da_col]
+            unstacked_da_column[field] = [docs.to_doc_list() for docs in da_col]
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
             # list is needed here otherwise we cannot delete the column

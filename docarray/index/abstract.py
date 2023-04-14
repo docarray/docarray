@@ -10,7 +10,6 @@ from typing import (
     Iterable,
     List,
     Mapping,
-    NamedTuple,
     Optional,
     Sequence,
     Tuple,
@@ -30,7 +29,12 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
-from docarray.utils.find import FindResult, _FindResult
+from docarray.utils.find import (
+    FindResult,
+    FindResultBatched,
+    _FindResult,
+    _FindResultBatched,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -45,16 +49,6 @@ else:
     torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
-
-
-class FindResultBatched(NamedTuple):
-    documents: List[DocList]
-    scores: List[np.ndarray]
-
-
-class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: List[np.ndarray]
 
 
 def _raise_not_composable(name):
