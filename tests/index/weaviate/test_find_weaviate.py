@@ -14,6 +14,8 @@ from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     weaviate_client,
 )
 
+pytestmark = [pytest.mark.slow, pytest.mark.index]
+
 
 def test_find_torch(weaviate_client):
     class TorchDoc(BaseDoc):

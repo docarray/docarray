@@ -1,6 +1,7 @@
 # TODO: enable ruff qa on this file when we figure out why it thinks weaviate_client is
 #       redefined at each test that fixture
 # ruff: noqa
+import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -9,6 +10,8 @@ from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     start_storage,
     weaviate_client,
 )
+
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 def test_column_config(weaviate_client):

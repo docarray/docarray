@@ -21,6 +21,8 @@ from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     weaviate_client,
 )
 
+pytestmark = [pytest.mark.slow, pytest.mark.index]
+
 
 class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000, is_embedding=True)
