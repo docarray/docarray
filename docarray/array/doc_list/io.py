@@ -358,10 +358,9 @@ class IOMixinArray(Iterable[T_doc]):
         :param dialect: defines separator and how to handle whitespaces etc.
             Can be a [`csv.Dialect`](https://docs.python.org/3/library/csv.html#csv.Dialect)
             instance or one string of:
-
-                - 'excel' (for comma separated values),
-                - 'excel-tab' (for tab separated values),
-                - 'unix' (for csv file generated on UNIX systems).
+            `'excel'` (for comma separated values),
+            `'excel-tab'` (for tab separated values),
+            `'unix'` (for csv file generated on UNIX systems).
 
         :return: `DocList` object
         """
@@ -428,10 +427,10 @@ class IOMixinArray(Iterable[T_doc]):
         :param dialect: defines separator and how to handle whitespaces etc.
             Can be a [`csv.Dialect`](https://docs.python.org/3/library/csv.html#csv.Dialect)
             instance or one string of:
+            `'excel'` (for comma separated values),
+            `'excel-tab'` (for tab separated values),
+            `'unix'` (for csv file generated on UNIX systems).
 
-                - 'excel' (for comma seperated values),
-                - 'excel-tab' (for tab separated values),
-                - 'unix' (for csv file generated on UNIX systems).
         """
         fields = self.doc_type._get_access_paths()
 

@@ -16,7 +16,7 @@ MAX_INT_16 = 2**15
 class AbstractAudioTensor(AbstractTensor, ABC):
     def to_bytes(self) -> 'AudioBytes':
         """
-        Convert audio tensor to AudioBytes.
+        Convert audio tensor to [`AudioBytes`][docarray.typrin.AudioBytes].
         """
         from docarray.typing.bytes.audio_bytes import AudioBytes
 

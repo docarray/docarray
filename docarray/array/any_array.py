@@ -209,7 +209,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ```
 
         If your [`DocList`][docarray.array.doc_list.doc_list.DocList] is in doc_vec mode, and you want to access a field of
-        type [`AnyTensor`][docarray.typing.AnyTensor], the doc_vec tensor will be returned instead of a list:
+        type `AnyTensor`, the doc_vec tensor will be returned instead of a list:
 
         ```python
         class Image(BaseDoc):
