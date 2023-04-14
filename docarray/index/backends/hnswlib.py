@@ -19,6 +19,7 @@ from typing import (
 )
 
 import numpy as np
+from pydantic import parse_obj_as
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
@@ -30,6 +31,7 @@ from docarray.index.abstract import (
 )
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult
@@ -262,7 +264,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
         )
-        return _FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(documents=docs[0], scores=parse_obj_as(NdArray, scores[0]))
 
     def _filter(
         self,

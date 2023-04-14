@@ -121,7 +121,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this [`DocList`][docarray.typing.DocList] using the passed values
+        """Set all Documents in this [`DocList`][docarray.array.doc_list.doc_list.DocList] using the passed values
 
         :param field: name of the fields to extract
         :values: the values to set at the DocList level
@@ -140,7 +140,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert a [`DocList`][docarray.typing.DocList] into a NodeProto protobuf message.
+        """Convert a [`DocList`][docarray.array.doc_list.doc_list.DocList] into a NodeProto protobuf message.
          This function should be called when a DocList
         is nested into another Document that need to be converted into a protobuf
 
@@ -157,13 +157,11 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     ) -> Union[List[Any], 'AbstractTensor']:
         """
         Return a List of the accessed objects when applying the `access_path`. If this
-        results in a nested list or list of [`DocList`s][docarray.typing.DocList], the list will be flattened
+        results in a nested list or list of [`DocList`s][docarray.array.doc_list.doc_list.DocList], the list will be flattened
         on the first level. The access path is a string that consists of attribute
         names, concatenated and `"__"`-separated. It describes the path from the first
         level to an arbitrary one, e.g. `'content__image__url'`.
 
-        :param access_path: a string that represents the access path (`"__"`-separated).
-        :return: list of the accessed objects, flattened if nested.
 
         ```python
         from docarray import BaseDoc, DocList, Text
@@ -210,7 +208,8 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
         ```
 
-        If your [`DocList`][docarray.typing.DocList] is in doc_vec mode, and you want to access a field of
+
+        If your [`DocList`][docarray.array.doc_list.doc_list.DocList] is in doc_vec mode, and you want to access a field of
         type [`AnyTensor`][docarray.typing.AnyTensor], the doc_vec tensor will be returned instead of a list:
 
         ```python
@@ -232,6 +231,9 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             access_path='tensor'
         )  # tensor of shape (2, 3, 224, 224)
         ```
+
+        :param access_path: a string that represents the access path ("__"-separated).
+        :return: list of the accessed objects, flattened if nested.
         """
         ...
 
@@ -263,7 +265,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     def summary(self):
         """
-        Print a summary of this [`DocList`][docarray.typing.DocList] object and a summary of the schema of its
+        Print a summary of this [`DocList`][docarray.array.doc_list.doc_list.DocList] object and a summary of the schema of its
         Document type.
         """
         DocArraySummary(self).summary()
@@ -275,13 +277,13 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         show_progress: bool = False,
     ) -> Generator[T, None, None]:
         """
-        Creates a `Generator` that yields [`DocList`][docarray.typing.DocList] of size `batch_size`.
+        Creates a `Generator` that yields [`DocList`][docarray.array.doc_list.doc_list.DocList] of size `batch_size`.
         Note, that the last batch might be smaller than `batch_size`.
 
         :param batch_size: Size of each generated batch.
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: if set, show a progress bar when batching documents.
-        :yield: a Generator of [`DocList`][docarray.typing.DocList], each in the length of `batch_size`
+        :yield: a Generator of [`DocList`][docarray.array.doc_list.doc_list.DocList], each in the length of `batch_size`
         """
         from rich.progress import track
 

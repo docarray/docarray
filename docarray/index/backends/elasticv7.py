@@ -3,11 +3,13 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 import numpy as np
+from pydantic import parse_obj_as
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
 from docarray.index.abstract import BaseDocIndex, _ColumnInfo
 from docarray.typing import AnyTensor
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import _FindResult
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
@@ -94,7 +96,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
         resp = self._client.search(index=self._index_name, body=query)
         docs, scores = self._format_response(resp)
 
-        return _FindResult(documents=docs, scores=scores)
+        return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     ###############################################
     # Helpers                                     #

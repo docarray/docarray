@@ -49,12 +49,12 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class FindResultBatched(NamedTuple):
     documents: List[DocList]
-    scores: np.ndarray
+    scores: List[np.ndarray]
 
 
 class _FindResultBatched(NamedTuple):
     documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: np.ndarray
+    scores: List[np.ndarray]
 
 
 def _raise_not_composable(name):
@@ -571,7 +571,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
             docs = [self._dict_list_to_docarray(docs) for docs in da_list]
-        return FindResultBatched(documents=docs, scores=scores)
+            return FindResultBatched(documents=docs, scores=scores)
+
+        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
 
     ##########################################################
     # Helper methods                                         #
