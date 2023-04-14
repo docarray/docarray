@@ -1,0 +1,62 @@
+name: Manual Publish DocArray[dot]org
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_token:
+        description: 'Your release token'
+        required: true
+  workflow_call:
+    secrets:
+      JINA_DEV_BOT:
+        required: true
+
+# uncomment this line for testing in PR
+#  push:
+
+jobs:
+  token-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug
+        run: |
+          echo ${{ github.event_name }} event triggered this action
+      - name: Check release token
+        id: token-check
+        run: |
+          touch SUCCESS
+        if: inputs.release_token == env.release_token
+        env:
+          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
+      - name: Check trigger event
+        run: | 
+          touch SUCCESS
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+      - name: Fail release token
+        run: |
+          [[ -f SUCCESS ]]
+
+  copy-readme:
+    needs: token-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          path: docarray
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          repository: docarray/docarray.github.io
+          path: docarray.github.io
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Check out DocArray page
+        run: |
+          cd ${GITHUB_WORKSPACE}/docarray.github.io
+          cp ${GITHUB_WORKSPACE}/docarray/README.md .
+          git config --local user.email "Jina Dev Bot"
+          git config --local user.name "dev-bot@jina.ai"
+          if [[ `git status --porcelain` ]]; then
+            git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
+            git push
+          fi
