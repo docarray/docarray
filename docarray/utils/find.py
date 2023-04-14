@@ -25,12 +25,12 @@ class _FindResult(NamedTuple):
 
 class FindResultBatched(NamedTuple):
     documents: List[DocList]
-    scores: AnyTensor
+    scores: List[AnyTensor]
 
 
 class _FindResultBatched(NamedTuple):
     documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: AnyTensor
+    scores: List[AnyTensor]
 
 
 def find(

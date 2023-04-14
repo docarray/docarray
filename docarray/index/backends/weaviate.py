@@ -449,7 +449,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
         docs, scores = zip(*docs_and_scores)
-        return _FindResultBatched(list(docs), scores)
+        return _FindResultBatched(list(docs), list(scores))
 
     def _get_items(self, doc_ids: Sequence[str]) -> List[Dict]:
         # TODO: warn when doc_ids > QUERY_MAXIMUM_RESULTS after
@@ -577,7 +577,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
         docs, scores = zip(*docs_and_scores)
-        return _FindResultBatched(list(docs), scores)
+        return _FindResultBatched(list(docs), list(scores))
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
         da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
