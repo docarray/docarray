@@ -90,7 +90,7 @@ def test_traverse_stacked_da():
         ]
     )
 
-    batch_stacked = batch.stack()
+    batch_stacked = batch.to_doc_vec()
     tensors = batch_stacked.traverse_flat(access_path='tensor')
 
     assert tensors.shape == (2, 3, 224, 224)

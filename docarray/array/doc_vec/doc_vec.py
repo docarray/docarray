@@ -134,7 +134,7 @@ class DocVec(AnyDocArray[T_doc]):
                             )
                         tf_stack.append(val.tensor)
 
-                    stacked: tf.Tensor = tf.stack(tf_stack)
+                    stacked: tf.Tensor = tf.to_doc_vec(tf_stack)
                     tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
@@ -160,7 +160,7 @@ class DocVec(AnyDocArray[T_doc]):
                         cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDoc):
-                    doc_columns[field_name] = getattr(docs, field_name).stack(
+                    doc_columns[field_name] = getattr(docs, field_name).to_doc_vec(
                         tensor_type=self.tensor_type
                     )
 
@@ -169,7 +169,7 @@ class DocVec(AnyDocArray[T_doc]):
                     for doc in docs:
                         docs_nested = getattr(doc, field_name)
                         if isinstance(docs_nested, DocList):
-                            docs_nested = docs_nested.stack(
+                            docs_nested = docs_nested.to_doc_vec(
                                 tensor_type=self.tensor_type
                             )
                         docs_list.append(docs_nested)
@@ -213,7 +213,7 @@ class DocVec(AnyDocArray[T_doc]):
         if isinstance(value, cls):
             return value
         elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
-            return cast(T, value.stack())
+            return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
             return cls(value)
         elif isinstance(value, Iterable):
@@ -328,7 +328,7 @@ class DocVec(AnyDocArray[T_doc]):
                     f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = cast(
-                T, value.stack(tensor_type=self.tensor_type)
+                T, value.to_doc_vec(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
