@@ -35,6 +35,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
 
+DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
@@ -804,3 +805,5 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
+
+> DocArray is a trademark of LF AI Projects, LLC
