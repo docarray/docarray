@@ -573,7 +573,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             docs = [self._dict_list_to_docarray(docs) for docs in da_list]
             return FindResultBatched(documents=docs, scores=scores)
 
-        return FindResultBatched(documents=da_list, scores=scores)
+        da_list_ = cast(List[DocList], da_list)
+        return FindResultBatched(documents=da_list_, scores=scores)
 
     ##########################################################
     # Helper methods                                         #

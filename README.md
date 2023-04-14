@@ -22,10 +22,10 @@ Those are the three pillars of DocArray, and you can check them out individually
 
 DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
-- :fire: DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
-- :zap: DocArray is built on **Pydantic** and out-of-the-box compatible with **FastAPI**
-- :package: DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
-- :chains: DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
+- :fire: DocArray has native compatibility for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)** and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, including for **model training use cases**
+- :zap: DocArray is built on **[Pydantic](https://github.com/pydantic/pydantic)** and out-of-the-box compatible with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
+- :package: DocArray can index data in vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** as well as **[HNSWLib](https://github.com/nmslib/hnswlib)**
+- :chains: DocArray data can be sent as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
 
 
 > :bulb: **Where are you coming from?** Depending on your use case and background, there are different was to "get" DocArray.

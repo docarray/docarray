@@ -63,7 +63,7 @@ for file in file_to_remove:
 
 @pytest.mark.parametrize('fpath', files_to_check, ids=str)
 def test_files_good(fpath):
-    check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle'])
+    check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle', 'jac'])
 
 
 def test_readme():
