@@ -193,7 +193,7 @@ def test_convert_to_da(batch):
     )
 
     batch = batch.to_doc_vec()
-    da = batch.unstack()
+    da = batch.to_doc_list()
 
     for doc in da:
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
@@ -212,14 +212,14 @@ def test_unstack_nested_document():
 
     batch = batch.to_doc_vec()
 
-    da = batch.unstack()
+    da = batch.to_doc_list()
 
     for doc in da:
         assert (doc.img.tensor == torch.zeros(3, 224, 224)).all()
 
 
 def test_unstack_nested_DocArray(nested_batch):
-    batch = nested_batch.unstack()
+    batch = nested_batch.to_doc_list()
     for i in range(len(batch)):
         assert isinstance(batch[i].img, DocList)
         for doc in batch[i].img:
