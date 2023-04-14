@@ -1,37 +1,35 @@
 import uuid
 from dataclasses import dataclass, field
 from typing import (
-    TypeVar,
-    Generic,
-    Optional,
-    cast,
-    Sequence,
     Any,
-    Union,
-    List,
     Dict,
     Generator,
-    Type,
+    Generic,
+    List,
+    Optional,
+    Sequence,
     Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
 )
 
 import numpy as np
+import qdrant_client
 from grpc import RpcError  # type: ignore[import]
+from qdrant_client.conversions import common_types as types
+from qdrant_client.http import models as rest
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
     BaseDocIndex,
-    _FindResultBatched,
     _ColumnInfo,
+    _FindResultBatched,
     _raise_not_composable,
 )
-
-import qdrant_client
-from qdrant_client.conversions import common_types as types
-from qdrant_client.http import models as rest
-
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import torch_imported
@@ -391,7 +389,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 for response in responses
             ],
             scores=[
-                np.array([point.score for point in response]) for response in responses
+                NdArray._docarray_from_native(
+                    np.array([point.score for point in response])
+                )
+                for response in responses
             ],
         )
 
@@ -454,7 +455,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # semantic search over vectors. Thus, each document is scored with a value of 1
         return _FindResultBatched(
             documents=documents_batched,
-            scores=[np.ones(len(docs)) for docs in documents_batched],
+            scores=[
+                NdArray._docarray_from_native(np.ones(len(docs)))
+                for docs in documents_batched
+            ],
         )
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:

@@ -24,7 +24,6 @@ from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
     BaseDocIndex,
     _ColumnInfo,
-    _FindResultBatched,
     _raise_not_composable,
     _raise_not_supported,
 )
@@ -33,7 +32,7 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
-from docarray.utils.find import _FindResult
+from docarray.utils.find import _FindResult, _FindResultBatched
 
 if TYPE_CHECKING:
     import hnswlib
