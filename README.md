@@ -793,21 +793,15 @@ Of course this is only one thing that DocArray can do, so we encourage you to ch
 To try out the alpha you can install it via git:
 
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
-```
+pip install "git+https://github.com/docarray/docarray"
 
-...or from the latest development branch
-
-```shell
-pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
-```
 
 ## See also
 
 - [Documentation](https://docarray-v2--jina-docs.netlify.app/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-- ["Legacy" DocArray github page](https://github.com/docarray/docarray)
+- ["Legacy" DocArray github page](https://github.com/docarray/docarray/tree/docarray-v1-fixes)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
 
 > DocArray is a trademark of LF AI Projects, LLC
