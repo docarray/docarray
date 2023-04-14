@@ -82,7 +82,7 @@ SelfJACDocStore = TypeVar('SelfJACDocStore', bound='JACDocStore')
 
 
 class JACDocStore(AbstractDocStore):
-    """Class to push and pull DocList to and from Jina AI Cloud."""
+    """Class to push and pull [`DocList`][docarray.DocList] to and from Jina AI Cloud."""
 
     @staticmethod
     @hubble.login_required
@@ -135,7 +135,7 @@ class JACDocStore(AbstractDocStore):
     @hubble.login_required
     def delete(name: str, missing_ok: bool = True) -> bool:
         """
-        Delete a DocList from the cloud.
+        Delete a [`DocList`][docarray.DocList] from the cloud.
         :param name: the name of the DocList to delete.
         :param missing_ok: if true, do not raise an error if the DocList does not exist.
         :return: True if the DocList was deleted, False if it did not exist.
@@ -158,17 +158,18 @@ class JACDocStore(AbstractDocStore):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocList object to Jina AI Cloud
+        """Push this [`DocList`][docarray.DocList] object to Jina AI Cloud
 
-        .. note::
+        !!! note
             - Push with the same ``name`` will override the existing content.
             - Kinda like a public clipboard where everyone can override anyone's content.
               So to make your content survive longer, you may want to use longer & more complicated name.
             - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
               persistence. Only use this full temporary transmission/storage/clipboard.
 
-        :param name: A name that can later be used to retrieve this :class:`DocList`.
-        :param public: By default, anyone can pull a DocList if they know its name.
+        :param docs: The `DocList` to push.
+        :param name: A name that can later be used to retrieve this `DocList`.
+        :param public: By default, anyone can pull a `DocList` if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
@@ -245,15 +246,16 @@ class JACDocStore(AbstractDocStore):
     ) -> Dict:
         """Push a stream of documents to Jina AI Cloud
 
-        .. note::
+        !!! note
             - Push with the same ``name`` will override the existing content.
             - Kinda like a public clipboard where everyone can override anyone's content.
               So to make your content survive longer, you may want to use longer & more complicated name.
             - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
               persistence. Only use this full temporary transmission/storage/clipboard.
 
-        :param name: A name that can later be used to retrieve this :class:`DocList`.
-        :param public: By default, anyone can pull a DocList if they know its name.
+        :param docs: a stream of documents
+        :param name: A name that can later be used to retrieve this `DocList`.
+        :param public: By default, anyone can pull a `DocList` if they know its name.
             Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
         :param branding: A dictionary of branding information to be sent to Jina Cloud. e.g. {"icon": "emoji", "background": "#fff"}
@@ -278,12 +280,12 @@ class JACDocStore(AbstractDocStore):
         show_progress: bool = False,
         local_cache: bool = True,
     ) -> 'DocList':
-        """Pull a :class:`DocList` from Jina AI Cloud to local.
+        """Pull a [`DocList`][docarray.DocList] from Jina AI Cloud to local.
 
-        :param name: the upload name set during :meth:`.push`
+        :param name: the upload name set during `.push`
         :param show_progress: if true, display a progress bar.
         :param local_cache: store the downloaded DocList to local folder
-        :return: a :class:`DocList` object
+        :return: a [`DocList`][docarray.DocList] object
         """
         from docarray import DocList
 
@@ -299,9 +301,9 @@ class JACDocStore(AbstractDocStore):
         show_progress: bool = False,
         local_cache: bool = False,
     ) -> Iterator['BaseDoc']:
-        """Pull a :class:`DocList` from Jina AI Cloud to local.
+        """Pull a [`DocList`][docarray.DocList] from Jina AI Cloud to local.
 
-        :param name: the upload name set during :meth:`.push`
+        :param name: the upload name set during `.push`
         :param show_progress: if true, display a progress bar.
         :param local_cache: store the downloaded DocList to local folder
         :return: An iterator of Documents

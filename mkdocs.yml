@@ -90,8 +90,12 @@ nav:
       - Building API:
           - user_guide/sending/api/jina.md
           - user_guide/sending/api/fastAPI.md
-
-    - user_guide/storing/first_step.md
+    - Storing:
+      - user_guide/storing/first_step.md
+      - DocStore:
+        - user_guide/storing/doc_store/store_file.md
+        - user_guide/storing/doc_store/store_jac.md
+        - user_guide/storing/doc_store/store_s3.md
 
   - How-to:
     - how_to/add_doc_index.md
