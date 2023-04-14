@@ -29,6 +29,7 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocProto
+from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
 
-    from docarray.typing import NdArray, TensorFlowTensor
+    from docarray.typing import TensorFlowTensor
 else:
     hnswlib = import_library('hnswlib', raise_error=False)
     torch = import_library('torch', raise_error=False)
