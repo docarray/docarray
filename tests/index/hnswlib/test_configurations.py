@@ -25,3 +25,21 @@ def test_configure_dim(tmp_path):
     index.index(docs)
 
     assert index.num_docs() == 10
+
+
+def test_configure_index(tmp_path):
+    class Schema(BaseDoc):
+        tens: NdArray[100] = Field(max_elements=12, space='cosine')
+        tens_two: NdArray[10] = Field(M=4, space='ip')
+
+    index = HnswDocumentIndex[Schema](work_dir=str(tmp_path))
+
+    assert index._hnsw_indices['tens'].max_elements == 12
+    assert index._hnsw_indices['tens'].space == 'cosine'
+    assert index._hnsw_indices['tens'].M == 16  # default
+    assert index._hnsw_indices['tens'].dim == 100
+
+    assert index._hnsw_indices['tens_two'].max_elements == 1024  # default
+    assert index._hnsw_indices['tens_two'].space == 'ip'
+    assert index._hnsw_indices['tens_two'].M == 4
+    assert index._hnsw_indices['tens_two'].dim == 10

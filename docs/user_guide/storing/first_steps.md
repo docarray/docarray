@@ -445,6 +445,37 @@ print(db._runtime_config)
 # > HHnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
 ```
 
+After this change, the new setting will be applied to _every_ column that corresponds to a `np.ndarray` type.
+
+**Column configurations**
+
+For many vector databases, individual columns can have different configurations.
+
+This commonly includes:
+- The data type of the column, e.g. `vector` vs `varchar`
+- If it is a vector column, the dimensionality of the vector
+- Whether an index should be built for a specific column
+
+The exact configurations that are available different from backend to backend, but in any case you can pass them
+directly in the schema of your Document Index, using the `Field()` syntax:
+
+```python
+class Schema(BaseDoc):
+    tens: NdArray[100] = Field(max_elements=12, space='cosine')
+    tens_two: NdArray[10] = Field(M=4, space='ip')
+
+
+db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+```
+
+The `HnswDocumentIndex` above contains two columns which are configured differently:
+- `tens` has a dimensionality of 100, can take up to 12 elements, and uses the `cosine` similarity space
+- `tens_two` has a dimensionality of 10, and uses the `ip` similarity space, and an `M` hyperparameter of 4
+
+All configurations that are not explicitly set will be taken from the `default_column_config` of the `RuntimeConfig`.
+
+For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` documentation TODO link.
+
 
 ## Document Store
 This section show you how to use the `DocArray.store` module. `DocArray.store` module is used to store the `Doc`.
