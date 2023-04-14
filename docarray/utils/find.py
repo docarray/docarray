@@ -218,7 +218,7 @@ def find_batched(
             docs_per_query.append(index[idx])
         batched_docs.append(DocList(docs_per_query))
         scores.append(scores_per_query)
-    return FindResultBatched(documents=batched_docs, scores=comp_backend.stack(scores))
+    return FindResultBatched(documents=batched_docs, scores=scores)
 
 
 def _extract_embedding_single(
