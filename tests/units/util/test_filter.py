@@ -128,7 +128,6 @@ def test_simple_filter(docs, dict_api):
 
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_nested_filter(docs, dict_api):
-
     if dict_api:
         method = lambda query: filter_docs(docs, query)  # noqa: E731
     else:

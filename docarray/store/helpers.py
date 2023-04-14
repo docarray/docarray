@@ -137,7 +137,6 @@ def _to_binary_stream(
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator[bytes]:
-
     if show_progress:
         pbar, t = _get_progressbar(
             'Serializing', disable=not show_progress, total=total
@@ -175,7 +174,6 @@ def _from_binary_stream(
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator['T']:
-
     if show_progress:
         pbar, t = _get_progressbar(
             'Deserializing', disable=not show_progress, total=total

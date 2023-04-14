@@ -74,7 +74,6 @@ class MyImage(BaseDoc):
 @pytest.mark.parametrize('n_docs,batch_size', [(10, 5), (10, 8)])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_map_docs_batched(n_docs, batch_size, backend):
-
     da = DocList[MyImage]([MyImage(url=IMAGE_PATHS['png']) for _ in range(n_docs)])
     it = map_docs_batched(
         docs=da, func=load_from_da, batch_size=batch_size, backend=backend
