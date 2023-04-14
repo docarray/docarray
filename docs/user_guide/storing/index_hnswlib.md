@@ -1,4 +1,4 @@
-# Hnswlib
+# Hnswlib Document Index
 
 [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implement the index based on [hnswlib](https://github.com/nmslib/hnswlib). This is a lightweight implementation with vectors stored in memory.
 

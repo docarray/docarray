@@ -78,10 +78,10 @@ nav:
   - Home: README.md
   - Tutorial/User Guide:
     - user_guide/intro.md
-    - Representing data:
+    - Represent:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
-    - Sending:
+    - Send:
       - user_guide/sending/first_step.md
       - Serialization:
         - user_guide/sending/ser/send_doc.md
@@ -90,6 +90,11 @@ nav:
       - Building API:
           - user_guide/sending/api/jina.md
           - user_guide/sending/api/fastAPI.md
+    - Store:
+        - user_guide/storing/first_step.md
+        - user_guide/storing/index_hnswlib.md
+        - user_guide/storing/index_weaviate.md
+        - user_guide/storing/index_elastic.md
 
     - user_guide/storing/first_step.md
 

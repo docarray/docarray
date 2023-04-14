@@ -1,4 +1,5 @@
-# Elastic
+# ElasticSearch Document Index
+
 [ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex) implement the index based on [Elasticsearch 7.10](https://github.com/elastic/elasticsearch). This is an implementation with vectors stored and supporting text/range search.
 
 !!! note
