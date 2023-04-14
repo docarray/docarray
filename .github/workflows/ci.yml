@@ -206,6 +206,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
+        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -225,7 +226,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and not elasticv8' tests
+          poetry run pytest -m 'index and not elasticv8' tests/index/${{ matrix.db_test_folder }}
         timeout-minutes: 30
 
 

@@ -7,7 +7,6 @@ from docarray.typing import NdArray
 
 @pytest.mark.proto
 def test_ndarray():
-
     original_ndarray = np.zeros((3, 224, 224))
 
     custom_ndarray = NdArray._docarray_from_native(original_ndarray)
@@ -19,7 +18,6 @@ def test_ndarray():
 
 @pytest.mark.proto
 def test_document_proto_set():
-
     data = {}
 
     nested_item1 = NodeProto(text='hello')

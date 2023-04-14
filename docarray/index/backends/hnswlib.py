@@ -48,10 +48,10 @@ else:
     if tf is not None:
         from docarray.typing import TensorFlowTensor
 
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
+HNSWLIB_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
 if torch is not None:
-    HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+    HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)  # type: ignore
 
 if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)

@@ -103,7 +103,6 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
 
     @classmethod
     def reshape(cls, tensor: 'torch.Tensor', shape: Tuple[int, ...]) -> 'torch.Tensor':
-
         """
         Gives a new shape to tensor without changing its data.
 

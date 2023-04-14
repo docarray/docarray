@@ -368,7 +368,7 @@ async def embed_text(doc: Text) -> Text:
     with torch.autocast(device_type="cuda", dtype=torch.float16):
         with torch.inference_mode():
             text_preprocess(doc)
-            da = DocList[Text]([doc], tensor_type=TorchTensor).stack()
+            da = DocList[Text]([doc], tensor_type=TorchTensor).to_doc_vec()
             da.to(DEVICE)
             doc.embedding = text_encoder(da)[0].to('cpu')
     return doc

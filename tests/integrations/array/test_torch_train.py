@@ -16,7 +16,7 @@ def test_torch_train():
     batch = DocList[Mmdoc](Mmdoc(text=f'hello{i}') for i in range(N))
     batch.tensor = torch.zeros(N, 3, 224, 224)
 
-    batch = batch.stack()
+    batch = batch.to_doc_vec()
 
     class Model(torch.nn.Module):
         def __init__(self):

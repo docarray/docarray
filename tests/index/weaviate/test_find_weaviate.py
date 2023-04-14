@@ -9,10 +9,12 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
 from docarray.typing import TorchTensor
-from tests.integrations.doc_index.weaviate.fixture_weaviate import (  # noqa: F401
+from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     start_storage,
     weaviate_client,
 )
+
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 def test_find_torch(weaviate_client):

@@ -247,10 +247,10 @@ dl.insert(
 And you can seamlessly switch between `DocVec` and `DocList`:
 
 ```python
-vec_2 = dl.stack()
+vec_2 = dl.to_doc_vec()
 assert isinstance(vec_2, DocVec)
 
-dl_2 = vec_2.unstack()
+dl_2 = vec_2.to_doc_list()
 assert isinstance(dl_2, DocList)
 ```
 
