@@ -134,7 +134,7 @@ class DocVec(AnyDocArray[T_doc]):
                             )
                         tf_stack.append(val.tensor)
 
-                    stacked: tf.Tensor = tf.to_doc_vec(tf_stack)
+                    stacked: tf.Tensor = tf.stack(tf_stack)
                     tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
