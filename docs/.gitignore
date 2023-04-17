@@ -1,6 +1,6 @@
 api/*
 proto/*
 
-README.md
+../README.md
 index.md
 CONTRIBUTING.md

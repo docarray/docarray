@@ -32,8 +32,9 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 - :chains: DocArray data can be sent as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
 
 
-> :bulb: **Where are you coming from?** Depending on your use case and background, there are different was to "get" DocArray.
-> You can navigate to the following section for an explanation that should fit your mindest:
+> :bulb: **Where are you coming from?** Depending on your use case and background, there are different ways to "get" DocArray.
+> You can navigate to the following section for an explanation that should fit your mindset:
+> 
 > - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
 > - [Coming from Pydantic](#coming-from-pydantic)
 > - [Coming from FastAPI](#coming-from-fastapi)
@@ -46,7 +47,8 @@ DocArray was released under the open-source [Apache License 2.0](https://github.
 DocArray allows you to **represent your data**, in an ML-native way.
 
 This is useful for different use cases:
-- :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
+
+- :woman_running: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
 - :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
 - :card_index_dividers: You are **parsing data** for later use in your ML or DS applications
 
@@ -60,6 +62,7 @@ Put simply, DocArray lets you represent your data in a dataclass-like way, with 
 from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 import torch
+
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -94,6 +97,7 @@ from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 import torch
+
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -160,6 +164,7 @@ That's why you can easily collect multiple `Documents`:
 When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
 
 DocArray offers two data structures for this:
+
 - **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
 - **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
 
@@ -185,7 +190,7 @@ vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
         for _ in range(100)
     ]
 )
-```
+``` 
 
 As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
 
@@ -263,6 +268,7 @@ DocArray allows you to **send your data**, in an ML-native way.
 This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
 
 This is useful for different use cases:
+
 - :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
 - :spider_web: You **distribute your model** across machines and need to send your data between nodes
 - :gear: You are building a **microservice** architecture and need to send your data between microservices
@@ -277,6 +283,7 @@ Whenever you want to send your data you need to serialize it, so let's take a lo
 from docarray import BaseDoc
 from docarray.typing import ImageTorchTensor
 import torch
+
 
 # model your data
 class MyDocument(BaseDoc):
@@ -302,7 +309,7 @@ doc_5 = MyDocument.parse_raw(json)
 ```
 
 Of course, serialization is not all you need.
-So check out how DocArray integrates with FatAPI and Jina.
+So check out how DocArray integrates with FastAPI and Jina.
 
 
 ## Store
@@ -311,6 +318,7 @@ Once you've modelled your data, and maybe sent it around, usually you want to **
 But fret not! DocArray has you covered!
 
 **Document Stores** let you, well, store your Documents, locally or remotely, all with the same user interface:
+
 - :cd: **On disk** as a file in your local file system
 - :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
 - :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
@@ -348,6 +356,7 @@ dl_2 = DocList[ImageDoc].pull('s3://my-bucket/my-documents', show_progress=True)
 **Document Indexes** let you index your Documents into a **vector database**, for efficient similarity-based retrieval.
 
 This is useful for:
+
 - :left_speech_bubble: Augmenting **LLMs and Chatbots** with domain knowledge ([Retrieval Augmented Generation](https://arxiv.org/abs/2005.11401))
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**

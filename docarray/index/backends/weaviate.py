@@ -77,6 +77,8 @@ DOCUMENTID = "docarrayid"
 
 class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs) -> None:
+        """Initialize WeaviateDocumentIndex"""
+
         self.embedding_column: Optional[str] = None
         self.properties: Optional[List[str]] = None
         # keep track of the column name that contains the bytes
@@ -165,6 +167,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return None
 
     def configure(self, runtime_config=None, **kwargs) -> None:
+        """
+        Configure the WeaviateDocumentIndex.
+        You can either pass a config object to `config` or pass individual config
+        parameters as keyword arguments.
+        If a configuration object is passed, it will replace the current configuration.
+        If keyword arguments are passed, they will update the current configuration.
+
+        :param runtime_config: the configuration to apply
+        :param kwargs: individual configuration parameters
+        """
         super().configure(runtime_config, **kwargs)
         self._configure_client()
 
@@ -208,6 +220,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of WeaviateDocumentIndex."""
+
         host: str = 'http://localhost:8080'
         index_name: str = 'Document'
         username: Optional[str] = None
@@ -218,6 +232,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
+
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {},
@@ -303,6 +319,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ):
+        """
+        Find k-nearest neighbors of the query.
+
+        :param query: query vector for KNN/ANN search. Has single axis.
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
+        """
         self._logger.debug('Executing `find`')
         if search_field != '':
             raise ValueError(
@@ -398,6 +422,18 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
+        """Find documents in the index using nearest neighbor search.
+
+        :param queries: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
+            or a DocList.
+            If a tensor-like is passed, it should have shape (batch_size, vector_dim)
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
+        """
         self._logger.debug('Executing `find_batched`')
         if search_field != '':
             raise ValueError(
@@ -586,6 +622,20 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResultBatched(list(docs), list(scores))
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
+        """
+        Execute a query on the WeaviateDocumentIndex.
+
+        Can take two kinds of inputs:
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index' `QueryBuilder.build()` method.
+
+        :param query: the query to execute
+        :param args: positional arguments to pass to the query
+        :param kwargs: keyword arguments to pass to the query
+        :return: the result of the query
+        """
         da_class = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
 
         if isinstance(query, self.QueryBuilder):
@@ -610,6 +660,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self._client.query.raw(query)
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         index_name = self._db_config.index_name
         result = self._client.query.aggregate(index_name).with_meta_count().do()
         # TODO: decorator to check for errors
@@ -618,7 +671,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return total_docs
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        """Map python type to database type."""
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type,
+            or None if ``python_type`` is not supported.
+        """
         for allowed_type in WEAVIATE_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
                 return 'number[]'
@@ -640,6 +699,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
     def build_query(self) -> BaseDocIndex.QueryBuilder:
+        """
+        Build a query for WeaviateDocumentIndex.
+        :return: QueryBuilder object
+        """
         return self.QueryBuilder(self)
 
     def _get_embedding_field(self):
@@ -676,6 +739,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ]
 
         def build(self) -> Any:
+            """Build the query object."""
             num_queries = len(self._queries)
 
             for i in range(num_queries):
@@ -736,6 +800,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
         ) -> Any:
+            """
+            Find k-nearest neighbors of the query.
+
+            :param query: query vector for search. Has single axis.
+            :param score_name: either `"certainty"` (default) or `"distance"`
+            :param score_threshold: the threshold of the score
+            :return: self
+            """
             near_vector = {
                 "vector": query,
             }
@@ -751,6 +823,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
         ) -> Any:
+            """Find k-nearest neighbors of the query vectors.
+
+            :param queries: query vector for KNN/ANN search.
+                Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
+                or a DocList.
+                If a tensor-like is passed, it should have shape `(batch_size, vector_dim)`
+            :param score_name: either `"certainty"` (default) or `"distance"`
+            :param score_threshold: the threshold of the score
+            :return: self
+            """
             adj_queries, adj_clauses = self._resize_queries_and_clauses(
                 self._queries, queries
             )
@@ -770,12 +852,20 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def filter(self, where_filter) -> Any:
+            """Find documents in the index based on a filter query
+            :param where_filter: a filter
+            :return: self
+            """
             where_filter = where_filter.copy()
             self._overwrite_id(where_filter)
             self._queries[0] = self._queries[0].with_where(where_filter)
             return self
 
         def filter_batched(self, filters) -> Any:
+            """Find documents in the index based on a filter query
+            :param filters: filters
+            :return: self
+            """
             adj_queries, adj_clauses = self._resize_queries_and_clauses(
                 self._queries, filters
             )
@@ -791,11 +881,23 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def text_search(self, query, search_field) -> Any:
+            """Find documents in the index based on a text search query
+
+            :param query: The text to search for
+            :param search_field: name of the field to search on
+            :return: self
+            """
             bm25 = {"query": query, "properties": [search_field]}
             self._queries[0] = self._queries[0].with_bm25(**bm25)
             return self
 
         def text_search_batched(self, queries, search_field) -> Any:
+            """Find documents in the index based on a text search query
+
+            :param queries: The texts to search for
+            :param search_field: name of the field to search on
+            :return: self
+            """
             adj_queries, adj_clauses = self._resize_queries_and_clauses(
                 self._queries, queries
             )
