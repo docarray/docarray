@@ -8,15 +8,15 @@ on:
 
 
 jobs:
-#  prerelease:
-#    needs: [success-all-test]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2.5.0
-#        with:
-#          fetch-depth: 100
-#      - name: Pre-release (.devN)
-#        run: |
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.5.0
+        with:
+          fetch-depth: 100
+      - name: Pre-release (.devN)
+        run: |
+           echo "hello"
 #          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 #          pip install twine wheel
 #          ./scripts/release.sh
