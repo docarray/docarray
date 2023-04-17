@@ -440,7 +440,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 for response in responses
             ],
             scores=[
-                np.array([point.score for point in response]) for response in responses
+                NdArray._docarray_from_native(
+                    np.array([point.score for point in response])
+                )
+                for response in responses
             ],
         )
 
@@ -503,7 +506,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # semantic search over vectors. Thus, each document is scored with a value of 1
         return _FindResultBatched(
             documents=documents_batched,
-            scores=[np.ones(len(docs)) for docs in documents_batched],
+            scores=[
+                NdArray._docarray_from_native(np.ones(len(docs)))
+                for docs in documents_batched
+            ],
         )
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:

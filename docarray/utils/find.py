@@ -23,6 +23,16 @@ class _FindResult(NamedTuple):
     scores: AnyTensor
 
 
+class FindResultBatched(NamedTuple):
+    documents: List[DocList]
+    scores: List[AnyTensor]
+
+
+class _FindResultBatched(NamedTuple):
+    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
+    scores: List[AnyTensor]
+
+
 def find(
     index: AnyDocArray,
     query: Union[AnyTensor, BaseDoc],
@@ -95,7 +105,7 @@ def find(
         and the second element contains the corresponding scores.
     """
     query = _extract_embedding_single(query, search_field)
-    return find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field=search_field,
@@ -103,7 +113,8 @@ def find(
         limit=limit,
         device=device,
         descending=descending,
-    )[0]
+    )
+    return FindResult(documents=docs[0], scores=scores[0])
 
 
 def find_batched(
@@ -114,7 +125,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-) -> List[FindResult]:
+) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
     Supports PyTorch and NumPy embeddings.
@@ -142,23 +153,23 @@ def find_batched(
 
     # use DocList as query
     query = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
 
     # use tensor as query
     query = torch.rand(3, 128)
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
         search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
     ```
 
     ---
@@ -176,8 +187,8 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocList, AnyTensor),
-        where the first element contains the closes matches for each query,
+    :return: A named tuple of the form (DocList, AnyTensor),
+        where the first element contains the closest matches for each query,
         and the second element contains the corresponding scores.
     """
     if descending is None:
@@ -197,14 +208,17 @@ def find_batched(
         dists, k=limit, device=device, descending=descending
     )
 
-    results = []
-    for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+    batched_docs: List[DocList] = []
+    scores = []
+    for _, (indices_per_query, scores_per_query) in enumerate(
+        zip(top_indices, top_scores)
+    ):
         docs_per_query: DocList = DocList([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
-        docs_per_query = DocList(docs_per_query)
-        results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
-    return results
+        batched_docs.append(DocList(docs_per_query))
+        scores.append(scores_per_query)
+    return FindResultBatched(documents=batched_docs, scores=scores)
 
 
 def _extract_embedding_single(

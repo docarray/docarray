@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/docarray/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
+<img src="https://github.com/docarray/docarray/blob/main/docs/assets/logo-dark.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
 <br>
 <b>The data structure for multimodal data</b>
 </p>
@@ -11,6 +11,10 @@
 <a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
+
+> ⬆️ **DocArray v2**: This readme refer to the second version of DocArray (starting at 0.30). If you want to use the old
+> DocArray v1 version (below 0.30) check out the [docarray-v1-fixe](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
+
 
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
@@ -36,6 +40,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
 
+DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
@@ -797,19 +802,15 @@ Of course this is only one thing that DocArray can do, so we encourage you to ch
 To try out the alpha you can install it via git:
 
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
-```
+pip install "git+https://github.com/docarray/docarray"
 
-...or from the latest development branch
-
-```shell
-pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
-```
 
 ## See also
 
 - [Documentation](https://docarray-v2--jina-docs.netlify.app/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-- ["Legacy" DocArray github page](https://github.com/docarray/docarray)
+- ["Legacy" DocArray github page](https://github.com/docarray/docarray/tree/docarray-v1-fixes)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
+
+> DocArray is a trademark of LF AI Projects, LLC
