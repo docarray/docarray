@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - tet-ci-2
 
 jobs:
   success-all-test:
