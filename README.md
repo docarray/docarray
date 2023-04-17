@@ -803,7 +803,7 @@ To try out the alpha you can install it via git:
 
 ```shell
 pip install "git+https://github.com/docarray/docarray"
-
+```
 
 ## See also
 
