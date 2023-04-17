@@ -4,8 +4,8 @@ In this section, we will walk through how to use DocArray to process multiple da
 
 !!! tip "See also"
     In this section, we will work with image and text data. If you are not yet familiar with how to process these 
-    modalities individually, you may want to check out the respective examples first: [`Image`](../image/image.md) 
-    and [`Text`](../text/text.md)
+    modalities individually, you may want to check out the [`Image`](../image/image.md) 
+    and [`Text`](../text/text.md) examples first.
 
 ## Model your data
 
@@ -14,7 +14,7 @@ DocArray allows you to model your data and these relationships.
 
 ### Define a schema
 
-Let's suppose you want to model a page of a newspaper that contains a main text, an image URL, a corresponding tensor 
+Suppose you want to model a page of a newspaper that contains a main text, an image URL, a corresponding tensor 
 as well as a description. You can model this example in the following way:
 
 ```python
@@ -40,10 +40,12 @@ page = Page(
     img_url='https://github.com/docarray/docarray/blob/main/docs/assets/favicon.png?raw=true',
     img_description='This is the image of an apple',
 )
+
 page.img_tensor = page.img_url.load()
 
 page.summary()
 ```
+
 <details>
     <summary>Output</summary>
     ``` { .text .no-copy }
@@ -71,6 +73,7 @@ print(page.img_url)
 print(page.img_description)
 print(page.img_tensor)
 ```
+
 <details>
     <summary>Output</summary>
     ``` { .text .no-copy }
@@ -93,7 +96,7 @@ For this example, let's try to define a schema to represent a newspaper. The new
 any number of following pages, and some metadata. Further, each page contains a main text and can contain an image 
 and an image description.
 
-To implement this you can simply add a `Newspaper` class to our previous implementation. The newspaper has a required 
+To implement this you can add a `Newspaper` class to the previous implementation. The newspaper has a required 
 `cover_page` attribute of type `Page` as well as a `pages` attribute, which is a `DocList` of `Page`s.
 
 ```python
@@ -114,7 +117,7 @@ class Newspaper(BaseDoc):
     metadata: dict = None
 ```
 
-You can instantiate this more complex `Newspaper` object in the same way as before:
+You can instantiate this more complex `Newspaper` object the same way as before:
 
 ```python
 cover_page = Page(
@@ -142,6 +145,7 @@ docarray_daily = Newspaper(
 
 docarray_daily.summary()
 ```
+
 <details>
     <summary>Output</summary>
     ``` { .text .no-copy }
