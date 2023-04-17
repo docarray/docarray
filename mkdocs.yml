@@ -119,6 +119,7 @@ nav:
     - data_types/3d_mesh/3d_mesh.md
     - data_types/table/table.md
     - data_types/multimodal/multimodal.md
+  - Migration guide: migration_guide.md
   - ...
   - Glossary: glossary.md
   - Contributing: CONTRIBUTING.md
