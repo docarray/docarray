@@ -8,7 +8,7 @@ on:
 
 jobs:
   prerelease:
-    needs: [docarray-test, docarray-oldproto-test]
+    needs: [success-all-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.5.0
