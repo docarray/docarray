@@ -79,12 +79,12 @@ plugins:
 
 nav:
   - Home: README.md
-  - Tutorial/User Guide:
+  - User Guide:
     - user_guide/intro.md
     - Representing data:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
-    - Sending:
+    - Sending data:
       - user_guide/sending/first_step.md
       - Serialization:
         - user_guide/sending/ser/send_doc.md
@@ -93,7 +93,7 @@ nav:
       - Building API:
           - user_guide/sending/api/jina.md
           - user_guide/sending/api/fastAPI.md
-    - Storing:
+    - Storing data:
       - user_guide/storing/first_step.md
       - DocStore:
         - user_guide/storing/doc_store/store_file.md
