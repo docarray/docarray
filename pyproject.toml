@@ -1,9 +1,38 @@
 [tool.poetry]
 name = "docarray"
-version = '0.30.0a3'
-description='The data structure for unstructured data'
+version = '0.30.0a4'
+description='The data structure for multimodal data'
+readme = 'README.md'
 authors=['DocArray']
 license='Apache 2.0'
+homepage = "https://docs.docarray.org/"
+repository = "https://github.com/docarray/docarray"
+documentation = "https://docs.docarray.org/"
+keywords = ['docarray', 'deep-learning', 'data-structures cross-modal multi-modal',' unstructured-data',' nested-data','neural-search']
+classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Education',
+        'Intended Audience :: Science/Research',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Unix Shell',
+        'Environment :: Console',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Topic :: Database :: Database Engines/Servers',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
+        'Topic :: Scientific/Engineering :: Image Recognition',
+        'Topic :: Multimedia :: Video',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'Topic :: Software Development',
+        'Topic :: Software Development :: Libraries',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
