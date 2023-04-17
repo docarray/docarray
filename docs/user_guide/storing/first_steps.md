@@ -4,7 +4,7 @@ A Document Index lets you store your Documents and search through them using vec
 
 This is useful if you want to store a bunch of data, and at a later point retrieve Documents that are similar to
 some query that you provide.
-Concrete examples where this is relevant are neural search application, Augmenting LLMs and Chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401))]),
+Concrete examples where this is relevant are neural search application, Augmenting LLMs and Chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401)),
 or recommender systems.
 
 !!! question "How does vector similarity search work?"
@@ -146,31 +146,31 @@ similar Documents in the Document Index.
 
 === "Search by Document"
 
-```python
-# create a query Document
-query = MyDoc(embedding=np.random.rand(128), text='query')
+    ```python
+    # create a query Document
+    query = MyDoc(embedding=np.random.rand(128), text='query')
 
-# find similar Documents
-matches, scores = db.find(query, search_field='embedding', limit=5)
+    # find similar Documents
+    matches, scores = db.find(query, search_field='embedding', limit=5)
 
-print(f'{matches=}')
-print(f'{matches.text=}')
-print(f'{scores=}')
-```
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
 
 === "Search by raw vector"
 
-```python
-# create a query vector
-query = np.random.rand(128)
+    ```python
+    # create a query vector
+    query = np.random.rand(128)
 
-# find similar Documents
-matches, scores = db.find(query, search_field='embedding', limit=5)
+    # find similar Documents
+    matches, scores = db.find(query, search_field='embedding', limit=5)
 
-print(f'{matches=}')
-print(f'{matches.text=}')
-print(f'{scores=}')
-```
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
 
 To succesfully peform a vector search, you need to specify a `search_field`. This is the field that serves as the
 basis of comparison between your query and the documents in the Document Index.
@@ -190,33 +190,33 @@ You can also search for multiple Documents at once, in a batch, using the [find_
 
 === "Search by Documents"
 
-```python
-# create some query Documents
-queries = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
-)
+    ```python
+    # create some query Documents
+    queries = DocList[MyDoc](
+        MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+    )
 
-# find similar Documents
-matches, scores = db.find_batched(queries, search_field='embedding', limit=5)
+    # find similar Documents
+    matches, scores = db.find_batched(queries, search_field='embedding', limit=5)
 
-print(f'{matches=}')
-print(f'{matches[0].text=}')
-print(f'{scores=}')
-```
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
 
 === "Search by raw vector"
 
-```python
-# create some query vectors
-query = np.random.rand(3, 128)
+    ```python
+    # create some query vectors
+    query = np.random.rand(3, 128)
 
-# find similar Documents
-matches, scores = db.find_batched(query, search_field='embedding', limit=5)
+    # find similar Documents
+    matches, scores = db.find_batched(query, search_field='embedding', limit=5)
 
-print(f'{matches=}')
-print(f'{matches[0].text=}')
-print(f'{scores=}')
-```
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
 
 The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
 a list of `DocList`s, one for each query, containing the closest matching documents; and the associated similarity scores.
@@ -349,26 +349,26 @@ You can customize every field in this configuration:
 
 === "Pass individual settings"
 
-```python
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+    ```python
+    db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
 
-custom_db_config = db._db_config
-print(custom_db_config)
+    custom_db_config = db._db_config
+    print(custom_db_config)
 
-# > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
-```
+    # > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+    ```
 
 === "Pass entire configuration"
 
-```python
-custom_db_config = HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+    ```python
+    custom_db_config = HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
 
-db = HnswDocumentIndex[MyDoc](custom_db_config)
+    db = HnswDocumentIndex[MyDoc](custom_db_config)
 
-print(db._db_config)
+    print(db._db_config)
 
-# > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
-```
+    # > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+    ```
 
 **Runtime configurations**
 
@@ -402,60 +402,60 @@ You can customize every field in this configuration using the [configure()][doca
 
 === "Pass individual settings"
 
-```python
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+    ```python
+    db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
 
-db.configure(
-    default_column_config={
-        np.ndarray: {
-            'dim': -1,
-            'index': True,
-            'space': 'ip',
-            'max_elements': 2048,
-            'ef_construction': 100,
-            'ef': 15,
-            'M': 8,
-            'allow_replace_deleted': True,
-            'num_threads': 5,
-        },
-        None: {},
-    }
-)
+    db.configure(
+        default_column_config={
+            np.ndarray: {
+                'dim': -1,
+                'index': True,
+                'space': 'ip',
+                'max_elements': 2048,
+                'ef_construction': 100,
+                'ef': 15,
+                'M': 8,
+                'allow_replace_deleted': True,
+                'num_threads': 5,
+            },
+            None: {},
+        }
+    )
 
-custom_runtime_config = db._runtime_config
-print(custom_runtime_config)
+    custom_runtime_config = db._runtime_config
+    print(custom_runtime_config)
 
-# > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
-```
+    # > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
+    ```
 
 === "Pass entire configuration"
 
-```python
-custom_runtime_config = HnswDocumentIndex.RuntimeConfig(
-    default_column_config={
-        np.ndarray: {
-            'dim': -1,
-            'index': True,
-            'space': 'ip',
-            'max_elements': 2048,
-            'ef_construction': 100,
-            'ef': 15,
-            'M': 8,
-            'allow_replace_deleted': True,
-            'num_threads': 5,
-        },
-        None: {},
-    }
-)
+    ```python
+    custom_runtime_config = HnswDocumentIndex.RuntimeConfig(
+        default_column_config={
+            np.ndarray: {
+                'dim': -1,
+                'index': True,
+                'space': 'ip',
+                'max_elements': 2048,
+                'ef_construction': 100,
+                'ef': 15,
+                'M': 8,
+                'allow_replace_deleted': True,
+                'num_threads': 5,
+            },
+            None: {},
+        }
+    )
 
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+    db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
 
-db.configure(custom_runtime_config)
+    db.configure(custom_runtime_config)
 
-print(db._runtime_config)
+    print(db._runtime_config)
 
-# > HHnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
-```
+    # > HHnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})
+    ```
 
 After this change, the new setting will be applied to _every_ column that corresponds to a `np.ndarray` type.
 
