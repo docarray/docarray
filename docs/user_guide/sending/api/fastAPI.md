@@ -10,8 +10,9 @@ and provide a seamless and efficient way to work with multimodal data in FastAPI
     pip install fastapi
     ```
 
+## Define schemas
 
-First, you should define schemas for your input and/or output Documents:
+First, you should define schemas for your input and/or output documents:
 ```python
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
@@ -27,7 +28,10 @@ class OutputDoc(BaseDoc):
     embedding_bert: NdArray
 ```
 
-Afterwards, you can use your Documents with FastAPI:
+## Use documents with FastAPI
+
+After creating your schemas, you can use your documents with FastAPI:
+
 ```python
 import numpy as np
 from fastapi import FastAPI
@@ -56,7 +60,7 @@ async with AsyncClient(app=app, base_url="http://test") as ac:
 doc = OutputDoc.parse_raw(response.content.decode())
 ```
 
-The big advantage here is **first-class support for ML centric data**, such as {Torch, TF, ...}Tensor, Embedding, etc.
+The big advantage here is **first-class support for ML centric data**, such as `TorchTensor`, `TensorFlowTensor`, `Embedding`, etc.
 
 This includes handy features such as validating the shape of a tensor:
 
@@ -92,11 +96,11 @@ Image(
 ```
 
 
-Further, you can send and receive lists of Documents represented as a `DocArray` object:
+Further, you can send and receive lists of documents represented as a `DocList` object:
 
 !!! note
-    Currently, `FastAPI` receives `DocArray` objects as lists, so you have to construct a DocArray inside the function.
-    Also, if you want to return a `DocArray` object, first you have to convert it to a list. 
+    Currently, `FastAPI` receives `DocList` objects as lists, so you have to construct a DocList inside the function.
+    Also, if you want to return a `DocList` object, first you have to convert it to a list. 
     (Shown in the example below)
 
 ```python
@@ -106,12 +110,12 @@ import numpy as np
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from docarray import DocArray
+from docarray import DocList
 from docarray.base_doc import DocArrayResponse
 from docarray.documents import TextDoc
 
 # Create a docarray
-docs = DocArray[TextDoc]([TextDoc(text='first'), TextDoc(text='second')])
+docs = DocList[TextDoc]([TextDoc(text='first'), TextDoc(text='second')])
 
 app = FastAPI()
 
@@ -120,14 +124,14 @@ app = FastAPI()
 @app.post("/doc/", response_class=DocArrayResponse)
 async def create_embeddings(docs: List[TextDoc]) -> List[TextDoc]:
     # The docs FastAPI will receive will be treated as List[TextDoc]
-    # so you need to cast it to DocArray
-    docs = DocArray[TextDoc].construct(docs)
+    # so you need to cast it to DocList
+    docs = DocList[TextDoc].construct(docs)
 
     # Embed docs
     for doc in docs:
         doc.embedding = np.zeros((3, 224, 224))
 
-    # Return your DocArray as a list
+    # Return your DocList as a list
     return list(docs)
 
 
@@ -136,5 +140,5 @@ async with AsyncClient(app=app, base_url="http://test") as ac:
 
 assert response.status_code == 200
 # You can read FastAPI's response in the following way
-docs = DocArray[TextDoc].from_json(response.content.decode())
+docs = DocList[TextDoc].from_json(response.content.decode())
 ```

@@ -14,17 +14,17 @@ jupyter:
 
 # Multimodal deep learning with DocArray
 
-DocArray is a library for representing, sending, and storing multi-modal data that can be used for a variety of different
+DocArray is a library for representing, sending, and storing multimodal data that can be used for a variety of different
 use cases.
 
-Here we will focus on a workflow familiar to many ML Engineers: Building and training a model, and then serving it to
+Here we will focus on a workflow familiar to many ML engineers: Building and training a model, and then serving it to
 users.
 
-This notebook contains two parts:
+This document contains two parts:
 
-1. **Representing**: We will use DocArray to represent multi-modal data while **building and training a PyTorch model**.
-We will see how DocArray can help to organize and group your modalities and tensors and make clear what methods expect as inputs and return as outputs.
-2. **Sending**: We will take the model that we built and trained in part 1, and **serve it using FastAPI**.
+1. **Representing**: We will use DocArray to represent multimodal data while **building and training a PyTorch model**.
+We will see how DocArray can help to organize and group your modalities and tensors and make clear what methods to expect as inputs and return as outputs.
+2. **Sending**: We will take the model that we built and trained in part one, and **serve it using FastAPI**.
 We will see how DocArray narrows the gap between model development and model deployment, and how the same data models can be
 reused in both contexts. That part will be very short, but that's the point!
 
@@ -32,15 +32,16 @@ So without further ado, let's dive into it!
 
 ## 1. Representing: Build and train a PyTorch model
 
-We will train a [CLIP](https://arxiv.org/abs/2103.00020)-like model on a dataset composes of text-image-pairs.
-The goal is to obtain a model that is able to understand both text and images and project them into a common embedding space.
+We will train a [CLIP](https://arxiv.org/abs/2103.00020)-like model on a dataset composed of text-image pairs.
+The goal is to obtain a model that can understand both text and images and project them into a common embedding space.
 
-We train the CLIP-like model on the [flickr8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset.
-To run this notebook you need to download and unzip the data into the same folder as the notebook.
+We train the CLIP-like model on the [Flickr8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset.
+To run this, you need to download and unzip the data into the same folder as your code.
 
-Note that in this notebook by no means we aim at reproduce any CLIP results (our dataset is way too small anyways),
-but we rather want to show how DocArray datastructures help researchers and practitioners to write beautiful and 
-pythonic multi-modal PyTorch code.
+!!! note
+    In this tutorial we do not aim to reproduce any CLIP results (our dataset is way too small anyway),
+    but rather we want to show how DocArray data structures help researchers and practitioners write beautiful and 
+    pythonic multimodal PyTorch code.
 
 ```bash
 #!pip install "docarray[torch,image]"
@@ -71,23 +72,23 @@ DEVICE = "cuda:0"  # change to your favourite device
 ```
 
 <!-- #region tags=[] -->
-## Create the Documents for handling the Muti-Modal data
+### Create documents for handling multimodal data
 <!-- #endregion -->
 
-The first thing we are trying to achieve when using DocArray is to clearly model our data so that we never get confused
-about which tensors are supposed to represent what.
+The first thing we want to achieve when using DocArray is to clearly model our data so that we never get confused
+about which tensors represent what.
 
-To do that we are using a concept that is at the core of DocArray. The `Document`, a collection of multi-modal data.
-The `BaseDoc` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
+To do that we are using a concept that is at the core of DocArray: The document -- a collection of multimodal data.
+The `BaseDoc` class allows users to define their own (nested, multimodal) document schema to represent any kind of complex data.
 
-Let's start by defining a few Documents to handle the different modalities that we will use during our training:
+Let's start by defining a few documents to handle the different modalities that we will use during our training:
 
 ```python
 from docarray import BaseDoc, DocList
 from docarray.typing import TorchTensor, ImageUrl
 ```
 
-Let's first create a Document for our Text modality. It will contain a number of `Tokens`, which we also define:
+Let's first create a document for our Text modality. It will contain a number of `Tokens`, which we also define:
 
 ```python
 from docarray.documents import TextDoc as BaseText
@@ -102,11 +103,12 @@ class Tokens(BaseDoc):
 class Text(BaseText):
     tokens: Optional[Tokens]
 ```
-Notice the [`TorchTensor`][docarray.typing.TorchTensor] type. It is a thin wrapper around `torch.Tensor` that can be use like any other torch tensor, 
+
+Notice the [`TorchTensor`][docarray.typing.TorchTensor] type. It is a thin wrapper around `torch.Tensor` that can be used like any other Torch tensor, 
 but also enables additional features. One such feature is shape parametrization (`TorchTensor[48]`), which lets you
 hint and even enforce the desired shape of any tensor!
 
-To represent our image data, we use the [`ImageDoc`][docarray.documents.ImageDoc] that is included in DocArray:
+To represent our image data, we use DocArray's [`ImageDoc`][docarray.documents.ImageDoc]:
 
 ```python
 from docarray.documents import ImageDoc
@@ -123,9 +125,9 @@ class ImageDoc(BaseDoc):
 ```
 
 Actually, the `BaseText` above also already includes `tensor`, `url` and `embedding` fields, so we can use those on our
-`Text` Document as well.
+`Text` document as well.
 
-The final Document used for training here is the `PairTextImage`, which simply combines the Text and Image modalities:
+The final document used for training here is the `PairTextImage`, which simply combines the Text and Image modalities:
 
 ```python
 class PairTextImage(BaseDoc):
@@ -133,10 +135,9 @@ class PairTextImage(BaseDoc):
     image: ImageDoc
 ```
 
-## Create the Dataset 
+### Create the dataset 
 
-
-In this section we will create a multi-modal pytorch dataset around the Flick8k dataset using DocArray.
+In this section we will create a multimodal pytorch dataset around the Flick8k dataset using DocArray.
 
 We will use DocArray's data loading functionality to load the data and use Torchvision and Transformers to preprocess the data before feeding it to our deep learning model:
 
@@ -191,7 +192,7 @@ def get_flickr8k_da(file: str = "captions.txt", N: Optional[int] = None):
     return da
 ```
 
-In the `get_flickr8k_da` method we process the Flickr8k dataset into a `DocList`.
+In the `get_flickr8k_da` method we process the [Flickr8k](https://www.kaggle.com/datasets/adityajn105/flickr8k) dataset into a `DocList`.
 
 Now let's instantiate this dataset using the [`MultiModalDataset`][docarray.data.MultiModalDataset] class. The constructor takes in the `da` and a dictionary of preprocessing transformations:
 
@@ -214,10 +215,9 @@ loader = DataLoader(
 )
 ```
 
-## Create the Pytorch model that works on DocArray
+### Create the Pytorch model that works on DocArray
 
-
-In this section we create two encoders, one per modality (Text and Image). These encoders are normal PyTorch `nn.Module`s.
+In this section we will create two encoders, one per modality (Text and Image). These encoders are normal PyTorch `nn.Module`s.
 The only difference is that they operate on `DocList` rather that on torch.Tensor:
 
 ```python
@@ -243,7 +243,6 @@ class TextEncoder(nn.Module):
 The `TextEncoder` takes a `DocList` of `TextDoc`s as input, and returns an embedding `TorchTensor` as output.
 `DocList` can be seen as a list of `TextDoc` documents, and the encoder will treat it as one batch.
 
-
 ```python
 class VisionEncoder(nn.Module):
     def __init__(self):
@@ -257,7 +256,7 @@ class VisionEncoder(nn.Module):
 ```
 
 Similarly, the `VisionEncoder` also takes a `DocList` of `ImageDoc`s as input, and returns an embedding `TorchTensor` as output.
-However, it operates on the `tensor` attribute of each Document.
+However, it operates on the `tensor` attribute of each document.
 
 Now we can instantiate our encoders:
 
@@ -266,10 +265,9 @@ vision_encoder = VisionEncoder().to(DEVICE)
 text_encoder = TextEncoder().to(DEVICE)
 ```
 
-As you can see, DocArray helps us to clearly convey what data is expected as input and output for each method, all through Python type hints.
+As you can see, DocArray helps us clearly convey what data is expected as input and output for each method, all through Python type hints.
 
-## Train the model in a contrastive way between Text and Image (CLIP)
-
+### Train the model in a contrastive way between Text and Image (CLIP)
 
 Now that we have defined our dataloader and our models, we can train the two encoders is a contrastive way.
 The goal is to match the representation of the text and the image for each pair in the dataset.
@@ -301,7 +299,7 @@ In the type hints of `cosine_sim` and `clip_loss` you can again notice that we c
 num_epoch = 1  # here you should do more epochs to really learn something
 ```
 
-One things to notice here is that our dataloader does not return a `torch.Tensor` but a `DocList[PairTextImage]`,
+One thing to notice here is that our dataloader does not return a `torch.Tensor` but a `DocList[PairTextImage]`,
 which is exactly what our model can operate on.
 
 So let's write a training loop and train our encoders:
@@ -327,20 +325,19 @@ with torch.autocast(device_type="cuda", dtype=torch.float16):
             optim.step()
 ```
 
-Here we can see how we can immediately group the output of each encoder with the Document (and modality) it belong to.
+Here we see how we can immediately group the output of each encoder with the document (and modality) it belong to.
 
-And with all that, we've successfully trained a CLIP-like model without ever being confused the meaning of any tensors!
+And with all that, we've successfully trained a CLIP-like model without ever getting confused about the meaning of any tensors!
 
 ## 2. Sending: Serve the model using FastAPI
 
 Now that we have a trained CLIP model, let's see how we can serve this model with a REST API by reusing most of the code above.
 
-Let's use our beloved [FastAPI](https://fastapi.tiangolo.com/) for that!
-
+Let's use [FastAPI](https://fastapi.tiangolo.com/) for that!
 
 FastAPI is powerful because it allows you to define your Rest API data schema in pure Python.
-And DocArray is fully compatible with FastAPI and Pydantic, which means that as long as you have a function that takes a Document as input, 
-FastAPI will be able to automatically translate it into a fully fledged API with documentation, openAPI specification and more:
+And DocArray is fully compatible with FastAPI and Pydantic, which means that as long as you have a function that takes a document as input, 
+FastAPI will be able to automatically translate it into a fully fledged API with documentation, OpenAPI specification and more:
 
 ```python
 from fastapi import FastAPI
@@ -374,7 +371,7 @@ async def embed_text(doc: Text) -> Text:
     return doc
 ```
 
-You can see that our earlier definition of the `Text` Document now doubles as the API schema for the `/embed_text` endpoint.
+You can see that our earlier definition of the `Text` document now doubles as the API schema for the `/embed_text` endpoint.
 
 With this running, we can query our model over the network:
 
@@ -402,4 +399,4 @@ doc_resp = Text.parse_raw(response.content.decode())
 doc_resp.embedding.shape
 ```
 
-And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocArray!
+And we're done! You have trained and served a multimodal ML model, with zero headaches and a lot of DocArray!

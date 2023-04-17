@@ -1,7 +1,7 @@
-# Intro
+# Introduction
 
 With DocArray you can represent text, image, video, audio, and 3D meshes, whether separate, nested or combined, 
-and process them as a DocList. 
+and process them as a [`DocList`][docarray.array.doc_list.doc_list.DocList]. 
 
 This section covers the following sections:
 
