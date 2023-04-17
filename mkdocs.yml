@@ -81,7 +81,7 @@ nav:
   - Home: README.md
   - User Guide:
     - user_guide/intro.md
-    - Represent:
+    - Representing data:
       - user_guide/representing/first_step.md
       - user_guide/representing/array.md
     - Sending data:
