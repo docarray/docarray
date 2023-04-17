@@ -50,7 +50,7 @@ all the features of `BaseModel` in your `Doc` class. `BaseDoc`:
 * Will perform data validation: `BaseDoc` will check that the data you pass to it is valid. If not, it will raise an 
 error. Data being "valid" is actually defined by the type used in the type hint itself, but we will come back to this concept [later](../../data_types/first_steps.md).
 * Can be configured using a nested `Config` class, see Pydantic [documentation](https://docs.pydantic.dev/usage/model_config/) for more detail on what kind of config Pydantic offers.
-* Can be used as a drop-in replacement for `BaseModel` in your code and is compatible with tools that use Pydantic, like [FastAPI]('https://fastapi.tiangolo.com/').
+* Can be used as a drop-in replacement for `BaseModel` in your code and is compatible with tools that use Pydantic, like [FastAPI]('https://fastapi.tiangolo.com/').=======
 
 ## Representing multimodal and nested data
 
