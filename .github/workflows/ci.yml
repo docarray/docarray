@@ -1,12 +1,15 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - feat-rewrite-v2
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_call:
+    inputs:
+      config-path:
+        type: string
+#  pull_request:
+#    types: [opened, synchronize, reopened]
+
+
+
 jobs:
 
   lint-ruff:
