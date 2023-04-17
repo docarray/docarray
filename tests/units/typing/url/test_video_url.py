@@ -25,7 +25,7 @@ if tf_available:
     from docarray.typing.tensor.video import VideoTensorFlowTensor
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
-REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
+REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
 
 
 @pytest.mark.slow

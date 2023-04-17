@@ -64,7 +64,7 @@ doc.summary()
     ╭──────────────────────┬───────────────────────────────────────────────────────╮
     │ Attribute            │ Value                                                 │
     ├──────────────────────┼───────────────────────────────────────────────────────┤
-    │ url: AudioUrl        │ https://github.com/docarray/docarray/blob/feat-rew    │
+    │ url: AudioUrl        │ https://github.com/docarray/docarray/blob/main/tes    │
     │                      │ ... (length: 90)                                      │
     │ tensor: AudioNdArray │ AudioNdArray of shape (30833,), dtype: float64        │
     │ frame_rate: int      │ 44100                                                 │
