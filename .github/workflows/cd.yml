@@ -17,7 +17,6 @@ jobs:
           fetch-depth: 100
       - name: Pre-release (.devN)
         run: |
-           echo "hello"
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           pip install twine wheel
           ./scripts/release.sh
