@@ -1,8 +1,8 @@
 # ElasticSearch Document Index
 
 DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic.co/elasticsearch/):
-- [ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex), based on [Elasticsearch 8](https://github.com/elastic/elasticsearch).
-- [ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex), based on [Elasticsearch 7.10](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0).
+- [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex], based on [Elasticsearch 8](https://github.com/elastic/elasticsearch).
+- [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex], based on [Elasticsearch 7.10](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0).
 
 !!! tip "Should you use ES v7 or v8?"
     [Elasticsearch v8](https://www.elastic.co/blog/whats-new-elastic-8-0-0) is the current version of ES and offers
@@ -21,7 +21,7 @@ DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic
     pip install elastic-transport
     ```
 
-    To use [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex], you need to install the following dependencies:
+    To use [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex], you need to install the following dependencies:
     
     ```console
     pip install elasticsearch==7.10.1
@@ -29,8 +29,8 @@ DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic
     ```
 
 
-The following examples is based on [ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex),
-but should also work with [ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex)
+The following examples is based on [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex],
+but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex].
 
 # Start ElasticSearch
 
@@ -154,7 +154,7 @@ This is the field that serves as the basis of comparison between your query and 
 You can use the `limit` argument to configurate how may Documents to return.
 
 !!! note
-    [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms such as HNSW.
+    [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex] is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms such as HNSW.
     This can lead to a poor performance when the search involves many vectors.
     [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] does not have this limitation.
 
@@ -410,7 +410,7 @@ The following configs can be set in `DBConfig`:
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
 
 You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
-To see how, see [here](user_guide/storing/first_steps.md#configuration-options#customize-configurations).
+To see how, see [here](first_steps.md#configuration-options#customize-configurations).
 
 ### RuntimeConfig
 
@@ -432,4 +432,4 @@ doc_index = ElasticDocIndex[SimpleDoc]()
 ```
 
 You can pass the above as a keyword arguments the `configure()` method or pass an entire configuration object.
-To see how, see [here](user_guide/storing/first_steps.md#configuration-options#customize-configurations).
+To see how, see [here](first_steps.md#configuration-options#customize-configurations).

@@ -15,13 +15,13 @@ jupyter:
 # Weaviate Document Index
 
 !!! note "Install dependencies"
-    To use [WeaviateDocumentIndex][docarray.index.backends.qdrant.WeaviateDocumentIndex], you need to install extra dependencies with the following command:
+    To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], you need to install extra dependencies with the following command:
 
     ```console
     pip install "docarray[weaviate]"
     ```
 
-This is the user guide for the [WeaviateDocumentIndex](docarray.index.backends.hnswlib.WeaviateDocumentIndex),
+This is the user guide for the [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex],
 focussing on special features and configurations of Weaviate.
 
 For general usage of a Document Index, see the [general user guide](./first_steps.md#document-index).
@@ -29,7 +29,7 @@ For general usage of a Document Index, see the [general user guide](./first_step
 
 # 1. Start Weaviate service
 
-To use [WeaviateDocumentIndex](docarray.index.backends.hnswlib.WeaviateDocumentIndex), it needs to hook into a running Weaviate service.
+To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], it needs to hook into a running Weaviate service.
 There are multiple ways to start a Weaviate instance, depending on your use case.
 
 <!-- #region -->

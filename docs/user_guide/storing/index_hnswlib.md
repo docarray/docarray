@@ -15,9 +15,10 @@ It stores vectors on disc in [hnswlib](https://github.com/nmslib/hnswlib), and s
     [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] is a great starting point
     for small to medium sized datasets, but it is not battle tested in production. If scalability, uptime, etc. are
     important to you, we recommend you eventually transition to one of our database backed Document Index implementations:
+
     - [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]
     - [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex]
-    - [ElasticDocumentIndex][docarray.index.backends.elasticsearch.ElasticDocumentIndex]
+    - [ElasticDocumentIndex][docarray.index.backends.elastic.ElasticDocIndex]
 
 
 ## Basic Usage

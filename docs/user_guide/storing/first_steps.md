@@ -1,13 +1,4 @@
-# Store
-
-If you work with multi-modal data, usually you want to **store** it somewhere.
-
-DocArray offers to ways of storing your data:
-
-1. In a **[Document Index](#document-index)** for fast retrieval using vector similarity
-2. In a **[Document Store](#document-store)** for simple long-term storage
-
-## Document Index
+# Overview
 
 A Document Index lets you store your Documents and search through them using vector similarity.
 
@@ -42,12 +33,13 @@ DocArray's Document Index concept achieves this by providing a unified interface
 In fact, you can think of Document Index as an **[ORM](https://sqlmodel.tiangolo.com/db-to-code/) for vector databases**.
 
 Currently, DocArray supports the following vector databases:
+
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
 
-For this user guide you will use the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex)
+For this user guide you will use the [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex]
 because it doesn't require you to launch a database server. Instead, it will store your data locally.
 
 !!! note "Using a different vector database"
@@ -56,11 +48,11 @@ because it doesn't require you to launch a database server. Instead, it will sto
 
 !!! note "HNSWLib-specific settings"
     The following sections explain the general concept of Document Index by using
-    [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) as an example.
-    For HNSWLib-specific settings, check out the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) documentation
+    [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] as an example.
+    For HNSWLib-specific settings, check out the [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] documentation
     [here](index_hnswlib.md).
 
-### Create a Document Index
+## Create a Document Index
 
 !!! note
     To use [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex], you need to install extra dependencies with the following command:
@@ -109,9 +101,9 @@ usually specify a `host` and a `port` instead.
 Either way, if the location does not yet contain any data, we start from a blank slate.
 If the location already contains data from a previous session, it will be accessible through the Document Index.
 
-### Index data
+## Index data
 
-Now that you have a Document Index, you can add data to it, using the [index()][docarray.index.backends.hnswlib.HnswDocumentIndex.index] method:
+Now that you have a Document Index, you can add data to it, using the [index()][docarray.index.abstract.BaseDocIndex.index] method:
 
 ```python
 import numpy as np
@@ -139,16 +131,17 @@ need to have compatible schemas.
     Let's say A is the schema of your Document Index and B is the schema of your data.
     There are a few rules that determine if a schema A is compatible with a schema B.
     If _any_ of the following is true, then A and B are compatible:
+
     - A and B are the same class
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-### Perform vector similarity search
+## Perform vector similarity search
 
-Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.backends.hnswlib.HnswDocumentIndex.find] method.
+Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
 
 
-Provided with a Document of type `MyDoc`, [find()][docarray.index.backends.hnswlib.HnswDocumentIndex.find] can find
+Provided with a Document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find] can find
 similar Documents in the Document Index.
 
 === "Search by Document"
@@ -186,14 +179,14 @@ In this particular example you only have one field (`embedding`) that is a vecto
 In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
 which one to use for the search.
 
-The [find()][docarray.index.backends.hnswlib.HnswDocumentIndex.find] method returns a named tuple containing the closest
+The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
 
 **Batched search:**
 
-You can also search for multiple Documents at once, in a batch, using the [find_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.find_batched] method.
+You can also search for multiple Documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
 === "Search by Documents"
 
@@ -225,26 +218,26 @@ print(f'{matches[0].text=}')
 print(f'{scores=}')
 ```
 
-The [find_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.find_batched] method returns a named tuple containing
+The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
 a list of `DocList`s, one for each query, containing the closest matching documents; and the associated similarity scores.
 
-### Perform filter search and text search
+## Perform filter search and text search
 
 In addition to vector similarity search, the Document Index interface offers methods for text search and filter search:
-[text_search()][docarray.index.backends.hnswlib.HnswDocumentIndex.text_search] and [filter()][docarray.index.backends.hnswlib.HnswDocumentIndex.filter],
-as well as their batched versions [text_search_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.text_search_batched] and [filter_batched()][docarray.index.backends.hnswlib.HnswDocumentIndex.filter_batched]
+[text_search()][docarray.index.abstract.BaseDocIndex.text_search] and [filter()][docarray.index.abstract.BaseDocIndex.filter],
+as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]
 
 The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
 or text search.
 
 To see how to perform these operations, you can check out other backends that do.
 
-### Perform hybrid search through the query builder
+## Perform hybrid search through the query builder
 
 Document Index support atomic operations for vector similarity search, text search and filter search.
 
 In order to combine these operations into a singe, hybrid search query, you can use the query builder that is accessible
-through [build_query()][docarray.index.backends.hnswlib.HnswDocumentIndex.build_query]:
+through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
 # prepare a query
@@ -269,7 +262,7 @@ What kinds of atomic queries can be combined in this way depends on the backend.
 Some can combine text search and vector search, others can perform filters and vectors search, etc.
 To see what backend can do what, check out the [specific docs](#document-index).
 
-### Access Documents by id
+## Access Documents by id
 
 To retrieve a Document from a Document Index, you don't necessarily need to perform some fancy search.
 
@@ -290,7 +283,7 @@ doc = db[ids[0]]  # get by single id
 docs = db[ids]  # get by list of ids
 ```
 
-### Delete Documents
+## Delete Documents
 
 In the same way you can access Documents by id, you can delete them:
 
@@ -309,7 +302,7 @@ del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
 
-### Customize configurations
+## Customize configurations
 
 It is DocArray's philosophy that each Document Index should "just work", meaning that it comes with a sane set of default
 settings that can get you most of the way there.
@@ -405,7 +398,7 @@ print(runtime_config)
 As you can see, `HnswDocumentIndex.RuntimeConfig` is a dataclass that contains only one configuration:
 `default_column_config`, which is a mapping from python types to database column configurations.
 
-You can customize every field in this configuration using the [configure()][docarray.index.backends.hnswlib.HnswDocumentIndex.configure] method:
+You can customize every field in this configuration using the [configure()][docarray.index.abstract.BaseDocIndex.configure] method:
 
 === "Pass individual settings"
 
@@ -498,7 +491,7 @@ All configurations that are not explicitly set will be taken from the `default_c
 
 For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` [documentation](index_hnswlib.md).
 
-### Nested data
+## Nested data
 
 The examples above all operate on a simple schema: All fields in `MyDoc` have "basic" types, such as `str` or `NdArray`.
 
@@ -578,28 +571,3 @@ docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit
 # find by the `video` tensor; neseted level
 docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 ```
-
-## Document Store
-
-In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multi-modal data and send it over the wire.
-In this section we will see how to store and persist this data.
-
-DocArray offers to ways of storing your data:
-
-1. In a **[Document Store](#document-store)** for simple long-term storage
-2. In a **[Document Index](#document-index)** for fast retrieval using vector similarity
-
-## Document Store
-    
-[DocList][docarray.array.doc_list.doc_list.DocList] can be persisted using the
-[`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] and 
-[`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] methods. 
-Under the hood, [DocStore][docarray.store.abstract_doc_store.AbstractDocStore] is used to persist a `DocList`. 
-You can store your documents on-disk. Alternatively, you can upload them to [AWS S3](https://aws.amazon.com/s3/), 
-[minio](https://min.io) or [Jina AI Cloud](https://cloud.jina.ai/user/storage). 
-
-This section covers the following three topics:
-
-  - [Store](doc_store/store_file.md) of [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] on-disk
-  - [Store on Jina AI Cloud](doc_store/store_jac.md) 
-  - [Store on S3](doc_store/store_s3.md)
