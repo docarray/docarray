@@ -13,8 +13,6 @@ DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-stream test
 RANDOM: str = uuid.uuid4().hex[:8]
 
-pytestmark = [pytest.mark.skip]
-
 
 @pytest.fixture(scope='session', autouse=True)
 def testing_namespace_cleanup():
