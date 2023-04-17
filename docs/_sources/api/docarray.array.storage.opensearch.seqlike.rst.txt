@@ -1,7 +1,0 @@
-docarray.array.storage.opensearch.seqlike module
-================================================
-
-.. automodule:: docarray.array.storage.opensearch.seqlike
-   :members:
-   :undoc-members:
-   :show-inheritance:
