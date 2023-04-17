@@ -144,7 +144,7 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         `tensor` can be a 1D array or a 2D array. When `tensor` is a 2D array, then
         normalization is row-based.
 
-        .. note::
+        !!! note
             - with `t_range=(0, 1)` will normalize the min-value of data to 0, max to 1;
             - with `t_range=(1, 0)` will normalize the min-value of data to 1, max value
               of the data to 0.

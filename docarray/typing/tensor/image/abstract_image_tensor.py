@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class AbstractImageTensor(AbstractTensor, ABC):
     def to_bytes(self, format: str = 'PNG') -> 'ImageBytes':
         """
-        Convert image tensor to ImageBytes.
+        Convert image tensor to [`ImageBytes`][docarray.typing.ImageBytes].
 
         :param format: the image format use to store the image, can be 'PNG' , 'JPG' ...
         :return: an ImageBytes object

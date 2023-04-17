@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/docarray/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
+<img src="https://github.com/docarray/docarray/blob/main/docs/assets/logo-dark.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
 <br>
 <b>The data structure for multimodal data</b>
 </p>
@@ -12,6 +12,10 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
+> ⬆️ **DocArray v2**: This readme refer to the second version of DocArray (starting at 0.30). If you want to use the old
+> DocArray v1 version (below 0.30) check out the [docarray-v1-fixe](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
+
+
 DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
 Those are the three pillars of DocArray, and you can check them out individually:
@@ -22,26 +26,29 @@ Those are the three pillars of DocArray, and you can check them out individually
 
 DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
-- :fire: DocArray has native compatibility for **NumPy**, **PyTorch** and **TensorFlow**, including for **model training use cases**
-- :zap: DocArray is built on **Pydantic** and out-of-the-box compatible with **FastAPI**
-- :package: DocArray can store data in vector databases such as **Weaviate, Qdrant, ElasticSearch** as well as **HNSWLib**
-- :chains: DocArray data can be sent as JSON over **HTTP** or as **Protobuf** over **gRPC**
+- :fire: DocArray has native compatibility for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)** and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, including for **model training use cases**
+- :zap: DocArray is built on **[Pydantic](https://github.com/pydantic/pydantic)** and out-of-the-box compatible with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
+- :package: DocArray can index data in vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** as well as **[HNSWLib](https://github.com/nmslib/hnswlib)**
+- :chains: DocArray data can be sent as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
 
 
-> :bulb: **Where are you coming from?** Depending on your use case and background, there are different was to "get" DocArray.
-> You can navigate to the following section for an explanation that should fit your mindest:
+> :bulb: **Where are you coming from?** Depending on your use case and background, there are different ways to "get" DocArray.
+> You can navigate to the following section for an explanation that should fit your mindset:
+> 
 > - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
 > - [Coming from Pydantic](#coming-from-pydantic)
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
 
+DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
 DocArray allows you to **represent your data**, in an ML-native way.
 
 This is useful for different use cases:
-- :running_woman: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
+
+- :woman_running: You are **training a model**, there are myriads of tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them
 - :cloud: You are **serving a model**, for example through FastAPI, and you want to specify your API endpoints
 - :card_index_dividers: You are **parsing data** for later use in your ML or DS applications
 
@@ -55,6 +62,7 @@ Put simply, DocArray lets you represent your data in a dataclass-like way, with 
 from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 import torch
+
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -89,6 +97,7 @@ from docarray import BaseDoc
 from docarray.typing import TorchTensor, ImageUrl
 from typing import Optional
 import torch
+
 
 # Define your data model
 class MyDocument(BaseDoc):
@@ -155,6 +164,7 @@ That's why you can easily collect multiple `Documents`:
 When building or interacting with an ML system, usually you want to process multiple Documents (data points) at once.
 
 DocArray offers two data structures for this:
+
 - **`DocVec`**: A vector of `Documents`. All tensors in the `Documents` are stacked up into a single tensor. **Perfect for batch processing and use inside of ML models**.
 - **`DocList`**: A list of `Documents`. All tensors in the `Documents` are kept as-is. **Perfect for streaming, re-ranking, and shuffling of data**.
 
@@ -180,7 +190,7 @@ vec = DocVec[Image](  # the DocVec is parametrized by your personal schema!
         for _ in range(100)
     ]
 )
-```
+``` 
 
 As you can see in the code snippet above, `DocVec` is **parametrized by the type of Document** you want to use with it: `DocVec[Image]`.
 
@@ -242,10 +252,10 @@ dl.insert(
 And you can seamlessly switch between `DocVec` and `DocList`:
 
 ```python
-vec_2 = dl.stack()
+vec_2 = dl.to_doc_vec()
 assert isinstance(vec_2, DocVec)
 
-dl_2 = vec_2.unstack()
+dl_2 = vec_2.to_doc_list()
 assert isinstance(dl_2, DocList)
 ```
 
@@ -258,6 +268,7 @@ DocArray allows you to **send your data**, in an ML-native way.
 This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
 
 This is useful for different use cases:
+
 - :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
 - :spider_web: You **distribute your model** across machines and need to send your data between nodes
 - :gear: You are building a **microservice** architecture and need to send your data between microservices
@@ -272,6 +283,7 @@ Whenever you want to send your data you need to serialize it, so let's take a lo
 from docarray import BaseDoc
 from docarray.typing import ImageTorchTensor
 import torch
+
 
 # model your data
 class MyDocument(BaseDoc):
@@ -297,7 +309,7 @@ doc_5 = MyDocument.parse_raw(json)
 ```
 
 Of course, serialization is not all you need.
-So check out how DocArray integrates with FatAPI and Jina.
+So check out how DocArray integrates with FastAPI and Jina.
 
 
 ## Store
@@ -306,6 +318,7 @@ Once you've modelled your data, and maybe sent it around, usually you want to **
 But fret not! DocArray has you covered!
 
 **Document Stores** let you, well, store your Documents, locally or remotely, all with the same user interface:
+
 - :cd: **On disk** as a file in your local file system
 - :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
 - :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
@@ -315,34 +328,27 @@ But fret not! DocArray has you covered!
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
 
-As an example, let's take a look at how that would work with AWS S3 storage:
+For example, let's see how that works with on-disk storage:
 
 ```python
-from docarray import DocList
-from docarray.documents import ImageDoc
-import numpy as np
+from docarray import BaseDoc, DocList
 
-dl = DocList[ImageDoc](
-    [
-        ImageDoc(
-            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-            tensor=np.zeros((3, 224, 224)),
-        )
-        for _ in range(100)
-    ]
-)
 
-# push the DocList to S3
-dl.push('s3://my-bucket/my-documents', show_progress=True)
+class SimpleDoc(BaseDoc):
+    text: str
 
-# pull the DocList from S3
-dl_2 = DocList[ImageDoc].pull('s3://my-bucket/my-documents', show_progress=True)
+
+docs = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
+docs.push('file://simple_docs')
+
+docs_pull = DocList[SimpleDoc].pull('file://simple_docs')
 ```
 </details>
 
 **Document Indexes** let you index your Documents into a **vector database**, for efficient similarity-based retrieval.
 
 This is useful for:
+
 - :left_speech_bubble: Augmenting **LLMs and Chatbots** with domain knowledge ([Retrieval Augmented Generation](https://arxiv.org/abs/2005.11401))
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**
@@ -726,7 +732,6 @@ Just like a vanilla Pydantic model!
   <summary>Click to expand</summary>
 
 If you came across DocArray as a universal vector database client, you can best think of it as **a new kind of ORM for vector databases**.
-
 DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
 store it there, and thus make it searchable:
 
@@ -788,13 +793,7 @@ Of course this is only one thing that DocArray can do, so we encourage you to ch
 To try out the alpha you can install it via git:
 
 ```shell
-pip install "git+https://github.com/docarray/docarray@2023.01.18.alpha#egg=docarray[proto,torch,image]"
-```
-
-...or from the latest development branch
-
-```shell
-pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[proto,torch,image]"
+pip install "git+https://github.com/docarray/docarray"
 ```
 
 ## See also
@@ -802,5 +801,7 @@ pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarr
 - [Documentation](https://docarray-v2--jina-docs.netlify.app/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-- ["Legacy" DocArray github page](https://github.com/docarray/docarray)
+- ["Legacy" DocArray github page](https://github.com/docarray/docarray/tree/docarray-v1-fixes)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
+
+> DocArray is a trademark of LF AI Projects, LLC

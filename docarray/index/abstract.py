@@ -10,7 +10,6 @@ from typing import (
     Iterable,
     List,
     Mapping,
-    NamedTuple,
     Optional,
     Sequence,
     Tuple,
@@ -30,7 +29,12 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
-from docarray.utils.find import FindResult, _FindResult
+from docarray.utils.find import (
+    FindResult,
+    FindResultBatched,
+    _FindResult,
+    _FindResultBatched,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -45,16 +49,6 @@ else:
     torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
-
-
-class FindResultBatched(NamedTuple):
-    documents: List[DocList]
-    scores: List[np.ndarray]
-
-
-class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: List[np.ndarray]
 
 
 def _raise_not_composable(name):
@@ -203,9 +197,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         Execute a query on the database.
 
         Can take two kinds of inputs:
-        - A native query of the underlying database. This is meant as a passthrough so that you
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
         can enjoy any functionality that is not available through the Document index API.
-        - The output of this Document index' `QueryBuilder.build()` method.
+        2. The output of this Document index' `QueryBuilder.build()` method.
 
         :param query: the query to execute
         :param args: positional arguments to pass to the query
@@ -274,8 +269,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param filter_queries: the DB specific filter queries to execute
         :param limit: maximum number of documents to return per query
-        :return: List of DocArrays containing the documents
-            that match the filter queries
+        :return: List of DocLists containing the documents that match the filter
+            queries
         """
         ...
 
@@ -383,14 +378,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
 
-        :param docs: Documents to index.
-
         !!! note
             Passing a sequence of Documents that is not a DocList
             (such as a List of Docs) comes at a performance penalty.
             This is because the Index needs to check compatibility between itself and
             the data. With a DocList as input this is a single check; for other inputs
             compatibility needs to be checked for every Document individually.
+
+        :param docs: Documents to index.
         """
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
@@ -573,7 +568,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             docs = [self._dict_list_to_docarray(docs) for docs in da_list]
             return FindResultBatched(documents=docs, scores=scores)
 
-        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
+        da_list_ = cast(List[DocList], da_list)
+        return FindResultBatched(documents=da_list_, scores=scores)
 
     ##########################################################
     # Helper methods                                         #

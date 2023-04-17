@@ -24,20 +24,20 @@ class UpdateMixin:
         """
         Updates self with the content of other. Changes are applied to self.
         Updating one Document with another consists in the following:
-         - setting data properties of the second Document to the first Document
-         if they are not None:
 
+         - Setting data properties of the second Document to the first Document
+         if they are not None
          - Concatenating lists and updating sets
-         - Updating recursively Documents and DocArrays
+         - Updating recursively Documents and DocLists
          - Updating Dictionaries of the left with the right
 
         It behaves as an update operation for Dictionaries, except that since
         it is applied to a static schema type, the presence of the field is
-        given by the field not having a None value and that DocArrays,
+        given by the field not having a None value and that DocLists,
         lists and sets are concatenated. It is worth mentioning that Tuples
-        are not merged together since they are meant to be inmutable,
+        are not merged together since they are meant to be immutable,
         so they behave as regular types and the value of `self` is updated
-        with the value of `other`
+        with the value of `other`.
 
 
         ---

@@ -14,7 +14,7 @@ def batch():
 
     batch = DocList[Image]([Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)])
 
-    return batch.stack()
+    return batch.to_doc_vec()
 
 
 @pytest.mark.proto
@@ -29,7 +29,7 @@ def test_proto_stacked_mode_numpy():
 
     da = DocList[MyDoc]([MyDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)])
 
-    da = da.stack()
+    da = da.to_doc_vec()
 
     da.from_protobuf(da.to_protobuf())
 
@@ -41,7 +41,7 @@ def test_stacked_proto():
 
     da = DocList[CustomDocument](
         [CustomDocument(image=np.zeros((3, 224, 224))) for _ in range(10)]
-    ).stack()
+    ).to_doc_vec()
 
     da2 = DocVec.from_protobuf(da.to_protobuf())
 

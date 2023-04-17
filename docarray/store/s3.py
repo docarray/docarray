@@ -48,15 +48,15 @@ class _BufferedCachingReader:
 
 
 class S3DocStore(AbstractDocStore):
-    """Class to push and pull DocList to and from S3."""
+    """Class to push and pull [`DocList`][docarray.DocList] to and from S3."""
 
     @staticmethod
     def list(namespace: str, show_table: bool = False) -> List[str]:
-        """List all DocArrays in the specified bucket and namespace.
+        """List all [`DocList`s][docarray.DocList] in the specified bucket and namespace.
 
         :param namespace: The bucket and namespace to list. e.g. my_bucket/my_namespace
         :param show_table: If true, a rich table will be printed to the console.
-        :return: A list of DocList names.
+        :return: A list of `DocList` names.
         """
         bucket, namespace = namespace.split('/', 1)
         s3 = boto3.resource('s3')
@@ -74,7 +74,7 @@ class S3DocStore(AbstractDocStore):
             from rich.table import Table
 
             table = Table(
-                title=f'You have {len(da_files)} DocArrays in bucket s3://{bucket} under the namespace "{namespace}"',
+                title=f'You have {len(da_files)} DocLists in bucket s3://{bucket} under the namespace "{namespace}"',
                 box=box.SIMPLE,
                 highlight=True,
             )
@@ -94,7 +94,7 @@ class S3DocStore(AbstractDocStore):
 
     @staticmethod
     def delete(name: str, missing_ok: bool = True) -> bool:
-        """Delete the DocList object at the specified bucket and key.
+        """Delete the [`DocList`][docarray.DocList] object at the specified bucket and key.
 
         :param name: The bucket and key to delete. e.g. my_bucket/my_key
         :param missing_ok: If true, no error will be raised if the object does not exist.
@@ -125,9 +125,9 @@ class S3DocStore(AbstractDocStore):
         show_progress: bool = False,
         branding: Optional[Dict] = None,
     ) -> Dict:
-        """Push this DocList object to the specified bucket and key.
+        """Push this [`DocList`][docarray.DocList] object to the specified bucket and key.
 
-        :param docs: The DocList to push.
+        :param docs: The `DocList` to push.
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
         :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
@@ -182,12 +182,12 @@ class S3DocStore(AbstractDocStore):
         show_progress: bool = False,
         local_cache: bool = False,
     ) -> 'DocList':
-        """Pull a :class:`DocList` from the specified bucket and key.
+        """Pull a [`DocList`][docarray.DocList] from the specified bucket and key.
 
         :param name: The bucket and key to pull from. e.g. my_bucket/my_key
         :param show_progress: if true, display a progress bar.
         :param local_cache: store the downloaded DocList to local cache
-        :return: a :class:`DocList` object
+        :return: a `DocList` object
         """
         docs = docs_cls(  # type: ignore
             cls.pull_stream(

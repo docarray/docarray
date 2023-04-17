@@ -18,6 +18,7 @@ T = TypeVar('T', bound='ElasticV7DocIndex')
 
 class ElasticV7DocIndex(ElasticDocIndex):
     def __init__(self, db_config=None, **kwargs):
+        """Initialize ElasticV7DocIndex"""
         from elasticsearch import __version__ as __es__version__
 
         if __es__version__[0] > 7:
@@ -33,6 +34,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
     class QueryBuilder(ElasticDocIndex.QueryBuilder):
         def build(self, *args, **kwargs) -> Any:
+            """Build the elastic search v7 query object."""
             if (
                 'script_score' in self._query['query']
                 and 'bool' in self._query['query']
@@ -53,6 +55,14 @@ class ElasticV7DocIndex(ElasticDocIndex):
             limit: int = 10,
             num_candidates: Optional[int] = None,
         ):
+            """
+            Find k-nearest neighbors of the query.
+
+            :param query: query vector for KNN/ANN search. Has single axis.
+            :param search_field: name of the field to search on
+            :param limit: maximum number of documents to return per query
+            :return: self
+            """
             if num_candidates:
                 warnings.warn('`num_candidates` is not supported in ElasticV7DocIndex')
 
@@ -76,10 +86,14 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
     @dataclass
     class DBConfig(ElasticDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of ElasticDocIndex."""
+
         hosts: Union[str, List[str], None] = 'http://localhost:9200'  # type: ignore
 
     @dataclass
     class RuntimeConfig(ElasticDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
+
         def dense_vector_config(self):
             return {'dims': 128}
 
@@ -88,6 +102,18 @@ class ElasticV7DocIndex(ElasticDocIndex):
     ###############################################
 
     def execute_query(self, query: Dict[str, Any], *args, **kwargs) -> Any:
+        """
+        Execute a query on the ElasticDocIndex.
+
+        Can take two kinds of inputs:
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index' `QueryBuilder.build()` method.
+
+        :param query: the query to execute
+        :return: the result of the query
+        """
         if args or kwargs:
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'

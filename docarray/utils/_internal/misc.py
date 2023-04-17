@@ -32,6 +32,8 @@ INSTALL_INSTRUCTIONS = {
     'trimesh': '"docarray[mesh]"',
     'hnswlib': '"docarray[hnswlib]"',
     'elasticsearch': '"docarray[elasticsearch]"',
+    'weaviate': '"docarray[weaviate]"',
+    'qdrant_client': '"docarray[qdrant]"',
     'fastapi': '"docarray[web]"',
     'torch': '"docarray[torch]"',
     'tensorflow': 'protobuf==3.19.0 tensorflow',

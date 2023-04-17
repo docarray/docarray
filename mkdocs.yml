@@ -73,6 +73,9 @@ plugins:
           options:
             docstring_style: sphinx
             inherited_members: true
+            show_root_toc_entry: false
+            show_root_heading: true
+            show_submodules: yes
 
 nav:
   - Home: README.md
@@ -90,19 +93,26 @@ nav:
       - Building API:
           - user_guide/sending/api/jina.md
           - user_guide/sending/api/fastAPI.md
-    - Store:
-        - user_guide/storing/first_step.md
-        - user_guide/storing/index_hnswlib.md
-        - user_guide/storing/index_weaviate.md
-        - user_guide/storing/index_elastic.md
 
-    - user_guide/storing/first_step.md
+    - Store:
+      - user_guide/storing/first_step.md
+      - DocIndex:
+          - user_guide/storing/first_steps.md
+          - user_guide/storing/index_hnswlib.md
+          - user_guide/storing/index_weaviate.md
+          - user_guide/storing/index_elastic.md
+          - user_guide/storing/index_qdrant.md
+      - DocStore:
+        - user_guide/storing/doc_store/store_file.md
+        - user_guide/storing/doc_store/store_jac.md
+        - user_guide/storing/doc_store/store_s3.md
 
   - How-to:
     - how_to/add_doc_index.md
     - how_to/multimodal_training_and_serving.md
     - how_to/optimize_performance_with_id_generation.md
   - Data Types:
+    - data_types/first_steps.md
     - data_types/text/text.md
     - data_types/image/image.md
     - data_types/audio/audio.md

@@ -44,7 +44,7 @@ class VideoNdArray(NdArray, VideoTensorMixin):
 
     doc_2 = MyVideoDoc(
         title='my_second_video_doc',
-        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true',
+        url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true',
     )
 
     doc_2.video_tensor = parse_obj_as(VideoNdArray, doc_2.url.load().video)

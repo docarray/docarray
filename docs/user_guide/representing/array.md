@@ -1,19 +1,19 @@
 # Array of documents
 
-DocArray allows users to represent and manipulate multi-modal data to build AI applications (Generative AI, neural search, etc). 
+DocArray allows users to represent and manipulate multi-modal data to build AI applications such as neural search and generative AI. 
 
-As you have seen in the last section (LINK), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which represents a *single* document, a *single* datapoint.
+As you have seen in the [previous section](array.md), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which represents a *single* document, a *single* datapoint.
 
 However, in machine learning we often need to work with an *array* of documents, and an *array* of data points.
 
-This section introduces the concept of `AnyDocArray` LINK which is an (abstract) collection of `BaseDoc`. This name of this library --
-`DocArray` -- is derived from this concept and it is short for `DocumentArray`.
+This section introduces the concept of [`AnyDocArray`][docarray.array.AnyDocArray] which is an (abstract) collection of `BaseDoc`. This name of this library --
+`DocArray` -- is derived from this concept and is short for `DocumentArray`.
 
 ## AnyDocArray
 
-`AnyDocArray` is an abstract class that represents an array of `BaseDoc`s which is not meant to be used directly, but to be subclassed.
+[`AnyDocArray`][docarray.array.AnyDocArray] is an abstract class that represents an array of [`BaseDoc`][docarray.BaseDoc]s which is not meant to be used directly, but to be subclassed.
 
-We provide two concrete implementations of `AnyDocArray` :
+We provide two concrete implementations of [`AnyDocArray`][docarray.array.AnyDocArray] :
 
 - [`DocList`][docarray.array.doc_list.doc_list.DocList] which is a Python list of `BaseDoc`s
 - [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] which is a column based representation of `BaseDoc`s
@@ -24,11 +24,11 @@ The spirit of `AnyDocArray`s is to extend the `BaseDoc` and `BaseModel` concepts
 
 ### Example
 
-Before going into detail lets look at a code example.
+Before going into detail let's look at a code example.
 
 !!! Note
     
-    `DocList` and `DocVec` are both `AnyDocArray`. The following section will use `DocList` as an example, but the same 
+    `DocList` and `DocVec` are both `AnyDocArray`s. The following section will use `DocList` as an example, but the same 
     applies to `DocVec`.
 
 First you need to create a `Doc` class, our data schema. Let's say you want to represent a banner with an image, a title and a description:
@@ -111,7 +111,7 @@ BannerDoc(image='https://example.com/image2.png', title='Bye Bye World', descrip
 
 !!! note
     The syntax `DocList[BannerDoc]` might surprise you in this context.
-    It is actually at the heart of DocArray but we'll come back to it later LINK TO LATER and continue with this example for now.
+    It is actually at the heart of DocArray, but we'll come back to it [later](#doclistdoctype-syntax) and continue with this example for now.
 
 As we said earlier, `DocList` (or more generally `AnyDocArray`) extends the `BaseDoc` API at the array level.
 
@@ -253,7 +253,7 @@ the Array level.
 
 This is where the custom syntax `DocList[DocType]` comes into play.
 
-!!!
+!!! note
     `DocList[DocType]` creates a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Documents.
 
 This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of `BaseDoc`s rather than just an array of non-homogenous `BaseDoc`s.
@@ -267,7 +267,7 @@ That said, `AnyDocArray` can also be used to create a non-homogenous `AnyDocArra
     `DocVec` cannot store non-homogenous `BaseDoc` and always needs the `DocVec[DocType]` syntax.
 
 The usage of a non-homogenous `DocList` is similar to a normal Python list but still offers DocArray functionality
-like serialization and sending over the wire (LINK). However, it won't be able to extend the API of your custom schema to the Array level.
+like [serialization and sending over the wire](../sending/first_step.md). However, it won't be able to extend the API of your custom schema to the Array level.
 
 Here is how you can instantiate a non-homogenous `DocList`:
 

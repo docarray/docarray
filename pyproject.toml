@@ -24,11 +24,12 @@ hnswlib = {version = ">=0.6.2", optional = true }
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 pandas = {version = ">=1.1.0", optional = true }
-weaviate-client = {version = ">=3.15", extras = ["weaviate"]}
+weaviate-client = {version = ">=3.15", optional = true}
 elasticsearch = {version = ">=7.10.1", optional = true }
 smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 elastic-transport = {version ="^8.4.0", optional = true }
+qdrant-client = {version = ">=1.1.4", python = "<3.12", optional = true }
 
 [tool.poetry.extras]
 proto = ["protobuf", "lz4"]
@@ -43,6 +44,8 @@ jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]
 torch = ["torch"]
 web = ["fastapi"]
+qdrant = ["qdrant-client"]
+weaviate = ["weaviate-client"]
 
 # all
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]

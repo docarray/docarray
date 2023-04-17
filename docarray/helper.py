@@ -41,9 +41,9 @@ def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
     """
     Convert an access path ("__"-separated) and its value to a (potentially) nested dict.
 
-    EXAMPLE USAGE
-    .. code-block:: python
-        assert access_path_to_dict('image__url', 'img.png') == {'image': {'url': 'img.png'}}
+    ```python
+    assert access_path_to_dict('image__url', 'img.png') == {'image': {'url': 'img.png'}}
+    ```
     """
     fields = access_path.split('__')
     for field in reversed(fields):
@@ -56,14 +56,16 @@ def _access_path_dict_to_nested_dict(access_path2val: Dict[str, Any]) -> Dict[An
     """
     Convert a dict, where the keys are access paths ("__"-separated) to a nested dictionary.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
+    ```python
+    access_path2val = {'image__url': 'some.png'}
+    assert access_path_dict_to_nested_dict(access_path2val) == {
+        'image': {'url': 'some.png'}
+    }
+    ```
 
-        access_path2val = {'image__url': 'some.png'}
-        assert access_path_dict_to_nested_dict(access_path2val) == {
-            'image': {'url': 'some.png'}
-        }
+    ---
 
     :param access_path2val: dict with access_paths as keys
     :return: nested dict where the access path keys are split into separate field names and nested keys
@@ -83,9 +85,10 @@ def _dict_to_access_paths(d: dict) -> Dict[str, Any]:
     Convert a (nested) dict to a Dict[access_path, value].
     Access paths are defined as a path of field(s) separated by "__".
 
-    EXAMPLE USAGE
-    .. code-block:: python
-        assert dict_to_access_paths({'image': {'url': 'img.png'}}) == {'image__url', 'img.png'}
+    ```python
+    assert dict_to_access_paths({'image': {'url': 'img.png'}}) == {'image__url', 'img.png'}
+    ```
+
     """
     result = {}
     for k, v in d.items():
@@ -105,15 +108,13 @@ def _update_nested_dicts(
     """
     Update a dict with another one, while considering shared nested keys.
 
-    EXAMPLE USAGE:
+    ```python
+    d1 = {'image': {'tensor': None}, 'title': 'hello'}
+    d2 = {'image': {'url': 'some.png'}}
 
-    .. code-block:: python
-
-        d1 = {'image': {'tensor': None}, 'title': 'hello'}
-        d2 = {'image': {'url': 'some.png'}}
-
-        update_nested_dicts(d1, d2)
-        assert d1 == {'image': {'tensor': None, 'url': 'some.png'}, 'title': 'hello'}
+    update_nested_dicts(d1, d2)
+    assert d1 == {'image': {'tensor': None, 'url': 'some.png'}, 'title': 'hello'}
+    ```
 
     :param to_update: dict that should be updated
     :param update_with: dict to update with
@@ -131,6 +132,7 @@ def _get_field_type_by_access_path(
 ) -> Optional[Type]:
     """
     Get field type by "__"-separated access path.
+
     :param doc_type: type of document
     :param access_path: "__"-separated access path
     :return: field type of accessed attribute. If access path is invalid, return None.
@@ -175,30 +177,32 @@ def get_paths(
     """
     Yield file paths described by `patterns`.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
-
-        from typing import Optional
-        from docarray import BaseDoc, DocList
-        from docarray.helper import get_paths
-        from docarray.typing import TextUrl, ImageUrl
-
-
-        class Banner(BaseDoc):
-            text_url: TextUrl
-            image_url: Optional[ImageUrl]
+    ```python
+    from typing import Optional
+    from docarray import BaseDoc, DocList
+    from docarray.helper import get_paths
+    from docarray.typing import TextUrl, ImageUrl
 
 
-        # you can call it in the constructor
-        docs = DocList[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
+    class Banner(BaseDoc):
+        text_url: TextUrl
+        image_url: Optional[ImageUrl]
 
-        # and call it after construction to set the urls
-        docs.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
 
-        for doc in docs:
-            assert doc.image_url.endswith('.txt')
-            assert doc.text_url.endswith('.jpg')
+    # you can call it in the constructor
+    docs = DocList[Banner]([Banner(text_url=url) for url in get_paths(patterns='*.txt')])
+
+    # and call it after construction to set the urls
+    docs.image_url = list(get_paths(patterns='*.jpg', exclude_regex='test'))
+
+    for doc in docs:
+        assert doc.image_url.endswith('.txt')
+        assert doc.text_url.endswith('.jpg')
+    ```
+
+    ---
 
     :param patterns: The pattern may contain simple shell-style wildcards,
         e.g. '\*.py', '[\*.zip, \*.gz]'

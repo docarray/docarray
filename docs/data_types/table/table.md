@@ -32,7 +32,7 @@ from docarray import DocList
 
 
 docs = DocList[Book].from_csv(
-    file_path='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/books.csv?raw=true'
+    file_path='https://github.com/docarray/docarray/blob/main/tests/toydata/books.csv?raw=true'
 )
 docs.summary()
 ```
@@ -136,7 +136,7 @@ Title2	author2	1234
 
 ```python
 docs = DocList[Book].from_csv(
-    file_path='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/books.tsv?raw=true',
+    file_path='https://github.com/docarray/docarray/blob/main/tests/toydata/books.tsv?raw=true',
     dialect='excel-tab',
 )
 for doc in docs:
@@ -194,7 +194,7 @@ class SemicolonSeparator(csv.Dialect):
 Finally, you can load your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
 ```python
 docs = DocList[Book].from_csv(
-    file_path='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/books_semicolon_sep.csv?raw=true',
+    file_path='https://github.com/docarray/docarray/blob/main/tests/toydata/books_semicolon_sep.csv?raw=true',
     dialect=SemicolonSeparator(),
 )
 for doc in docs:

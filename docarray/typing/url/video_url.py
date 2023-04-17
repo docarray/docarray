@@ -41,7 +41,7 @@ class VideoUrl(AnyUrl):
 
 
         doc = MyDoc(
-            video_url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+            video_url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
         )
         doc.video, doc.audio, doc.key_frame_indices = doc.video_url.load()
 
@@ -64,7 +64,7 @@ class VideoUrl(AnyUrl):
 
         url = parse_obj_as(
             VideoUrl,
-            'https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true',
+            'https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true',
         )
         key_frame_indices = url.load().key_frame_indices
         assert isinstance(key_frame_indices, NdArray)
@@ -73,8 +73,7 @@ class VideoUrl(AnyUrl):
         ---
 
         :param kwargs: supports all keyword arguments that are being supported by
-            av.open() as described in:
-            https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
+            av.open() as described [here](https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open)
 
         :return: [`AudioNdArray`][docarray.typing.AudioNdArray] representing the audio content,
             [`VideoNdArray`][docarray.typing.VideoNdArray] representing the images of the video,

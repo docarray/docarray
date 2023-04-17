@@ -42,7 +42,7 @@ class MyAudio(BaseDoc):
 
 
 doc = MyAudio(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true'
 )
 ```
 
@@ -64,7 +64,7 @@ doc.summary()
     ╭──────────────────────┬───────────────────────────────────────────────────────╮
     │ Attribute            │ Value                                                 │
     ├──────────────────────┼───────────────────────────────────────────────────────┤
-    │ url: AudioUrl        │ https://github.com/docarray/docarray/blob/feat-rew    │
+    │ url: AudioUrl        │ https://github.com/docarray/docarray/blob/main/tes    │
     │                      │ ... (length: 90)                                      │
     │ tensor: AudioNdArray │ AudioNdArray of shape (30833,), dtype: float64        │
     │ frame_rate: int      │ 44100                                                 │
@@ -95,7 +95,7 @@ class MyAudio(BaseDoc):
 
 
 doc = MyAudio(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true'
 )
 
 doc.tf_tensor, _ = doc.url.load()
@@ -123,7 +123,7 @@ class MyAudio(BaseDoc):
 
 
 doc = MyAudio(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true'
 )
 
 doc.bytes_ = doc.url.load_bytes()  # type(doc.bytes_) = AudioBytes
@@ -203,7 +203,7 @@ class MyAudio(AudioDoc):
 
 
 audio = MyAudio(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.mp3?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true'
 )
 audio.name = 'My first audio doc!'
 audio.tensor, audio.frame_rate = audio.url.load()
