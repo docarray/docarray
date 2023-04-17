@@ -1,6 +1,7 @@
 import uuid
 from dataclasses import dataclass, field
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generator,
@@ -16,11 +17,7 @@ from typing import (
 )
 
 import numpy as np
-import qdrant_client
 from grpc import RpcError  # type: ignore[import]
-from qdrant_client.conversions import common_types as types
-from qdrant_client.http import models as rest
-from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
 from docarray import BaseDoc, DocList
@@ -32,8 +29,19 @@ from docarray.index.abstract import (
 )
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import torch_imported
+from docarray.utils._internal.misc import import_library, torch_imported
 from docarray.utils.find import _FindResult
+
+if TYPE_CHECKING:
+    import qdrant_client
+    from qdrant_client.conversions import common_types as types
+    from qdrant_client.http import models as rest
+    from qdrant_client.http.exceptions import UnexpectedResponse
+else:
+    qdrant_client = import_library('qdrant_client')
+    from qdrant_client.conversions import common_types as types
+    from qdrant_client.http import models as rest
+    from qdrant_client.http.exceptions import UnexpectedResponse
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
