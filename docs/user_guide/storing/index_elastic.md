@@ -1,26 +1,40 @@
 # ElasticSearch Document Index
 
-[ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex) implement the index based on [Elasticsearch 7.10](https://github.com/elastic/elasticsearch). This is an implementation with vectors stored and supporting text/range search.
+DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic.co/elasticsearch/):
+- [ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex), based on [Elasticsearch 8](https://github.com/elastic/elasticsearch).
+- [ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex), based on [Elasticsearch 7.10](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0).
 
-!!! note
-    To use [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex], one need to install the extra dependency with the following command
+!!! tip "Should you use ES v7 or v8?"
+    [Elasticsearch v8](https://www.elastic.co/blog/whats-new-elastic-8-0-0) is the current version of ES and offers
+    **native vector search (ANN) support**, alongside text and range search.
 
-    ```console
-    pip install "docarray[elasticsearch]"
-    ```
+    [Elasticsearch v7.10](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0) can store vectors, but
+    **does _not_ support native ANN vector search**, but only exhaustive (=slow) vector search, alongside text and range search.
 
-[ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex) is based on [Elasticsearch 8](https://github.com/elastic/elasticsearch) and supports hnsw based vector search as well.
+    Some users prefer to use ES v7.10 because it is available under a [different license](https://www.elastic.co/pricing/faq/licensing) compared to ES v8.0.0.
 
-!!! note
-    To use [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex], one need to install the extra dependency with the following command
+!!! note "Installation"
+    To use [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex], you need to install the following dependencies:
 
     ```console
     pip install elasticsearch==8.6.2
     pip install elastic-transport
     ```
 
+    To use [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex], you need to install the following dependencies:
+    
+    ```console
+    pip install elasticsearch==7.10.1
+    pip install elastic-transport
+    ```
 
-The following examples is based on `ElasticDocIndex`. We use docker-compose to create a local elasticsearch service with the following `docker-compose.yml`.
+
+The following examples is based on [ElasticDocIndex](docarray.index.backends.elastic.ElasticDocIndex),
+but should also work with [ElasticV7DocIndex](docarray.index.backends.elastic.ElasticV7DocIndex)
+
+# Start ElasticSearch
+
+You can use docker-compose to create a local Elasticsearch service with the following `docker-compose.yml`.
 
 ```yaml
 version: "3.3"
@@ -41,16 +55,22 @@ networks:
     name: elastic
 ```
 
-Run the following command in the folder of the above `docker-compose.yml` to start the service,
+Run the following command in the folder of the above `docker-compose.yml` to start the service:
 
 ```bash
 docker-compose up
 ```
 
 ## Construct
-To construct an index, you need to define the schema first. You can define the schema in the same way as defining a `Doc`. Dimensionality is necessary for vector space that you want to perform similarity search in the future. You need to specify the shape or define it by `dims`. You can set `col_type` to configurate [field data types in ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping-types.html).
+To construct an index, you first need to define a schema in the form of a `Document`.
 
-`hosts` is the argument for setting the elasticsearch hosts. By default, it is `http://localhost:9200`. 
+There are a number of configurations you can pack into your schema:
+- Every field in your schema will become one column in the database
+- For vector fields, such as `NdArray`, `TorchTensor`, or `TensorflowTensor`, you need to specify a dimensionality to be able to perform vector search
+- You can override the default column type for every field. To do that, you can pass any [ES field data type](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping-types.html) to `field_name: Type = Field(col_type=...)`. You can see an example of this on the [section on keyword filters](#keyword-filter).
+
+Additionally, you can pass a `hosts` argument to the `__init__()` method to connect to an ES instance.
+By default, it is `http://localhost:9200`. 
 
 
 ```python
@@ -63,15 +83,18 @@ from docarray.typing import NdArray
 
 
 class SimpleDoc(BaseDoc):
-    tensor: NdArray = Field(dims=128)
-    # tensor: NdArray[128]
+    # specify tensor field with dimensionality 128
+    tensor: NdArray[128]
+    # alternative and equivalent definition:
+    # tensor: NdArray = Field(dims=128)
 
 
-doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index = ElasticDocIndex[SimpleDoc](hosts='http://localhost:9200')
 ```
 
-## Index
-Use `.index()` to add `Doc` into the index. You could use the same class as the schema for defining the `Doc`. Alternatively, you need to define the `Doc` following the schema of the index. `.num_docs()` returns the total number of `Doc` in the index.
+## Index Documents
+Use `.index()` to add Documents into the index.
+The`.num_docs()` method returns the total number of Documents in the index.
 
 ```python
 index_docs = [SimpleDoc(tensor=np.ones(128)) for _ in range(64)]
@@ -81,8 +104,8 @@ doc_index.index(index_docs)
 print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
-## Access
-To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple `Doc`.
+## Access Documents
+To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple Documents.
 
 ```python
 # access a single Doc
@@ -93,20 +116,26 @@ doc_index[index_docs[16].id, index_docs[17].id]
 ```
 
 ### Persistence
-To access a `Doc` formerly persisted, you can specify `index_name` and the `hosts`.
+You can hood into a database index that was persisted during a previous session.
+To do so, you need to specify `index_name` and the `hosts`:
 
 ```python
-doc_index = ElasticDocIndex[SimpleDoc](index_name='previously_stored')
+doc_index = ElasticDocIndex[SimpleDoc](
+    hosts='http://localhost:9200', index_name='previously_stored'
+)
 doc_index.index(index_docs)
 
-doc_index2 = ElasticDocIndex[SimpleDoc](index_name='previously_stored')
+doc_index2 = ElasticDocIndex[SimpleDoc](
+    hosts='http://localhost:9200', index_name='previously_stored'
+)
 
 print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
 ```
 
 
-## Delete
-To delete the `Doc`, use the built-in function `del` with the `id` of the `Doc` to be deleted. You can also pass a list of `id` to delete multiple `Doc`.
+## Delete Documents
+To delete the Documents, use the built-in function `del` with the `id` of the Documents that you want to delete.
+You can also pass a list of ids to delete multiple Documents.
 
 ```python
 # delete a single Doc
@@ -116,8 +145,18 @@ del doc_index[index_docs[16].id]
 del doc_index[index_docs[17].id, index_docs[18].id]
 ```
 
-## Find Nearest Neighbors
-The `.find()` method is used to find the nearest neighbors of a tensor. You need to specify `search_field` that is used when performing the vector search. You can use `limit` argument to configurate how much `Doc` to return.
+## Find nearest neighbors
+The `.find()` method is used to find the nearest neighbors of a vector.
+
+You need to specify `search_field` that is used when performing the vector search.
+This is the field that serves as the basis of comparison between your query and your indexed Documents.
+
+You can use the `limit` argument to configurate how may Documents to return.
+
+!!! note
+    [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms such as HNSW.
+    This can lead to a poor performance when the search involves many vectors.
+    [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] does not have this limitation.
 
 ```python
 query = SimpleDoc(tensor=np.ones(128))
@@ -125,11 +164,13 @@ query = SimpleDoc(tensor=np.ones(128))
 docs, scores = doc_index.find(query, limit=5, search_field='tensor')
 ```
 
-!!! note
-    [ElasticV7DocIndex][docarray.index.backends.elastic.ElasticV7DocIndex] is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms as Hnswlib. This could lead to a poor performance when the search involves too many vectors.
 
-## Nested Index
-When using the index, you can define multiple fields as well as the nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
+## Nested data
+When using the index you can define multiple fields, including nesting Documents inside another Document.
+
+Consider the following example:
+You have `YouTubeVideoDoc` including the `tensor` field calculated based on the description.
+Besides, `YouTbueVideoDoc` has `thumbnail` and `video` field, each of which has its own `tensor`.
 
 ```python
 from docarray.typing import ImageUrl, VideoUrl, AnyTensor
@@ -167,7 +208,10 @@ index_docs = [
 doc_index.index(index_docs)
 ```
 
-You can use the dunder operator to specify the field defined in the nested data. In the following codes, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field.
+**You can perform search on any nesting level.**
+To do so, use the dunder operator to specify the field defined in the nested data.
+
+In the following example, you can see how to perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field:
 
 ```python
 # example of find nested and flat index
@@ -178,10 +222,13 @@ query_doc = YouTubeVideoDoc(
     video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
     tensor=np.ones(256),
 )
+
 # find by the youtubevideo tensor
 docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
+
 # find by the thumbnail tensor
 docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit=3)
+
 # find by the video tensor
 docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 ```
@@ -189,18 +236,18 @@ docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 To delete a nested data, you need to specify the `id`.
 
 !!! note
-You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower level is not supported yet.
+    You can only delete `Doc` at the top level. Deletion of the `Doc` on the lower level is not supported yet.
 
 ```python
 # example of delete nested and flat index
 del doc_index[index_docs[3].id, index_docs[4].id]
 ```
 
-## Elasticsearch Query
-Besides the vector search, you can also perform other queries supported by Elasticsearch.
+## Other Elasticsearch queries
+Besides the vector search, you can also perform other queries supported by Elasticsearch, such as text search, and various filters.
 
-### Text Search
-As in elasticsearch, you could use text search directly on the field of type `str`. 
+### Text search
+As in "pure" Elasticsearch, you can use text search directly on the field of type `str`:
 
 ```python
 class NewsDoc(BaseDoc):
@@ -215,20 +262,23 @@ index_docs = [
 ]
 doc_index.index(index_docs)
 query = 'finance'
+
 # search with text
 docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
 ### Query Filter
-`filter()` accepts queries that follow [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
+The `filter()` method accepts queries that follow the [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consist of leaf and compound clauses.
+
+Using this, you can perform [keyword filters](#keyword-filter), [geolocation filters](#geolocation-filter) and [range filters](#range-filter).
 
 #### Keyword filter
-To filter the docs, you can use `col_type='keyword'` to configurate the keyword search for the fields.
+To filter the Documents in your index by keyword, you can use `Field(col_type='keyword')` to enable keyword search for a given fields:
 
 ```python
 class NewsDoc(BaseDoc):
     text: str
-    category: str = Field(col_type='keyword')
+    category: str = Field(col_type='keyword')  # enable keyword filtering
 
 
 doc_index = ElasticDocIndex[NewsDoc]()
@@ -245,12 +295,12 @@ docs = doc_index.filter(query_filter)
 ```
 
 #### Geolocation filter
-To filter the docs, you can use `col_type='geo_point'` to configurate the keyword search for the fields.
+To filter the Documents in your index by geolocation, you can use `Field(col_type='geo_point')` on a given field.
 
 ```python
 class NewsDoc(BaseDoc):
     text: str
-    location: dict = Field(col_type='geo_point')
+    location: dict = Field(col_type='geo_point')  # enable geolocation filtering
 
 
 doc_index = ElasticDocIndex[NewsDoc]()
@@ -279,11 +329,13 @@ docs = doc_index.filter(query)
 ```
 
 #### Range filter
-You can have [range field types](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html) in your `Doc` schema and set `col_type='integer_range'`(or also `date_range`, etc.) to filter the docs based on the range of the field. 
+You can have [range field types](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html) in your Document schema and set `Field(col_type='integer_range')`(or also `date_range`, etc.) to filter the docs based on the range of the field. 
 
 ```python
 class NewsDoc(BaseDoc):
-    time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+    time_frame: dict = Field(
+        col_type='date_range', format='yyyy-MM-dd'
+    )  # enable range filtering
 
 
 doc_index = ElasticDocIndex[NewsDoc]()
@@ -307,11 +359,16 @@ query = {
         }
     }
 }
+
 docs = doc_index.filter(query)
 ```
 
-### QueryBuilder
-You can use `QueryBuilder` to build your own query. `find()`, `filter()` and `text_search()` methods and their combination are supported. 
+### Hybrid serach and query builder
+To combine any of the "atomic" search approaches above, you can use the `QueryBuilder` to build your own hybrid query. 
+
+For this the `find()`, `filter()` and `text_search()` methods and their combination are supported.
+
+For example, you can build a hybrid serach query that performs range filtering, vector search and text search:
 
 ```python
 class MyDoc(BaseDoc):
@@ -337,9 +394,9 @@ q = (
 docs, _ = doc_index.execute_query(q)
 ```
 
-You can also directly pass a query to `execute_query()` method.
+You can also manually build a valid ES query and directly pass it to the `execute_query()` method.
 
-## Config
+## Configuration options
 
 ### DBConfig
 The following configs can be set in `DBConfig`:
@@ -351,6 +408,9 @@ The following configs can be set in `DBConfig`:
 | `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
+
+You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
+To see how, see [here](user_guide/storing/first_steps.md#configuration-options#customize-configurations).
 
 ### RuntimeConfig
 
@@ -370,3 +430,6 @@ class SimpleDoc(BaseDoc):
 
 doc_index = ElasticDocIndex[SimpleDoc]()
 ```
+
+You can pass the above as a keyword arguments the `configure()` method or pass an entire configuration object.
+To see how, see [here](user_guide/storing/first_steps.md#configuration-options#customize-configurations).
