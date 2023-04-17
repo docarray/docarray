@@ -111,7 +111,7 @@ BannerDoc(image='https://example.com/image2.png', title='Bye Bye World', descrip
 
 !!! note
     The syntax `DocList[BannerDoc]` might surprise you in this context.
-    It is actually at the heart of DocArray but we'll come back to it later LINK TO LATER and continue with this example for now.
+    It is actually at the heart of DocArray, but we'll come back to it [later](#doclistdoctype-syntax) and continue with this example for now.
 
 As we said earlier, `DocList` (or more generally `AnyDocArray`) extends the `BaseDoc` API at the array level.
 
