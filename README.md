@@ -740,7 +740,7 @@ Just like a vanilla Pydantic model!
   <summary>Click to expand</summary>
 
 If you came across DocArray as a universal vector database client, you can best think of it as **a new kind of ORM for vector databases**.
-
+www
 DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
 store it there, and thus make it searchable:
 
