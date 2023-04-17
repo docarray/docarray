@@ -73,7 +73,7 @@ class TextDoc(BaseDoc):
 
     mmdoc = MultiModalDoc(
         image_doc=ImageDoc(
-            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/image-data/apple.png?raw=true'
+            url='https://github.com/docarray/docarray/tree/main/tests/toydata/image-data/apple.png?raw=true'
         ),
         text_doc=TextDoc(text='hello world, how are you doing?'),
     )

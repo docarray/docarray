@@ -39,7 +39,7 @@ class AudioDoc(BaseDoc):
 
     # use it directly
     audio = AudioDoc(
-        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+        url='https://github.com/docarray/docarray/tree/main/tests/toydata/hello.wav?raw=true'
     )
     audio.tensor, audio.frame_rate = audio.url.load()
     # model = MyEmbeddingModel()
@@ -59,7 +59,7 @@ class AudioDoc(BaseDoc):
 
 
     audio = MyAudio(
-        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+        url='https://github.com/docarray/docarray/tree/main/tests/toydata/hello.wav?raw=true'
     )
     audio.name = TextDoc(text='my first audio')
     audio.tensor, audio.frame_rate = audio.url.load()
@@ -82,7 +82,7 @@ class AudioDoc(BaseDoc):
 
     mmdoc = MultiModalDoc(
         audio=AudioDoc(
-            url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/hello.wav?raw=true'
+            url='https://github.com/docarray/docarray/tree/main/tests/toydata/hello.wav?raw=true'
         ),
         text=TextDoc(text='hello world, how are you doing?'),
     )
