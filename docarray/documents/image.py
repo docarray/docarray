@@ -36,7 +36,7 @@ class ImageDoc(BaseDoc):
 
     # use it directly
     image = ImageDoc(
-        url='https://github.com/docarray/docarray/tree/main/tests/toydata/image-data/apple.png?raw=true'
+        url='https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true'
     )
     image.tensor = image.url.load()
     # model = MyEmbeddingModel()
@@ -57,7 +57,7 @@ class ImageDoc(BaseDoc):
 
 
     image = MyImage(
-        url='https://github.com/docarray/docarray/tree/main/tests/toydata/image-data/apple.png?raw=true'
+        url='https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true'
     )
     image.tensor = image.url.load()
     # model = MyEmbeddingModel()
@@ -80,7 +80,7 @@ class ImageDoc(BaseDoc):
 
     mmdoc = MultiModalDoc(
         image=ImageDoc(
-            url='https://github.com/docarray/docarray/tree/main/tests/toydata/image-data/apple.png?raw=true'
+            url='https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true'
         ),
         text=TextDoc(text='hello world, how are you doing?'),
     )

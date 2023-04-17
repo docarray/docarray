@@ -41,7 +41,7 @@ class VideoUrl(AnyUrl):
 
 
         doc = MyDoc(
-            video_url='https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true'
+            video_url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
         )
         doc.video, doc.audio, doc.key_frame_indices = doc.video_url.load()
 
@@ -64,7 +64,7 @@ class VideoUrl(AnyUrl):
 
         url = parse_obj_as(
             VideoUrl,
-            'https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true',
+            'https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true',
         )
         key_frame_indices = url.load().key_frame_indices
         assert isinstance(key_frame_indices, NdArray)

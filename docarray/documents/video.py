@@ -41,7 +41,7 @@ class VideoDoc(BaseDoc):
 
     # use it directly
     vid = VideoDoc(
-        url='https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true'
+        url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
     )
     vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
     # model = MyEmbeddingModel()
@@ -62,7 +62,7 @@ class VideoDoc(BaseDoc):
 
 
     video = MyVideo(
-        url='https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true'
+        url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
     )
     video.name = TextDoc(text='my first video')
     video.tensor = video.url.load().video
@@ -85,7 +85,7 @@ class VideoDoc(BaseDoc):
 
     mmdoc = MultiModalDoc(
         video=VideoDoc(
-            url='https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true'
+            url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
         ),
         text=TextDoc(text='hello world, how are you doing?'),
     )

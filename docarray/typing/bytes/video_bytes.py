@@ -69,7 +69,7 @@ class VideoBytes(bytes, AbstractType):
 
 
         doc = MyDoc(
-            video_url='https://github.com/docarray/docarray/tree/main/tests/toydata/mov_bbb.mp4?raw=true'
+            video_url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
         )
 
         video, audio, key_frame_indices = doc.video_url.load()
