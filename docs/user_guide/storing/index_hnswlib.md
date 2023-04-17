@@ -1,13 +1,13 @@
 # Hnswlib Document Index
 
-[HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implement the index based on [hnswlib](https://github.com/nmslib/hnswlib). This is a lightweight implementation with vectors stored in memory.
-
 !!! note
     To use [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex], one need to install the extra dependency with the following command
 
     ```console
     pip install "docarray[hnswlib]"
     ```
+
+[HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implements the index based on [hnswlib](https://github.com/nmslib/hnswlib). This is a lightweight implementation with vectors stored in memory.
 
 ## Construct
 To construct an index, you need to define the schema first. You can define the schema in the same way as define a `Doc`. The only difference is that you need to define the dimensionality of the vector space by `dim` and the name of the space by `space`. The `dim` argument must be an integer. The `space` argument can be one of `l2`, `ip` or `cosine`. TODO: add links to the detailed explaination

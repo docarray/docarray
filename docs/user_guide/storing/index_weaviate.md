@@ -14,6 +14,13 @@ jupyter:
 
 # Weaviate Document Index
 
+!!! note "Install dependencies"
+    To use [WeaviateDocumentIndex][docarray.index.backends.qdrant.WeaviateDocumentIndex], you need to install extra dependencies with the following command:
+
+    ```console
+    pip install "docarray[weaviate]"
+    ```
+
 This is the user guide for the [WeaviateDocumentIndex](docarray.index.backends.hnswlib.WeaviateDocumentIndex),
 focussing on special features and configurations of Weaviate.
 
