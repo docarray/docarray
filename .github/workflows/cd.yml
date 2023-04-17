@@ -1,0 +1,53 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  prerelease:
+    needs: [docarray-test, docarray-oldproto-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.5.0
+        with:
+          fetch-depth: 100
+      - name: Pre-release (.devN)
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          pip install twine wheel
+          ./scripts/release.sh
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
+
+  check-readme-modification:
+    runs-on: ubuntu-latest
+    outputs:
+      readme_changed: ${{ steps.step_output.outputs.readme_changed }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            README.md
+
+      - name: Check if README is modified
+        id: step_output
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          echo "readme_changed=true" >> $GITHUB_OUTPUT
+
+  publish-docarray-org:
+    needs: check-readme-modification
+    if: needs.check-readme-modification.outputs.readme_changed == 'true'
+    uses: ./.github/workflows/publish-docarray-org.yml
+    secrets: inherit
