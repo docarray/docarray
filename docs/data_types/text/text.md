@@ -1,4 +1,3 @@
-
 # 🔤 Text
 
 DocArray supports many different modalities including `Text`.
@@ -20,7 +19,7 @@ class MyText(BaseDoc):
 doc = MyText(text='Hello world!')
 ```
 
-The text can include any type of character, including emojis:
+Text can include any type of character, including emojis:
 
 ```python
 doc.text = '👋	नमस्ते दुनिया!	你好世界！こんにちは世界！	Привет мир!'
@@ -28,7 +27,7 @@ doc.text = '👋	नमस्ते दुनिया!	你好世界！こんに
 
 ## Load text file
 
-If your text data is too long to be written inline or if it is stored in a file, you can also define the URL as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] first and then load the text data.
+If your text data is too long to be written inline or if it is stored in a file, you can first define the URL as a [`TextUrl`][docarray.typing.url.text_url.TextUrl] and then load the text data.
 
 Let's first define a schema:
 
@@ -41,7 +40,8 @@ class MyText(BaseDoc):
     text: str = None
     url: TextUrl = None
 ```
-Next, you can instantiate a `MyText` object with a `url` attribute and load its content to the `text` field.
+Next, instantiate a `MyText` object with a `url` attribute and load its content to the `text` field.
+
 ```python
 doc = MyText(
     url='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
@@ -53,8 +53,8 @@ assert doc.text.startswith('<TITLE>Read Me</TITLE>')
 
 ##  Segment long texts
 
-Often times when you index or search text data, you don’t want to consider thousands of words as one huge string. 
-Instead, some finer granularity would be nice. You can do this by leveraging nested fields. For example, let’s split some page content into its sentences by `'.'`.
+When you index or search text data, you often don’t want to consider thousands of words as one huge string. 
+Instead, some finer granularity would be nice. You can do this by leveraging nested fields. For example, let’s split some page content into its sentences by `'.'`:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -73,6 +73,7 @@ page = Page(content=[Sentence(text=t) for t in long_text.split('.')])
 
 page.summary()
 ```
+
 <details>
     <summary>Output</summary>
     ``` { .text .no-copy }
@@ -105,4 +106,3 @@ class TextDoc(BaseDoc):
     embedding: Optional[AnyEmbedding]
     bytes_: Optional[bytes]
 ```
-

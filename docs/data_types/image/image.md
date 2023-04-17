@@ -7,6 +7,7 @@ Moreover, we will introduce DocArray's image-specific types, to represent your i
 
 !!! note
     This requires `Pillow` dependency. You can install all necessary dependencies via:
+
     ```cmd 
     pip install "docarray[image]"
     ```
@@ -16,9 +17,9 @@ Moreover, we will introduce DocArray's image-specific types, to represent your i
 !!! tip
     Check out our predefined [`ImageDoc`](#getting-started-predefined-imagedoc) to get started and play around with our image features.
 
-First, let's define our class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has an `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type [`ImageTensor`](../../../../api_references/typing/tensor/image).
+First, let's define the class `MyImage`, which extends [`BaseDoc`][docarray.base_doc.doc.BaseDoc] and has a `url` attribute of type [`ImageUrl`][docarray.typing.url.ImageUrl], as well as an optional `tensor` attribute of type [`ImageTensor`](../../../../api_references/typing/tensor/image).
 
-Next, let's instantiate a `MyImage` object with a local or remote URL. 
+Next, let's instantiate a `MyImage` object with a local or remote URL:
 
 ```python
 from docarray.typing import ImageTensor, ImageUrl
@@ -35,7 +36,7 @@ img = MyImage(
 )
 ```
 
-To load the image data you can call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object.
+To load the image data you can call [`.load()`][docarray.typing.url.ImageUrl.load] on the `url` attribute. By default, [`ImageUrl.load()`][docarray.typing.url.ImageUrl.load] returns an [`ImageNdArray`][docarray.typing.tensor.image.image_ndarray.ImageNdArray] object:
 
 ```python
 from docarray.typing import ImageNdArray
@@ -108,7 +109,7 @@ img = MyImage(tensor=np.ones(shape=(200, 300, 3)))
 # img = MyImage(tensor=np.ones(shape=(224, 224, 3)))
 ```
 
-If you have RGB images of different shapes, you could specify only the dimension as well as the number of channels:
+If you have RGB images of different shapes, you can specify only the dimensions and number of channels:
 
 ```python
 import numpy as np
@@ -123,8 +124,6 @@ class MyFlexibleImage(BaseDoc):
 img_1 = MyFlexibleImage(tensor=np.zeros(shape=(200, 300, 3)))
 img_2 = MyFlexibleImage(tensor=np.ones(shape=(224, 224, 3)))
 ```
-
-
 
 ## ImageBytes
 
@@ -162,15 +161,13 @@ assert isinstance(bytes_from_tensor, ImageBytes)
 You can display your image in a notebook from both an [`ImageUrl`][docarray.typing.url.ImageUrl] instance as well as an 
 [`ImageTensor`](../../../../api_references/typing/tensor/image) instance.
 
-
 <figure markdown>
   ![](display_notebook.jpg){ width="900" }
 </figure>
 
-
 ## Getting started - Predefined `ImageDoc`
 
-To get started and play around with the image-modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
+To get started and play around with the image modality, DocArray provides a predefined [`ImageDoc`][docarray.documents.image.ImageDoc], which includes all of the previously mentioned functionalities:
 
 ``` { .python }
 class ImageDoc(BaseDoc):
@@ -181,6 +178,7 @@ class ImageDoc(BaseDoc):
 ```
 
 You can use this class directly or extend it to your preference:
+
 ``` { .python }
 from docarray.documents import ImageDoc
 from docarray.typing import AnyEmbedding
@@ -197,6 +195,7 @@ image = MyImage(
     image_title='My first image',
     url='http://www.jina.ai/image.jpg',
 )
+
 image.tensor = image.url.load()
 model = SomeEmbeddingModel()
 image.embedding = model(image.tensor)

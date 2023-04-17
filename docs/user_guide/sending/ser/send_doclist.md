@@ -1,8 +1,11 @@
 # DocList
-When sending or storing [`DocList`][docarray.array.doc_list.doc_list.DocList], you need to use serialization. [DocList][docarray.array.doc_list.doc_list.DocList] supports multiple ways to serialize the data.
+
+When sending or storing [`DocList`][docarray.array.doc_list.doc_list.DocList], you need to use serialization. [`DocList`][docarray.array.doc_list.doc_list.DocList] supports multiple ways to serialize the data.
 
 ## JSON
-You can use [`to_json()`][docarray.array.doc_list.io.IOMixinArray.to_json] and [`from_json()`][docarray.array.doc_list.io.IOMixinArray.from_json] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
+
+-  [`to_json()`][docarray.array.doc_list.io.IOMixinArray.to_json] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to JSON. It returns the binary representation of the JSON object. 
+-  [`from_json()`][docarray.array.doc_list.io.IOMixinArray.from_json] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from JSON. It can load from either a `str` or `binary` representation of the JSON object.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -24,14 +27,14 @@ with open('simple-dl.json', 'r') as f:
     print(dl_load_from_json)
 ```
 
-[to_json()][docarray.array.doc_list.io.IOMixinArray.to_json] returns the binary representation of the json object. [from_json()][docarray.array.doc_list.io.IOMixinArray.from_json] can load from either `str` or `binary` representation of the json object.
-
 ```output
 b'[{"id":"5540e72d407ae81abb2390e9249ed066","text":"doc 0"},{"id":"fbe9f80d2fa03571e899a2887af1ac1b","text":"doc 1"}]'
 ```
 
-## Protobuf
-To serialize a DocList with `protobuf`, you can use [`to_protobuf()`][docarray.array.doc_list.io.IOMixinArray.to_protobuf]  and [`from_protobuf()`][docarray.array.doc_list.io.IOMixinArray.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
+## protobuf
+
+- [`to_protobuf()`][docarray.array.doc_list.io.IOMixinArray.to_protobuf] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to `protobuf`. It returns a `protobuf` object of `docarray_pb2.DocListProto` class.
+- [`from_protobuf()`][docarray.array.doc_list.io.IOMixinArray.from_protobuf] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from `protobuf`. It accepts a `protobuf` message object to construct a [`DocList`][docarray.array.doc_list.doc_list.DocList].
 
 ```python
 from docarray import BaseDoc, DocList
@@ -49,16 +52,15 @@ print(type(proto_message_dl))
 print(dl_from_proto)
 ```
 
-[to_protobuf()][docarray.array.doc_list.io.IOMixinArray.to_protobuf]  returns a protobuf object of `docarray_pb2.DocListProto` class. [from_protobuf()][docarray.array.doc_list.io.IOMixinArray.from_protobuf]  accepts a protobuf message object to construct a [DocList][docarray.array.doc_list.doc_list.DocList].
-
 ## Base64
-When transferring over the network, you can choose `Base64` format to serialize the [`DocList`][docarray.array.doc_list.doc_list.DocList].
-Serializing a [DocList][docarray.array.doc_list.doc_list.DocList] in Base64 supports both `pickle` and `protobuf` protocols. Besides, you can choose different compression methods.
 
-To serialize a [DocList][docarray.array.doc_list.doc_list.DocList] in Base64, you can use [`to_base64()`][docarray.array.doc_list.io.IOMixinArray.to_base64]  and [`from_base64()`][docarray.array.doc_list.io.IOMixinArray.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
+When transferring data over the network, use `Base64` format to serialize the [`DocList`][docarray.array.doc_list.doc_list.DocList].
+Serializing a [`DocList`][docarray.array.doc_list.doc_list.DocList] in Base64 supports both the `pickle` and `protobuf` protocols. You can also choose different compression methods.
 
-We support multiple compression methods. (namely : `lz4`, `bz2`, `lzma`, `zlib`, `gzip`)
+- [`to_base64()`][docarray.array.doc_list.io.IOMixinArray.to_base64] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to Base64
+- [`from_base64()`][docarray.array.doc_list.io.IOMixinArray.from_base64] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from Base64:
 
+You can multiple compression methods: `lz4`, `bz2`, `lzma`, `zlib`, and `gzip`.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -78,9 +80,11 @@ dl_from_base64 = DocList[SimpleDoc].from_base64(
 ```
 
 ## Binary
-Similar to `Base64` serialization, `Binary` serialization also supports different protocols and compression methods.
 
-To save a [DocList][docarray.array.doc_list.doc_list.DocList] into a binary file, you can use [`save_binary()`][docarray.array.doc_list.io.IOMixinArray.to_base64]  and [`load_binary()`][docarray.array.doc_list.io.IOMixinArray.from_protobuf] to serialize and deserialize a [DocList][docarray.array.doc_list.doc_list.DocList]:
+- [`save_binary()`][docarray.array.doc_list.io.IOMixinArray.save_binary] saves a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a binary file.
+- [`load_binary()`][docarray.array.doc_list.io.IOMixinArray.load_binary] loads a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a binary file.
+
+You can multiple compression methods: `lz4`, `bz2`, `lzma`, `zlib`, and `gzip`.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -99,10 +103,20 @@ dl_from_binary = DocList[SimpleDoc].load_binary(
 )
 ```
 
-The [DocList][docarray.array.doc_list.doc_list.DocList] is stored at `simple-dl.pickle` file.
+In the above snippet, the [`DocList`][docarray.array.doc_list.doc_list.DocList] is stored as the file `simple-dl.pickle`.
 
 ### Bytes
-Under the hood,  [save_binary()][docarray.array.doc_list.io.IOMixinArray.to_base64] prepares the file object and calls [to_bytes()][docarray.array.doc_list.io.IOMixinArray.to_bytes] function to convert the [DocList][docarray.array.doc_list.doc_list.DocList] into a byte object. You can use [to_bytes()][docarray.array.doc_list.io.IOMixinArray.to_bytes] function directly and use [from_bytes()][docarray.array.doc_list.io.IOMixinArray.from_bytes] to load the [DocList][docarray.array.doc_list.doc_list.DocList] from a byte object. You can use `protocol` to choose between `pickle` and `protobuf`. Besides, [to_bytes()][docarray.array.doc_list.io.IOMixinArray.to_bytes]  and [save_binary()][docarray.array.doc_list.io.IOMixinArray.save_binary] support multiple options for `compress` as well. 
+
+- [to_bytes()][docarray.array.doc_list.io.IOMixinArray.to_bytes] saves a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a byte object.
+- [from_bytes()][docarray.array.doc_list.io.IOMixinArray.from_bytes] loads a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a byte object.  
+
+!!! note
+    These methods are used under the hood by [save_binary()][docarray.array.doc_list.io.IOMixinArray.to_base64] and [`load_binary()`][docarray.array.doc_list.io.IOMixinArray.load_binary] to prepare/load/save to a binary file. You can also use them directly to work with byte files.
+
+Like working with binary files:
+
+- You can use `protocol` to choose between `pickle` and `protobuf`. 
+- You can use multiple compression methods: `lz4`, `bz2`, `lzma`, `zlib`, and `gzip`.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -121,9 +135,12 @@ dl_from_bytes = DocList[SimpleDoc].from_bytes(
 )
 ```
 
-
 ## CSV
-You can use [`from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] and [`to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv] to de-/serializae and deserialize the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a CSV file. Use the `dialect` parameter to choose the dialect of the CSV format:
+
+- [`to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a CSV file.
+- [`from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a CSV file.
+
+Use the `dialect` parameter to choose the [dialect of the CSV format](https://docs.python.org/3/library/csv.html#dialects-and-formatting-parameters):
 
 ```python
 from docarray import BaseDoc, DocList
@@ -140,9 +157,10 @@ dl_from_csv = DocList[SimpleDoc].from_csv('simple-dl.csv')
 print(dl_from_csv)
 ```
 
-
 ## Pandas.Dataframe
-You can use [`from_dataframe()`][docarray.array.doc_list.io.IOMixinArray.from_dataframe] and [`to_dataframe()`][docarray.array.doc_list.io.IOMixinArray.to_dataframe] to load/save the [DocList][docarray.array.doc_list.doc_list.DocList] from/to a pandas DataFrame:
+
+- [`from_dataframe()`][docarray.array.doc_list.io.IOMixinArray.from_dataframe] loads a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a [Pandas Dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
+- [`to_dataframe()`][docarray.array.doc_list.io.IOMixinArray.to_dataframe] saves a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a [Pandas Dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
 ```python
 from docarray import BaseDoc, DocList
@@ -161,5 +179,5 @@ print(dl_from_dataframe)
 
 See also:
 
-* The serializing [BaseDoc](./send_doc.md) section
-* The serializing [DocVec](./send_docvec.md) section
+* The serializing [`BaseDoc`](./send_doc.md) section
+* The serializing [`DocVec`](./send_docvec.md) section
