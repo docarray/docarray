@@ -28,8 +28,8 @@ from docarray.index.abstract import (
     _raise_not_supported,
 )
 from docarray.proto import DocProto
-from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult, _FindResultBatched
