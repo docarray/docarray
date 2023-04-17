@@ -8,6 +8,8 @@
 set -ex
 
 INIT_FILE='docarray/__init__.py'
+PYPROJECT_FILE='pyproject.toml'
+VER_TAG_PYPROJECT='version = '
 VER_TAG='__version__ = '
 RELEASENOTE='./node_modules/.bin/git-release-notes'
 
@@ -33,7 +35,7 @@ function clean_build {
 }
 
 function pub_pypi {
-    # publish to pypi
+    publish to pypi
     clean_build
     poetry config http-basic.pypi $PYPI_USERNAME $PYPI_PASSWORD
     poetry publish --build
@@ -88,6 +90,8 @@ if [[ $1 == "final" ]]; then
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+  update_ver_line "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT" "$PYPROJECT_FILE"
+
   RELEASE_REASON="$2"
   RELEASE_ACTOR="$3"
   git_commit
@@ -104,6 +108,8 @@ elif [[ $1 == 'rc' ]]; then
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+  update_ver_line "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT" "$PYPROJECT_FILE"
+
   RELEASE_REASON="$2"
   RELEASE_ACTOR="$3"
   git_commit
@@ -115,6 +121,7 @@ else
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+  update_ver_line "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT" "$PYPROJECT_FILE"
 
   pub_pypi
 fi
