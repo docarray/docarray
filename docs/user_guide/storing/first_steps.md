@@ -28,7 +28,7 @@ Currently, DocArray supports the following vector databases:
 - [Elasticsearch](https://www.elastic.co/elasticsearch/)  |  [Docs v8](TODO), [Docs v7](TODO)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](TODO)
 
-For this user guide you will use the [HNSWLibDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex)
+For this user guide you will use the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex)
 because it doesn't require you to launch a database server. Instead, it will store your data locally.
 
 !!! note "Using a different vector database"
@@ -37,8 +37,8 @@ because it doesn't require you to launch a database server. Instead, it will sto
 
 !!! note "HNSWLib-specific settings"
     The following sections explain the general concept of Document Index by using
-    [HNSWLibDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) as an example.
-    For HNSWLib-specific settings, check out the [HNSWLibDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) documentation.
+    [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) as an example.
+    For HNSWLib-specific settings, check out the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) documentation.
     TODO link docs
 
 ### Create a Document Index
@@ -54,7 +54,7 @@ To create a Document Index, your first need a Document that defines the schema o
 
 ```python
 from docarray import BaseDoc
-from docarray.index import HNSWLibDocumentIndex
+from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray
 
 
@@ -63,12 +63,12 @@ class MyDoc(BaseDoc):
     text: str
 
 
-db = HNSWLibDocumentIndex[MyDoc](work_dir='./my_test_db')
+db = HnswDocumentIndex[MyDoc](work_dir='./my_test_db')
 ```
 
 **Schema definition:**
 
-In this code snippet, `HNSWLibDocumentIndex` takes a schema of the form of `MyDoc`.
+In this code snippet, `HnswDocumentIndex` takes a schema of the form of `MyDoc`.
 The Document Index then _creates column for each field in `MyDoc`_.
 
 The column types in the backend database are determined the type hints of the fields in the Document.
@@ -84,7 +84,7 @@ the database will store vectors with 128 dimensions.
 
 **Database location:**
 
-For `HNSWLibDocumentIndex` you need to specify a `work_dir` where the data will be stored; for other backends you
+For `HnswDocumentIndex` you need to specify a `work_dir` where the data will be stored; for other backends you
 usually specify a `host` and a `port` instead.
 
 Either way, if the location does not yet contain any data, we start from a blank slate.
@@ -110,7 +110,7 @@ db.index(docs)
 That call to [index()][docarray.index.backends.hnswlib.HnswDocumentIndex.index] stores all Documents in `docs` into the Document Index,
 ready to be retrieved in the next step.
 
-As you can see, `DocList[MyDoc]` and `HNSWLibDocumentIndex[MyDoc]` are both parameterized with `MyDoc`.
+As you can see, `DocList[MyDoc]` and `HnswDocumentIndex[MyDoc]` are both parameterized with `MyDoc`.
 This means that they share the same schema, and in general, the schema of a Document Index and the data that you want to store
 need to have compatible schemas.
 
@@ -181,14 +181,14 @@ You can also search for multiple Documents at once, in a batch, using the [find_
 ```python
 # create some query Documents
 queries = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for _ in range(3)
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
 )
 
 # find similar Documents
-matches, scores = db.find(queries, search_field='embedding', limit=5)
+matches, scores = db.find_batched(queries, search_field='embedding', limit=5)
 
 print(f'{matches=}')
-print(f'{matches.text=}')
+print(f'{matches[0].text=}')
 print(f'{scores=}')
 ```
 
@@ -199,7 +199,7 @@ print(f'{scores=}')
 query = np.random.rand(3, 128)
 
 # find similar Documents
-matches, scores = db.find(query, search_field='embedding', limit=5)
+matches, scores = db.find_batched(query, search_field='embedding', limit=5)
 
 print(f'{matches=}')
 print(f'{matches[0].text=}')
@@ -239,7 +239,7 @@ query = (
 )
 
 # execute the combined query and return the results
-results = store.execute_query(q)
+results = db.execute_query(query)
 print(f'{results=}')
 ```
 
@@ -259,11 +259,11 @@ You can also access data by the id that as assigned to every Document:
 ```python
 # prepare some data
 data = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for _ in range(3)
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
 )
 
 # remember the Document ids and index the data
-ids = data.ids
+ids = data.id
 db.index(data)
 
 # access the Documents by id
@@ -278,11 +278,11 @@ In the same way you can access Documents by id, you can delete them:
 ```python
 # prepare some data
 data = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for _ in range(3)
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
 )
 
 # remember the Document ids and index the data
-ids = data.ids
+ids = data.id
 db.index(data)
 
 # access the Documents by id
