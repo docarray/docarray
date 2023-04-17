@@ -12,9 +12,9 @@ jupyter:
     name: python3
 ---
 
-# Multimodal deep learning with DocList
+# Multimodal deep learning with DocArray
 
-DocList is a library for representing, sending, and storing multi-modal data that can be used for a variety of different
+DocArray is a library for representing, sending, and storing multi-modal data that can be used for a variety of different
 use cases.
 
 Here we will focus on a workflow familiar to many ML Engineers: Building and training a model, and then serving it to
@@ -22,10 +22,10 @@ users.
 
 This notebook contains two parts:
 
-1. **Representing**: We will use DocList to represent multi-modal data while **building and training a PyTorch model**.
-We will see how DocList can help to organize and group your modalities and tensors and make clear what methods expect as inputs and return as outputs.
+1. **Representing**: We will use DocArray to represent multi-modal data while **building and training a PyTorch model**.
+We will see how DocArray can help to organize and group your modalities and tensors and make clear what methods expect as inputs and return as outputs.
 2. **Sending**: We will take the model that we built and trained in part 1, and **serve it using FastAPI**.
-We will see how DocList narrows the gap between model development and model deployment, and how the same data models can be
+We will see how DocArray narrows the gap between model development and model deployment, and how the same data models can be
 reused in both contexts. That part will be very short, but that's the point!
 
 So without further ado, let's dive into it!
@@ -39,11 +39,11 @@ We train the CLIP-like model on the [flickr8k](https://www.kaggle.com/datasets/a
 To run this notebook you need to download and unzip the data into the same folder as the notebook.
 
 Note that in this notebook by no means we aim at reproduce any CLIP results (our dataset is way too small anyways),
-but we rather want to show how DocList datastructures help researchers and practitioners to write beautiful and 
+but we rather want to show how DocArray datastructures help researchers and practitioners to write beautiful and 
 pythonic multi-modal PyTorch code.
 
 ```bash
-#!pip install "git+https://github.com/DocList/DocList@feat-rewrite-v2#egg=DocList[torch,image]"
+#!pip install "docarray[torch,image]"
 #!pip install torchvision
 #!pip install transformers
 #!pip install fastapi
@@ -56,7 +56,7 @@ from typing import Callable, Dict, List, Optional
 ```
 
 ```python
-import DocList
+import docarray
 import torch
 ```
 
@@ -74,10 +74,10 @@ DEVICE = "cuda:0"  # change to your favourite device
 ## Create the Documents for handling the Muti-Modal data
 <!-- #endregion -->
 
-The first thing we are trying to achieve when using DocList is to clearly model our data so that we never get confused
+The first thing we are trying to achieve when using DocArray is to clearly model our data so that we never get confused
 about which tensors are supposed to represent what.
 
-To do that we are using a concept that is at the core of DocList. The `Document`, a collection of multi-modal data.
+To do that we are using a concept that is at the core of DocArray. The `Document`, a collection of multi-modal data.
 The `BaseDoc` class allows users to define their own (nested, multi-modal) Document schema to represent any kind of complex data.
 
 Let's start by defining a few Documents to handle the different modalities that we will use during our training:
@@ -106,7 +106,7 @@ Notice the [`TorchTensor`][docarray.typing.TorchTensor] type. It is a thin wrapp
 but also enables additional features. One such feature is shape parametrization (`TorchTensor[48]`), which lets you
 hint and even enforce the desired shape of any tensor!
 
-To represent our image data, we use the [`ImageDoc`][docarray.documents.ImageDoc] that is included in DocList:
+To represent our image data, we use the [`ImageDoc`][docarray.documents.ImageDoc] that is included in DocArray:
 
 ```python
 from docarray.documents import ImageDoc
@@ -136,9 +136,9 @@ class PairTextImage(BaseDoc):
 ## Create the Dataset 
 
 
-In this section we will create a multi-modal pytorch dataset around the Flick8k dataset using `DocList`.
+In this section we will create a multi-modal pytorch dataset around the Flick8k dataset using DocArray.
 
-We will use `DocList` data loading functionality to load the data and use Torchvision and Transformers to preprocess the data before feeding it to our deep learning model:
+We will use DocArray's data loading functionality to load the data and use Torchvision and Transformers to preprocess the data before feeding it to our deep learning model:
 
 ```python
 from torch.utils.data import DataLoader, Dataset
@@ -214,7 +214,7 @@ loader = DataLoader(
 )
 ```
 
-## Create the Pytorch model that works on DocList
+## Create the Pytorch model that works on DocArray
 
 
 In this section we create two encoders, one per modality (Text and Image). These encoders are normal PyTorch `nn.Module`s.
@@ -266,7 +266,7 @@ vision_encoder = VisionEncoder().to(DEVICE)
 text_encoder = TextEncoder().to(DEVICE)
 ```
 
-As you can see, DocList helps us to clearly convey what data is expected as input and output for each method, all through Python type hints.
+As you can see, DocArray helps us to clearly convey what data is expected as input and output for each method, all through Python type hints.
 
 ## Train the model in a contrastive way between Text and Image (CLIP)
 
@@ -339,7 +339,7 @@ Let's use our beloved [FastAPI](https://fastapi.tiangolo.com/) for that!
 
 
 FastAPI is powerful because it allows you to define your Rest API data schema in pure Python.
-And DocList is fully compatible with FastAPI and Pydantic, which means that as long as you have a function that takes a Document as input, 
+And DocArray is fully compatible with FastAPI and Pydantic, which means that as long as you have a function that takes a Document as input, 
 FastAPI will be able to automatically translate it into a fully fledged API with documentation, openAPI specification and more:
 
 ```python
@@ -402,4 +402,4 @@ doc_resp = Text.parse_raw(response.content.decode())
 doc_resp.embedding.shape
 ```
 
-And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocList!
+And we're done! You have trained and served a mulit-modal ML model, with zero headache and a lot of DocArray!
