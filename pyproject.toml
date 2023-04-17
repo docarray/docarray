@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "docarray"
 version = '0.30.0a3'
-description='The data structure for unstructured data'
+readme = 'README.md'
 authors=['DocArray']
 license='Apache 2.0'
 
