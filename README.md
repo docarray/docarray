@@ -793,7 +793,7 @@ Of course this is only one thing that DocArray can do, so we encourage you to ch
 To try out the alpha you can install it via git:
 
 ```shell
-pip install "git+https://github.com/docarray/docarray"
+pip install -U docarray
 ```
 
 ## See also
