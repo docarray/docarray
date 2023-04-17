@@ -20,13 +20,13 @@ jobs:
       - name: Pre-release (.devN)
         run: |
            echo "hello"
-#          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-#          pip install twine wheel
-#          ./scripts/release.sh
-#        env:
-#          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-#          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-#          JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          pip install twine wheel
+          ./scripts/release.sh
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
 
   check-readme-modification:
     runs-on: ubuntu-latest
