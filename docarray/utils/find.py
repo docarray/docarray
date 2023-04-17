@@ -13,7 +13,7 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils.map import map_docs_batched
+from docarray.utils.map import _map_docs_batched_multiarg
 
 
 class FindResult(NamedTuple):
@@ -111,6 +111,25 @@ def find(
     )[0]
 
 
+def get_result(
+    query: Union[DocList, AnyTensor],
+    index_embeddings,
+    device,
+    comp_backend,
+    embedding_field,
+    embedding_type,
+    metric_fn,
+    limit,
+    descending,
+):
+    q_embed = _extract_embeddings(query, embedding_field, embedding_type)
+    dists = metric_fn(q_embed, index_embeddings, device=device)
+    top_scores, top_indices = comp_backend.Retrieval.top_k(
+        dists, k=limit, device=device, descending=descending
+    )
+    return top_indices, top_scores
+
+
 def find_batched(
     index: AnyDocArray,
     query: Union[AnyTensor, DocList],
@@ -191,18 +210,6 @@ def find_batched(
     :param shuffle: If set, shuffle the Documents before dividing into minibatches.
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
-        In general, if `func` is IO-bound then `thread` is a good choice.
-        On the other hand, if `func` is CPU-bound, then you may use `process`.
-        In practice, you should try yourselves to figure out the best value.
-        However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
-        you should always use `thread` backend.
-        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
-        falls under the "IO-bound" category.
-        !!! warning
-            When using `process` backend, your `func` should not modify elements in-place.
-            This is because the multiprocessing backend passes the variable via pickle
-            and works in another process.
-            The passed object and the original object do **not** share the same memory.
     :param num_worker: the number of parallel workers. If not given, then the number of CPUs
         in the system will be used.
     :param show_progress: show a progress bar
@@ -224,13 +231,16 @@ def find_batched(
 
     results = []
 
-    def _get_result(query: Union[DocList, AnyTensor]):
-        q_embed = _extract_embeddings(query, embedding_field, embedding_type)
-        dists = metric_fn(q_embed, index_embeddings, device=device)
-        top_scores, top_indices = comp_backend.Retrieval.top_k(
-            dists, k=limit, device=device, descending=descending #type: ignore
-        )
-        return top_indices, top_scores
+    func_args = {
+        'index_embeddings': index_embeddings,
+        'device': device,
+        'comp_backend': comp_backend,
+        'embedding_field': embedding_field,
+        'embedding_type': embedding_type,
+        'metric_fn': metric_fn,
+        'limit': limit,
+        'descending': descending,
+    }
 
     if batch_size is not None:
         if batch_size <= 0:
@@ -240,11 +250,11 @@ def find_batched(
         else:
             batch_size = int(batch_size)
     else:
-        top_indices, top_scores = _get_result(query)
+        top_indices, top_scores = get_result(query, **func_args)
         res = []
         for indices_per_query, scores_per_query in zip(top_indices, top_scores):
             docs_per_query: DocList = DocList([])
-            for idx in indices_per_query:  
+            for idx in indices_per_query:
                 docs_per_query.append(index[idx])
             docs_per_query = DocList(docs_per_query)
             res.append(FindResult(scores=scores_per_query, documents=docs_per_query))
@@ -255,23 +265,21 @@ def find_batched(
         d = DocList[Doc](Doc() for _ in range(comp_backend.shape(query)[0]))
         d.embedding = query  # type: ignore
         query = d
-
-    it = map_docs_batched(
+    it = _map_docs_batched_multiarg(
         docs=query,
-        func=_get_result,
+        func=get_result,
         batch_size=batch_size,
         backend=backend,
         num_worker=num_worker,
         shuffle=shuffle,
         pool=pool,
         show_progress=show_progress,
+        func_args=func_args,
     )
 
     for indices_per_query, scores_per_query in it:
-        per_query_docs: DocList = DocList([])  
-        for idx, scores in zip(
-            indices_per_query, scores_per_query
-        ):  # workaround until #930 is fixed
+        per_query_docs: DocList = DocList([])
+        for idx, scores in zip(indices_per_query, scores_per_query):
             per_query_docs = index[idx]
             results.append(FindResult(scores=scores, documents=per_query_docs))
 

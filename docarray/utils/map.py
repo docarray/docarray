@@ -2,7 +2,7 @@ __all__ = ['map_docs', 'map_docs_batched']
 from contextlib import nullcontext
 from math import ceil
 from multiprocessing.pool import Pool, ThreadPool
-from typing import Callable, Generator, Optional, TypeVar, Union
+from typing import Callable, Generator, Optional, TypeVar, Union, Any, Mapping
 
 from rich.progress import track
 
@@ -199,6 +199,120 @@ def map_docs_batched(
         imap = p.imap(func, docs._batch(batch_size=batch_size, shuffle=shuffle))
         for x in track(
             imap, total=ceil(len(docs) / batch_size), disable=not show_progress
+        ):
+            yield x
+
+
+def _map_docs_batched_multiarg(
+    docs: T,
+    func: Callable[..., Union[T, Any]],
+    batch_size: int,
+    func_args: Mapping[str, Any],
+    backend: str = "thread",
+    num_worker: Optional[int] = None,
+    shuffle: bool = False,
+    pool: Optional[Union[Pool, ThreadPool]] = None,
+    show_progress: bool = False,
+) -> Generator[Union[T, T_doc], None, None]:
+    """
+    Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
+    yielding the results.
+    Each element in the returned iterator is an :class:`AnyDocArray`.
+
+    ---
+
+    ```python
+    from docarray import BaseDoc, DocList
+    from docarray.utils.map import _map_docs_batched_multiarg
+
+
+    class MyDoc(BaseDoc):
+        name: str
+
+
+    def case_name(docs: DocList[MyDoc],upper_case: bool) -> DocList[MyDoc]:
+        if upper_case == True:
+            docs.name = [n.upper() for n in docs.name]
+        else:
+            docs.name = [n.lower() for n in docs.name]
+        return docs
+
+
+    batch_size = 16
+    docs = DocList[MyDoc]([MyDoc(name='my orange cat') for _ in range(100)])
+    func_args={'upper_case': True}
+    it = _map_docs_batched_multiarg(docs, case_name, batch_size=batch_size, func_args=func_args)
+    for i, d in enumerate(it):
+        docs[i * batch_size : (i + 1) * batch_size] = d
+
+    assert len(docs) == 100
+    print(docs.name[:3])
+
+    ---
+
+    ```
+    ['MY ORANGE CAT', 'MY ORANGE CAT', 'MY ORANGE CAT']
+    ```
+
+    ---
+
+    :param docs: DocList to apply function to
+    :param batch_size: Size of each generated batch (except the last one, which might
+        be smaller).
+    :param func_args: Arguments to be passed to function (same set of arguments will be passed to function in every minibatch)
+    :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+    :param func: a function that takes an :class:`AnyDocArray` as input and outputs
+        an :class:`AnyDocArray` or a :class:`BaseDoc`.
+    :param backend: `thread` for multithreading and `process` for multiprocessing.
+        Defaults to `thread`.
+        In general, if `func` is IO-bound then `thread` is a good choice.
+        On the other hand, if `func` is CPU-bound, then you may use `process`.
+        In practice, you should try yourselves to figure out the best value.
+        However, if you wish to modify the elements in-place, regardless of IO/CPU-bound,
+        you should always use `thread` backend.
+        Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
+        falls under the "IO-bound" category.
+
+        .. warning::
+            When using `process` backend, your `func` should not modify elements in-place.
+            This is because the multiprocessing backend passes the variable via pickle
+            and works in another process.
+            The passed object and the original object do **not** share the same memory.
+
+    :param num_worker: the number of parallel workers. If not given, then the number of CPUs
+        in the system will be used.
+    :param show_progress: show a progress bar
+    :param pool: use an existing/external pool. If given, `backend` is ignored and you will
+        be responsible for closing the pool.
+
+    :return: yield DocLists returned from `func`
+    """
+    if backend == "process" and _is_lambda_or_partial_or_local_function(func):
+        raise ValueError(
+            f"Multiprocessing does not allow functions that are local, lambda or partial: {func}"
+        )
+
+    context_pool: Union[nullcontext, Union[Pool, ThreadPool]]
+    if pool:
+        p = pool
+        context_pool = nullcontext()
+    else:
+        p = _get_pool(backend, num_worker)
+        context_pool = p
+
+    args_list = []
+    no_of_batches = ceil(len(docs) / batch_size)
+
+    for i in func_args.values():
+        ls = [i for k in range(no_of_batches)]
+        args_list.append(ls)
+
+    with context_pool:
+        starmap = p.starmap(
+            func, zip(docs._batch(batch_size=batch_size, shuffle=shuffle), *args_list)
+        )
+        for x in track(
+            starmap, total=ceil(len(docs) / batch_size), disable=not show_progress
         ):
             yield x
 

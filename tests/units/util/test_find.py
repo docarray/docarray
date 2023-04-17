@@ -17,6 +17,9 @@ class NdDoc(BaseDoc):
     tensor: NdArray
 
 
+N_QUERIES = 5
+
+
 @pytest.fixture()
 def random_torch_query():
     return TorchDoc(tensor=torch.rand(128))
@@ -24,7 +27,9 @@ def random_torch_query():
 
 @pytest.fixture()
 def random_torch_batch_query():
-    return DocList[TorchDoc]([TorchDoc(tensor=torch.rand(128)) for _ in range(5)])
+    return DocList[TorchDoc](
+        [TorchDoc(tensor=torch.rand(128)) for _ in range(N_QUERIES)]
+    )
 
 
 @pytest.fixture()
@@ -34,7 +39,7 @@ def random_nd_query():
 
 @pytest.fixture()
 def random_nd_batch_query():
-    return DocList[NdDoc]([NdDoc(tensor=np.random.rand(128)) for _ in range(5)])
+    return DocList[NdDoc]([NdDoc(tensor=np.random.rand(128)) for _ in range(N_QUERIES)])
 
 
 @pytest.fixture()
@@ -137,16 +142,33 @@ def test_find_np_stacked(random_nd_query, random_nd_index):
     assert (sorted(scores, reverse=True) == scores).all()
 
 
+@pytest.mark.slow
+@pytest.mark.parametrize('n_queries,batch_size', [(20, 5), (5, 2), (5, 1)])
+@pytest.mark.parametrize('backend', ['thread', 'process'])
 @pytest.mark.parametrize('metric', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
-def test_find_batched_torch(random_torch_batch_query, random_torch_index, metric):
+def test_find_batched_torch(n_queries, random_torch_index, batch_size, backend, metric):
+    query = DocList[TorchDoc](
+        [TorchDoc(tensor=torch.rand(128)) for _ in range(n_queries)]
+    )
     results = find_batched(
         random_torch_index,
-        random_torch_batch_query,
+        query,
+        embedding_field='tensor',
+        limit=7,
+        batch_size=batch_size,
+        backend=backend,
+        metric=metric,
+    )
+    # without parallel processing
+    expected_result = find_batched(
+        random_torch_index,
+        query,
         embedding_field='tensor',
         limit=7,
         metric=metric,
     )
-    assert len(results) == len(random_torch_batch_query)
+    assert len(results) == len(query)
+
     for top_k, scores in results:
         assert len(top_k) == 7
         assert len(scores) == 7
@@ -155,6 +177,11 @@ def test_find_batched_torch(random_torch_batch_query, random_torch_index, metric
             assert (torch.stack(sorted(sc)) == sc).all()
         else:
             assert (torch.stack(sorted(sc, reverse=True)) == sc).all()
+    for (top_k, scores), (exp_top_k, exp_scores) in zip(results, expected_result):
+        for i, j in zip(top_k, exp_top_k):
+            assert i == j
+        for i, j in zip(scores, exp_scores):
+            assert torch.allclose(i, j)
 
 
 def test_find_batched_torch_tensor_query(random_torch_batch_query, random_torch_index):
@@ -198,16 +225,32 @@ def test_find_batched_torch_stacked(
         assert (torch.stack(sorted(sc, reverse=True)) == sc).all()
 
 
+@pytest.mark.slow
+@pytest.mark.parametrize('n_queries,batch_size', [(20, 5), (5, 2), (5, 1)])
+@pytest.mark.parametrize('backend', ['thread', 'process'])
 @pytest.mark.parametrize('metric', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
-def test_find_batched_np(random_nd_batch_query, random_nd_index, metric):
+def test_find_batched_np(n_queries, random_nd_index, batch_size, backend, metric):
+    query = DocList[NdDoc](
+        [NdDoc(tensor=np.random.rand(128)) for _ in range(n_queries)]
+    )
     results = find_batched(
         random_nd_index,
-        random_nd_batch_query,
+        query,
+        embedding_field='tensor',
+        batch_size=batch_size,
+        backend=backend,
+        limit=7,
+        metric=metric,
+    )
+    # without parallel processing
+    expected_result = find_batched(
+        random_nd_index,
+        query,
         embedding_field='tensor',
         limit=7,
         metric=metric,
     )
-    assert len(results) == len(random_nd_batch_query)
+    assert len(results) == len(query)
     for top_k, scores in results:
         assert len(top_k) == 7
         assert len(scores) == 7
@@ -216,6 +259,12 @@ def test_find_batched_np(random_nd_batch_query, random_nd_index, metric):
             assert (sorted(sc) == sc).all()
         else:
             assert (sorted(sc, reverse=True) == sc).all()
+
+    for (top_k, scores), (exp_top_k, exp_scores) in zip(results, expected_result):
+        for i, j in zip(top_k, exp_top_k):
+            assert i == j
+        for i, j in zip(scores, exp_scores):
+            assert i == pytest.approx(j)
 
 
 def test_find_batched_np_tensor_query(random_nd_batch_query, random_nd_index):
