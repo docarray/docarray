@@ -328,7 +328,7 @@ But fret not! DocArray has you covered!
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
 
-As an example, let's take a look at how that would work with on-disk storage:
+For example, let's see how that works with on-disk storage:
 
 ```python
 from docarray import BaseDoc, DocList
