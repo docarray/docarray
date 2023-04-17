@@ -328,28 +328,20 @@ But fret not! DocArray has you covered!
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
 
-As an example, let's take a look at how that would work with Jina AI Cloud storage:
+As an example, let's take a look at how that would work with on-disk storage:
 
 ```python
 from docarray import BaseDoc, DocList
-import os
 
 
 class SimpleDoc(BaseDoc):
     text: str
 
 
-# first create a personal access token here: https://cloud.jina.ai/settings/tokens
-os.environ['JINA_AUTH_TOKEN'] = 'YOUR_PAT'
+docs = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
+docs.push('file://simple_docs')
 
-DL_NAME = 'simple-dl'
-dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
-
-# push to Jina AI Cloud
-dl.push(f'jac://{DL_NAME}')
-
-# pull from Jina AI Cloud
-dl_pull = DocList[SimpleDoc].pull(f'jac://{DL_NAME}')
+docs_pull = DocList[SimpleDoc].pull('file://simple_docs')
 ```
 </details>
 
