@@ -102,7 +102,7 @@ class JACDocStore(AbstractDocStore):
         from rich.table import Table
 
         resp = HubbleClient(jsonify=True).list_artifacts(
-            filter={'type': 'DocumentArray'}, sort={'createdAt': 1}
+            filter={'type': 'documentArray'}, sort={'createdAt': 1}
         )
 
         table = Table(
@@ -186,7 +186,7 @@ class JACDocStore(AbstractDocStore):
                     delimiter,
                 ),
                 'name': name,
-                'type': 'DocumentArray',
+                'type': 'documentArray',
                 'public': public,
                 'metaData': json.dumps(
                     {
@@ -211,7 +211,7 @@ class JACDocStore(AbstractDocStore):
 
         def gen():
             yield _head
-            binary_stream = docs.to_binary_stream(
+            binary_stream = docs._to_binary_stream(
                 protocol='protobuf', compress='gzip', show_progress=show_progress
             )
             while True:

@@ -8,7 +8,9 @@
 set -ex
 
 INIT_FILE='docarray/__init__.py'
-VER_TAG='__version__ = '
+PYPROJECT_FILE='pyproject.toml'
+VER_TAG_PYPROJECT="version = "
+VER_TAG="__version__ = "
 RELEASENOTE='./node_modules/.bin/git-release-notes'
 
 function escape_slashes {
@@ -25,6 +27,16 @@ function update_ver_line {
     head -n10 ${FILE}
 }
 
+function update_ver_line_pyproject {
+    local OLD_LINE_PATTERN=$1
+    local NEW_LINE=$2
+    local FILE=$3
+
+    local NEW=$(echo "${NEW_LINE}" | escape_slashes)
+    sed -i '3{/'"${OLD_LINE_PATTERN}"'/s/.*/'"${NEW}"'/}' "${FILE}"
+    head -n10 ${FILE}
+}
+
 
 function clean_build {
     rm -rf dist
@@ -33,7 +45,6 @@ function clean_build {
 }
 
 function pub_pypi {
-    # publish to pypi
     clean_build
     poetry config http-basic.pypi $PYPI_USERNAME $PYPI_PASSWORD
     poetry publish --build
@@ -88,6 +99,11 @@ if [[ $1 == "final" ]]; then
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+
+  VER_TAG_NEXT_PYPROJECT=$VER_TAG_PYPROJECT\'${NEXT_VER}\'
+  update_ver_line_pyproject "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT_PYPROJECT" "$PYPROJECT_FILE"
+
+
   RELEASE_REASON="$2"
   RELEASE_ACTOR="$3"
   git_commit
@@ -104,6 +120,11 @@ elif [[ $1 == 'rc' ]]; then
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+
+  VER_TAG_NEXT_PYPROJECT=$VER_TAG_PYPROJECT\'${NEXT_VER}\'
+  update_ver_line_pyproject "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT_PYPROJECT" "$PYPROJECT_FILE"
+
+
   RELEASE_REASON="$2"
   RELEASE_ACTOR="$3"
   git_commit
@@ -115,6 +136,9 @@ else
 
   VER_TAG_NEXT=$VER_TAG\'${NEXT_VER}\'
   update_ver_line "$VER_TAG" "$VER_TAG_NEXT" "$INIT_FILE"
+
+  VER_TAG_NEXT_PYPROJECT=$VER_TAG_PYPROJECT\'${NEXT_VER}\'
+  update_ver_line_pyproject "$VER_TAG_PYPROJECT" "$VER_TAG_NEXT_PYPROJECT" "$PYPROJECT_FILE"
 
   pub_pypi
 fi
