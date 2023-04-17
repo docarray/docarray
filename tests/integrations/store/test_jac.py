@@ -13,8 +13,6 @@ DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-stream test
 RANDOM: str = uuid.uuid4().hex[:8]
 
-pytestmark = [pytest.mark.skip]
-
 
 @pytest.fixture(scope='session', autouse=True)
 def testing_namespace_cleanup():
@@ -68,6 +66,7 @@ def test_pushpull_correct(capsys):
     assert len(captured.err) == 0, 'No error should be printed when show_progress=False'
 
 
+@pytest.mark.skip(reason='time out')
 @pytest.mark.slow
 @pytest.mark.internet
 def test_pushpull_stream_correct(capsys):
@@ -99,6 +98,7 @@ def test_pushpull_stream_correct(capsys):
     assert len(captured.err) == 0, 'No error should be printed when show_progress=False'
 
 
+@pytest.mark.skip(reason='time out')
 @pytest.mark.slow
 @pytest.mark.internet
 def test_pull_stream_vs_pull_full():
@@ -155,9 +155,9 @@ def test_pull_stream_vs_pull_full():
     ), 'Full pull memory usage should be dependent on the size of the data'
 
 
+@pytest.mark.skip(reason='The CI account might be broken')
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.skip(reason='The CI account might be broken')
 def test_list_and_delete():
     DA_NAME_0 = f'test{RANDOM}-list-and-delete-da0'
     DA_NAME_1 = f'test{RANDOM}-list-and-delete-da1'
@@ -212,6 +212,7 @@ def test_list_and_delete():
     ), 'Deleting a non-existent DA should return False'
 
 
+@pytest.mark.skip(reason='time out')
 @pytest.mark.slow
 @pytest.mark.internet
 def test_concurrent_push_pull():

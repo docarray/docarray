@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - chore-fix-prerelease
 
 jobs:
   success-all-test:
@@ -18,11 +19,11 @@ jobs:
       - name: Pre-release (.devN)
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          pip install twine wheel
+          pip install poetry
           ./scripts/release.sh
         env:
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          PYPI_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          PYPI_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
           JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
 
   check-readme-modification:

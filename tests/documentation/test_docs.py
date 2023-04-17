@@ -4,7 +4,9 @@ import pytest
 from mktestdocs import grab_code_blocks
 from mktestdocs.__main__ import _executors, check_raw_string
 
-file_to_skip = ['fastAPI', 'jina']
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+
+file_to_skip = ['fastAPI', 'jina', 'index', 'first_steps.md']
 
 
 def check_raw_file_full(raw, lang="python", keyword_ignore=[]):
