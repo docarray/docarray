@@ -87,7 +87,7 @@ vec = DocVec[MyDocument](
 print(vec.image_tensor.shape)  # (10, 1704, 2272, 3)
 ```
 
-<details>
+<details markdown="1">
   <summary>Click for more details</summary>
 
 So let's take a closer look at how you can represent your data with DocArray:
@@ -323,7 +323,7 @@ But fret not! DocArray has you covered!
 - :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
 - :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
 
-<details>
+<details markdown="1">
   <summary>See Document Store usage</summary>
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
@@ -355,7 +355,7 @@ This is useful for:
 
 Currently, DocArray Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
 
-<details>
+<details markdown="1">
   <summary>See Document Index usage</summary>
 
 The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
@@ -407,7 +407,7 @@ Choose your own adventure!
 
 ## Coming from old DocArray
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 If you are using DocArray v<0.30.0, you will be familiar with its [dataclass API](https://docarray.jina.ai/fundamentals/dataclass/).
@@ -432,7 +432,7 @@ For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdran
 
 ## Coming from Pydantic
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 If you come from Pydantic, you can see DocArray Documents as juiced up Pydantic models, and DocArray as a collection of goodies around them.
@@ -509,7 +509,7 @@ except Exception as e:
 
 ## Coming from PyTorch
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 If you come from PyTorch, you can see DocArray mainly as a way of _organizing your data as it flows through your model_.
@@ -620,7 +620,7 @@ schema definition (see [below](#coming-from-fastapi)). Everything is handled in 
 
 ## Coming from TensorFlow
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 Similar to the [PyTorch approach](#coming-from-pytorch), you can also use DocArray with TensorFlow to handle and represent multi-modal data inside your ML model.
@@ -669,7 +669,7 @@ class MyPodcastModel(tf.keras.Model):
 
 ## Coming from FastAPI
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 Documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI!
@@ -728,7 +728,7 @@ Just like a vanilla Pydantic model!
 
 ## Coming from a vector database
 
-<details>
+<details markdown="1">
   <summary>Click to expand</summary>
 
 If you came across DocArray as a universal vector database client, you can best think of it as **a new kind of ORM for vector databases**.
