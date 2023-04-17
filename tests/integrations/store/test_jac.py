@@ -155,7 +155,7 @@ def test_pull_stream_vs_pull_full():
     ), 'Full pull memory usage should be dependent on the size of the data'
 
 
-# @pytest.mark.skip(reason='The CI account might be broken')
+@pytest.mark.skip(reason='The CI account might be broken')
 @pytest.mark.slow
 @pytest.mark.internet
 def test_list_and_delete():
