@@ -468,7 +468,7 @@ class Schema(BaseDoc):
     tens_two: NdArray[10] = Field(M=4, space='ip')
 
 
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
+db = HnswDocumentIndex[Schema](work_dir='/tmp/my_db')
 ```
 
 The `HnswDocumentIndex` above contains two columns which are configured differently:
