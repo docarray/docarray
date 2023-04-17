@@ -17,16 +17,35 @@ Concrete examples where this is relevant are neural search application, Augmenti
 or recommender systems.
 
 !!! question "How does vector similarity search work?"
-    TODO
+    Without going into too much detail, the idea behind vector similarity search is the following:
+
+    You represent every data point that you have (in our case, a Document) as a _vector_, or _embedding_.
+    This vector should represent as much semantic information about your data as possible: Similar data points should
+    be represented by similar vectors.
+
+    These vectors (embeddings) are usually obtained by passing the data through a suitable neural network that has been
+    trained to produce such semantic representations - this is the _encoding_ step.
+
+    Once you have your vector that represent your data, you can store them, for example in a vector database.
+    
+    To perform similarity search, you take your input query and encode it in the same way as the data in your database.
+    Then, the database will search through the stored vectors and return the ones that are most similar to your query.
+    This similarity is measured by a _similarity metric_, which can be [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity),
+    [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), or any other metric that you can think of.
+
+    If you store a lot of data, performing this similarity computation for every data point in your database is expensive.
+    Therefore, vector databases usually perform _approximate nearest neighbor (ANN)_ search.
+    There are various algorithms for doing this, such as [HNSW](https://arxiv.org/abs/1603.09320), but in a nutshell,
+    they allow you to search through a large database of vectors very quickly, at the expense of a small loss in accuracy.
 
 DocArray's Document Index concept achieves this by providing a unified interface to a number of [vector databases](https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb).
 In fact, you can think of Document Index as an **[ORM](https://sqlmodel.tiangolo.com/db-to-code/) for vector databases**.
 
 Currently, DocArray supports the following vector databases:
-- [Weaviate](https://weaviate.io/)  |  [Docs](TODO)
-- [Qdrant](https://qdrant.tech/)  |  [Docs](TODO)
-- [Elasticsearch](https://www.elastic.co/elasticsearch/)  |  [Docs v8](TODO), [Docs v7](TODO)
-- [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](TODO)
+- [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
+- [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
+- [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
 
 For this user guide you will use the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex)
 because it doesn't require you to launch a database server. Instead, it will store your data locally.
@@ -38,8 +57,8 @@ because it doesn't require you to launch a database server. Instead, it will sto
 !!! note "HNSWLib-specific settings"
     The following sections explain the general concept of Document Index by using
     [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) as an example.
-    For HNSWLib-specific settings, check out the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) documentation.
-    TODO link docs
+    For HNSWLib-specific settings, check out the [HnswDocumentIndex](docarray.index.backends.hnswlib.HnswDocumentIndex) documentation
+    [here](index_hnswlib.md).
 
 ### Create a Document Index
 
@@ -72,7 +91,7 @@ In this code snippet, `HnswDocumentIndex` takes a schema of the form of `MyDoc`.
 The Document Index then _creates column for each field in `MyDoc`_.
 
 The column types in the backend database are determined the type hints of the fields in the Document.
-Optionally, you can customize the database types for every field TODO link to this.
+Optionally, you can customize the database types for every field, as you can see [here](#customize-configurations).
 
 Most vector databases need to know the dimensionality of the vectors that will be stored.
 Here, that is automatically inferred from the type hint of the `embedding` field: `NdArray[128]` means that
@@ -80,7 +99,7 @@ the database will store vectors with 128 dimensions.
 
 !!! note "PyTorch and TensorFlow support"
     Instead of using `NdArray` you can use `TorchTensor` or `TensorFlowTensor` and the Document Index will handle that
-    for you. No need to convert your tensors to numpy arrays!
+    for you. This is supported for all Document Index backends. No need to convert your tensors to numpy arrays manually!
 
 **Database location:**
 
@@ -170,7 +189,7 @@ which one to use for the search.
 The [find()][docarray.index.backends.hnswlib.HnswDocumentIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
-How these scores are calculated depends on the backend, and can usually be configured TODO link.
+How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
 
 **Batched search:**
 
@@ -218,7 +237,7 @@ as well as their batched versions [text_search_batched()][docarray.index.backend
 The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
 or text search.
 
-To see how to perform these operations, you can check out other backends that do: TODO add link to those
+To see how to perform these operations, you can check out other backends that do.
 
 ### Perform hybrid search through the query builder
 
@@ -230,7 +249,7 @@ through [build_query()][docarray.index.backends.hnswlib.HnswDocumentIndex.build_
 ```python
 # prepare a query
 q_doc = MyDoc(embedding=np.random.rand(128), text='query')
-# TODO black doesnt like the code below
+
 query = (
     db.build_query()  # get empty query object
     .find(query=q_doc, search_field='embedding')  # add vector similarity search
@@ -248,7 +267,7 @@ to obtain a combined set of results.
 
 What kinds of atomic queries can be combined in this way depends on the backend.
 Some can combine text search and vector search, others can perform filters and vectors search, etc.
-To see what backend can do what, check out the specific docs TODO add links
+To see what backend can do what, check out the [specific docs](#document-index).
 
 ### Access Documents by id
 
@@ -477,7 +496,7 @@ The `HnswDocumentIndex` above contains two columns which are configured differen
 
 All configurations that are not explicitly set will be taken from the `default_column_config` of the `RuntimeConfig`.
 
-For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` documentation TODO link.
+For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` [documentation](index_hnswlib.md).
 
 
 ## Document Store
