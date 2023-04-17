@@ -71,7 +71,7 @@ Another difference is that [BaseDoc][docarray.base_doc.doc.BaseDoc] has an `id` 
 Let's say you want to represent a YouTube video in your application, perhaps to build a search system for YouTube videos.
 A YouTube video is not only composed of a video, but also has a title, description, thumbnail (and more, but let's keep it simple).
 
-All of these elements are from different `modalities` LINK TO MODALITIES SECTION (not ready): the title and description are text, the thumbnail is an image, and the video in itself is, well, a video.
+All of these elements are from different [`modalities`](../../data_types/first_steps.md): the title and description are text, the thumbnail is an image, and the video in itself is, well, a video.
 
 DocArray allows to represent all of this multimodal data in a single object. 
 
@@ -122,7 +122,7 @@ class YouTubeVideoDoc(BaseDoc):
 
 You now have `YouTubeVideoDoc` which is a pythonic representation of a YouTube video. 
 
-This representation can now be used to send (LINK) or to store (LINK) data. You can even use it directly to [train a machine learning](../../how_to/multimodal_training_and_serving.md) [Pytorch](https://pytorch.org/docs/stable/index.html) model on this representation. 
+This representation can now be used to [send](../sending/first_step.md) or to [store](../storing/first_step.md) data. You can even use it directly to [train a machine learning](../../how_to/multimodal_training_and_serving.md) [Pytorch](https://pytorch.org/docs/stable/index.html) model on this representation. 
 
 !!! note
 

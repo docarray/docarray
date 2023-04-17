@@ -11,7 +11,7 @@ class AbstractDocStore(ABC):
     @staticmethod
     @abstractmethod
     def list(namespace: str, show_table: bool) -> List[str]:
-        """List all DocArrays in the specified backend at the namespace.
+        """List all DocLists in the specified backend at the namespace.
 
         :param namespace: The namespace to list
         :param show_table: If true, a table is printed to the console

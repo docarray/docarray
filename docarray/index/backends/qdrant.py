@@ -1,6 +1,7 @@
 import uuid
 from dataclasses import dataclass, field
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generator,
@@ -16,11 +17,7 @@ from typing import (
 )
 
 import numpy as np
-import qdrant_client
 from grpc import RpcError  # type: ignore[import]
-from qdrant_client.conversions import common_types as types
-from qdrant_client.http import models as rest
-from qdrant_client.http.exceptions import UnexpectedResponse
 
 import docarray.typing.id
 from docarray import BaseDoc, DocList
@@ -32,8 +29,19 @@ from docarray.index.abstract import (
 )
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import torch_imported
+from docarray.utils._internal.misc import import_library, torch_imported
 from docarray.utils.find import _FindResult
+
+if TYPE_CHECKING:
+    import qdrant_client
+    from qdrant_client.conversions import common_types as types
+    from qdrant_client.http import models as rest
+    from qdrant_client.http.exceptions import UnexpectedResponse
+else:
+    qdrant_client = import_library('qdrant_client')
+    from qdrant_client.conversions import common_types as types
+    from qdrant_client.http import models as rest
+    from qdrant_client.http.exceptions import UnexpectedResponse
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
@@ -57,6 +65,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     UUID_NAMESPACE = uuid.UUID('3896d314-1e95-4a3a-b45a-945f9f0b541d')
 
     def __init__(self, db_config=None, **kwargs):
+        """Initialize QdrantDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -79,6 +88,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class Query:
+        """Dataclass describing a query."""
+
         vector_field: Optional[str]
         vector_query: Optional[NdArray]
         filter: Optional[rest.Filter]
@@ -98,6 +109,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._text_search_filters: List[Tuple[str, str]] = text_search_filters or []
 
         def build(self, limit: int) -> 'QdrantDocumentIndex.Query':
+            """
+            Build a query object for QdrantDocumentIndex.
+            :return: QdrantDocumentIndex.Query object
+            """
             vector_query = None
             if len(self._vector_filters) > 0:
                 # If there are multiple vector queries applied, we can average them and
@@ -127,6 +142,13 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def find(  # type: ignore[override]
             self, query: NdArray, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
+            """
+            Find k-nearest neighbors of the query.
+
+            :param query: query vector for search. Has single axis.
+            :param search_field: field to perform search on
+            :return: QueryBuilder object
+            """
             if self._vector_search_field and self._vector_search_field != search_field:
                 raise ValueError(
                     f'Trying to call .find for search_field = {search_field}, but '
@@ -143,6 +165,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def filter(  # type: ignore[override]
             self, filter_query: rest.Filter
         ) -> 'QdrantDocumentIndex.QueryBuilder':
+            """Find documents in the index based on a filter query
+            :param filter_query: a filter
+            :return: QueryBuilder object
+            """
             return QdrantDocumentIndex.QueryBuilder(
                 vector_search_field=self._vector_search_field,
                 vector_filters=self._vector_filters,
@@ -153,6 +179,12 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def text_search(  # type: ignore[override]
             self, query: str, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
+            """Find documents in the index based on a text search query
+
+            :param query: The text to search for
+            :param search_field: name of the field to search on
+            :return: QueryBuilder object
+            """
             return QdrantDocumentIndex.QueryBuilder(
                 vector_search_field=self._vector_search_field,
                 vector_filters=self._vector_filters,
@@ -166,6 +198,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of QdrantDocumentIndex."""
+
         location: Optional[str] = None
         url: Optional[str] = None
         port: Optional[int] = 6333
@@ -189,6 +223,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of QdrantDocumentIndex."""
+
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 'id': {},  # type: ignore[dict-item]
@@ -198,6 +234,12 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type.
+        """
         if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
             return 'vector'
 
@@ -243,6 +285,9 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         return self._client.count(collection_name=self._db_config.collection_name).count
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -278,6 +323,20 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return [self._convert_to_doc(point) for point in response]
 
     def execute_query(self, query: Union[Query, RawQuery], *args, **kwargs) -> DocList:
+        """
+        Execute a query on the QdrantDocumentIndex.
+
+        Can take two kinds of inputs:
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index's `QueryBuilder.build()` method.
+
+        :param query: the query to execute
+        :param args: positional arguments to pass to the query
+        :param kwargs: keyword arguments to pass to the query
+        :return: the result of the query
+        """
         if not isinstance(query, QdrantDocumentIndex.Query):
             points = self._execute_raw_query(query.copy())
         elif query.vector_field:

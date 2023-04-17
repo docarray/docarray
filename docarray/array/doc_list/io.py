@@ -760,15 +760,10 @@ class IOMixinArray(Iterable[T_doc]):
         """Save DocList into a binary file.
 
         It will use the protocol to pick how to save the DocList.
-        If used 'picke-doc_list` and `protobuf-array` the DocList will be stored
+        If used `picke-doc_list` and `protobuf-array` the DocList will be stored
         and compressed at complete level using `pickle` or `protobuf`.
         When using `protobuf` or `pickle` as protocol each Document in DocList
         will be stored individually and this would make it available for streaming.
-
-        :param file: File or filename to which the data is saved.
-        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
-        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
 
          !!! note
             If `file` is `str` it can specify `protocol` and `compress` as file extensions.
@@ -776,6 +771,11 @@ class IOMixinArray(Iterable[T_doc]):
             string interpolation of the respective `protocol` and `compress` methods.
             For example if `file=my_docarray.protobuf.lz4` then the binary data will be created using `protocol=protobuf`
             and `compress=lz4`.
+
+        :param file: File or filename to which the data is saved.
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         """
         if isinstance(file, io.BufferedWriter):
             file_ctx = nullcontext(file)

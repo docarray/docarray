@@ -77,6 +77,7 @@ def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
 
 class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
+        """Initialize HnswDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
         self._work_dir = self._db_config.work_dir
@@ -138,6 +139,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._queries: List[Tuple[str, Dict]] = query or []
 
         def build(self, *args, **kwargs) -> Any:
+            """Build the query object."""
             return self._queries
 
         find = _collect_query_args('find')
@@ -149,10 +151,14 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of WeaviateDocumentIndex."""
+
         work_dir: str = '.'
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
+
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
@@ -176,7 +182,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ###############################################
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
-        """Map python type to database type."""
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type,
+            or None if ``python_type`` is not supported.
+        """
         for allowed_type in HNSWLIB_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
                 return np.ndarray
@@ -188,7 +200,17 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ...
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
-        """index a document into the store"""
+        """Index Documents into the index.
+
+        !!! note
+            Passing a sequence of Documents that is not a DocList
+            (such as a List of Docs) comes at a performance penalty.
+            This is because the Index needs to check compatibility between itself and
+            the data. With a DocList as input this is a single check; for other inputs
+            compatibility needs to be checked for every Document individually.
+
+        :param docs: Documents to index.
+        """
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
 
@@ -209,6 +231,20 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._sqlite_conn.commit()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
+        """
+        Execute a query on the WeaviateDocumentIndex.
+
+        Can take two kinds of inputs:
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index' `QueryBuilder.build()` method.
+
+        :param query: the query to execute
+        :param args: positional arguments to pass to the query
+        :param kwargs: keyword arguments to pass to the query
+        :return: the result of the query
+        """
         if args or kwargs:
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
@@ -324,6 +360,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return out_docs
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         return self._get_num_docs_sqlite()
 
     ###############################################
