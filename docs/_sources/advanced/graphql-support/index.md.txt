@@ -1,9 +1,9 @@
 # GraphQL
 
 
-DocArray supports GraphQL for querying a DocumentArray and getting exactly the fields you need: So, if `.embedding` is too big and verbose, you don't need to query it. Compared to the REST API, clients using GraphQL are fast and stable because they are in control the data they get, not the server. 
+DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need: `.embedding` is too big and too verbose, then don't query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server. 
 
-When integrating DocArray into a GraphQL app, you only need to implement the *query* (in GraphQL idiom, this is like the API endpoint that your server allows). The *schema* part is provided by DocArray and can be used out of the box.
+When integrating DocArray in a GraphQL app, you only need to implement the *query* (in GraphQL idiom, this is like the API endpoint that your server allows). The *schema* part is provided by DocArray and can be used out of the box.
 
 
 ````{tip}
@@ -11,7 +11,7 @@ This feature requires `strawberry`. You can install it via `pip install "docarra
 ````
 
 ```{seealso}
-This article does *not* serve as the introduction to GraphQL. If you don't have a GraphQL background, we strongly recommend learning more about GraphQL in the [official GraphQL documentation](https://graphql.org/). You may also want to learn more about [Strawberry](https://strawberry.rocks/). Otherwise, you may get confused by the GraphQL idioms, e.g. query, schema.
+This article does *not* serve as the introduction to GraphQL. If you don't have GraphQL background, it is stronly recommended to learn more about GraphQL in the [official GraphQL documentation](https://graphql.org/). You may also want to learn more about [Strawberry](https://strawberry.rocks/). Otherwise, you may get confused by the GraphQL idioms, e.g. query, schema.
 ```
 
 ## Basic example
@@ -73,11 +73,11 @@ class Query:
 schema = strawberry.Schema(query=Query)
 ``` 
 
-Notice how we leverage {class}`~docarray.document.strawberry_type.StrawberryDocument` and use {meth}`~docarray.array.mixins.pydantic.StrawberryMixin.to_strawberry_type` to convert the type in the resolver before returning the result.
+Notice how I leverage {class}`~docarray.document.strawberry_type.StrawberryDocument` and use {meth}`~docarray.array.mixins.pydantic.StrawberryMixin.to_strawberry_type` to convert the type in the resolver before returning the result.
 
-In practice, `da` could be your final search results, or some DocumentArray after embedding or preprocessing. Here we just use the dummy matches we created before to serve as the results.
+In practice, `da` could be your final search results, or some DocumentArray after embedding or preprocessing. Here I just use the dummy matches I created before to serve as the results.
 
-Finally, save all code snippets above into `toy.py` and run it from the terminal:
+Finally, save all code snippets above into `toy.py` and run it from the console via:
 
 ```bash
 strawberry server toy
@@ -107,11 +107,11 @@ Try the following query
 :width: 90%
 ```
 
-Now we have one endpoint that allows user to selectively read fields from a DocumentArray. We can add additional endpoints to the `Query` class to support advanced filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users. 
+Now we have one endpoint that allows user to selectively read fields from a DocumentArray. Additional endpoints can be added to `Query` class, to support advance filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users. 
 
 ## Integrate with FastAPI
 
-Strawberry's built-in server is perfect for prototyping an API. When it comes to production, you can use FastAPI. Here's a short example to show how to wrap the above snippet in a FastAPI app:
+Strawberry's built-in server is perfect for prototyping an API. When it comes to production, you can use FastAPI. Here is a short example how you can wrap the above snippet it in a FastAPI app:
 
 ```python
 from strawberry.asgi import GraphQL
@@ -124,4 +124,5 @@ app.add_route('/graphql', graphql_app)
 app.add_websocket_route('/graphql', graphql_app)
 ```
 
-Learn more about [FastAPI GraphQL support](https://fastapi.tiangolo.com/advanced/graphql/).
+You can learn more about [FastAPI GraphQL support from here](https://fastapi.tiangolo.com/advanced/graphql/).
+

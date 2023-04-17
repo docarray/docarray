@@ -42,7 +42,7 @@ d1 = Document(text='hello')
 d2 = Document(blob=b'\f1')
 d3 = Document(tensor=numpy.array([1, 2, 3]))
 d4 = Document(
-    uri='https://docs.docarray.org',
+    uri='https://docarray.jina.ai',
     mime_type='text/plain',
     granularity=1,
     adjacency=3,
@@ -82,12 +82,12 @@ You can also wrap keyword arguments into a `dict`. The following ways of initial
 
 ```python
 d1 = Document(
-    uri='https://docs.docarray.org', mime_type='text/plain', granularity=1, adjacency=3
+    uri='https://docarray.jina.ai', mime_type='text/plain', granularity=1, adjacency=3
 )
 
 d2 = Document(
     dict(
-        uri='https://docs.docarray.org',
+        uri='https://docarray.jina.ai',
         mime_type='text/plain',
         granularity=1,
         adjacency=3,
@@ -96,7 +96,7 @@ d2 = Document(
 
 d3 = Document(
     {
-        'uri': 'https://docs.docarray.org',
+        'uri': 'https://docarray.jina.ai',
         'mime_type': 'text/plain',
         'granularity': 1,
         'adjacency': 3,

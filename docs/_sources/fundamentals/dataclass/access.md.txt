@@ -82,7 +82,7 @@ class InnerDoc:
 @dataclass
 class OuterDoc:
     feature_image: InnerDoc
-    website: str = 'https://docs.docarray.org'
+    website: str = 'https://docarray.jina.ai'
 
 
 doc = Document(OuterDoc(feature_image=InnerDoc(description='this is a description')))
@@ -381,7 +381,7 @@ class BannerDoc:
 class ColumnArticle:
     featured: BannerDoc
     description: Text = 'this is a column article'
-    website: str = 'https://docs.docarray.org'
+    website: str = 'https://docarray.jina.ai'
 
 
 c1 = ColumnArticle(featured=BannerDoc(banner='test-1.jpeg'))

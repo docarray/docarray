@@ -17,18 +17,18 @@ To use Opensearch as the storage backend, it is required to have the Opensearch 
 ```yaml
 version: "3.3"
 services:
-  opensearch:
+  elastic:
     image: opensearchproject/opensearch:2.4.0
     environment:
-      - plugins.security.disabled=true
+      - xpack.security.enabled=false
       - discovery.type=single-node
     ports:
-      - "9900:9200"
+      - "9200:9200"
     networks:
       - os
 
 networks:
-  os:
+  elastic:
     name: os
 ```
 

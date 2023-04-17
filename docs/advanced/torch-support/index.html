@@ -5,12 +5,12 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <meta property="og:title" content="PyTorch/Deep Learning Frameworks" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://docs.docarray.org/advanced/torch-support/" />
-<meta property="og:site_name" content="DocArray 0.21.1 Documentation" />
-<meta property="og:description" content="DocArray can be easily integrated into the PyTorch, Tensorflow and PaddlePaddle frameworks. The.embedding and.tensor attributes in Document class can contain a PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor. It means that if you store the Document on disk..." />
-<meta property="og:image" content="https://docs.docarray.org/_static/banner.png" />
-<meta property="og:image:alt" content="DocArray 0.21.1 Documentation" />
-<meta name="description" content="DocArray can be easily integrated into the PyTorch, Tensorflow and PaddlePaddle frameworks. The.embedding and.tensor attributes in Document class can contain a PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor. It means that if you store the Document on disk..." />
+<meta property="og:url" content="https://docarray.jina.ai/advanced/torch-support/" />
+<meta property="og:site_name" content="DocArray 0.21.0 Documentation" />
+<meta property="og:description" content="DocArray can be easily integrated into PyTorch, Tensorflow, PaddlePaddle frameworks. The.embedding and.tensor attributes in Document class can contain PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor. It means that if you store the Document on disk in pickl..." />
+<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
+<meta property="og:image:alt" content="DocArray 0.21.0 Documentation" />
+<meta name="description" content="DocArray can be easily integrated into PyTorch, Tensorflow, PaddlePaddle frameworks. The.embedding and.tensor attributes in Document class can contain PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor. It means that if you store the Document on disk in pickl..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,10 +30,10 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" /><link rel="prev" title="Jupyter Notebook/Colab" href="../../fundamentals/notebook-support/" />
-        <link rel="canonical" href="https://docs.docarray.org/advanced/torch-support/index.html" />
+        <link rel="canonical" href="https://docarray.jina.ai/advanced/torch-support/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>PyTorch/Deep Learning Frameworks - DocArray 0.21.1 documentation</title>
+        <title>PyTorch/Deep Learning Frameworks - DocArray 0.21.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -166,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.21.1 documentation</div>
+                <div class="brand">DocArray 0.21.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -241,7 +241,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+    <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/">What is DocArray?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
@@ -327,6 +327,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/">Changelog</a></li>
 </ul>
 
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://finetuner.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
 </div>
 </div>
 
@@ -370,9 +402,9 @@
                 <article role="main">
                     <section id="pytorch-deep-learning-frameworks">
 <h1>PyTorch/Deep Learning Frameworks<a class="headerlink" href="#pytorch-deep-learning-frameworks" title="Permalink to this heading">#</a></h1>
-<p>DocArray can be easily integrated into the PyTorch, Tensorflow and PaddlePaddle frameworks.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> and <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> attributes in Document class can contain a PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor.</p>
-<p>It means that if you store the Document on disk in <code class="docutils literal notranslate"><span class="pre">pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> with/o compression, or transmit the Document over the network in <code class="docutils literal notranslate"><span class="pre">pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> without compression, the data type of <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> and <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> is preserved.</p>
+<p>DocArray can be easily integrated into PyTorch, Tensorflow, PaddlePaddle frameworks.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> and <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> attributes in Document class can contain PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor.</p>
+<p>It means that if you store the Document on disk in <code class="docutils literal notranslate"><span class="pre">pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> with/o compression, or transit the Document over the network in <code class="docutils literal notranslate"><span class="pre">pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> with/o compression, the data type of <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> and <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> is preserved.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -408,18 +440,18 @@
 </div>
 <section id="load-map-batch-in-one-shot">
 <h2>Load, map, batch in one-shot<a class="headerlink" href="#load-map-batch-in-one-shot" title="Permalink to this heading">#</a></h2>
-<p>There is a very common pattern in deep learning engineering: loading big data, mapping it via some function for preprocessing on CPU, and batching it to GPU for intensive deep learning stuff.</p>
+<p>There is a very common pattern in the deep learning engineering: loading big data, mapping it via some function for preprocessing on CPU, and batching it to GPU for intensive deep learning stuff.</p>
 <p>There are many pitfalls in this pattern when not implemented correctly, to name a few:</p>
 <ul class="simple">
-<li><p>Data may not fit into memory.</p></li>
-<li><p>Mapping via CPU only utilizes a single-core.</p></li>
-<li><p>Data-draining problem: GPU is not fully utilized as data is blocked by the slow CPU preprocessing step.</p></li>
+<li><p>data may not fit into memory;</p></li>
+<li><p>mapping via CPU only utilizes a single-core;</p></li>
+<li><p>data-draining problem: GPU is not fully utilized as data is blocked by the slow CPU preprocessing step.</p></li>
 </ul>
-<p>DocArray provides a high-level function <a class="reference internal" href="../../api/docarray.array.mixins.dataloader/#docarray.array.mixins.dataloader.DataLoaderMixin.dataloader" title="docarray.array.mixins.dataloader.DataLoaderMixin.dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataloader()</span></code></a> that allows you to do this in one-shot, avoiding all these pitfalls. The following figure illustrates this function:</p>
+<p>DocArray provides a high-level function <a class="reference internal" href="../../api/docarray.array.mixins.dataloader/#docarray.array.mixins.dataloader.DataLoaderMixin.dataloader" title="docarray.array.mixins.dataloader.DataLoaderMixin.dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataloader()</span></code></a> that allows you to do this in one-shot, avoiding all pitfalls. The following figure illustrates this function:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/dataloader.svg"><img alt="../../_images/dataloader.svg" src="../../_images/dataloader.svg" width="80%" /></a>
 </figure>
-<p>Say we have one million 32x32 color images, which takes up 3.14GB on the disk with <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> and <code class="docutils literal notranslate"><span class="pre">compress='gz'</span></code>. To process it:</p>
+<p>Say we have a one million 32 x 32 color images, which takes 3.14GB on the disk with <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> and <code class="docutils literal notranslate"><span class="pre">compress='gz'</span></code>. To process it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -455,8 +487,7 @@ cpu job done
 GPU job done
 cpu job done
 GPU job done
-cpu job done
-cpu job done
+cpu job donecpu job done
 </pre></div>
 </div>
 </section>
@@ -497,7 +528,7 @@ cpu job done
                         <div class="copyright">
                             Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Mar 07, 2023</div>
+                            Last updated on Jan 17, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -542,6 +573,19 @@ cpu job done
             
         </aside>
     </div>
+    <qa-bot
+            title="DocArray Bot"
+            description="The data structure for unstructured data"
+    >
+        <template>
+            <dl>
+                <dt>You can ask questions about our docs. Try:</dt>
+                <dd>What is a DocumentArray?</dd>
+                <dd>How to use docarray with Jina?</dd>
+                <dd>How to find nearest neighbour of Documents?</dd>
+            </dl>
+        </template>
+    </qa-bot>
 </div>
 <img referrerpolicy="no-referrer-when-downgrade"
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -555,6 +599,11 @@ cpu job done
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
+        });
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     </body>
