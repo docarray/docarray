@@ -1,9 +1,9 @@
-# Intro
+# Overview
 
 In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multi-modal data and send it over the wire.
 In this section we will see how to store and persist this data.
 
-DocArray offers to ways of storing your data:
+DocArray offers to ways of storing your data, each of which have their own documentation sections:
 
 1. In a **[Document Store](#document-store)** for simple long-term storage
 2. In a **[Document Index](#document-index)** for fast retrieval using vector similarity
@@ -24,3 +24,20 @@ This section covers the following three topics:
   - [Store on S3](doc_store/store_s3.md)
    
 ## Document Index
+
+A Document Index lets you store your Documents and search through them using vector similarity.
+
+This is useful if you want to store a bunch of data, and at a later point retrieve Documents that are similar to
+some query that you provide.
+Concrete examples where this is relevant are neural search application, Augmenting LLMs and Chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401))]),
+or recommender systems.
+
+DocArray's Document Index concept achieves this by providing a unified interface to a number of [vector databases](https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb).
+In fact, you can think of Document Index as an **[ORM](https://sqlmodel.tiangolo.com/db-to-code/) for vector databases**.
+
+Currently, DocArray supports the following vector databases:
+
+- [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
+- [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
+- [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
