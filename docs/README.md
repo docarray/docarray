@@ -5,7 +5,7 @@ DocArray is a library for **representing, sending and storing multi-modal data**
 
 This means that DocArray lets you do the following things:
 
-## Represent
+## Represent data
 
 ```python
 from docarray import BaseDocument
@@ -115,7 +115,7 @@ print(type(da.tensor))
 print(da.tensor.shape)
 ```
 
-## Send
+## Send data
 - **Serialize** any `Document` or `DocumentArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
 - Use in **microservice** architecture: Send over **HTTP** or **gRPC**
 - Integrate seamlessly with **FastAPI** and **Jina**
@@ -137,7 +137,7 @@ async with AsyncClient(app=app, base_url="http://test") as ac:
 Image.from_protobuf(doc.to_protobuf())
 ```
 
-## Store
+## Store data
 - Persist and `DocumentArray` using a **`DocumentStore`**
 - Store your Documents in any supported (vector) database: **Elasticsearch**, **Qdrant**, **Weaviate**, **Redis**, **Milvus**, **ANNLite** or **SQLite**
 - Leverage DocumentStores to **perform vector search on your multi-modal data**
