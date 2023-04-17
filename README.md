@@ -328,28 +328,20 @@ But fret not! DocArray has you covered!
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
 
-As an example, let's take a look at how that would work with AWS S3 storage:
+For example, let's see how that works with on-disk storage:
 
 ```python
-from docarray import DocList
-from docarray.documents import ImageDoc
-import numpy as np
+from docarray import BaseDoc, DocList
 
-dl = DocList[ImageDoc](
-    [
-        ImageDoc(
-            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
-            tensor=np.zeros((3, 224, 224)),
-        )
-        for _ in range(100)
-    ]
-)
 
-# push the DocList to S3
-dl.push('s3://my-bucket/my-documents', show_progress=True)
+class SimpleDoc(BaseDoc):
+    text: str
 
-# pull the DocList from S3
-dl_2 = DocList[ImageDoc].pull('s3://my-bucket/my-documents', show_progress=True)
+
+docs = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(8)])
+docs.push('file://simple_docs')
+
+docs_pull = DocList[SimpleDoc].pull('file://simple_docs')
 ```
 </details>
 
