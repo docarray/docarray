@@ -183,7 +183,7 @@ class IOMixinArray(Iterable[T_doc]):
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
-                        self.to_binary_stream(
+                        self._to_binary_stream(
                             protocol=protocol,
                             compress=compress,
                             show_progress=show_progress,
@@ -195,7 +195,7 @@ class IOMixinArray(Iterable[T_doc]):
                     f'protocol={protocol} is not supported. Can be only {ALLOWED_PROTOCOLS}.'
                 )
 
-    def to_binary_stream(
+    def _to_binary_stream(
         self,
         protocol: str = 'protobuf',
         compress: Optional[str] = None,
