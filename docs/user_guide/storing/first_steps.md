@@ -498,6 +498,86 @@ All configurations that are not explicitly set will be taken from the `default_c
 
 For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` [documentation](index_hnswlib.md).
 
+### Nested data
+
+The examples above all operate on a simple schema: All fields in `MyDoc` have "basic" types, such as `str` or `NdArray`.
+
+**Index nested data:**
+
+It is, however, also possible to represent nested Documents and store them in a Document Index.
+
+In the following example you can see a complex schema that contains nested Documents.
+The `YouTubeVideoDoc` contains a `VideoDoc` and an `ImageDoc`, alongside some "basic" fields:
+
+```python
+from docarray.typing import ImageUrl, VideoUrl, AnyTensor
+
+
+# define a nested schema
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: AnyTensor = Field(space='cosine', dim=64)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    tensor: AnyTensor = Field(space='cosine', dim=128)
+
+
+class YouTubeVideoDoc(BaseDoc):
+    title: str
+    description: str
+    thumbnail: ImageDoc
+    video: VideoDoc
+    tensor: AnyTensor = Field(space='cosine', dim=256)
+
+
+# create a Document Index
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp2')
+
+# create some data
+index_docs = [
+    YouTubeVideoDoc(
+        title=f'video {i+1}',
+        description=f'this is video from author {10*i}',
+        thumbnail=ImageDoc(url=f'http://example.ai/images/{i}', tensor=np.ones(64)),
+        video=VideoDoc(url=f'http://example.ai/videos/{i}', tensor=np.ones(128)),
+        tensor=np.ones(256),
+    )
+    for i in range(8)
+]
+
+# index the Documents
+doc_index.index(index_docs)
+```
+
+
+**Search nested data:**
+
+You can perform search on any nesting level.
+To do so, use the dunder operator to specify the field defined in the nested data.
+
+In the following example, you can see how to perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the nested `thumbnail` and `video` fields:
+
+```python
+# create a query Document
+query_doc = YouTubeVideoDoc(
+    title=f'video query',
+    description=f'this is a query video',
+    thumbnail=ImageDoc(url=f'http://example.ai/images/1024', tensor=np.ones(64)),
+    video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
+    tensor=np.ones(256),
+)
+
+# find by the `youtubevideo` tensor; root level
+docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
+
+# find by the `thumbnail` tensor; nested level
+docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit=3)
+
+# find by the `video` tensor; neseted level
+docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
+```
 
 ## Document Store
 This section show you how to use the `DocArray.store` module. `DocArray.store` module is used to store the `Doc`.
