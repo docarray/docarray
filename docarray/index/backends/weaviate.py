@@ -5,6 +5,7 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generator,
@@ -20,7 +21,6 @@ from typing import (
 )
 
 import numpy as np
-import weaviate
 from pydantic import parse_obj_as
 from typing_extensions import Literal
 
@@ -30,7 +30,13 @@ from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResult
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
+
+if TYPE_CHECKING:
+    import weaviate
+else:
+    weaviate = import_library('weaviate')
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='WeaviateDocumentIndex')
