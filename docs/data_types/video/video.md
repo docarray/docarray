@@ -35,7 +35,7 @@ class MyVideo(BaseDoc):
 
 
 doc = MyVideo(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
 )
 ```
 
@@ -88,7 +88,7 @@ class MyVideo(BaseDoc):
 
 
 doc = MyVideo(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
 )
 
 doc.tf_tensor = doc.url.load().video
@@ -116,7 +116,7 @@ class MyVideo(BaseDoc):
 
 
 doc = MyVideo(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
 )
 
 doc.bytes_ = doc.url.load_bytes()
@@ -216,7 +216,7 @@ class MyVideo(VideoDoc):
 
 
 video = MyVideo(
-    url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true'
+    url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
 )
 video.name = 'My first video doc!'
 video.tensor = video.url.load().video

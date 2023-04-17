@@ -37,7 +37,7 @@ data.
 ```python
 page = Page(
     main_text='Hello world',
-    img_url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/docs/assets/favicon.png?raw=true',
+    img_url='https://github.com/docarray/docarray/blob/main/docs/assets/favicon.png?raw=true',
     img_description='This is the image of an apple',
 )
 page.img_tensor = page.img_url.load()
@@ -75,7 +75,7 @@ print(page.img_tensor)
     <summary>Output</summary>
     ``` { .text .no-copy }
     Hello world
-    https://github.com/docarray/docarray/blob/feat-rewrite-v2/docs/assets/favicon.png?raw=true
+    https://github.com/docarray/docarray/blob/main/docs/assets/favicon.png?raw=true
     This is DocArray
     ImageTorchTensor([[[0, 0, 0],
                        [0, 0, 0],
@@ -119,14 +119,14 @@ You can instantiate this more complex `Newspaper` object in the same way as befo
 ```python
 cover_page = Page(
     main_text='DocArray Daily',
-    img_url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/docs/assets/favicon.png',
+    img_url='https://github.com/docarray/docarray/blob/main/docs/assets/favicon.png',
 )
 
 pages = DocList[Page](
     [
         Page(
             main_text='Hello world',
-            img_url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/docs/assets/favicon.png',
+            img_url='https://github.com/docarray/docarray/blob/main/docs/assets/favicon.png',
             img_description='This is the image of an apple',
         ),
         Page(main_text='Second page'),
