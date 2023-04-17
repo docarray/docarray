@@ -197,9 +197,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         Execute a query on the database.
 
         Can take two kinds of inputs:
-        - A native query of the underlying database. This is meant as a passthrough so that you
+
+        1. A native query of the underlying database. This is meant as a passthrough so that you
         can enjoy any functionality that is not available through the Document index API.
-        - The output of this Document index' `QueryBuilder.build()` method.
+        2. The output of this Document index' `QueryBuilder.build()` method.
 
         :param query: the query to execute
         :param args: positional arguments to pass to the query
@@ -268,8 +269,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param filter_queries: the DB specific filter queries to execute
         :param limit: maximum number of documents to return per query
-        :return: List of DocArrays containing the documents
-            that match the filter queries
+        :return: List of DocLists containing the documents that match the filter
+            queries
         """
         ...
 

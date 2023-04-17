@@ -38,7 +38,9 @@ class PushPullMixin(Iterable['BaseDoc']):
 
     @staticmethod
     def resolve_url(url: str) -> Tuple[PUSH_PULL_PROTOCOL, str]:
-        """Resolve the URL to the correct protocol and name."""
+        """Resolve the URL to the correct protocol and name.
+        :param url: url to resolve
+        """
         protocol, name = url.split('://', 2)
         if protocol in SUPPORTED_PUSH_PULL_PROTOCOLS:
             protocol = cast(PUSH_PULL_PROTOCOL, protocol)
