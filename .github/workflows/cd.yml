@@ -19,7 +19,7 @@ jobs:
       - name: Pre-release (.devN)
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          pip install twine wheel
+          pip install poetry
           ./scripts/release.sh
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
