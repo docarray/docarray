@@ -42,13 +42,11 @@ doc = MyVideo(
 Now you can load the video file content by simply calling [`.load()`][docarray.typing.url.audio_url.AudioUrl.load] on your [`AudioUrl`][docarray.typing.url.audio_url.AudioUrl] instance.
 This will return a [NamedTuple](https://docs.python.org/3/library/typing.html#typing.NamedTuple) of a **video tensor**, an **audio tensor**, and the **key frame indices**:
 
-- The video tensor is a 4-dim array of shape `(n_frames, height, width, channels)`. <br>The first dimension represents the frame id. 
-The last three dimensions represent the image data of the corresponding frame. 
-
-- If the video contains audio, it will be stored as an AudioNdArray.
-
+- The video tensor is a 4-dimensional array of shape `(n_frames, height, width, channels)`. 
+    - The first dimension represents the frame id. 
+    - The last three dimensions represent the image data of the corresponding frame. 
+- If the video contains audio, it will be stored as an `AudioNdArray`.
 - Additionally, the key frame indices will be stored. A key frame is defined as the starting point of any smooth transition.
-
 
 ```python
 doc.video, doc.audio, doc.key_frame_indices = doc.url.load()
@@ -59,12 +57,13 @@ assert isinstance(doc.key_frame_indices, NdArray)
 
 print(doc.video.shape)
 ```
+
 ``` { .text .no-copy }
 (250, 176, 320, 3)
 ```
-For the given example you can infer from `doc.video`'s shape, that the video contains 250 frames of size 176x320 in RGB mode. 
-Based on the overall length of the video (10s), you can infer the framerate is approximately 250/10 = 25 frames per second (fps).
 
+For the given example you can infer from `doc.video`'s shape that the video contains 250 frames of size 176x320 in RGB mode. 
+Based on the overall length of the video (10 seconds), you can infer the framerate is approximately 250/10 = 25 frames per second (fps).
 
 ## VideoTensor
 
@@ -74,7 +73,7 @@ DocArray offers several [`VideoTensor`s](../../../../api_references/typing/tenso
 - [`VideoTorchTensor`][docarray.typing.tensor.video.VideoTorchTensor]
 - [`VideoTensorFlowTensor`][docarray.typing.tensor.video.VideoTensorFlowTensor]
 
-If you specify the type of your tensor to one of the above, it will be cast to that automatically:
+If you specify the type of your tensor as one of the above, it will be cast to that automatically:
 
 ```python hl_lines="7 8 15 16"
 from docarray import BaseDoc
@@ -97,8 +96,6 @@ doc.torch_tensor = doc.url.load().video
 assert isinstance(doc.tf_tensor, VideoTensorFlowTensor)
 assert isinstance(doc.torch_tensor, VideoTorchTensor)
 ```
-
-
 
 ## VideoBytes
 
@@ -133,11 +130,10 @@ bytes_from_tensor = doc.video.to_bytes()
 assert isinstance(bytes_from_tensor, VideoBytes)
 ```
 
-
 ## Key frame extraction
 
 A key frame is defined as the starting point of any smooth transition.
-Given the key frame indices, you can access selected scenes.
+Given the key frame indices, you can access selected scenes:
 
 ```python
 indices = doc.key_frame_indices
@@ -164,11 +160,10 @@ for frame in key_frames:
   ![](key_frames.png){ width="350" }
 </figure>
 
-
-
 ## Save video to file
 
-You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4-secOND video, instead of the original 10-second video with a frame rate of 25 fps. 
+You can save your video tensor to a file. In the example below you save the video with a framerate of 60 fps, which results in a 4-second video, instead of the original 10-second video with a frame rate of 25 fps. 
+
 ``` { .python }
 doc.video.save(
     file_path="/path/my_video.mp4",
@@ -184,9 +179,8 @@ You can play a video in a notebook from its URL as well as its tensor, by callin
 doc_fast = MyAudio(url="/path/my_video.mp4")
 doc_fast.url.display()
 ```
+
 ![type:video](mov_bbb_framerate_60.mp4){: style='width: 600px; height: 330px'}
-
-
 
 ## Getting started - Predefined `VideoDoc`
 
@@ -218,6 +212,7 @@ class MyVideo(VideoDoc):
 video = MyVideo(
     url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
 )
+
 video.name = 'My first video doc!'
 video.tensor = video.url.load().video
 ```

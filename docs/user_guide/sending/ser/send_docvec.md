@@ -1,7 +1,14 @@
 # DocVec
 
-When sending or storing [`DocVec`][docarray.array.doc_list.doc_list.DocVec], you need to use serialization. [DocVec][docarray.array.doc_list.doc_list.DocVec] only supports protobuf to serialize the data.
-You can use [`to_protobuf`][docarray.array.doc_list.doc_list.DocVec.to_protobuf] and [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf] to serialize and deserialize a [DocVec][docarray.array.doc_list.doc_list.DocVec]
+When sending or storing [`DocVec`][docarray.array.doc_list.doc_list.DocVec], you need to use protobuf serialization. 
+
+!!! note
+    We plan to add more serialization formats in the future, notably JSON.
+
+## protobuf
+
+- [`to_protobuf`][docarray.array.doc_list.doc_list.DocVec.to_protobuf] serializes a [DocVec][docarray.array.doc_list.doc_list.DocVec] to `protobuf`. It returns a `protobuf` object of `docarray_pb2.DocVecProto` class. 
+- [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf] deserializes a [DocVec][docarray.array.doc_list.doc_list.DocVec] from `protobuf`. It accepts a protobuf message object to construct a [DocVec][docarray.array.doc_list.doc_list.DocVec].
 
 ```python
 import numpy as np
@@ -21,10 +28,7 @@ proto_message_dv = dv.to_protobuf()
 dv_from_proto = DocVec[SimpleVecDoc].from_protobuf(proto_message_dv)
 ```
 
-!!! note
-    We are planning to add more serialization formats in the future, notably JSON.
+## See also
 
-[`to_protobuf`][docarray.array.doc_list.doc_list.DocVec.to_protobuf] returns a protobuf object of `docarray_pb2.DocVecProto` class. [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf] accepts a protobuf message object to construct a [DocVec][docarray.array.doc_list.doc_list.DocVec].
-
-* The serializing [BaseDoc](./send_doc.md) section
-* The serializing [DocList](./send_doclist.md) section
+* The serializing [`BaseDoc`](./send_doc.md) section
+* The serializing [`DocList`](./send_doclist.md) section
