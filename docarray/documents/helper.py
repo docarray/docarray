@@ -160,6 +160,7 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 
 def create_from_named_tuple(
     named_tuple_cls: Type['NamedTuple'],
+    __base__: Type['T_doc'],
     **kwargs: Any,
 ):
     """
@@ -190,10 +191,8 @@ def create_from_named_tuple(
         assert issubclass(Doc, Audio)
 
     """
-    if '__base__' in kwargs:
-        if not issubclass(kwargs["__base__"], BaseDoc):
-            raise ValueError(f'{kwargs["__base__"]} is not a BaseDoc or its subclass')
-    else:
-        kwargs["__base__"] = BaseDoc
-    doc = create_model_from_namedtuple(named_tuple_cls, **kwargs)
+    if __base__:
+        if not issubclass(__base__, BaseDoc):
+            raise ValueError(f'{type(__base__)} is not a BaseDoc or its subclass')
+    doc = create_model_from_namedtuple(named_tuple_cls, __base__=__base__, **kwargs)
     return doc

@@ -159,7 +159,7 @@ def test_create_from_named_tuple():
     with pytest.raises(ValueError):
         _ = create_from_named_tuple(MyMultiModalDoc, __base__=BaseModel)
 
-    Doc = create_from_named_tuple(MyMultiModalDoc)
+    Doc = create_from_named_tuple(MyMultiModalDoc, __base__=BaseDoc)
 
     myDoc1 = Doc(
         image=ImageDoc(tensor=np.random.rand(3, 224, 224)), text=TextDoc(text='hey')
