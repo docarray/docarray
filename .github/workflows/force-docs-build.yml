@@ -30,7 +30,7 @@ on:
         type: string
         default: Jina Dev Bot
       git_config_email:
-        type: stringcd
+        type: string
         default: dev-bot@jina.ai
 
 jobs:
