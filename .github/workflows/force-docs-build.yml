@@ -30,7 +30,7 @@ on:
         type: string
         default: Jina Dev Bot
       git_config_email:
-        type: string
+        type: stringcd
         default: dev-bot@jina.ai
 
 jobs:
@@ -74,14 +74,6 @@ jobs:
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
           git checkout -f ${{ inputs.pages_branch }}
           git reset --hard HEAD
-      - name: Moving old doc versions
-        run: |
-          cd docs
-          for i in $(cat _versions.json | jq '.[].version' | tr -d '"'); do if [ -d "$i" ]; then mv "$i" /tmp/gen-html; fi; done
-      - name: Swap in new docs
-        run: |
-          rm -rf ./docs
-          mv /tmp/gen-html ./docs
       - name: Push it up!
         run: |
           git config --local user.email "${{ inputs.git_config_email }}"
