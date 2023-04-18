@@ -341,7 +341,6 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 2. Use the `{admonition}` boxes with care.
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
 
-
 Note: Example code in the documentation should also follow our [code style conventions]().
 
 ### Building documentation on your local machine
@@ -370,6 +369,6 @@ python -m http.server
 
 You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser.
 
-## 🙏 Thank You
+## 🙏 Thank you
 
 Once again, thanks so much for your interest in contributing to DocArray. We're excited to see your contributions!
