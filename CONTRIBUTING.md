@@ -49,7 +49,7 @@ There are also a couple of nice to haves:
 
 **Note:** If you're just fixing a typo or grammatical issue, you can go straight to a pull request.
 
-### Associate with GitHub account
+### Associate with your GitHub account
 
 - Confirm username and email on [your profile page](https://github.com/settings/profile).
 - Set git config on your computer.
@@ -68,8 +68,7 @@ git log  # to confirm the change is effective
 git push --force
 ```
 
-### Installing dependencies using 
-
+### Installing dependencies using Poetry
 
 We use [Poetry](https://python-poetry.org/) to manage our dependencies.
 
@@ -83,6 +82,7 @@ poetry install --all-extras # this will install all of the dependency needed for
 This will automatically create a virtual environment and install all the dependency from the `lockfile` of Poetry.
 
 To run your code you need to either activate the environment:
+
 ```shell
 poetry shell
 python XYZ
@@ -163,18 +163,18 @@ feat: add hat wobble
 +-------> Type: build, ci, chore, docs, feat, fix, refactor, style, or test.
 ```
 
-- ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
-- docs: Documentation only changes
-- feat: A new feature
-- fix: A bug fix
-- perf: A code change that improves performance
-- refactor: A code change that neither fixes a bug nor adds a feature
-- test: Adding missing tests or correcting existing tests
-- chore: updating grunt tasks etc.; no production code change
+- `ci`: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+- `docs`: Documentation only changes
+- `feat`: A new feature
+- `fix`: A bug fix
+- `perf`: A code change that improves performance
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: updating grunt tasks etc.; no production code change
 
 ### Writing your commit message
 
-A good commit message helps us track DocArray's development. A Pull Request with a bad commit message will be *rejected* automatically in the CI pipeline.
+A good commit message helps us track DocArray's development. A pull request with a bad commit message will be *rejected* automatically in the CI pipeline.
 
 Commit messages should stick to our [naming conventions](#-naming-conventions) outlined above, and use the format `type(scope?): subject`:
 
@@ -239,16 +239,19 @@ If appropriate, make the dependency optional. For example if it is a new library
 
 `mylib = {version = ">=X.y.z", optional = true }`
 
-you will also need to add an extra:
+You will also need to add an extra:
+
 ```toml
 [tool.poetry.extras]
 new_modalities = ['mylib']
 ```
 
 Note: Manual editing of `pyproject.toml` is equivalent  to `poetry add "mylib>=3.9"  -E new_modalities`
+
 <a name="-testing-docarray-locally-and-on-ci"></a>
 ## 💥 Testing DocArray Locally and on CI
-Locally you can run the test via:
+
+Locally you can run the tests via:
 
 ```bash
 poetry install --all-extras
@@ -257,22 +260,27 @@ poetry run pip install tensorflow
 poetry run pytest -v -s tests
 ```
 
-for local development we suggest to use the following command to run the tests
+For local development we suggest using the following command to run the tests:
+
 ```bash
 poetry run pytest -v -s tests -m 'not tensorflow and not slow and not internet'
 ```
-This only take a couple of second.
+
+This only take a couple of seconds.
 
 ### Test policy
 
 Every contribution that adds or modifies the behavior of a feature must include a suite of tests that validates that the feature works as expected.
 
 This allows:
+
 * the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base.
 * the contributors to be sure that they don't break already-merged features when refactoring or modifying the code base.
 
 <a name="-enable-logging"></a>
 ## Enable logging
+
+
 If you need to monitor and debug your code, you can enable docarray logging:
 ```python
 import logging
@@ -324,7 +332,7 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 Bonus: **Know when to break the rules**. Documentation writing is as much art as it is science. Sometimes you will have to deviate from these rules in order to write good documentation.
 
-[MyST](https://myst-parser.readthedocs.io/en/latest/) Elements Usage
+#### [MyST](https://myst-parser.readthedocs.io/en/latest/) Elements Usage
 
 1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
 2. Use the `{admonition}` boxes with care.
@@ -349,8 +357,8 @@ export NUM_RELEASES=10
 bash makedoc.sh local-only
 ```
 
-Docs website will be generated in `_build/dirhtml`
-To serve it, run
+The docs website will be generated in `_build/dirhtml`.
+To serve it, run:
 
 ```bash
 cd _build/dirhtml
