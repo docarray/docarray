@@ -1993,97 +1993,6 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-          Api references
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7">
-          <span class="md-nav__icon md-icon"></span>
-          Api references
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
-          Index
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7_1">
-          <span class="md-nav__icon md-icon"></span>
-          Index
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../api_references/index/backends/" class="md-nav__link">
-        Backends
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../../glossary/" class="md-nav__link">
         Glossary
@@ -2141,9 +2050,11 @@
 
 
 <div><h1 id="elasticsearch-document-index">ElasticSearch Document Index</h1>
-<p>DocArray comes with two Document Indexes for <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>:
-- <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, based on <a href="https://github.com/elastic/elasticsearch">Elasticsearch 8</a>.
-- <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, based on <a href="https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0">Elasticsearch 7.10</a>.</p>
+<p>DocArray comes with two Document Indexes for <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>:</p>
+<ul>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, based on <a href="https://github.com/elastic/elasticsearch">Elasticsearch 8</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, based on <a href="https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0">Elasticsearch 7.10</a>.</li>
+</ul>
 <div class="admonition tip">
 <p class="admonition-title">Should you use ES v7 or v8?</p>
 <p><a href="https://www.elastic.co/blog/whats-new-elastic-8-0-0">Elasticsearch v8</a> is the current version of ES and offers
@@ -2154,17 +2065,17 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Installation</p>
-<p>To use <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, you need to install the following dependencies:</p>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, you need to install the following dependencies:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">pip install elasticsearch==8.6.2</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">pip install elastic-transport</span>
 </span></code></pre></div>
-<p>To use <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, you need to install the following dependencies:</p>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, you need to install the following dependencies:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">pip install elasticsearch==7.10.1</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">pip install elastic-transport</span>
 </span></code></pre></div>
 </div>
-<p>The following examples is based on <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>,
-but will also work for <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>.</p>
+<p>The following examples is based on <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>,
+but will also work for <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>.</p>
 <h1 id="start-elasticsearch">Start ElasticSearch</h1>
 <p>You can use docker-compose to create a local Elasticsearch service with the following <code>docker-compose.yml</code>.</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">"3.3"</span>
@@ -2259,9 +2170,9 @@ This is the field that serves as the basis of comparison between your query and 
 <p>You can use the <code>limit</code> argument to configurate how may Documents to return.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a> is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms such as HNSW.
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a> is using Elasticsearch v7.10.1 which does not support approximate nearest neighbour algorithms such as HNSW.
 This can lead to a poor performance when the search involves many vectors.
-<a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a> does not have this limitation.</p>
+<a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a> does not have this limitation.</p>
 </div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">query</span> <span class="o">=</span> <span class="n">SimpleDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>

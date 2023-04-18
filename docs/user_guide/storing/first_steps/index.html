@@ -2080,97 +2080,6 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-          Api references
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7">
-          <span class="md-nav__icon md-icon"></span>
-          Api references
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
-          Index
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7_1">
-          <span class="md-nav__icon md-icon"></span>
-          Index
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../api_references/index/backends/" class="md-nav__link">
-        Backends
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../../glossary/" class="md-nav__link">
         Glossary
@@ -2331,7 +2240,7 @@ In fact, you can think of Document Index as an <strong><a href="https://sqlmodel
 <li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
 <li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
 </ul>
-<p>For this user guide you will use the <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>
+<p>For this user guide you will use the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>
 because it doesn't require you to launch a database server. Instead, it will store your data locally.</p>
 <div class="admonition note">
 <p class="admonition-title">Using a different vector database</p>
@@ -2341,14 +2250,14 @@ To do so, check out their respective documentation sections.</p>
 <div class="admonition note">
 <p class="admonition-title">HNSWLib-specific settings</p>
 <p>The following sections explain the general concept of Document Index by using
-<a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> as an example.
-For HNSWLib-specific settings, check out the <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> documentation
+<a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> as an example.
+For HNSWLib-specific settings, check out the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> documentation
 <a href="../index_hnswlib/">here</a>.</p>
 </div>
 <h2 id="create-a-document-index">Create a Document Index</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To use <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>, you need to install extra dependencies with the following command:</p>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>, you need to install extra dependencies with the following command:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">pip install "docarray[hnswlib]"</span>
 </span></code></pre></div>
 </div>
@@ -2396,7 +2305,7 @@ If the location already contains data from a previous session, it will be access
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># index the data</span>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </span></code></pre></div>
-<p>That call to <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex.index">index()</a> stores all Documents in <code>docs</code> into the Document Index,
+<p>That call to <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex.index">index()</a> stores all Documents in <code>docs</code> into the Document Index,
 ready to be retrieved in the next step.</p>
 <p>As you can see, <code>DocList[MyDoc]</code> and <code>HnswDocumentIndex[MyDoc]</code> are both parameterized with <code>MyDoc</code>.
 This means that they share the same schema, and in general, the schema of a Document Index and the data that you want to store
@@ -2491,7 +2400,7 @@ a list of <code>DocList</code>s, one for each query, containing the closest matc
 <p>In addition to vector similarity search, the Document Index interface offers methods for text search and filter search:
 <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.text_search">text_search()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.filter">filter()</a>,
 as well as their batched versions <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.text_search_batched">text_search_batched()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.filter_batched">filter_batched()</a></p>
-<p>The <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> implementation does not offer support for filter
+<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> implementation does not offer support for filter
 or text search.</p>
 <p>To see how to perform these operations, you can check out other backends that do.</p>
 <h2 id="perform-hybrid-search-through-the-query-builder">Perform hybrid search through the query builder</h2>

@@ -2065,97 +2065,6 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-          Api references
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7">
-          <span class="md-nav__icon md-icon"></span>
-          Api references
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
-      
-      
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
-          Index
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_7_1">
-          <span class="md-nav__icon md-icon"></span>
-          Index
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../api_references/index/backends/" class="md-nav__link">
-        Backends
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../../glossary/" class="md-nav__link">
         Glossary
@@ -2271,31 +2180,31 @@
 <div><h1 id="hnswlib-document-index">Hnswlib Document Index</h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To use <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>, one need to install the extra dependency with the following command</p>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>, one need to install the extra dependency with the following command</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">pip install "docarray[hnswlib]"</span>
 </span></code></pre></div>
 </div>
-<p><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> is a lightweight Document Index implementation
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> is a lightweight Document Index implementation
 that runs fully locally and is best suited for small to medium sized datasets.
 It stores vectors on disc in <a href="https://github.com/nmslib/hnswlib">hnswlib</a>, and stores all other data in <a href="https://www.sqlite.org/index.html">SQLite</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Production readiness</p>
-<p><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> is a great starting point
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> is a great starting point
 for small to medium sized datasets, but it is not battle tested in production. If scalability, uptime, etc. are
 important to you, we recommend you eventually transition to one of our database backed Document Index implementations:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.qdrant.QdrantDocumentIndex">QdrantDocumentIndex</a></li>
-<li><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.weaviate.WeaviateDocumentIndex">WeaviateDocumentIndex</a></li>
-<li><a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocumentIndex</a></li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/qdrant/#docarray.index.backends.qdrant.QdrantDocumentIndex">QdrantDocumentIndex</a></li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/weaviate/#docarray.index.backends.weaviate.WeaviateDocumentIndex">WeaviateDocumentIndex</a></li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocumentIndex</a></li>
 </ul>
 </div>
 <h2 id="basic-usage">Basic Usage</h2>
-<p>To see how to create a <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> instance, add Documents,
+<p>To see how to create a <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> instance, add Documents,
 perform search, etc. see the <a href="../first_steps/#document-index">general user guide</a>.</p>
 <h2 id="configuration">Configuration</h2>
-<p>This section lays out the configurations and options that are specific to <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>.</p>
+<p>This section lays out the configurations and options that are specific to <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>.</p>
 <h3 id="dbconfig">DBConfig</h3>
-<p>The <code>DBConfig</code> of <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> expects only one argument:
+<p>The <code>DBConfig</code> of <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> expects only one argument:
 <code>work_dir</code>.</p>
 <p>This is the location where all of the Index's data will be stored: The vaious HNSWLib indexes, as well as the SQLite database.</p>
 <p>You can pass this directly to the constructor:</p>
@@ -2320,7 +2229,7 @@ This means that if you try to open an index that is already open in another proc
 To avoid this, you can specify a different <code>work_dir</code> for each process.</p>
 </div>
 <h3 id="runtimeconfig">RuntimeConfig</h3>
-<p>The <code>RuntimeConfig</code> of <a class="autorefs autorefs-internal" href="../../../api_references/index/backends/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> contains only one entry,
+<p>The <code>RuntimeConfig</code> of <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> contains only one entry,
 the default mapping from Python types to column configurations.</p>
 <p>You can see in the <a href="#field-wise-configurations">section below</a> how to override configurations for specific fields.
 If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using <code>RuntimeConfig</code>:</p>
