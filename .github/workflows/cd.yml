@@ -48,8 +48,8 @@ jobs:
         run: |
           echo "readme_changed=true" >> $GITHUB_OUTPUT
 
-#  publish-docarray-org:
-#    needs: check-readme-modification
-#    if: needs.check-readme-modification.outputs.readme_changed == 'true'
-#    uses: ./.github/workflows/publish-docarray-org.yml
-#    secrets: inherit
+  publish-docarray-org:
+    needs: check-readme-modification
+    if: needs.check-readme-modification.outputs.readme_changed == 'true'
+    uses: ./.github/workflows/publish-docarray-org.yml
+    secrets: inherit
