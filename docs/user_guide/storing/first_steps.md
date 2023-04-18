@@ -1,4 +1,4 @@
-# Overview
+# Introduction
 
 A Document Index lets you store your Documents and search through them using vector similarity.
 
