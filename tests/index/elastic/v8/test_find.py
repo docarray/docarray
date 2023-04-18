@@ -4,21 +4,27 @@ import torch
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
+from docarray.index import ElasticDocIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.integrations.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.integrations.doc_index.elastic.fixture import FlatDoc, SimpleDoc
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+from tests.index.elastic.fixture import FlatDoc, SimpleDoc
 
-pytestmark = [pytest.mark.slow, pytest.mark.index]
+pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
 
-def test_find_simple_schema():
+@pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
+def test_find_simple_schema(similarity):
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(similarity=similarity)
 
-    store = ElasticV7DocIndex[SimpleSchema]()
+    store = ElasticDocIndex[SimpleSchema]()
 
-    index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
+    index_docs = []
+    for _ in range(10):
+        vec = np.random.rand(10)
+        if similarity == 'dot_product':
+            vec = vec / np.linalg.norm(vec)
+        index_docs.append(SimpleDoc(tens=vec))
     store.index(index_docs)
 
     query = index_docs[-1]
@@ -26,22 +32,27 @@ def test_find_simple_schema():
 
     assert len(docs) == 5
     assert len(scores) == 5
-
     assert docs[0].id == index_docs[-1].id
     assert np.allclose(docs[0].tens, index_docs[-1].tens)
 
 
-def test_find_flat_schema():
+@pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
+def test_find_flat_schema(similarity):
     class FlatSchema(BaseDoc):
-        tens_one: NdArray = Field(dims=10)
-        tens_two: NdArray = Field(dims=50)
+        tens_one: NdArray = Field(dims=10, similarity=similarity)
+        tens_two: NdArray = Field(dims=50, similarity=similarity)
 
-    store = ElasticV7DocIndex[FlatSchema]()
+    store = ElasticDocIndex[FlatSchema]()
 
-    index_docs = [
-        FlatDoc(tens_one=np.random.rand(10), tens_two=np.random.rand(50))
-        for _ in range(10)
-    ]
+    index_docs = []
+    for _ in range(10):
+        vec_one = np.random.rand(10)
+        vec_two = np.random.rand(50)
+        if similarity == 'dot_product':
+            vec_one = vec_one / np.linalg.norm(vec_one)
+            vec_two = vec_two / np.linalg.norm(vec_two)
+        index_docs.append(FlatDoc(tens_one=vec_one, tens_two=vec_two))
+
     store.index(index_docs)
 
     query = index_docs[-1]
@@ -63,27 +74,37 @@ def test_find_flat_schema():
     assert np.allclose(docs[0].tens_two, index_docs[-1].tens_two)
 
 
-def test_find_nested_schema():
+@pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
+def test_find_nested_schema(similarity):
     class SimpleDoc(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(similarity=similarity)
 
     class NestedDoc(BaseDoc):
         d: SimpleDoc
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(similarity=similarity)
 
     class DeepNestedDoc(BaseDoc):
         d: NestedDoc
-        tens: NdArray = Field(dims=10)
+        tens: NdArray = Field(similarity=similarity, dims=10)
 
-    store = ElasticV7DocIndex[DeepNestedDoc]()
+    store = ElasticDocIndex[DeepNestedDoc]()
 
-    index_docs = [
-        DeepNestedDoc(
-            d=NestedDoc(d=SimpleDoc(tens=np.random.rand(10)), tens=np.random.rand(10)),
-            tens=np.random.rand(10),
+    index_docs = []
+    for _ in range(10):
+        vec_simple = np.random.rand(10)
+        vec_nested = np.random.rand(10)
+        vec_deep = np.random.rand(10)
+        if similarity == 'dot_product':
+            vec_simple = vec_simple / np.linalg.norm(vec_simple)
+            vec_nested = vec_nested / np.linalg.norm(vec_nested)
+            vec_deep = vec_deep / np.linalg.norm(vec_deep)
+        index_docs.append(
+            DeepNestedDoc(
+                d=NestedDoc(d=SimpleDoc(tens=vec_simple), tens=vec_nested),
+                tens=vec_deep,
+            )
         )
-        for _ in range(10)
-    ]
+
     store.index(index_docs)
 
     query = index_docs[-1]
@@ -114,7 +135,7 @@ def test_find_torch():
     class TorchDoc(BaseDoc):
         tens: TorchTensor[10]
 
-    store = ElasticV7DocIndex[TorchDoc]()
+    store = ElasticDocIndex[TorchDoc]()
 
     # A dense_vector field stores dense vectors of float values.
     index_docs = [
@@ -143,7 +164,7 @@ def test_find_tensorflow():
     class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
-    store = ElasticV7DocIndex[TfDoc]()
+    store = ElasticDocIndex[TfDoc]()
 
     index_docs = [
         TfDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
@@ -168,7 +189,7 @@ def test_find_tensorflow():
 
 
 def test_find_batched():
-    store = ElasticV7DocIndex[SimpleDoc]()
+    store = ElasticDocIndex[SimpleDoc]()
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     store.index(index_docs)
@@ -191,7 +212,7 @@ def test_filter():
         B: int
         C: float
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
 
     index_docs = [MyDoc(id=f'{i}', A=(i % 2 == 0), B=i, C=i + 0.5) for i in range(10)]
     store.index(index_docs)
@@ -218,7 +239,7 @@ def test_text_search():
     class MyDoc(BaseDoc):
         text: str
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     index_docs = [
         MyDoc(text='hello world'),
         MyDoc(text='never gonna give you up'),
@@ -245,15 +266,13 @@ def test_text_search():
 
 def test_query_builder():
     class MyDoc(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(similarity='l2_norm')
         num: int
         text: str
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     index_docs = [
-        MyDoc(
-            id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'
-        )
+        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
         for i in range(10)
     ]
     store.index(index_docs)
@@ -269,13 +288,10 @@ def test_query_builder():
 
     # find
     q = store.build_query().find(index_docs[-1], search_field='tens', limit=3).build()
-    docs, scores = store.execute_query(q)
-    assert len(docs) == 3
-    assert len(scores) == 3
-    assert docs[0]['id'] == index_docs[-1].id
-    assert np.allclose(docs[0]['tens'], index_docs[-1].tens)
+    docs, _ = store.execute_query(q)
+    assert [doc['id'] for doc in docs] == ['9', '8', '7']
 
-    # text search
+    # text_search
     q = store.build_query().text_search('0', search_field='text').build()
     docs, _ = store.execute_query(q)
     assert [doc['id'] for doc in docs] == ['0', '1']
@@ -289,32 +305,24 @@ def test_query_builder():
         .build()
     )
     docs, _ = store.execute_query(q)
-    assert sorted([doc['id'] for doc in docs]) == ['0', '1']
+    assert [doc['id'] for doc in docs] == ['1', '0']
 
     # direct
-    index_docs = [
-        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
-        for i in range(10)
-    ]
-    store.index(index_docs)
-
     query = {
-        'query': {
-            'script_score': {
-                'query': {
-                    'bool': {
-                        'filter': [
-                            {'range': {'num': {'gte': 2}}},
-                            {'range': {'num': {'lte': 3}}},
-                        ],
-                    },
-                },
-                'script': {
-                    'source': '1 / (1 + l2norm(params.query_vector, \'tens\'))',
-                    'params': {'query_vector': index_docs[-1].tens},
-                },
-            }
-        }
+        'knn': {
+            'field': 'tens',
+            'query_vector': [9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0],
+            'k': 10,
+            'num_candidates': 10000,
+            'filter': {
+                'bool': {
+                    'filter': [
+                        {'range': {'num': {'gte': 2}}},
+                        {'range': {'num': {'lte': 3}}},
+                    ]
+                }
+            },
+        },
     }
 
     docs, _ = store.execute_query(query)

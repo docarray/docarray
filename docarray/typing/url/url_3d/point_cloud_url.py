@@ -29,7 +29,7 @@ class PointCloud3DUrl(Url3D):
         trimesh_args: Optional[Dict[str, Any]] = None,
     ) -> 'PointsAndColors':
         """
-        Load the data from the url into an NdArray containing point cloud information.
+        Load the data from the url into an `NdArray` containing point cloud information.
 
 
         ---
@@ -45,7 +45,7 @@ class PointCloud3DUrl(Url3D):
             point_cloud_url: PointCloud3DUrl
 
 
-        doc = MyDoc(point_cloud_url="toydata/tetrahedron.obj")
+        doc = MyDoc(point_cloud_url="thttps://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
         # point_cloud = doc.point_cloud_url.load(samples=100)
 
@@ -93,23 +93,27 @@ class PointCloud3DUrl(Url3D):
         """
         Plot point cloud from url.
 
-        First, it loads the point cloud into a :class:`PointsAndColors` object, and then
+        First, it loads the point cloud into a `PointsAndColors` object, and then
         calls display on it. The following is therefore equivalent:
 
-        .. code-block:: python
+        ---
 
-            import numpy as np
-            from docarray import BaseDoc
+        ```python
+        import numpy as np
+        from docarray import BaseDoc
 
-            from docarray.documents import PointCloud3D
+        from docarray.documents import PointCloud3D
 
-            pc = PointCloud3D("toydata/tetrahedron.obj")
+        pc = PointCloud3D(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
 
-            # option 1
-            pc.url.display()
+        # option 1
+        # pc.url.display()
 
-            # option 2 (equivalent)
-            pc.url.load(samples=10000).display()
+        # option 2 (equivalent)
+        # pc.url.load(samples=10000).display()
+        ```
+
+        ---
 
         :param samples: number of points to sample from the mesh.
         """

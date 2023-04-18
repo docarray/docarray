@@ -3,11 +3,11 @@ from typing_extensions import TYPE_CHECKING
 from docarray.typing.bytes import AudioBytes, ImageBytes, VideoBytes
 from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
-from docarray.typing.tensor.audio import AudioNdArray
+from docarray.typing.tensor.audio import AudioNdArray, AudioTensor
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.typing.tensor.video import VideoNdArray
+from docarray.typing.tensor.video import VideoNdArray, VideoTensor
 from docarray.typing.url import (
     AnyUrl,
     AudioUrl,
@@ -50,6 +50,8 @@ __all__ = [
     'ID',
     'AnyTensor',
     'ImageTensor',
+    'AudioTensor',
+    'VideoTensor',
     'ImageNdArray',
     'ImageBytes',
     'VideoBytes',
@@ -71,6 +73,7 @@ _tf_tensors = [
     'AudioTensorFlowTensor',
     'VideoTensorFlowTensor',
 ]
+__all_test__ = __all__ + _torch_tensors
 
 
 def __getattr__(name: str):
@@ -86,7 +89,6 @@ def __getattr__(name: str):
     import docarray.typing.tensor
 
     tensor_cls = getattr(docarray.typing.tensor, name)
-
     if name not in __all__:
         __all__.append(name)
 

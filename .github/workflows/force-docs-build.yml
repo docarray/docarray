@@ -1,0 +1,91 @@
+name: Manual Docs Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_token:
+        description: 'Your release token'
+        required: true
+      triggered_by:
+        description: 'CD | TAG | MANUAL'
+        required: false
+        default: MANUAL
+      build_old_docs:
+        description: 'Whether to build old docs (TRUE | FALSE)'
+        type: string
+        default: 'FALSE'
+      package:
+        description: The name of the repo to build documentation for.
+        type: string
+        default: docarray
+      repo_owner:
+        description: The owner of the repo to build documentation for. Defaults to 'jina-ai'.
+        type: string
+        default: jina-ai
+      pages_branch:
+        description: Branch that Github Pages observes
+        type: string
+        default: gh-pages
+      git_config_name:
+        type: string
+        default: Jina Dev Bot
+      git_config_email:
+        type: string
+        default: dev-bot@jina.ai
+
+jobs:
+  token-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check release token
+        id: token-check
+        run: | 
+          touch SUCCESS
+        if: inputs.release_token == env.release_token
+        env:
+          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
+      - name: Fail release token
+        run: |
+          [[ -f SUCCESS ]]
+
+  build-and-push-latest-docs:
+    needs: token-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
+
+      - name: docs Build
+        run: |
+          cd docs
+          bash makedocs.sh
+          cd ..
+      - name: Checkout to GH pages branch (${{ inputs.pages_branch }})
+        run: |
+          git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
+          git checkout -f ${{ inputs.pages_branch }}
+          git reset --hard HEAD
+      - name: Moving old doc versions
+        run: |
+          cd docs
+          for i in $(cat _versions.json | jq '.[].version' | tr -d '"'); do if [ -d "$i" ]; then mv "$i" /tmp/gen-html; fi; done
+      - name: Swap in new docs
+        run: |
+          rm -rf ./docs
+          mv /tmp/gen-html ./docs
+      - name: Push it up!
+        run: |
+          git config --local user.email "${{ inputs.git_config_email }}"
+          git config --local user.name "${{ inputs.git_config_name }}"
+          git show --summary
+          git add ./docs && git commit -m "chore(docs): update docs due to ${{github.event_name}} on ${{github.repository}}"
+          git push origin ${{ inputs.pages_branch }}

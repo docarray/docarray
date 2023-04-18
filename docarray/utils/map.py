@@ -57,8 +57,8 @@ def map_docs(
     ---
 
     :param docs: DocList to apply function to
-    :param func: a function that takes a :class:`BaseDoc` as input and outputs
-        a :class:`BaseDoc`.
+    :param func: a function that takes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
+        as input and outputs a [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
     :param backend: `thread` for multithreading and `process` for multiprocessing.
         Defaults to `thread`.
         In general, if `func` is IO-bound then `thread` is a good choice.
@@ -69,7 +69,7 @@ def map_docs(
         Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
         falls under the "IO-bound" category.
 
-        .. warning::
+        !!! warning
             When using `process` backend, your `func` should not modify elements in-place.
             This is because the multiprocessing backend passes the variable via pickle
             and works in another process.
@@ -116,7 +116,7 @@ def map_docs_batched(
     """
     Return an iterator that applies `func` to every **minibatch** of iterable in parallel,
     yielding the results.
-    Each element in the returned iterator is an :class:`AnyDocArray`.
+    Each element in the returned iterator is an `AnyDocArray`.
 
     ---
 
@@ -168,7 +168,7 @@ def map_docs_batched(
         Note that computation that is offloaded to non-python code (e.g. through np/torch/tf)
         falls under the "IO-bound" category.
 
-        .. warning::
+        !!! warning
             When using `process` backend, your `func` should not modify elements in-place.
             This is because the multiprocessing backend passes the variable via pickle
             and works in another process.

@@ -38,8 +38,8 @@ class metaTensorFlow(
 @_register_proto(proto_type_name='tensorflow_tensor')
 class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow):
     """
-    TensorFlowTensor class with a :attr:`~docarray.typing.TensorFlowTensor.tensor`
-    attribute of type :class:`tf.Tensor`, intended for use in a Document.
+    TensorFlowTensor class with a `.tensor` attribute of type `tf.Tensor`,
+    intended for use in a Document.
 
     This enables (de)serialization from/to protobuf and json, data validation,
     and coersion from compatible types like numpy.ndarray.
@@ -47,95 +47,114 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     This type can also be used in a parametrized way, specifying the shape of the
     tensor.
 
-    In comparison to :class:`~docarray.typing.TorchTensor` and
-    :class:`~docarray.typing.NdArray`, :class:`~docarray.typing.TensorFlowTensor` is not
-    a subclass of :class:`tf.Tensor` (or :class:`torch.Tensor`, :class:`np.ndarray`
-    respectively).
-    Instead, the :class:`tf.Tensor` is stored in
-    :attr:`~docarray.typing.TensorFlowTensor.tensor`.
+    In comparison to [`TorchTensor`][docarray.typing.TorchTensor] and
+    [`NdArray`][docarray.typing.tensor.ndarray.NdArray],
+    [`TensorFlowTensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor]
+    is not a subclass of `tf.Tensor` (or `torch.Tensor`, `np.ndarray` respectively).
+    Instead, the `tf.Tensor` is stored in
+    [`TensorFlowTensor.tensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor].
     Therefore, to do operations on the actual tensor data you have to always access the
-    :attr:`~docarray.typing.TensorFlowTensor.tensor` attribute.
+    [`TensorFlowTensor.tensor`][docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor]
+    attribute.
 
-    EXAMPLE USAGE
+    ---
 
-    .. code-block:: python
-
-        import tensorflow as tf
-        from docarray.typing import TensorFlowTensor
-
-
-        t = TensorFlowTensor(tensor=tf.zeros((224, 224)))
-
-        # tensorflow functions
-        broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
-        broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
-        broadcasted = tf.broadcast_to(t, (3, 224, 224))  # this will fail
-
-        # tensorflow.Tensor methods:
-        arr = t.tensor.numpy()
-        arr = t.unwrap().numpy()
-        arr = t.numpy()  # this will fail
-
-    The :class:`~docarray.computation.tensorflow_backend.TensorFlowBackend` however,
-    operates on our :class:`~docarray.typing.TensorFlowTensor` instances.
-    Here, you do not have to access the :attr:`~docarray.typing.TensorFlowTensor.tensor`
-    but can instead just hand over your :class:`~docarray.typing.TensorFlowTensor`
-    instance.
-
-    .. code-block:: python
-
-        import tensorflow as tf
-        from docarray.typing import TensorFlowTensor
+    ```python
+    import tensorflow as tf
+    from docarray.typing import TensorFlowTensor
 
 
-        zeros = TensorFlowTensor(tensor=tf.zeros((3, 224, 224)))
+    t = TensorFlowTensor(tensor=tf.zeros((224, 224)))
 
-        comp_be = zeros.get_comp_backend()
-        reshaped = comp_be.reshape(zeros, (224, 224, 3))
-        assert comp_be.shape(reshaped) == (224, 224, 3)
+    # tensorflow functions
+    broadcasted = tf.broadcast_to(t.tensor, (3, 224, 224))
+    broadcasted = tf.broadcast_to(t.unwrap(), (3, 224, 224))
 
-    You can use :class:`~docarray.typing.TensorFlowTensor` in a Document as follows:
+    # this will fail:
+    # broadcasted = tf.broadcast_to(t, (3, 224, 224))
 
-    .. code-block:: python
+    # tensorflow.Tensor methods:
+    arr = t.tensor.numpy()
+    arr = t.unwrap().numpy()
 
-        from docarray import BaseDoc
-        from docarray.typing import TensorFlowTensor
-        import tensorflow as tf
+    # this will fail:
+    # arr = t.numpy()
+    ```
+
+    ---
+
+    The [`TensorFlowBackend`] however, operates on our
+    [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instances.
+    Here, you do not have to access the `.tensor` attribute,
+    but can instead just hand over your
+    [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] instance.
+
+    ---
+
+    ```python
+    import tensorflow as tf
+    from docarray.typing import TensorFlowTensor
 
 
-        class MyDoc(BaseDoc):
-            tensor: TensorFlowTensor
-            image_tensor: TensorFlowTensor[3, 224, 224]
-            square_crop: TensorFlowTensor[3, 'x', 'x']
-            random_image: TensorFlowTensor[
-                3, ...
-            ]  # first dimension is fixed, can have arbitrary shape
+    zeros = TensorFlowTensor(tensor=tf.zeros((3, 224, 224)))
+
+    comp_be = zeros.get_comp_backend()
+    reshaped = comp_be.reshape(zeros, (224, 224, 3))
+    assert comp_be.shape(reshaped) == (224, 224, 3)
+    ```
+
+    ---
+
+    You can use [`TensorFlowTensor`][docarray.typing.TensorFlowTensor] in a Document as follows:
+
+    ---
+
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import TensorFlowTensor
+    import tensorflow as tf
 
 
-        # create a document with tensors
-        doc = MyDoc(
-            tensor=tf.zeros((128,)),
-            image_tensor=tf.zeros((3, 224, 224)),
-            square_crop=tf.zeros((3, 64, 64)),
-            random_image=tf.zeros(3, 128, 256),
-        )
+    class MyDoc(BaseDoc):
+        tensor: TensorFlowTensor
+        image_tensor: TensorFlowTensor[3, 224, 224]
+        square_crop: TensorFlowTensor[3, 'x', 'x']
+        random_image: TensorFlowTensor[
+            3, ...
+        ]  # first dimension is fixed, can have arbitrary shape
 
-        # automatic shape conversion
-        doc = MyDoc(
-            tensor=tf.zeros((128,)),
-            image_tensor=tf.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
-            square_crop=tf.zeros((3, 128, 128)),
-            random_image=tf.zeros(3, 64, 128),
-        )
 
-        # !! The following will raise an error due to shape mismatch !!
+    # create a document with tensors
+    doc = MyDoc(
+        tensor=tf.zeros((128,)),
+        image_tensor=tf.zeros((3, 224, 224)),
+        square_crop=tf.zeros((3, 64, 64)),
+        random_image=tf.zeros((3, 128, 256)),
+    )
+
+    # automatic shape conversion
+    doc = MyDoc(
+        tensor=tf.zeros((128,)),
+        image_tensor=tf.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+        square_crop=tf.zeros((3, 128, 128)),
+        random_image=tf.zeros((3, 64, 128)),
+    )
+
+    # !! The following will raise an error due to shape mismatch !!
+    from pydantic import ValidationError
+
+    try:
         doc = MyDoc(
             tensor=tf.zeros((128,)),
             image_tensor=tf.zeros((224, 224)),  # this will fail validation
             square_crop=tf.zeros((3, 128, 64)),  # this will also fail validation
             random_image=tf.zeros(4, 64, 128),  # this will also fail validation
         )
+    except ValidationError as e:
+        pass
+    ```
 
+    ---
     """
 
     __parametrized_meta__ = metaTensorFlow
@@ -153,7 +172,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         return TensorFlowCompBackend._cast_output(t=tensor)
 
     def __setitem__(self, index, value):
-        """Set a slice of this tensor's tf.Tensor"""
+        """Set a slice of this tensor's `tf.Tensor`"""
         t = self.unwrap()
         value = tf.cast(value, dtype=t.dtype)
         var = tf.Variable(t)
@@ -161,7 +180,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         self.tensor = tf.constant(var)
 
     def __iter__(self):
-        """Iterate over the elements of this tensor's tf.Tensor."""
+        """Iterate over the elements of this tensor's `tf.Tensor`."""
         for i in range(len(self)):
             yield self[i]
 
@@ -196,11 +215,11 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     @classmethod
     def _docarray_from_native(cls: Type[T], value: Union[tf.Tensor, T]) -> T:
         """
-        Create a TensorFlowTensor from a tensorflow.Tensor or TensorFlowTensor
+        Create a `TensorFlowTensor` from a `tf.Tensor` or `TensorFlowTensor`
         instance.
 
-        :param value: instance of tf.Tensor or TensorFlowTensor
-        :return: a TensorFlowTensor
+        :param value: instance of `tf.Tensor` or `TensorFlowTensor`
+        :return: a `TensorFlowTensor`
         """
         if isinstance(value, TensorFlowTensor):
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized
@@ -231,7 +250,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
-        Convert TensorFlowTensor into a json compatible object
+        Convert `TensorFlowTensor` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
         return self.unwrap().numpy()
@@ -257,7 +276,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         """
         Read ndarray from a proto msg.
         :param pb_msg:
-        :return: a TensorFlowTensor
+        :return: a `TensorFlowTensor`
         """
         source = pb_msg.dense
         if source.buffer:
@@ -272,33 +291,35 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
-        """Create a TensorFlowTensor from a numpy array.
+        """Create a `TensorFlowTensor` from a numpy array.
 
         :param value: the numpy array
-        :return: a TensorFlowTensor
+        :return: a `TensorFlowTensor`
         """
         return cls._docarray_from_native(tf.convert_to_tensor(value))
 
     def unwrap(self) -> tf.Tensor:
         """
-        Return the original tensorflow.Tensor without any memory copy.
+        Return the original `tf.Tensor` without any memory copy.
 
-        The original view rest intact and is still a Document TensorFlowTensor
-        but the return object is a pure tf.Tensor but both object share
+        The original view rest intact and is still a Document `TensorFlowTensor`
+        but the return object is a pure `tf.Tensor` but both object share
         the same memory layout.
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray.typing import TensorFlowTensor
-            import tensorflow as tf
+        ---
 
-            t1 = TensorFlowTensor.validate(tf.zeros((3, 224, 224)), None, None)
-            # here t1 is a docarray TensorFlowTensor
-            t2 = t.unwrap()
-            # here t2 is a pure tf.Tensor but t1 is still a Docarray TensorFlowTensor
+        ```python
+        from docarray.typing import TensorFlowTensor
+        import tensorflow as tf
 
+        t1 = TensorFlowTensor.validate(tf.zeros((3, 224, 224)), None, None)
+        # here t1 is a docarray TensorFlowTensor
+        t2 = t1.unwrap()
+        # here t2 is a pure tf.Tensor but t1 is still a Docarray TensorFlowTensor
+        ```
 
-        :return: a tf.Tensor
+        ---
+        :return: a `tf.Tensor`
         """
         return self.tensor
 

@@ -24,7 +24,8 @@ class UpdateMixin:
         """
         Updates self with the content of other. Changes are applied to self.
         Updating one Document with another consists in the following:
-         - setting data properties of the second Document to the first Document
+
+         - Setting data properties of the second Document to the first Document
          if they are not None
          - Concatenating lists and updating sets
          - Updating recursively Documents and DocArrays
@@ -34,34 +35,37 @@ class UpdateMixin:
         it is applied to a static schema type, the presence of the field is
         given by the field not having a None value and that DocArrays,
         lists and sets are concatenated. It is worth mentioning that Tuples
-        are not merged together since they are meant to be inmutable,
+        are not merged together since they are meant to be immutable,
         so they behave as regular types and the value of `self` is updated
-        with the value of `other`
-
-            EXAMPLE USAGE
-
-            .. code-block:: python
-
-                from docarray import BaseDoc
-                from docarray.documents import Text
+        with the value of `other`.
 
 
-                class MyDocument(BaseDoc):
-                    content: str
-                    title: Optional[str] = None
-                    tags_: List
+        ---
+
+        ```python
+        from typing import List, Optional
+
+        from docarray import BaseDoc
 
 
-                doc1 = MyDocument(
-                    content='Core content of the document', title='Title', tags_=['python', 'AI']
-                )
-                doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+        class MyDocument(BaseDoc):
+            content: str
+            title: Optional[str] = None
+            tags_: List
 
-                doc1.update(doc2)
-                assert doc1.content == 'Core content updated'
-                assert doc1.title == 'Title'
-                assert doc1.tags_ == ['python', 'AI', 'docarray']
 
+        doc1 = MyDocument(
+            content='Core content of the document', title='Title', tags_=['python', 'AI']
+        )
+        doc2 = MyDocument(content='Core content updated', tags_=['docarray'])
+
+        doc1.update(doc2)
+        assert doc1.content == 'Core content updated'
+        assert doc1.title == 'Title'
+        assert doc1.tags_ == ['python', 'AI', 'docarray']
+        ```
+
+        ---
         :param other: The Document with which to update the contents of this
         """
         if type(self) != type(other):

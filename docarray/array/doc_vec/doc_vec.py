@@ -59,32 +59,34 @@ class DocVec(AnyDocArray[T_doc]):
     computation that require batches of data (ex: matrix multiplication, distance
     calculation, deep learning forward pass)
 
-    A DocVec has a similar interface as
-    {class}`~docarray.array.DocList` but with an underlying implementation that is
-    column based instead of row based. Each field
-    of the schema of the DocArrayStack
-    (the :attr:`~docarray.array.doc_vec.DocVec.doc_type` which is a
-    `BaseDoc`) will be stored in a column. If the field is a tensor, the data from all Documents will be stored as a single, doc_vec (torch/np/tf) tensor.
-    If the tensor field
-    is `AnyTensor` or a Union of tensor types, the
-    :attr:`~docarray.array.doc_vec.DocVec.tensor_type` will be used to determine
-    the type of the doc_vec column.
+    A DocVec has a similar interface as [`DocList`][docarray.array.DocList]
+    but with an underlying implementation that is column based instead of row based.
+    Each field of the schema of the `DocVec` (the `.doc_type` which is a
+    [`BaseDoc`][docarray.BaseDoc]) will be stored in a column.
 
-    If the field is another `BasedDoc` the column will be another DocVec that follows the
-    schema of the nested Document.
-    If the field is a `DocList` or
-    `DocVec` then the column will be a list of `DocVec`.
+    If the field is a tensor, the data from all Documents will be stored as a single
+    doc_vec (torch/np/tf) tensor.
+
+    If the tensor field is `AnyTensor` or a Union of tensor types, the
+    `.tensor_type` will be used to determine the type of the doc_vec column.
+
+    If the field is another [`BaseDoc`][docarray.BaseDoc] the column will be another
+    `DocVec` that follows the schema of the nested Document.
+
+    If the field is a [`DocList`][docarray.DocList] or `DocVec` then the column will
+    be a list of `DocVec`.
+
     For any other type the column is a Python list.
 
-    Every `Document` inside a `DocVec` is a view into the data columns stored at the `DocVec` level. The `BaseDoc`  does
-     not hold any data itself. The behavior of
-     this Document "view" is similar to the behavior of `view = tensor[i]` in
-     numpy/PyTorch.
+    Every `Document` inside a `DocVec` is a view into the data columns stored at the
+    `DocVec` level. The `BaseDoc` does not hold any data itself. The behavior of
+    this Document "view" is similar to the behavior of `view = tensor[i]` in
+    numpy/PyTorch.
 
-    :param docs: a homogeneous sequence of BaseDoc
+    :param docs: a homogeneous sequence of `BaseDoc`
     :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
-    if the BaseDoc of this DocVec has some undefined tensor type like
-    AnyTensor or Union of NdArray and TorchTensor
+        if the BaseDoc of this DocVec has some undefined tensor type like
+        AnyTensor or Union of NdArray and TorchTensor
     """
 
     doc_type: Type[T_doc]
@@ -136,7 +138,6 @@ class DocVec(AnyDocArray[T_doc]):
                     tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
-
                     tensor = getattr(docs[0], field_name)
                     column_shape = (
                         (len(docs), *tensor.shape)
@@ -159,7 +160,7 @@ class DocVec(AnyDocArray[T_doc]):
                         cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDoc):
-                    doc_columns[field_name] = getattr(docs, field_name).stack(
+                    doc_columns[field_name] = getattr(docs, field_name).to_doc_vec(
                         tensor_type=self.tensor_type
                     )
 
@@ -168,7 +169,7 @@ class DocVec(AnyDocArray[T_doc]):
                     for doc in docs:
                         docs_nested = getattr(doc, field_name)
                         if isinstance(docs_nested, DocList):
-                            docs_nested = docs_nested.stack(
+                            docs_nested = docs_nested.to_doc_vec(
                                 tensor_type=self.tensor_type
                             )
                         docs_list.append(docs_nested)
@@ -195,7 +196,7 @@ class DocVec(AnyDocArray[T_doc]):
         """
         Create a DocVec directly from a storage object
         :param storage: the underlying storage.
-        :return: a DocArrayStack
+        :return: a DocVec
         """
         docs = cls.__new__(cls)
         docs.tensor_type = storage.tensor_type
@@ -212,7 +213,7 @@ class DocVec(AnyDocArray[T_doc]):
         if isinstance(value, cls):
             return value
         elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
-            return cast(T, value.stack())
+            return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
             return cls(value)
         elif isinstance(value, Iterable):
@@ -327,7 +328,7 @@ class DocVec(AnyDocArray[T_doc]):
                     f'this DocVec schema : {self.doc_type}'
                 )
             processed_value = cast(
-                T, value.stack(tensor_type=self.tensor_type)
+                T, value.to_doc_vec(tensor_type=self.tensor_type)
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
@@ -376,7 +377,6 @@ class DocVec(AnyDocArray[T_doc]):
             self._storage.tensor_columns[field] = values
 
         elif field in self._storage.doc_columns.keys():
-
             values_ = parse_obj_as(
                 DocVec.__class_getitem__(self._storage.doc_columns[field].doc_type),
                 values,
@@ -474,7 +474,7 @@ class DocVec(AnyDocArray[T_doc]):
             any_columns=any_columns_proto,
         )
 
-    def unstack(self: T) -> DocList[T_doc]:
+    def to_doc_list(self: T) -> DocList[T_doc]:
         """Convert DocVec into a DocList.
 
         Note this destroys the arguments and returns a new DocList
@@ -486,10 +486,10 @@ class DocVec(AnyDocArray[T_doc]):
         unstacked_any_column = self._storage.any_columns
 
         for field, doc_col in self._storage.doc_columns.items():
-            unstacked_doc_column[field] = doc_col.unstack()
+            unstacked_doc_column[field] = doc_col.to_doc_list()
 
         for field, da_col in self._storage.docs_vec_columns.items():
-            unstacked_da_column[field] = [docs.unstack() for docs in da_col]
+            unstacked_da_column[field] = [docs.to_doc_list() for docs in da_col]
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
             # list is needed here otherwise we cannot delete the column

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @_register_proto(proto_type_name='video_ndarray')
 class VideoNdArray(NdArray, VideoTensorMixin):
     """
-    Subclass of NdArray, to represent a video tensor.
+    Subclass of [`NdArray`][docarray.typing.NdArray], to represent a video tensor.
     Adds video-specific features to the tensor.
 
     ---
@@ -42,15 +42,13 @@ class VideoNdArray(NdArray, VideoTensorMixin):
         video_tensor=np.random.random((100, 224, 224, 3)),
     )
 
-    doc_1.video_tensor.save(file_path='/tmp/file_1.mp4')
-
     doc_2 = MyVideoDoc(
         title='my_second_video_doc',
-        url='/tmp/file_1.mp4',
+        url='https://github.com/docarray/docarray/blob/feat-rewrite-v2/tests/toydata/mov_bbb.mp4?raw=true',
     )
 
     doc_2.video_tensor = parse_obj_as(VideoNdArray, doc_2.url.load().video)
-    doc_2.video_tensor.save(file_path='/tmp/file_2.mp4')
+    # doc_2.video_tensor.save(file_path='/tmp/file_2.mp4')
     ```
 
     ---
