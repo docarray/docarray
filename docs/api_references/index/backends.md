@@ -1,3 +1,0 @@
-# Backends
-
-::: docarray.index.backends

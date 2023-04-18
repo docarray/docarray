@@ -1,6 +1,7 @@
 # ElasticSearch Document Index
 
 DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic.co/elasticsearch/):
+
 - [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex], based on [Elasticsearch 8](https://github.com/elastic/elasticsearch).
 - [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex], based on [Elasticsearch 7.10](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0).
 
