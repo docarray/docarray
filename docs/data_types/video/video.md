@@ -15,7 +15,7 @@ Moreover, you will learn about DocArray's video-specific types, to represent you
 
 In DocArray video data is represented by a video tensor, an audio tensor, and the key frame indices. 
 
-![type:video](mov_bbb.mp4){: style='autoplay: false; width: 600px; height: 330px'}
+![type:video](mov_bbb.mp4){: style='width: 600px; height: 330px'}
 
 !!! tip
     Check out our predefined [`VideoDoc`](#getting-started-predefined-videodoc) to get started and play around with our video features.
