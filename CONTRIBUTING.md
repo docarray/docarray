@@ -300,14 +300,17 @@ If you _do_ make modification in a `.proto` file, you need to **recompile the pr
 In order to maintain compatibility with most of the Python ecosystem, in DocArray we compile to two different protobuf
 versions. Therefore, compilation is a two-step process:
 
-1. **Step 1:** Compile using `protoc` version 3.19
-   1. Download protoc v3.19 as appropriate for your system, e.g. from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.19.5)
-   2. Unzip the file and make `protoc` executable: `chmod +x bin/protoc`
-   3. Compile the protobuf definitions in the `pb2` directory. From `docarray/proto/` run `path/to/v-3-19/bin/protoc -I . --python_out="pb2" docarray.proto`.
-2. **Step 2:** Compile using `protoc` version 3.21
-    1. Download protoc v3.21 as appropriate for your system, e.g. from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v21.12)
-    2. Same as above
-    3. Compile the protobuf definitions in the `pb` directory. From `docarray/proto/` run `path/to/v-3-21/bin/protoc -I . --python_out="pb" docarray.proto`.
+### Step 1: Compile using `protoc` version 3.19
+
+1. Download protoc v3.19 as appropriate for your system, e.g. from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v3.19.5)
+2. Unzip the file and make `protoc` executable: `chmod +x bin/protoc`
+3. Compile the protobuf definitions in the `pb2` directory. From `docarray/proto/` run `path/to/v-3-19/bin/protoc -I . --python_out="pb2" docarray.proto`.
+
+### Step 2: Compile using `protoc` version 3.21
+
+1. Download protoc v3.21 as appropriate for your system, e.g. from [here](https://github.com/protocolbuffers/protobuf/releases/tag/v21.12)
+2. Same as above
+3. Compile the protobuf definitions in the `pb` directory. From `docarray/proto/` run `path/to/v-3-21/bin/protoc -I . --python_out="pb" docarray.proto`.
 
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing documentation
