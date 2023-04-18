@@ -332,16 +332,8 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 7. Think about the **structure** of the page beforehand. Split it into headers before writing the content.
 8. If relevant, include a “**See also**” section at the end.
 9. Link to any existing explanations of the concepts you are using.
-
-Bonus: **Know when to break the rules**. Documentation writing is as much art as it is science. Sometimes you will have to deviate from these rules in order to write good documentation.
-
-#### [MyST](https://myst-parser.readthedocs.io/en/latest/) Elements Usage
-
-1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
-2. Use the `{admonition}` boxes with care.
-3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
-
-Note: Example code in the documentation should also follow our [code style conventions]().
+10. Example code in the documentation should also follow our code style.
+11. **Know when to break the rules**. Documentation writing is as much art as it is science. Sometimes you will have to deviate from these rules in order to write good documentation.
 
 ### Building documentation on your local machine
 
