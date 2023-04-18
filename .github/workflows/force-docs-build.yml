@@ -69,6 +69,10 @@ jobs:
           cd docs
           bash makedocs.sh
           cd ..
+      - name: docs Build
+        run: |
+          rm -rf docs
+          mv site docs
       - name: Checkout to GH pages branch (${{ inputs.pages_branch }})
         run: |
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
