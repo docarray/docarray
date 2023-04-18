@@ -1,4 +1,4 @@
-# ElasticSearch Document Index
+# Elasticsearch Document Index
 
 DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic.co/elasticsearch/):
 
@@ -33,7 +33,7 @@ DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic
 The following examples is based on [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex],
 but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex].
 
-# Start ElasticSearch
+# Start Elasticsearch
 
 You can use docker-compose to create a local Elasticsearch service with the following `docker-compose.yml`.
 
