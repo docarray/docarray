@@ -356,14 +356,14 @@ Note: Example code in the documentation should also follow our [code style conve
 cd docs
 pip install -r requirements.txt
 export NUM_RELEASES=10
-bash makedoc.sh local-only
+bash makedoc.sh
 ```
 
-The docs website will be generated in `_build/dirhtml`.
+The docs website will be generated in `site`.
 To serve it, run:
 
 ```bash
-cd _build/dirhtml
+mkdocs serve
 python -m http.server
 ```
 
