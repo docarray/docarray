@@ -72,12 +72,14 @@ jobs:
       - name: docs Build
         run: |
           rm -rf docs
-          mv site docs
+          mv site /tmp/tmp_docs
       - name: Checkout to GH pages branch (${{ inputs.pages_branch }})
         run: |
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
           git checkout -f ${{ inputs.pages_branch }}
           git reset --hard HEAD
+          mv /tmp/tmp_docs docs
+
       - name: Push it up!
         run: |
           git config --local user.email "${{ inputs.git_config_email }}"
