@@ -27,7 +27,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 
 - :fire: Native compatibility for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)** and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, including for **model training use cases**
 - :zap: Built on **[Pydantic](https://github.com/pydantic/pydantic)** and out-of-the-box compatible with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
-- :package: Support vector databases like **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** and **[HNSWLib](https://github.com/nmslib/hnswlib)**
+- :package: Support for vector databases like **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** and **[HNSWLib](https://github.com/nmslib/hnswlib)**
 - :chains: Send data as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
 
 > :bulb: **Where are you coming from?** Based on your use case and background, there are different ways to understand DocArray:
@@ -45,7 +45,7 @@ DocArray allows you to **represent your data**, in an ML-native way.
 
 This is useful for different use cases:
 
-- :woman_running: You are **training a model**: There are tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them.
+- :running: You are **training a model**: There are tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them.
 - :cloud: You are **serving a model**: For example through FastAPI, and you want to specify your API endpoints.
 - :card_index_dividers: You are **parsing data**: For later use in your ML or data science applications.
 
@@ -256,7 +256,7 @@ assert isinstance(dl_2, DocList)
 
 ## Send
 
-DocArray allows you to **send your data**, in an ML-native way.
+DocArray allows you to **send your data** in an ML-native way.
 
 This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
 
@@ -270,7 +270,7 @@ This is useful for different use cases:
 > that DocArray is fully compatible with FastAPI!
 > Also, we have a [dedicated section](#coming-from-fastapi) just for you!
 
-Whenever you want to send your data you need to serialize it, so let's take a look at how that works with DocArray:
+Whenever you want to send your data, you need to serialize it, so let's take a look at how that works with DocArray:
 
 ```python
 from docarray import BaseDoc
@@ -336,7 +336,7 @@ docs_pull = DocList[SimpleDoc].pull('file://simple_docs')
 ```
 </details>
 
-**Document Indexes** let you index your Documents into a **vector database**, for efficient similarity-based retrieval.
+**Document Indexes** let you index your Documents in a **vector database** for efficient similarity-based retrieval.
 
 This is useful for:
 
