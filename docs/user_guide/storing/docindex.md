@@ -136,7 +136,7 @@ need to have compatible schemas.
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-## Perform vector similarity search
+## Vector similarity search
 
 Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
 
