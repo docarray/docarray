@@ -100,7 +100,7 @@ nav:
     - Storing data:
       - user_guide/storing/first_step.md
       - DocIndex:
-          - user_guide/storing/first_steps.md
+          - user_guide/storing/docindex.md
           - user_guide/storing/index_hnswlib.md
           - user_guide/storing/index_weaviate.md
           - user_guide/storing/index_elastic.md
