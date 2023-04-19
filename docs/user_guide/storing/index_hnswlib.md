@@ -23,7 +23,7 @@ It stores vectors on disk in [hnswlib](https://github.com/nmslib/hnswlib), and s
 ## Basic Usage
 
 To see how to create a [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] instance, add Documents,
-perform search, etc. see the [general user guide](./first_steps.md#document-index).
+perform search, etc. see the [general user guide](./docindex.md).
 
 ## Configuration
 
