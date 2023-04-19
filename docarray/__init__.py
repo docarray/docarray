@@ -21,7 +21,8 @@ def __getattr__(name: str):
         raise ImportError(
             f'Cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\'.\n'
             f'The concept of \'{name}\' does not exist in this version of docarray.\n'
-            f'If you still want to use \'{name}\' please downgrade to version <=0.21.0.'
+            f'If you still want to use \'{name}\' please downgrade to version <=0.21.0 '
+            f'with: `pip install -U docarray==0.21.0`.'
         )
     else:
         raise ImportError(
