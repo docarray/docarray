@@ -31,7 +31,6 @@ class ID(str, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         try:
             id: str = str(value)
             return cls(id)

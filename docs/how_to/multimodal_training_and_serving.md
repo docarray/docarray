@@ -12,7 +12,7 @@ jupyter:
     name: python3
 ---
 
-# Multi-Modal Deep learning with DocList
+# Multimodal deep learning with DocList
 
 DocList is a library for representing, sending, and storing multi-modal data that can be used for a variety of different
 use cases.
@@ -366,7 +366,7 @@ async def embed_text(doc: Text) -> Text:
     with torch.autocast(device_type="cuda", dtype=torch.float16):
         with torch.inference_mode():
             text_preprocess(doc)
-            da = DocList[Text]([doc], tensor_type=TorchTensor).stack()
+            da = DocList[Text]([doc], tensor_type=TorchTensor).to_doc_vec()
             da.to(DEVICE)
             doc.embedding = text_encoder(da)[0].to('cpu')
     return doc

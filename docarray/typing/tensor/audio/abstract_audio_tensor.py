@@ -5,19 +5,24 @@ from typing import TYPE_CHECKING, Any, BinaryIO, Dict, TypeVar, Union
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_notebook
 
+if TYPE_CHECKING:
+    from docarray.typing.bytes.audio_bytes import AudioBytes
+
 T = TypeVar('T', bound='AbstractAudioTensor')
 
 MAX_INT_16 = 2**15
 
 
 class AbstractAudioTensor(AbstractTensor, ABC):
-    def to_bytes(self):
+    def to_bytes(self) -> 'AudioBytes':
         """
-        Convert audio tensor to bytes.
+        Convert audio tensor to [`AudioBytes`][docarray.typrin.AudioBytes].
         """
+        from docarray.typing.bytes.audio_bytes import AudioBytes
+
         tensor = self.get_comp_backend().to_numpy(self)
         tensor = (tensor * MAX_INT_16).astype('<h')
-        return tensor.tobytes()
+        return AudioBytes(tensor.tobytes())
 
     def save(
         self: 'T',
@@ -37,15 +42,13 @@ class AbstractAudioTensor(AbstractTensor, ABC):
         :param sample_width: sample width in bytes
         :param pydub_args: dictionary of additional arguments for pydub.AudioSegment.export function
         """
-        if TYPE_CHECKING:
-            import pydub
-        else:
-            pydub = import_library('pydub', raise_error=True)
+        pydub = import_library('pydub', raise_error=True)  # noqa: F841
+        from pydub import AudioSegment
 
         comp_backend = self.get_comp_backend()
         channels = 2 if comp_backend.n_dim(array=self) > 1 else 1  # type: ignore
 
-        segment = pydub.AudioSegment(
+        segment = AudioSegment(
             self.to_bytes(),
             frame_rate=frame_rate,
             sample_width=sample_width,

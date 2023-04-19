@@ -8,7 +8,6 @@ from docarray.typing import TorchEmbedding, TorchTensor
 
 @pytest.mark.proto
 def test_proto_tensor():
-
     tensor = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
 
     tensor._to_node_protobuf()

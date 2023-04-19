@@ -69,7 +69,6 @@ def test_image_shortcut_doc():
 @pytest.mark.slow
 @pytest.mark.internet
 def test_byte():
-
     img = ImageDoc(url=REMOTE_JPG)
     img.bytes_ = img.url.load_bytes()
     assert isinstance(img.bytes_, ImageBytes)
@@ -78,10 +77,10 @@ def test_byte():
 @pytest.mark.slow
 @pytest.mark.internet
 def test_byte_from_tensor():
-
     img = ImageDoc(url=REMOTE_JPG)
     img.tensor = img.url.load()
     img.bytes_ = img.tensor.to_bytes()
 
     assert isinstance(img.bytes_, bytes)
+    assert isinstance(img.bytes_, ImageBytes)
     assert len(img.bytes_) > 0

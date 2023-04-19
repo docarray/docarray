@@ -2,10 +2,10 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import ElasticV7DocIndex
-from tests.integrations.doc_index.elastic.fixture import start_storage_v7  # noqa: F401
+from docarray.index import ElasticDocIndex
+from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
 
-pytestmark = [pytest.mark.slow, pytest.mark.index]
+pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
 
 def test_column_config():
@@ -13,7 +13,7 @@ def test_column_config():
         text: str
         color: str = Field(col_type='keyword')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     index_docs = [
         MyDoc(id='0', text='hello world', color='red'),
         MyDoc(id='1', text='never gonna give you up', color='blue'),
@@ -44,7 +44,7 @@ def test_field_object():
             }
         )
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     doc = [
         MyDoc(manager={'age': 25, 'name': {'first': 'Rachel', 'last': 'Green'}}),
         MyDoc(manager={'age': 30, 'name': {'first': 'Monica', 'last': 'Geller'}}),
@@ -64,7 +64,7 @@ def test_field_geo_point():
     class MyDoc(BaseDoc):
         location: dict = Field(col_type='geo_point')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     doc = [
         MyDoc(location={'lat': 40.12, 'lon': -72.34}),
         MyDoc(location={'lat': 41.12, 'lon': -73.34}),
@@ -92,7 +92,7 @@ def test_field_range():
         expected_attendees: dict = Field(col_type='integer_range')
         time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    store = ElasticDocIndex[MyDoc]()
     doc = [
         MyDoc(
             expected_attendees={'gte': 10, 'lt': 20},

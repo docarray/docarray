@@ -31,7 +31,6 @@ class AudioBytes(bytes, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         value = bytes_validator(value)
         return cls(value)
 
@@ -46,7 +45,8 @@ class AudioBytes(bytes, AbstractType):
 
     def load(self) -> Tuple[AudioNdArray, int]:
         """
-        Load the Audio from the AudioBytes into an AudioNdArray
+        Load the Audio from the [`AudioBytes`][docarray.typing.AudioBytes] into an
+        [`AudioNdArray`][docarray.typing.AudioNdArray].
 
         ---
 
@@ -75,8 +75,8 @@ class AudioBytes(bytes, AbstractType):
         ```
 
         ---
-        :return: tuple of an AudioNdArray representing the audio bytes content,
-            and an integer representing the frame rate.
+        :return: tuple of an [`AudioNdArray`][docarray.typing.AudioNdArray] representing the
+            audio bytes content, and an integer representing the frame rate.
         """
         pydub = import_library('pydub', raise_error=True)  # noqa: F841
         from pydub import AudioSegment

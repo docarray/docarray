@@ -10,7 +10,6 @@ from typing import (
     Iterable,
     List,
     Mapping,
-    NamedTuple,
     Optional,
     Sequence,
     Tuple,
@@ -30,7 +29,12 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
-from docarray.utils.find import FindResult, _FindResult
+from docarray.utils.find import (
+    FindResult,
+    FindResultBatched,
+    _FindResult,
+    _FindResultBatched,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -45,16 +49,6 @@ else:
     torch = import_library('torch', raise_error=False)
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
-
-
-class FindResultBatched(NamedTuple):
-    documents: List[DocList]
-    scores: np.ndarray
-
-
-class _FindResultBatched(NamedTuple):
-    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
-    scores: np.ndarray
 
 
 def _raise_not_composable(name):
@@ -384,13 +378,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """index Documents into the index.
 
         :param docs: Documents to index.
+
+        !!! note
+            Passing a sequence of Documents that is not a DocList
+            (such as a List of Docs) comes at a performance penalty.
+            This is because the Index needs to check compatibility between itself and
+            the data. With a DocList as input this is a single check; for other inputs
+            compatibility needs to be checked for every Document individually.
         """
-        if not isinstance(docs, (BaseDoc, DocList)):
-            self._logger.warning(
-                'Passing a sequence of Documents that is not a DocList comes at '
-                'a performance penalty, since compatibility with the schema of Index '
-                'needs to be checked for every Document individually.'
-            )
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
@@ -399,7 +394,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
-        search_field: str = 'embedding',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
@@ -415,6 +410,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
         else:
@@ -432,7 +428,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def find_batched(
         self,
         queries: Union[AnyTensor, DocList],
-        search_field: str = 'embedding',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
@@ -449,6 +445,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
             query_vec_np = np.stack(
@@ -511,7 +508,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def text_search(
         self,
         query: Union[str, BaseDoc],
-        search_field: str = 'text',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
@@ -523,6 +520,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `text_search` for search field {search_field}')
+        self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_text = self._get_values_by_column([query], search_field)[0]
         else:
@@ -539,7 +537,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def text_search_batched(
         self,
         queries: Union[Sequence[str], Sequence[BaseDoc]],
-        search_field: str = 'text',
+        search_field: str = '',
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
@@ -553,6 +551,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.debug(
             f'Executing `text_search_batched` for search field {search_field}'
         )
+        self._validate_search_field(search_field)
         if isinstance(queries[0], BaseDoc):
             query_docs: Sequence[BaseDoc] = cast(Sequence[BaseDoc], queries)
             query_texts: Sequence[str] = self._get_values_by_column(
@@ -566,7 +565,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
             docs = [self._dict_list_to_docarray(docs) for docs in da_list]
-        return FindResultBatched(documents=docs, scores=scores)
+            return FindResultBatched(documents=docs, scores=scores)
+
+        da_list_ = cast(List[DocList], da_list)
+        return FindResultBatched(documents=da_list_, scores=scores)
 
     ##########################################################
     # Helper methods                                         #
@@ -814,6 +816,27 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
 
         return DocList[BaseDoc].construct(out_docs)
+
+    def _validate_search_field(self, search_field: Union[str, None]) -> bool:
+        """
+        Validate if the given `search_field` corresponds to one of the
+        columns that was parsed from the schema.
+
+        Some backends, like weaviate, don't use search fields, so the function
+        returns True if `search_field` is empty or None.
+
+        :param search_field: search field to validate.
+        :return: True if the field exists, False otherwise.
+        """
+        if not search_field or search_field in self._column_infos.keys():
+            if not search_field:
+                self._logger.info('Empty search field was passed')
+            return True
+        else:
+            valid_search_fields = ', '.join(self._column_infos.keys())
+            raise ValueError(
+                f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
+            )
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """

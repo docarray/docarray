@@ -23,10 +23,20 @@ class _FindResult(NamedTuple):
     scores: AnyTensor
 
 
+class FindResultBatched(NamedTuple):
+    documents: List[DocList]
+    scores: List[AnyTensor]
+
+
+class _FindResultBatched(NamedTuple):
+    documents: Union[List[DocList], List[List[Dict[str, Any]]]]
+    scores: List[AnyTensor]
+
+
 def find(
     index: AnyDocArray,
     query: Union[AnyTensor, BaseDoc],
-    embedding_field: str = 'embedding',
+    search_field: str = '',
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
@@ -39,7 +49,7 @@ def find(
     !!! note
         This is a simple implementation of exact search. If you need to do advance
         search using approximate nearest neighbours search or hybrid search or
-        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
+        multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc].
 
     ---
 
@@ -61,7 +71,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
 
@@ -70,7 +80,7 @@ def find(
     top_matches, scores = find(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
     ```
@@ -79,7 +89,7 @@ def find(
 
     :param index: the index of Documents to search in
     :param query: the query to search for
-    :param embedding_field: the tensor-like field in the index to use
+    :param search_field: the tensor-like field in the index to use
         for the similarity computation
     :param metric: the distance metric to use for the similarity computation.
         Can be one of the following strings:
@@ -94,27 +104,28 @@ def find(
         where the first element contains the closes matches for the query,
         and the second element contains the corresponding scores.
     """
-    query = _extract_embedding_single(query, embedding_field)
-    return find_batched(
+    query = _extract_embedding_single(query, search_field)
+    docs, scores = find_batched(
         index=index,
         query=query,
-        embedding_field=embedding_field,
+        search_field=search_field,
         metric=metric,
         limit=limit,
         device=device,
         descending=descending,
-    )[0]
+    )
+    return FindResult(documents=docs[0], scores=scores[0])
 
 
 def find_batched(
     index: AnyDocArray,
     query: Union[AnyTensor, DocList],
-    embedding_field: str = 'embedding',
+    search_field: str = '',
     metric: str = 'cosine_sim',
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-) -> List[FindResult]:
+) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
     Supports PyTorch and NumPy embeddings.
@@ -122,7 +133,7 @@ def find_batched(
     !!! note
         This is a simple implementation of exact search. If you need to do advance
         search using approximate nearest neighbours search or hybrid search or
-        multi vector search please take a look at the [BaseDoc][docarray.base_doc.doc.BaseDoc]
+        multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
 
 
     ---
@@ -142,30 +153,30 @@ def find_batched(
 
     # use DocList as query
     query = DocList[MyDocument]([MyDocument(embedding=torch.rand(128)) for _ in range(3)])
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
 
     # use tensor as query
     query = torch.rand(3, 128)
-    results = find_batched(
+    docs, scores = find_batched(
         index=index,
         query=query,
-        embedding_field='embedding',
+        search_field='embedding',
         metric='cosine_sim',
     )
-    top_matches, scores = results[0]
+    top_matches, scores = docs[0], scores[0]
     ```
 
     ---
 
     :param index: the index of Documents to search in
     :param query: the query to search for
-    :param embedding_field: the tensor-like field in the index to use
+    :param search_field: the tensor-like field in the index to use
         for the similarity computation
     :param metric: the distance metric to use for the similarity computation.
         Can be one of the following strings:
@@ -176,19 +187,19 @@ def find_batched(
         can be either `cpu` or a `cuda` device.
     :param descending: sort the results in descending order.
         Per default, this is chosen based on the `metric` argument.
-    :return: a list of named tuples of the form (DocList, AnyTensor),
-        where the first element contains the closes matches for each query,
+    :return: A named tuple of the form (DocList, AnyTensor),
+        where the first element contains the closest matches for each query,
         and the second element contains the corresponding scores.
     """
     if descending is None:
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
-    embedding_type = _da_attr_type(index, embedding_field)
+    embedding_type = _da_attr_type(index, search_field)
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    index_embeddings = _extract_embeddings(index, embedding_field, embedding_type)
-    query_embeddings = _extract_embeddings(query, embedding_field, embedding_type)
+    index_embeddings = _extract_embeddings(index, search_field, embedding_type)
+    query_embeddings = _extract_embeddings(query, search_field, embedding_type)
 
     # compute distances and return top results
     metric_fn = getattr(comp_backend.Metrics, metric)
@@ -197,30 +208,33 @@ def find_batched(
         dists, k=limit, device=device, descending=descending
     )
 
-    results = []
-    for indices_per_query, scores_per_query in zip(top_indices, top_scores):
+    batched_docs: List[DocList] = []
+    scores = []
+    for _, (indices_per_query, scores_per_query) in enumerate(
+        zip(top_indices, top_scores)
+    ):
         docs_per_query: DocList = DocList([])
         for idx in indices_per_query:  # workaround until #930 is fixed
             docs_per_query.append(index[idx])
-        docs_per_query = DocList(docs_per_query)
-        results.append(FindResult(scores=scores_per_query, documents=docs_per_query))
-    return results
+        batched_docs.append(DocList(docs_per_query))
+        scores.append(scores_per_query)
+    return FindResultBatched(documents=batched_docs, scores=scores)
 
 
 def _extract_embedding_single(
     data: Union[DocList, BaseDoc, AnyTensor],
-    embedding_field: str,
+    search_field: str,
 ) -> AnyTensor:
     """Extract the embeddings from a single query,
     and return it in a batched representation.
 
     :param data: the data
-    :param embedding_field: the embedding field
+    :param search_field: the embedding field
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
     if isinstance(data, BaseDoc):
-        emb = next(AnyDocArray._traverse(data, embedding_field))
+        emb = next(AnyDocArray._traverse(data, search_field))
     else:  # treat data as tensor
         emb = data
     if len(emb.shape) == 1:
@@ -232,22 +246,22 @@ def _extract_embedding_single(
 
 def _extract_embeddings(
     data: Union[AnyDocArray, BaseDoc, AnyTensor],
-    embedding_field: str,
+    search_field: str,
     embedding_type: Type,
 ) -> AnyTensor:
     """Extract the embeddings from the data.
 
     :param data: the data
-    :param embedding_field: the embedding field
+    :param search_field: the embedding field
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
     :return: the embeddings
     """
     emb: AnyTensor
     if isinstance(data, DocList):
-        emb_list = list(AnyDocArray._traverse(data, embedding_field))
+        emb_list = list(AnyDocArray._traverse(data, search_field))
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, (DocVec, BaseDoc)):
-        emb = next(AnyDocArray._traverse(data, embedding_field))
+        emb = next(AnyDocArray._traverse(data, search_field))
     else:  # treat data as tensor
         emb = cast(AnyTensor, data)
 

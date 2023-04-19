@@ -12,10 +12,11 @@ class ImageTensorFlowTensor(
     TensorFlowTensor, AbstractImageTensor, metaclass=metaTensorFlow
 ):
     """
-    Subclass of TensorFlowTensor, to represent an image tensor.
-    Adds image-specific features to the tensor.
-    For instance the ability convert the tensor back to image bytes which are
-    optimized to send over the wire
+    Subclass of [`TensorFlowTensor`][docarray.typing.TensorFlowTensor],
+    to represent an image tensor. Adds image-specific features to the tensor.
+    For instance the ability convert the tensor back to
+    [`ImageBytes`][docarray.typing.ImageBytes] which are
+    optimized to send over the wire.
 
 
     ---
@@ -24,14 +25,14 @@ class ImageTensorFlowTensor(
     from typing import Optional
 
     from docarray import BaseDoc
-    from docarray.typing import ImageTensorFlowTensor, ImageUrl
+    from docarray.typing import ImageBytes, ImageTensorFlowTensor, ImageUrl
 
 
     class MyImageDoc(BaseDoc):
         title: str
         tensor: Optional[ImageTensorFlowTensor]
         url: Optional[ImageUrl]
-        bytes: Optional[bytes]
+        bytes: Optional[ImageBytes]
 
 
     doc = MyImageDoc(

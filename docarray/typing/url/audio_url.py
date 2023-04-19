@@ -19,7 +19,8 @@ class AudioUrl(AnyUrl):
 
     def load(self: T) -> Tuple[AudioNdArray, int]:
         """
-        Load the data from the url into an AudioNdArray and the frame rate.
+        Load the data from the url into an [`AudioNdArray`][docarray.typing.AudioNdArray]
+        and the frame rate.
 
         ---
 
@@ -42,8 +43,8 @@ class AudioUrl(AnyUrl):
 
         ---
 
-        :return: tuple of an AudioNdArray representing the Audio file content,
-            and an integer representing the frame rate.
+        :return: tuple of an [`AudioNdArray`][docarray.typing.AudioNdArray] representing
+            the audio file content, and an integer representing the frame rate.
 
         """
         bytes_ = self.load_bytes()
@@ -51,11 +52,11 @@ class AudioUrl(AnyUrl):
 
     def load_bytes(self, timeout: Optional[float] = None) -> AudioBytes:
         """
-        Convert url to AudioBytes. This will either load or download the file and save
-        it into an AudioBytes object.
+        Convert url to [`AudioBytes`][docarray.typing.AudioBytes]. This will either load or
+        download the file and save it into an [`AudioBytes`][docarray.typing.AudioBytes] object.
 
         :param timeout: timeout for urlopen. Only relevant if url is not local
-        :return: AudioBytes object
+        :return: [`AudioBytes`][docarray.typing.AudioBytes] object
         """
         bytes_ = super().load_bytes(timeout=timeout)
         return AudioBytes(bytes_)
@@ -74,4 +75,4 @@ class AudioUrl(AnyUrl):
             else:
                 display(Audio(filename=self))
         else:
-            warnings.warn('Display of image is only possible in a notebook.')
+            warnings.warn('Display of audio is only possible in a notebook.')

@@ -7,7 +7,7 @@ from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
-from docarray.typing.tensor.image import ImageNdArray
+from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -32,7 +32,6 @@ class ImageBytes(bytes, AbstractType):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         value = bytes_validator(value)
         return cls(value)
 
@@ -84,7 +83,8 @@ class ImageBytes(bytes, AbstractType):
         axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
     ) -> ImageNdArray:
         """
-        Load the image from the ImageBytes into an ImageNdArray
+        Load the image from the [`ImageBytes`][docarray.typing.ImageBytes] into an
+        [`ImageNdArray`][docarray.typing.ImageNdArray].
 
         ---
 
@@ -119,7 +119,7 @@ class ImageBytes(bytes, AbstractType):
         :param height: height of the image tensor.
         :param axis_layout: ordering of the different image axes.
             'H' = height, 'W' = width, 'C' = color channel
-        :return: ImageNdArray representing the image as RGB values
+        :return: [`ImageNdArray`][docarray.typing.ImageNdArray] representing the image as RGB values
         """
         raw_img = self.load_pil()
 

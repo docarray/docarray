@@ -24,7 +24,7 @@ def test_batch(shuffle, stack, batch_size, n_batches):
         ]
     )
     if stack:
-        da = da.stack()
+        da = da.to_doc_vec()
 
     batches = list(da._batch(batch_size=batch_size, shuffle=shuffle))
     assert len(batches) == n_batches

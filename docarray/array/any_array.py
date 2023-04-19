@@ -121,7 +121,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         field: str,
         values: Union[List, T, 'AbstractTensor'],
     ):
-        """Set all Documents in this DocList using the passed values
+        """Set all Documents in this [`DocList`][docarray.array.doc_list.doc_list.DocList] using the passed values
 
         :param field: name of the fields to extract
         :values: the values to set at the DocList level
@@ -140,9 +140,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         ...
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert a DocList into a NodeProto protobuf message.
-         This function should be called when a DocList
-        is nested into another Document that need to be converted into a protobuf
+        """Convert a [`DocList`][docarray.array.doc_list.doc_list.DocList] into a NodeProto
+        protobuf message.
+        This function should be called when a DocList is nested into
+        another Document that need to be converted into a protobuf.
 
         :return: the nested item protobuf message
         """
@@ -157,82 +158,82 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     ) -> Union[List[Any], 'AbstractTensor']:
         """
         Return a List of the accessed objects when applying the `access_path`. If this
-        results in a nested list or list of DocLists, the list will be flattened
+        results in a nested list or list of [`DocList`s][docarray.array.doc_list.doc_list.DocList], the list will be flattened
         on the first level. The access path is a string that consists of attribute
-        names, concatenated and "__"-separated. It describes the path from the first
-        level to an arbitrary one, e.g. 'content__image__url'.
-
-        :param access_path: a string that represents the access path ("__"-separated).
-        :return: list of the accessed objects, flattened if nested.
-
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import BaseDoc, DocList, Text
+        names, concatenated and `"__"`-separated. It describes the path from the first
+        level to an arbitrary one, e.g. `'content__image__url'`.
 
 
-            class Author(BaseDoc):
-                name: str
+        ```python
+        from docarray import BaseDoc, DocList, Text
 
 
-            class Book(BaseDoc):
-                author: Author
-                content: Text
+        class Author(BaseDoc):
+            name: str
 
 
-            docs = DocList[Book](
-                Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
-                for i in range(10)  # noqa: E501
-            )
+        class Book(BaseDoc):
+            author: Author
+            content: Text
 
-            books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
 
-            authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
+        docs = DocList[Book](
+            Book(author=Author(name='Jenny'), content=Text(text=f'book_{i}'))
+            for i in range(10)  # noqa: E501
+        )
+
+        books = docs.traverse_flat(access_path='content')  # list of 10 Text objs
+
+        authors = docs.traverse_flat(access_path='author__name')  # list of 10 strings
+        ```
 
         If the resulting list is a nested list, it will be flattened:
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            from docarray import BaseDoc, DocList
+        ```python
+        from docarray import BaseDoc, DocList
 
 
-            class Chapter(BaseDoc):
-                content: str
+        class Chapter(BaseDoc):
+            content: str
 
 
-            class Book(BaseDoc):
-                chapters: DocList[Chapter]
+        class Book(BaseDoc):
+            chapters: DocList[Chapter]
 
 
-            docs = DocList[Book](
-                Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
-                for _ in range(10)
-            )
+        docs = DocList[Book](
+            Book(chapters=DocList[Chapter]([Chapter(content='some_content') for _ in range(3)]))
+            for _ in range(10)
+        )
 
-            chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
+        chapters = docs.traverse_flat(access_path='chapters')  # list of 30 strings
+        ```
 
-        If your DocList is in doc_vec mode, and you want to access a field of
-        type AnyTensor, the doc_vec tensor will be returned instead of a list:
+        If your [`DocList`][docarray.array.doc_list.doc_list.DocList] is in doc_vec mode, and you want to access a field of
+        type `AnyTensor`, the doc_vec tensor will be returned instead of a list:
 
-        EXAMPLE USAGE
-        .. code-block:: python
-            class Image(BaseDoc):
-                tensor: TorchTensor[3, 224, 224]
+        ```python
+        class Image(BaseDoc):
+            tensor: TorchTensor[3, 224, 224]
 
 
-            batch = DocList[Image](
-                [
-                    Image(
-                        tensor=torch.zeros(3, 224, 224),
-                    )
-                    for _ in range(2)
-                ]
-            )
+        batch = DocList[Image](
+            [
+                Image(
+                    tensor=torch.zeros(3, 224, 224),
+                )
+                for _ in range(2)
+            ]
+        )
 
-            batch_stacked = batch.stack()
-            tensors = batch_stacked.traverse_flat(
-                access_path='tensor'
-            )  # tensor of shape (2, 3, 224, 224)
+        batch_stacked = batch.stack()
+        tensors = batch_stacked.traverse_flat(
+            access_path='tensor'
+        )  # tensor of shape (2, 3, 224, 224)
+        ```
 
+        :param access_path: a string that represents the access path ("__"-separated).
+        :return: list of the accessed objects, flattened if nested.
         """
         ...
 
@@ -264,7 +265,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
     def summary(self):
         """
-        Print a summary of this DocList object and a summary of the schema of its
+        Print a summary of this [`DocList`][docarray.array.doc_list.doc_list.DocList] object and a summary of the schema of its
         Document type.
         """
         DocArraySummary(self).summary()
@@ -276,13 +277,13 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         show_progress: bool = False,
     ) -> Generator[T, None, None]:
         """
-        Creates a `Generator` that yields `DocList` of size `batch_size`.
+        Creates a `Generator` that yields [`DocList`][docarray.array.doc_list.doc_list.DocList] of size `batch_size`.
         Note, that the last batch might be smaller than `batch_size`.
 
         :param batch_size: Size of each generated batch.
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: if set, show a progress bar when batching documents.
-        :yield: a Generator of `DocList`, each in the length of `batch_size`
+        :yield: a Generator of [`DocList`][docarray.array.doc_list.doc_list.DocList], each in the length of `batch_size`
         """
         from rich.progress import track
 

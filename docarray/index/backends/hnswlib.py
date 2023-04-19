@@ -24,15 +24,15 @@ from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
     BaseDocIndex,
     _ColumnInfo,
-    _FindResultBatched,
     _raise_not_composable,
     _raise_not_supported,
 )
 from docarray.proto import DocProto
+from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.filter import filter_docs
-from docarray.utils.find import _FindResult
+from docarray.utils.find import _FindResult, _FindResultBatched
 
 if TYPE_CHECKING:
     import hnswlib
@@ -47,10 +47,10 @@ else:
     if tf is not None:
         from docarray.typing import TensorFlowTensor
 
-HNSWLIB_PY_VEC_TYPES = [list, tuple, np.ndarray, AbstractTensor]
+HNSWLIB_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
 if torch is not None:
-    HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)
+    HNSWLIB_PY_VEC_TYPES.append(torch.Tensor)  # type: ignore
 
 if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
@@ -262,7 +262,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
         )
-        return _FindResult(documents=docs[0], scores=scores[0])
+        return _FindResult(
+            documents=docs[0], scores=NdArray._docarray_from_native(scores[0])
+        )
 
     def _filter(
         self,

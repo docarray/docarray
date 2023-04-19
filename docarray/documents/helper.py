@@ -40,24 +40,21 @@ def create_doc(
         in the format `<name>=(<type>, <default default>)` or `<name>=<default value>`
     :return: the new Document class
 
-    EXAMPLE USAGE
+    ```python
+    from docarray.documents import Audio
+    from docarray.documents.helper import create_doc
+    from docarray.typing.tensor.audio import AudioNdArray
 
-    .. code-block:: python
+    MyAudio = create_doc(
+        'MyAudio',
+        __base__=Audio,
+        title=(str, ...),
+        tensor=(AudioNdArray, ...),
+    )
 
-        from docarray.documents import Audio
-        from docarray.documents.helper import create_doc
-        from docarray.typing.tensor.audio import AudioNdArray
-
-        MyAudio = create_doc(
-            'MyAudio',
-            __base__=Audio,
-            title=(str, ...),
-            tensor=(AudioNdArray, ...),
-        )
-
-        assert issubclass(MyAudio, BaseDoc)
-        assert issubclass(MyAudio, Audio)
-
+    assert issubclass(MyAudio, BaseDoc)
+    assert issubclass(MyAudio, Audio)
+    ```
     """
 
     if not issubclass(__base__, BaseDoc):

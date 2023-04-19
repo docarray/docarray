@@ -138,7 +138,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         For more Pythonic code, please use ``bytes(...)``.
 
         :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
-        :param compress: compress algorithm to use
+        :param compress: compression algorithm to use
         :return: the binary serialization in bytes
         """
         import pickle
@@ -219,7 +219,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         fields: Dict[str, Any] = {}
 
         for field_name in pb_msg.data:
-
             if field_name not in cls.__fields__.keys():
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
@@ -265,7 +264,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         elif content_key is None:
             return_field = None
         elif docarray_type is None:
-
             arg_to_container: Dict[str, Callable] = {
                 'list': list,
                 'set': set,
