@@ -3,10 +3,10 @@
 In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multi-modal data and send it over the wire.
 In this section we will see how to store and persist this data.
 
-DocArray offers to ways of storing your data, each of which have their own documentation sections:
+DocArray offers two ways of storing your data, each of which have their own documentation sections:
 
-1. In a **[Document Store](#document-store)** for simple long-term storage
-2. In a **[Document Index](#document-index)** for fast retrieval using vector similarity
+1. **[Document Store](#document-store)** for simple long-term storage
+2. **[Document Index](#document-index)** for fast retrieval using vector similarity
 
 ## Document Store
     
@@ -14,22 +14,22 @@ DocArray offers to ways of storing your data, each of which have their own docum
 [`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] and 
 [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] methods. 
 Under the hood, [DocStore][docarray.store.abstract_doc_store.AbstractDocStore] is used to persist a `DocList`. 
-You can store your documents on-disk. Alternatively, you can upload them to [AWS S3](https://aws.amazon.com/s3/), 
+You can either store your documents on-disk or upload them to [AWS S3](https://aws.amazon.com/s3/), 
 [minio](https://min.io) or [Jina AI Cloud](https://cloud.jina.ai/user/storage). 
 
 This section covers the following three topics:
 
-  - [Store](doc_store/store_file.md) of [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] on-disk
-  - [Store on Jina AI Cloud](doc_store/store_jac.md) 
-  - [Store on S3](doc_store/store_s3.md)
+  - [Storing](doc_store/store_file.md) [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] on-disk
+  - [Storing on Jina AI Cloud](doc_store/store_jac.md) 
+  - [Storing on S3](doc_store/store_s3.md)
    
 ## Document Index
 
 A Document Index lets you store your Documents and search through them using vector similarity.
 
-This is useful if you want to store a bunch of data, and at a later point retrieve Documents that are similar to
-some query that you provide.
-Concrete examples where this is relevant are neural search application, Augmenting LLMs and Chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401))]),
+This is useful if you want to store a bunch of data, and at a later point retrieve documents that are similar to
+a query that you provide.
+Relevant concrete examples are neural search applications, augmenting LLMs and chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401))]),
 or recommender systems.
 
 DocArray's Document Index concept achieves this by providing a unified interface to a number of [vector databases](https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb).
@@ -40,4 +40,4 @@ Currently, DocArray supports the following vector databases:
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
-- [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
+- [Hnswlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)

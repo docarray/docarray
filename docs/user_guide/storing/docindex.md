@@ -2,25 +2,25 @@
 
 A Document Index lets you store your Documents and search through them using vector similarity.
 
-This is useful if you want to store a bunch of data, and at a later point retrieve Documents that are similar to
+This is useful if you want to store a bunch of data, and at a later point retrieve documents that are similar to
 some query that you provide.
-Concrete examples where this is relevant are neural search application, Augmenting LLMs and Chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401)),
+Relevant concrete examples are neural search applications, augmenting LLMs and chatbots with domain knowledge ([Retrieval-Augmented Generation](https://arxiv.org/abs/2005.11401)),
 or recommender systems.
 
 !!! question "How does vector similarity search work?"
     Without going into too much detail, the idea behind vector similarity search is the following:
 
-    You represent every data point that you have (in our case, a Document) as a _vector_, or _embedding_.
+    You represent every data point that you have (in our case, a document) as a _vector_, or _embedding_.
     This vector should represent as much semantic information about your data as possible: Similar data points should
     be represented by similar vectors.
 
     These vectors (embeddings) are usually obtained by passing the data through a suitable neural network that has been
     trained to produce such semantic representations - this is the _encoding_ step.
 
-    Once you have your vector that represent your data, you can store them, for example in a vector database.
+    Once you have your vectors that represent your data, you can store them, for example in a vector database.
     
     To perform similarity search, you take your input query and encode it in the same way as the data in your database.
-    Then, the database will search through the stored vectors and return the ones that are most similar to your query.
+    Then, the database will search through the stored vectors and return those that are most similar to your query.
     This similarity is measured by a _similarity metric_, which can be [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity),
     [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), or any other metric that you can think of.
 
@@ -43,10 +43,10 @@ For this user guide you will use the [HnswDocumentIndex][docarray.index.backends
 because it doesn't require you to launch a database server. Instead, it will store your data locally.
 
 !!! note "Using a different vector database"
-    You can easily use Weaviate, Qdrant, or Elasticsearch instead, they share the same API!
-    To do so, check out their respective documentation sections.
+    You can easily use Weaviate, Qdrant, or Elasticsearch instead -- they share the same API!
+    To do so, check their respective documentation sections.
 
-!!! note "HNSWLib-specific settings"
+!!! note "Hnswlib-specific settings"
     The following sections explain the general concept of Document Index by using
     [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] as an example.
     For HNSWLib-specific settings, check out the [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] documentation
@@ -61,7 +61,7 @@ because it doesn't require you to launch a database server. Instead, it will sto
     pip install "docarray[hnswlib]"
     ```
 
-To create a Document Index, your first need a Document that defines the schema of your index.
+To create a Document Index, you first need a document that defines the schema of your index:
 
 ```python
 from docarray import BaseDoc
@@ -80,10 +80,10 @@ db = HnswDocumentIndex[MyDoc](work_dir='./my_test_db')
 **Schema definition:**
 
 In this code snippet, `HnswDocumentIndex` takes a schema of the form of `MyDoc`.
-The Document Index then _creates column for each field in `MyDoc`_.
+The Document Index then _creates a column for each field in `MyDoc`_.
 
-The column types in the backend database are determined the type hints of the fields in the Document.
-Optionally, you can customize the database types for every field, as you can see [here](#customize-configurations).
+The column types in the backend database are determined by the type hints of the document's fields.
+Optionally, you can [customize the database types for every field](#customize-configurations).
 
 Most vector databases need to know the dimensionality of the vectors that will be stored.
 Here, that is automatically inferred from the type hint of the `embedding` field: `NdArray[128]` means that
@@ -91,7 +91,7 @@ the database will store vectors with 128 dimensions.
 
 !!! note "PyTorch and TensorFlow support"
     Instead of using `NdArray` you can use `TorchTensor` or `TensorFlowTensor` and the Document Index will handle that
-    for you. This is supported for all Document Index backends. No need to convert your tensors to numpy arrays manually!
+    for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
 
 **Database location:**
 
@@ -126,23 +126,22 @@ This means that they share the same schema, and in general, the schema of a Docu
 need to have compatible schemas.
 
 !!! question "When are two schemas compatible?"
-    The schema of your Document Index and of your data need to be compatible with each other.
+    The schemas of your Document Index and data need to be compatible with each other.
     
     Let's say A is the schema of your Document Index and B is the schema of your data.
-    There are a few rules that determine if a schema A is compatible with a schema B.
-    If _any_ of the following is true, then A and B are compatible:
+    There are a few rules that determine if schema A is compatible with schema B.
+    If _any_ of the following are true, then A and B are compatible:
 
     - A and B are the same class
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-## Perform vector similarity search
+## Vector similarity search
 
 Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
 
-
-Provided with a Document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find] can find
-similar Documents in the Document Index.
+By using a document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find], you can find
+similar Documents in the Document Index:
 
 === "Search by Document"
 
@@ -186,7 +185,7 @@ How these scores are calculated depends on the backend, and can usually be [conf
 
 **Batched search:**
 
-You can also search for multiple Documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
+You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
 === "Search by Documents"
 
@@ -204,7 +203,7 @@ You can also search for multiple Documents at once, in a batch, using the [find_
     print(f'{scores=}')
     ```
 
-=== "Search by raw vector"
+=== "Search by raw vectors"
 
     ```python
     # create some query vectors
@@ -219,24 +218,25 @@ You can also search for multiple Documents at once, in a batch, using the [find_
     ```
 
 The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
-a list of `DocList`s, one for each query, containing the closest matching documents; and the associated similarity scores.
+a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
 
-## Perform filter search and text search
+## Filter search and text search
 
-In addition to vector similarity search, the Document Index interface offers methods for text search and filter search:
+In addition to vector similarity search, the Document Index interface offers methods for text search and filtered search:
 [text_search()][docarray.index.abstract.BaseDocIndex.text_search] and [filter()][docarray.index.abstract.BaseDocIndex.filter],
-as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]
+as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched].
 
-The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
-or text search.
+!!! note
+    The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
+    or text search.
 
-To see how to perform these operations, you can check out other backends that do.
+    To see how to perform filter or text search, you can check out other backends that offer support.
 
-## Perform hybrid search through the query builder
+## Hybrid search through the query builder
 
-Document Index support atomic operations for vector similarity search, text search and filter search.
+Document Index supports atomic operations for vector similarity search, text search and filter search.
 
-In order to combine these operations into a singe, hybrid search query, you can use the query builder that is accessible
+To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
 through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
@@ -255,18 +255,18 @@ results = db.execute_query(query)
 print(f'{results=}')
 ```
 
-In the example above you can see how to form a hybrid query that combines vector similarity search and filter search
+In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
 to obtain a combined set of results.
 
-What kinds of atomic queries can be combined in this way depends on the backend.
-Some can combine text search and vector search, others can perform filters and vectors search, etc.
+The kinds of atomic queries that can be combined in this way depends on the backend.
+Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
 To see what backend can do what, check out the [specific docs](#document-index).
 
-## Access Documents by id
+## Access documents by `id`
 
-To retrieve a Document from a Document Index, you don't necessarily need to perform some fancy search.
+To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.
 
-You can also access data by the id that as assigned to every Document:
+You can also access data by the `id` that was assigned to each document:
 
 ```python
 # prepare some data
@@ -285,7 +285,7 @@ docs = db[ids]  # get by list of ids
 
 ## Delete Documents
 
-In the same way you can access Documents by id, you can delete them:
+In the same way you can access Documents by id, you can also delete them:
 
 ```python
 # prepare some data
@@ -304,15 +304,16 @@ del db[ids[1:]]  # del by list of ids
 
 ## Customize configurations
 
-It is DocArray's philosophy that each Document Index should "just work", meaning that it comes with a sane set of default
-settings that can get you most of the way there.
+DocArray's philosophy is that each Document Index should "just work", meaning that it comes with a sane set of defaults
+that get you most of the way there.
 
 However, there are different configurations that you may want to tweak, including:
+
 - The [ANN](https://ignite.apache.org/docs/latest/machine-learning/binary-classification/ann) algorithm used, for example [HNSW](https://www.pinecone.io/learn/hnsw/) or [ScaNN](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html)
 - Hyperparameters of the ANN algorithm, such as `ef_construction` for HNSW
 - The distance metric to use, such as cosine or L2 distance
 - The data type of each column in the database
-- ...
+- And many more...
 
 The specific configurations that you can tweak depend on the backend, but the interface to do so is universal.
 
@@ -320,17 +321,17 @@ Document Indexes differentiate between three different kind of configurations:
 
 **Database configurations**
 
-_Database configurations_ are configurations that pertain to the entire DB or DB table (as opposed to just a specific column),
+_Database configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
 and that you _don't_ dynamically change at runtime.
 
 This commonly includes:
+
 - host and port
 - index or collection name
 - authentication settings
 - ...
 
-
-For every backend, you can get the full list of configurations, and their defaults, like this:
+For every backend, you can get a full list of configurations and their defaults:
 
 ```python
 from docarray.index import HnswDocumentIndex
@@ -372,18 +373,17 @@ You can customize every field in this configuration:
 
 **Runtime configurations**
 
-_Runtime configurations_ are configurations that pertain to the entire DB or DB table (as opposed to just a specific column),
+_Runtime configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
 and that you can dynamically change at runtime.
 
 
 This commonly includes:
 - default batch size for batching operations
-- default mapping from pythong types to DB column types
-- default consistency level for various DB operations
+- default mapping from pythong types to database column types
+- default consistency level for various database operations
 - ...
 
-
-For every backend, you can get the full list of configurations, and their defaults, like this:
+For every backend, you can get the full list of configurations and their defaults:
 
 ```python
 from docarray.index import HnswDocumentIndex
@@ -396,7 +396,7 @@ print(runtime_config)
 ```
 
 As you can see, `HnswDocumentIndex.RuntimeConfig` is a dataclass that contains only one configuration:
-`default_column_config`, which is a mapping from python types to database column configurations.
+`default_column_config`, which is a mapping from Python types to database column configurations.
 
 You can customize every field in this configuration using the [configure()][docarray.index.abstract.BaseDocIndex.configure] method:
 
@@ -464,11 +464,11 @@ After this change, the new setting will be applied to _every_ column that corres
 For many vector databases, individual columns can have different configurations.
 
 This commonly includes:
-- The data type of the column, e.g. `vector` vs `varchar`
-- If it is a vector column, the dimensionality of the vector
-- Whether an index should be built for a specific column
+- the data type of the column, e.g. `vector` vs `varchar`
+- the dimensionality of the vector (if it is a vector column)
+- whether an index should be built for a specific column
 
-The exact configurations that are available different from backend to backend, but in any case you can pass them
+The available configurations vary from backend to backend, but in any case you can pass them
 directly in the schema of your Document Index, using the `Field()` syntax:
 
 ```python
@@ -484,8 +484,8 @@ db = HnswDocumentIndex[Schema](work_dir='/tmp/my_db')
 ```
 
 The `HnswDocumentIndex` above contains two columns which are configured differently:
-- `tens` has a dimensionality of 100, can take up to 12 elements, and uses the `cosine` similarity space
-- `tens_two` has a dimensionality of 10, and uses the `ip` similarity space, and an `M` hyperparameter of 4
+- `tens` has a dimensionality of `100`, can take up to `12` elements, and uses the `cosine` similarity space
+- `tens_two` has a dimensionality of `10`, and uses the `ip` similarity space, and an `M` hyperparameter of 4
 
 All configurations that are not explicitly set will be taken from the `default_column_config` of the `RuntimeConfig`.
 
@@ -544,11 +544,9 @@ index_docs = [
 doc_index.index(index_docs)
 ```
 
-
 **Search nested data:**
 
-You can perform search on any nesting level.
-To do so, use the dunder operator to specify the field defined in the nested data.
+You can perform search on any nesting level by using the dunder operator to specify the field defined in the nested data.
 
 In the following example, you can see how to perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the nested `thumbnail` and `video` fields:
 

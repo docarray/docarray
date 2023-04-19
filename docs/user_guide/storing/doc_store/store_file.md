@@ -1,10 +1,13 @@
 # Store on-disk
 
-When you want to use your [DocList][docarray.array.doc_list.doc_list.DocList] in another place, you can use the 
-[`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] function to push the [DocList][docarray.array.doc_list.doc_list.DocList] 
-to one place and later use the [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] function to pull its content back. 
+When you want to use your [DocList][docarray.array.doc_list.doc_list.DocList] in another place, you can use:
 
-## Push & pull
+- the [`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] method to push the [DocList][docarray.array.doc_list.doc_list.DocList] 
+to one place.
+- the [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] method to pull its content back. 
+
+## Push and pull
+
 To use the store locally, you need to pass a local file path to the function starting with `'file://'`.
 
 ```python
@@ -21,14 +24,15 @@ dl.push('file://simple_dl')
 dl_pull = DocList[SimpleDoc].pull('file://simple_dl')
 ```
 
-A file with the name of `simple_dl.docs` being created to store the `DocList`.
+A file with the name of `simple_dl.docs` will be created in `$HOME/.docarray/cache` to store the `DocList`.
 
 
-## Push & pull with streaming
-When you have a large amount of documents to push and pull, you could use the streaming function. 
+## Push and pull with streaming
+
+When you have a large amount of documents to push and pull, you can use the streaming method:
 [`.push_stream()`][docarray.array.doc_list.pushpull.PushPullMixin.push_stream] and 
-[`.pull_stream()`][docarray.array.doc_list.pushpull.PushPullMixin.pull_stream] can help you to stream the `DocList` in 
-order to save the memory usage. You set multiple `DocList` to pull from the same source as well.
+[`.pull_stream()`][docarray.array.doc_list.pushpull.PushPullMixin.pull_stream] stream the `DocList`
+to save memory usage. You set multiple `DocList`s to pull from the same source as well:
 
 ```python
 from docarray import BaseDoc, DocList
