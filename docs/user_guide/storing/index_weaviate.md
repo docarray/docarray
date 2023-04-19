@@ -22,20 +22,17 @@ jupyter:
     ```
 
 This is the user guide for the [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex],
-focussing on special features and configurations of Weaviate.
+focusing on special features and configurations of Weaviate.
 
-For general usage of a Document Index, see the [general user guide](./first_steps.md#document-index).
-
+For general usage of a Document Index, see the [general user guide](./docindex.md).
 
 # 1. Start Weaviate service
 
-To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], it needs to hook into a running Weaviate service.
+To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], DocArray needs to hook into a running Weaviate service.
 There are multiple ways to start a Weaviate instance, depending on your use case.
 
 <!-- #region -->
 ## 1.1. Options - Overview
-
-There are multiple ways to start a Weaviate instance.
 
 | Instance type | General use case | Configurability | Notes | 
 | ----- | ----- | ----- | ----- | 
@@ -111,6 +108,7 @@ embedded_options = EmbeddedOptions()
 Weaviate offers [multiple authentication options](https://weaviate.io/developers/weaviate/configuration/authentication), as well as [authorization options](https://weaviate.io/developers/weaviate/configuration/authorization). 
 
 With DocArray, you can use any of:
+
 - Anonymous access (public instance),
 - OIDC with username & password, and
 - API-key based authentication.
@@ -210,13 +208,13 @@ Additionally, you can specify the below settings when you instantiate a configur
 | **Category: General** |
 | host | str | Weaviate instance url | http://localhost:8080 |
 | **Category: Authentication** |
-| username | str | username known to the specified authentication provider (e.g. WCS) | None | `jp@weaviate.io` |
-| password | str | corresponding password | None | `p@ssw0rd` |
+| username | str | Username known to the specified authentication provider (e.g. WCS) | None | `jp@weaviate.io` |
+| password | str | Corresponding password | None | `p@ssw0rd` |
 | auth_api_key | str | API key known to the Weaviate instance | None | `mys3cretk3y` | 
 | **Category: Data schema** |
 | index_name | str | Class name to use to store the document | `Document` |
 | **Category: Embedded Weaviate** |
-| embedded_options| EmbeddedOptions | options for embedded weaviate | None |
+| embedded_options| EmbeddedOptions | Options for embedded weaviate | None |
 
 The type `EmbeddedOptions` can be specified as described [here](https://weaviate.io/developers/weaviate/installation/embedded#embedded-options)
 
@@ -246,15 +244,16 @@ store.configure(runtimeconfig)  # Batch settings being passed on
 | batch_config | Dict[str, Any] | dictionary to configure the weaviate client's batching logic | see below |
 
 Read more: 
+
 - Weaviate [docs on batching with the Python client](https://weaviate.io/developers/weaviate/client-libraries/python#batching)
 <!-- #endregion -->
 
 <!-- #region -->
 ## 3. Available column types
 
-Python data types are mapped to Weaviate type according to the below convention.
+Python data types are mapped to Weaviate type according to the below conventions.
 
-| python type | weaviate type |
+| Python type | Weaviate type |
 | ----------- | ------------- |
 | docarray.typing.ID | string |
 | str | text |
@@ -279,7 +278,7 @@ A list of available Weaviate data types [is here](https://weaviate.io/developers
 
 ## 4. Adding example data
 
-Putting it together, we can add data as shown below using Weaviate as the document store.
+Putting it together, we can add data below using Weaviate as the Document Index:
 
 ```python
 import numpy as np
@@ -332,23 +331,21 @@ store.index(docs)
 
 ### 4.1. Notes
 
-- In order to use vector search, you need to specify `is_embedding` for exactly one field.
-    - This is as Weaviate is configured to allow one vector per data object.
+- To use vector search, you need to specify `is_embedding` for exactly one field.
+    - This is because Weaviate is configured to allow one vector per data object.
     - If you would like to see Weaviate support multiple vectors per object, [upvote the issue](https://github.com/weaviate/weaviate/issues/2465) which will help to prioritize it.
 - For a field to be considered as an embedding, its type needs to be of subclass `np.ndarray` or `AbstractTensor` and `is_embedding` needs to be set to `True`. 
     - If `is_embedding` is set to `False` or not provided, the field will be treated as a `number[]`, and as a result, it will not be added to Weaviate's vector index.
 - It is possible to create a schema without specifying `is_embedding` for any field. 
     - This will however mean that the document will not be vectorized and cannot be searched using vector search. 
 
-
 ## 5. Query Builder/Hybrid Search
-
 
 ### 5.1. Text search
 
 To perform a text search, follow the below syntax. 
 
-This will perform a text search for the word "hello" in the field "text" and return the first 2 results:
+This will perform a text search for the word "hello" in the field "text" and return the first two results:
 
 ```python
 q = store.build_query().text_search("world", search_field="text").limit(2).build()
@@ -361,7 +358,7 @@ docs
 
 To perform a vector similarity search, follow the below syntax. 
 
-This will perform a vector similarity search for the vector [1, 2] and return the first 2 results:
+This will perform a vector similarity search for the vector [1, 2] and return the first two results:
 
 ```python
 q = store.build_query().find([1, 2]).limit(2).build()
@@ -374,7 +371,7 @@ docs
 
 To perform a hybrid search, follow the below syntax. 
 
-This will perform a hybrid search for the word "hello" and the vector [1, 2] and return the first 2 results:
+This will perform a hybrid search for the word "hello" and the vector [1, 2] and return the first two results:
 
 **Note**: Hybrid search searches through the object vector and all fields. Accordingly, the `search_field` keyword it will have no effect. 
 
