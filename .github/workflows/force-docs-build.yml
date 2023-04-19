@@ -69,19 +69,17 @@ jobs:
           cd docs
           bash makedocs.sh
           cd ..
+      - name: docs Build
+        run: |
+          rm -rf docs
+          mv site /tmp/tmp_docs
       - name: Checkout to GH pages branch (${{ inputs.pages_branch }})
         run: |
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
           git checkout -f ${{ inputs.pages_branch }}
           git reset --hard HEAD
-      - name: Moving old doc versions
-        run: |
-          cd docs
-          for i in $(cat _versions.json | jq '.[].version' | tr -d '"'); do if [ -d "$i" ]; then mv "$i" /tmp/gen-html; fi; done
-      - name: Swap in new docs
-        run: |
-          rm -rf ./docs
-          mv /tmp/gen-html ./docs
+          mv /tmp/tmp_docs docs
+
       - name: Push it up!
         run: |
           git config --local user.email "${{ inputs.git_config_email }}"

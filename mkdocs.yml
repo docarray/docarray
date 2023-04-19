@@ -66,7 +66,11 @@ extra_css:
 plugins:
   - search
   - awesome-pages
-  - mkdocs-video
+  - mkdocs-video:
+      is_video: True
+      video_autoplay: True
+      video_loop: True
+      video_muted: True
   - mkdocstrings:
       handlers:
         python:
