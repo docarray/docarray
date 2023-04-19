@@ -116,7 +116,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self._hnsw_indices[col_name] = self._load_index(col_name, col)
                 self._logger.info(f'Loading an existing index for column `{col_name}`')
             else:
-                self._hnsw_indices[col_name] = self._create_index(col)
+                self._hnsw_indices[col_name] = self._create_index(col_name, col)
                 self._logger.info(f'Created a new index for column `{col_name}`')
 
         # SQLite setup
@@ -396,13 +396,14 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             construct_params['dim'] = col.n_dim
         return hnswlib.Index(**construct_params)
 
-    def _create_index(self, col: '_ColumnInfo') -> hnswlib.Index:
+    def _create_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Create a new HNSW index for a column, and initialize it."""
         index = self._create_index_class(col)
         init_params = dict((k, col.config[k]) for k in self._index_init_params)
         index.init_index(**init_params)
         index.set_ef(col.config['ef'])
         index.set_num_threads(col.config['num_threads'])
+        index.save_index(self._hnsw_locations[col_name])
         return index
 
     # SQLite helpers

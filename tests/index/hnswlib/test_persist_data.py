@@ -78,3 +78,8 @@ def test_persist_and_restore_nested(tmp_path):
         ]
     )
     assert store.num_docs() == 15
+
+
+def test_persist_index_file(tmp_path):
+    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
