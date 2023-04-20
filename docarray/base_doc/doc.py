@@ -40,6 +40,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
+    parent_id: Optional[ID] = None
 
     class Config:
         json_loads = orjson.loads

@@ -390,6 +390,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
+        self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
 
@@ -634,6 +635,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
 
         return {col_name: _col_gen(col_name) for col_name in self._column_infos}
+
+    def _update_subindex_data(
+        self,
+        docs: DocList[BaseDoc],
+    ):
+        for field_name, type_, _ in self._flatten_schema(self._schema):
+            if issubclass(type_, AnyDocArray):
+                for doc in docs:
+                    for nested_doc in getattr(doc, field_name):
+                        nested_doc.parent_id = doc.id
 
     ##################################################
     # Behind-the-scenes magic                        #

@@ -324,14 +324,12 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
-        print('begin--------')
-        print(self._index_name)
-        print(column_to_data)
-
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
-                print(col_name)
-                docs = [*column_to_data[col_name]][0]
+                docs = [
+                    doc for doc_list in column_to_data[col_name] for doc in doc_list
+                ]
+                print(docs)
                 self._subindices[col_name].index(docs)
                 column_to_data.pop(col_name, None)
 
@@ -359,8 +357,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         if refresh:
             self._refresh(self._index_name)
-
-        print('finish--------')
 
     def num_docs(self) -> int:
         """
