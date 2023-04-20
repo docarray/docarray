@@ -23,6 +23,10 @@ def test_persist_and_restore(tmp_path):
 
     # create index
     store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+
+    # load existing index file
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    assert store.num_docs() == 0
     store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(10)])
     assert store.num_docs() == 10
     find_results_before = store.find(query, search_field='tens', limit=5)
@@ -78,10 +82,3 @@ def test_persist_and_restore_nested(tmp_path):
         ]
     )
     assert store.num_docs() == 15
-
-
-def test_persist_index_file(tmp_path):
-    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(10)])
-    assert store.num_docs() == 10
