@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import os
 import sqlite3
@@ -21,6 +22,7 @@ from typing import (
 import numpy as np
 
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import (
     BaseDocIndex,
     _ColumnInfo,
@@ -85,6 +87,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
+        print('begin--------------')
+        print(self._work_dir)
+
         # HNSWLib setup
         self._index_construct_params = ('space', 'dim')
         self._index_init_params = (
@@ -101,6 +106,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                sub_db_config = copy.deepcopy(self._db_config)
+                sub_db_config.work_dir += f'/{col_name}'
+                self._subindices[col_name] = HnswDocumentIndex[
+                    col.docarray_type.doc_type
+                ](sub_db_config)
             if not col.config:
                 # non-tensor type; don't create an index
                 continue
@@ -128,6 +139,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._create_docs_table()
         self._sqlite_conn.commit()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
+
+        print('finish--------------')
 
     ###############################################
     # Inner classes for query builder and configs #

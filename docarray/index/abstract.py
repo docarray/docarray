@@ -101,6 +101,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
             self._schema
         )
+        self._subindices = {}
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -728,8 +729,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, field_ in self._flatten_schema(schema):
             # Union types are handle in _flatten_schema
             if issubclass(type_, AnyDocArray):
-                raise ValueError(
-                    'Indexing field of DocList type (=subindex)' 'is not yet supported.'
+                column_infos[field_name] = _ColumnInfo(
+                    docarray_type=type_, db_type=None, config=None, n_dim=None
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
