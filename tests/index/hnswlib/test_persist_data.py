@@ -81,5 +81,7 @@ def test_persist_and_restore_nested(tmp_path):
 
 
 def test_persist_index_file(tmp_path):
-    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(10)])
+    assert store.num_docs() == 10
