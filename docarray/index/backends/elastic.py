@@ -1,4 +1,5 @@
 # mypy: ignore-errors
+import copy
 import uuid
 import warnings
 from collections import defaultdict
@@ -28,6 +29,7 @@ from pydantic import parse_obj_as
 
 import docarray.typing
 from docarray import BaseDoc
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import BaseDocIndex, _ColumnInfo, _raise_not_composable
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -84,6 +86,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         mappings.update(self._db_config.index_mappings)
 
         for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                sub_db_config = copy.deepcopy(self._db_config)
+                sub_db_config.index_name = f'{self._index_name}__{col_name}'
+                self._subindices[col_name] = ElasticDocIndex[
+                    col.docarray_type.doc_type
+                ](sub_db_config)
+                continue
             if col.db_type == 'dense_vector' and (
                 not col.n_dim and col.config['dims'] < 0
             ):
@@ -315,6 +324,17 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
+        print('begin--------')
+        print(self._index_name)
+        print(column_to_data)
+
+        for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                print(col_name)
+                docs = [*column_to_data[col_name]][0]
+                self._subindices[col_name].index(docs)
+                column_to_data.pop(col_name, None)
+
         data = self._transpose_col_value_dict(column_to_data)
         requests = []
 
@@ -324,6 +344,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
+                if issubclass(col.docarray_type, AnyDocArray):
+                    continue
                 if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
                 if row[col_name] is None:
@@ -337,6 +359,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         if refresh:
             self._refresh(self._index_name)
+
+        print('finish--------')
 
     def num_docs(self) -> int:
         """

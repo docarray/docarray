@@ -112,6 +112,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self._subindices[col_name] = HnswDocumentIndex[
                     col.docarray_type.doc_type
                 ](sub_db_config)
+                continue
             if not col.config:
                 # non-tensor type; don't create an index
                 continue
