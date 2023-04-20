@@ -15,8 +15,8 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 def test_column_config(weaviate_client):
-    def get_text_field_data_type(store, index_name):
-        props = store._client.schema.get(index_name)["properties"]
+    def get_text_field_data_type(index, index_name):
+        props = index._client.schema.get(index_name)["properties"]
         text_field = [p for p in props if p["name"] == "text"][0]
 
         return text_field["dataType"][0]
@@ -28,9 +28,9 @@ def test_column_config(weaviate_client):
         text: str = Field(col_type="string")
 
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name="TextDoc")
-    store = WeaviateDocumentIndex[TextDoc](db_config=dbconfig)
-    assert get_text_field_data_type(store, "TextDoc") == "text"
+    index = WeaviateDocumentIndex[TextDoc](db_config=dbconfig)
+    assert get_text_field_data_type(index, "TextDoc") == "text"
 
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name="StringDoc")
-    store = WeaviateDocumentIndex[StringDoc](db_config=dbconfig)
-    assert get_text_field_data_type(store, "StringDoc") == "string"
+    index = WeaviateDocumentIndex[StringDoc](db_config=dbconfig)
+    assert get_text_field_data_type(index, "StringDoc") == "string"
