@@ -26,7 +26,7 @@ class _FindResult(NamedTuple):
     scores: AnyTensor
 
 
-class Doc(BaseDoc):
+class _query_doc(BaseDoc):
     embedding: Optional[AnyTensor]
 
 
@@ -275,7 +275,9 @@ def find_batched(
 
     if not (isinstance(query, DocList) or isinstance(query, (DocVec, BaseDoc))):
         query = cast(AnyTensor, query)
-        d = DocList[Doc](Doc() for _ in range(comp_backend.shape(query)[0]))
+        d = DocList[_query_doc](
+            _query_doc() for _ in range(comp_backend.shape(query)[0])
+        )
         d.embedding = query  # type: ignore
         query = d
 
