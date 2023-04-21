@@ -50,8 +50,9 @@ markdown_extensions:
   - md_in_html
 
 extra:
-#  analytics:
-#    provider: google
+  analytics:
+    provider: google
+    property: G-HTTNBRW3Z2
   social:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/docarray/docarray
