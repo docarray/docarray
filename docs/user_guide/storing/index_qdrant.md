@@ -10,7 +10,7 @@
 The following is a starter script for using the [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex],
 based on the [Qdrant](https://qdrant.tech/) vector search engine.
 
-For general usage of a Document Index, see the [general user guide](./first_steps.md#document-index).
+For general usage of a Document Index, see the [general user guide](./docindex.md#document-index).
 
 !!! tip "See all configuration options"
     To see all configuration options for the [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex],
