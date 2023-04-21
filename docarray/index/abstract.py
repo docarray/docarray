@@ -334,17 +334,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # retrieve nested data
+        # TODO hnswlib or has blob doesn't need this
         for field_name, type_, _ in self._flatten_schema(self._schema):
             if issubclass(type_, AnyDocArray):
                 for doc in doc_sequence:
-                    id = doc['id'] if isinstance(doc, Dict) else doc.id
-                    nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
-                        id
-                    )
-                    if nested_docs_id:
-                        doc[field_name] = self._subindices[field_name].__getitem__(
-                            nested_docs_id
-                        )
+                    self._get_subindex_doclist(doc, field_name)
 
         # check data
         if len(doc_sequence) == 0:
@@ -438,6 +432,15 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
+
+        if search_field:
+            if '__' in search_field:
+                fields = search_field.split('__')
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
+                    return self._subindices[fields[0]].find(
+                        query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
+                    )
+
         self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
@@ -866,22 +869,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param search_field: search field to validate.
         :return: True if the field exists, False otherwise.
         """
-        if search_field:
-            if '__' in search_field:
-                fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
-                    return self._subindices[fields[0]]._validate_search_field(
-                        '__'.join(fields[1:])
-                    )
-            else:
-                if search_field not in self._column_infos.keys():
-                    valid_search_fields = ', '.join(self._column_infos.keys())
-                    raise ValueError(
-                        f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
-                    )
+
+        # TODO don't check for subindices here, but in find
+
+        if not search_field or search_field in self._column_infos.keys():
+            if not search_field:
+                self._logger.info('Empty search field was passed')
+            return True
         else:
-            self._logger.info('Empty search field was passed')
-        return True
+            valid_search_fields = ', '.join(self._column_infos.keys())
+            raise ValueError(
+                f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
+            )
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
@@ -918,6 +917,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
+
+            if issubclass(t_, AnyDocArray):
+                self._get_subindex_doclist(doc_dict, field_name)
+
             if is_optional_type(t_):
                 for t_arg in get_args(t_):
                     if t_arg is not type(None):
@@ -956,3 +959,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 ]
                 self._subindices[col_name].index(docs)
                 column_to_data.pop(col_name, None)
+
+    def _get_subindex_doclist(
+        self, doc: Union[TSchema, Dict[str, Any]], field_name: str
+    ) -> DocList[TSchema]:
+        parent_id = doc['id'] if isinstance(doc, dict) else doc.id
+        nested_docs_id = self._subindices[field_name]._filter_by_parent_id(parent_id)
+        if nested_docs_id:
+            doc[field_name] = self._subindices[field_name].__getitem__(nested_docs_id)
