@@ -151,6 +151,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             :param num_candidates: number of candidates
             :return: self
             """
+            # TODO support subindex in QueryBuilder
+
             self._outer_instance._validate_search_field(search_field)
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]

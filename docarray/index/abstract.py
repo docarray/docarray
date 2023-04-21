@@ -431,6 +431,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
+        # TODO decide the return value of subindex find
+
         self._logger.debug(f'Executing `find` for search field {search_field}')
 
         if search_field:
@@ -476,6 +478,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
+
+        if search_field:
+            if '__' in search_field:
+                fields = search_field.split('__')
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
+                    return self._subindices[fields[0]].find_batched(
+                        queries,
+                        search_field='__'.join(fields[1:]),
+                        limit=limit,
+                        **kwargs,
+                    )
+
         self._validate_search_field(search_field)
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
