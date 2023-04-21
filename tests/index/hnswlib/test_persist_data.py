@@ -22,23 +22,27 @@ def test_persist_and_restore(tmp_path):
     query = SimpleDoc(tens=np.random.random((10,)))
 
     # create index
-    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(10)])
-    assert store.num_docs() == 10
-    find_results_before = store.find(query, search_field='tens', limit=5)
+    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+
+    # load existing index file
+    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    assert index.num_docs() == 0
+    index.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(10)])
+    assert index.num_docs() == 10
+    find_results_before = index.find(query, search_field='tens', limit=5)
 
     # delete and restore
-    del store
-    store = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    assert store.num_docs() == 10
-    find_results_after = store.find(query, search_field='tens', limit=5)
+    del index
+    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    assert index.num_docs() == 10
+    find_results_after = index.find(query, search_field='tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
         assert (doc_before.tens == doc_after.tens).all()
 
     # add new data
-    store.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(5)])
-    assert store.num_docs() == 15
+    index.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(5)])
+    assert index.num_docs() == 15
 
 
 def test_persist_and_restore_nested(tmp_path):
@@ -47,8 +51,8 @@ def test_persist_and_restore_nested(tmp_path):
     )
 
     # create index
-    store = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
-    store.index(
+    index = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
+    index.index(
         [
             NestedDoc(
                 tens=np.random.random((50,)), d=SimpleDoc(tens=np.random.random((10,)))
@@ -56,20 +60,20 @@ def test_persist_and_restore_nested(tmp_path):
             for _ in range(10)
         ]
     )
-    assert store.num_docs() == 10
-    find_results_before = store.find(query, search_field='d__tens', limit=5)
+    assert index.num_docs() == 10
+    find_results_before = index.find(query, search_field='d__tens', limit=5)
 
     # delete and restore
-    del store
-    store = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
-    assert store.num_docs() == 10
-    find_results_after = store.find(query, search_field='d__tens', limit=5)
+    del index
+    index = HnswDocumentIndex[NestedDoc](work_dir=str(tmp_path))
+    assert index.num_docs() == 10
+    find_results_after = index.find(query, search_field='d__tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
         assert (doc_before.tens == doc_after.tens).all()
 
     # delete and restore
-    store.index(
+    index.index(
         [
             NestedDoc(
                 tens=np.random.random((50,)), d=SimpleDoc(tens=np.random.random((10,)))
@@ -77,9 +81,4 @@ def test_persist_and_restore_nested(tmp_path):
             for _ in range(5)
         ]
     )
-    assert store.num_docs() == 15
-
-
-def test_persist_index_file(tmp_path):
-    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
-    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    assert index.num_docs() == 15
