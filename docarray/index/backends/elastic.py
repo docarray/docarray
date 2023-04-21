@@ -616,6 +616,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
 
+    def _filter_by_parent_id(self, id: str) -> List[str]:
+        resp = self._client_search(
+            query={'term': {'parent_id': id}}, fields=['id'], _source=False
+        )
+        ids = [hit['fields']['id'][0] for hit in resp['hits']['hits']]
+        return ids
+
     ###############################################
     # API Wrappers                                #
     ###############################################

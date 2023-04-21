@@ -330,8 +330,22 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             key = [key]
         else:
             return_singleton = False
+
         # retrieve data
         doc_sequence = self._get_items(key)
+        # retrieve nested data
+        for field_name, type_, _ in self._flatten_schema(self._schema):
+            if issubclass(type_, AnyDocArray):
+                for doc in doc_sequence:
+                    id = doc['id'] if isinstance(doc, Dict) else doc.id
+                    nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
+                        id
+                    )
+                    if nested_docs_id:
+                        doc[field_name] = self._subindices[field_name].__getitem__(
+                            nested_docs_id
+                        )
+
         # check data
         if len(doc_sequence) == 0:
             raise KeyError(f'No document with id {key} found')
@@ -912,3 +926,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
+
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        return None
