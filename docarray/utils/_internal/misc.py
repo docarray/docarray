@@ -32,6 +32,7 @@ INSTALL_INSTRUCTIONS = {
     'trimesh': '"docarray[mesh]"',
     'hnswlib': '"docarray[hnswlib]"',
     'elasticsearch': '"docarray[elasticsearch]"',
+    'elastic_transport': '"docarray[elasticsearch]"',
     'weaviate': '"docarray[weaviate]"',
     'qdrant_client': '"docarray[qdrant]"',
     'fastapi': '"docarray[web]"',
