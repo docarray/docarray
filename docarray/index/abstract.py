@@ -866,15 +866,22 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param search_field: search field to validate.
         :return: True if the field exists, False otherwise.
         """
-        if not search_field or search_field in self._column_infos.keys():
-            if not search_field:
-                self._logger.info('Empty search field was passed')
-            return True
+        if search_field:
+            if '__' in search_field:
+                fields = search_field.split('__')
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
+                    return self._subindices[fields[0]]._validate_search_field(
+                        '__'.join(fields[1:])
+                    )
+            else:
+                if search_field not in self._column_infos.keys():
+                    valid_search_fields = ', '.join(self._column_infos.keys())
+                    raise ValueError(
+                        f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
+                    )
         else:
-            valid_search_fields = ', '.join(self._column_infos.keys())
-            raise ValueError(
-                f'{search_field} is not a valid search field. Valid search fields are: {valid_search_fields}'
-            )
+            self._logger.info('Empty search field was passed')
+        return True
 
     def _to_numpy(self, val: Any, allow_passthrough=False) -> Any:
         """
