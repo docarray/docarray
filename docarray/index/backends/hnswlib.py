@@ -403,7 +403,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
-        index.load_index(self._hnsw_locations[col_name], max_elements=1024)
+        index.load_index(
+            self._hnsw_locations[col_name], max_elements=col.config['max_elements']
+        )
         return index
 
     # HNSWLib helpers

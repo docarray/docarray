@@ -21,15 +21,15 @@ def test_find_torch(weaviate_client):
     class TorchDoc(BaseDoc):
         tens: TorchTensor[10] = Field(dims=10, is_embedding=True)
 
-    store = WeaviateDocumentIndex[TorchDoc]()
+    index = WeaviateDocumentIndex[TorchDoc]()
 
     index_docs = [
         TorchDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
     ]
-    store.index(index_docs)
+    index.index(index_docs)
 
     query = index_docs[-1]
-    docs, scores = store.find(query, limit=5)
+    docs, scores = index.find(query, limit=5)
 
     assert len(docs) == 5
     assert len(scores) == 5
@@ -47,15 +47,15 @@ def test_find_tensorflow():
     class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10] = Field(dims=10, is_embedding=True)
 
-    store = WeaviateDocumentIndex[TfDoc]()
+    index = WeaviateDocumentIndex[TfDoc]()
 
     index_docs = [
         TfDoc(tens=np.random.rand(10).astype(dtype=np.float32)) for _ in range(10)
     ]
-    store.index(index_docs)
+    index.index(index_docs)
 
     query = index_docs[-1]
-    docs, scores = store.find(query, limit=5)
+    docs, scores = index.find(query, limit=5)
 
     assert len(docs) == 5
     assert len(scores) == 5
