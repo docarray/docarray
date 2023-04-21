@@ -546,11 +546,11 @@ class IOMixinArray(Iterable[T_doc]):
     def _stream_header(self) -> bytes:
         # Binary format for streaming case
 
-        # V1 DocList streaming serialization format
-        # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
+        # V2 DocList streaming serialization format
+        # | 1 byte | 8 bytes | 4 bytes | variable(docarray v2) | 4 bytes | variable(docarray v2) ...
 
         # 1 byte (uint8)
-        version_byte = b'\x01'
+        version_byte = b'\x02'
         # 8 bytes (uint64)
         num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
         return version_byte + num_docs_as_bytes
@@ -597,6 +597,12 @@ class IOMixinArray(Iterable[T_doc]):
             from docarray.utils._internal.progress_bar import _get_progressbar
 
             # 1 byte (uint8)
+            version_num = int.from_bytes(d[0:1], 'big', signed=False)
+            if version_num != 2:
+                raise ValueError(
+                    f'Unsupported version number {version_num} in binary format, expected 2'
+                )
+
             # 8 bytes (uint64)
             num_docs = int.from_bytes(d[1:9], 'big', signed=False)
 
@@ -655,6 +661,14 @@ class IOMixinArray(Iterable[T_doc]):
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
+            version_num = int.from_bytes(
+                version_numdocs_lendoc0[0:1], 'big', signed=False
+            )
+            if version_num != 2:
+                raise ValueError(
+                    f'Unsupported version number {version_num} in binary format, expected 2'
+                )
+
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 

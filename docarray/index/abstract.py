@@ -854,9 +854,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             return val.unwrap().numpy()
         if isinstance(val, (list, tuple)):
             return np.array(val)
-        if (torch is not None and isinstance(val, torch.Tensor)) or (
-            tf is not None and isinstance(val, tf.Tensor)
-        ):
+        if torch is not None and isinstance(val, torch.Tensor):
+            return val.detach().numpy()
+        if tf is not None and isinstance(val, tf.Tensor):
             return val.numpy()
         if allow_passthrough:
             return val

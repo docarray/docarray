@@ -58,16 +58,16 @@ def documents():
 
 
 @pytest.fixture
-def test_store(weaviate_client, documents):
-    store = WeaviateDocumentIndex[Document]()
-    store.index(documents)
-    yield store
+def test_index(weaviate_client, documents):
+    index = WeaviateDocumentIndex[Document]()
+    index.index(documents)
+    yield index
 
 
 def test_index_simple_schema(weaviate_client, ten_simple_docs):
-    store = WeaviateDocumentIndex[SimpleDoc]()
-    store.index(ten_simple_docs)
-    assert store.num_docs() == 10
+    index = WeaviateDocumentIndex[SimpleDoc]()
+    index.index(ten_simple_docs)
+    assert index.num_docs() == 10
 
     for doc in ten_simple_docs:
         doc_id = doc.id
@@ -111,24 +111,24 @@ def test_find(weaviate_client, caplog):
     vectors = [[10, 10], [10.5, 10.5], [-100, -100]]
     docs = [Document(embedding=vector) for vector in vectors]
 
-    store = WeaviateDocumentIndex[Document]()
-    store.index(docs)
+    index = WeaviateDocumentIndex[Document]()
+    index.index(docs)
 
     query = [10.1, 10.1]
 
-    results = store.find(
+    results = index.find(
         query, search_field='', limit=3, score_name="distance", score_threshold=1e-2
     )
     assert len(results) == 2
 
-    results = store.find(query, search_field='', limit=3, score_threshold=0.99)
+    results = index.find(query, search_field='', limit=3, score_threshold=0.99)
     assert len(results) == 2
 
     with pytest.raises(
         ValueError,
         match=r"Argument search_field is not supported for WeaviateDocumentIndex",
     ):
-        store.find(query, search_field="foo", limit=10)
+        index.find(query, search_field="foo", limit=10)
 
 
 def test_find_batched(weaviate_client, caplog):
@@ -138,19 +138,19 @@ def test_find_batched(weaviate_client, caplog):
     vectors = [[10, 10], [10.5, 10.5], [-100, -100]]
     docs = [Document(embedding=vector) for vector in vectors]
 
-    store = WeaviateDocumentIndex[Document]()
-    store.index(docs)
+    index = WeaviateDocumentIndex[Document]()
+    index.index(docs)
 
     queries = np.array([[10.1, 10.1], [-100, -100]])
 
-    results = store.find_batched(
+    results = index.find_batched(
         queries, search_field='', limit=3, score_name="distance", score_threshold=1e-2
     )
     assert len(results) == 2
     assert len(results.documents[0]) == 2
     assert len(results.documents[1]) == 1
 
-    results = store.find_batched(
+    results = index.find_batched(
         queries, search_field='', limit=3, score_name="certainty"
     )
     assert len(results) == 2
@@ -161,7 +161,7 @@ def test_find_batched(weaviate_client, caplog):
         ValueError,
         match=r"Argument search_field is not supported for WeaviateDocumentIndex",
     ):
-        store.find_batched(queries, search_field="foo", limit=10)
+        index.find_batched(queries, search_field="foo", limit=10)
 
 
 @pytest.mark.parametrize(
@@ -172,8 +172,8 @@ def test_find_batched(weaviate_client, caplog):
         ({"path": ["id"], "operator": "Equal", "valueString": "1"}, 1),
     ],
 )
-def test_filter(test_store, filter_query, expected_num_docs):
-    docs = test_store.filter(filter_query, limit=3)
+def test_filter(test_index, filter_query, expected_num_docs):
+    docs = test_index.filter(filter_query, limit=3)
     actual_num_docs = len(docs)
 
     assert actual_num_docs == expected_num_docs
@@ -198,50 +198,50 @@ def test_filter(test_store, filter_query, expected_num_docs):
         ),
     ],
 )
-def test_filter_batched(test_store, filter_queries, expected_num_docs):
+def test_filter_batched(test_index, filter_queries, expected_num_docs):
     filter_queries = [
         {"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"},
         {"path": ["text"], "operator": "Equal", "valueText": "foo"},
     ]
 
-    results = test_store.filter_batched(filter_queries, limit=3)
+    results = test_index.filter_batched(filter_queries, limit=3)
     actual_num_docs = [len(docs) for docs in results]
     assert actual_num_docs == expected_num_docs
 
 
-def test_text_search(test_store):
-    results = test_store.text_search(query="lorem", search_field="text", limit=3)
+def test_text_search(test_index):
+    results = test_index.text_search(query="lorem", search_field="text", limit=3)
     assert len(results.documents) == 1
 
 
-def test_text_search_batched(test_store):
+def test_text_search_batched(test_index):
     text_queries = ["lorem", "foo"]
 
-    results = test_store.text_search_batched(
+    results = test_index.text_search_batched(
         queries=text_queries, search_field="text", limit=3
     )
     assert len(results.documents[0]) == 1
     assert len(results.documents[1]) == 0
 
 
-def test_del_items(test_store):
-    del test_store[["1", "2"]]
-    assert test_store.num_docs() == 1
+def test_del_items(test_index):
+    del test_index[["1", "2"]]
+    assert test_index.num_docs() == 1
 
 
-def test_get_items(test_store):
-    docs = test_store[["1", "2"]]
+def test_get_items(test_index):
+    docs = test_index[["1", "2"]]
     assert len(docs) == 2
     assert set(doc.id for doc in docs) == {'1', '2'}
 
 
 def test_index_nested_documents(weaviate_client):
-    store = WeaviateDocumentIndex[NestedDocument]()
+    index = WeaviateDocumentIndex[NestedDocument]()
     document = NestedDocument(
         text="lorem ipsum", child=Document(embedding=[10, 10], text="dolor sit amet")
     )
-    store.index([document])
-    assert store.num_docs() == 1
+    index.index([document])
+    assert index.num_docs() == 1
 
 
 @pytest.mark.parametrize(
@@ -256,13 +256,13 @@ def test_index_nested_documents(weaviate_client):
 def test_text_search_nested_documents(
     weaviate_client, search_field, query, expected_num_docs
 ):
-    store = WeaviateDocumentIndex[NestedDocument]()
+    index = WeaviateDocumentIndex[NestedDocument]()
     document = NestedDocument(
         text="lorem ipsum", child=Document(embedding=[10, 10], text="dolor sit amet")
     )
-    store.index([document])
+    index.index([document])
 
-    results = store.text_search(query=query, search_field=search_field, limit=3)
+    results = index.text_search(query=query, search_field=search_field, limit=3)
 
     assert len(results.documents) == expected_num_docs
 
@@ -275,37 +275,37 @@ def test_reuse_existing_schema(weaviate_client, caplog):
         assert "Will reuse existing schema" in caplog.text
 
 
-def test_query_builder(test_store):
+def test_query_builder(test_index):
     query_embedding = [10.25, 10.25]
     query_text = "ipsum"
     where_filter = {"path": ["id"], "operator": "Equal", "valueString": "1"}
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .find(query=query_embedding)
         .filter(where_filter)
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs) == 1
 
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .text_search(query=query_text, search_field="text")
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs) == 1
 
 
-def test_batched_query_builder(test_store):
+def test_batched_query_builder(test_index):
     query_embeddings = [[10.25, 10.25], [-100, -100]]
     query_texts = ["ipsum", "foo"]
     where_filters = [{"path": ["id"], "operator": "Equal", "valueString": "1"}]
 
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .find_batched(
             queries=query_embeddings, score_name="certainty", score_threshold=0.99
         )
@@ -313,22 +313,22 @@ def test_batched_query_builder(test_store):
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs[0]) == 1
     assert len(docs[1]) == 0
 
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .text_search_batched(queries=query_texts, search_field="text")
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs[0]) == 1
     assert len(docs[1]) == 0
 
 
-def test_raw_graphql(test_store):
+def test_raw_graphql(test_index):
     graphql_query = """
     {
      Aggregate {
@@ -341,35 +341,35 @@ def test_raw_graphql(test_store):
     }
     """
 
-    results = test_store.execute_query(graphql_query)
+    results = test_index.execute_query(graphql_query)
     num_docs = results["data"]["Aggregate"]["Document"][0]["meta"]["count"]
 
     assert num_docs == 3
 
 
-def test_hybrid_query(test_store):
+def test_hybrid_query(test_index):
     query_embedding = [10.25, 10.25]
     query_text = "ipsum"
     where_filter = {"path": ["id"], "operator": "Equal", "valueString": "1"}
 
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .find(query=query_embedding)
         .text_search(query=query_text, search_field="text")
         .filter(where_filter)
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs) == 1
 
 
-def test_hybrid_query_batched(test_store):
+def test_hybrid_query_batched(test_index):
     query_embeddings = [[10.25, 10.25], [-100, -100]]
     query_texts = ["dolor", "elit"]
 
     q = (
-        test_store.build_query()
+        test_index.build_query()
         .find_batched(
             queries=query_embeddings, score_name="certainty", score_threshold=0.99
         )
@@ -377,7 +377,7 @@ def test_hybrid_query_batched(test_store):
         .build()
     )
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert docs[0][0].id == '1'
     assert docs[1][0].id == '2'
 
@@ -387,28 +387,28 @@ def test_index_multi_modal_doc():
         image: ImageDoc
         text: TextDoc
 
-    store = WeaviateDocumentIndex[MyMultiModalDoc]()
+    index = WeaviateDocumentIndex[MyMultiModalDoc]()
 
     doc = [
         MyMultiModalDoc(
             image=ImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
         )
     ]
-    store.index(doc)
+    index.index(doc)
 
     id_ = doc[0].id
-    assert store[id_].id == id_
-    assert np.all(store[id_].image.embedding == doc[0].image.embedding)
-    assert store[id_].text.text == doc[0].text.text
+    assert index[id_].id == id_
+    assert np.all(index[id_].image.embedding == doc[0].image.embedding)
+    assert index[id_].text.text == doc[0].text.text
 
 
 def test_index_document_with_bytes(weaviate_client):
     doc = ImageDoc(id="1", url="www.foo.com", bytes_=b"foo")
 
-    store = WeaviateDocumentIndex[ImageDoc]()
-    store.index([doc])
+    index = WeaviateDocumentIndex[ImageDoc]()
+    index.index([doc])
 
-    results = store.filter(
+    results = index.filter(
         filter_query={"path": ["id"], "operator": "Equal", "valueString": "1"}
     )
 
@@ -423,22 +423,22 @@ def test_index_document_with_no_embeddings(weaviate_client):
 
     doc = Document(not_embedding=[2, 5], text="dolor sit amet", id="1")
 
-    store = WeaviateDocumentIndex[Document]()
+    index = WeaviateDocumentIndex[Document]()
 
-    store.index([doc])
+    index.index([doc])
 
-    results = store.filter(
+    results = index.filter(
         filter_query={"path": ["id"], "operator": "Equal", "valueString": "1"}
     )
 
     assert doc == results[0]
 
 
-def test_limit_query_builder(test_store):
+def test_limit_query_builder(test_index):
     query_vector = [10.25, 10.25]
-    q = test_store.build_query().find(query=query_vector).limit(2)
+    q = test_index.build_query().find(query=query_vector).limit(2)
 
-    docs = test_store.execute_query(q)
+    docs = test_index.execute_query(q)
     assert len(docs) == 2
 
 
@@ -448,6 +448,6 @@ def test_embedded_weaviate():
 
     embedded_options = EmbeddedOptions()
     db_config = WeaviateDocumentIndex.DBConfig(embedded_options=embedded_options)
-    store = WeaviateDocumentIndex[Document](db_config=db_config)
+    index = WeaviateDocumentIndex[Document](db_config=db_config)
 
-    assert store._client._connection.embedded_db
+    assert index._client._connection.embedded_db

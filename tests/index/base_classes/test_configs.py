@@ -63,10 +63,10 @@ class DummyDocIndex(BaseDocIndex):
 
 
 def test_defaults():
-    store = DummyDocIndex[SimpleDoc]()
-    assert store._db_config.other == 5
-    assert store._db_config.work_dir == '.'
-    assert store._runtime_config.default_column_config[str] == {
+    index = DummyDocIndex[SimpleDoc]()
+    assert index._db_config.other == 5
+    assert index._db_config.work_dir == '.'
+    assert index._runtime_config.default_column_config[str] == {
         'dim': 128,
         'space': 'l2',
     }
@@ -74,39 +74,39 @@ def test_defaults():
 
 def test_set_by_class():
     # change all settings
-    store = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi', other=10))
-    assert store._db_config.other == 10
-    assert store._db_config.work_dir == 'hi'
-    store.configure(RuntimeConfig(default_column_config={}, default_ef=10))
-    assert store._runtime_config.default_column_config == {}
+    index = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi', other=10))
+    assert index._db_config.other == 10
+    assert index._db_config.work_dir == 'hi'
+    index.configure(RuntimeConfig(default_column_config={}, default_ef=10))
+    assert index._runtime_config.default_column_config == {}
 
     # change only some settings
-    store = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi'))
-    assert store._db_config.other == 5
-    assert store._db_config.work_dir == 'hi'
-    store.configure(RuntimeConfig(default_column_config={}))
-    assert store._runtime_config.default_column_config == {}
+    index = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi'))
+    assert index._db_config.other == 5
+    assert index._db_config.work_dir == 'hi'
+    index.configure(RuntimeConfig(default_column_config={}))
+    assert index._runtime_config.default_column_config == {}
 
 
 def test_set_by_kwargs():
     # change all settings
-    store = DummyDocIndex[SimpleDoc](work_dir='hi', other=10)
-    assert store._db_config.other == 10
-    assert store._db_config.work_dir == 'hi'
-    store.configure(default_column_config={}, default_ef=10)
-    assert store._runtime_config.default_column_config == {}
+    index = DummyDocIndex[SimpleDoc](work_dir='hi', other=10)
+    assert index._db_config.other == 10
+    assert index._db_config.work_dir == 'hi'
+    index.configure(default_column_config={}, default_ef=10)
+    assert index._runtime_config.default_column_config == {}
 
     # change only some settings
-    store = DummyDocIndex[SimpleDoc](work_dir='hi')
-    assert store._db_config.other == 5
-    assert store._db_config.work_dir == 'hi'
-    store.configure(default_column_config={})
-    assert store._runtime_config.default_column_config == {}
+    index = DummyDocIndex[SimpleDoc](work_dir='hi')
+    assert index._db_config.other == 5
+    assert index._db_config.work_dir == 'hi'
+    index.configure(default_column_config={})
+    assert index._runtime_config.default_column_config == {}
 
 
 def test_default_column_config():
-    store = DummyDocIndex[SimpleDoc]()
-    assert store._runtime_config.default_column_config == {
+    index = DummyDocIndex[SimpleDoc]()
+    assert index._runtime_config.default_column_config == {
         str: {
             'dim': 128,
             'space': 'l2',

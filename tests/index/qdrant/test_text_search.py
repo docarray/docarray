@@ -1,12 +1,10 @@
 import numpy as np
-
 from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
-
-from .fixtures import qdrant_config, qdrant
+from tests.index.qdrant.fixtures import qdrant, qdrant_config  # noqa: F401
 
 
 class SimpleDoc(BaseDoc):
@@ -14,12 +12,12 @@ class SimpleDoc(BaseDoc):
     text: str
 
 
-def test_text_search(qdrant_config, qdrant):
+def test_text_search(qdrant_config):  # noqa: F811
     class SimpleSchema(BaseDoc):
         embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
         text: str
 
-    store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
+    index = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
     index_docs = [
         SimpleDoc(
@@ -28,10 +26,10 @@ def test_text_search(qdrant_config, qdrant):
         )
         for i in range(10)
     ]
-    store.index(index_docs)
+    index.index(index_docs)
 
     query = 'ipsum 2'
-    docs, scores = store.text_search(query, search_field='text', limit=5)
+    docs, scores = index.text_search(query, search_field='text', limit=5)
 
     assert len(docs) == 1
     assert len(scores) == 1
@@ -39,12 +37,12 @@ def test_text_search(qdrant_config, qdrant):
     assert scores[0] > 0.0
 
 
-def test_text_search_batched(qdrant_config, qdrant):
+def test_text_search_batched(qdrant_config):  # noqa: F811
     class SimpleSchema(BaseDoc):
         embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
         text: str
 
-    store = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
+    index = QdrantDocumentIndex[SimpleSchema](db_config=qdrant_config)
 
     index_docs = [
         SimpleDoc(
@@ -53,10 +51,10 @@ def test_text_search_batched(qdrant_config, qdrant):
         )
         for i in range(10)
     ]
-    store.index(index_docs)
+    index.index(index_docs)
 
     queries = ['ipsum 2', 'ipsum 4', 'Lorem']
-    docs, scores = store.text_search_batched(queries, search_field='text', limit=5)
+    docs, scores = index.text_search_batched(queries, search_field='text', limit=5)
 
     assert len(docs) == 3
     assert len(docs[0]) == 1

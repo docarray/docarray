@@ -13,20 +13,20 @@ def test_column_config():
         text: str
         color: str = Field(col_type='keyword')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    index = ElasticV7DocIndex[MyDoc]()
     index_docs = [
         MyDoc(id='0', text='hello world', color='red'),
         MyDoc(id='1', text='never gonna give you up', color='blue'),
         MyDoc(id='2', text='we are the world', color='green'),
     ]
-    store.index(index_docs)
+    index.index(index_docs)
 
     query = 'world'
-    docs, _ = store.text_search(query, search_field='text')
+    docs, _ = index.text_search(query, search_field='text')
     assert [doc.id for doc in docs] == ['0', '2']
 
     filter_query = {'terms': {'color': ['red', 'blue']}}
-    docs = store.filter(filter_query)
+    docs = index.filter(filter_query)
     assert [doc.id for doc in docs] == ['0', '1']
 
 
@@ -44,19 +44,19 @@ def test_field_object():
             }
         )
 
-    store = ElasticV7DocIndex[MyDoc]()
+    index = ElasticV7DocIndex[MyDoc]()
     doc = [
         MyDoc(manager={'age': 25, 'name': {'first': 'Rachel', 'last': 'Green'}}),
         MyDoc(manager={'age': 30, 'name': {'first': 'Monica', 'last': 'Geller'}}),
         MyDoc(manager={'age': 35, 'name': {'first': 'Phoebe', 'last': 'Buffay'}}),
     ]
-    store.index(doc)
+    index.index(doc)
     id_ = doc[0].id
-    assert store[id_].id == id_
-    assert store[id_].manager == doc[0].manager
+    assert index[id_].id == id_
+    assert index[id_].manager == doc[0].manager
 
     filter_query = {'range': {'manager.age': {'gte': 30}}}
-    docs = store.filter(filter_query)
+    docs = index.filter(filter_query)
     assert [doc.id for doc in docs] == [doc[1].id, doc[2].id]
 
 
@@ -64,13 +64,13 @@ def test_field_geo_point():
     class MyDoc(BaseDoc):
         location: dict = Field(col_type='geo_point')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    index = ElasticV7DocIndex[MyDoc]()
     doc = [
         MyDoc(location={'lat': 40.12, 'lon': -72.34}),
         MyDoc(location={'lat': 41.12, 'lon': -73.34}),
         MyDoc(location={'lat': 42.12, 'lon': -74.34}),
     ]
-    store.index(doc)
+    index.index(doc)
 
     query = {
         'query': {
@@ -83,7 +83,7 @@ def test_field_geo_point():
         },
     }
 
-    docs, _ = store.execute_query(query)
+    docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == [doc[0].id, doc[1].id]
 
 
@@ -92,7 +92,7 @@ def test_field_range():
         expected_attendees: dict = Field(col_type='integer_range')
         time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
 
-    store = ElasticV7DocIndex[MyDoc]()
+    index = ElasticV7DocIndex[MyDoc]()
     doc = [
         MyDoc(
             expected_attendees={'gte': 10, 'lt': 20},
@@ -107,7 +107,7 @@ def test_field_range():
             time_frame={'gte': '2023-03-01', 'lt': '2023-04-01'},
         ),
     ]
-    store.index(doc)
+    index.index(doc)
 
     query = {
         'query': {
@@ -127,5 +127,5 @@ def test_field_range():
             }
         },
     }
-    docs, _ = store.execute_query(query)
+    docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == [doc[0].id, doc[1].id]
