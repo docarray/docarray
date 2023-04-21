@@ -370,6 +370,17 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.info(f'Deleting documents with id(s) {key} from the index')
         if isinstance(key, str):
             key = [key]
+
+        # delete nested data
+        for field_name, type_, _ in self._flatten_schema(self._schema):
+            if issubclass(type_, AnyDocArray):
+                for doc_id in key:
+                    nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
+                        doc_id
+                    )
+                    if nested_docs_id:
+                        del self._subindices[field_name][nested_docs_id]
+        # delete data
         self._del_items(key)
 
     def configure(self, runtime_config=None, **kwargs):
@@ -929,3 +940,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
         return None
+
+    def _index_subindex(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                docs = [
+                    doc for doc_list in column_to_data[col_name] for doc in doc_list
+                ]
+                self._subindices[col_name].index(docs)
+                column_to_data.pop(col_name, None)

@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Generator,
     Generic,
     List,
     Optional,
@@ -87,9 +88,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
-        print('begin--------------')
-        print(self._work_dir)
-
         # HNSWLib setup
         self._index_construct_params = ('space', 'dim')
         self._index_init_params = (
@@ -140,8 +138,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._create_docs_table()
         self._sqlite_conn.commit()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
-
-        print('finish--------------')
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -209,9 +205,23 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return None  # all types allowed, but no db type needed
 
-    def _index(self, column_data_dic, **kwargs):
+    def _index(
+        self,
+        column_to_data: Dict[str, Generator[Any, None, None]],
+        docs_validated: Sequence[BaseDoc],
+    ):
+        self._index_subindex(column_to_data)
+
         # not needed, we implement `index` directly
-        ...
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
+        # indexing into HNSWLib and SQLite sequentially
+        # could be improved by processing in parallel
+        for col_name, index in self._hnsw_indices.items():
+            data = column_to_data[col_name]
+            data_np = [self._to_numpy(arr) for arr in data]
+            data_stacked = np.stack(data_np)
+            index.add_items(data_stacked, ids=hashed_ids)
+            index.save_index(self._hnsw_locations[col_name])
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """Index Documents into the index.
@@ -230,16 +240,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._logger.debug(f'Indexing {len(docs)} documents')
         docs_validated = self._validate_docs(docs)
+        self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)
-        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
-        # indexing into HNSWLib and SQLite sequentially
-        # could be improved by processing in parallel
-        for col_name, index in self._hnsw_indices.items():
-            data = data_by_columns[col_name]
-            data_np = [self._to_numpy(arr) for arr in data]
-            data_stacked = np.stack(data_np)
-            index.add_items(data_stacked, ids=hashed_ids)
-            index.save_index(self._hnsw_locations[col_name])
+
+        self._index(data_by_columns, docs_validated, **kwargs)
 
         self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
@@ -356,6 +360,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
+
         try:
             for doc_id in doc_ids:
                 id_ = self._to_hashed_id(doc_id)
@@ -364,6 +369,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         except RuntimeError:
             raise KeyError(f'No document with id {doc_ids} found')
 
+        print(doc_ids)
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
 
@@ -397,7 +403,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
-        index.load_index(self._hnsw_locations[col_name])
+        index.load_index(self._hnsw_locations[col_name], max_elements=1024)
         return index
 
     # HNSWLib helpers
