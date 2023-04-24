@@ -5,7 +5,7 @@ import pytest
 import torch
 
 from docarray import DocList
-from docarray.base_doc import BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
@@ -287,6 +287,7 @@ def test_super_complex_nested():
     (doc2.data['hello'][3][0] == torch.ones(55)).all()
 
 
+@pytest.mark.proto
 @pytest.mark.tensorflow
 def test_super_complex_nested_tensorflow():
     class MyDoc(BaseDoc):
@@ -296,3 +297,11 @@ def test_super_complex_nested_tensorflow():
     doc = MyDoc(data=data)
 
     MyDoc.from_protobuf(doc.to_protobuf())
+
+
+@pytest.mark.proto
+def test_any_doc_proto():
+    doc = AnyDoc(hello='world')
+    pt = doc.to_protobuf()
+    doc2 = AnyDoc.from_protobuf(pt)
+    assert doc2.dict()['hello'] == 'world'

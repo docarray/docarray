@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import BaseDoc, DocList
+from docarray.base_doc import AnyDoc
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
@@ -59,3 +60,11 @@ def test_nested_proto_any_doc():
     )
 
     DocList.from_protobuf(da.to_protobuf())
+
+
+@pytest.mark.proto
+def test_any_doc_list_proto():
+    doc = AnyDoc(hello='world')
+    pt = DocList([doc]).to_protobuf()
+    docs = DocList.from_protobuf(pt)
+    assert docs[0].dict()['hello'] == 'world'
