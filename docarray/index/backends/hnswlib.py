@@ -232,7 +232,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
-        Execute a query on the WeaviateDocumentIndex.
+        Execute a query on the HnswDocumentIndex.
 
         Can take two kinds of inputs:
 
