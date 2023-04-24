@@ -219,7 +219,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         fields: Dict[str, Any] = {}
 
         for field_name in pb_msg.data:
-            if field_name not in cls.__fields__.keys():
+            if (
+                not (cls.Config.load_extra_fields_from_protobuf)
+                and field_name not in cls.__fields__.keys()
+            ):
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
 

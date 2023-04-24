@@ -50,6 +50,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         json_encoders = {AbstractTensor: lambda x: x}
 
         validate_assignment = True
+        load_extra_fields_from_protobuf = False
 
     @classmethod
     def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:

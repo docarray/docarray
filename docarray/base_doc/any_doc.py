@@ -8,6 +8,10 @@ class AnyDoc(BaseDoc):
     AnyDoc is a Document that is not tied to any schema
     """
 
+    class Config:
+        load_extra_fields_from_protobuf = True  # I introduce this variable to allow to load more that the fields defined in the schema
+        # will documented this behavior later if this fix our problem
+
     def __init__(self, **kwargs):
         super().__init__()
         self.__dict__.update(kwargs)
