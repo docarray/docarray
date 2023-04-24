@@ -77,7 +77,7 @@ class MyDoc(BaseDoc):
 db = HnswDocumentIndex[MyDoc](work_dir='./my_test_db')
 ```
 
-**Schema definition:**
+### Schema definition
 
 In this code snippet, `HnswDocumentIndex` takes a schema of the form of `MyDoc`.
 The Document Index then _creates a column for each field in `MyDoc`_.
@@ -92,6 +92,69 @@ the database will store vectors with 128 dimensions.
 !!! note "PyTorch and TensorFlow support"
     Instead of using `NdArray` you can use `TorchTensor` or `TensorFlowTensor` and the Document Index will handle that
     for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
+
+
+### Using a predefined Document as schema
+
+DocArray offers a number of predefined Documents, like [ImageDoce][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
+Depending on the backend, and exception will be raised, or no vector index for ANN lookup will be built.
+
+The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
+field. But this is crucial information for any vector database to work properly!
+
+You can work around this problem by subclassing the predefined Document and adding the dimensionality information:
+
+=== "Using type hint"
+    ```python
+    from docarray.documents import TextDoc
+    from docarray.typing import NdArray
+    from docarray.index import HnswDocumentIndex
+
+
+    class MyDoc(TextDoc):
+        embedding: NdArray[128]
+
+
+    db = HnswDocumentIndex[MyDoc](work_dir='test_db')
+    ```
+
+=== "Using Field()"
+    ```python
+    from docarray.documents import TextDoc
+    from docarray.typing import AnyTensor
+    from docarray.index import HnswDocumentIndex
+    from pydantic import Field
+
+
+    class MyDoc(TextDoc):
+        embedding: AnyTensor = Field(n_dim=128)
+
+
+    db = HnswDocumentIndex[MyDoc](work_dir='test_db3')
+    ```
+
+Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
+predefined Document type, or of your custom Document type.
+
+The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
+
+```python
+from docarray import DocList
+
+# data of type TextDoc
+data = DocList[TextDoc](
+    [
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+    ]
+)
+
+# you can index this into Document Index of type MyDoc
+db.index(data)
+```
+
 
 **Database location:**
 
@@ -135,6 +198,8 @@ need to have compatible schemas.
     - A and B are the same class
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
+
+    In particular this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 ## Vector similarity search
 
@@ -183,7 +248,7 @@ matching documents and their associated similarity scores.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
 
-**Batched search:**
+### Batched search
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
@@ -319,7 +384,7 @@ The specific configurations that you can tweak depend on the backend, but the in
 
 Document Indexes differentiate between three different kind of configurations:
 
-**Database configurations**
+### Database configurations
 
 _Database configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
 and that you _don't_ dynamically change at runtime.
@@ -371,7 +436,7 @@ You can customize every field in this configuration:
     # > HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
     ```
 
-**Runtime configurations**
+### Runtime configurations
 
 _Runtime configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
 and that you can dynamically change at runtime.
@@ -459,7 +524,7 @@ You can customize every field in this configuration using the [configure()][doca
 
 After this change, the new setting will be applied to _every_ column that corresponds to a `np.ndarray` type.
 
-**Column configurations**
+### Column configurations
 
 For many vector databases, individual columns can have different configurations.
 
