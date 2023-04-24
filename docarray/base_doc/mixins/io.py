@@ -127,6 +127,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def _get_field_type(cls, field: str) -> Type:
         ...
 
+    @classmethod
+    def _get_field_type_array(cls, field: str) -> Type:
+        return cls._get_field_type(field)
+
     def __bytes__(self) -> bytes:
         return self.to_bytes()
 
@@ -256,12 +260,20 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
             )
-        elif content_key in ['doc', 'doc_array']:
+        elif content_key == 'doc':
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a Document or a DocList'
+                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
                 )
             return_field = cls._get_field_type(field_name).from_protobuf(
+                getattr(value, content_key)
+            )  # we get to the parent class
+        elif content_key == 'doc_array':
+            if field_name is None:
+                raise ValueError(
+                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
+                )
+            return_field = cls._get_field_type_array(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
         elif content_key is None:

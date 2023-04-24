@@ -26,3 +26,9 @@ class AnyDoc(BaseDoc):
         :return:
         """
         return AnyDoc
+
+    @classmethod
+    def _get_field_type_array(cls, field: str) -> Type:
+        from docarray import DocList
+
+        return DocList
