@@ -199,7 +199,7 @@ need to have compatible schemas.
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-    In particular this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
+    In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 ## Vector similarity search
 
