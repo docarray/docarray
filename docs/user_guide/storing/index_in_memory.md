@@ -1,17 +1,11 @@
 # In-Memory Document Index
 
 
-
 [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] stores all Documents in DocLists in memory. 
-It is a great starting point for small datasets, but is not battle-tested in production.
+It is a great starting point for small datasets, where you may not want to launch a database server.
 
-!!! note "Production readiness"
-    If scalability, uptime, etc. are important, we recommend you eventually transition to one of our 
-    database-backed Document Index implementations:
-
-    - [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]
-    - [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex]
-    - [ElasticDocumentIndex][docarray.index.backends.elastic.ElasticDocIndex]
+For vector search and filtering the InMemoryDocIndex utilizes DocArray's [`find()`][docarray.utils.find.find] and 
+[`filter_docs()`][docarray.utils.filter.filter_docs] functions.
 
 ## Basic Usage
 
@@ -140,7 +134,12 @@ doc_index.index(index_docs)
 
 ## Search docs
 
-You can use the `search_field` to specify which field to use when performing the vector search. You can use the dunder operator to specify the field defined in nested data. In the following code, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or the `tensor` field of the `thumbnail` and `video` field:
+To search Documents, the `InMemoryDocIndex` uses DocArray's [`find`][docarray.utils.find.find] function.
+
+You can use the `search_field` to specify which field to use when performing the vector search. 
+You can use the dunder operator to specify the field defined in nested data. 
+In the following code, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` 
+or the `tensor` field of the `thumbnail` and `video` field:
 
 ```python
 # find by the youtubevideo tensor
@@ -157,6 +156,8 @@ docs, scores = doc_index.find(query, search_field='video__tensor', limit=3)
 ```
 
 ## Filter Documents
+
+To filter Documents, the `InMemoryDocIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
 The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
