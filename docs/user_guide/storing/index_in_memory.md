@@ -139,7 +139,7 @@ To search Documents, the `InMemoryDocIndex` uses DocArray's [`find`][docarray.ut
 You can use the `search_field` to specify which field to use when performing the vector search. 
 You can use the dunder operator to specify the field defined in nested data. 
 In the following code, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` 
-or the `tensor` field of the `thumbnail` and `video` field:
+or the `tensor` field of the `thumbnail` and `video` fields:
 
 ```python
 # find by the youtubevideo tensor
