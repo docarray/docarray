@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from pydantic import Field
 
 from docarray import BaseDoc, DocList
 from docarray.index.backends.in_memory import InMemoryDocIndex
@@ -45,12 +46,49 @@ def test_del_item(docs, doc_index):
     assert doc_index.num_docs() == 8
 
 
-def test_find(doc_index):
-    query = SchemaDoc(text='query', price=0, tensor=np.ones(10))
+@pytest.mark.parametrize('space', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
+@pytest.mark.parametrize('is_query_doc', [True, False])
+def test_find(doc_index, space, is_query_doc):
+    class MyDoc(BaseDoc):
+        text: str
+        price: int
+        tensor: NdArray[10] = Field(space=space)
+
+    if is_query_doc:
+        query = MyDoc(text='query', price=0, tensor=np.ones(10))
+    else:
+        query = np.ones(10)
+
     docs, scores = doc_index.find(query, search_field='tensor', limit=5)
 
     assert len(docs) == 5
     assert len(scores) == 5
+    assert doc_index.num_docs() == 10
+
+
+@pytest.mark.parametrize('space', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
+@pytest.mark.parametrize('is_query_doc', [True, False])
+def test_find_batched(doc_index, space, is_query_doc):
+    class MyDoc(BaseDoc):
+        text: str
+        price: int
+        tensor: NdArray[10] = Field(space=space)
+
+    if is_query_doc:
+        query = DocList[MyDoc](
+            [
+                MyDoc(text='query 0', price=0, tensor=np.zeros(10)),
+                MyDoc(text='query 1', price=1, tensor=np.ones(10)),
+            ]
+        )
+    else:
+        query = np.ones((2, 10))
+
+    docs, scores = doc_index.find_batched(query, search_field='tensor', limit=5)
+
+    assert len(docs) == 2
+    for result in docs:
+        assert len(result) == 5
     assert doc_index.num_docs() == 10
 
 

@@ -83,7 +83,6 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
 
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
-                np.ndarray: {},
                 str: {},
                 int: {},
                 float: {},
@@ -91,7 +90,8 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
                 set: {},
                 dict: {},
                 ID: {},
-                AbstractTensor: {},
+                np.ndarray: {'space': 'cosine_sim'},
+                AbstractTensor: {'space': 'cosine_sim'},
                 # `None` is not a Type, but we allow it here anyway
                 None: {},  # type: ignore
             }
@@ -181,15 +181,27 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
+        """Find documents in the index using nearest neighbor search.
 
+        :param query: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.)
+            with a single axis, or a Document
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
+        """
         self._logger.debug(f'Executing `find` for search field {search_field}')
         self._validate_search_field(search_field)
+        config = self._column_infos[search_field].config
 
         docs, scores = find(
             index=self._docs,
             query=query,
             search_field=search_field,
             limit=limit,
+            metric=config['space'],
         )
         return FindResult(documents=DocList[self._schema](docs), scores=scores)
 
@@ -219,12 +231,14 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
         self._validate_search_field(search_field)
+        config = self._column_infos[search_field].config
 
         find_res = find_batched(
             index=self._docs,
             query=cast(NdArray, queries),
             search_field=search_field,
             limit=limit,
+            metric=config['space'],
         )
 
         return find_res
@@ -242,7 +256,8 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     ) -> DocList:
         """Find documents in the index based on a filter query
 
-        :param filter_query: the DB specific filter query to execute
+        :param filter_query: the filter query to execute following the query
+            language of
         :param limit: maximum number of documents to return
         :return: a DocList containing the documents that match the filter query
         """
