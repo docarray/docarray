@@ -37,6 +37,8 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
         super().__init__(db_config=None, **kwargs)
+
+        self._docs: DocList
         if docs is None:
             self._docs = DocList[self._schema]()
         else:
@@ -63,10 +65,10 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
             return self._queries
 
         find = _collect_query_args('find')
+        find_batched = _collect_query_args('find_batched')
         filter = _collect_query_args('filter')
-        text_search = _raise_not_supported('text_search')
-        find_batched = _raise_not_supported('find_batched')
         filter_batched = _raise_not_supported('find_batched')
+        text_search = _raise_not_supported('text_search')
         text_search_batched = _raise_not_supported('text_search')
 
     @dataclass
@@ -104,6 +106,9 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         raise NotImplementedError
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         return len(self._docs)
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -124,9 +129,9 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
                 indices.append(i)
         return self._docs[indices]
 
-    def execute_query(self, query: List[str], *args, **kwargs) -> Any:
+    def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
-        Execute a query on the HnswDocumentIndex.
+        Execute a query on the InMemoryDocIndex.
 
         Can take two kinds of inputs:
 
@@ -191,7 +196,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
-        pass
+        raise NotImplementedError
 
     def find_batched(
         self,
@@ -227,7 +232,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def _find_batched(
         self, queries: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResultBatched:
-        pass
+        raise NotImplementedError
 
     def filter(
         self,
@@ -247,7 +252,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         return cast(DocList, docs)
 
     def _filter(self, filter_query: Any, limit: int) -> Union[DocList, List[Dict]]:
-        pass
+        raise NotImplementedError
 
     def _filter_batched(
         self, filter_queries: Any, limit: int
