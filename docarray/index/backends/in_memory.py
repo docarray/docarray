@@ -40,11 +40,11 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         """Initialize InMemoryDocIndex"""
         super().__init__(db_config=None, **kwargs)
         self._runtime_config = self.RuntimeConfig()
-        self._docs: DocList
-        if docs is None:
-            self._docs = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))()
-        else:
-            self._docs = docs
+        self._docs = (
+            docs
+            if docs is not None
+            else DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))()
+        )
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
