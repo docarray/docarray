@@ -531,6 +531,26 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         return docs
 
+    def filter_subindex(
+        self,
+        filter_query: Any,
+        subindex: str,
+        limit: int = 10,
+        **kwargs,
+    ) -> DocList:
+        self._logger.debug(
+            f'Executing `filter` for the query {filter_query} in subindex {subindex}'
+        )
+        if '__' in subindex:
+            fields = subindex.split('__')
+            return self._subindices[fields[0]].filter_subindex(
+                filter_query, '__'.join(fields[1:]), limit=limit, **kwargs
+            )
+        else:
+            return self._subindices[subindex].filter(
+                filter_query, limit=limit, **kwargs
+            )
+
     def filter_batched(
         self,
         filter_queries: Any,
