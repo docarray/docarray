@@ -36,6 +36,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
+        """Initialize InMemoryDocIndex"""
         super().__init__(db_config=None, **kwargs)
 
         self._docs: DocList
@@ -98,6 +99,17 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
+        """index Documents into the index.
+
+        !!! note
+            Passing a sequence of Documents that is not a DocList
+            (such as a List of Docs) comes at a performance penalty.
+            This is because the Index needs to check compatibility between itself and
+            the data. With a DocList as input this is a single check; for other inputs
+            compatibility needs to be checked for every Document individually.
+
+        :param docs: Documents to index.
+        """
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
         self._docs.extend(docs)
@@ -112,6 +124,10 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         return len(self._docs)
 
     def _del_items(self, doc_ids: Sequence[str]):
+        """Delete Documents from the index.
+
+        :param doc_ids: ids to delete from the Document Store
+        """
         indices = []
         for i, doc in enumerate(self._docs):
             if doc.id in doc_ids:
@@ -123,6 +139,12 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def _get_items(
         self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
+        """Get Documents from the index, by `id`.
+        If no document is found, a KeyError is raised.
+
+        :param doc_ids: ids to get from the Document index
+        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
+        """
         indices = []
         for i, doc in enumerate(self._docs):
             if doc.id in doc_ids:
