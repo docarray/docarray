@@ -900,3 +900,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
+
+    def __len__(self) -> int:
+        return self.num_docs()

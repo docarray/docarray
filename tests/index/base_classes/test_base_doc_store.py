@@ -71,7 +71,7 @@ class DummyDocIndex(BaseDocIndex):
         return str
 
     _index = _identity
-    num_docs = _identity
+    num_docs = lambda n: 3
     _del_items = _identity
     _get_items = _identity
     execute_query = _identity
@@ -572,3 +572,9 @@ def test_validate_search_fields():
     # 'ten' is not a valid field
     with pytest.raises(ValueError):
         index._validate_search_field('ten')
+
+
+def test_len():
+    store = DummyDocIndex[SimpleDoc]()
+    count = len(store)
+    assert count == 3
