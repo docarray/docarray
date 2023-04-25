@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -19,7 +20,7 @@ import numpy as np
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
 from docarray.index.backends.hnswlib import _collect_query_args
-from docarray.typing import ID, AnyTensor, NdArray
+from docarray.typing import AnyTensor, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import (
@@ -34,11 +35,17 @@ from docarray.utils.find import (
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
+def _get_default_dict() -> dict:
+    d = defaultdict(lambda: {})
+    d[AbstractTensor] = {'space': 'cosine_sim'}
+    return d
+
+
 class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
         """Initialize InMemoryDocIndex"""
         super().__init__(db_config=None, **kwargs)
-
+        self._runtime_config = self.RuntimeConfig()
         self._docs: DocList
         if docs is None:
             self._docs = DocList[self._schema]()
@@ -83,19 +90,12 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         """Dataclass that contains all "dynamic" configurations of InMemoryDocIndex."""
 
         default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: {
-                str: {},
-                int: {},
-                float: {},
-                list: {},
-                set: {},
-                dict: {},
-                ID: {},
-                np.ndarray: {'space': 'cosine_sim'},
-                AbstractTensor: {'space': 'cosine_sim'},
-                # `None` is not a Type, but we allow it here anyway
-                None: {},  # type: ignore
-            }
+            default_factory=lambda: defaultdict(
+                dict,
+                {
+                    AbstractTensor: {'space': 'cosine_sim'},
+                },
+            )
         )
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
