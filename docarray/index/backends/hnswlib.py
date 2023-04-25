@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 
     from docarray.typing import TensorFlowTensor
 else:
-    hnswlib = import_library('hnswlib', raise_error=False)
+    hnswlib = import_library('hnswlib', raise_error=True)
     torch = import_library('torch', raise_error=False)
     tf = import_library('tensorflow', raise_error=False)
     if tf is not None:

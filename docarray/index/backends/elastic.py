@@ -5,6 +5,7 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Generator,
@@ -22,9 +23,6 @@ from typing import (
 )
 
 import numpy as np
-from elastic_transport import NodeConfig
-from elasticsearch import Elasticsearch
-from elasticsearch.helpers import parallel_bulk
 from pydantic import parse_obj_as
 
 import docarray.typing
@@ -34,7 +32,7 @@ from docarray.index.abstract import BaseDocIndex, _ColumnInfo, _raise_not_compos
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import _FindResult, _FindResultBatched
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
@@ -42,14 +40,27 @@ T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
-if is_torch_available():
-    import torch
 
+if TYPE_CHECKING:
+    from elastic_transport import NodeConfig
+    from elasticsearch import Elasticsearch
+    from elasticsearch.helpers import parallel_bulk
+else:
+    elasticsearch = import_library('elasticsearch', raise_error=True)
+    from elasticsearch import Elasticsearch
+    from elasticsearch.helpers import parallel_bulk
+
+    elastic_transport = import_library('elastic_transport', raise_error=True)
+    from elastic_transport import NodeConfig
+
+    torch = import_library('torch', raise_error=False)
+    tf = import_library('tensorflow', raise_error=False)
+
+
+if torch is not None:
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
 
-if is_tf_available():
-    import tensorflow as tf  # type: ignore
-
+if tf is not None:
     from docarray.typing import TensorFlowTensor
 
     ELASTIC_PY_VEC_TYPES.append(tf.Tensor)

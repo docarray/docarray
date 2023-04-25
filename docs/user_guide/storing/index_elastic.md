@@ -425,7 +425,7 @@ The following configs can be set in `DBConfig`:
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
 
 You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
-See [here](first_steps.md#configuration-options#customize-configurations) for more information.
+See [here](docindex.md#configuration-options#customize-configurations) for more information.
 
 ### RuntimeConfig
 
@@ -447,4 +447,4 @@ doc_index = ElasticDocIndex[SimpleDoc]()
 ```
 
 You can pass the above as keyword arguments to the `configure()` method or pass an entire configuration object.
-See [here](first_steps.md#configuration-options#customize-configurations) for more information.
+See [here](docindex.md#configuration-options#customize-configurations) for more information.

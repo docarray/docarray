@@ -99,7 +99,7 @@ book_titles = docs.title  # returns a list[str]
 
 ## Changes to Document Store
 
-In v2 the `Document Store` has been renamed to [`DocIndex`](user_guide/storing/first_steps.md) and can be used for fast retrieval using vector similarity. 
+In v2 the `Document Store` has been renamed to [`DocIndex`](user_guide/storing/docindex.md) and can be used for fast retrieval using vector similarity. 
 DocArray v2 `DocIndex` supports:
 
 - [Weaviate](https://weaviate.io/)
@@ -114,4 +114,4 @@ in v2 you can initialize a `DocIndex` object of your choice, such as:
 db = HnswDocumentIndex[MyDoc](work_dir='/my/work/dir')
 ```
 
-In contrast, [`DocStore`](user_guide/storing/first_step.md#document-store) in v2 can be used for simple long-term storage, such as with AWS S3 buckets or Jina AI Cloud.
+In contrast, [`DocStore`](user_guide/storing/docindex.md#document-store) in v2 can be used for simple long-term storage, such as with AWS S3 buckets or Jina AI Cloud.
