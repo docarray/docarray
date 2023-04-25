@@ -19,7 +19,10 @@ import numpy as np
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
-from docarray.index.backends.hnswlib import _collect_query_args
+from docarray.index.backends.helper import (
+    _collect_query_args,
+    _execute_find_and_filter_query,
+)
 from docarray.typing import AnyTensor, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.filter import filter_docs
@@ -163,31 +166,11 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-
-        ann_docs = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))([])
-        filter_conditions = []
-        doc_to_score: Dict[BaseDoc, Any] = {}
-        for op, op_kwargs in query:
-            if op == 'find':
-                docs, scores = self.find(**op_kwargs)
-                ann_docs.extend(docs)
-                doc_to_score.update(zip(docs.__getattribute__('id'), scores))
-            elif op == 'filter':
-                filter_conditions.append(op_kwargs['filter_query'])
-
-        self._logger.debug(f'Executing query {query}')
-        docs_filtered = ann_docs
-        for cond in filter_conditions:
-            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-            docs_filtered = docs_cls(filter_docs(docs_filtered, cond))
-
-        self._logger.debug(f'{len(docs_filtered)} results found')
-        docs_and_scores = zip(
-            docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
+        find_res = _execute_find_and_filter_query(
+            doc_index=self,
+            query=query,
         )
-        docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
-        out_docs, out_scores = zip(*docs_sorted)
-        return FindResult(documents=out_docs, scores=out_scores)
+        return find_res
 
     def find(
         self,
