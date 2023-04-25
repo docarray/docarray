@@ -91,7 +91,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 sub_db_config.index_name = f'{self._index_name}__{col_name}'
                 self._subindices[col_name] = ElasticDocIndex[
                     col.docarray_type.doc_type
-                ](sub_db_config)
+                ](db_config=sub_db_config, subindex=True)
                 continue
             if col.db_type == 'dense_vector' and (
                 not col.n_dim and col.config['dims'] < 0
@@ -103,7 +103,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
             mappings['properties'][col_name] = self._create_index_mapping(col)
 
-        # print(mappings['properties'])
         if self._client.indices.exists(index=self._index_name):
             self._client_put_mapping(mappings)
         else:

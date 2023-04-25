@@ -25,7 +25,7 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDoc, DocList
 from docarray.array.any_array import AnyDocArray
-from docarray.typing import AnyTensor
+from docarray.typing import ID, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
@@ -85,12 +85,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     # for subclasses this is filled automatically
     _schema: Optional[Type[BaseDoc]] = None
 
-    def __init__(self, db_config=None, **kwargs):
+    def __init__(self, db_config=None, subindex=False, **kwargs):
         if self._schema is None:
             raise ValueError(
                 'A DocumentIndex must be typed with a Document type.'
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
+        if subindex:
+            self._schema._add_fields(parent_id=(ID, None))
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
@@ -101,6 +103,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
             self._schema
         )
+        self._subindex = subindex
         self._subindices = {}
 
     ###############################################
@@ -952,8 +955,17 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
                 doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
 
+        if self._subindex:
+            doc_dict.pop('parent_id', None)
+            schema._remove_field('parent_id')
+
         schema_cls = cast(Type[BaseDoc], schema)
-        return schema_cls(**doc_dict)
+        doc = schema_cls(**doc_dict)
+
+        if self._subindex:
+            schema._add_fields(parent_id=(ID, None))
+
+        return doc
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""

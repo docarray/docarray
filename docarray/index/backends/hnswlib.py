@@ -109,7 +109,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 sub_db_config.work_dir += f'/{col_name}'
                 self._subindices[col_name] = HnswDocumentIndex[
                     col.docarray_type.doc_type
-                ](sub_db_config)
+                ](db_config=sub_db_config, subindex=True)
                 continue
             if not col.config:
                 # non-tensor type; don't create an index
@@ -360,6 +360,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
+        # TODO recursively delete from all subindices
 
         try:
             for doc_id in doc_ids:
@@ -455,6 +456,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return docs_cls([self._doc_from_bytes(row[0]) for row in rows])
 
     def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocList[TSchema]:
+        # TODO remove parent id from results
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
         docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
