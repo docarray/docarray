@@ -7,7 +7,7 @@ It is a great starting point for small datasets, where you may not want to launc
 For vector search and filtering the InMemoryDocIndex utilizes DocArray's [`find()`][docarray.utils.find.find] and 
 [`filter_docs()`][docarray.utils.filter.filter_docs] functions.
 
-## Basic Usage
+## Basic usage
 
 To see how to create a [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] instance, add Documents,
 perform search, etc. see the [general user guide](./docindex.md).
@@ -43,7 +43,7 @@ The `RuntimeConfig` of [InMemoryDocIndex][docarray.index.backends.in_memory.InMe
 the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using `RuntimeConfig`:
+If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using `RuntimeConfig`:
 
 ```python
 from collections import defaultdict
