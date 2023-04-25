@@ -96,9 +96,9 @@ the database will store vectors with 128 dimensions.
 
 ### Using a predefined Document as schema
 
-DocArray offers a number of predefined Documents, like [ImageDoce][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
-Depending on the backend, and exception will be raised, or no vector index for ANN lookup will be built.
+Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
 
 The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
@@ -135,7 +135,7 @@ You can work around this problem by subclassing the predefined Document and addi
     ```
 
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
-predefined Document type, or of your custom Document type.
+predefined Document type, or your custom Document type.
 
 The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
@@ -199,7 +199,7 @@ need to have compatible schemas.
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-    In particular this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
+    In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 ## Vector similarity search
 
