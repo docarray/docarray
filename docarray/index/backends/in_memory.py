@@ -127,8 +127,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
             if doc.id in doc_ids:
                 indices.append(i)
 
-        for idx in reversed(indices):
-            self._docs.pop(idx)
+        del self._docs[indices]
 
     def _get_items(
         self, doc_ids: Sequence[str]
