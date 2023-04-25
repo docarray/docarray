@@ -932,10 +932,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
+        # TODO refactor
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
 
-            if issubclass(t_, AnyDocArray):
+            if not is_union_type(t_) and issubclass(t_, AnyDocArray):
                 self._get_subindex_doclist(doc_dict, field_name)
 
             if is_optional_type(t_):
