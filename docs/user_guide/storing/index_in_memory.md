@@ -132,7 +132,7 @@ index_docs = [
 doc_index.index(index_docs)
 ```
 
-## Search docs
+## Search Documents
 
 To search Documents, the `InMemoryDocIndex` uses DocArray's [`find`][docarray.utils.find.find] function.
 
@@ -212,7 +212,7 @@ for doc in cheap_books:
     ```
 </details>
 
-## Delete docs 
+## Delete Documents 
 
 To delete nested data, you need to specify the `id`.
 
