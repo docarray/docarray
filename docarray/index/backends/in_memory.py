@@ -197,7 +197,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResult:
-        """Find documents in the index using nearest neighbor search.
+        """Find Documents in the index using nearest-neighbor search.
 
         :param query: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.)
@@ -205,7 +205,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         :param search_field: name of the field to search on.
             Documents in the index are retrieved based on this similarity
             of this field to the query.
-        :param limit: maximum number of documents to return
+        :param limit: maximum number of Documents to return
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
@@ -236,7 +236,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> FindResultBatched:
-        """Find documents in the index using nearest neighbor search.
+        """Find Documents in the index using nearest-neighbor search.
 
         :param queries: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,

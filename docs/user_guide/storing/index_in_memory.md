@@ -3,10 +3,10 @@
 
 
 [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] stores all Documents in DocLists in memory. 
-It is a great starting point for small-sized datasets, but it is not battle tested in production.
+It is a great starting point for small datasets, but is not battle-tested in production.
 
 !!! note "Production readiness"
-    If scalability, uptime, etc. are important to you, we recommend you eventually transition to one of our 
+    If scalability, uptime, etc. are important, we recommend you eventually transition to one of our 
     database-backed Document Index implementations:
 
     - [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]
@@ -94,7 +94,7 @@ class Schema(BaseDoc):
 
 In the example above you can see how to configure two different vector fields, with two different sets of settings.
 
-## Nested Index
+## Nested index
 
 When using the index, you can define multiple fields and their nested structure. In the following example, you have `YouTubeVideoDoc` including the `tensor` field calculated based on the description. `YouTubeVideoDoc` has `thumbnail` and `video` fields, each with their own `tensor`.
 
@@ -140,7 +140,7 @@ doc_index.index(index_docs)
 
 ## Search docs
 
-You can use the `search_field` to specify which field to use when performing the vector search. You can use the dunder operator to specify the field defined in the nested data. In the following code, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the `thumbnail` and `video` field:
+You can use the `search_field` to specify which field to use when performing the vector search. You can use the dunder operator to specify the field defined in nested data. In the following code, you can perform vector search on the `tensor` field of the `YouTubeVideoDoc` or the `tensor` field of the `thumbnail` and `video` field:
 
 ```python
 # find by the youtubevideo tensor
@@ -156,12 +156,12 @@ query = parse_obj_as(NdArray, np.ones(128))
 docs, scores = doc_index.find(query, search_field='video__tensor', limit=3)
 ```
 
-## Filter docs
+## Filter Documents
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
 The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
-In the following example let filter for all the books that are cheaper than 29 dollars:
+In the following example let's filter for all the books that are cheaper than 29 dollars:
 
 ```python
 from docarray import BaseDoc, DocList
