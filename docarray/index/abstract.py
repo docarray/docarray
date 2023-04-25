@@ -337,7 +337,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # retrieve nested data
-        # TODO hnswlib or has blob doesn't need this
+
         for field_name, type_, _ in self._flatten_schema(self._schema):
             if issubclass(type_, AnyDocArray):
                 for doc in doc_sequence:
@@ -416,6 +416,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
 
+    # TODO another find method that returns both subindex and root results
+
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
@@ -434,8 +436,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param limit: maximum number of documents to return
         :return: a named tuple containing `documents` and `scores`
         """
-        # TODO decide the return value of subindex find
-
         self._logger.debug(f'Executing `find` for search field {search_field}')
 
         if search_field:
@@ -617,6 +617,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         da_list_ = cast(List[DocList], da_list)
         return FindResultBatched(documents=da_list_, scores=scores)
+
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        return None
 
     ##########################################################
     # Helper methods                                         #
@@ -974,9 +977,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
-
-    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
-        return None
 
     def _index_subindex(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         for col_name, col in self._column_infos.items():

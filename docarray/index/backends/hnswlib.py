@@ -360,7 +360,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
-        # TODO recursively delete from all subindices
+        for field_name, type_, _ in self._flatten_schema(self._schema):
+            if issubclass(type_, AnyDocArray):
+                for id in doc_ids:
+                    doc = self.__getitem__(id)
+                    sub_ids = [sub_doc.id for sub_doc in getattr(doc, field_name)]
+                    del self._subindices[field_name][sub_ids]
 
         try:
             for doc_id in doc_ids:
@@ -370,7 +375,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         except RuntimeError:
             raise KeyError(f'No document with id {doc_ids} found')
 
-        print(doc_ids)
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
 
