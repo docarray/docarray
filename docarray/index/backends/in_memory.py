@@ -35,12 +35,6 @@ from docarray.utils.find import (
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-def _get_default_dict() -> dict:
-    d = defaultdict(lambda: {})
-    d[AbstractTensor] = {'space': 'cosine_sim'}
-    return d
-
-
 class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
         """Initialize InMemoryDocIndex"""
@@ -48,7 +42,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         self._runtime_config = self.RuntimeConfig()
         self._docs: DocList
         if docs is None:
-            self._docs = DocList[self._schema]()
+            self._docs = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))()
         else:
             self._docs = docs
 
@@ -225,7 +219,10 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
             limit=limit,
             metric=config['space'],
         )
-        return FindResult(documents=DocList[self._schema](docs), scores=scores)
+        docs_with_schema = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))(
+            docs
+        )
+        return FindResult(documents=docs_with_schema, scores=scores)
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
