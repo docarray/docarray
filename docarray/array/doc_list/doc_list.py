@@ -16,6 +16,7 @@ from typing import (
 )
 
 from typing_inspect import is_union_type
+from typing_extensions import SupportsIndex
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinArray
@@ -62,7 +63,6 @@ class DocList(
     PushPullMixin,
     IOMixinArray,
     AnyDocArray[T_doc],
-    List[T_doc],
 ):
     """
      DocList is a container of Documents.
@@ -200,7 +200,7 @@ class DocList(
         """
         self._data.extend(self._validate_docs(docs))
 
-    def insert(self, i: int, doc: T_doc):
+    def insert(self, i: SupportsIndex, doc: T_doc):
         """
         Insert a Document to the `DocList`. The Document must be from the same
         class as the doc_type of this `DocList` otherwise it will fail.
@@ -303,7 +303,7 @@ class DocList(
         return super().from_protobuf(pb_msg)
 
     @overload
-    def __getitem__(self, item: int) -> T_doc:
+    def __getitem__(self, item: SupportsIndex) -> T_doc:
         ...
 
     @overload
