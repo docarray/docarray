@@ -3,7 +3,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Iterable,
-    MutableSequence,
     Optional,
     Sequence,
     TypeVar,
@@ -57,17 +56,11 @@ class IndexingSequenceMixin(List[T_item]):
 
     """
 
-    _data: MutableSequence[T_item]
-
     @abc.abstractmethod
     def __init__(
         self,
         docs: Optional[Iterable[T_item]] = None,
     ):
-        ...
-
-    @abc.abstractmethod
-    def __len__(self) -> int:
         ...
 
     @staticmethod
@@ -110,13 +103,13 @@ class IndexingSequenceMixin(List[T_item]):
     def _get_from_indices(self: T, item: Iterable[int]) -> T:
         results = []
         for ix in item:
-            results.append(self._data[ix])
+            results.append(self[ix])
         return self.__class__(results)
 
     def _set_by_indices(self: T, item: Iterable[int], value: Iterable[T_item]):
         for ix, doc_to_set in zip(item, value):
             try:
-                self._data[ix] = doc_to_set
+                self[ix] = doc_to_set
             except KeyError:
                 raise IndexError(f'Index {ix} is out of range')
 
@@ -129,7 +122,7 @@ class IndexingSequenceMixin(List[T_item]):
         i_value = 0
         for i, mask_value in zip(range(len(self)), item):
             if mask_value:
-                self._data[i] = value[i_value]
+                self[i] = value[i_value]
                 i_value += 1
 
     def _del_from_mask(self: T, item: Iterable[bool]) -> None:
@@ -140,7 +133,7 @@ class IndexingSequenceMixin(List[T_item]):
         for ix in sorted(item, reverse=True):
             # reversed is needed here otherwise some the indices are not up to date after
             # each delete
-            del self._data[ix]
+            del self[ix]
 
     def __delitem__(self, key: Union[SupportsIndex, IndexIterType]) -> None:
         item = self._normalize_index_item(key)
@@ -148,7 +141,7 @@ class IndexingSequenceMixin(List[T_item]):
         if item is None:
             return
         elif isinstance(item, (int, slice)):
-            del self._data[item]
+            del self[item]
         else:
             head = item[0]  # type: ignore
             if isinstance(head, bool):
@@ -171,10 +164,10 @@ class IndexingSequenceMixin(List[T_item]):
         item = self._normalize_index_item(item)
 
         if type(item) == slice:
-            return self.__class__(self._data[item])
+            return self.__class__(self[item])
 
         if isinstance(item, int):
-            return self._data[item]
+            return self[item]
 
         if item is None:
             return self
@@ -201,9 +194,9 @@ class IndexingSequenceMixin(List[T_item]):
         key_norm = self._normalize_index_item(key)
 
         if isinstance(key_norm, int):
-            self._data[key_norm] = value
+            self[key_norm] = value
         elif isinstance(key_norm, slice):
-            self._data[key_norm] = value
+            self[key_norm] = value
         else:
             # _normalize_index_item() guarantees the line below is correct
             head = key_norm[0]
