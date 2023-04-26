@@ -108,8 +108,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     @classmethod
     def _remove_field(cls, field: str):
-        cls.__fields__.pop(field)
-        cls.__annotations__.pop(field)
+        cls.__fields__.pop(field, None)
+        cls.__annotations__.pop(field, None)
 
     @classmethod
     def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:

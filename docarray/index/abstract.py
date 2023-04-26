@@ -93,7 +93,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
         if subindex:
+            # self._schema._add_fields(parent_id=(ID, None))
+            self._schema = type(self._schema.__name__ + 'Subindex', (self._schema,), {})
             self._schema._add_fields(parent_id=(ID, None))
+
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
@@ -749,8 +752,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         ):
             if issubclass(type_, AnyDocArray):
                 for doc in docs:
-                    for nested_doc in getattr(doc, field_name):
+                    _list = getattr(doc, field_name)
+                    for i, nested_doc in enumerate(_list):
+                        nested_doc = self._subindices[field_name]._schema(
+                            **nested_doc.dict()
+                        )
                         nested_doc.parent_id = doc.id
+                        _list[i] = nested_doc
 
     ##################################################
     # Behind-the-scenes magic                        #
@@ -985,7 +993,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc]
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc], inner=False
     ) -> BaseDoc:
         """
         Convert a dict to a Document object.
@@ -1016,23 +1024,24 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     nested_name = key[len(f'{field_name}__') :]
                     inner_dict[nested_name] = doc_dict.pop(key)
 
-                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
+                doc_dict[field_name] = self._convert_dict_to_doc(
+                    inner_dict, t_, inner=True
+                )
 
-        if self._subindex:
+        if self._subindex and not inner:
             doc_dict.pop('parent_id', None)
             schema._remove_field('parent_id')
 
         schema_cls = cast(Type[BaseDoc], schema)
         doc = schema_cls(**doc_dict)
 
-        if self._subindex:
+        if self._subindex and not inner:
             schema._add_fields(parent_id=(ID, None))
 
         return doc
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""
-
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
@@ -1052,6 +1061,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def _get_subindex_doclist(
         self, doc: Union[TSchema, Dict[str, Any]], field_name: str
     ):
+        # TODO if field name exists, return
         parent_id = doc['id'] if isinstance(doc, dict) else doc.id
         nested_docs_id = self._subindices[field_name]._filter_by_parent_id(parent_id)
         if nested_docs_id:
