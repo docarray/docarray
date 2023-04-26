@@ -114,8 +114,13 @@ class DocList(
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
+        validate_input_docs: bool = True,
     ):
-        super().__init__(self._validate_docs(docs) if docs else [])
+        if validate_input_docs:
+            docs = self._validate_docs(docs) if docs else []
+        else:
+            docs = docs if docs else []
+        super().__init__(docs)
 
     @classmethod
     def construct(
@@ -128,9 +133,7 @@ class DocList(
         :param docs: a Sequence (list) of Document with the same schema
         :return: a `DocList` object
         """
-        new_docs = cls()
-        new_docs = docs if isinstance(docs, list) else list(docs)
-        return new_docs
+        return cls(docs, False)
 
     def __eq__(self, other: Any) -> bool:
         if self.__len__() != other.__len__():
