@@ -1,42 +1,43 @@
 import numpy as np
 import pytest
-from pydantic import Field
 
 from docarray import BaseDoc, DocList
-from docarray.index import HnswDocumentIndex
+from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray
+from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    simple_tens: NdArray[10] = Field(space='l2')
+    simple_tens: NdArray[10]
     simple_text: str
 
 
 class ListDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     simple_doc: SimpleDoc
-    list_tens: NdArray[20] = Field(space='l2')
+    list_tens: NdArray[20]
 
 
 class MyDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     list_docs: DocList[ListDoc]
-    my_tens: NdArray[30] = Field(space='l2')
+    my_tens: NdArray[30]
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def index():
-    index = HnswDocumentIndex[MyDoc](work_dir='./tmp')
+    print('aaa')
+    index = ElasticV7DocIndex[MyDoc](index_name='idx')
     return index
 
 
 def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], HnswDocumentIndex)
-    assert isinstance(index._subindices['list_docs'], HnswDocumentIndex)
+    assert isinstance(index._subindices['docs'], ElasticV7DocIndex)
+    assert isinstance(index._subindices['list_docs'], ElasticV7DocIndex)
     assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], HnswDocumentIndex
+        index._subindices['list_docs']._subindices['docs'], ElasticV7DocIndex
     )
 
 
@@ -118,15 +119,14 @@ def test_subindex_find(index):
     docs, scores = index.find(query, search_field='my_tens', limit=5)
     assert len(scores) == 5
     assert [doc.id for doc in docs] == [f'{i}' for i in range(5)]
-    assert docs[0].id == '0'
 
     # sub level
     query = np.ones((10,))
-    docs, scores = index.find(query, search_field='docs__simple_tens', limit=5)
-    assert len(scores) == 5
-    assert set([doc.id for doc in docs]) == set([f'docs-{i}-0' for i in range(5)])
-    for doc in docs:
-        assert np.allclose(doc.simple_tens, np.ones(10))
+    docs, scores = index.find(query, search_field='docs__simple_tens', limit=25)
+    assert len(scores) == 25
+    assert set([doc.id for doc in docs]) == set(
+        [f'docs-{i}-{j}' for i in range(5) for j in range(5)]
+    )
 
     # sub sub level
     query = np.ones((10,))
@@ -135,9 +135,20 @@ def test_subindex_find(index):
     )
     assert len(docs) == 5
     assert len(scores) == 5
+
+
+def test_subindex_filter(index):
+    query = {'match': {'simple_doc__simple_text': 'hello 0'}}
+    docs = index.filter_subindex(query, subindex='list_docs', limit=5)
+    assert len(docs) == 5
     for doc in docs:
         assert doc.id.split('-')[-1] == '0'
-        assert np.allclose(doc.simple_tens, np.ones(10))
+
+    query = {'match': {'simple_text': 'hello 0'}}
+    docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
+    assert len(docs) == 5
+    for doc in docs:
+        assert doc.id.split('-')[-1] == '0'
 
 
 def test_subindex_del(index):
