@@ -39,7 +39,6 @@ else:
     if torch is not None:
         from docarray.typing import TorchTensor
 
-
 T = TypeVar('T', bound='IOMixin')
 
 
@@ -122,10 +121,17 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
     __fields__: Dict[str, 'ModelField']
 
+    class Config:
+        _load_extra_fields_from_protobuf: bool
+
     @classmethod
     @abstractmethod
     def _get_field_type(cls, field: str) -> Type:
         ...
+
+    @classmethod
+    def _get_field_type_array(cls, field: str) -> Type:
+        return cls._get_field_type(field)
 
     def __bytes__(self) -> bytes:
         return self.to_bytes()
@@ -149,7 +155,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             bstr = self.to_protobuf().SerializePartialToString()
         else:
             raise ValueError(
-                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+                f'protocol={protocol} is not supported. Can be only `protobuf` or '
+                f'pickle protocols 0-5.'
             )
         return _compress_bytes(bstr, algorithm=compress)
 
@@ -178,7 +185,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return cls.from_protobuf(pb_msg)
         else:
             raise ValueError(
-                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+                f'protocol={protocol} is not supported. Can be only `protobuf` or '
+                f'pickle protocols 0-5.'
             )
 
     def to_base64(
@@ -219,7 +227,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         fields: Dict[str, Any] = {}
 
         for field_name in pb_msg.data:
-            if field_name not in cls.__fields__.keys():
+            if (
+                not (cls.Config._load_extra_fields_from_protobuf)
+                and field_name not in cls.__fields__.keys()
+            ):
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
 
@@ -253,12 +264,20 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
             )
-        elif content_key in ['doc', 'doc_array']:
+        elif content_key == 'doc':
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a Document or a DocList'
+                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
                 )
             return_field = cls._get_field_type(field_name).from_protobuf(
+                getattr(value, content_key)
+            )  # we get to the parent class
+        elif content_key == 'doc_array':
+            if field_name is None:
+                raise ValueError(
+                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
+                )
+            return_field = cls._get_field_type_array(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
         elif content_key is None:
