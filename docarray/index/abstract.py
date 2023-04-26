@@ -1032,6 +1032,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
 
+    def __len__(self) -> int:
+        return self.num_docs()
+
     def _index_subindex(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
