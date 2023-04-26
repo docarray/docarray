@@ -14,9 +14,11 @@
 
 <!-- start elevator-pitch -->
 
-> ⬆️ **DocArray v2**: We are currently working on v2 of DocArray. Keep reading here if you are interested in the
-> current (stable) version, or check out the [v2 alpha branch](https://github.com/docarray/docarray/tree/feat-rewrite-v2#readme)
-> and [v2 roadmap](https://github.com/docarray/docarray/issues/780)!
+> ⬆️ **DocArray v2**: This is the legacy version of DocArray, a.k.a DocArray v1 fixe branch
+> to check out the current version: [DocArray v1](https://github.com/docarray/docarray)
+> Legacy documentation can be found here: [DocArray v1](https://docarray.jina.ai/)
+
+
 
 DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer multimodal data with a Pythonic API.
 
