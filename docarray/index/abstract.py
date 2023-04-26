@@ -343,8 +343,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            for doc in doc_sequence:
-                self._get_subindex_doclist(doc, field_name)
+            if issubclass(type_, AnyDocArray):
+                for doc in doc_sequence:
+                    self._get_subindex_doclist(doc, field_name)
 
         # check data
         if len(doc_sequence) == 0:
