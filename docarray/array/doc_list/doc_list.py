@@ -308,3 +308,9 @@ class DocList(
 
     def __getitem__(self, item):
         return super().__getitem__(item)
+
+    def __instancecheck__(self, instance):
+        if isinstance(instance, list):
+            return True
+        else:
+            return super().__instancecheck__(instance)
