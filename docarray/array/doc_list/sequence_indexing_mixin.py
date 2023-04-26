@@ -11,8 +11,10 @@ from typing import (
     cast,
     no_type_check,
     overload,
-    List
+    List,
 )
+
+from typing_extensions import SupportsIndex
 
 import numpy as np
 
@@ -140,7 +142,7 @@ class IndexingSequenceMixin(List[T_item]):
             # each delete
             del self._data[ix]
 
-    def __delitem__(self, key: Union[int, IndexIterType]) -> None:
+    def __delitem__(self, key: Union[SupportsIndex, IndexIterType]) -> None:
         item = self._normalize_index_item(key)
 
         if item is None:
@@ -158,7 +160,7 @@ class IndexingSequenceMixin(List[T_item]):
                 raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
-    def __getitem__(self: T, item: int) -> T_item:
+    def __getitem__(self: T, item: SupportsIndex) -> T_item:
         ...
 
     @overload
@@ -187,11 +189,11 @@ class IndexingSequenceMixin(List[T_item]):
             raise TypeError(f'Invalid type {type(head)} for indexing')
 
     @overload
-    def __setitem__(self: T, key: IndexIterType, value: Sequence[T_item]):
+    def __setitem__(self: T, key: SupportsIndex, value: T_item) -> None:
         ...
 
     @overload
-    def __setitem__(self: T, key: int, value: T_item):
+    def __setitem__(self: T, key: IndexIterType, value: Iterable[T_item]):
         ...
 
     @no_type_check
