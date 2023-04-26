@@ -75,6 +75,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(ElasticDocIndex.DBConfig, self._db_config)
 
+        self._logger.debug('Elastic Search index is being initialized')
+
         # ElasticSearch client creation
         if self._db_config.index_name is None:
             id = uuid.uuid4().hex

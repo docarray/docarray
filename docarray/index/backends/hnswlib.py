@@ -30,11 +30,14 @@ from docarray.index.abstract import (
     _raise_not_composable,
     _raise_not_supported,
 )
+from docarray.index.backends.helper import (
+    _collect_query_args,
+    _execute_find_and_filter_query,
+)
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal.misc import import_library, is_np_int
-from docarray.utils.filter import filter_docs
 from docarray.utils.find import _FindResult, _FindResultBatched
 
 if TYPE_CHECKING:
@@ -62,20 +65,6 @@ if tf is not None:
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
-
-
-def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
-    def inner(self, *args, **kwargs):
-        if args:
-            raise ValueError(
-                f'Positional arguments are not supported for '
-                f'`{type(self)}.{method_name}`.'
-                f' Use keyword arguments instead.'
-            )
-        updated_query = self._queries + [(method_name, kwargs)]
-        return type(self)(updated_query)
-
-    return inner
 
 
 class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
@@ -251,7 +240,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
-        Execute a query on the WeaviateDocumentIndex.
+        Execute a query on the HnswDocumentIndex.
 
         Can take two kinds of inputs:
 
@@ -268,31 +257,11 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-
-        ann_docs = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))([])
-        filter_conditions = []
-        doc_to_score: Dict[BaseDoc, Any] = {}
-        for op, op_kwargs in query:
-            if op == 'find':
-                docs, scores = self.find(**op_kwargs)
-                ann_docs.extend(docs)
-                doc_to_score.update(zip(docs.__getattribute__('id'), scores))
-            elif op == 'filter':
-                filter_conditions.append(op_kwargs['filter_query'])
-
-        self._logger.debug(f'Executing query {query}')
-        docs_filtered = ann_docs
-        for cond in filter_conditions:
-            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-            docs_filtered = docs_cls(filter_docs(docs_filtered, cond))
-
-        self._logger.debug(f'{len(docs_filtered)} results found')
-        docs_and_scores = zip(
-            docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
+        find_res = _execute_find_and_filter_query(
+            doc_index=self,
+            query=query,
         )
-        docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
-        out_docs, out_scores = zip(*docs_sorted)
-        return _FindResult(documents=out_docs, scores=out_scores)
+        return find_res
 
     def _find_batched(
         self,
