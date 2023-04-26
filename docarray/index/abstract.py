@@ -794,6 +794,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             t_ = schema._get_field_type(field_name)
             inner_prefix = name_prefix + field_name + '__'
 
+            # TODO or change this in _update_subindex_data
+            if field_name == 'parent_id' and name_prefix != '':
+                continue
+
             if is_union_type(t_):
                 union_args = get_args(t_)
 
