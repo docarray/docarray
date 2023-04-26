@@ -340,10 +340,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # retrieve nested data
-        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
-            if issubclass(type_, AnyDocArray):
-                for doc in doc_sequence:
-                    self._get_subindex_doclist(doc, field_name)
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            for doc in doc_sequence:
+                self._get_subindex_doclist(doc, field_name)
 
         # check data
         if len(doc_sequence) == 0:
@@ -371,7 +372,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             key = [key]
 
         # delete nested data
-        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
             if issubclass(type_, AnyDocArray):
                 for doc_id in key:
                     nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
@@ -740,7 +743,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self,
         docs: DocList[BaseDoc],
     ):
-        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
             if issubclass(type_, AnyDocArray):
                 for doc in docs:
                     for nested_doc in getattr(doc, field_name):

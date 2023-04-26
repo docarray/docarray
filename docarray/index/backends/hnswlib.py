@@ -361,7 +361,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
-        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
             if issubclass(type_, AnyDocArray):
                 for id in doc_ids:
                     doc = self.__getitem__(id)
