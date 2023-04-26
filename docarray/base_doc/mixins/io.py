@@ -122,7 +122,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     __fields__: Dict[str, 'ModelField']
 
     class Config:
-        load_extra_fields_from_protobuf: bool
+        _load_extra_fields_from_protobuf: bool
 
     @classmethod
     @abstractmethod
@@ -228,7 +228,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         for field_name in pb_msg.data:
             if (
-                not (cls.Config.load_extra_fields_from_protobuf)
+                not (cls.Config._load_extra_fields_from_protobuf)
                 and field_name not in cls.__fields__.keys()
             ):
                 continue  # optimization we don't even load the data if the key does not
