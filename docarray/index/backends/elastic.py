@@ -42,6 +42,8 @@ ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import torch
     from elastic_transport import NodeConfig
     from elasticsearch import Elasticsearch
     from elasticsearch.helpers import parallel_bulk

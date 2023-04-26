@@ -108,7 +108,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 sub_db_config = copy.deepcopy(self._db_config)
                 sub_db_config.work_dir += f'/{col_name}'
                 self._subindices[col_name] = HnswDocumentIndex[
-                    col.docarray_type.doc_type
+                    col.docarray_type.doc_type  # type: ignore
                 ](db_config=sub_db_config, subindex=True)
                 continue
             if not col.config:
@@ -205,7 +205,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return None  # all types allowed, but no db type needed
 
-    def _index(
+    # TODO fix mypy here
+    def _index(  # type: ignore
         self,
         column_to_data: Dict[str, Generator[Any, None, None]],
         docs_validated: Sequence[BaseDoc],
@@ -360,7 +361,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
-        for field_name, type_, _ in self._flatten_schema(self._schema):
+        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
             if issubclass(type_, AnyDocArray):
                 for id in doc_ids:
                     doc = self.__getitem__(id)

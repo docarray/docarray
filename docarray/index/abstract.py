@@ -340,7 +340,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # retrieve nested data
-        for field_name, type_, _ in self._flatten_schema(self._schema):
+        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
             if issubclass(type_, AnyDocArray):
                 for doc in doc_sequence:
                     self._get_subindex_doclist(doc, field_name)
@@ -371,7 +371,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             key = [key]
 
         # delete nested data
-        for field_name, type_, _ in self._flatten_schema(self._schema):
+        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
             if issubclass(type_, AnyDocArray):
                 for doc_id in key:
                     nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
@@ -418,8 +418,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
 
-    # TODO another find method that returns both subindex and root results
-
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
@@ -443,7 +441,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find(
                         query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
                     )
@@ -476,7 +474,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         fields = search_field.split('__')
         if len(fields) < 2 or not issubclass(
-            self._schema._get_field_type(fields[0]), AnyDocArray
+            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
         ):
             raise ValueError(
                 f'search_field {search_field} is not a valid subindex field'
@@ -492,7 +490,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         ]
         root_docs = self[root_ids]
         return SubindexFindResult(
-            root_documents=root_docs, sub_documents=sub_docs, scores=scores
+            root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
         )
 
     def find_batched(
@@ -519,7 +517,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),
@@ -742,7 +740,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self,
         docs: DocList[BaseDoc],
     ):
-        for field_name, type_, _ in self._flatten_schema(self._schema):
+        for field_name, type_, _ in self._flatten_schema(self._schema):  # type: ignore
             if issubclass(type_, AnyDocArray):
                 for doc in docs:
                     for nested_doc in getattr(doc, field_name):
@@ -847,7 +845,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             # Union types are handle in _flatten_schema
             if issubclass(type_, AnyDocArray):
                 column_infos[field_name] = _ColumnInfo(
-                    docarray_type=type_, db_type=None, config=None, n_dim=None
+                    docarray_type=type_, db_type=None, config=dict(), n_dim=None
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
@@ -947,9 +945,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param search_field: search field to validate.
         :return: True if the field exists, False otherwise.
         """
-
-        # TODO don't check for subindices here, but in find
-
         if not search_field or search_field in self._column_infos.keys():
             if not search_field:
                 self._logger.info('Empty search field was passed')
@@ -1050,7 +1045,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def _get_subindex_doclist(
         self, doc: Union[TSchema, Dict[str, Any]], field_name: str
-    ) -> DocList[TSchema]:
+    ):
         parent_id = doc['id'] if isinstance(doc, dict) else doc.id
         nested_docs_id = self._subindices[field_name]._filter_by_parent_id(parent_id)
         if nested_docs_id:
