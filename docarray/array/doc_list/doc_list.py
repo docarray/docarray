@@ -128,8 +128,8 @@ class DocList(
         :param docs: a Sequence (list) of Document with the same schema
         :return: a `DocList` object
         """
-        new_docs = cls.__new__(cls)
-        new_docs._data = docs if isinstance(docs, list) else list(docs)
+        new_docs = cls()
+        new_docs = docs if isinstance(docs, list) else list(docs)
         return new_docs
 
     def __eq__(self, other: Any) -> bool:

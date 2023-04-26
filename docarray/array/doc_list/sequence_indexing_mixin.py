@@ -1,9 +1,7 @@
-import abc
 from typing import (
     TYPE_CHECKING,
     Any,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -55,13 +53,6 @@ class IndexingSequenceMixin(List[T_item]):
     ---
 
     """
-
-    @abc.abstractmethod
-    def __init__(
-        self,
-        docs: Optional[Iterable[T_item]] = None,
-    ):
-        ...
 
     @staticmethod
     def _normalize_index_item(
@@ -141,7 +132,7 @@ class IndexingSequenceMixin(List[T_item]):
         if item is None:
             return
         elif isinstance(item, (int, slice)):
-            del self[item]
+            super().__delitem__(item)
         else:
             head = item[0]  # type: ignore
             if isinstance(head, bool):
@@ -164,10 +155,10 @@ class IndexingSequenceMixin(List[T_item]):
         item = self._normalize_index_item(item)
 
         if type(item) == slice:
-            return self.__class__(self[item])
+            return self.__class__(super().__getitem__(item))
 
         if isinstance(item, int):
-            return self[item]
+            return super().__getitem__(item)
 
         if item is None:
             return self
