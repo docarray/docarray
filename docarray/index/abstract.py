@@ -32,6 +32,7 @@ from docarray.utils._internal.misc import import_library
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
+    SubindexFindResult,
     _FindResult,
     _FindResultBatched,
 )
@@ -119,6 +120,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             The output of this should be able to be passed to execute_query().
             """
             ...
+
+        # TODO support subindex in QueryBuilder
 
         # the methods below need to be implemented by subclasses
         # If, in your subclass, one of these is not usable in a query builder, but
@@ -337,7 +340,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # retrieve data
         doc_sequence = self._get_items(key)
         # retrieve nested data
-
         for field_name, type_, _ in self._flatten_schema(self._schema):
             if issubclass(type_, AnyDocArray):
                 for doc in doc_sequence:
@@ -460,6 +462,38 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
+
+    def find_subindex(  # TODO change method name
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> SubindexFindResult:
+        self._logger.debug(
+            f'Executing `find` for search field {search_field} and return both root and sub level results'
+        )
+
+        fields = search_field.split('__')
+        if len(fields) < 2 or not issubclass(
+            self._schema._get_field_type(fields[0]), AnyDocArray
+        ):
+            raise ValueError(
+                f'search_field {search_field} is not a valid subindex field'
+            )
+
+        sub_docs, scores = self._subindices[fields[0]].find(
+            query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
+        )
+
+        root_ids = [
+            self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
+            for doc in sub_docs
+        ]
+        root_docs = self[root_ids]
+        return SubindexFindResult(
+            root_documents=root_docs, sub_documents=sub_docs, scores=scores
+        )
 
     def find_batched(
         self,
@@ -1014,3 +1048,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         nested_docs_id = self._subindices[field_name]._filter_by_parent_id(parent_id)
         if nested_docs_id:
             doc[field_name] = self._subindices[field_name].__getitem__(nested_docs_id)
+
+    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        subindex = self._subindices[root]
+
+        if sub in subindex._column_infos.keys():
+            sub_doc = subindex._get_items([id])
+            parent_id = (
+                sub_doc[0]['parent_id']
+                if isinstance(sub_doc[0], dict)
+                else sub_doc[0].parent_id
+            )
+            return parent_id
+        else:
+            fields = sub.split('__')
+            cur_root_id = subindex._get_root_doc_id(
+                id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_doc_id(cur_root_id, root, fields[0])

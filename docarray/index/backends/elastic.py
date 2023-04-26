@@ -161,8 +161,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             :param num_candidates: number of candidates
             :return: self
             """
-            # TODO support subindex in QueryBuilder
-
             self._outer_instance._validate_search_field(search_field)
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
@@ -389,7 +387,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         self._refresh(self._index_name)
 
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[Dict[str, Any]]:
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 

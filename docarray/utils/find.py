@@ -23,6 +23,12 @@ class _FindResult(NamedTuple):
     scores: AnyTensor
 
 
+class SubindexFindResult(NamedTuple):
+    root_documents: DocList
+    sub_documents: DocList
+    scores: AnyTensor
+
+
 class FindResultBatched(NamedTuple):
     documents: List[DocList]
     scores: List[AnyTensor]
