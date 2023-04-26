@@ -39,7 +39,6 @@ else:
     if torch is not None:
         from docarray.typing import TorchTensor
 
-
 T = TypeVar('T', bound='IOMixin')
 
 
@@ -122,6 +121,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
     __fields__: Dict[str, 'ModelField']
 
+    class Config:
+        load_extra_fields_from_protobuf: bool
+
     @classmethod
     @abstractmethod
     def _get_field_type(cls, field: str) -> Type:
@@ -153,7 +155,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             bstr = self.to_protobuf().SerializePartialToString()
         else:
             raise ValueError(
-                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+                f'protocol={protocol} is not supported. Can be only `protobuf` or '
+                f'pickle protocols 0-5.'
             )
         return _compress_bytes(bstr, algorithm=compress)
 
@@ -182,7 +185,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             return cls.from_protobuf(pb_msg)
         else:
             raise ValueError(
-                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+                f'protocol={protocol} is not supported. Can be only `protobuf` or '
+                f'pickle protocols 0-5.'
             )
 
     def to_base64(
