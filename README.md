@@ -15,7 +15,7 @@
 <!-- start elevator-pitch -->
 
 > ⬆️ **DocArray v2**: This is the legacy version of DocArray, a.k.a DocArray v1 fixe branch
-> to check out the current version: [DocArray v1](https://github.com/docarray/docarray)
+> to check out the current version: [DocArray v2](https://github.com/docarray/docarray)
 > Legacy documentation can be found here: [DocArray v1](https://docarray.jina.ai/)
 
 
