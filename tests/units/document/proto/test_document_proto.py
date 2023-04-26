@@ -287,7 +287,6 @@ def test_super_complex_nested():
     (doc2.data['hello'][3][0] == torch.ones(55)).all()
 
 
-@pytest.mark.proto
 @pytest.mark.tensorflow
 def test_super_complex_nested_tensorflow():
     class MyDoc(BaseDoc):
