@@ -13,8 +13,8 @@ from typing import (
     overload,
 )
 
-from typing_inspect import is_union_type
 from typing_extensions import SupportsIndex
+from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinArray
@@ -40,10 +40,10 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
 class DocList(
+    AnyDocArray[T_doc],
     IndexingSequenceMixin[T_doc],
     PushPullMixin,
     IOMixinArray,
-    AnyDocArray[T_doc],
 ):
     """
      DocList is a container of Documents.
@@ -115,7 +115,9 @@ class DocList(
         self,
         docs: Optional[Iterable[T_doc]] = None,
     ):
-        super().__init__(self._validate_docs(docs) if docs else [])
+        super(IndexingSequenceMixin, self).__init__(
+            self._validate_docs(docs) if docs else []
+        )
 
     @classmethod
     def construct(

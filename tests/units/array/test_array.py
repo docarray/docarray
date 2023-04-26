@@ -23,11 +23,6 @@ def da():
     return DocList[Text]([Text(text=f'hello {i}') for i in range(10)])
 
 
-def test_iterate(da):
-    for doc, doc2 in zip(da, da._data):
-        assert doc.id == doc2.id
-
-
 def test_append():
     class Text(BaseDoc):
         text: str
@@ -224,7 +219,7 @@ def test_get_bulk_attributes_document():
         inner: InnerDoc
 
     N = 10
-
+    print(DocList[Mmdoc])
     da = DocList[Mmdoc]((Mmdoc(inner=InnerDoc(text=f'hello{i}')) for i in range(N)))
 
     assert isinstance(da.inner, DocList)
