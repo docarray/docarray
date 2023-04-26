@@ -58,7 +58,7 @@ def _delegate_meth_to_data(meth_name: str) -> Callable:
 
 
 class DocList(
-    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
+    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc], List[T_doc]
 ):
     """
      DocList is a container of Documents.
