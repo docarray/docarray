@@ -13,9 +13,9 @@ from typing import (
 
 import numpy as np
 
-from docarray.computation.torch_backend import TorchCompBackend
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.torch_tensor import TorchTensor
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -113,15 +113,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        from docarray.typing.tensor.torch_tensor import TorchTensor
-
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
         elif issubclass(TorchTensor, value.__class__):
             try:
-                arr_from_tensor = TorchCompBackend.to_numpy(value)
+                backend = TorchTensor.get_comp_backend()
+                arr_from_tensor = backend.to_numpy(value)
                 return cls._docarray_from_native(arr_from_tensor)
             except Exception:
                 pass
