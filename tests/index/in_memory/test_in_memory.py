@@ -3,7 +3,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDoc, DocList
-from docarray.index.backends.in_memory import InMemoryDocIndex
+from docarray.index.backends.in_memory import InMemoryExactNNIndex
 from docarray.typing import NdArray
 
 
@@ -26,7 +26,7 @@ def docs():
 
 
 def test_indexing(docs):
-    doc_index = InMemoryDocIndex[SchemaDoc]()
+    doc_index = InMemoryExactNNIndex[SchemaDoc]()
     assert doc_index.num_docs() == 0
 
     doc_index.index(docs)
@@ -35,7 +35,7 @@ def test_indexing(docs):
 
 @pytest.fixture
 def doc_index(docs):
-    doc_index = InMemoryDocIndex[SchemaDoc]()
+    doc_index = InMemoryExactNNIndex[SchemaDoc]()
     doc_index.index(docs)
     return doc_index
 
