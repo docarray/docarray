@@ -105,7 +105,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+          poetry run pytest -v -s -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -151,7 +151,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+          poetry run pytest -v -s -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -182,7 +182,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'proto' tests
+          poetry run pytest -v -s -m 'proto' tests
         timeout-minutes: 30
 
 
@@ -213,7 +213,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and not elasticv8' tests/index/${{ matrix.db_test_folder }}
+          poetry run pytest -v -s -m 'index and not elasticv8' tests/index/${{ matrix.db_test_folder }}
         timeout-minutes: 30
 
 
@@ -244,7 +244,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and elasticv8' tests
+          poetry run pytest -v -s -m 'index and elasticv8' tests
         timeout-minutes: 30
 
   docarray-test-tensorflow:
@@ -273,7 +273,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'tensorflow' tests
+          poetry run pytest -v -s -m 'tensorflow' tests
         timeout-minutes: 30
 
   docarray-test-benchmarks:
@@ -298,7 +298,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'benchmark' tests
+          poetry run pytest -v -s -m 'benchmark' tests
         timeout-minutes: 30
 
   # just for blocking the merge until all parallel core-test are successful
