@@ -292,6 +292,6 @@ class DocList(
     def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
 
         if isinstance(item, type) and issubclass(item, BaseDoc):
-            return AnyDocArray.__class_getitem__.__func__(cls, item)
+            return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
         else:
             return super().__class_getitem__(item)
