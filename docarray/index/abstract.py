@@ -892,7 +892,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
 
         schema_cls = cast(Type[BaseDoc], schema)
-        return schema_cls(**dict(doc_dict))
+        return schema_cls(**doc_dict)
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""
