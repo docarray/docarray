@@ -242,7 +242,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
     @classmethod
     def _get_content_from_node_proto(
-        cls, value: 'NodeProto', field_name: Optional[str] = None
+        cls,
+        value: 'NodeProto',
+        field_name: Optional[str] = None,
+        field_type: Optional[Type] = None,
     ) -> Any:
         """
         load the proto data from a node proto
@@ -251,6 +254,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :param field_name: the name of the field
         :return: the loaded field
         """
+
+        if field_name is not None and field_type is not None:
+            raise ValueError("field_type and field_name cannot be both passed")
+
+        field_type = field_type or cls._get_field_type(field_name)
+
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
 
         content_key = value.WhichOneof('content')
@@ -265,11 +274,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 getattr(value, content_key)
             )
         elif content_key == 'doc':
-            if field_name is None:
+            if field_type is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
+                    'field_type cannot be None when trying to deserialize a BaseDoc'
                 )
-            return_field = cls._get_field_type(field_name).from_protobuf(
+            return_field = field_type.from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
         elif content_key == 'doc_array':
@@ -294,7 +303,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key in arg_to_container.keys():
                 return_field = arg_to_container[content_key](
-                    cls._get_content_from_node_proto(node)
+                    cls._get_content_from_node_proto(
+                        node, field_type=cls.__fields__[field_name].type_
+                    )
                     for node in getattr(value, content_key).data
                 )
 
