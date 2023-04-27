@@ -12,8 +12,8 @@ from typing import (
 )
 
 import numpy as np
-import torch
 
+from docarray.computation.torch_backend import TorchCompBackend
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -113,12 +113,18 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+        import torch
+
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
-            return cast(T, value)
+            try:
+                arr_from_tensor = TorchCompBackend.to_numpy(value)
+                return cls._docarray_from_native(arr_from_tensor)
+            except Exception:
+                pass
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)

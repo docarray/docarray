@@ -3,7 +3,7 @@ import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
-from docarray.typing import TorchEmbedding, TorchTensor
+from docarray.typing import NdArray, TorchEmbedding, TorchTensor
 
 
 @pytest.mark.proto
@@ -11,6 +11,17 @@ def test_proto_tensor():
     tensor = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
 
     tensor._to_node_protobuf()
+
+
+def test_proto_ndarray_tensor():
+    from docarray.proto.pb2.docarray_pb2 import NdArrayProto
+
+    tensor = parse_obj_as(NdArray, torch.zeros((3, 224, 224)))
+    proto = tensor.to_protobuf()
+    assert isinstance(proto, NdArrayProto)
+
+    from_proto = NdArray.from_protobuf(proto)
+    assert isinstance(from_proto, NdArray)
 
 
 def test_json_schema():
