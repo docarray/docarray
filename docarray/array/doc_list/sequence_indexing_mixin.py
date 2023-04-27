@@ -2,18 +2,17 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Iterable,
+    List,
     Sequence,
     TypeVar,
     Union,
     cast,
     no_type_check,
     overload,
-    List,
 )
 
-from typing_extensions import SupportsIndex
-
 import numpy as np
+from typing_extensions import SupportsIndex
 
 from docarray.utils._internal.misc import import_library
 
@@ -185,9 +184,9 @@ class IndexingSequenceMixin(List[T_item]):
         key_norm = self._normalize_index_item(key)
 
         if isinstance(key_norm, int):
-            self[key_norm] = value
+            super().__setitem__(key_norm, value)
         elif isinstance(key_norm, slice):
-            self[key_norm] = value
+            super().__setitem__(key_norm, value)
         else:
             # _normalize_index_item() guarantees the line below is correct
             head = key_norm[0]

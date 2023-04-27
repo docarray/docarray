@@ -271,9 +271,9 @@ class DocVec(AnyDocArray[T_doc]):
         in the array like container
         """
         if field in self._storage.any_columns.keys():
-            return self._storage.any_columns[field].data
+            return self._storage.any_columns[field]
         elif field in self._storage.docs_vec_columns.keys():
-            return self._storage.docs_vec_columns[field].data
+            return self._storage.docs_vec_columns[field]
         elif field in self._storage.columns.keys():
             return self._storage.columns[field]
         else:

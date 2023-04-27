@@ -1,4 +1,4 @@
-from typing import Iterator, MutableSequence, TypeVar
+from typing import TypeVar
 
 from docarray.array.doc_list.sequence_indexing_mixin import IndexingSequenceMixin
 
@@ -24,18 +24,4 @@ class ListAdvancedIndexing(IndexingSequenceMixin[T_item]):
 
     """
 
-    _data: MutableSequence[T_item]
-
-    def __init__(self, data: MutableSequence[T_item]):
-        self._data = data
-
-    @property
-    def data(self) -> MutableSequence[T_item]:
-        return self._data
-
-    def __len__(self) -> int:
-        return len(self._data)
-
-    def __iter__(self) -> Iterator[T_item]:
-        for item in self._data:
-            yield item
+    ...
