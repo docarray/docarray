@@ -304,3 +304,25 @@ def test_any_doc_proto():
     pt = doc.to_protobuf()
     doc2 = AnyDoc.from_protobuf(pt)
     assert doc2.dict()['hello'] == 'world'
+
+
+def test_nested_list():
+    from typing import List
+
+    from docarray import BaseDoc, DocList
+    from docarray.documents import TextDoc
+
+    class TextDocWithId(TextDoc):
+        id: str
+
+    class ResultTestDoc(BaseDoc):
+        matches: List[TextDocWithId]
+
+    da = DocList[ResultTestDoc](
+        [
+            ResultTestDoc(matches=[TextDocWithId(id=f'{i}') for _ in range(10)])
+            for i in range(10)
+        ]
+    )
+
+    DocList[ResultTestDoc].from_protobuf(da.to_protobuf())

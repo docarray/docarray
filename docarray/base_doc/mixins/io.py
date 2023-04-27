@@ -258,8 +258,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         if field_name is not None and field_type is not None:
             raise ValueError("field_type and field_name cannot be both passed")
 
-        field_type = (
-            field_type or cls._get_field_type(field_name) if field_name else None
+        field_type = field_type or (
+            cls._get_field_type(field_name) if field_name else None
         )
 
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
@@ -286,7 +286,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         elif content_key == 'doc_array':
             if field_name is None:
                 raise ValueError(
-                    'field_name cannot be None when trying to deseriliaze a BaseDoc'
+                    'field_name cannot be None when trying to deserialize a BaseDoc'
                 )
             return_field = cls._get_field_type_array(field_name).from_protobuf(
                 getattr(value, content_key)
