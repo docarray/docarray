@@ -258,7 +258,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         if field_name is not None and field_type is not None:
             raise ValueError("field_type and field_name cannot be both passed")
 
-        field_type = field_type or cls._get_field_type(field_name)
+        field_type = (
+            field_type or cls._get_field_type(field_name) if field_name else None
+        )
 
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
 
@@ -302,10 +304,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
+                field_type = cls.__fields__[field_name].type_ if field_name else None
                 return_field = arg_to_container[content_key](
-                    cls._get_content_from_node_proto(
-                        node, field_type=cls.__fields__[field_name].type_
-                    )
+                    cls._get_content_from_node_proto(node, field_type=field_type)
                     for node in getattr(value, content_key).data
                 )
 
