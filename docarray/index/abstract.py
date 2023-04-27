@@ -421,7 +421,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
