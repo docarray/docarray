@@ -327,3 +327,24 @@ def test_nested_list():
     )
 
     DocList[ResultTestDoc].from_protobuf(da.to_protobuf())
+
+
+@pytest.mark.proto
+def test_nested_dict_typed():
+    from docarray import BaseDoc, DocList
+    from docarray.documents import TextDoc
+
+    class TextDocWithId(TextDoc):
+        id: str
+
+    class ResultTestDoc(BaseDoc):
+        matches: Dict[str, TextDocWithId]
+
+    da = DocList[ResultTestDoc](
+        [
+            ResultTestDoc(matches={f'{i}': TextDocWithId(id=f'{i}') for _ in range(10)})
+            for i in range(10)
+        ]
+    )
+
+    DocList[ResultTestDoc].from_protobuf(da.to_protobuf())

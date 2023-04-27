@@ -312,8 +312,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key == 'dict':
                 deser_dict: Dict[str, Any] = dict()
+                field_type = cls.__fields__[field_name].type_ if field_name else None
                 for key_name, node in value.dict.data.items():
-                    deser_dict[key_name] = cls._get_content_from_node_proto(node)
+                    deser_dict[key_name] = cls._get_content_from_node_proto(
+                        node, field_type=field_type
+                    )
                 return_field = deser_dict
             else:
                 raise ValueError(
