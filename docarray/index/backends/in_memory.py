@@ -38,9 +38,9 @@ from docarray.utils.find import (
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
+class InMemoryExactSearchIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
-        """Initialize InMemoryDocIndex"""
+        """Initialize InMemoryExactSearchIndex"""
         super().__init__(db_config=None, **kwargs)
         self._runtime_config = self.RuntimeConfig()
         self._docs = (
@@ -78,13 +78,13 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        """Dataclass that contains all "static" configurations of InMemoryDocIndex."""
+        """Dataclass that contains all "static" configurations of InMemoryExactSearchIndex."""
 
         pass
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of InMemoryDocIndex."""
+        """Dataclass that contains all "dynamic" configurations of InMemoryExactSearchIndex."""
 
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
@@ -139,7 +139,8 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
         If no document is found, a KeyError is raised.
 
         :param doc_ids: ids to get from the Document index
-        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
+        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`.
+            Duplicate `doc_ids` can be omitted in the output.
         """
         indices = []
         for i, doc in enumerate(self._docs):
@@ -149,7 +150,7 @@ class InMemoryDocIndex(BaseDocIndex, Generic[TSchema]):
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
-        Execute a query on the InMemoryDocIndex.
+        Execute a query on the InMemoryExactSearchIndex.
 
         Can take two kinds of inputs:
 

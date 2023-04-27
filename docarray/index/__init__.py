@@ -1,7 +1,7 @@
 import types
 from typing import TYPE_CHECKING
 
-from docarray.index.backends.in_memory import InMemoryDocIndex
+from docarray.index.backends.in_memory import InMemoryExactSearchIndex
 from docarray.utils._internal.misc import (
     _get_path_from_docarray_root_level,
     import_library,
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
     from docarray.index.backends.weaviate import WeaviateDocumentIndex  # noqa: F401
 
-__all__ = ['InMemoryDocIndex']
+__all__ = ['InMemoryExactSearchIndex']
 
 
 def __getattr__(name: str):

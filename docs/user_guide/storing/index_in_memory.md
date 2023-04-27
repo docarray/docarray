@@ -1,22 +1,22 @@
 # In-Memory Document Index
 
 
-[InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] stores all Documents in DocLists in memory. 
+[InMemoryExactSearchIndex][docarray.index.backends.in_memory.InMemoryExactSearchIndex] stores all Documents in DocLists in memory. 
 It is a great starting point for small datasets, where you may not want to launch a database server.
 
-For vector search and filtering the InMemoryDocIndex utilizes DocArray's [`find()`][docarray.utils.find.find] and 
+For vector search and filtering the InMemoryExactSearchIndex utilizes DocArray's [`find()`][docarray.utils.find.find] and 
 [`filter_docs()`][docarray.utils.filter.filter_docs] functions.
 
 ## Basic usage
 
-To see how to create a [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] instance, add Documents,
+To see how to create a [InMemoryExactSearchIndex][docarray.index.backends.in_memory.InMemoryExactSearchIndex] instance, add Documents,
 perform search, etc. see the [general user guide](./docindex.md).
 
 You can initialize the index as follows:
 
 ```python
 from docarray import BaseDoc, DocList
-from docarray.index.backends.in_memory import InMemoryDocIndex
+from docarray.index.backends.in_memory import InMemoryExactSearchIndex
 from docarray.typing import NdArray
 
 
@@ -26,20 +26,20 @@ class MyDoc(BaseDoc):
 
 docs = DocList[MyDoc](MyDoc() for _ in range(10))
 
-doc_index = InMemoryDocIndex[MyDoc]()
+doc_index = InMemoryExactSearchIndex[MyDoc]()
 doc_index.index(docs)
 
 # or in one step:
-doc_index = InMemoryDocIndex[MyDoc](docs)
+doc_index = InMemoryExactSearchIndex[MyDoc](docs)
 ```
 
 ## Configuration
 
-This section lays out the configurations and options that are specific to [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex].
+This section lays out the configurations and options that are specific to [InMemoryExactSearchIndex][docarray.index.backends.in_memory.InMemoryExactSearchIndex].
 
 ### RuntimeConfig
 
-The `RuntimeConfig` of [InMemoryDocIndex][docarray.index.backends.in_memory.InMemoryDocIndex] contains only one entry:
+The `RuntimeConfig` of [InMemoryExactSearchIndex][docarray.index.backends.in_memory.InMemoryExactSearchIndex] contains only one entry:
 the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
@@ -95,7 +95,7 @@ When using the index, you can define multiple fields and their nested structure.
 ```python
 import numpy as np
 from docarray import BaseDoc
-from docarray.index.backends.in_memory import InMemoryDocIndex
+from docarray.index.backends.in_memory import InMemoryExactSearchIndex
 from docarray.typing import ImageUrl, VideoUrl, AnyTensor
 from pydantic import Field
 
@@ -118,7 +118,7 @@ class YouTubeVideoDoc(BaseDoc):
     tensor: AnyTensor = Field(space='cosine_sim')
 
 
-doc_index = InMemoryDocIndex[YouTubeVideoDoc]()
+doc_index = InMemoryExactSearchIndex[YouTubeVideoDoc]()
 index_docs = [
     YouTubeVideoDoc(
         title=f'video {i+1}',
@@ -134,7 +134,7 @@ doc_index.index(index_docs)
 
 ## Search Documents
 
-To search Documents, the `InMemoryDocIndex` uses DocArray's [`find`][docarray.utils.find.find] function.
+To search Documents, the `InMemoryExactSearchIndex` uses DocArray's [`find`][docarray.utils.find.find] function.
 
 You can use the `search_field` to specify which field to use when performing the vector search. 
 You can use the dunder operator to specify the field defined in nested data. 
@@ -157,7 +157,7 @@ docs, scores = doc_index.find(query, search_field='video__tensor', limit=3)
 
 ## Filter Documents
 
-To filter Documents, the `InMemoryDocIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
+To filter Documents, the `InMemoryExactSearchIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
 The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
@@ -174,7 +174,7 @@ class Book(BaseDoc):
 
 
 books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
-book_index = InMemoryDocIndex[Book](books)
+book_index = InMemoryExactSearchIndex[Book](books)
 
 # filter for books that are cheaper than 29 dollars
 query = {'price': {'$lte': 29}}
