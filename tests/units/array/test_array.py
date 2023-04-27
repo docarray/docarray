@@ -380,11 +380,11 @@ def test_construct():
     class Text(BaseDoc):
         text: str
 
-    docs = [Text(text=f'hello {i}') for i in range(10)]
+    docs = [Text(text=f'hello {i}') for i in range(10)] + [BaseDoc()]
 
     da = DocList[Text].construct(docs)
 
-    assert da is docs
+    assert type(da[-1]) == BaseDoc
 
 
 def test_reverse():
