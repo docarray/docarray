@@ -101,6 +101,11 @@ def _type_to_protobuf(value: Any) -> 'NodeProto':
         data = {}
 
         for key, content in value.items():
+            if not isinstance(key, str):
+                raise ValueError(
+                    f'Protobuf only support string as key, but got {type(key)}'
+                )
+
             data[key] = _type_to_protobuf(content)
 
         struct = DictOfAnyProto(data=data)

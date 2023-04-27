@@ -221,6 +221,17 @@ def test_nested_dict():
 
 
 @pytest.mark.proto
+def test_nested_dict_error():
+    class MyDoc(BaseDoc):
+        data: Dict
+
+    doc = MyDoc(data={0: (1, 2)})
+
+    with pytest.raises(ValueError, match="Protobuf only support string as key"):
+        doc.to_protobuf()
+
+
+@pytest.mark.proto
 def test_tuple_complex():
     class MyDoc(BaseDoc):
         data: Tuple
