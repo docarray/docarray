@@ -366,7 +366,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         paths = []
         for field in cls.__fields__.keys():
             field_type = cls._get_field_type(field)
-            if field != 'id' and not is_union_type(field_type) and issubclass(field_type, BaseDoc):
+            if (
+                field != 'id'
+                and not is_union_type(field_type)
+                and issubclass(field_type, BaseDoc)
+            ):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:
                     paths.append(f'{field}__{path}')
