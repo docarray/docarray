@@ -153,6 +153,8 @@ def test_find_batched_torch(random_torch_batch_query, random_torch_index, metric
     for top_k, top_scores in zip(documents, scores):
         assert len(top_k) == 7
         assert len(top_scores) == 7
+        assert top_k.doc_type == random_torch_index.doc_type
+
     for sc in scores:
         if metric.endswith('_dist'):
             assert (torch.stack(sorted(sc)) == sc).all()
