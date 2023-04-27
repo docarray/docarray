@@ -99,7 +99,6 @@ class _LazyRequestReader:
 
 class IOMixinArray(Iterable[T_doc]):
     doc_type: Type[T_doc]
-    _data: List[T_doc]
 
     @abstractmethod
     def __len__(self):
@@ -329,14 +328,7 @@ class IOMixinArray(Iterable[T_doc]):
         """Convert the object into JSON bytes. Can be loaded via `.from_json`.
         :return: JSON serialization of `DocList`
         """
-        return orjson_dumps(self._data)
-
-    def _docarray_to_json_compatible(self) -> List[T_doc]:
-        """
-        Convert itself into a json compatible object
-        :return: A list of documents
-        """
-        return self._data
+        return orjson_dumps(self)
 
     @classmethod
     def from_csv(

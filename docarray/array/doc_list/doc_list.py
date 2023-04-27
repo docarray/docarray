@@ -1,9 +1,7 @@
 import io
-from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Iterable,
     List,
     MutableSequence,
@@ -15,15 +13,13 @@ from typing import (
     overload,
 )
 
+from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinArray
 from docarray.array.doc_list.pushpull import PushPullMixin
-from docarray.array.doc_list.sequence_indexing_mixin import (
-    IndexingSequenceMixin,
-    IndexIterType,
-)
+from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
@@ -40,25 +36,11 @@ T = TypeVar('T', bound='DocList')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 
-def _delegate_meth_to_data(meth_name: str) -> Callable:
-    """
-    create a function that mimic a function call to the data attribute of the
-    DocList
-
-    :param meth_name: name of the method
-    :return: a method that mimic the meth_name
-    """
-    func = getattr(list, meth_name)
-
-    @wraps(func)
-    def _delegate_meth(self, *args, **kwargs):
-        return getattr(self._data, meth_name)(*args, **kwargs)
-
-    return _delegate_meth
-
-
 class DocList(
-    IndexingSequenceMixin[T_doc], PushPullMixin, IOMixinArray, AnyDocArray[T_doc]
+    ListAdvancedIndexing[T_doc],
+    PushPullMixin,
+    IOMixinArray,
+    AnyDocArray[T_doc],
 ):
     """
      DocList is a container of Documents.
@@ -129,8 +111,13 @@ class DocList(
     def __init__(
         self,
         docs: Optional[Iterable[T_doc]] = None,
+        validate_input_docs: bool = True,
     ):
-        self._data: List[T_doc] = list(self._validate_docs(docs)) if docs else []
+        if validate_input_docs:
+            docs = self._validate_docs(docs) if docs else []
+        else:
+            docs = docs if docs else []
+        super().__init__(docs)
 
     @classmethod
     def construct(
@@ -143,9 +130,7 @@ class DocList(
         :param docs: a Sequence (list) of Document with the same schema
         :return: a `DocList` object
         """
-        new_docs = cls.__new__(cls)
-        new_docs._data = docs if isinstance(docs, list) else list(docs)
-        return new_docs
+        return cls(docs, False)
 
     def __eq__(self, other: Any) -> bool:
         if self.__len__() != other.__len__():
@@ -168,12 +153,6 @@ class DocList(
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
 
-    def __len__(self):
-        return len(self._data)
-
-    def __iter__(self):
-        return iter(self._data)
-
     def __bytes__(self) -> bytes:
         with io.BytesIO() as bf:
             self._write_bytes(bf=bf)
@@ -185,7 +164,7 @@ class DocList(
         as the `.doc_type` of this `DocList` otherwise it will fail.
         :param doc: A Document
         """
-        self._data.append(self._validate_one_doc(doc))
+        super().append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -194,31 +173,28 @@ class DocList(
         fail.
         :param docs: Iterable of Documents
         """
-        self._data.extend(self._validate_docs(docs))
+        super().extend(self._validate_docs(docs))
 
-    def insert(self, i: int, doc: T_doc):
+    def insert(self, i: SupportsIndex, doc: T_doc):
         """
         Insert a Document to the `DocList`. The Document must be from the same
         class as the doc_type of this `DocList` otherwise it will fail.
         :param i: index to insert
         :param doc: A Document
         """
-        self._data.insert(i, self._validate_one_doc(doc))
-
-    pop = _delegate_meth_to_data('pop')
-    remove = _delegate_meth_to_data('remove')
-    reverse = _delegate_meth_to_data('reverse')
-    sort = _delegate_meth_to_data('sort')
+        super().insert(i, self._validate_one_doc(doc))
 
     def _get_data_column(
         self: T,
         field: str,
     ) -> Union[MutableSequence, T, 'TorchTensor', 'NdArray']:
-        """Return all values of the fields from all docs this doc_list contains
-
-        :param field: name of the fields to extract
-        :return: Returns a list of the field value for each document
-        in the doc_list like container
+        """Return all v  @classmethod
+          def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):alues of the fields from all docs this doc_list contains
+        @classmethod
+          def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+              :param field: name of the fields to extract
+              :return: Returns a list of the field value for each document
+              in the doc_list like container
         """
         field_type = self.__class__.doc_type._get_field_type(field)
 
@@ -299,7 +275,7 @@ class DocList(
         return super().from_protobuf(pb_msg)
 
     @overload
-    def __getitem__(self, item: int) -> T_doc:
+    def __getitem__(self, item: SupportsIndex) -> T_doc:
         ...
 
     @overload
@@ -308,3 +284,11 @@ class DocList(
 
     def __getitem__(self, item):
         return super().__getitem__(item)
+
+    @classmethod
+    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+
+        if isinstance(item, type) and issubclass(item, BaseDoc):
+            return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
+        else:
+            return super().__class_getitem__(item)
