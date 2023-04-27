@@ -221,6 +221,17 @@ def test_nested_dict():
 
 
 @pytest.mark.proto
+def test_nested_dict_error():
+    class MyDoc(BaseDoc):
+        data: Dict
+
+    doc = MyDoc(data={0: (1, 2)})
+
+    with pytest.raises(ValueError, match="Protobuf only support string as key"):
+        doc.to_protobuf()
+
+
+@pytest.mark.proto
 def test_tuple_complex():
     class MyDoc(BaseDoc):
         data: Tuple
@@ -304,3 +315,47 @@ def test_any_doc_proto():
     pt = doc.to_protobuf()
     doc2 = AnyDoc.from_protobuf(pt)
     assert doc2.dict()['hello'] == 'world'
+
+
+@pytest.mark.proto
+def test_nested_list():
+    from typing import List
+
+    from docarray import BaseDoc, DocList
+    from docarray.documents import TextDoc
+
+    class TextDocWithId(TextDoc):
+        id: str
+
+    class ResultTestDoc(BaseDoc):
+        matches: List[TextDocWithId]
+
+    da = DocList[ResultTestDoc](
+        [
+            ResultTestDoc(matches=[TextDocWithId(id=f'{i}') for _ in range(10)])
+            for i in range(10)
+        ]
+    )
+
+    DocList[ResultTestDoc].from_protobuf(da.to_protobuf())
+
+
+@pytest.mark.proto
+def test_nested_dict_typed():
+    from docarray import BaseDoc, DocList
+    from docarray.documents import TextDoc
+
+    class TextDocWithId(TextDoc):
+        id: str
+
+    class ResultTestDoc(BaseDoc):
+        matches: Dict[str, TextDocWithId]
+
+    da = DocList[ResultTestDoc](
+        [
+            ResultTestDoc(matches={f'{i}': TextDocWithId(id=f'{i}') for _ in range(10)})
+            for i in range(10)
+        ]
+    )
+
+    DocList[ResultTestDoc].from_protobuf(da.to_protobuf())
