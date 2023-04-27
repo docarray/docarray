@@ -13,8 +13,8 @@ from typing import (
     overload,
 )
 
-from typing_inspect import is_union_type
 from typing_extensions import SupportsIndex
+from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinArray
@@ -191,11 +191,13 @@ class DocList(
         self: T,
         field: str,
     ) -> Union[MutableSequence, T, 'TorchTensor', 'NdArray']:
-        """Return all values of the fields from all docs this doc_list contains
-
-        :param field: name of the fields to extract
-        :return: Returns a list of the field value for each document
-        in the doc_list like container
+        """Return all v  @classmethod
+          def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):alues of the fields from all docs this doc_list contains
+        @classmethod
+          def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+              :param field: name of the fields to extract
+              :return: Returns a list of the field value for each document
+              in the doc_list like container
         """
         field_type = self.__class__.doc_type._get_field_type(field)
 
@@ -285,3 +287,11 @@ class DocList(
 
     def __getitem__(self, item):
         return super().__getitem__(item)
+
+    @classmethod
+    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+
+        if isinstance(item, type) and issubclass(item, BaseDoc):
+            return AnyDocArray.__class_getitem__.__func__(cls, item)
+        else:
+            return super().__class_getitem__(item)
