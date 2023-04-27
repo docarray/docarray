@@ -352,7 +352,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         ):
             if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
                 for doc in doc_sequence:
-                    self._get_subindex_doclist(doc, field_name)
+                    self._get_subindex_doclist(doc, field_name)  # type: ignore
 
         # cast output
         if isinstance(doc_sequence, DocList):
@@ -1024,7 +1024,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # TODO out_schema is not the schema in memory, but the fields and name are the same
         if self._subindex:
             out_shcema = type(schema.__name__[:-8], (schema,), {})
-            out_shcema._remove_field('parent_id')
+            out_shcema._remove_field('parent_id')  # type: ignore
             doc_dict.pop('parent_id', None)
             schema_cls = cast(Type[BaseDoc], out_shcema)
         else:
