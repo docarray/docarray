@@ -432,6 +432,12 @@ class IOMixinArray(Iterable[T_doc]):
             `'unix'` (for csv file generated on UNIX systems).
 
         """
+        if self.doc_type == AnyDoc:
+            raise TypeError(
+                'DocList must be homogeneous to be converted to a csv.'
+                'There is no document schema defined. '
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+            )
         fields = self.doc_type._get_access_paths()
 
         with open(file_path, 'w') as csv_file:
@@ -531,6 +537,13 @@ class IOMixinArray(Iterable[T_doc]):
             import pandas as pd
         else:
             pd = import_library('pandas', raise_error=True)
+
+        if self.doc_type == AnyDoc:
+            raise TypeError(
+                'DocList must be homogeneous to be converted to a DataFrame.'
+                'There is no document schema defined. '
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+            )
 
         fields = self.doc_type._get_access_paths()
         df = pd.DataFrame(columns=fields)

@@ -85,3 +85,12 @@ def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
         DocList[nested_doc.__class__].from_dataframe(df=df)
+
+
+def test_doc_list_error():
+    class Book(BaseDoc):
+        title: str
+
+    docs = DocList([Book(title='hello'), Book(title='world')])
+    with pytest.raises(TypeError):
+        docs.to_dataframe()
