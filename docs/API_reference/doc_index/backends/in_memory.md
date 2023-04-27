@@ -1,3 +1,3 @@
-# InMemoryExactSearchIndex
+#InMemoryExactNNIndex
 
-::: docarray.index.backends.in_memory.InMemoryExactSearchIndex
+::: docarray.index.backends.in_memory.InMemoryExactNNIndex

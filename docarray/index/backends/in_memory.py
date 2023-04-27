@@ -38,9 +38,9 @@ from docarray.utils.find import (
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-class InMemoryExactSearchIndex(BaseDocIndex, Generic[TSchema]):
+class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, docs: Optional[DocList] = None, **kwargs):
-        """Initialize InMemoryExactSearchIndex"""
+        """Initialize InMemoryExactNNIndex"""
         super().__init__(db_config=None, **kwargs)
         self._runtime_config = self.RuntimeConfig()
         self._docs = (
@@ -78,13 +78,13 @@ class InMemoryExactSearchIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        """Dataclass that contains all "static" configurations of InMemoryExactSearchIndex."""
+        """Dataclass that contains all "static" configurations of InMemoryExactNNIndex."""
 
         pass
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of InMemoryExactSearchIndex."""
+        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
 
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
@@ -150,7 +150,7 @@ class InMemoryExactSearchIndex(BaseDocIndex, Generic[TSchema]):
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
-        Execute a query on the InMemoryExactSearchIndex.
+        Execute a query on the InMemoryExactNNIndex.
 
         Can take two kinds of inputs:
 
