@@ -306,6 +306,7 @@ def test_any_doc_proto():
     assert doc2.dict()['hello'] == 'world'
 
 
+@pytest.mark.proto
 def test_nested_list():
     from typing import List
 
