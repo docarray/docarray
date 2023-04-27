@@ -387,7 +387,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index.
         """
-        self._logger.debug(f'Indexing {len(docs)} documents')
+        n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
+        self._logger.debug(f'Indexing {n_docs} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
