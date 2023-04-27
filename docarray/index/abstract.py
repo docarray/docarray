@@ -93,7 +93,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
         if subindex:
-            # self._schema._add_fields(parent_id=(ID, None))
             self._schema = type(self._schema.__name__ + 'Subindex', (self._schema,), {})
             self._schema._add_fields(parent_id=(ID, None))
 
@@ -342,17 +341,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         # retrieve data
         doc_sequence = self._get_items(key)
-        # retrieve nested data
-        for field_name, type_, _ in self._flatten_schema(
-            cast(Type[BaseDoc], self._schema)
-        ):
-            if issubclass(type_, AnyDocArray):
-                for doc in doc_sequence:
-                    self._get_subindex_doclist(doc, field_name)
 
         # check data
         if len(doc_sequence) == 0:
             raise KeyError(f'No document with id {key} found')
+
+        # retrieve nested data
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
+                for doc in doc_sequence:
+                    self._get_subindex_doclist(doc, field_name)
 
         # cast output
         if isinstance(doc_sequence, DocList):
@@ -806,10 +806,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             t_ = schema._get_field_type(field_name)
             inner_prefix = name_prefix + field_name + '__'
 
-            # TODO or change this in _update_subindex_data
-            if field_name == 'parent_id' and name_prefix != '':
-                continue
-
             if is_union_type(t_):
                 union_args = get_args(t_)
 
@@ -993,7 +989,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc], inner=False
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc]
     ) -> BaseDoc:
         """
         Convert a dict to a Document object.
@@ -1002,7 +998,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
-        # TODO refactor
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
 
@@ -1024,20 +1019,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     nested_name = key[len(f'{field_name}__') :]
                     inner_dict[nested_name] = doc_dict.pop(key)
 
-                doc_dict[field_name] = self._convert_dict_to_doc(
-                    inner_dict, t_, inner=True
-                )
+                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
 
-        if self._subindex and not inner:
+        # TODO out_schema is not the schema in memory, but the fields and name are the same
+        if self._subindex:
+            out_shcema = type(schema.__name__[:-8], (schema,), {})
+            out_shcema._remove_field('parent_id')
             doc_dict.pop('parent_id', None)
-            schema._remove_field('parent_id')
+            schema_cls = cast(Type[BaseDoc], out_shcema)
+        else:
+            schema_cls = cast(Type[BaseDoc], schema)
 
-        schema_cls = cast(Type[BaseDoc], schema)
         doc = schema_cls(**doc_dict)
-
-        if self._subindex and not inner:
-            schema._add_fields(parent_id=(ID, None))
-
         return doc
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
@@ -1058,14 +1051,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 self._subindices[col_name].index(docs)
                 column_to_data.pop(col_name, None)
 
-    def _get_subindex_doclist(
-        self, doc: Union[TSchema, Dict[str, Any]], field_name: str
-    ):
-        # TODO if field name exists, return
-        parent_id = doc['id'] if isinstance(doc, dict) else doc.id
-        nested_docs_id = self._subindices[field_name]._filter_by_parent_id(parent_id)
-        if nested_docs_id:
-            doc[field_name] = self._subindices[field_name].__getitem__(nested_docs_id)
+    def _get_subindex_doclist(self, doc: Dict[str, Any], field_name: str):
+        if field_name not in doc.keys():
+            parent_id = doc['id']
+            nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
+                parent_id
+            )
+            if nested_docs_id:
+                doc[field_name] = self._subindices[field_name].__getitem__(
+                    nested_docs_id
+                )
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
         subindex = self._subindices[root]
