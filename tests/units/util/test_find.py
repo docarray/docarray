@@ -362,7 +362,7 @@ def test_find_nested(stack):
         ]
     )
     if stack:
-        index = index.stack()
+        index = index.to_doc_vec()
 
     top_k, scores = find(
         index,

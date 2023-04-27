@@ -14,6 +14,7 @@ from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.map import _map_docs_batched_multiarg
+from docarray.documents import TextDoc
 
 
 class FindResult(NamedTuple):
@@ -24,10 +25,6 @@ class FindResult(NamedTuple):
 class _FindResult(NamedTuple):
     documents: Union[DocList, List[Dict[str, Any]]]
     scores: AnyTensor
-
-
-class _query_doc(BaseDoc):
-    embedding: Optional[AnyTensor]
 
 
 class FindResultBatched(NamedTuple):
@@ -123,7 +120,7 @@ def find(
 
 
 def get_result(
-    query: Union[DocList, AnyTensor],
+    query_embeds,
     index_embeddings,
     device,
     comp_backend,
@@ -133,7 +130,7 @@ def get_result(
     limit,
     descending,
 ):
-    q_embed = _extract_embeddings(query, search_field, embedding_type)
+    q_embed = query_embeds
     dists = metric_fn(q_embed, index_embeddings, device=device)
     top_scores, top_indices = comp_backend.Retrieval.top_k(
         dists, k=limit, device=device, descending=descending
@@ -260,7 +257,8 @@ def find_batched(
         else:
             batch_size = int(batch_size)
     else:
-        top_indices, top_scores = get_result(query, **func_args)
+        query_embs = _extract_embeddings(query, search_field, embedding_type)
+        top_indices, top_scores = get_result(query_embs, **func_args)
         batched_docs: List[DocList] = []
         scores = []
         for _, (indices_per_query, scores_per_query) in enumerate(
@@ -275,9 +273,7 @@ def find_batched(
 
     if not (isinstance(query, DocList) or isinstance(query, (DocVec, BaseDoc))):
         query = cast(AnyTensor, query)
-        d = DocList[_query_doc](
-            _query_doc() for _ in range(comp_backend.shape(query)[0])
-        )
+        d = DocList[TextDoc](TextDoc() for _ in range(comp_backend.shape(query)[0]))
         d.embedding = query  # type: ignore
         query = d
 

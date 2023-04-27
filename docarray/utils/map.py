@@ -301,16 +301,23 @@ def _map_docs_batched_multiarg(
         context_pool = p
 
     args_list = []
-    no_of_batches = ceil(len(docs) / batch_size)
+    per_batch_args = []
+    for k in func_args.values():
+        per_batch_args.append(k)
+    from docarray.utils.find import _extract_embeddings
 
-    for i in func_args.values():
-        ls = [i for k in range(no_of_batches)]
+    batches = docs._batch(batch_size=batch_size, shuffle=shuffle)
+    for batch in batches:
+        embs = _extract_embeddings(
+            batch, func_args['search_field'], func_args['embedding_type']
+        )
+        ls = [embs]
+        ls = ls + per_batch_args
+
         args_list.append(ls)
 
     with context_pool:
-        starmap = p.starmap(
-            func, zip(docs._batch(batch_size=batch_size, shuffle=shuffle), *args_list)
-        )
+        starmap = p.starmap(func, args_list)
         for x in track(
             starmap, total=ceil(len(docs) / batch_size), disable=not show_progress
         ):
