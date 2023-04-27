@@ -46,8 +46,8 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='IOMixinArray')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
-ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
-SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
+ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array', 'json-array'}
+SINGLE_PROTOCOLS = {'pickle', 'protobuf', 'json'}
 ALLOWED_PROTOCOLS = ARRAY_PROTOCOLS.union(SINGLE_PROTOCOLS)
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
@@ -180,6 +180,8 @@ class IOMixinArray(Iterable[T_doc]):
                 f.write(self.to_protobuf().SerializePartialToString())
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
+            elif protocol == 'json-array':
+                f.write(self.to_json())
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
@@ -575,7 +577,11 @@ class IOMixinArray(Iterable[T_doc]):
             else:
                 d = fp.read()
 
-        if protocol is not None and protocol in ('pickle-array', 'protobuf-array'):
+        if protocol is not None and protocol in (
+            'pickle-array',
+            'protobuf-array',
+            'json-array',
+        ):
             if _get_compress_ctx(algorithm=compress) is not None:
                 d = _decompress_bytes(d, algorithm=compress)
                 compress = None
@@ -589,6 +595,9 @@ class IOMixinArray(Iterable[T_doc]):
             return cls.from_protobuf(dap)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
+
+        elif protocol is not None and protocol == 'json-array':
+            return cls.from_json(d)
 
         # Binary format for streaming case
         else:
