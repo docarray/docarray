@@ -17,7 +17,7 @@ from typing_extensions import SupportsIndex
 from docarray.utils._internal.misc import import_library
 
 T_item = TypeVar('T_item')
-T = TypeVar('T', bound='IndexingSequenceMixin')
+T = TypeVar('T', bound='ListAdvancedIndexing')
 
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
@@ -33,12 +33,11 @@ def _is_np_int(item: Any) -> bool:
     return False  # this is unreachable, but mypy wants it
 
 
-class IndexingSequenceMixin(List[T_item]):
+class ListAdvancedIndexing(List[T_item]):
     """
-    This mixin allow sto extend a list into an object that can be indexed
-    a la numpy/pytorch.
+    A list wrapper that implements custom indexing
 
-    You can index into, delete from, and set items in a IndexingSequenceMixin like a numpy doc_list or torch tensor:
+    You can index into a ListAdvanceIndex like a numpy array or torch tensor:
 
     ---
 
