@@ -58,6 +58,8 @@ def test_find_torch(random_torch_query, random_torch_index, metric):
     )
     assert len(top_k) == 7
     assert len(scores) == 7
+    assert top_k.doc_type == random_torch_index.doc_type
+
     if metric.endswith('_dist'):
         assert (torch.stack(sorted(scores)) == scores).all()
     else:
