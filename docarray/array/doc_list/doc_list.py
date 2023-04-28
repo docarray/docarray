@@ -294,4 +294,4 @@ class DocList(
             return super().__class_getitem__(item)
 
     def __repr__(self):
-        return AnyDocArray.__repr__(self)
+        return AnyDocArray.__repr__(self)  # type: ignore
