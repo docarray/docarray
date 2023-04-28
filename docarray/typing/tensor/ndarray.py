@@ -12,6 +12,7 @@ from typing import (
 )
 
 import numpy as np
+import torch
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -115,6 +116,8 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
+            return cast(T, value)
+        elif isinstance(value, torch.Tensor):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
