@@ -86,7 +86,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     # for subclasses this is filled automatically
     _schema: Optional[Type[BaseDoc]] = None
 
-    def __init__(self, db_config=None, subindex=False, **kwargs):
+    def __init__(self, db_config=None, subindex: bool = False, **kwargs):
         if self._schema is None:
             raise ValueError(
                 'A DocumentIndex must be typed with a Document type.'
@@ -110,8 +110,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
             self._schema
         )
-        self._subindex = subindex
-        self._subindices = {}
+        self._is_subindex = subindex
+        self._subindices: Dict[str, BaseDocIndex] = {}
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -759,7 +759,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 for doc in docs:
                     _list = getattr(doc, field_name)
                     for i, nested_doc in enumerate(_list):
-                        nested_doc = self._subindices[field_name]._schema(
+                        nested_doc = self._subindices[field_name]._schema(  # type: ignore
                             **nested_doc.__dict__
                         )
                         nested_doc.parent_id = doc.id
@@ -1028,7 +1028,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     inner_dict, t_, inner=True
                 )
 
-        if self._subindex and not inner:
+        if self._is_subindex and not inner:
             doc_dict.pop('parent_id', None)
             schema_cls = cast(Type[BaseDoc], self._ori_schema)
         else:
@@ -1039,7 +1039,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        if self._subindex:
+        if self._is_subindex:
             docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._ori_schema))
         else:
             docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
