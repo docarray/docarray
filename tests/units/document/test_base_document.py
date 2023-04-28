@@ -24,3 +24,22 @@ def test_update():
     assert doc1.content == 'Core content updated'
     assert doc1.title == 'Title'
     assert doc1.tags_ == ['python', 'AI', 'docarray']
+
+
+def test_equal_nested_docs():
+    import numpy as np
+
+    from docarray import BaseDoc, DocList
+    from docarray.typing import NdArray
+
+    class SimpleDoc(BaseDoc):
+        simple_tens: NdArray[10]
+
+    class NestedDoc(BaseDoc):
+        docs: DocList[SimpleDoc]
+
+    nested_docs = NestedDoc(
+        docs=DocList[SimpleDoc]([SimpleDoc(simple_tens=np.ones(10)) for j in range(2)]),
+    )
+
+    assert nested_docs == nested_docs
