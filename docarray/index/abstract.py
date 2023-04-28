@@ -93,12 +93,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
         if subindex:
+
+            class _new_schema(self._schema):  # type: ignore
+                parent_id: Optional[ID] = None
+
             self._ori_schema = self._schema
-
-            class _new_schema(self._schema):
-                parent_id: ID = None
-
-            self._schema = _new_schema
+            self._schema = cast(Type[BaseDoc], _new_schema)
 
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
