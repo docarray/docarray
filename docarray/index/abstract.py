@@ -760,7 +760,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     _list = getattr(doc, field_name)
                     for i, nested_doc in enumerate(_list):
                         nested_doc = self._subindices[field_name]._schema(
-                            **nested_doc.dict()
+                            **nested_doc.__dict__
                         )
                         nested_doc.parent_id = doc.id
                         _list[i] = nested_doc
