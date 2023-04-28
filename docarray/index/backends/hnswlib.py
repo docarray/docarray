@@ -228,7 +228,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if kwargs:
             raise ValueError(f'{list(kwargs.keys())} are not valid keyword arguments')
 
-        self._logger.debug(f'Indexing {len(docs)} documents')
+        n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
+        self._logger.debug(f'Indexing {n_docs} documents')
         docs_validated = self._validate_docs(docs)
         self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)

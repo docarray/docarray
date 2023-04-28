@@ -15,7 +15,7 @@ def test_da_init():
     da = DocVec[MyDoc](docs, tensor_type=NdArray)
 
     assert (da._storage.tensor_columns['tensor'] == np.zeros((4, 10))).all()
-    assert da._storage.any_columns['name']._data == ['hello' for _ in range(4)]
+    assert da._storage.any_columns['name'] == ['hello' for _ in range(4)]
 
 
 def test_da_iter():

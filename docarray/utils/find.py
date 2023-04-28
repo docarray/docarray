@@ -219,10 +219,11 @@ def find_batched(
     for _, (indices_per_query, scores_per_query) in enumerate(
         zip(top_indices, top_scores)
     ):
-        docs_per_query: DocList = DocList([])
+        doc_type = cast(Type[BaseDoc], index.doc_type)
+        docs_per_query: DocList = DocList.__class_getitem__(doc_type)()
         for idx in indices_per_query:  # workaround until #930 is fixed
-            docs_per_query.append(index[idx])
-        batched_docs.append(DocList(docs_per_query))
+            docs_per_query.append(index[int(idx)])
+        batched_docs.append(docs_per_query)
         scores.append(scores_per_query)
     return FindResultBatched(documents=batched_docs, scores=scores)
 
