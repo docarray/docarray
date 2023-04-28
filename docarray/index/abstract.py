@@ -93,8 +93,12 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
         if subindex:
-            self._schema = type(self._schema.__name__ + 'Subindex', (self._schema,), {})
-            self._schema._add_fields(parent_id=(ID, None))
+            self._ori_schema = self._schema
+
+            class _new_schema(self._schema):
+                parent_id: ID = None
+
+            self._schema = _new_schema
 
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
@@ -1021,12 +1025,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
                 doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
 
-        # TODO out_schema is not the schema in memory, but the fields and name are the same
         if self._subindex:
-            out_shcema = type(schema.__name__[:-8], (schema,), {})
-            out_shcema._remove_field('parent_id')  # type: ignore
             doc_dict.pop('parent_id', None)
-            schema_cls = cast(Type[BaseDoc], out_shcema)
+            schema_cls = cast(Type[BaseDoc], self._ori_schema)
         else:
             schema_cls = cast(Type[BaseDoc], schema)
 
@@ -1036,7 +1037,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        if self._subindex:
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._ori_schema))
+        else:
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
 
     def __len__(self) -> int:
