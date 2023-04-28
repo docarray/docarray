@@ -140,7 +140,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
-        if self.dict().keys() != other.dict().keys():
+        if self.__fields__.keys() != other.__fields__.keys():
             return False
 
         for field_name in self.__fields__:

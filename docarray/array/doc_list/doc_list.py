@@ -293,3 +293,6 @@ class DocList(
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
         else:
             return super().__class_getitem__(item)
+
+    def __repr__(self):
+        return AnyDocArray.__repr__(self)  # type: ignore
