@@ -110,3 +110,13 @@ def test_from_remote_csv_file():
     books = DocList[Book].from_csv(file_path=remote_url)
 
     assert len(books) == 3
+
+
+def test_doc_list_error(tmpdir):
+    class Book(BaseDoc):
+        title: str
+
+    docs = DocList([Book(title='hello'), Book(title='world')])
+    tmp_file = str(tmpdir / 'tmp.csv')
+    with pytest.raises(TypeError):
+        docs.to_csv(tmp_file)

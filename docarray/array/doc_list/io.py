@@ -46,8 +46,8 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='IOMixinArray')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
-ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array'}
-SINGLE_PROTOCOLS = {'pickle', 'protobuf'}
+ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array', 'json-array'}
+SINGLE_PROTOCOLS = {'pickle', 'protobuf', 'json'}
 ALLOWED_PROTOCOLS = ARRAY_PROTOCOLS.union(SINGLE_PROTOCOLS)
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
@@ -99,7 +99,6 @@ class _LazyRequestReader:
 
 class IOMixinArray(Iterable[T_doc]):
     doc_type: Type[T_doc]
-    _data: List[T_doc]
 
     @abstractmethod
     def __len__(self):
@@ -180,6 +179,8 @@ class IOMixinArray(Iterable[T_doc]):
                 f.write(self.to_protobuf().SerializePartialToString())
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
+            elif protocol == 'json-array':
+                f.write(self.to_json())
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
@@ -327,14 +328,7 @@ class IOMixinArray(Iterable[T_doc]):
         """Convert the object into JSON bytes. Can be loaded via `.from_json`.
         :return: JSON serialization of `DocList`
         """
-        return orjson_dumps(self._data)
-
-    def _docarray_to_json_compatible(self) -> List[T_doc]:
-        """
-        Convert itself into a json compatible object
-        :return: A list of documents
-        """
-        return self._data
+        return orjson_dumps(self)
 
     @classmethod
     def from_csv(
@@ -432,6 +426,12 @@ class IOMixinArray(Iterable[T_doc]):
             `'unix'` (for csv file generated on UNIX systems).
 
         """
+        if self.doc_type == AnyDoc:
+            raise TypeError(
+                'DocList must be homogeneous to be converted to a csv.'
+                'There is no document schema defined. '
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+            )
         fields = self.doc_type._get_access_paths()
 
         with open(file_path, 'w') as csv_file:
@@ -532,12 +532,20 @@ class IOMixinArray(Iterable[T_doc]):
         else:
             pd = import_library('pandas', raise_error=True)
 
+        if self.doc_type == AnyDoc:
+            raise TypeError(
+                'DocList must be homogeneous to be converted to a DataFrame.'
+                'There is no document schema defined. '
+                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+            )
+
         fields = self.doc_type._get_access_paths()
         df = pd.DataFrame(columns=fields)
 
         for doc in self:
             doc_dict = _dict_to_access_paths(doc.dict())
-            df = df.append(doc_dict, ignore_index=True)
+            doc_dict = {k: [v] for k, v in doc_dict.items()}
+            df = pd.concat([df, pd.DataFrame.from_dict(doc_dict)], ignore_index=True)
 
         return df
 
@@ -575,7 +583,11 @@ class IOMixinArray(Iterable[T_doc]):
             else:
                 d = fp.read()
 
-        if protocol is not None and protocol in ('pickle-array', 'protobuf-array'):
+        if protocol is not None and protocol in (
+            'pickle-array',
+            'protobuf-array',
+            'json-array',
+        ):
             if _get_compress_ctx(algorithm=compress) is not None:
                 d = _decompress_bytes(d, algorithm=compress)
                 compress = None
@@ -589,6 +601,9 @@ class IOMixinArray(Iterable[T_doc]):
             return cls.from_protobuf(dap)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
+
+        elif protocol is not None and protocol == 'json-array':
+            return cls.from_json(d)
 
         # Binary format for streaming case
         else:

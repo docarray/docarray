@@ -21,7 +21,7 @@ from pydantic import BaseConfig, parse_obj_as
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
-from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
+from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
@@ -271,9 +271,9 @@ class DocVec(AnyDocArray[T_doc]):
         in the array like container
         """
         if field in self._storage.any_columns.keys():
-            return self._storage.any_columns[field].data
+            return self._storage.any_columns[field]
         elif field in self._storage.docs_vec_columns.keys():
-            return self._storage.docs_vec_columns[field].data
+            return self._storage.docs_vec_columns[field]
         elif field in self._storage.columns.keys():
             return self._storage.columns[field]
         else:

@@ -38,14 +38,14 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray.documents import ImageDoc
-from docarray.base_doc import DocumentResponse
+from docarray.base_doc import DocArrayResponse
 
 input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
 
 app = FastAPI()
 
 
-@app.post("/doc/", response_model=OutputDoc, response_class=DocumentResponse)
+@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
     ## call my fancy model to generate the embeddings
     doc = OutputDoc(

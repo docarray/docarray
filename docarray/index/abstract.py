@@ -387,7 +387,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         :param docs: Documents to index.
         """
-        self._logger.debug(f'Indexing {len(docs)} documents')
+        n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
+        self._logger.debug(f'Indexing {n_docs} documents')
         docs_validated = self._validate_docs(docs)
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
@@ -421,7 +422,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -900,3 +901,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
+
+    def __len__(self) -> int:
+        return self.num_docs()

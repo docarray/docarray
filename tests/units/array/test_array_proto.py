@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import BaseDoc, DocList
+from docarray.base_doc import AnyDoc
 from docarray.documents import ImageDoc, TextDoc
 from docarray.typing import NdArray
 
@@ -59,3 +60,34 @@ def test_nested_proto_any_doc():
     )
 
     DocList.from_protobuf(da.to_protobuf())
+
+
+@pytest.mark.proto
+def test_any_doc_list_proto():
+    doc = AnyDoc(hello='world')
+    pt = DocList([doc]).to_protobuf()
+    docs = DocList.from_protobuf(pt)
+    assert docs[0].dict()['hello'] == 'world'
+
+
+@pytest.mark.proto
+def test_any_nested_doc_list_proto():
+    from docarray import BaseDoc, DocList
+
+    class TextDocWithId(BaseDoc):
+        id: str
+        text: str
+
+    class ResultTestDoc(BaseDoc):
+        matches: DocList[TextDocWithId]
+
+    index_da = DocList[TextDocWithId](
+        [TextDocWithId(id=f'{i}', text=f'ID {i}') for i in range(10)]
+    )
+
+    out_da = DocList[ResultTestDoc]([ResultTestDoc(matches=index_da[0:2])])
+    pb = out_da.to_protobuf()
+    docs = DocList.from_protobuf(pb)
+    assert docs[0].matches[0].id == '0'
+    assert len(docs[0].matches) == 2
+    assert len(docs) == 1

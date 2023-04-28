@@ -10,7 +10,7 @@ from typing import (
     Union,
 )
 
-from docarray.array.doc_vec.list_advance_indexing import ListAdvancedIndexing
+from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 

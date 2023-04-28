@@ -36,7 +36,28 @@ T_update = TypeVar('T_update', bound='UpdateMixin')
 
 class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
-    The base class for Documents
+    BaseDoc is the base class for all Documents. This class should be subclassed
+    to create new Document types with a specific schema.
+
+    The schema of a Document is defined by the fields of the class.
+
+    Example:
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import NdArray, ImageUrl
+    import numpy as np
+
+
+    class MyDoc(BaseDoc):
+        embedding: NdArray[512]
+        image: ImageUrl
+
+
+    doc = MyDoc(embedding=np.zeros(512), image='https://example.com/image.jpg')
+    ```
+
+
+    BaseDoc is a subclass of [pydantic.BaseModel](https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
     """
 
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
@@ -50,6 +71,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         json_encoders = {AbstractTensor: lambda x: x}
 
         validate_assignment = True
+        _load_extra_fields_from_protobuf = False
 
     @classmethod
     def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
@@ -118,7 +140,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
-        if self.dict().keys() != other.dict().keys():
+        if self.__fields__.keys() != other.__fields__.keys():
             return False
 
         for field_name in self.__fields__:

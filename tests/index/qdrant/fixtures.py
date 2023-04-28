@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 import qdrant_client
 
