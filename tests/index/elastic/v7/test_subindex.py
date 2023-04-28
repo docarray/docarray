@@ -93,23 +93,23 @@ def test_subindex_index(index):
 
 def test_subindex_get(index):
     doc = index['1']
-    assert isinstance(doc, MyDoc)
+    assert type(doc) == MyDoc
     assert doc.id == '1'
 
     assert len(doc.docs) == 5
-    assert isinstance(doc.docs[0], SimpleDoc)
+    assert type(doc.docs[0]) == SimpleDoc
     assert doc.docs[0].id == 'docs-1-0'
     assert np.allclose(doc.docs[0].simple_tens, np.ones(10))
 
     assert len(doc.list_docs) == 5
-    assert isinstance(doc.list_docs[0], ListDoc)
+    assert type(doc.list_docs[0]) == ListDoc
     assert doc.list_docs[0].id == 'list_docs-1-0'
     assert len(doc.list_docs[0].docs) == 5
-    assert isinstance(doc.list_docs[0].docs[0], SimpleDoc)
+    assert type(doc.list_docs[0].docs[0]) == SimpleDoc
     assert doc.list_docs[0].docs[0].id == 'list_docs-docs-1-0-0'
     assert np.allclose(doc.list_docs[0].docs[0].simple_tens, np.ones(10))
     assert doc.list_docs[0].docs[0].simple_text == 'hello 0'
-    assert isinstance(doc.list_docs[0].simple_doc, SimpleDoc)
+    assert type(doc.list_docs[0].simple_doc) == SimpleDoc
     assert doc.list_docs[0].simple_doc.id == 'list_docs-simple_doc-1-0'
     assert np.allclose(doc.list_docs[0].simple_doc.simple_tens, np.ones(10))
     assert doc.list_docs[0].simple_doc.simple_text == 'hello 0'
@@ -123,14 +123,14 @@ def test_subindex_find(index):
     query = np.ones((30,))
     docs, scores = index.find(query, search_field='my_tens', limit=5)
     assert len(scores) == 5
-    assert isinstance(docs[0], MyDoc)
+    assert type(docs[0]) == MyDoc
     assert [doc.id for doc in docs] == [f'{i}' for i in range(5)]
 
     # sub level
     query = np.ones((10,))
     docs, scores = index.find(query, search_field='docs__simple_tens', limit=25)
     assert len(scores) == 25
-    assert isinstance(docs[0], SimpleDoc)
+    assert type(docs[0]) == SimpleDoc
     assert set([doc.id for doc in docs]) == set(
         [f'docs-{i}-{j}' for i in range(5) for j in range(5)]
     )
@@ -142,21 +142,21 @@ def test_subindex_find(index):
     )
     assert len(docs) == 5
     assert len(scores) == 5
-    assert isinstance(docs[0], SimpleDoc)
+    assert type(docs[0]) == SimpleDoc
 
 
 def test_subindex_filter(index):
     query = {'match': {'simple_doc__simple_text': 'hello 0'}}
     docs = index.filter_subindex(query, subindex='list_docs', limit=5)
-    assert isinstance(docs[0], ListDoc)
     assert len(docs) == 5
+    assert type(docs[0]) == ListDoc
     for doc in docs:
         assert doc.id.split('-')[-1] == '0'
 
     query = {'match': {'simple_text': 'hello 0'}}
     docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
-    assert isinstance(docs[0], SimpleDoc)
     assert len(docs) == 5
+    assert type(docs[0]) == SimpleDoc
     for doc in docs:
         assert doc.id.split('-')[-1] == '0'
 
