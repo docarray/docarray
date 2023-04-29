@@ -195,7 +195,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 sub_db_config.index_name = (
                     f'{self._db_config.index_name}__{column_name}'
                 )
-                self._subindices[column_name] = self.__class__[
+                self._subindices[column_name] = self.__class__[  # type: ignore
                     column_info.docarray_type.doc_type
                 ](db_config=sub_db_config, subindex=True)
                 continue
@@ -342,7 +342,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if search_field != '':
             fields = search_field.split('__')
-            if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+            if fields[0] in self._schema.__fields__.keys() and issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
                 return self._subindices[fields[0]].find(
                     query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
                 )
