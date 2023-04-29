@@ -28,20 +28,7 @@ class MyDoc(BaseDoc):
 
 @pytest.fixture
 def index():
-    print('aaa')
     index = ElasticV7DocIndex[MyDoc](index_name='idx')
-    return index
-
-
-def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], ElasticV7DocIndex)
-    assert isinstance(index._subindices['list_docs'], ElasticV7DocIndex)
-    assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], ElasticV7DocIndex
-    )
-
-
-def test_subindex_index(index):
     my_docs = [
         MyDoc(
             id=f'{i}',
@@ -85,6 +72,19 @@ def test_subindex_index(index):
     ]
 
     index.index(my_docs)
+    return index
+
+
+def test_subindex_init(index):
+    assert isinstance(index._subindices['docs'], ElasticV7DocIndex)
+    assert isinstance(index._subindices['list_docs'], ElasticV7DocIndex)
+    assert isinstance(
+        index._subindices['list_docs']._subindices['docs'], ElasticV7DocIndex
+    )
+
+
+def test_subindex_index(index):
+
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
@@ -143,6 +143,36 @@ def test_subindex_find(index):
     assert len(docs) == 5
     assert len(scores) == 5
     assert type(docs[0]) == SimpleDoc
+
+
+def test_find_subindex(index):
+    # root level
+    query = np.ones((30,))
+    with pytest.raises(ValueError):
+        _, _ = index.find_subindex(query, search_field='my_tens', limit=5)
+
+    # sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, search_field='docs__simple_tens', limit=25
+    )
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    assert len(scores) == 25
+    for root_doc, doc in zip(root_docs, docs):
+        assert root_doc.id == f'{doc.id.split("-")[1]}'
+
+    # sub sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, search_field='list_docs__docs__simple_tens', limit=5
+    )
+    assert len(docs) == 5
+    assert len(scores) == 5
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc in zip(root_docs, docs):
+        assert root_doc.id == f'{doc.id.split("-")[2]}'
 
 
 def test_subindex_filter(index):

@@ -30,18 +30,6 @@ class MyDoc(BaseDoc):
 @pytest.fixture
 def index():
     index = ElasticDocIndex[MyDoc](index_name='idx')
-    return index
-
-
-def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], ElasticDocIndex)
-    assert isinstance(index._subindices['list_docs'], ElasticDocIndex)
-    assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], ElasticDocIndex
-    )
-
-
-def test_subindex_index(index):
     my_docs = [
         MyDoc(
             id=f'{i}',
@@ -85,6 +73,18 @@ def test_subindex_index(index):
     ]
 
     index.index(my_docs)
+    return index
+
+
+def test_subindex_init(index):
+    assert isinstance(index._subindices['docs'], ElasticDocIndex)
+    assert isinstance(index._subindices['list_docs'], ElasticDocIndex)
+    assert isinstance(
+        index._subindices['list_docs']._subindices['docs'], ElasticDocIndex
+    )
+
+
+def test_subindex_index(index):
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
@@ -146,6 +146,38 @@ def test_subindex_find(index):
     for doc, score in zip(docs, scores):
         assert doc.id.split('-')[-1] == '0'
         assert np.allclose(doc.simple_tens, np.ones(10))
+        assert score == 1.0
+
+
+def test_find_subindex(index):
+    # root level
+    query = np.ones((30,))
+    with pytest.raises(ValueError):
+        _, _ = index.find_subindex(query, search_field='my_tens', limit=5)
+
+    # sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, search_field='docs__simple_tens', limit=5
+    )
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert np.allclose(doc.simple_tens, np.ones(10))
+        assert root_doc.id == f'{doc.id.split("-")[1]}'
+        assert score == 1.0
+
+    # sub sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, search_field='list_docs__docs__simple_tens', limit=5
+    )
+    assert len(docs) == 5
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert np.allclose(doc.simple_tens, np.ones(10))
+        assert root_doc.id == f'{doc.id.split("-")[2]}'
         assert score == 1.0
 
 
