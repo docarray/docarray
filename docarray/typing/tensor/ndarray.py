@@ -12,8 +12,6 @@ from typing import (
 )
 
 import numpy as np
-import torch
-
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -25,6 +23,7 @@ if TYPE_CHECKING:
     from docarray.proto import NdArrayProto
 
 from docarray.base_doc.base_node import BaseNode
+from docarray.utils._internal.misc import import_library
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -113,11 +112,12 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
+        torch = import_library('torch', raise_error=False)
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
-        elif isinstance(value, torch.Tensor):
+        elif torch and isinstance(value, torch.Tensor):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
