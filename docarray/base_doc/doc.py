@@ -109,7 +109,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     @classmethod
     def schema_summary(cls) -> None:
-        """Print a summary of the Documents schema."""
+        """Print a summary Fof the Documents schema."""
         from docarray.display.document_summary import DocumentSummary
 
         DocumentSummary.schema_summary(cls)
@@ -270,7 +270,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         for field in self.__fields__.keys():
             from docarray import DocList
 
-            if issubclass(self._get_field_type(field), DocList):
+            type_ = self._get_field_type(field)
+            if isinstance(type_, type) and issubclass(type_, DocList):
                 doclist_exclude_fields.append(field)
 
         original_exclude = exclude
