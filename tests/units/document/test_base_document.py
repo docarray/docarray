@@ -70,17 +70,17 @@ def test_nested_to_dict(nested_docs):
     assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
 
 
-def test_nested_to_dict_exclude_1(nested_docs):
+def test_nested_to_dict_exclude(nested_docs):
     d = nested_docs.dict(exclude={'docs'})
     assert 'docs' not in d.keys()
 
 
-def test_nested_to_dict_exclude_2(nested_docs):
+def test_nested_to_dict_exclude_set(nested_docs):
     d = nested_docs.dict(exclude={'hello'})
     assert 'hello' not in d.keys()
 
 
-def test_nested_to_dict_exclude_3(nested_docs):  # doto change
+def test_nested_to_dict_exclude_dict(nested_docs):  # doto change
     d = nested_docs.dict(exclude={'hello': True})
     assert 'docs' not in d.keys()
     assert 'hello' not in d.keys()
