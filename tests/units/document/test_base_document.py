@@ -82,5 +82,4 @@ def test_nested_to_dict_exclude_set(nested_docs):
 
 def test_nested_to_dict_exclude_dict(nested_docs):  # doto change
     d = nested_docs.dict(exclude={'hello': True})
-    assert 'docs' not in d.keys()
     assert 'hello' not in d.keys()

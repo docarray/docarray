@@ -278,7 +278,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if exclude is None:
             exclude = set(doclist_exclude_fields)
         elif isinstance(exclude, AbstractSet):
-            exclude = set(*exclude, *doclist_exclude_fields)
+            exclude = set([*exclude, *doclist_exclude_fields])
         elif isinstance(exclude, Mapping):
             exclude = dict(**exclude)
             exclude.update({field: ... for field in doclist_exclude_fields})
@@ -295,8 +295,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         for field in doclist_exclude_fields:
             # we need to do this because pydantic will not recognize DocList correctly
-            if original_exclude:
-                if field not in original_exclude:
-                    data[field] = [doc.dict() for doc in getattr(self, field)]
+            original_exclude = original_exclude or {}
+            if field not in original_exclude:
+                data[field] = [doc.dict() for doc in getattr(self, field)]
 
         return data
