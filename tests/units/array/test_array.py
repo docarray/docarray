@@ -434,7 +434,7 @@ def test_sort():
     assert da[1].url == 'http://url.com/foo_1.png'
 
 
-def test_optional():
+def test_optional_field():
     from typing import Optional
 
     from docarray import BaseDoc, DocList
