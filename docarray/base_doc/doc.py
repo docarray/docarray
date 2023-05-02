@@ -1,9 +1,11 @@
 import os
 from typing import (
     TYPE_CHECKING,
+    AbstractSet,
     Any,
     Callable,
     Dict,
+    Mapping,
     Optional,
     Type,
     TypeVar,
@@ -24,7 +26,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 if TYPE_CHECKING:
     from pydantic import Protocol
     from pydantic.types import StrBytes
-    from pydantic.typing import AbstractSetIntStr, MappingIntStrAny
+    from pydantic.typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
 
     from docarray.array.doc_vec.column_storage import ColumnStorageView
 
@@ -57,7 +59,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     ```
 
 
-    BaseDoc is a subclass of [pydantic.BaseModel](https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
+    BaseDoc is a subclass of [pydantic.BaseModel](
+    https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
     """
 
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
@@ -180,7 +183,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return self.dict()
 
     ########################################################################################################################################################
-    ### this section is just for documentation purposes will be removed later once https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
+    ### this section is just for documentation purposes will be removed later once
+    # https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
     ########################################################################################################################################################
 
     def json(
@@ -198,9 +202,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         **dumps_kwargs: Any,
     ) -> str:
         """
-        Generate a JSON representation of the model, `include` and `exclude` arguments as per `dict()`.
+        Generate a JSON representation of the model, `include` and `exclude`
+        arguments as per `dict()`.
 
-        `encoder` is an optional function to supply as `default` to json.dumps(), other arguments as per `json.dumps()`.
+        `encoder` is an optional function to supply as `default` to json.dumps(),
+        other arguments as per `json.dumps()`.
         """
         return super().json(
             include=include,
@@ -242,3 +248,52 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             proto=proto,
             allow_pickle=allow_pickle,
         )
+
+    def dict(
+        self,
+        *,
+        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        by_alias: bool = False,
+        skip_defaults: Optional[bool] = None,
+        exclude_unset: bool = False,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False,
+    ) -> 'DictStrAny':
+        """
+        Generate a dictionary representation of the model, optionally specifying
+        which fields to include or exclude.
+
+        """
+
+        doclist_exclude_fields = []
+        for field in self.__fields__.keys():
+            from docarray import DocList
+
+            if issubclass(self._get_field_type(field), DocList):
+                doclist_exclude_fields.append(field)
+
+        original_exclude = exclude
+        if exclude is None:
+            exclude = set(doclist_exclude_fields)
+        elif isinstance(exclude, AbstractSet):
+            exclude.update(doclist_exclude_fields)
+        elif isinstance(exclude, Mapping):
+            exclude.update({field: ... for field in doclist_exclude_fields})
+
+        data = super().dict(
+            include=include,
+            exclude=exclude,
+            by_alias=by_alias,
+            skip_defaults=skip_defaults,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+        )
+
+        for field in doclist_exclude_fields:
+            # we need to do this because pydantic will not recognize DocList correctly
+            if field not in original_exclude:
+                data[field] = [doc.dict() for doc in getattr(self, field)]
+
+        return data
