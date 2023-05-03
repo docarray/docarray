@@ -66,10 +66,10 @@ class DocVec(AnyDocArray[T_doc]):
     [`BaseDoc`][docarray.BaseDoc]) will be stored in a column.
 
     If the field is a tensor, the data from all Documents will be stored as a single
-    doc_vec (torch/np/tf) tensor.
+    (torch/np/tf) tensor.
 
     If the tensor field is `AnyTensor` or a Union of tensor types, the
-    `.tensor_type` will be used to determine the type of the doc_vec column.
+    `.tensor_type` will be used to determine the type of the column.
 
     If the field is another [`BaseDoc`][docarray.BaseDoc] the column will be another
     `DocVec` that follows the schema of the nested Document.
@@ -83,6 +83,15 @@ class DocVec(AnyDocArray[T_doc]):
     `DocVec` level. The `BaseDoc` does not hold any data itself. The behavior of
     this Document "view" is similar to the behavior of `view = tensor[i]` in
     numpy/PyTorch.
+
+    !!! note
+        DocVec support optional fields. Nevertheless if a field is optional it needs to
+        be homogeneous. This means that if the first document has a None value all of the
+        other documents should have a None value as well.
+    !!! note
+        If one field is Optional the column will be stored
+        * as None if the first doc is as the field as None
+        * as a normal column otherwise that cannot contain None value
 
     :param docs: a homogeneous sequence of `BaseDoc`
     :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
