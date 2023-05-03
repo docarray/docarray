@@ -445,6 +445,10 @@ assert not my_doc.is_view()  # False
 
 Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support optional fields but they behave differently.
 
+!!! note
+    This whole section is specific for nested BaseDoc, DocList and DocVec. 
+    for other data type DocList and DocVec will treat the optional case as a normal case.
+
 Let's take an example:
 
 ```python
