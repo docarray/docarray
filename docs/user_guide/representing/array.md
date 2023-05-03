@@ -439,6 +439,99 @@ assert not my_doc.is_view()  # False
     To summarize: you should use `DocVec` when you need to work with contiguous data, and you should use `DocList` when you need to rearrange
     or extend your data.
 
+
+## Dealing with Optional Field
+
+
+Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support optional fields but they behave differently.
+
+Let's take an example:
+
+```python
+from docarray.typing import NdArray
+import numpy as np
+
+
+class ImageDoc(BaseDoc):
+    tensor: NdArray
+
+
+class ArticleDoc(BaseDoc):
+    image: Optional[ImageDoc]
+    title: str
+```
+
+In this example `ArticleDoc` has an optional field `image` which is an `ImageDoc`. This means that this field can either
+be None or be a `ImageDoc` instance.
+
+Remember for both DocList and DocVec calling `docs.image` will return a list like object of all the images of the documents.
+
+For DocList it will just iterate over all the documents and collect the image attribute of each document in a sequence for DocVec it will return the column of the image attribute.
+
+The question which kind of sequence to you pick when the field is optional, i.e, some of the datapoint could be None ?
+
+For DocList it will return a list of `Optional[ImageDoc]` instead of a `DocList[ImageDoc]`:
+
+```python
+from docarray import DocList
+
+
+docs = DocList[ArticleDoc](
+    [
+        ArticleDoc(image=ImageDoc(tensor=np.ones((3, 224, 224))), title="Hello"),
+        ArticleDoc(image=None, title="World"),
+    ]
+)
+
+assert docs.image == [ImageDoc(tensor=np.ones((3, 224, 224))), None]
+```
+
+but for DocVec it is a bit different. Indeed, DocVec store the data for each filed as contiguous column. 
+This means that DocVec can create a column in only two case: either all the data for a field is None or all the data is not None.
+
+For the first one the whole column will just be None. In the second The column will be a `DocList[ImageDoc]`
+
+
+
+```python
+from docarray import DocVec
+
+docs = DocVec[ArticleDoc](
+    [
+        ArticleDoc(image=ImageDoc(tensor=np.zeros((3, 224, 224))), title="Hello")
+        for _ in range(10)
+    ]
+)
+assert (docs.image.tensor == np.zeros((3, 224, 224))).all()
+``` 
+
+Or it can be None
+
+```python
+docs = DocVec[ArticleDoc]([ArticleDoc(title="Hello") for _ in range(10)])
+assert docs.image is None
+``` 
+
+But if you try a mix you will get an error:
+
+```python
+try:
+    docs = DocVec[ArticleDoc](
+        [
+            ArticleDoc(image=ImageDoc(tensor=np.ones((3, 224, 224))), title="Hello"),
+            ArticleDoc(image=None, title="World"),
+        ]
+    )
+except ValueError as e:
+    print(e)
+``` 
+
+```bash
+None is not a <class '__main__.ImageDoc'>
+```
+
+--- 
+
 See also:
 
 
