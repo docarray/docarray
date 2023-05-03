@@ -115,9 +115,22 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
                 else:
                     return None
 
-        return self.storage.columns[name][self.index]
+        col = self.storage.columns[name]
+
+        if col is not None:
+            return col[self.index]
+        else:
+            return None
 
     def __setitem__(self, name, value) -> None:
+        if self.storage.columns[name] is None:
+            raise ValueError(
+                f'Cannot set an item to a None column. This mean that '
+                f'the DocVec that encapsulate this doc has the field '
+                f'{name} set to None. If you want to modify that you need to do it at the'
+                f'DocVec level. `docs.field = np.zeros(10)`'
+            )
+
         self.storage.columns[name][self.index] = value
 
     def __delitem__(self, key):

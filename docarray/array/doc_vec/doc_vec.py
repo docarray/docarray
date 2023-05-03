@@ -136,10 +136,10 @@ class DocVec(AnyDocArray[T_doc]):
                         )
 
                 if first_doc_is_none:
-                    for doc in docs:
+                    for i, doc in enumerate(docs):
                         if getattr(doc, field_name) is not None:
                             raise ValueError(
-                                f'Field {field_name} is not None for {doc} even though it is None for the first doc'
+                                f'Field {field_name} is put to None for the first doc. This mean that all of the other docs should have this field set to None as well. This is not the case for {doc} at index {i}'
                             )
 
             def _check_field_not_none(field_name, doc):

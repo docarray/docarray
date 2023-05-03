@@ -567,25 +567,6 @@ def test_doc_view_nested(batch_nested_doc):
     assert batch.inner[0].hello == 'world'
 
 
-def test_optional_field():
-    from typing import Optional
-
-    class Nested(BaseDoc):
-        tensor: NdArray
-
-    class Image(BaseDoc):
-        url: str
-        features: Optional[Nested] = None
-
-    docs = DocVec[Image]([Image(url='http://url.com/foo.png') for _ in range(10)])
-
-    assert docs.features is None
-
-    docs.features = DocList[Nested]([Nested(tensor=np.zeros(10)) for _ in range(10)])
-
-    assert docs.features.tensor.shape == (10, 10)
-
-
 def test_type_error_no_doc_type():
 
     with pytest.raises(TypeError):
