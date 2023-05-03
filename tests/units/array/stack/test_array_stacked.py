@@ -584,3 +584,9 @@ def test_optional_field():
     docs.features = DocList[Nested]([Nested(tensor=np.zeros(10)) for _ in range(10)])
 
     assert docs.features.tensor.shape == (10, 10)
+
+
+def test_type_error_no_doc_type():
+
+    with pytest.raises(TypeError):
+        DocVec([BaseDoc() for _ in range(10)])

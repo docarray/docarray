@@ -23,7 +23,7 @@ from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
-from docarray.base_doc import BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -97,6 +97,12 @@ class DocVec(AnyDocArray[T_doc]):
         docs: Sequence[T_doc],
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
+
+        if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
+            raise TypeError(
+                f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
+                f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
+            )
         self.tensor_type = tensor_type
 
         tensor_columns: Dict[str, Optional[AbstractTensor]] = dict()
