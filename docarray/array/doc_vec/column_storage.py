@@ -5,6 +5,7 @@ from typing import (
     Dict,
     Iterable,
     MutableMapping,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -37,9 +38,9 @@ class ColumnStorage:
 
     def __init__(
         self,
-        tensor_columns: Dict[str, AbstractTensor],
-        doc_columns: Dict[str, 'DocVec'],
-        docs_vec_columns: Dict[str, ListAdvancedIndexing['DocVec']],
+        tensor_columns: Dict[str, Optional[AbstractTensor]],
+        doc_columns: Dict[str, Optional['DocVec']],
+        docs_vec_columns: Dict[str, Optional[ListAdvancedIndexing['DocVec']]],
         any_columns: Dict[str, ListAdvancedIndexing],
         tensor_type: Type[AbstractTensor] = NdArray,
     ):
@@ -63,12 +64,22 @@ class ColumnStorage:
     def __getitem__(self: T, item: IndexIterType) -> T:
         if isinstance(item, tuple):
             item = list(item)
-        tensor_columns = {key: col[item] for key, col in self.tensor_columns.items()}
-        doc_columns = {key: col[item] for key, col in self.doc_columns.items()}
-        docs_vec_columns = {
-            key: col[item] for key, col in self.docs_vec_columns.items()
+        tensor_columns = {
+            key: col[item] if col is not None else col
+            for key, col in self.tensor_columns.items()
         }
-        any_columns = {key: col[item] for key, col in self.any_columns.items()}
+        doc_columns = {
+            key: col[item] if col is not None else col
+            for key, col in self.doc_columns.items()
+        }
+        docs_vec_columns = {
+            key: col[item] if col is not None else col
+            for key, col in self.docs_vec_columns.items()
+        }
+        any_columns = {
+            key: col[item] if col is not None else col
+            for key, col in self.any_columns.items()
+        }
 
         return self.__class__(
             tensor_columns,
@@ -91,11 +102,18 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
     def __getitem__(self, name: str) -> Any:
         if name in self.storage.tensor_columns.keys():
             tensor = self.storage.tensor_columns[name]
+            if tensor is None:
+                return None
             if tensor.get_comp_backend().n_dim(tensor) == 1:
                 # to ensure consistensy between numpy and pytorch
                 # we wrap the scalr in a tensor of ndim = 1
                 # otherwise numpy pass by value whereas torch by reference
-                return self.storage.tensor_columns[name][self.index : self.index + 1]
+                col = self.storage.tensor_columns[name]
+
+                if col is not None:
+                    return col[self.index : self.index + 1]
+                else:
+                    return None
 
         return self.storage.columns[name][self.index]
 

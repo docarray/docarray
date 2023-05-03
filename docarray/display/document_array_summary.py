@@ -65,11 +65,12 @@ class DocArraySummary:
         for field_name, value_tens in docs._storage.tensor_columns.items():
             fields.append(field_name)
         for field_name, value_doc in docs._storage.doc_columns.items():
-            fields.extend(
-                [
-                    f'{field_name}.{x}'
-                    for x in DocArraySummary._get_stacked_fields(docs=value_doc)
-                ]
-            )
+            if value_doc is not None:
+                fields.extend(
+                    [
+                        f'{field_name}.{x}'
+                        for x in DocArraySummary._get_stacked_fields(docs=value_doc)
+                    ]
+                )
 
         return fields
