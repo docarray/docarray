@@ -32,7 +32,7 @@ def testing_namespace_cleanup():
         )
     )
     for da_name in da_names:
-        JACDocStore.delete(f'jac://{da_name}')
+        JACDocStore.delete(f'{da_name}')
 
 
 @pytest.mark.slow
