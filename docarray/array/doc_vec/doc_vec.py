@@ -136,7 +136,7 @@ class DocVec(AnyDocArray[T_doc]):
 
             first_doc_is_none = getattr(docs[0], field_name) is None
 
-            def _check_none_field():
+            def _verify_optional_field_of_docs(docs):
 
                 if is_field_required:
                     if first_doc_is_none:
@@ -151,7 +151,7 @@ class DocVec(AnyDocArray[T_doc]):
                                 f'Field {field_name} is put to None for the first doc. This mean that all of the other docs should have this field set to None as well. This is not the case for {doc} at index {i}'
                             )
 
-            def _check_field_not_none(field_name, doc):
+            def _check_doc_field_not_none(field_name, doc):
                 if getattr(doc, field_name) is None:
                     raise ValueError(
                         f'Field {field_name} is None for {doc} even though it is not None for the first doc'
@@ -169,13 +169,13 @@ class DocVec(AnyDocArray[T_doc]):
                     # does not work here, therefore handle separately.
 
                     if first_doc_is_none:
-                        _check_none_field()
+                        _verify_optional_field_of_docs(docs)
                         tensor_columns[field_name] = None
                     else:
                         tf_stack = []
                         for i, doc in enumerate(docs):
                             val = getattr(doc, field_name)
-                            _check_field_not_none(field_name, doc)
+                            _check_doc_field_not_none(field_name, doc)
                             tf_stack.append(val.tensor)
 
                         stacked: tf.Tensor = tf.stack(tf_stack)
@@ -183,7 +183,7 @@ class DocVec(AnyDocArray[T_doc]):
 
                 elif issubclass(field_type, AbstractTensor):
                     if first_doc_is_none:
-                        _check_none_field()
+                        _verify_optional_field_of_docs(docs)
                         tensor_columns[field_name] = None
                     else:
                         tensor = getattr(docs[0], field_name)
@@ -205,13 +205,13 @@ class DocVec(AnyDocArray[T_doc]):
                         )
 
                         for i, doc in enumerate(docs):
-                            _check_field_not_none(field_name, doc)
+                            _check_doc_field_not_none(field_name, doc)
                             val = getattr(doc, field_name)
                             cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDoc):
                     if first_doc_is_none:
-                        _check_none_field()
+                        _verify_optional_field_of_docs(docs)
                         doc_columns[field_name] = None
                     else:
                         if is_field_required:
@@ -227,7 +227,7 @@ class DocVec(AnyDocArray[T_doc]):
 
                 elif issubclass(field_type, AnyDocArray):
                     if first_doc_is_none:
-                        _check_none_field()
+                        _verify_optional_field_of_docs(docs)
                         doc_columns[field_name] = None
                     else:
                         docs_list = list()
@@ -540,9 +540,13 @@ class DocVec(AnyDocArray[T_doc]):
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
 
         for field, col_doc in self._storage.doc_columns.items():
-            doc_columns_proto[field] = col_doc.to_protobuf() if col_doc else None
+            doc_columns_proto[field] = (
+                col_doc.to_protobuf() if col_doc is not None else None
+            )
         for field, col_tens in self._storage.tensor_columns.items():
-            tensor_columns_proto[field] = col_tens.to_protobuf() if col_tens else None
+            tensor_columns_proto[field] = (
+                col_tens.to_protobuf() if col_tens is not None else None
+            )
         for field, col_da in self._storage.docs_vec_columns.items():
             list_proto = ListOfDocArrayProto()
             if col_da:
