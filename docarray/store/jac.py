@@ -102,7 +102,9 @@ class JACDocStore(AbstractDocStore):
         from rich.table import Table
 
         resp = HubbleClient(jsonify=True).list_artifacts(
-            filter={'type': 'documentArray'}, sort={'createdAt': 1}, pageSize=10000,
+            filter={'type': 'documentArray'},
+            sort={'createdAt': 1},
+            pageSize=10000,
         )
 
         table = Table(
