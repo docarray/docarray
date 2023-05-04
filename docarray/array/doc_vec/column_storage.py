@@ -117,7 +117,7 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
 
         col = self.storage.columns[name]
 
-        if col None:
+        if col is None:
             return None
         return col[self.index]
 
