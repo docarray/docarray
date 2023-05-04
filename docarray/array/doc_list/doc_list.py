@@ -103,8 +103,8 @@ class DocList(
     ```
 
     !!! note
-        if the DocList is homogeneous and its schema contains nested BaseDoc
-        (i.e, BaseDoc inside a BaseDoc) but that it is an optional field. Calling
+        If the DocList is homogeneous and its schema contains nested BaseDoc
+        (i.e, BaseDoc inside a BaseDoc) where the nested Document is `Optional`, calling
         `docs.nested_doc` will return a List of the nested BaseDoc instead of DocList.
         This is because the nested field could be None and therefore could not fit into
         a DocList.
