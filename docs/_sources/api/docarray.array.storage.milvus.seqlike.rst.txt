@@ -1,0 +1,7 @@
+docarray.array.storage.milvus.seqlike module
+============================================
+
+.. automodule:: docarray.array.storage.milvus.seqlike
+   :members:
+   :undoc-members:
+   :show-inheritance:

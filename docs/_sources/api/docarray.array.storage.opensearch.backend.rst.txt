@@ -1,0 +1,7 @@
+docarray.array.storage.opensearch.backend module
+================================================
+
+.. automodule:: docarray.array.storage.opensearch.backend
+   :members:
+   :undoc-members:
+   :show-inheritance:

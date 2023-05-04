@@ -1,0 +1,7 @@
+docarray-docs
+=============
+
+.. toctree::
+   :maxdepth: 4
+
+   docarray
