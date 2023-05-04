@@ -5,10 +5,15 @@ on:
     branches:
       - main
       - chore-fix-prerelease
+      - chore-ci-fix-jac
 
 jobs:
   success-all-test:
     uses: ./.github/workflows/ci.yml
+    with:
+      env:
+        JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+
   prerelease:
     needs: [success-all-test]
     runs-on: ubuntu-latest
