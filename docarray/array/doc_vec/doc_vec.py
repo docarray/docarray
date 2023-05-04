@@ -233,6 +233,7 @@ class DocVec(AnyDocArray[T_doc]):
                         docs_list = list()
                         for doc in docs:
                             docs_nested = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
                             if isinstance(docs_nested, DocList):
                                 docs_nested = docs_nested.to_doc_vec(
                                     tensor_type=self.tensor_type
