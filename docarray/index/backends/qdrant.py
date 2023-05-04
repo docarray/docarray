@@ -45,7 +45,6 @@ else:
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
-
 QDRANT_PY_VECTOR_TYPES: List[Any] = [np.ndarray, AbstractTensor]
 if torch_imported:
     import torch
@@ -86,6 +85,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._initialize_collection()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
+    @property
+    def collection_name(self):
+        return self._db_config.collection_name or TSchema.__name__
+
     @dataclass
     class Query:
         """Dataclass describing a query."""
@@ -97,11 +100,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(
-            self,
-            vector_search_field: Optional[str] = None,
-            vector_filters: Optional[List[NdArray]] = None,
-            payload_filters: Optional[List[rest.Filter]] = None,
-            text_search_filters: Optional[List[Tuple[str, str]]] = None,
+                self,
+                vector_search_field: Optional[str] = None,
+                vector_filters: Optional[List[NdArray]] = None,
+                payload_filters: Optional[List[rest.Filter]] = None,
+                text_search_filters: Optional[List[Tuple[str, str]]] = None,
         ):
             self._vector_search_field: Optional[str] = vector_search_field
             self._vector_filters: List[NdArray] = vector_filters or []
@@ -140,7 +143,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def find(  # type: ignore[override]
-            self, query: NdArray, search_field: str = ''
+                self, query: NdArray, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """
             Find k-nearest neighbors of the query.
@@ -163,7 +166,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def filter(  # type: ignore[override]
-            self, filter_query: rest.Filter
+                self, filter_query: rest.Filter
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """Find documents in the index based on a filter query
             :param filter_query: a filter
@@ -177,7 +180,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def text_search(  # type: ignore[override]
-            self, query: str, search_field: str = ''
+                self, query: str, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """Find documents in the index based on a text search query
 
@@ -211,7 +214,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         timeout: Optional[float] = None
         host: Optional[str] = None
         path: Optional[str] = None
-        collection_name: str = 'documents'
+        collection_name: Optional[str] = None
         shard_number: Optional[int] = None
         replication_factor: Optional[int] = None
         write_consistency_factor: Optional[int] = None
@@ -250,7 +253,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _initialize_collection(self):
         try:
-            self._client.get_collection(self._db_config.collection_name)
+            self._client.get_collection(self.collection_name)
         except (UnexpectedResponse, RpcError, ValueError):
             vectors_config = {
                 column_name: self._to_qdrant_vector_params(column_info)
@@ -258,7 +261,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 if column_info.db_type == 'vector'
             }
             self._client.create_collection(
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 vectors_config=vectors_config,
                 shard_number=self._db_config.shard_number,
                 replication_factor=self._db_config.replication_factor,
@@ -270,7 +273,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 quantization_config=self._db_config.quantization_config,
             )
             self._client.create_payload_index(
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 field_name='__generated_vectors',
                 field_schema=rest.PayloadSchemaType.KEYWORD,
             )
@@ -280,7 +283,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # TODO: add batching the documents to avoid timeouts
         points = [self._build_point_from_row(row) for row in rows]
         self._client.upsert(
-            collection_name=self._db_config.collection_name,
+            collection_name=self.collection_name,
             points=points,
         )
 
@@ -288,7 +291,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        return self._client.count(collection_name=self._db_config.collection_name).count
+        return self._client.count(collection_name=self.collection_name).count
 
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)
@@ -298,17 +301,17 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise KeyError('Document keys could not found: %s' % ','.join(missing_keys))
 
         self._client.delete(
-            collection_name=self._db_config.collection_name,
+            collection_name=self.collection_name,
             points_selector=rest.PointIdsList(
                 points=[self._to_qdrant_id(doc_id) for doc_id in doc_ids],
             ),
         )
 
     def _get_items(
-        self, doc_ids: Sequence[str]
+            self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         response, _ = self._client.scroll(
-            collection_name=self._db_config.collection_name,
+            collection_name=self.collection_name,
             scroll_filter=rest.Filter(
                 must=[
                     rest.HasIdCondition(
@@ -343,7 +346,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             # We perform semantic search with some vectors with Qdrant's search method
             # should be called
             points = self._client.search(  # type: ignore[assignment]
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 query_vector=(query.vector_field, query.vector_query),  # type: ignore[arg-type]
                 query_filter=rest.Filter(
                     must=[query.filter],
@@ -364,7 +367,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         else:
             # Just filtering, so Qdrant's scroll has to be used instead
             points, _ = self._client.scroll(  # type: ignore[assignment]
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 scroll_filter=query.filter,
                 limit=query.limit,
                 with_payload=True,
@@ -375,7 +378,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return self._dict_list_to_docarray(docs)
 
     def _execute_raw_query(
-        self, query: RawQuery
+            self, query: RawQuery
     ) -> Sequence[Union[rest.ScoredPoint, rest.Record]]:
         payload_filter = query.pop('filter', None)
         if payload_filter:
@@ -388,7 +391,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if search_params:
                 search_params = rest.SearchParams.parse_obj(search_params)  # type: ignore[assignment]
             points = self._client.search(  # type: ignore[assignment]
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 query_vector=query.pop('vector'),
                 query_filter=payload_filter,
                 search_params=search_params,
@@ -397,7 +400,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         else:
             # Just filtering, so Qdrant's scroll has to be used instead
             points, _ = self._client.scroll(  # type: ignore[assignment]
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 scroll_filter=payload_filter,
                 **query,
             )
@@ -405,7 +408,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return points
 
     def _find(
-        self, query: np.ndarray, limit: int, search_field: str = ''
+            self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
@@ -414,10 +417,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _find_batched(
-        self, queries: np.ndarray, limit: int, search_field: str = ''
+            self, queries: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         responses = self._client.search_batch(
-            collection_name=self._db_config.collection_name,
+            collection_name=self.collection_name,
             requests=[
                 rest.SearchRequest(
                     vector=rest.NamedVector(
@@ -456,21 +459,21 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def _filter(
-        self, filter_query: rest.Filter, limit: int
+            self, filter_query: rest.Filter, limit: int
     ) -> Union[DocList, List[Dict]]:
         query_batched = [filter_query]
         docs = self._filter_batched(filter_queries=query_batched, limit=limit)
         return docs[0]
 
     def _filter_batched(
-        self, filter_queries: Sequence[rest.Filter], limit: int
+            self, filter_queries: Sequence[rest.Filter], limit: int
     ) -> Union[List[DocList], List[List[Dict]]]:
         responses = []
         for filter_query in filter_queries:
             # There is no batch scroll available in Qdrant client yet, so we need to
             # perform the queries one by one. It will be changed in the future versions.
             response, _ = self._client.scroll(
-                collection_name=self._db_config.collection_name,
+                collection_name=self.collection_name,
                 scroll_filter=filter_query,
                 limit=limit,
                 with_payload=True,
@@ -484,7 +487,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
     def _text_search(
-        self, query: str, limit: int, search_field: str = ''
+            self, query: str, limit: int, search_field: str = ''
     ) -> _FindResult:
         query_batched = [query]
         docs, scores = self._text_search_batched(
@@ -493,7 +496,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _text_search_batched(
-        self, queries: Sequence[str], limit: int, search_field: str = ''
+            self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         filter_queries = [
             rest.Filter(
@@ -563,7 +566,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def _convert_to_doc(
-        self, point: Union[rest.ScoredPoint, rest.Record]
+            self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
         document = cast(Dict[str, Any], point.payload)
         generated_vectors = document.pop('__generated_vectors')

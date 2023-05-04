@@ -74,12 +74,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('Elastic Search index is being initialized')
 
         # ElasticSearch client creation
-        if self._db_config.index_name is None:
-            id = uuid.uuid4().hex
-            self._db_config.index_name = 'index__' + id
-
-        self._index_name = self._db_config.index_name
-
         self._client = Elasticsearch(
             hosts=self._db_config.hosts,
             **self._db_config.es_config,
@@ -108,7 +102,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             mappings['properties'][col_name] = self._create_index_mapping(col)
 
         # print(mappings['properties'])
-        if self._client.indices.exists(index=self._index_name):
+        if self._client.indices.exists(index=self.index_name):
             self._client_put_mapping(mappings)
         else:
             self._client_create(mappings)
@@ -116,7 +110,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         if len(self._db_config.index_settings):
             self._client_put_settings(self._db_config.index_settings)
 
-        self._refresh(self._index_name)
+        self._refresh(self.index_name)
+
+    @property
+    def index_name(self):
+        return self._db_config.index_name or TSchema.__name__
 
     ###############################################
     # Inner classes for query builder and configs #
