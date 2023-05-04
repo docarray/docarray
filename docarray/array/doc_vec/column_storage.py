@@ -65,19 +65,19 @@ class ColumnStorage:
         if isinstance(item, tuple):
             item = list(item)
         tensor_columns = {
-            key: col[item] if col is not None else col
+            key: col[item] if col is not None else None
             for key, col in self.tensor_columns.items()
         }
         doc_columns = {
-            key: col[item] if col is not None else col
+            key: col[item] if col is not None else None
             for key, col in self.doc_columns.items()
         }
         docs_vec_columns = {
-            key: col[item] if col is not None else col
+            key: col[item] if col is not None else None
             for key, col in self.docs_vec_columns.items()
         }
         any_columns = {
-            key: col[item] if col is not None else col
+            key: col[item] if col is not None else None
             for key, col in self.any_columns.items()
         }
 
