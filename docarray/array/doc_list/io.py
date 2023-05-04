@@ -544,7 +544,8 @@ class IOMixinArray(Iterable[T_doc]):
 
         for doc in self:
             doc_dict = _dict_to_access_paths(doc.dict())
-            df = df.append(doc_dict, ignore_index=True)
+            doc_dict = {k: [v] for k, v in doc_dict.items()}
+            df = pd.concat([df, pd.DataFrame.from_dict(doc_dict)], ignore_index=True)
 
         return df
 
