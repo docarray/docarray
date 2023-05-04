@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - chore-fix-prerelease
-      - chore-ci-fix-jac
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   success-all-test:
