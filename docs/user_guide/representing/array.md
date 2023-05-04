@@ -466,6 +466,8 @@ Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarr
       * DocVec will behave the same with tensor field.
 
 
+#### DocList with optional Field
+
 Let's take an example to illustrate the exact behavior
 
 ```python
@@ -506,7 +508,10 @@ docs = DocList[ArticleDoc](
 assert docs.image == [ImageDoc(tensor=np.ones((3, 224, 224))), None]
 ```
 
-but for DocVec it is a bit different. Indeed, DocVec store the data for each filed as contiguous column. 
+#### DocVec with optional Field
+
+
+For DocVec it is a bit different. Indeed, DocVec store the data for each filed as contiguous column. 
 This means that DocVec can create a column in only two case: either all the data for a field is None or all the data is not None.
 
 For the first one the whole column will just be None. In the second The column will be a `DocList[ImageDoc]`
