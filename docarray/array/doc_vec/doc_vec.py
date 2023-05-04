@@ -85,7 +85,7 @@ class DocVec(AnyDocArray[T_doc]):
     numpy/PyTorch.
 
     !!! note
-        DocVec support optional fields. Nevertheless if a field is optional it needs to
+        DocVec supports optional fields. Nevertheless if a field is optional it needs to
         be homogeneous. This means that if the first document has a None value all of the
         other documents should have a None value as well.
     !!! note
