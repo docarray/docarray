@@ -236,9 +236,14 @@ def test_multimodal_doc(qdrant_config):  # noqa: F811
 
 
 def test_collection_name():
-    class MyDoc(BaseDoc):
-        expected_attendees: dict = Field(col_type='integer_range')
-        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+    class TextDoc(BaseDoc):
+        text: str = Field()
 
-    index = QdrantDocumentIndex[MyDoc]()
-    assert index.collection_name == MyDoc.__name__
+    class StringDoc(BaseDoc):
+        text: str = Field(col_type="string")
+
+    index = QdrantDocumentIndex[TextDoc]()
+    assert index.collection_name == TextDoc.__name__.lower()
+
+    index = QdrantDocumentIndex[StringDoc]()
+    assert index.collection_name == StringDoc.__name__.lower()

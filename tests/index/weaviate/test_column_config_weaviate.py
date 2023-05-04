@@ -37,9 +37,14 @@ def test_column_config(weaviate_client):
 
 
 def test_index_name():
-    class MyDoc(BaseDoc):
-        expected_attendees: dict = Field(col_type='integer_range')
-        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+    class TextDoc(BaseDoc):
+        text: str = Field()
 
-    index = WeaviateDocumentIndex[MyDoc]()
-    assert index.index_name == MyDoc.__name__
+    class StringDoc(BaseDoc):
+        text: str = Field(col_type="string")
+
+    index = WeaviateDocumentIndex[TextDoc]()
+    assert index.index_name == TextDoc.__name__
+
+    index = WeaviateDocumentIndex[StringDoc]()
+    assert index.index_name == StringDoc.__name__

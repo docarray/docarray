@@ -132,9 +132,14 @@ def test_field_range():
 
 
 def test_index_name():
-    class MyDoc(BaseDoc):
-        expected_attendees: dict = Field(col_type='integer_range')
-        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+    class TextDoc(BaseDoc):
+        text: str = Field()
 
-    index = ElasticV7DocIndex[MyDoc]()
-    assert index.index_name == MyDoc.__name__
+    class StringDoc(BaseDoc):
+        text: str = Field(col_type="string")
+
+    index = ElasticV7DocIndex[TextDoc]()
+    assert index.index_name == TextDoc.__name__.lower()
+
+    index = ElasticV7DocIndex[StringDoc]()
+    assert index.index_name == StringDoc.__name__.lower()

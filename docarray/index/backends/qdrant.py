@@ -88,7 +88,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @property
     def collection_name(self):
         default_collection_name = (
-            self._schema.__name__ if self._schema is not None else None
+            self._schema.__name__.lower() if self._schema is not None else None
         )
         if default_collection_name is None:
             raise ValueError(

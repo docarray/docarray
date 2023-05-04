@@ -745,7 +745,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def __init__(self, document_index):
             self._queries = [
                 document_index._client.query.get(
-                    document_index._db_config.index_name, document_index.properties
+                    document_index.index_name, document_index.properties
                 )
             ]
 
