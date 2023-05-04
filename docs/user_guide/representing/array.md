@@ -446,10 +446,27 @@ assert not my_doc.is_view()  # False
 Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support optional fields but they behave differently.
 
 !!! note
-    This whole section is specific for nested BaseDoc, DocList and DocVec. 
-    for other data type DocList and DocVec will treat the optional case as a normal case.
+    example of optional field
+    
+    ```python
+    from typing import Optional
+    from docarray import BaseDoc
 
-Let's take an example:
+
+    class MyDoc(BaseDoc):
+        nested_doc: Optional[BaseDoc]
+    ```
+
+!!! note
+    Using optional field is slightly different in some case so watch out. But in a nutshell :
+    
+    For nested BaseDoc 
+    * DocList will return a list of document if the field is optional and a DocList if the field is not optional
+      * DocVec will return a DocList if all documents are there, or None if all docs are None. No mix of docs and None allowed!
+      * DocVec will behave the same with tensor field.
+
+
+Let's take an example to illustrate the exact behavior
 
 ```python
 from typing import Optional
@@ -473,9 +490,7 @@ Remember for both DocList and DocVec calling `docs.image` will return a list lik
 
 For DocList it will just iterate over all the documents and collect the image attribute of each document in a sequence for DocVec it will return the column of the image attribute.
 
-The question which kind of sequence to you pick when the field is optional, i.e, some of the datapoint could be None ?
-
-For DocList it will return a list of `Optional[ImageDoc]` instead of a `DocList[ImageDoc]`:
+For DocList it will return a list of `Optional[ImageDoc]` instead of a `DocList[ImageDoc]`, this is because the list can contain None and DocList can't.
 
 ```python
 from docarray import DocList
