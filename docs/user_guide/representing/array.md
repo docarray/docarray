@@ -452,6 +452,7 @@ Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarr
 Let's take an example:
 
 ```python
+from typing import Optional
 from docarray.typing import NdArray
 import numpy as np
 
