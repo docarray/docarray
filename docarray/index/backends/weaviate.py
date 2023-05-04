@@ -113,7 +113,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @property
     def index_name(self):
-        return self._db_config.index_name or TSchema.__name__
+        default_index_name = self._schema.__name__ if self._schema is not None else None
+        if default_index_name is None:
+            raise ValueError(
+                'A WeaviateDocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: WeaviateDocumentIndex[DocumentType]'
+            )
+
+        return self._db_config.index_name or default_index_name
 
     def _set_properties(self) -> None:
         field_overwrites = {"id": DOCUMENTID}

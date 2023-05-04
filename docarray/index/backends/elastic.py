@@ -1,5 +1,4 @@
 # mypy: ignore-errors
-import uuid
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -114,7 +113,14 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     @property
     def index_name(self):
-        return self._db_config.index_name or TSchema.__name__
+        default_index_name = self._schema.__name__ if self._schema is not None else None
+        if default_index_name is None:
+            raise ValueError(
+                'A ElasticDocIndex must be typed with a Document type.'
+                'To do so, use the syntax: ElasticDocIndex[DocumentType]'
+            )
+
+        return self._db_config.index_name or default_index_name
 
     ###############################################
     # Inner classes for query builder and configs #

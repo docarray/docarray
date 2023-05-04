@@ -34,3 +34,12 @@ def test_column_config(weaviate_client):
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name="StringDoc")
     index = WeaviateDocumentIndex[StringDoc](db_config=dbconfig)
     assert get_text_field_data_type(index, "StringDoc") == "string"
+
+
+def test_index_name():
+    class MyDoc(BaseDoc):
+        expected_attendees: dict = Field(col_type='integer_range')
+        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+    index = WeaviateDocumentIndex[MyDoc]()
+    assert index.index_name == MyDoc.__name__

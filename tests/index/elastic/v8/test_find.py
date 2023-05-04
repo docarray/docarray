@@ -272,7 +272,9 @@ def test_query_builder():
 
     index = ElasticDocIndex[MyDoc]()
     index_docs = [
-        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
+        MyDoc(
+            id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i / 2)}'
+        )
         for i in range(10)
     ]
     index.index(index_docs)
@@ -327,3 +329,12 @@ def test_query_builder():
 
     docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == ['7', '6', '5', '4']
+
+
+def test_index_name():
+    class MyDoc(BaseDoc):
+        expected_attendees: dict = Field(col_type='integer_range')
+        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+    index = ElasticDocIndex[MyDoc]()
+    assert index.index_name == MyDoc.__name__

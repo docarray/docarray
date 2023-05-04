@@ -129,3 +129,12 @@ def test_field_range():
     }
     docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == [doc[0].id, doc[1].id]
+
+
+def test_index_name():
+    class MyDoc(BaseDoc):
+        expected_attendees: dict = Field(col_type='integer_range')
+        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+    index = ElasticV7DocIndex[MyDoc]()
+    assert index.index_name == MyDoc.__name__

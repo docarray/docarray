@@ -233,3 +233,12 @@ def test_multimodal_doc(qdrant_config):  # noqa: F811
         0.0
     )
     assert index[id_].text.text == doc[0].text.text
+
+
+def test_collection_name():
+    class MyDoc(BaseDoc):
+        expected_attendees: dict = Field(col_type='integer_range')
+        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+    index = QdrantDocumentIndex[MyDoc]()
+    assert index.collection_name == MyDoc.__name__

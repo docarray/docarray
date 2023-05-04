@@ -87,7 +87,16 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @property
     def collection_name(self):
-        return self._db_config.collection_name or TSchema.__name__
+        default_collection_name = (
+            self._schema.__name__ if self._schema is not None else None
+        )
+        if default_collection_name is None:
+            raise ValueError(
+                'A QdrantDocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: QdrantDocumentIndex[DocumentType]'
+            )
+
+        return self._db_config.collection_name or default_collection_name
 
     @dataclass
     class Query:
@@ -100,11 +109,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(
-                self,
-                vector_search_field: Optional[str] = None,
-                vector_filters: Optional[List[NdArray]] = None,
-                payload_filters: Optional[List[rest.Filter]] = None,
-                text_search_filters: Optional[List[Tuple[str, str]]] = None,
+            self,
+            vector_search_field: Optional[str] = None,
+            vector_filters: Optional[List[NdArray]] = None,
+            payload_filters: Optional[List[rest.Filter]] = None,
+            text_search_filters: Optional[List[Tuple[str, str]]] = None,
         ):
             self._vector_search_field: Optional[str] = vector_search_field
             self._vector_filters: List[NdArray] = vector_filters or []
@@ -143,7 +152,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def find(  # type: ignore[override]
-                self, query: NdArray, search_field: str = ''
+            self, query: NdArray, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """
             Find k-nearest neighbors of the query.
@@ -166,7 +175,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def filter(  # type: ignore[override]
-                self, filter_query: rest.Filter
+            self, filter_query: rest.Filter
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """Find documents in the index based on a filter query
             :param filter_query: a filter
@@ -180,7 +189,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         def text_search(  # type: ignore[override]
-                self, query: str, search_field: str = ''
+            self, query: str, search_field: str = ''
         ) -> 'QdrantDocumentIndex.QueryBuilder':
             """Find documents in the index based on a text search query
 
@@ -308,7 +317,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def _get_items(
-            self, doc_ids: Sequence[str]
+        self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         response, _ = self._client.scroll(
             collection_name=self.collection_name,
@@ -378,7 +387,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return self._dict_list_to_docarray(docs)
 
     def _execute_raw_query(
-            self, query: RawQuery
+        self, query: RawQuery
     ) -> Sequence[Union[rest.ScoredPoint, rest.Record]]:
         payload_filter = query.pop('filter', None)
         if payload_filter:
@@ -408,7 +417,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return points
 
     def _find(
-            self, query: np.ndarray, limit: int, search_field: str = ''
+        self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
@@ -417,7 +426,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _find_batched(
-            self, queries: np.ndarray, limit: int, search_field: str = ''
+        self, queries: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         responses = self._client.search_batch(
             collection_name=self.collection_name,
@@ -459,14 +468,14 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def _filter(
-            self, filter_query: rest.Filter, limit: int
+        self, filter_query: rest.Filter, limit: int
     ) -> Union[DocList, List[Dict]]:
         query_batched = [filter_query]
         docs = self._filter_batched(filter_queries=query_batched, limit=limit)
         return docs[0]
 
     def _filter_batched(
-            self, filter_queries: Sequence[rest.Filter], limit: int
+        self, filter_queries: Sequence[rest.Filter], limit: int
     ) -> Union[List[DocList], List[List[Dict]]]:
         responses = []
         for filter_query in filter_queries:
@@ -487,7 +496,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
 
     def _text_search(
-            self, query: str, limit: int, search_field: str = ''
+        self, query: str, limit: int, search_field: str = ''
     ) -> _FindResult:
         query_batched = [query]
         docs, scores = self._text_search_batched(
@@ -496,7 +505,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs[0], scores=scores[0])  # type: ignore[arg-type]
 
     def _text_search_batched(
-            self, queries: Sequence[str], limit: int, search_field: str = ''
+        self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         filter_queries = [
             rest.Filter(
@@ -566,7 +575,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def _convert_to_doc(
-            self, point: Union[rest.ScoredPoint, rest.Record]
+        self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
         document = cast(Dict[str, Any], point.payload)
         generated_vectors = document.pop('__generated_vectors')
