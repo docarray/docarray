@@ -203,18 +203,18 @@ And a list of environment variables is [available on this page](https://weaviate
 
 Additionally, you can specify the below settings when you instantiate a configuration object in DocArray.
 
-| name | type | explanation | default | example |
-| ---- | ---- | ----------- | ------- | ------- |
+| name | type | explanation | default                                                                | example |
+| ---- | ---- | ----------- |------------------------------------------------------------------------| ------- |
 | **Category: General** |
-| host | str | Weaviate instance url | http://localhost:8080 |
+| host | str | Weaviate instance url | http://localhost:8080                                                  |
 | **Category: Authentication** |
-| username | str | Username known to the specified authentication provider (e.g. WCS) | None | `jp@weaviate.io` |
-| password | str | Corresponding password | None | `p@ssw0rd` |
-| auth_api_key | str | API key known to the Weaviate instance | None | `mys3cretk3y` | 
+| username | str | Username known to the specified authentication provider (e.g. WCS) | None                                                                   | `jp@weaviate.io` |
+| password | str | Corresponding password | None                                                                   | `p@ssw0rd` |
+| auth_api_key | str | API key known to the Weaviate instance | None                                                                   | `mys3cretk3y` | 
 | **Category: Data schema** |
-| index_name | str | Class name to use to store the document | `Document` |
+| index_name | str | Class name to use to store the document| The document class name, e.g. `MyDoc` for `WeaviateDocumentIndex[MyDoc]` | `Document` |
 | **Category: Embedded Weaviate** |
-| embedded_options| EmbeddedOptions | Options for embedded weaviate | None |
+| embedded_options| EmbeddedOptions | Options for embedded weaviate | None                                                                   |
 
 The type `EmbeddedOptions` can be specified as described [here](https://weaviate.io/developers/weaviate/installation/embedded#embedded-options)
 
