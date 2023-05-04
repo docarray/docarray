@@ -5,8 +5,8 @@ on:
     inputs:
       config-path:
         type: string
-  pull_request:
-    types: [opened, synchronize, reopened]
+#  pull_request:
+#    types: [opened, synchronize, reopened]
 
 
 jobs:
