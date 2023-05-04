@@ -267,10 +267,10 @@ class JACDocStore(AbstractDocStore):
         # But it must be done this way for now because Hubble expects to know the length of the DocList
         # before it starts receiving the documents
         first_doc = next(docs)
-        docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
+        _docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
-            docs.append(doc)
-        return cls.push(docs, name, public, show_progress, branding)
+            _docs.append(doc)
+        return cls.push(_docs, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
