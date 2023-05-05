@@ -65,7 +65,7 @@ def test_index(weaviate_client, documents):
 
 
 def test_index_simple_schema(weaviate_client, ten_simple_docs):
-    index = WeaviateDocumentIndex[SimpleDoc]()
+    index = WeaviateDocumentIndex[SimpleDoc](index_name="Document")
     index.index(ten_simple_docs)
     assert index.num_docs() == 10
 
