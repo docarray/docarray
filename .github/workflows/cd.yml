@@ -8,14 +8,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-env:
-  JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 jobs:
   success-all-test:
     uses: ./.github/workflows/ci.yml
-#    with:
-#      env:
-#        JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+    env:
+      JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
   prerelease:
     needs: [success-all-test]
