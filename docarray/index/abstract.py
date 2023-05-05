@@ -500,7 +500,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
             for doc in sub_docs
         ]
-        root_docs = self[root_ids]
+        root_docs = DocList[self._schema]()  # type: ignore
+        for id in root_ids:
+            root_docs.append(self[id])
         return SubindexFindResult(
             root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
         )
