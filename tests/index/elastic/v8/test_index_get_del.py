@@ -18,14 +18,17 @@ from tests.index.elastic.fixture import (  # noqa: F401
     ten_flat_docs,
     ten_nested_docs,
     ten_simple_docs,
+    tmp_index_name,
 )
 
 pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
-    index = ElasticDocIndex[SimpleDoc]()
+def test_index_simple_schema(
+    ten_simple_docs, use_docarray, tmp_index_name  # noqa: F811
+):
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     if use_docarray:
         ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
@@ -34,8 +37,8 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
-    index = ElasticDocIndex[FlatDoc]()
+def test_index_flat_schema(ten_flat_docs, use_docarray, tmp_index_name):  # noqa: F811
+    index = ElasticDocIndex[FlatDoc](index_name=tmp_index_name)
     if use_docarray:
         ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
@@ -44,8 +47,10 @@ def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_nested_schema(ten_nested_docs, use_docarray):  # noqa: F811
-    index = ElasticDocIndex[NestedDoc]()
+def test_index_nested_schema(
+    ten_nested_docs, use_docarray, tmp_index_name  # noqa: F811
+):
+    index = ElasticDocIndex[NestedDoc](index_name=tmp_index_name)
     if use_docarray:
         ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
 
@@ -54,8 +59,10 @@ def test_index_nested_schema(ten_nested_docs, use_docarray):  # noqa: F811
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):  # noqa: F811
-    index = ElasticDocIndex[DeepNestedDoc]()
+def test_index_deep_nested_schema(
+    ten_deep_nested_docs, use_docarray, tmp_index_name  # noqa: F811
+):
+    index = ElasticDocIndex[DeepNestedDoc](index_name=tmp_index_name)
     if use_docarray:
         ten_deep_nested_docs = DocList[DeepNestedDoc](ten_deep_nested_docs)
 
@@ -63,9 +70,11 @@ def test_index_deep_nested_schema(ten_deep_nested_docs, use_docarray):  # noqa: 
     assert index.num_docs() == 10
 
 
-def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
+def test_get_single(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_index_name  # noqa: F811
+):
     # simple
-    index = ElasticDocIndex[SimpleDoc]()
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -75,7 +84,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F
         assert np.all(index[id_].tens == d.tens)
 
     # flat
-    index = ElasticDocIndex[FlatDoc]()
+    index = ElasticDocIndex[FlatDoc](index_name=tmp_index_name + 'flat')
     index.index(ten_flat_docs)
 
     assert index.num_docs() == 10
@@ -86,7 +95,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F
         assert np.all(index[id_].tens_two == d.tens_two)
 
     # nested
-    index = ElasticDocIndex[NestedDoc]()
+    index = ElasticDocIndex[NestedDoc](index_name=tmp_index_name + 'nested')
     index.index(ten_nested_docs)
 
     assert index.num_docs() == 10
@@ -97,11 +106,13 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F
         assert np.all(index[id_].d.tens == d.d.tens)
 
 
-def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
+def test_get_multiple(
+    ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_index_name  # noqa: F811
+):
     docs_to_get_idx = [0, 2, 4, 6, 8]
 
     # simple
-    index = ElasticDocIndex[SimpleDoc]()
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -113,7 +124,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa:
         assert np.all(d_out.tens == d_in.tens)
 
     # flat
-    index = ElasticDocIndex[FlatDoc]()
+    index = ElasticDocIndex[FlatDoc](index_name=tmp_index_name + 'flat')
     index.index(ten_flat_docs)
 
     assert index.num_docs() == 10
@@ -126,7 +137,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa:
         assert np.all(d_out.tens_two == d_in.tens_two)
 
     # nested
-    index = ElasticDocIndex[NestedDoc]()
+    index = ElasticDocIndex[NestedDoc](index_name=tmp_index_name + 'nested')
     index.index(ten_nested_docs)
 
     assert index.num_docs() == 10
@@ -147,16 +158,16 @@ def test_get_key_error(ten_simple_docs):  # noqa: F811
         index['not_a_real_id']
 
 
-def test_persisting(ten_simple_docs):  # noqa: F811
-    index = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+def test_persisting(ten_simple_docs, tmp_index_name):  # noqa: F811
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
-    index2 = ElasticDocIndex[SimpleDoc](index_name='test_persisting')
+    index2 = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     assert index2.num_docs() == 10
 
 
-def test_del_single(ten_simple_docs):  # noqa: F811
-    index = ElasticDocIndex[SimpleDoc]()
+def test_del_single(ten_simple_docs, tmp_index_name):  # noqa: F811
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
     # delete once
     assert index.num_docs() == 10
@@ -183,10 +194,10 @@ def test_del_single(ten_simple_docs):  # noqa: F811
             assert np.all(index[id_].tens == d.tens)
 
 
-def test_del_multiple(ten_simple_docs):  # noqa: F811
+def test_del_multiple(ten_simple_docs, tmp_index_name):  # noqa: F811
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    index = ElasticDocIndex[SimpleDoc]()
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -210,8 +221,8 @@ def test_del_key_error(ten_simple_docs):  # noqa: F811
         del index['not_a_real_id']
 
 
-def test_num_docs(ten_simple_docs):  # noqa: F811
-    index = ElasticDocIndex[SimpleDoc]()
+def test_num_docs(ten_simple_docs, tmp_index_name):  # noqa: F811
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10

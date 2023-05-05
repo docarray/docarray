@@ -3,7 +3,8 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
-from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+
+# from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
@@ -136,7 +137,7 @@ def test_index_name():
         text: str = Field()
 
     class StringDoc(BaseDoc):
-        text: str = Field(col_type="string")
+        text: str = Field(col_type='text')
 
     index = ElasticDocIndex[TextDoc]()
     assert index.index_name == TextDoc.__name__.lower()

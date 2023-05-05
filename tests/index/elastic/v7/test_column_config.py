@@ -136,7 +136,7 @@ def test_index_name():
         text: str = Field()
 
     class StringDoc(BaseDoc):
-        text: str = Field(col_type="string")
+        text: str = Field(col_type='text')
 
     index = ElasticV7DocIndex[TextDoc]()
     assert index.index_name == TextDoc.__name__.lower()
