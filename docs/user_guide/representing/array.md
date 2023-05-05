@@ -443,10 +443,10 @@ assert not my_doc.is_view()  # False
 ## Dealing with Optional fields
 
 
-Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support optional fields but they behave differently.
+Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support nested optional fields but they behave slightly differently.
 
-!!! note
-    example of optional field
+!!! note "Nested optional field"
+    By a "nested optional field" we mean a document that is contained within another document, and declared as `Optional`:
     
     ```python
     from typing import Optional
@@ -457,18 +457,19 @@ Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarr
         nested_doc: Optional[BaseDoc]
     ```
 
-!!! note
-    Using optional field is slightly different in some case so watch out. But in a nutshell :
+Using nested optional fields differs slightly between DocList and DocVes, so watch out. But in a nutshell:
     
-    For nested BaseDoc 
-    * DocList will return a list of document if the field is optional and a DocList if the field is not optional
-      * DocVec will return a DocList if all documents are there, or None if all docs are None. No mix of docs and None allowed!
-      * DocVec will behave the same with tensor field.
+When accessing a nested BaseDoc:
+* DocList will return a list of documents if the field is optional and a DocList if the field is not optional
+* DocVec will return a DocList if all documents are there, or None if all docs are None. No mix of docs and None allowed!
+* DocVec will behave the same for a tensor field instead of a BaseDoc
+    
+More detailed information is provided in the sections below
 
 
-#### DocList with optional Field
+#### DocList with nested optional Field
 
-Let's take an example to illustrate the exact behavior
+Let's take an example to illustrate the exact behavior:
 
 ```python
 from typing import Optional
@@ -508,7 +509,7 @@ docs = DocList[ArticleDoc](
 assert docs.image == [ImageDoc(tensor=np.ones((3, 224, 224))), None]
 ```
 
-#### DocVec with optional Field
+#### DocVec with nested optional Field
 
 
 
