@@ -11,8 +11,8 @@ on:
 jobs:
   success-all-test:
     uses: ./.github/workflows/ci.yml
-    env:
-      JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+#    env:
+#      JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
   prerelease:
     needs: [success-all-test]
