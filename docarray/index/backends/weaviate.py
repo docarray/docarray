@@ -386,7 +386,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
         fields = search_field.split('__')
-        if len(fields) == 0 or not issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+        if len(fields) == 0 or fields[0] == '' or not issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
             raise ValueError(
                 f'search_field {search_field} is not a valid subindex field'
             )
@@ -395,16 +395,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
         )
 
-        print('find_subindex')
-        print(sub_docs)
-        print(fields)
-        print()
-
         root_ids = [
             self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
             for doc in sub_docs
         ]
-        root_docs = self[root_ids]
+        root_docs = DocList[self._schema]()
+        for id in root_ids:
+            root_docs.append(self[id])
 
         return SubindexFindResult(
             root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
