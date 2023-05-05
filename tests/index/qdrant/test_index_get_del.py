@@ -10,7 +10,7 @@ from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray, NdArrayEmbedding, TorchTensor
-from tests.index.qdrant.fixtures import qdrant, qdrant_config  # noqa: F401
+from tests.index.qdrant.fixtures import start_storage, tmp_collection_name  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -56,9 +56,11 @@ def ten_nested_docs():
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_simple_schema(
-    ten_simple_docs, qdrant_config, use_docarray  # noqa: F811
+    ten_simple_docs, use_docarray, tmp_collection_name  # noqa: F811
 ):
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     if use_docarray:
         ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
@@ -67,8 +69,12 @@ def test_index_simple_schema(
 
 
 @pytest.mark.parametrize('use_docarray', [True, False])
-def test_index_flat_schema(ten_flat_docs, qdrant_config, use_docarray):  # noqa: F811
-    index = QdrantDocumentIndex[FlatDoc](db_config=qdrant_config)
+def test_index_flat_schema(
+    ten_flat_docs, use_docarray, tmp_collection_name  # noqa: F811
+):
+    index = QdrantDocumentIndex[FlatDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     if use_docarray:
         ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
@@ -78,9 +84,11 @@ def test_index_flat_schema(ten_flat_docs, qdrant_config, use_docarray):  # noqa:
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_nested_schema(
-    ten_nested_docs, qdrant_config, use_docarray  # noqa: F811
+    ten_nested_docs, use_docarray, tmp_collection_name  # noqa: F811
 ):
-    index = QdrantDocumentIndex[NestedDoc](db_config=qdrant_config)
+    index = QdrantDocumentIndex[NestedDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     if use_docarray:
         ten_nested_docs = DocList[NestedDoc](ten_nested_docs)
 
@@ -88,24 +96,28 @@ def test_index_nested_schema(
     assert index.num_docs() == 10
 
 
-def test_index_torch(qdrant_config):  # noqa: F811
+def test_index_torch(tmp_collection_name):  # noqa: F811
     docs = [TorchDoc(tens=np.random.randn(10)) for _ in range(10)]
     assert isinstance(docs[0].tens, torch.Tensor)
     assert isinstance(docs[0].tens, TorchTensor)
 
-    index = QdrantDocumentIndex[TorchDoc](db_config=qdrant_config)
+    index = QdrantDocumentIndex[TorchDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
 
     index.index(docs)
     assert index.num_docs() == 10
 
 
 @pytest.mark.skip('Qdrant does not support storing image tensors yet')
-def test_index_builtin_docs(qdrant_config):  # noqa: F811
+def test_index_builtin_docs(tmp_collection_name):  # noqa: F811
     # TextDoc
     class TextSchema(TextDoc):
         embedding: Optional[NdArrayEmbedding] = Field(dim=10)
 
-    index = QdrantDocumentIndex[TextSchema](db_config=qdrant_config)
+    index = QdrantDocumentIndex[TextSchema](
+        host='localhost', collection_name=tmp_collection_name
+    )
 
     index.index(
         DocList[TextDoc](
@@ -133,16 +145,18 @@ def test_index_builtin_docs(qdrant_config):  # noqa: F811
     assert index.num_docs() == 10
 
 
-def test_get_key_error(ten_simple_docs, qdrant_config):  # noqa: F811
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+def test_get_key_error(ten_simple_docs):
+    index = QdrantDocumentIndex[SimpleDoc](host='localhost')
     index.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
         index['not_a_real_id']
 
 
-def test_del_single(ten_simple_docs, qdrant_config):  # noqa: F811
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+def test_del_single(ten_simple_docs, tmp_collection_name):  # noqa: F811
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     index.index(ten_simple_docs)
     # delete once
     assert index.num_docs() == 10
@@ -167,10 +181,12 @@ def test_del_single(ten_simple_docs, qdrant_config):  # noqa: F811
             assert index[id_].id == id_
 
 
-def test_del_multiple(ten_simple_docs, qdrant_config):  # noqa: F811
+def test_del_multiple(ten_simple_docs, tmp_collection_name):  # noqa: F811
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -185,16 +201,18 @@ def test_del_multiple(ten_simple_docs, qdrant_config):  # noqa: F811
             assert index[doc.id].id == doc.id
 
 
-def test_del_key_error(ten_simple_docs, qdrant_config):  # noqa: F811
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+def test_del_key_error(ten_simple_docs):  # noqa: F811
+    index = QdrantDocumentIndex[SimpleDoc](host='localhost')
     index.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
         del index['not_a_real_id']
 
 
-def test_num_docs(ten_simple_docs, qdrant_config):  # noqa: F811
-    index = QdrantDocumentIndex[SimpleDoc](db_config=qdrant_config)
+def test_num_docs(ten_simple_docs, tmp_collection_name):  # noqa: F811
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -213,12 +231,12 @@ def test_num_docs(ten_simple_docs, qdrant_config):  # noqa: F811
     assert index.num_docs() == 10
 
 
-def test_multimodal_doc(qdrant_config):  # noqa: F811
+def test_multimodal_doc():  # noqa: F811
     class MyMultiModalDoc(BaseDoc):
         image: ImageDoc
         text: TextDoc
 
-    index = QdrantDocumentIndex[MyMultiModalDoc](db_config=qdrant_config)
+    index = QdrantDocumentIndex[MyMultiModalDoc](host='localhost')
 
     doc = [
         MyMultiModalDoc(
@@ -240,7 +258,7 @@ def test_collection_name():
         text: str = Field()
 
     class StringDoc(BaseDoc):
-        text: str = Field(col_type="string")
+        text: str = Field(col_type='payload')
 
     index = QdrantDocumentIndex[TextDoc]()
     assert index.collection_name == TextDoc.__name__.lower()
