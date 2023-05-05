@@ -439,6 +439,126 @@ assert not my_doc.is_view()  # False
     To summarize: you should use `DocVec` when you need to work with contiguous data, and you should use `DocList` when you need to rearrange
     or extend your data.
 
+
+## Dealing with Optional fields
+
+
+Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] support nested optional fields but they behave slightly differently.
+
+!!! note "Nested optional field"
+    By a "nested optional field" we mean a document that is contained within another document, and declared as `Optional`:
+    
+    ```python
+    from typing import Optional
+    from docarray import BaseDoc
+
+
+    class MyDoc(BaseDoc):
+        nested_doc: Optional[BaseDoc]
+    ```
+
+Using nested optional fields differs slightly between DocList and DocVes, so watch out. But in a nutshell:
+    
+When accessing a nested BaseDoc:
+* DocList will return a list of documents if the field is optional and a DocList if the field is not optional
+* DocVec will return a DocVec if all documents are there, or None if all docs are None. No mix of docs and None allowed!
+* DocVec will behave the same for a tensor field instead of a BaseDoc
+    
+
+
+
+#### DocList with nested optional Field
+
+Let's take an example to illustrate the exact behavior:
+
+```python
+from typing import Optional
+from docarray.typing import NdArray
+import numpy as np
+
+
+class ImageDoc(BaseDoc):
+    tensor: NdArray
+
+
+class ArticleDoc(BaseDoc):
+    image: Optional[ImageDoc]
+    title: str
+```
+
+In this example `ArticleDoc` has an optional field `image` which is an `ImageDoc`. This means that this field can either
+be None or be a `ImageDoc` instance.
+
+Remember that for both DocList and DocVec calling `docs.image` will return a list-like object of all the images of the documents.
+
+For DocList this call will iterate over all the documents and collect the image attribute of each document in a sequence, and for DocVec it will return the already stacked column of the `.image` attribute.
+
+For DocList it will return a list of `Optional[ImageDoc]` instead of a `DocList[ImageDoc]`, this is because the list can contain None and DocList can't.
+
+```python
+from docarray import DocList
+
+
+docs = DocList[ArticleDoc](
+    [
+        ArticleDoc(image=ImageDoc(tensor=np.ones((3, 224, 224))), title="Hello"),
+        ArticleDoc(image=None, title="World"),
+    ]
+)
+
+assert docs.image == [ImageDoc(tensor=np.ones((3, 224, 224))), None]
+```
+
+#### DocVec with nested optional Field
+
+
+
+For DocVec it is a bit different. Indeed, a DocVec stores the data for each filed as contiguous column. 
+This means that DocVec can create a column in only two cases: either all the data for a field is None or all the data is not None.
+
+For the first case the whole column will just be None. In the second case the column will be a `DocList[ImageDoc]`
+
+
+
+```python
+from docarray import DocVec
+
+docs = DocVec[ArticleDoc](
+    [
+        ArticleDoc(image=ImageDoc(tensor=np.zeros((3, 224, 224))), title="Hello")
+        for _ in range(10)
+    ]
+)
+assert (docs.image.tensor == np.zeros((3, 224, 224))).all()
+``` 
+
+Or it can be None:
+
+```python
+docs = DocVec[ArticleDoc]([ArticleDoc(title="Hello") for _ in range(10)])
+assert docs.image is None
+``` 
+
+But if you try a mix you will get an error:
+
+```python
+try:
+    docs = DocVec[ArticleDoc](
+        [
+            ArticleDoc(image=ImageDoc(tensor=np.ones((3, 224, 224))), title="Hello"),
+            ArticleDoc(image=None, title="World"),
+        ]
+    )
+except ValueError as e:
+    print(e)
+``` 
+
+```bash
+None is not a <class '__main__.ImageDoc'>
+```
+
+--- 
+
 See also:
 
 
