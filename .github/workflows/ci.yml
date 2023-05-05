@@ -5,6 +5,9 @@ on:
     inputs:
       config-path:
         type: string
+    secrets:
+      JINA_AUTH_TOKEN:
+        required: false
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -104,11 +107,11 @@ jobs:
           poetry run pip install elasticsearch==8.6.2
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
-          
+
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -126,6 +129,36 @@ jobs:
 #          fail_ci_if_error: false
 #          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
+
+  docarray-test-jac:
+    needs: [lint-ruff, check-black, import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install elasticsearch==8.6.2
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ffmpeg
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m "not (tensorflow or benchmark or index)" tests/integrations/store/test_jac.py
+        timeout-minutes: 30
+        env:
+          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
 
   docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
@@ -155,7 +188,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }}
+          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
