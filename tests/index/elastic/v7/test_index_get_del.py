@@ -70,11 +70,9 @@ def test_index_deep_nested_schema(
     assert index.num_docs() == 10
 
 
-def test_get_single(
-    ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_index_name  # noqa: F811
-):
+def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
     # simple
-    index = ElasticV7DocIndex[SimpleDoc](index_name=tmp_index_name)
+    index = ElasticV7DocIndex[SimpleDoc]()
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -82,9 +80,10 @@ def test_get_single(
         id_ = d.id
         assert index[id_].id == id_
         assert np.all(index[id_].tens == d.tens)
+    index._client.indices.delete(index='simpledoc')
 
     # flat
-    index = ElasticV7DocIndex[FlatDoc](index_name=tmp_index_name + 'flat')
+    index = ElasticV7DocIndex[FlatDoc]()
     index.index(ten_flat_docs)
 
     assert index.num_docs() == 10
@@ -93,9 +92,10 @@ def test_get_single(
         assert index[id_].id == id_
         assert np.all(index[id_].tens_one == d.tens_one)
         assert np.all(index[id_].tens_two == d.tens_two)
+    index._client.indices.delete(index='flatdoc')
 
     # nested
-    index = ElasticV7DocIndex[NestedDoc](index_name=tmp_index_name + 'nested')
+    index = ElasticV7DocIndex[NestedDoc]()
     index.index(ten_nested_docs)
 
     assert index.num_docs() == 10
@@ -104,15 +104,14 @@ def test_get_single(
         assert index[id_].id == id_
         assert index[id_].d.id == d.d.id
         assert np.all(index[id_].d.tens == d.d.tens)
+    index._client.indices.delete(index='nesteddoc')
 
 
-def test_get_multiple(
-    ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_index_name  # noqa: F811
-):
+def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs):  # noqa: F811
     docs_to_get_idx = [0, 2, 4, 6, 8]
 
     # simple
-    index = ElasticV7DocIndex[SimpleDoc](index_name=tmp_index_name)
+    index = ElasticV7DocIndex[SimpleDoc]()
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -124,7 +123,7 @@ def test_get_multiple(
         assert np.all(d_out.tens == d_in.tens)
 
     # flat
-    index = ElasticV7DocIndex[FlatDoc](index_name=tmp_index_name + 'flat')
+    index = ElasticV7DocIndex[FlatDoc]()
     index.index(ten_flat_docs)
 
     assert index.num_docs() == 10
@@ -137,7 +136,7 @@ def test_get_multiple(
         assert np.all(d_out.tens_two == d_in.tens_two)
 
     # nested
-    index = ElasticV7DocIndex[NestedDoc](index_name=tmp_index_name + 'nested')
+    index = ElasticV7DocIndex[NestedDoc]()
     index.index(ten_nested_docs)
 
     assert index.num_docs() == 10

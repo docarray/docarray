@@ -171,8 +171,8 @@ def test_find_tensorflow():
     )
 
 
-def test_find_batched():
-    index = ElasticV7DocIndex[SimpleDoc]()
+def test_find_batched(tmp_index_name):  # noqa: F811
+    index = ElasticV7DocIndex[SimpleDoc](index_name=tmp_index_name)
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     index.index(index_docs)

@@ -110,14 +110,12 @@ def test_index_torch(tmp_collection_name):  # noqa: F811
 
 
 @pytest.mark.skip('Qdrant does not support storing image tensors yet')
-def test_index_builtin_docs(tmp_collection_name):  # noqa: F811
+def test_index_builtin_docs():
     # TextDoc
     class TextSchema(TextDoc):
         embedding: Optional[NdArrayEmbedding] = Field(dim=10)
 
-    index = QdrantDocumentIndex[TextSchema](
-        host='localhost', collection_name=tmp_collection_name
-    )
+    index = QdrantDocumentIndex[TextSchema](host='localhost')
 
     index.index(
         DocList[TextDoc](
@@ -145,8 +143,10 @@ def test_index_builtin_docs(tmp_collection_name):  # noqa: F811
     assert index.num_docs() == 10
 
 
-def test_get_key_error(ten_simple_docs):
-    index = QdrantDocumentIndex[SimpleDoc](host='localhost')
+def test_get_key_error(ten_simple_docs, tmp_collection_name):  # noqa: F811
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     index.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
@@ -201,8 +201,10 @@ def test_del_multiple(ten_simple_docs, tmp_collection_name):  # noqa: F811
             assert index[doc.id].id == doc.id
 
 
-def test_del_key_error(ten_simple_docs):  # noqa: F811
-    index = QdrantDocumentIndex[SimpleDoc](host='localhost')
+def test_del_key_error(ten_simple_docs, tmp_collection_name):  # noqa: F811
+    index = QdrantDocumentIndex[SimpleDoc](
+        host='localhost', collection_name=tmp_collection_name
+    )
     index.index(ten_simple_docs)
 
     with pytest.raises(KeyError):
@@ -231,7 +233,7 @@ def test_num_docs(ten_simple_docs, tmp_collection_name):  # noqa: F811
     assert index.num_docs() == 10
 
 
-def test_multimodal_doc():  # noqa: F811
+def test_multimodal_doc():
     class MyMultiModalDoc(BaseDoc):
         image: ImageDoc
         text: TextDoc
