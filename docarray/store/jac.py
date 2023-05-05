@@ -102,7 +102,9 @@ class JACDocStore(AbstractDocStore):
         from rich.table import Table
 
         resp = HubbleClient(jsonify=True).list_artifacts(
-            filter={'type': 'documentArray'}, sort={'createdAt': 1}
+            filter={'type': 'documentArray'},
+            sort={'createdAt': 1},
+            pageSize=10000,
         )
 
         table = Table(
@@ -267,10 +269,10 @@ class JACDocStore(AbstractDocStore):
         # But it must be done this way for now because Hubble expects to know the length of the DocList
         # before it starts receiving the documents
         first_doc = next(docs)
-        docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
+        _docs = DocList[first_doc.__class__]([first_doc])  # type: ignore
         for doc in docs:
-            docs.append(doc)
-        return cls.push(docs, name, public, show_progress, branding)
+            _docs.append(doc)
+        return cls.push(_docs, name, public, show_progress, branding)
 
     @staticmethod
     @hubble.login_required
