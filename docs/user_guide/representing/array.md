@@ -461,10 +461,10 @@ Using nested optional fields differs slightly between DocList and DocVes, so wat
     
 When accessing a nested BaseDoc:
 * DocList will return a list of documents if the field is optional and a DocList if the field is not optional
-* DocVec will return a DocList if all documents are there, or None if all docs are None. No mix of docs and None allowed!
+* DocVec will return a DocVec if all documents are there, or None if all docs are None. No mix of docs and None allowed!
 * DocVec will behave the same for a tensor field instead of a BaseDoc
     
-More detailed information is provided in the sections below
+
 
 
 #### DocList with nested optional Field
