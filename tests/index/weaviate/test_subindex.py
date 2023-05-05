@@ -160,6 +160,38 @@ def test_subindex_find(index):
     assert type(docs[0]) == SimpleDoc
 
 
+def test_find_subindex(index):
+    # root level
+    query = np.ones((30,))
+    with pytest.raises(ValueError):
+        _, _ = index.find_subindex(query, search_field='', limit=5)
+
+    # sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query,
+        search_field='docs',
+        limit=5,
+        score_name='distance',
+        score_threshold=1e-2,
+    )
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert root_doc.id == f'{doc.id.split("-")[1]}'
+
+    # sub sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, search_field='list_docs__docs', limit=5
+    )
+    assert len(docs) == 5
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert root_doc.id == f'{doc.id.split("-")[2]}'
+
+
 def test_subindex_filter(index):
     query = {
         'path': ['simple_doc__simple_text'],
