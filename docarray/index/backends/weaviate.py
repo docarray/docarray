@@ -399,7 +399,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
             for doc in sub_docs
         ]
-        root_docs = DocList[self._schema]()
+        root_docs = DocList[self._schema]()  # type: ignore
         for id in root_ids:
             root_docs.append(self[id])
 

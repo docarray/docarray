@@ -262,7 +262,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     sub_db_config.collection_name = (
                         f'{self._db_config.collection_name}__{column_name}'
                     )
-                    self._subindices[column_name] = self.__class__[
+                    self._subindices[column_name] = self.__class__[  # type: ignore
                         column_info.docarray_type.doc_type
                     ](sub_db_config, subindex=True)
                     continue
@@ -552,7 +552,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             with_payload=rest.PayloadSelectorInclude(include=['id']),
         )
 
-        ids = [point.payload['id'] for point in response]
+        ids = [point.payload['id'] for point in response]  # type: ignore
         return ids
 
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
