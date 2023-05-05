@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
-      - chore-fix-prerelease
 
 jobs:
   success-all-test:
     uses: ./.github/workflows/ci.yml
+    secrets:
+      JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+
   prerelease:
     needs: [success-all-test]
     runs-on: ubuntu-latest
