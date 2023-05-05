@@ -300,3 +300,5 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 data[field] = [doc.dict() for doc in getattr(self, field)]
 
         return data
+
+    to_json = json
