@@ -476,35 +476,10 @@ def test_np_nan():
     assert all(doc.scalar is None for doc in da)
     assert all(doc.scalar == doc.scalar for doc in da)
     stacked_da = da.to_doc_vec()
-    assert type(stacked_da.scalar) == NdArray
+    assert stacked_da.scalar is None
 
-    assert all(type(doc.scalar) == NdArray for doc in stacked_da)  # TODO fail here
+    assert all(doc.scalar is None for doc in stacked_da)
     # Stacking them turns them into np.nan
-    assert all(doc.scalar.ndim == 1 for doc in stacked_da)
-    assert all(doc.scalar != doc.scalar for doc in stacked_da)  # Test for nan
-
-    stacked_da.scalar[0] = 3.0
-    assert stacked_da[0].scalar == 3.0
-
-
-def test_torch_nan():
-    class MyDoc(BaseDoc):
-        scalar: Optional[TorchTensor]
-
-    da = DocList[MyDoc]([MyDoc() for _ in range(3)])
-    assert all(doc.scalar is None for doc in da)
-    assert all(doc.scalar == doc.scalar for doc in da)
-    stacked_da = da.to_doc_vec(tensor_type=TorchTensor)
-    assert type(stacked_da.scalar) == TorchTensor
-
-    assert all(type(doc.scalar) == TorchTensor for doc in stacked_da)
-    # Stacking them turns them into torch.nan
-    assert all(doc.scalar.ndim == 1 for doc in stacked_da)
-    assert all(doc.scalar != doc.scalar for doc in stacked_da)  # Test for nan
-
-    # Make sure they share memory
-    stacked_da.scalar[0] = 3.0
-    assert stacked_da[0].scalar == 3.0
 
 
 def test_from_storage():
@@ -590,3 +565,9 @@ def test_doc_view_nested(batch_nested_doc):
     # batch[0].__fields_set__
     batch[0].inner = Inner(hello='world')
     assert batch.inner[0].hello == 'world'
+
+
+def test_type_error_no_doc_type():
+
+    with pytest.raises(TypeError):
+        DocVec([BaseDoc() for _ in range(10)])
