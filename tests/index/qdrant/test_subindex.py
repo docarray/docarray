@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
+import qdrant_client
 from pydantic import Field
 from qdrant_client.http import models as rest
 
 from docarray import BaseDoc, DocList
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
-from tests.index.qdrant.fixtures import qdrant, qdrant_config  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -29,7 +29,14 @@ class MyDoc(BaseDoc):
 
 
 @pytest.fixture
-def index(qdrant_config):  # noqa: F811
+def qdrant_config() -> QdrantDocumentIndex.DBConfig:
+    client = qdrant_client.QdrantClient(path='./tmp/qdrant-subindex')
+    client.delete_collection(collection_name='documents')
+    return QdrantDocumentIndex.DBConfig(path=client._client.location)
+
+
+@pytest.fixture
+def index(qdrant_config):
     index = QdrantDocumentIndex[MyDoc](db_config=qdrant_config)
     my_docs = [
         MyDoc(
