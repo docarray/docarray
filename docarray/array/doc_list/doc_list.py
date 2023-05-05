@@ -164,7 +164,7 @@ class DocList(
         as the `.doc_type` of this `DocList` otherwise it will fail.
         :param doc: A Document
         """
-        super().append(self._validate_one_doc(doc))
+        return super().append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -173,7 +173,11 @@ class DocList(
         fail.
         :param docs: Iterable of Documents
         """
-        super().extend(self._validate_docs(docs))
+        it = self._validate_docs(docs)
+        if self is docs:
+            # see https://github.com/docarray/docarray/issues/1489
+            it = list(it)
+        return super().extend(it)
 
     def insert(self, i: SupportsIndex, doc: T_doc):
         """
