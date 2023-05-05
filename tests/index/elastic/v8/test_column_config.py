@@ -3,18 +3,17 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
-
-# from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
+from tests.index.elastic.fixture import start_storage_v8, tmp_index_name  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
 
-def test_column_config():
+def test_column_config(tmp_index_name):  # noqa: F811
     class MyDoc(BaseDoc):
         text: str
         color: str = Field(col_type='keyword')
 
-    index = ElasticDocIndex[MyDoc]()
+    index = ElasticDocIndex[MyDoc](index_name=tmp_index_name)
     index_docs = [
         MyDoc(id='0', text='hello world', color='red'),
         MyDoc(id='1', text='never gonna give you up', color='blue'),
@@ -31,7 +30,7 @@ def test_column_config():
     assert [doc.id for doc in docs] == ['0', '1']
 
 
-def test_field_object():
+def test_field_object(tmp_index_name):  # noqa: F811
     class MyDoc(BaseDoc):
         manager: dict = Field(
             properties={
@@ -45,7 +44,7 @@ def test_field_object():
             }
         )
 
-    index = ElasticDocIndex[MyDoc]()
+    index = ElasticDocIndex[MyDoc](index_name=tmp_index_name)
     doc = [
         MyDoc(manager={'age': 25, 'name': {'first': 'Rachel', 'last': 'Green'}}),
         MyDoc(manager={'age': 30, 'name': {'first': 'Monica', 'last': 'Geller'}}),
@@ -61,11 +60,11 @@ def test_field_object():
     assert [doc.id for doc in docs] == [doc[1].id, doc[2].id]
 
 
-def test_field_geo_point():
+def test_field_geo_point(tmp_index_name):  # noqa: F811
     class MyDoc(BaseDoc):
         location: dict = Field(col_type='geo_point')
 
-    index = ElasticDocIndex[MyDoc]()
+    index = ElasticDocIndex[MyDoc](index_name=tmp_index_name)
     doc = [
         MyDoc(location={'lat': 40.12, 'lon': -72.34}),
         MyDoc(location={'lat': 41.12, 'lon': -73.34}),
@@ -88,12 +87,12 @@ def test_field_geo_point():
     assert [doc['id'] for doc in docs] == [doc[0].id, doc[1].id]
 
 
-def test_field_range():
+def test_field_range(tmp_index_name):  # noqa: F811
     class MyDoc(BaseDoc):
         expected_attendees: dict = Field(col_type='integer_range')
         time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
 
-    index = ElasticDocIndex[MyDoc]()
+    index = ElasticDocIndex[MyDoc](index_name=tmp_index_name)
     doc = [
         MyDoc(
             expected_attendees={'gte': 10, 'lt': 20},
