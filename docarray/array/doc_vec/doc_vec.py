@@ -6,6 +6,7 @@ from typing import (
     Iterable,
     List,
     MutableSequence,
+    Optional,
     Sequence,
     Tuple,
     Type,
@@ -22,7 +23,7 @@ from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
-from docarray.base_doc import BaseDoc
+from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -65,10 +66,10 @@ class DocVec(AnyDocArray[T_doc]):
     [`BaseDoc`][docarray.BaseDoc]) will be stored in a column.
 
     If the field is a tensor, the data from all Documents will be stored as a single
-    doc_vec (torch/np/tf) tensor.
+    (torch/np/tf) tensor.
 
     If the tensor field is `AnyTensor` or a Union of tensor types, the
-    `.tensor_type` will be used to determine the type of the doc_vec column.
+    `.tensor_type` will be used to determine the type of the column.
 
     If the field is another [`BaseDoc`][docarray.BaseDoc] the column will be another
     `DocVec` that follows the schema of the nested Document.
@@ -83,6 +84,15 @@ class DocVec(AnyDocArray[T_doc]):
     this Document "view" is similar to the behavior of `view = tensor[i]` in
     numpy/PyTorch.
 
+    !!! note
+        DocVec supports optional fields. Nevertheless if a field is optional it needs to
+        be homogeneous. This means that if the first document has a None value all of the
+        other documents should have a None value as well.
+    !!! note
+        If one field is Optional the column will be stored
+        * as None if the first doc is as the field as None
+        * as a normal column otherwise that cannot contain None value
+
     :param docs: a homogeneous sequence of `BaseDoc`
     :param tensor_type: Tensor Class used to wrap the doc_vec tensors. This is useful
         if the BaseDoc of this DocVec has some undefined tensor type like
@@ -96,11 +106,17 @@ class DocVec(AnyDocArray[T_doc]):
         docs: Sequence[T_doc],
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
+
+        if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
+            raise TypeError(
+                f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
+                f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
+            )
         self.tensor_type = tensor_type
 
-        tensor_columns: Dict[str, AbstractTensor] = dict()
-        doc_columns: Dict[str, 'DocVec'] = dict()
-        docs_vec_columns: Dict[str, ListAdvancedIndexing['DocVec']] = dict()
+        tensor_columns: Dict[str, Optional[AbstractTensor]] = dict()
+        doc_columns: Dict[str, Optional['DocVec']] = dict()
+        docs_vec_columns: Dict[str, Optional[ListAdvancedIndexing['DocVec']]] = dict()
         any_columns: Dict[str, ListAdvancedIndexing] = dict()
 
         if len(docs) == 0:
@@ -116,8 +132,34 @@ class DocVec(AnyDocArray[T_doc]):
             # from each document and put them in the corresponding column
             field_type = self.doc_type._get_field_type(field_name)
 
+            is_field_required = self.doc_type.__fields__[field_name].required
+
+            first_doc_is_none = getattr(docs[0], field_name) is None
+
+            def _verify_optional_field_of_docs(docs):
+
+                if is_field_required:
+                    if first_doc_is_none:
+                        raise ValueError(
+                            f'Field {field_name} is None for {docs[0]} even though it is required'
+                        )
+
+                if first_doc_is_none:
+                    for i, doc in enumerate(docs):
+                        if getattr(doc, field_name) is not None:
+                            raise ValueError(
+                                f'Field {field_name} is put to None for the first doc. This mean that all of the other docs should have this field set to None as well. This is not the case for {doc} at index {i}'
+                            )
+
+            def _check_doc_field_not_none(field_name, doc):
+                if getattr(doc, field_name) is None:
+                    raise ValueError(
+                        f'Field {field_name} is None for {doc} even though it is not None for the first doc'
+                    )
+
             if is_tensor_union(field_type):
                 field_type = tensor_type
+
             if isinstance(field_type, type):
                 if tf_available and issubclass(field_type, TensorFlowTensor):
                     # tf.Tensor does not allow item assignment, therefore the
@@ -125,55 +167,79 @@ class DocVec(AnyDocArray[T_doc]):
                     # of initializing an empty array and assigning values to it
                     # iteratively
                     # does not work here, therefore handle separately.
-                    tf_stack = []
-                    for i, doc in enumerate(docs):
-                        val = getattr(doc, field_name)
-                        if val is None:
-                            val = TensorFlowTensor(
-                                tensor_type.get_comp_backend().none_value()
-                            )
-                        tf_stack.append(val.tensor)
 
-                    stacked: tf.Tensor = tf.stack(tf_stack)
-                    tensor_columns[field_name] = TensorFlowTensor(stacked)
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        tensor_columns[field_name] = None
+                    else:
+                        tf_stack = []
+                        for i, doc in enumerate(docs):
+                            val = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
+                            tf_stack.append(val.tensor)
+
+                        stacked: tf.Tensor = tf.stack(tf_stack)
+                        tensor_columns[field_name] = TensorFlowTensor(stacked)
 
                 elif issubclass(field_type, AbstractTensor):
-                    tensor = getattr(docs[0], field_name)
-                    column_shape = (
-                        (len(docs), *tensor.shape)
-                        if tensor is not None
-                        else (len(docs),)
-                    )
-                    tensor_columns[field_name] = field_type._docarray_from_native(
-                        field_type.get_comp_backend().empty(
-                            column_shape,
-                            dtype=tensor.dtype if hasattr(tensor, 'dtype') else None,
-                            device=tensor.device if hasattr(tensor, 'device') else None,
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        tensor_columns[field_name] = None
+                    else:
+                        tensor = getattr(docs[0], field_name)
+                        column_shape = (
+                            (len(docs), *tensor.shape)
+                            if tensor is not None
+                            else (len(docs),)
                         )
-                    )
+                        tensor_columns[field_name] = field_type._docarray_from_native(
+                            field_type.get_comp_backend().empty(
+                                column_shape,
+                                dtype=tensor.dtype
+                                if hasattr(tensor, 'dtype')
+                                else None,
+                                device=tensor.device
+                                if hasattr(tensor, 'device')
+                                else None,
+                            )
+                        )
 
-                    for i, doc in enumerate(docs):
-                        val = getattr(doc, field_name)
-                        if val is None:
-                            val = tensor_type.get_comp_backend().none_value()
-
-                        cast(AbstractTensor, tensor_columns[field_name])[i] = val
+                        for i, doc in enumerate(docs):
+                            _check_doc_field_not_none(field_name, doc)
+                            val = getattr(doc, field_name)
+                            cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif issubclass(field_type, BaseDoc):
-                    doc_columns[field_name] = getattr(docs, field_name).to_doc_vec(
-                        tensor_type=self.tensor_type
-                    )
-
-                elif issubclass(field_type, AnyDocArray):
-                    docs_list = list()
-                    for doc in docs:
-                        docs_nested = getattr(doc, field_name)
-                        if isinstance(docs_nested, DocList):
-                            docs_nested = docs_nested.to_doc_vec(
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        doc_columns[field_name] = None
+                    else:
+                        if is_field_required:
+                            doc_columns[field_name] = getattr(
+                                docs, field_name
+                            ).to_doc_vec(tensor_type=self.tensor_type)
+                        else:
+                            doc_columns[field_name] = DocList.__class_getitem__(
+                                field_type
+                            )(getattr(docs, field_name)).to_doc_vec(
                                 tensor_type=self.tensor_type
                             )
-                        docs_list.append(docs_nested)
-                    docs_vec_columns[field_name] = ListAdvancedIndexing(docs_list)
+
+                elif issubclass(field_type, AnyDocArray):
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        doc_columns[field_name] = None
+                    else:
+                        docs_list = list()
+                        for doc in docs:
+                            docs_nested = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
+                            if isinstance(docs_nested, DocList):
+                                docs_nested = docs_nested.to_doc_vec(
+                                    tensor_type=self.tensor_type
+                                )
+                            docs_list.append(docs_nested)
+                        docs_vec_columns[field_name] = ListAdvancedIndexing(docs_list)
                 else:
                     any_columns[field_name] = ListAdvancedIndexing(
                         getattr(docs, field_name)
@@ -227,15 +293,18 @@ class DocVec(AnyDocArray[T_doc]):
         :param device: the device to move the data to
         """
         for field, col_tens in self._storage.tensor_columns.items():
-            self._storage.tensor_columns[field] = col_tens.get_comp_backend().to_device(
-                col_tens, device
-            )
+            if col_tens is not None:
+                self._storage.tensor_columns[
+                    field
+                ] = col_tens.get_comp_backend().to_device(col_tens, device)
 
         for field, col_doc in self._storage.doc_columns.items():
-            self._storage.doc_columns[field] = col_doc.to(device)
+            if col_doc is not None:
+                self._storage.doc_columns[field] = col_doc.to(device)
         for _, col_da in self._storage.docs_vec_columns.items():
-            for docs in col_da:
-                docs.to(device)
+            if col_da is not None:
+                for docs in col_da:
+                    docs.to(device)
 
         return self
 
@@ -263,7 +332,7 @@ class DocVec(AnyDocArray[T_doc]):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, 'DocVec', AbstractTensor]:
+    ) -> Union[MutableSequence, 'DocVec', AbstractTensor, None]:
         """Return one column of the data
 
         :param field: name of the fields to extract
@@ -353,6 +422,7 @@ class DocVec(AnyDocArray[T_doc]):
             T,
             DocList,
             AbstractTensor,
+            None,
         ],
     ) -> None:
         """Set all Documents in this DocList using the passed values
@@ -360,39 +430,57 @@ class DocVec(AnyDocArray[T_doc]):
         :param field: name of the fields to set
         :values: the values to set at the DocList level
         """
+        if values is None:
+            if field in self._storage.tensor_columns.keys():
+                self._storage.tensor_columns[field] = values
+            elif field in self._storage.doc_columns.keys():
+                self._storage.doc_columns[field] = values
+            elif field in self._storage.docs_vec_columns.keys():
+                self._storage.docs_vec_columns[field] = values
+            elif field in self._storage.any_columns.keys():
+                raise ValueError(
+                    f'column {field} cannot be set to None, try to pass '
+                    f'a list of None instead'
+                )
+            else:
+                raise ValueError(f'{field} does not exist in {self}')
 
-        if len(values) != len(self._storage):
-            raise ValueError(
-                f'{values} has not the right length, expected '
-                f'{len(self._storage)} , got {len(values)}'
-            )
-        if field in self._storage.tensor_columns.keys():
-            validation_class = (
-                self._storage.tensor_columns[field].__unparametrizedcls__
-                or self._storage.tensor_columns[field].__class__
-            )
-            # TODO shape check should be handle by the tensor validation
-
-            values = parse_obj_as(validation_class, values)
-            self._storage.tensor_columns[field] = values
-
-        elif field in self._storage.doc_columns.keys():
-            values_ = parse_obj_as(
-                DocVec.__class_getitem__(self._storage.doc_columns[field].doc_type),
-                values,
-            )
-            self._storage.doc_columns[field] = values_
-
-        elif field in self._storage.docs_vec_columns.keys():
-            values_ = cast(Sequence[DocList[T_doc]], values)
-            # TODO here we should actually check if this is correct
-            self._storage.docs_vec_columns[field] = values_
-        elif field in self._storage.any_columns.keys():
-            # TODO here we should actually check if this is correct
-            values_ = cast(Sequence, values)
-            self._storage.any_columns[field] = values_
         else:
-            raise KeyError(f'{field} is not a valid field for this DocList')
+            if len(values) != len(self._storage):
+                raise ValueError(
+                    f'{values} has not the right length, expected '
+                    f'{len(self._storage)} , got {len(values)}'
+                )
+            if field in self._storage.tensor_columns.keys():
+
+                col = self._storage.tensor_columns[field]
+                if col is not None:
+                    validation_class = col.__unparametrizedcls__ or col.__class__
+                else:
+                    validation_class = self.doc_type.__fields__[field].type_
+
+                # TODO shape check should be handle by the tensor validation
+
+                values = parse_obj_as(validation_class, values)
+                self._storage.tensor_columns[field] = values
+
+            elif field in self._storage.doc_columns.keys():
+                values_ = parse_obj_as(
+                    DocVec.__class_getitem__(self.doc_type._get_field_type(field)),
+                    values,
+                )
+                self._storage.doc_columns[field] = values_
+
+            elif field in self._storage.docs_vec_columns.keys():
+                values_ = cast(Sequence[DocList[T_doc]], values)
+                # TODO here we should actually check if this is correct
+                self._storage.docs_vec_columns[field] = values_
+            elif field in self._storage.any_columns.keys():
+                # TODO here we should actually check if this is correct
+                values_ = cast(Sequence, values)
+                self._storage.any_columns[field] = values_
+            else:
+                raise KeyError(f'{field} is not a valid field for this DocList')
 
     ####################
     # Deleting data    #
@@ -434,7 +522,7 @@ class DocVec(AnyDocArray[T_doc]):
         return cls.from_columns_storage(storage)
 
     def to_protobuf(self) -> 'DocVecProto':
-        """Convert DocList into a Protobuf message"""
+        """Convert DocVec into a Protobuf message"""
         from docarray.proto import (
             DocListProto,
             DocVecProto,
@@ -453,13 +541,18 @@ class DocVec(AnyDocArray[T_doc]):
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
 
         for field, col_doc in self._storage.doc_columns.items():
-            doc_columns_proto[field] = col_doc.to_protobuf()
+            doc_columns_proto[field] = (
+                col_doc.to_protobuf() if col_doc is not None else None
+            )
         for field, col_tens in self._storage.tensor_columns.items():
-            tensor_columns_proto[field] = col_tens.to_protobuf()
+            tensor_columns_proto[field] = (
+                col_tens.to_protobuf() if col_tens is not None else None
+            )
         for field, col_da in self._storage.docs_vec_columns.items():
             list_proto = ListOfDocArrayProto()
-            for docs in col_da:
-                list_proto.data.append(docs.to_protobuf())
+            if col_da:
+                for docs in col_da:
+                    list_proto.data.append(docs.to_protobuf())
             da_columns_proto[field] = list_proto
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
@@ -480,24 +573,29 @@ class DocVec(AnyDocArray[T_doc]):
         Note this destroys the arguments and returns a new DocList
         """
 
-        unstacked_doc_column: Dict[str, DocList] = dict()
-        unstacked_da_column: Dict[str, List[DocList]] = dict()
-        unstacked_tensor_column: Dict[str, List[AbstractTensor]] = dict()
+        unstacked_doc_column: Dict[str, Optional[DocList]] = dict()
+        unstacked_da_column: Dict[str, Optional[List[DocList]]] = dict()
+        unstacked_tensor_column: Dict[str, Optional[List[AbstractTensor]]] = dict()
         unstacked_any_column = self._storage.any_columns
 
         for field, doc_col in self._storage.doc_columns.items():
-            unstacked_doc_column[field] = doc_col.to_doc_list()
+            unstacked_doc_column[field] = doc_col.to_doc_list() if doc_col else None
 
         for field, da_col in self._storage.docs_vec_columns.items():
-            unstacked_da_column[field] = [docs.to_doc_list() for docs in da_col]
+
+            unstacked_da_column[field] = (
+                [docs.to_doc_list() for docs in da_col] if da_col else None
+            )
 
         for field, tensor_col in list(self._storage.tensor_columns.items()):
             # list is needed here otherwise we cannot delete the column
-            unstacked_tensor_column[field] = list()
-            for tensor in tensor_col:
-                tensor_copy = tensor.get_comp_backend().copy(tensor)
-                unstacked_tensor_column[field].append(tensor_copy)
+            if tensor_col is not None:
+                tensors = list()
+                for tensor in tensor_col:
+                    tensor_copy = tensor.get_comp_backend().copy(tensor)
+                    tensors.append(tensor_copy)
 
+                unstacked_tensor_column[field] = tensors
             del self._storage.tensor_columns[field]
 
         unstacked_column = ChainMap(  # type: ignore

@@ -102,6 +102,13 @@ class DocList(
     del docs[0:5]  # remove elements for 0 to 5 from DocList
     ```
 
+    !!! note
+        If the DocList is homogeneous and its schema contains nested BaseDoc
+        (i.e, BaseDoc inside a BaseDoc) where the nested Document is `Optional`, calling
+        `docs.nested_doc` will return a List of the nested BaseDoc instead of DocList.
+        This is because the nested field could be None and therefore could not fit into
+        a DocList.
+
     :param docs: iterable of Document
 
     """
@@ -200,6 +207,7 @@ class DocList(
 
         if (
             not is_union_type(field_type)
+            and self.__class__.doc_type.__fields__[field].required
             and isinstance(field_type, type)
             and issubclass(field_type, BaseDoc)
         ):
