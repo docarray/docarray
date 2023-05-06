@@ -1,5 +1,4 @@
 # mypy: ignore-errors
-import uuid
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -74,12 +73,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('Elastic Search index is being initialized')
 
         # ElasticSearch client creation
-        if self._db_config.index_name is None:
-            id = uuid.uuid4().hex
-            self._db_config.index_name = 'index__' + id
-
-        self._index_name = self._db_config.index_name
-
         self._client = Elasticsearch(
             hosts=self._db_config.hosts,
             **self._db_config.es_config,
@@ -108,7 +101,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             mappings['properties'][col_name] = self._create_index_mapping(col)
 
         # print(mappings['properties'])
-        if self._client.indices.exists(index=self._index_name):
+        if self._client.indices.exists(index=self.index_name):
             self._client_put_mapping(mappings)
         else:
             self._client_create(mappings)
@@ -116,7 +109,20 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         if len(self._db_config.index_settings):
             self._client_put_settings(self._db_config.index_settings)
 
-        self._refresh(self._index_name)
+        self._refresh(self.index_name)
+
+    @property
+    def index_name(self):
+        default_index_name = (
+            self._schema.__name__.lower() if self._schema is not None else None
+        )
+        if default_index_name is None:
+            raise ValueError(
+                'A ElasticDocIndex must be typed with a Document type.'
+                'To do so, use the syntax: ElasticDocIndex[DocumentType]'
+            )
+
+        return self._db_config.index_name or default_index_name
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -333,7 +339,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         for row in data:
             request = {
-                '_index': self._index_name,
+                '_index': self.index_name,
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
@@ -349,13 +355,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             warnings.warn(str(info))
 
         if refresh:
-            self._refresh(self._index_name)
+            self._refresh(self.index_name)
 
     def num_docs(self) -> int:
         """
         Get the number of documents.
         """
-        return self._client.count(index=self._index_name)['count']
+        return self._client.count(index=self.index_name)['count']
 
     def _del_items(
         self,
@@ -365,7 +371,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         requests = []
         for _id in doc_ids:
             requests.append(
-                {'_op_type': 'delete', '_index': self._index_name, '_id': _id}
+                {'_op_type': 'delete', '_index': self.index_name, '_id': _id}
             )
 
         _, warning_info = self._send_requests(requests, chunk_size)
@@ -375,7 +381,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             ids = [info['delete']['_id'] for info in warning_info]
             warnings.warn(f'No document with id {ids} found')
 
-        self._refresh(self._index_name)
+        self._refresh(self.index_name)
 
     def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
         accumulated_docs = []
@@ -416,7 +422,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        resp = self._client.search(index=self._index_name, **query)
+        resp = self._client.search(index=self.index_name, **query)
         docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
@@ -440,7 +446,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         request = []
         for query in queries:
-            head = {'index': self._index_name}
+            head = {'index': self.index_name}
             body = self._form_search_body(query, limit, search_field)
             request.extend([head, body])
 
@@ -469,7 +475,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ) -> List[List[Dict]]:
         request = []
         for query in filter_queries:
-            head = {'index': self._index_name}
+            head = {'index': self.index_name}
             body = {'query': query, 'size': limit}
             request.extend([head, body])
 
@@ -499,7 +505,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         request = []
         for query in queries:
-            head = {'index': self._index_name}
+            head = {'index': self.index_name}
             body = self._form_text_search_body(query, limit, search_field)
             request.extend([head, body])
 
@@ -615,20 +621,20 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     def _client_put_mapping(self, mappings: Dict[str, Any]):
         self._client.indices.put_mapping(
-            index=self._index_name, properties=mappings['properties']
+            index=self.index_name, properties=mappings['properties']
         )
 
     def _client_create(self, mappings: Dict[str, Any]):
-        self._client.indices.create(index=self._index_name, mappings=mappings)
+        self._client.indices.create(index=self.index_name, mappings=mappings)
 
     def _client_put_settings(self, settings: Dict[str, Any]):
-        self._client.indices.put_settings(index=self._index_name, settings=settings)
+        self._client.indices.put_settings(index=self.index_name, settings=settings)
 
     def _client_mget(self, ids: Sequence[str]):
-        return self._client.mget(index=self._index_name, ids=ids)
+        return self._client.mget(index=self.index_name, ids=ids)
 
     def _client_search(self, **kwargs):
-        return self._client.search(index=self._index_name, **kwargs)
+        return self._client.search(index=self.index_name, **kwargs)
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
-        return self._client.msearch(index=self._index_name, searches=request)
+        return self._client.msearch(index=self.index_name, searches=request)

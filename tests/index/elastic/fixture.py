@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 
 import numpy as np
 import pytest
@@ -87,3 +88,8 @@ def ten_deep_nested_docs():
         DeepNestedDoc(d=NestedDoc(d=SimpleDoc(tens=np.random.randn(10))))
         for _ in range(10)
     ]
+
+
+@pytest.fixture(scope='function')
+def tmp_index_name():
+    return uuid.uuid4().hex

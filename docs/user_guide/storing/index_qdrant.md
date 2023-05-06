@@ -27,6 +27,10 @@ For general usage of a Document Index, see the [general user guide](./docindex.m
     runtime_config = QdrantDocumentIndex.RuntimeConfig()
     print(runtime_config)  # shows default values
     ```
+    
+    Note that the collection_name from the DBConfig is an Optional[str] with None as default value. This is because
+    the QdrantDocumentIndex will take the name the Document type that you use as schema. For example, for QdrantDocumentIndex[MyDoc](...) 
+    the data will be stored in a collection name MyDoc if no specific collection_name is passed in the DBConfig.
 
 ```python
 import numpy as np

@@ -6,8 +6,12 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.index.elastic.fixture import start_storage_v7  # noqa: F401
-from tests.index.elastic.fixture import FlatDoc, SimpleDoc
+from tests.index.elastic.fixture import (  # noqa: F401
+    FlatDoc,
+    SimpleDoc,
+    start_storage_v7,
+    tmp_index_name,
+)
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -167,8 +171,8 @@ def test_find_tensorflow():
     )
 
 
-def test_find_batched():
-    index = ElasticV7DocIndex[SimpleDoc]()
+def test_find_batched(tmp_index_name):  # noqa: F811
+    index = ElasticV7DocIndex[SimpleDoc](index_name=tmp_index_name)
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     index.index(index_docs)
@@ -243,13 +247,13 @@ def test_text_search():
             assert doc.text.index(query) >= 0
 
 
-def test_query_builder():
+def test_query_builder(tmp_index_name):  # noqa: F811
     class MyDoc(BaseDoc):
         tens: NdArray[10]
         num: int
         text: str
 
-    index = ElasticV7DocIndex[MyDoc]()
+    index = ElasticV7DocIndex[MyDoc](index_name=tmp_index_name)
     index_docs = [
         MyDoc(
             id=f'{i}', tens=np.random.rand(10), num=int(i / 2), text=f'text {int(i/2)}'

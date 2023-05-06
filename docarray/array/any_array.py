@@ -106,7 +106,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, T, 'AbstractTensor']:
+    ) -> Union[MutableSequence, T, 'AbstractTensor', None]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract

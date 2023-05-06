@@ -443,3 +443,23 @@ def test_sort():
     assert len(da) == 3
     assert da[0].url == 'http://url.com/foo_0.png'
     assert da[1].url == 'http://url.com/foo_1.png'
+
+
+def test_optional_field():
+    from typing import Optional
+
+    from docarray import BaseDoc, DocList
+    from docarray.typing import ImageUrl, NdArray
+
+    class Nested(BaseDoc):
+        tensor: NdArray
+
+    class Image(BaseDoc):
+        url: ImageUrl
+        features: Optional[Nested] = None
+
+    docs = DocList[Image]([Image(url='http://url.com/foo.png') for _ in range(10)])
+
+    assert docs.features == [None for _ in range(10)]
+    assert isinstance(docs.features, list)
+    assert not isinstance(docs.features, DocList)
