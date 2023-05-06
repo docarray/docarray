@@ -161,7 +161,12 @@ db.index(data)
 For `HnswDocumentIndex` you need to specify a `work_dir` where the data will be stored; for other backends you
 usually specify a `host` and a `port` instead.
 
-Either way, if the location does not yet contain any data, we start from a blank slate.
+In addition to a host and a port, most backends can also take an `index_name`, `table_name`, `collection_name` or similar.
+This specifies the name of the index/table/collection that will be created in the database.
+You don't have to specify this though: By default, this name will be taken from the name of the Document type that you use as schema.
+For example, for `WeaviateDocumentIndex[MyDoc](...)` the data will be stored in a Weaviate Class of name `MyDoc`.
+
+In any case, if the location does not yet contain any data, we start from a blank slate.
 If the location already contains data from a previous session, it will be accessible through the Document Index.
 
 ## Index data

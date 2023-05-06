@@ -6,18 +6,22 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
-from tests.index.elastic.fixture import FlatDoc, SimpleDoc
+from tests.index.elastic.fixture import (  # noqa: F401
+    FlatDoc,
+    SimpleDoc,
+    start_storage_v8,
+    tmp_index_name,
+)
 
 pytestmark = [pytest.mark.slow, pytest.mark.index, pytest.mark.elasticv8]
 
 
 @pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
-def test_find_simple_schema(similarity):
+def test_find_simple_schema(similarity, tmp_index_name):  # noqa: F811
     class SimpleSchema(BaseDoc):
         tens: NdArray[10] = Field(similarity=similarity)
 
-    index = ElasticDocIndex[SimpleSchema]()
+    index = ElasticDocIndex[SimpleSchema](index_name=tmp_index_name)
 
     index_docs = []
     for _ in range(10):
@@ -37,12 +41,12 @@ def test_find_simple_schema(similarity):
 
 
 @pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
-def test_find_flat_schema(similarity):
+def test_find_flat_schema(similarity, tmp_index_name):  # noqa: F811
     class FlatSchema(BaseDoc):
         tens_one: NdArray = Field(dims=10, similarity=similarity)
         tens_two: NdArray = Field(dims=50, similarity=similarity)
 
-    index = ElasticDocIndex[FlatSchema]()
+    index = ElasticDocIndex[FlatSchema](index_name=tmp_index_name)
 
     index_docs = []
     for _ in range(10):
@@ -75,7 +79,7 @@ def test_find_flat_schema(similarity):
 
 
 @pytest.mark.parametrize('similarity', ['cosine', 'l2_norm', 'dot_product'])
-def test_find_nested_schema(similarity):
+def test_find_nested_schema(similarity, tmp_index_name):  # noqa: F811
     class SimpleDoc(BaseDoc):
         tens: NdArray[10] = Field(similarity=similarity)
 
@@ -87,7 +91,7 @@ def test_find_nested_schema(similarity):
         d: NestedDoc
         tens: NdArray = Field(similarity=similarity, dims=10)
 
-    index = ElasticDocIndex[DeepNestedDoc]()
+    index = ElasticDocIndex[DeepNestedDoc](index_name=tmp_index_name)
 
     index_docs = []
     for _ in range(10):
@@ -188,8 +192,8 @@ def test_find_tensorflow():
     )
 
 
-def test_find_batched():
-    index = ElasticDocIndex[SimpleDoc]()
+def test_find_batched(tmp_index_name):  # noqa: F811
+    index = ElasticDocIndex[SimpleDoc](index_name=tmp_index_name)
 
     index_docs = [SimpleDoc(tens=np.random.rand(10)) for _ in range(10)]
     index.index(index_docs)
@@ -272,7 +276,9 @@ def test_query_builder():
 
     index = ElasticDocIndex[MyDoc]()
     index_docs = [
-        MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i/2)}')
+        MyDoc(
+            id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'text {int(i / 2)}'
+        )
         for i in range(10)
     ]
     index.index(index_docs)
@@ -327,3 +333,12 @@ def test_query_builder():
 
     docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == ['7', '6', '5', '4']
+
+
+def test_index_name():
+    class MyDoc(BaseDoc):
+        expected_attendees: dict = Field(col_type='integer_range')
+        time_frame: dict = Field(col_type='date_range', format='yyyy-MM-dd')
+
+    index = ElasticDocIndex[MyDoc]()
+    assert index.index_name == MyDoc.__name__.lower()

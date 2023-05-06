@@ -34,3 +34,17 @@ def test_column_config(weaviate_client):
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name="StringDoc")
     index = WeaviateDocumentIndex[StringDoc](db_config=dbconfig)
     assert get_text_field_data_type(index, "StringDoc") == "string"
+
+
+def test_index_name():
+    class TextDoc(BaseDoc):
+        text: str = Field()
+
+    class StringDoc(BaseDoc):
+        text: str = Field(col_type="string")
+
+    index = WeaviateDocumentIndex[TextDoc]()
+    assert index.index_name == TextDoc.__name__
+
+    index = WeaviateDocumentIndex[StringDoc]()
+    assert index.index_name == StringDoc.__name__

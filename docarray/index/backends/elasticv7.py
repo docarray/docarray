@@ -119,7 +119,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
 
-        resp = self._client.search(index=self._index_name, body=query)
+        resp = self._client.search(index=self.index_name, body=query)
         docs, scores = self._format_response(resp)
 
         return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
@@ -161,20 +161,20 @@ class ElasticV7DocIndex(ElasticDocIndex):
     ###############################################
 
     def _client_put_mapping(self, mappings: Dict[str, Any]):
-        self._client.indices.put_mapping(index=self._index_name, body=mappings)
+        self._client.indices.put_mapping(index=self.index_name, body=mappings)
 
     def _client_create(self, mappings: Dict[str, Any]):
         body = {'mappings': mappings}
-        self._client.indices.create(index=self._index_name, body=body)
+        self._client.indices.create(index=self.index_name, body=body)
 
     def _client_put_settings(self, settings: Dict[str, Any]):
-        self._client.indices.put_settings(index=self._index_name, body=settings)
+        self._client.indices.put_settings(index=self.index_name, body=settings)
 
     def _client_mget(self, ids: Sequence[str]):
-        return self._client.mget(index=self._index_name, body={'ids': ids})
+        return self._client.mget(index=self.index_name, body={'ids': ids})
 
     def _client_search(self, **kwargs):
-        return self._client.search(index=self._index_name, body=kwargs)
+        return self._client.search(index=self.index_name, body=kwargs)
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
-        return self._client.msearch(index=self._index_name, body=request)
+        return self._client.msearch(index=self.index_name, body=request)
