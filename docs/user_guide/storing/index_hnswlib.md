@@ -207,3 +207,5 @@ To delete nested data, you need to specify the `id`.
 # example of deleting nested and flat index
 del doc_index[index_docs[6].id]
 ```
+
+Check [here](docindex#nested-data-with-subindex) for nested data with subindex.

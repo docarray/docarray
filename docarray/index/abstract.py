@@ -94,11 +94,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
         if subindex:
 
-            class _new_schema(self._schema):  # type: ignore
+            class _NewSchema(self._schema):  # type: ignore
                 parent_id: Optional[ID] = None
 
             self._ori_schema = self._schema
-            self._schema = cast(Type[BaseDoc], _new_schema)
+            self._schema = cast(Type[BaseDoc], _NewSchema)
 
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
@@ -480,6 +480,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> SubindexFindResult:
+        """Find documents in subindex level.
+
+        :param query: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.)
+            with a single axis, or a Document
+        :param search_field: name of the field to search on.
+            The search field must be a subindex field.
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing root docs, subindex docs and scores
+        """
         self._logger.debug(
             f'Executing `find` for search field {search_field} and return both root and sub level results'
         )
@@ -584,6 +594,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         limit: int = 10,
         **kwargs,
     ) -> DocList:
+        """Find documents in subindex level based on a filter query
+
+        :param filter_query: the DB specific filter query to execute
+        :param subindex: name of the subindex to search on
+        :param limit: maximum number of documents to return
+        :return: a DocList containing the subindex level documents that match the filter query
+        """
         self._logger.debug(
             f'Executing `filter` for the query {filter_query} in subindex {subindex}'
         )
@@ -685,6 +702,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return FindResultBatched(documents=da_list_, scores=scores)
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        """Filter the ids of the subindex documents given id of root document.
+
+        :param id: the root document id to filter by
+        :return: a list of ids of the subindex documents
+        """
         return None
 
     ##########################################################
@@ -754,6 +776,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self,
         docs: DocList[BaseDoc],
     ):
+        """
+        Add `parent_id` to all sublevel documents.
+
+        :param docs: The document(s) to update the `parent_id` for
+        """
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
