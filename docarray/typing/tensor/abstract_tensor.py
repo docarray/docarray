@@ -1,6 +1,8 @@
 import abc
 import warnings
 from abc import ABC
+from functools import reduce
+from operator import mul
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -16,6 +18,9 @@ from typing import (
     cast,
 )
 
+import numpy as np
+
+from docarray.base_doc.io.json import orjson_dumps
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
@@ -224,6 +229,21 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         except TypeError:
             raise TypeError(f'{item} is not a valid tensor shape.')
         return item
+
+    @classmethod
+    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+        field_schema.update(type='array', items={'type': 'number'})
+        if cls.__docarray_target_shape__ is not None:
+            shape_info = (
+                '[' + ', '.join([str(s) for s in cls.__docarray_target_shape__]) + ']'
+            )
+            if reduce(mul, cls.__docarray_target_shape__, 1) <= 256:
+                # custom example only for 'small' shapes, otherwise it is too big to display
+                example_payload = orjson_dumps(np.zeros(cls.__docarray_target_shape__))
+                field_schema.update(example=example_payload)
+        else:
+            shape_info = 'not specified'
+        field_schema['tensor/array shape'] = shape_info
 
     @classmethod
     def _docarray_create_parametrized_type(cls: Type[T], shape: Tuple[int]):

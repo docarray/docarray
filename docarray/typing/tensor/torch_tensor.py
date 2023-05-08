@@ -1,12 +1,9 @@
 from copy import copy
-from functools import reduce
-from operator import mul
-from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 
 from docarray.base_doc.base_node import BaseNode
-from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library
@@ -134,21 +131,6 @@ class TorchTensor(
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
-
-    @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        field_schema.update(type='array', items={'type': 'number'})
-        if cls.__docarray_target_shape__ is not None:
-            shape_info = (
-                '[' + ', '.join([str(s) for s in cls.__docarray_target_shape__]) + ']'
-            )
-            if reduce(mul, cls.__docarray_target_shape__, 1) <= 256:
-                # custom example only for 'small' shapes, otherwise it is too big to display
-                example_payload = orjson_dumps(np.zeros(cls.__docarray_target_shape__))
-                field_schema.update(example=example_payload)
-        else:
-            shape_info = 'not specified'
-        field_schema['tensor/array shape'] = shape_info
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
