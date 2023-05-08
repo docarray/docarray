@@ -180,12 +180,13 @@ class DocList(
         fail.
         :param docs: Iterable of Documents
         """
+        it: Iterable[T_doc] = list()
         if self is docs:
             # see https://github.com/docarray/docarray/issues/1489
-            it = list(it)
+            it = list(docs)
         else:
             it = self._validate_docs(docs)
-         
+
         return super().extend(it)
 
     def insert(self, i: SupportsIndex, doc: T_doc):
