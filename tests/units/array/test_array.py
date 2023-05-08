@@ -3,6 +3,7 @@ from typing import Optional, TypeVar, Union
 import numpy as np
 import pytest
 import torch
+from pydantic import parse_obj_as
 
 from docarray import BaseDoc, DocList
 from docarray.typing import ImageUrl, NdArray, TorchTensor
@@ -51,6 +52,17 @@ def test_extend():
     assert len(da) == 20
     for da, i in zip(da, range(20)):
         assert da.id == str(i)
+
+
+def test_extend_itself():
+    class Text(BaseDoc):
+        text: str
+
+    da = DocList[Text]([Text(text='hello', id=str(i)) for i in range(10)])
+
+    da.extend(da)
+
+    assert len(da) == 20
 
 
 def test_slice(da):
@@ -331,7 +343,7 @@ def test_get_from_slice():
     texts = da_sliced.text
     assert len(texts) == 5
     for i, text in enumerate(texts):
-        assert text == f'hello{i*2}'
+        assert text == f'hello{i * 2}'
 
 
 def test_del_item(da):
@@ -452,3 +464,18 @@ def test_optional_field():
     assert docs.features == [None for _ in range(10)]
     assert isinstance(docs.features, list)
     assert not isinstance(docs.features, DocList)
+
+
+def test_validate_list_dict():
+
+    images = [
+        dict(url=f'http://url.com/foo_{i}.png', tensor=NdArray(i)) for i in [2, 0, 1]
+    ]
+
+    docs = parse_obj_as(DocList[Image], images)
+
+    assert docs.url == [
+        'http://url.com/foo_2.png',
+        'http://url.com/foo_0.png',
+        'http://url.com/foo_1.png',
+    ]

@@ -13,6 +13,7 @@ from typing import (
     overload,
 )
 
+from pydantic import parse_obj_as
 from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
@@ -171,7 +172,7 @@ class DocList(
         as the `.doc_type` of this `DocList` otherwise it will fail.
         :param doc: A Document
         """
-        super().append(self._validate_one_doc(doc))
+        return super().append(self._validate_one_doc(doc))
 
     def extend(self, docs: Iterable[T_doc]):
         """
@@ -180,7 +181,14 @@ class DocList(
         fail.
         :param docs: Iterable of Documents
         """
-        super().extend(self._validate_docs(docs))
+        it: Iterable[T_doc] = list()
+        if self is docs:
+            # see https://github.com/docarray/docarray/issues/1489
+            it = list(docs)
+        else:
+            it = self._validate_docs(docs)
+
+        return super().extend(it)
 
     def insert(self, i: SupportsIndex, doc: T_doc):
         """
@@ -261,8 +269,13 @@ class DocList(
 
         if isinstance(value, (cls, DocVec)):
             return value
-        elif isinstance(value, Iterable):
+        elif isinstance(value, cls):
             return cls(value)
+        elif isinstance(value, Iterable):
+            docs = []
+            for doc in value:
+                docs.append(parse_obj_as(cls.doc_type, doc))
+            return cls(docs)
         else:
             raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
