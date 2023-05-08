@@ -151,6 +151,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, BaseDoc):
+            return False
+
         if self.__fields__.keys() != other.__fields__.keys():
             return False
 
