@@ -112,6 +112,17 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._set_properties()
         self._create_schema()
 
+    @property
+    def index_name(self):
+        default_index_name = self._schema.__name__ if self._schema is not None else None
+        if default_index_name is None:
+            raise ValueError(
+                'A WeaviateDocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: WeaviateDocumentIndex[DocumentType]'
+            )
+
+        return self._db_config.index_name or default_index_name
+
     def _set_properties(self) -> None:
         field_overwrites = {"id": DOCUMENTID}
 
@@ -218,13 +229,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         #       and configure replication
         # we will update base on user feedback
         schema["properties"] = properties
-        schema["class"] = self._db_config.index_name
+        schema["class"] = self.index_name
 
         # TODO: Use exists() instead of contains() when available
         #       see https://github.com/weaviate/weaviate-python-client/issues/232
         if self._client.schema.contains(schema):
             logging.warning(
-                f"Found index {self._db_config.index_name} with schema {schema}. Will reuse existing schema."
+                f"Found index {self.index_name} with schema {schema}. Will reuse existing schema."
             )
         else:
             self._client.schema.create_class(schema)
@@ -234,7 +245,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """Dataclass that contains all "static" configurations of WeaviateDocumentIndex."""
 
         host: str = 'http://localhost:8080'
-        index_name: str = 'Document'
+        index_name: Optional[str] = None
         username: Optional[str] = None
         password: Optional[str] = None
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
@@ -280,7 +291,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # see: https://weaviate.io/developers/weaviate/api/rest/batch#maximum-number-of-deletes-per-query
         while has_matches:
             results = self._client.batch.delete_objects(
-                class_name=self._db_config.index_name,
+                class_name=self.index_name,
                 where=where_filter,
             )
 
@@ -290,14 +301,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._overwrite_id(filter_query)
 
         results = (
-            self._client.query.get(self._db_config.index_name, self.properties)
+            self._client.query.get(self.index_name, self.properties)
             .with_additional("vector")
             .with_where(filter_query)
             .with_limit(limit)
             .do()
         )
 
-        docs = results["data"]["Get"][self._db_config.index_name]
+        docs = results["data"]["Get"][self.index_name]
 
         return [self._parse_weaviate_result(doc) for doc in docs]
 
@@ -308,7 +319,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._overwrite_id(filter_query)
 
         qs = [
-            self._client.query.get(self._db_config.index_name, self.properties)
+            self._client.query.get(self.index_name, self.properties)
             .with_additional("vector")
             .with_where(filter_query)
             .with_limit(limit)
@@ -430,7 +441,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResult:
-        index_name = self._db_config.index_name
+        index_name = self.index_name
         if search_field:
             logging.warning(
                 'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
@@ -534,7 +545,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 near_vector[score_name] = score_threshold
 
             q = (
-                self._client.query.get(self._db_config.index_name, self.properties)
+                self._client.query.get(self.index_name, self.properties)
                 .with_near_vector(near_vector)
                 .with_limit(limit)
                 .with_additional([score_name, "vector"])
@@ -567,7 +578,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         results = (
-            self._client.query.get(self._db_config.index_name, self.properties)
+            self._client.query.get(self.index_name, self.properties)
             .with_where(where_filter)
             .with_additional("vector")
             .do()
@@ -575,7 +586,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         docs = [
             self._parse_weaviate_result(doc)
-            for doc in results["data"]["Get"][self._db_config.index_name]
+            for doc in results["data"]["Get"][self.index_name]
         ]
 
         return docs
@@ -616,7 +627,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._index_subindex(column_to_data)
 
         docs = self._transpose_col_value_dict(column_to_data)
-        index_name = self._db_config.index_name
+        index_name = self.index_name
 
         with self._client.batch as batch:
             for doc in docs:
@@ -639,7 +650,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _text_search(
         self, query: str, limit: int, search_field: str = ''
     ) -> _FindResult:
-        index_name = self._db_config.index_name
+        index_name = self.index_name
         bm25 = {"query": query, "properties": [search_field]}
 
         results = (
@@ -664,7 +675,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             bm25 = {"query": query, "properties": [search_field]}
 
             q = (
-                self._client.query.get(self._db_config.index_name, self.properties)
+                self._client.query.get(self.index_name, self.properties)
                 .with_bm25(bm25)
                 .with_limit(limit)
                 .with_additional(["score", "vector"])
@@ -725,7 +736,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        index_name = self._db_config.index_name
+        index_name = self.index_name
         result = self._client.query.aggregate(index_name).with_meta_count().do()
         # TODO: decorator to check for errors
         total_docs = result["data"]["Aggregate"][index_name][0]["meta"]["count"]
@@ -829,7 +840,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def __init__(self, document_index):
             self._queries = [
                 document_index._client.query.get(
-                    document_index._db_config.index_name, document_index.properties
+                    document_index.index_name, document_index.properties
                 )
             ]
 

@@ -129,3 +129,17 @@ def test_field_range():
     }
     docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == [doc[0].id, doc[1].id]
+
+
+def test_index_name():
+    class TextDoc(BaseDoc):
+        text: str = Field()
+
+    class StringDoc(BaseDoc):
+        text: str = Field(col_type='text')
+
+    index = ElasticV7DocIndex[TextDoc]()
+    assert index.index_name == TextDoc.__name__.lower()
+
+    index = ElasticV7DocIndex[StringDoc]()
+    assert index.index_name == StringDoc.__name__.lower()

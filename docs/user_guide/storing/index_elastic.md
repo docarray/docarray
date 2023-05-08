@@ -494,7 +494,7 @@ The following configs can be set in `DBConfig`:
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
 | `hosts`           | Hostname of the Elasticsearch server                                                                                                   | `http://localhost:9200` |
 | `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None |
-| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None |
+| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None. Data will be stored in an index named after the Document type used as schema. |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
 
