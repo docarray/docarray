@@ -151,6 +151,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             object.__setattr__(self, '__dict__', dict_ref)
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, BaseDoc):
+            return False
+
         if self.__fields__.keys() != other.__fields__.keys():
             return False
 
@@ -249,7 +252,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             # we need to do this because pydantic will not recognize DocList correctly
             original_exclude = original_exclude or {}
             if field not in original_exclude:
-                data[field] = [doc.dict() for doc in getattr(self, field)]
+                val = getattr(self, field)
+                data[field] = [doc.dict() for doc in val] if val is not None else None
 
         # this is copy from pydantic code
         if self.__custom_root_type__:
@@ -319,7 +323,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             # we need to do this because pydantic will not recognize DocList correctly
             original_exclude = original_exclude or {}
             if field not in original_exclude:
-                data[field] = [doc.dict() for doc in getattr(self, field)]
+                val = getattr(self, field)
+                data[field] = [doc.dict() for doc in val] if val is not None else None
 
         return data
 
