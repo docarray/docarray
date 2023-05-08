@@ -252,8 +252,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             # we need to do this because pydantic will not recognize DocList correctly
             original_exclude = original_exclude or {}
             if field not in original_exclude:
-                val = getattr(self, field)
-                data[field] = [doc.dict() for doc in val] if val is not None else None
+                data[field] = getattr(
+                    self, field
+                )  # here we need to keep doclist as doclist otherwise if a user want to have a special json config it will not work
 
         # this is copy from pydantic code
         if self.__custom_root_type__:
