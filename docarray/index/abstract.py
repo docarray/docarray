@@ -156,6 +156,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # Example: `default_column_config['VARCHAR'] = {'length': 255}`
         default_column_config: Dict[Type, Dict[str, Any]] = field(default_factory=dict)
 
+    @property
+    def index_name(self):
+        ...
+
     #####################################
     # Abstract methods                  #
     # Subclasses must implement these   #
@@ -934,7 +938,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             if issubclass(col.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
                 sub_db_config.index_name = f'{self.index_name}__{col_name}'
-                self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](
+                self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](  # type: ignore
                     db_config=sub_db_config, subindex=True
                 )
 
