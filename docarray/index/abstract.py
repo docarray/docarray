@@ -1,3 +1,4 @@
+import copy
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
@@ -112,6 +113,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         )
         self._is_subindex = subindex
         self._subindices: Dict[str, BaseDocIndex] = {}
+        self._init_subindex()
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -142,7 +144,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     @dataclass
     class DBConfig(ABC):
-        ...
+        index_name: Optional[str] = None
 
     @dataclass
     class RuntimeConfig(ABC):
@@ -923,6 +925,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return _ColumnInfo(
             docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim
         )
+
+    def _init_subindex(
+        self,
+    ):
+        """Initialize subindices if any column is subclass of AnyDocArray."""
+        for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                sub_db_config = copy.deepcopy(self._db_config)
+                sub_db_config.index_name = f'{self.index_name}__{col_name}'
+                self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](
+                    db_config=sub_db_config, subindex=True
+                )
 
     def _validate_docs(
         self, docs: Union[BaseDoc, Sequence[BaseDoc]]

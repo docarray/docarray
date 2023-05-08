@@ -1,4 +1,3 @@
-import copy
 import uuid
 from dataclasses import dataclass, field
 from typing import (
@@ -68,6 +67,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
+
+        if self._db_config is not None and getattr(self._db_config, 'index_name'):
+            self._db_config.collection_name = self._db_config.index_name
+
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
         )
@@ -99,6 +102,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         return self._db_config.collection_name or default_collection_name
+
+    @property
+    def index_name(self):
+        return self.collection_name
 
     @dataclass
     class Query:
@@ -269,15 +276,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             vectors_config = {}
 
             for column_name, column_info in self._column_infos.items():
-                if issubclass(column_info.docarray_type, AnyDocArray):
-                    sub_db_config = copy.deepcopy(self._db_config)
-                    sub_db_config.collection_name = (
-                        f'{self.collection_name}__{column_name}'
-                    )
-                    self._subindices[column_name] = self.__class__[  # type: ignore
-                        column_info.docarray_type.doc_type
-                    ](sub_db_config, subindex=True)
-                    continue
                 if column_info.db_type == 'vector':
                     vectors_config[column_name] = self._to_qdrant_vector_params(
                         column_info

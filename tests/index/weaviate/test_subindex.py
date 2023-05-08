@@ -80,8 +80,7 @@ def index():
     return index
 
 
-def test_subindex_init():
-    index = WeaviateDocumentIndex[MyDoc]()
+def test_subindex_init(index):
     assert isinstance(index._subindices['docs'], WeaviateDocumentIndex)
     assert isinstance(index._subindices['list_docs'], WeaviateDocumentIndex)
     assert isinstance(
