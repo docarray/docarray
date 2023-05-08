@@ -473,7 +473,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
         return FindResult(documents=docs, scores=scores)
 
-    def find_subindex(  # TODO change method name
+    def find_subindex(
         self,
         query: Union[AnyTensor, BaseDoc],
         search_field: str = '',
@@ -1078,6 +1078,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return self.num_docs()
 
     def _index_subindex(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        """Index subindex documents in the corresponding subindex.
+
+        :param column_to_data: A dictionary from column name to a generator
+        """
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
                 docs = [
@@ -1087,6 +1091,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 column_to_data.pop(col_name, None)
 
     def _get_subindex_doclist(self, doc: Dict[str, Any], field_name: str):
+        """Get subindex Documents from the index and assign them to `field_name`.
+
+        :param doc: a dictionary mapping from column name to value
+        :param field_name: field name of the subindex Documents
+        """
         if field_name not in doc.keys():
             parent_id = doc['id']
             nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
@@ -1098,6 +1107,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        """Get the root_id given the id of a subindex Document and the root and subindex name
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
         subindex = self._subindices[root]
 
         if sub in subindex._column_infos.keys():
