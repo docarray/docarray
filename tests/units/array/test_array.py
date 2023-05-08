@@ -53,6 +53,17 @@ def test_extend():
         assert da.id == str(i)
 
 
+def test_extend_itself():
+    class Text(BaseDoc):
+        text: str
+
+    da = DocList[Text]([Text(text='hello', id=str(i)) for i in range(10)])
+
+    da.extend(da)
+
+    assert len(da) == 20
+
+
 def test_slice(da):
     da2 = da[0:5]
     assert type(da2) == da.__class__
@@ -331,7 +342,7 @@ def test_get_from_slice():
     texts = da_sliced.text
     assert len(texts) == 5
     for i, text in enumerate(texts):
-        assert text == f'hello{i*2}'
+        assert text == f'hello{i * 2}'
 
 
 def test_del_item(da):
