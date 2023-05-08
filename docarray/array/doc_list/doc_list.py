@@ -13,6 +13,7 @@ from typing import (
     overload,
 )
 
+from pydantic import parse_obj_as
 from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
@@ -268,8 +269,13 @@ class DocList(
 
         if isinstance(value, (cls, DocVec)):
             return value
-        elif isinstance(value, Iterable):
+        elif isinstance(value, cls):
             return cls(value)
+        elif isinstance(value, Iterable):
+            docs = []
+            for doc in value:
+                docs.append(parse_obj_as(cls.doc_type, doc))
+            return cls(docs)
         else:
             raise TypeError(f'Expecting an Iterable of {cls.doc_type}')
 
