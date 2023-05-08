@@ -3,7 +3,8 @@ from typing import List, Optional
 import numpy as np
 import pytest
 
-from docarray import BaseDoc, DocList
+from docarray import DocList
+from docarray.base_doc.doc import BaseDoc
 from docarray.typing import NdArray
 
 
@@ -80,11 +81,11 @@ def test_nested_to_dict_exclude_set(nested_docs):
     assert 'hello' not in d.keys()
 
 
-def test_nested_to_dict_exclude_dict(nested_docs):  # doto change
+def test_nested_to_dict_exclude_dict(nested_docs):
     d = nested_docs.dict(exclude={'hello': True})
     assert 'hello' not in d.keys()
 
 
 def test_nested_to_json(nested_docs):
-    nested_docs.json()
-    # nested_docs.__class__.parse_raw(d)
+    d = nested_docs.json()
+    nested_docs.__class__.parse_raw(d)
