@@ -1,20 +1,25 @@
 import os
+import warnings
 from typing import (
     TYPE_CHECKING,
     AbstractSet,
     Any,
     Callable,
     Dict,
+    List,
     Mapping,
     Optional,
+    Tuple,
     Type,
     TypeVar,
     Union,
+    cast,
     no_type_check,
 )
 
 import orjson
 from pydantic import BaseModel, Field
+from pydantic.main import ROOT_KEY
 from rich.console import Console
 
 from docarray.base_doc.base_node import BaseNode
@@ -34,6 +39,9 @@ _console: Console = Console()
 
 T = TypeVar('T', bound='BaseDoc')
 T_update = TypeVar('T_update', bound='UpdateMixin')
+
+
+ExcludeType = Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']]
 
 
 class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
@@ -191,7 +199,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self,
         *,
         include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
-        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        exclude: ExcludeType = None,
         by_alias: bool = False,
         skip_defaults: Optional[bool] = None,
         exclude_unset: bool = False,
@@ -208,18 +216,45 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         `encoder` is an optional function to supply as `default` to json.dumps(),
         other arguments as per `json.dumps()`.
         """
-        return super().json(
-            include=include,
-            exclude=exclude,
-            by_alias=by_alias,
-            skip_defaults=skip_defaults,
-            exclude_unset=exclude_unset,
-            exclude_defaults=exclude_defaults,
-            exclude_none=exclude_none,
-            encoder=encoder,
-            models_as_dict=models_as_dict,
-            **dumps_kwargs,
+        exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
+            exclude=exclude
         )
+
+        # this is copy from pydantic code
+        if skip_defaults is not None:
+            warnings.warn(
+                f'{self.__class__.__name__}.json(): "skip_defaults" is deprecated and replaced by "exclude_unset"',
+                DeprecationWarning,
+            )
+            exclude_unset = skip_defaults
+        encoder = cast(Callable[[Any], Any], encoder or self.__json_encoder__)
+
+        # We don't directly call `self.dict()`, which does exactly this with `to_dict=True`
+        # because we want to be able to keep raw `BaseModel` instances and not as `dict`.
+        # This allows users to write custom JSON encoders for given `BaseModel` classes.
+        data = dict(
+            self._iter(
+                to_dict=models_as_dict,
+                by_alias=by_alias,
+                include=include,
+                exclude=exclude,
+                exclude_unset=exclude_unset,
+                exclude_defaults=exclude_defaults,
+                exclude_none=exclude_none,
+            )
+        )
+
+        # this is the custom part to deal with DocList
+        for field in doclist_exclude_fields:
+            # we need to do this because pydantic will not recognize DocList correctly
+            original_exclude = original_exclude or {}
+            if field not in original_exclude:
+                data[field] = [doc.dict() for doc in getattr(self, field)]
+
+        # this is copy from pydantic code
+        if self.__custom_root_type__:
+            data = data[ROOT_KEY]
+        return self.__config__.json_dumps(data, default=encoder, **dumps_kwargs)
 
     @no_type_check
     @classmethod
@@ -253,7 +288,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self,
         *,
         include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
-        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']] = None,
+        exclude: ExcludeType = None,
         by_alias: bool = False,
         skip_defaults: Optional[bool] = None,
         exclude_unset: bool = False,
@@ -266,22 +301,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         """
 
-        doclist_exclude_fields = []
-        for field in self.__fields__.keys():
-            from docarray import DocList
-
-            type_ = self._get_field_type(field)
-            if isinstance(type_, type) and issubclass(type_, DocList):
-                doclist_exclude_fields.append(field)
-
-        original_exclude = exclude
-        if exclude is None:
-            exclude = set(doclist_exclude_fields)
-        elif isinstance(exclude, AbstractSet):
-            exclude = set([*exclude, *doclist_exclude_fields])
-        elif isinstance(exclude, Mapping):
-            exclude = dict(**exclude)
-            exclude.update({field: ... for field in doclist_exclude_fields})
+        exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
+            exclude=exclude
+        )
 
         data = super().dict(
             include=include,
@@ -300,5 +322,31 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 data[field] = [doc.dict() for doc in getattr(self, field)]
 
         return data
+
+    def _exclude_doclist(
+        self, exclude: ExcludeType
+    ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
+        doclist_exclude_fields = []
+        for field in self.__fields__.keys():
+            from docarray import DocList
+
+            type_ = self._get_field_type(field)
+            if isinstance(type_, type) and issubclass(type_, DocList):
+                doclist_exclude_fields.append(field)
+
+        original_exclude = exclude
+        if exclude is None:
+            exclude = set(doclist_exclude_fields)
+        elif isinstance(exclude, AbstractSet):
+            exclude = set([*exclude, *doclist_exclude_fields])
+        elif isinstance(exclude, Mapping):
+            exclude = dict(**exclude)
+            exclude.update({field: ... for field in doclist_exclude_fields})
+
+        return (
+            exclude,
+            original_exclude,
+            doclist_exclude_fields,
+        )
 
     to_json = json

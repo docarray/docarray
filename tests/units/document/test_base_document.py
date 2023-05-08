@@ -83,3 +83,8 @@ def test_nested_to_dict_exclude_set(nested_docs):
 def test_nested_to_dict_exclude_dict(nested_docs):  # doto change
     d = nested_docs.dict(exclude={'hello': True})
     assert 'hello' not in d.keys()
+
+
+def test_nested_to_json(nested_docs):
+    nested_docs.json()
+    # nested_docs.__class__.parse_raw(d)
