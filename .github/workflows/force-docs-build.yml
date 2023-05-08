@@ -78,6 +78,7 @@ jobs:
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
           git checkout -f ${{ inputs.pages_branch }}
           git reset --hard HEAD
+          rm -rf docs
           mv /tmp/tmp_docs docs
 
       - name: Push it up!
