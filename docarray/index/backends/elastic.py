@@ -96,7 +96,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
-                sub_db_config.index_name = f'{self._index_name}__{col_name}'
+                sub_db_config.index_name = f'{self.index_name}__{col_name}'
                 self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](
                     db_config=sub_db_config, subindex=True
                 )

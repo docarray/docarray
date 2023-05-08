@@ -203,9 +203,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             # in weaviate, we do not create a property for the doc's embeddings
             if issubclass(column_info.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
-                sub_db_config.index_name = (
-                    f'{self._db_config.index_name}__{column_name}'
-                )
+                sub_db_config.index_name = f'{self.index_name}__{column_name}'
                 self._subindices[column_name] = self.__class__[  # type: ignore
                     column_info.docarray_type.doc_type
                 ](db_config=sub_db_config, subindex=True)

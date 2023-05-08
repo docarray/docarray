@@ -272,7 +272,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 if issubclass(column_info.docarray_type, AnyDocArray):
                     sub_db_config = copy.deepcopy(self._db_config)
                     sub_db_config.collection_name = (
-                        f'{self._db_config.collection_name}__{column_name}'
+                        f'{self.collection_name}__{column_name}'
                     )
                     self._subindices[column_name] = self.__class__[  # type: ignore
                         column_info.docarray_type.doc_type
