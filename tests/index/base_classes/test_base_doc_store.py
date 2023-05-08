@@ -60,6 +60,10 @@ class DummyDocIndex(BaseDocIndex):
                     db_config=sub_db_config, subindex=True
                 )
 
+    @property
+    def index_name(self):
+        return 'dummy'
+
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         default_column_config: Dict[Type, Dict[str, Any]] = field(

@@ -28,13 +28,6 @@ class MyDoc(BaseDoc):
     my_tens: NdArray[30] = Field(space='l2')
 
 
-# @pytest.fixture
-# def qdrant_config() -> QdrantDocumentIndex.DBConfig:
-#     client = qdrant_client.QdrantClient(host="localhost", port=6333)
-#     client.delete_collection(collection_name='documents')
-#     return QdrantDocumentIndex.DBConfig(path=client._client.location)
-
-
 @pytest.fixture(scope='session')
 def index():
     index = QdrantDocumentIndex[MyDoc](QdrantDocumentIndex.DBConfig(host='localhost'))

@@ -1,4 +1,4 @@
-import copy
+import glob
 import hashlib
 import os
 import sqlite3
@@ -70,11 +70,16 @@ T = TypeVar('T', bound='HnswDocumentIndex')
 class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         """Initialize HnswDocumentIndex"""
+        if db_config is not None and getattr(db_config, 'index_name'):
+            db_config.work_dir = db_config.index_name.replace("__", "/")
+
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
         self._work_dir = self._db_config.work_dir
         self._logger.debug(f'Working directory set to {self._work_dir}')
-        load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
+        load_existing = os.path.exists(self._work_dir) and glob.glob(
+            f'{self._work_dir}/*.bin'
+        )
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
         # HNSWLib setup
@@ -94,11 +99,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
-                sub_db_config = copy.deepcopy(self._db_config)
-                sub_db_config.work_dir += f'/{col_name}'
-                self._subindices[col_name] = HnswDocumentIndex[
-                    col.docarray_type.doc_type  # type: ignore
-                ](db_config=sub_db_config, subindex=True)
                 continue
             if not col.config:
                 # non-tensor type; don't create an index
@@ -127,6 +127,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._create_docs_table()
         self._sqlite_conn.commit()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
+
+    @property
+    def index_name(self):
+        return self._db_config.work_dir  # type: ignore
 
     ###############################################
     # Inner classes for query builder and configs #

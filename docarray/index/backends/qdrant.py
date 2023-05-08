@@ -66,11 +66,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
+        if db_config is not None and getattr(db_config, 'index_name'):
+            db_config.collection_name = db_config.index_name
+
         super().__init__(db_config=db_config, **kwargs)
-
-        if self._db_config is not None and getattr(self._db_config, 'index_name'):
-            self._db_config.collection_name = self._db_config.index_name
-
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
         )
