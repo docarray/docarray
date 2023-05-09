@@ -96,14 +96,14 @@ nav:
       - user_guide/sending/api/fastAPI.md
     - Storing data:
       - user_guide/storing/first_step.md
-      - DocIndex - vector search:
+      - DocIndex - Vector search:
           - user_guide/storing/docindex.md
           - user_guide/storing/index_in_memory.md
           - user_guide/storing/index_hnswlib.md
           - user_guide/storing/index_weaviate.md
           - user_guide/storing/index_elastic.md
           - user_guide/storing/index_qdrant.md
-      - DocStore - bulk storage:
+      - DocStore - Bulk storage:
         - user_guide/storing/doc_store/store_file.md
         - user_guide/storing/doc_store/store_jac.md
         - user_guide/storing/doc_store/store_s3.md
