@@ -2,6 +2,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -216,4 +217,29 @@
  - [[```ce89d5b7```](https://github.com/jina-ai/docarray/commit/ce89d5b7a957552bcf97a74758a5cb4f4f4c7dfd)] __-__ bump pyproject version (#1415) (*samsja*)
  - [[```e6b3700d```](https://github.com/jina-ai/docarray/commit/e6b3700ddaf9e9b648d8c92b4dd2024af064c790)] __-__ __version__: the next version will be 0.30.1 (*Jina Dev Bot*)
  - [[```56e11a3c```](https://github.com/jina-ai/docarray/commit/56e11a3c431bcd051281a01d91d1086a0eacdf90)] __-__ install poetry during release (#1404) (*samsja*)
+
+<a name=release-note-0-31-1></a>
+## Release Note (`0.31.1`)
+
+> Release time: 2023-05-08 16:30:54
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ samsja,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```302b49a9```](https://github.com/jina-ai/docarray/commit/302b49a99f95f9449e131f5fcc176dad12d143df)] __-__ json and dict when calling empty doclist (#1512) (*samsja*)
+
+### 🧼 Code Refactoring
+
+ - [[```ebecff85```](https://github.com/jina-ai/docarray/commit/ebecff85c97771184a5ec1acac56f274e452fdde)] __-__ remove useless step in json encoder (#1513) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```8c7eb95f```](https://github.com/jina-ai/docarray/commit/8c7eb95fac2b5064fc90bd59c25fa2de0df9508e)] __-__ bump version (#1514) (*samsja*)
+ - [[```94cccbb5```](https://github.com/jina-ai/docarray/commit/94cccbb5fb296e7b2639ecec12c0f163f06546d6)] __-__ fix cd for documentation (#1509) (*samsja*)
+ - [[```04b930f4```](https://github.com/jina-ai/docarray/commit/04b930f4751a44188b6cb531c1cb4d2f5c43ae02)] __-__ __version__: the next version will be 0.31.1 (*Jina Dev Bot*)
 
