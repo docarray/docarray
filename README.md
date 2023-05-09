@@ -789,7 +789,7 @@ pip install -U docarray
 
 ## See also
 
-- [Documentation](https://docs.docarray.org)
+- [Documentation](https://docarray.jina.ai)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray/tree/docarray-v1-fixes)
