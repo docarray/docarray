@@ -89,3 +89,28 @@ def test_nested_to_dict_exclude_dict(nested_docs):
 def test_nested_to_json(nested_docs):
     d = nested_docs.json()
     nested_docs.__class__.parse_raw(d)
+
+
+@pytest.fixture
+def nested_none_docs():
+    class SimpleDoc(BaseDoc):
+        simple_tens: NdArray[10]
+
+    class NestedDoc(BaseDoc):
+        docs: Optional[DocList[SimpleDoc]]
+        hello: str = 'world'
+
+    nested_docs = NestedDoc()
+
+    return nested_docs
+
+
+def test_nested_none_to_dict(nested_none_docs):
+    d = nested_none_docs.dict()
+    assert d == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
+
+
+def test_nested_none_to_json(nested_none_docs):
+    d = nested_none_docs.json()
+    d = nested_none_docs.__class__.parse_raw(d)
+    assert d.dict() == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
