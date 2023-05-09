@@ -899,7 +899,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             :param search_field: name of the field to search on
             :return: self
             """
-            bm25 = {"query": query}
+            bm25: Dict[str, Any] = {"query": query}
             if search_field:
                 bm25["properties"] = [search_field]
             self._queries[0] = self._queries[0].with_bm25(**bm25)
