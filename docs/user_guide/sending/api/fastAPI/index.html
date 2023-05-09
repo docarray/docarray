@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docs.docarray.org/user_guide/sending/api/fastAPI/">
+        <link rel="canonical" href="https://docarray.jina.ai/user_guide/sending/api/fastAPI/">
       
       
         <link rel="prev" href="../jina/">
@@ -617,6 +617,13 @@
         <li class="md-nav__item">
   <a href="#use-documents-with-fastapi" class="md-nav__link">
     Use documents with FastAPI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specify-tensor-shapes" class="md-nav__link">
+    Specify tensor shapes
   </a>
   
 </li>
@@ -2138,6 +2145,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#specify-tensor-shapes" class="md-nav__link">
+    Specify tensor shapes
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2281,7 +2295,55 @@ Also, if you want to return a <code>DocList</code> object, first you have to con
 </span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
 </span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="c1"># You can read FastAPI's response in the following way</span>
 </span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">TextDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
-</span></code></pre></div></div>
+</span></code></pre></div>
+<h2 id="specify-tensor-shapes">Specify tensor shapes</h2>
+<p>DocArray enables you to serve web apps that work on tensors (from numpy, PyTorch, or TensorFlow) as input and/or output,
+and lets you specify and validate the shapes of said tensors.</p>
+<p>To do that, you have to specify the expected shape in the type hint of your document.
+For example, you can create the following FastAPI app in <code>main.py</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span><span class="p">,</span> <span class="n">NdArray</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="kn">from</span> <span class="nn">docarray.base_doc</span> <span class="kn">import</span> <span class="n">DocArrayResponse</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">class</span> <span class="nc">Doc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="c1"># specify shapes of tensors</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">embedding_torch</span><span class="p">:</span> <span class="n">TorchTensor</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">embedding_np</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/foo"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">Doc</span><span class="p">,</span> <span class="n">response_class</span><span class="o">=</span><span class="n">DocArrayResponse</span><span class="p">)</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Doc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Doc</span><span class="p">:</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="k">return</span> <span class="n">Doc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding_np</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You can start the app using:
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uvicorn main:app --reload
+</span></code></pre></div>
+<p>This API will now only accept an <code>embedding_torch</code> of shape <code>(10,)</code> and an <code>embedding_np</code> of shape <code>(3, 4)</code>.</p>
+<p>This is also reflected in the OpenAPI specification and SwaggerUI.
+Navigate to <a href="http://127.0.0.1:8000/docs">http://127.0.0.1:8000/docs</a> to see the API documentation:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Example payload</label><label for="__tabbed_1_2">Schema definition</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><img align="left" alt="Image title" src="../fastapi-example-request.png"></p>
+</div>
+<div class="tabbed-block">
+<p><img align="left" alt="Image title" src="../fastapi-example-schema.png"></p>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Large tensors</p>
+<p>Rendering an example payload of a large (say, 3x224x224) tensor would prohibitively slow down the API documentation.
+Therefore, only tensors with a maximum of 256 elements generate a valid payload example.</p>
+<p>If you specify a larget tensor (e.g. <code>TorchTensor[3, 224, 224]</code>), the example payload will show a tensor with a single
+elemnt. But data validation will stil work as expected.</p>
+</div></div>
 
 
   
