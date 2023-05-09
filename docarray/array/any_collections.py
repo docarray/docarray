@@ -1,24 +1,27 @@
 from abc import abstractmethod
 from typing import (
     TYPE_CHECKING,
+    Any,
     Dict,
     Generic,
     Iterable,
-    List,
-    MutableSequence,
     Type,
     TypeVar,
     Union,
     cast,
 )
 
+from pydantic import ValidationError
+
 from docarray.base_doc import BaseDoc
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name
 
 if TYPE_CHECKING:
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
     from docarray.proto import DocListProto, NodeProto
-    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyCollections')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
@@ -86,7 +89,7 @@ class AnyCollections(Generic[T_doc], AbstractType):
     def _get_data_column(
         self: T,
         field: str,
-    ) -> Union[MutableSequence, T, 'AbstractTensor', None]:
+    ):
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -99,7 +102,7 @@ class AnyCollections(Generic[T_doc], AbstractType):
     def _set_data_column(
         self: T,
         field: str,
-        values: Union[List, T, 'AbstractTensor'],
+        values: Any,
     ):
         """Set all Documents in this [`DocList`][docarray.array.doc_list.doc_list.DocList] using the passed values
 
@@ -130,3 +133,15 @@ class AnyCollections(Generic[T_doc], AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(doc_array=self.to_protobuf())
+
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Any,
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+        if isinstance(value, cls):
+            return value
+        else:
+            raise ValidationError(f'Value {value} is not a valid DocDict type')
