@@ -35,6 +35,10 @@ TTensor = TypeVar('TTensor')
 ShapeT = TypeVar('ShapeT')
 
 
+# displaying tensors that are too large causes problems in the browser
+DISPLAY_TENSOR_OPENAPI_MAX_ITEMS = 256
+
+
 class _ParametrizedMeta(type):
     """
     This metaclass ensures that instance, subclass and equality checks on parametrized Tensors
@@ -237,7 +241,10 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             shape_info = (
                 '[' + ', '.join([str(s) for s in cls.__docarray_target_shape__]) + ']'
             )
-            if reduce(mul, cls.__docarray_target_shape__, 1) <= 256:
+            if (
+                reduce(mul, cls.__docarray_target_shape__, 1)
+                <= DISPLAY_TENSOR_OPENAPI_MAX_ITEMS
+            ):
                 # custom example only for 'small' shapes, otherwise it is too big to display
                 example_payload = orjson_dumps(np.zeros(cls.__docarray_target_shape__))
                 field_schema.update(example=example_payload)
