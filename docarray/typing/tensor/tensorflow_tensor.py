@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -242,11 +242,6 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         from docarray.computation.tensorflow_backend import TensorFlowCompBackend
 
         return TensorFlowCompBackend()
-
-    @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        # this is needed to dump to json
-        field_schema.update(type='string', format='tensor')
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """

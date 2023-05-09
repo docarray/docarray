@@ -1,15 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generic,
-    List,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -135,11 +124,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
             return cast(T, value.view(cls.__unparametrizedcls__))
         return value.view(cls)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        # this is needed to dump to json
-        field_schema.update(type='string', format='tensor')
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
         """
