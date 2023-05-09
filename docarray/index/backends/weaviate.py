@@ -979,18 +979,23 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def text_search(self, query, search_field) -> Any:
+        def text_search(self, query: str, search_field: Optional[str] = None) -> Any:
+
             """Find documents in the index based on a text search query
 
             :param query: The text to search for
             :param search_field: name of the field to search on
             :return: self
             """
-            bm25 = {"query": query, "properties": [search_field]}
+            bm25 = {"query": query}
+            if search_field:
+                bm25["properties"] = [search_field]
             self._queries[0] = self._queries[0].with_bm25(**bm25)
             return self
 
-        def text_search_batched(self, queries, search_field) -> Any:
+        def text_search_batched(
+            self, queries: Sequence[str], search_field: Optional[str] = None
+        ) -> Any:
             """Find documents in the index based on a text search query
 
             :param queries: The texts to search for
@@ -1003,7 +1008,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             new_queries = []
 
             for query, clause in zip(adj_queries, adj_clauses):
-                bm25 = {"query": clause, "properties": [search_field]}
+                bm25 = {"query": clause}
+                if search_field:
+                    bm25["properties"] = [search_field]
                 new_queries.append(query.with_bm25(**bm25))
 
             self._queries = new_queries
