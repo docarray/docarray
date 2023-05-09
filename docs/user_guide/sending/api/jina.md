@@ -1,4 +1,4 @@
-# Jina
+# Send over Jina
 
 In this example we'll build an audio-to-text app using [Jina](https://docs.jina.ai/), DocArray and [Whisper](https://openai.com/research/whisper).
 

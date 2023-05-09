@@ -1,8 +1,62 @@
-# DocList
+# Serialization
+
+DocArray offers various serialization options for all of its main data classes:
+[BaseDoc][docarray.base_doc.doc.BaseDoc], [DocList][docarray.array.doc_list.doc_list.DocList], and [DocVec][docarray.array.doc_list.doc_list.DocVec]
+
+## BaseDoc
+
+You need to serialize a [BaseDoc][docarray.base_doc.doc.BaseDoc] before you can store or send it.
+
+!!! note
+    [BaseDoc][docarray.base_doc.doc.BaseDoc] supports serialization to `protobuf` and `json` formats.
+
+### JSON
+
+- [`json`][docarray.base_doc.doc.BaseDoc.json] serializes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc] to a JSON string.
+- [`parse_raw`][docarray.base_doc.doc.BaseDoc.parse_raw] deserializes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc] from a JSON string.
+
+```python
+from typing import List
+from docarray import BaseDoc
+
+
+class MyDoc(BaseDoc):
+    text: str
+    tags: List[str]
+
+
+doc = MyDoc(text='hello world', tags=['hello', 'world'])
+json_str = doc.json()
+new_doc = MyDoc.parse_raw(json_str)
+assert doc == new_doc  # True
+```
+
+### Protobuf
+
+- [`to_protobuf`][docarray.base_doc.mixins.io.IOMixin.to_protobuf] serializes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc] to a `protobuf` message object.
+- [`from_protobuf`][docarray.base_doc.mixins.io.IOMixin.from_protobuf] deserializes a [`BaseDoc`][docarray.base_doc.doc.BaseDoc] from a `protobuf` object.
+
+```python
+from typing import List
+from docarray import BaseDoc
+
+
+class MyDoc(BaseDoc):
+    text: str
+    tags: List[str]
+
+
+doc = MyDoc(text='hello world', tags=['hello', 'world'])
+proto_message = doc.to_protobuf()
+new_doc = MyDoc.from_protobuf(proto_message)
+assert doc == new_doc  # True
+```
+
+## DocList
 
 When sending or storing [`DocList`][docarray.array.doc_list.doc_list.DocList], you need to use serialization. [`DocList`][docarray.array.doc_list.doc_list.DocList] supports multiple ways to serialize the data.
 
-## JSON
+### JSON
 
 -  [`to_json()`][docarray.array.doc_list.io.IOMixinArray.to_json] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to JSON. It returns the binary representation of the JSON object. 
 -  [`from_json()`][docarray.array.doc_list.io.IOMixinArray.from_json] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from JSON. It can load from either a `str` or `binary` representation of the JSON object.
@@ -31,7 +85,7 @@ with open('simple-dl.json', 'r') as f:
 b'[{"id":"5540e72d407ae81abb2390e9249ed066","text":"doc 0"},{"id":"fbe9f80d2fa03571e899a2887af1ac1b","text":"doc 1"}]'
 ```
 
-## protobuf
+### Protobuf
 
 - [`to_protobuf()`][docarray.array.doc_list.io.IOMixinArray.to_protobuf] serializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] to `protobuf`. It returns a `protobuf` object of `docarray_pb2.DocListProto` class.
 - [`from_protobuf()`][docarray.array.doc_list.io.IOMixinArray.from_protobuf] deserializes a [`DocList`][docarray.array.doc_list.doc_list.DocList] from `protobuf`. It accepts a `protobuf` message object to construct a [`DocList`][docarray.array.doc_list.doc_list.DocList].
@@ -52,7 +106,7 @@ print(type(proto_message_dl))
 print(dl_from_proto)
 ```
 
-## Base64
+### Base64
 
 When transferring data over the network, use `Base64` format to serialize the [`DocList`][docarray.array.doc_list.doc_list.DocList].
 Serializing a [`DocList`][docarray.array.doc_list.doc_list.DocList] in Base64 supports both the `pickle` and `protobuf` protocols. You can also choose different compression methods.
@@ -79,12 +133,14 @@ dl_from_base64 = DocList[SimpleDoc].from_base64(
 )
 ```
 
-## Binary
+### Save binary
+
+These methods **serialize and save** your data:
 
 - [`save_binary()`][docarray.array.doc_list.io.IOMixinArray.save_binary] saves a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a binary file.
 - [`load_binary()`][docarray.array.doc_list.io.IOMixinArray.load_binary] loads a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a binary file.
 
-You can multiple compression methods: `lz4`, `bz2`, `lzma`, `zlib`, and `gzip`.
+You can choose between multiple compression methods: `lz4`, `bz2`, `lzma`, `zlib`, and `gzip`.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -106,6 +162,8 @@ dl_from_binary = DocList[SimpleDoc].load_binary(
 In the above snippet, the [`DocList`][docarray.array.doc_list.doc_list.DocList] is stored as the file `simple-dl.pickle`.
 
 ### Bytes
+
+These methods just serialize your data, without saving it to a file:
 
 - [to_bytes()][docarray.array.doc_list.io.IOMixinArray.to_bytes] saves a [`DocList`][docarray.array.doc_list.doc_list.DocList] to a byte object.
 - [from_bytes()][docarray.array.doc_list.io.IOMixinArray.from_bytes] loads a [`DocList`][docarray.array.doc_list.doc_list.DocList] from a byte object.  
@@ -177,7 +235,34 @@ dl_from_dataframe = DocList[SimpleDoc].from_dataframe(df)
 print(dl_from_dataframe)
 ```
 
-See also:
+## DocVec
 
-* The serializing [`BaseDoc`](./send_doc.md) section
-* The serializing [`DocVec`](./send_docvec.md) section
+When sending or storing [`DocVec`][docarray.array.doc_list.doc_list.DocVec], you need to use protobuf serialization. 
+
+!!! note
+    We plan to add more serialization formats in the future, notably JSON.
+
+### Protobuf
+
+- [`to_protobuf`][docarray.array.doc_list.doc_list.DocVec.to_protobuf] serializes a [DocVec][docarray.array.doc_list.doc_list.DocVec] to `protobuf`. It returns a `protobuf` object of `docarray_pb2.DocVecProto` class. 
+- [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf] deserializes a [DocVec][docarray.array.doc_list.doc_list.DocVec] from `protobuf`. It accepts a protobuf message object to construct a [DocVec][docarray.array.doc_list.doc_list.DocVec].
+
+```python
+import numpy as np
+
+from docarray import BaseDoc, DocVec
+from docarray.typing import AnyTensor
+
+
+class SimpleVecDoc(BaseDoc):
+    tensor: AnyTensor
+
+
+dv = DocVec[SimpleVecDoc]([SimpleVecDoc(tensor=np.ones(16)) for _ in range(8)])
+
+proto_message_dv = dv.to_protobuf()
+
+dv_from_proto = DocVec[SimpleVecDoc].from_protobuf(proto_message_dv)
+```
+
+

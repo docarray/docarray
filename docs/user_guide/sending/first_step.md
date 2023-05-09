@@ -5,5 +5,5 @@ to represent multi-modal data. In this section we will see **how to send such da
 
 This section is divided into two parts:
 
-- [Serializing](./ser/send_doc.md) [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec]
+- [Serializing](./serialization.md) [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec]
 - [Using DocArray with a web framework to build a multimodal API](./api/jina.md)
