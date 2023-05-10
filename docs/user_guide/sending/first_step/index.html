@@ -16,7 +16,7 @@
         <link rel="prev" href="../../representing/array/">
       
       
-        <link rel="next" href="../ser/send_doc/">
+        <link rel="next" href="../serialization/">
       
       <link rel="icon" href="../../../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
@@ -407,6 +407,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
@@ -450,117 +452,14 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_2" >
-      
-      
-        
-          
-        
-          
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_2_3_2" id="__nav_2_3_2_label" tabindex="0">
-          Serialization
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_2_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_3_2">
-          <span class="md-nav__icon md-icon"></span>
-          Serialization
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../ser/send_doc/" class="md-nav__link">
-        BaseDoc
+      <a href="../serialization/" class="md-nav__link">
+        Serialization
       </a>
     </li>
   
 
             
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ser/send_doclist/" class="md-nav__link">
-        DocList
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ser/send_docvec/" class="md-nav__link">
-        DocVec
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_3" >
-      
-      
-        
-          
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_2_3_3" id="__nav_2_3_3_label" tabindex="0">
-          Building API
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_3_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_3_3">
-          <span class="md-nav__icon md-icon"></span>
-          Building API
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
           
             
               
@@ -569,7 +468,7 @@
   
     <li class="md-nav__item">
       <a href="../api/jina/" class="md-nav__link">
-        Jina
+        Send over Jina
       </a>
     </li>
   
@@ -583,15 +482,8 @@
   
     <li class="md-nav__item">
       <a href="../api/fastAPI/" class="md-nav__link">
-        FastAPI
+        Send over FastAPI
       </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -683,14 +575,14 @@
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
-          DocIndex
+          DocIndex - Vector search
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_4_2">
           <span class="md-nav__icon md-icon"></span>
-          DocIndex
+          DocIndex - Vector search
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -809,14 +701,14 @@
       
       
         <label class="md-nav__link" for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
-          DocStore
+          DocStore - Bulk storage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_4_3">
           <span class="md-nav__icon md-icon"></span>
-          DocStore
+          DocStore - Bulk storage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -2096,7 +1988,7 @@
 to represent multi-modal data. In this section we will see <strong>how to send such data over the wire</strong>.</p>
 <p>This section is divided into two parts:</p>
 <ul>
-<li><a href="../ser/send_doc/">Serializing</a> <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>, <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a></li>
+<li><a href="../serialization/">Serializing</a> <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>, <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a></li>
 <li><a href="../api/jina/">Using DocArray with a web framework to build a multimodal API</a></li>
 </ul></div>
 
