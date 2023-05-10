@@ -644,7 +644,7 @@ docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 
 ### Nested data with subindex
 
-Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above][## Nested data].
+Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
 
 If a Document contains a DocList, it can still be stored in a Document Index.
 In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
