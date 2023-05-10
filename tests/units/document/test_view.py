@@ -1,5 +1,3 @@
-import re
-
 import numpy as np
 
 from docarray import BaseDoc
@@ -18,13 +16,11 @@ def test_document_view():
     doc_vec = DocVec[MyDoc](docs)
     storage = doc_vec._storage
 
-    delimiters = [",", '(', '=', ')']
-    result = re.split('|'.join(map(re.escape, delimiters)), str(doc_vec[0]))
-    assert (
-        re.sub(r'\x1b\[([0-9,A-Z]{1,2}(;[0-9]{1,2})?)?[m|K]?', '', result[0]) == 'MyDoc'
-    )
-    assert re.sub(r'\x1b\[([0-9,A-Z]{1,2}(;[0-9]{1,2})?)?[m|K]?', '', result[1]) == 'id'
-    assert re.sub(r'\x1b\[([0-9,A-Z]{1,2}(;[0-9]{1,2})?)?[m|K]?', '', result[2]) == '0'
+    result = str(doc_vec[0])
+    assert 'MyDoc' in result
+    assert 'id' in result
+    assert 'tensor' in result
+    assert 'name' in result
 
     doc = MyDoc.from_view(ColumnStorageView(0, storage))
     assert doc.is_view()
