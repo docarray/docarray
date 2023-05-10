@@ -63,7 +63,7 @@ def test_wrong_but_reshapable():
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
 
-def test_inependent_variable_dim():
+def test_independent_variable_dim():
     # test independent variable dimensions
     tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 224, 224))
     assert isinstance(tensor, TorchTensor)
@@ -177,3 +177,16 @@ def test_deepcopy():
 
     doc_copy.embedding = torch.randn(32)
     assert not (doc.embedding == doc_copy.embedding).all()
+
+
+def test_serialization():
+    from docarray import BaseDoc
+
+    class MyDoc(BaseDoc):
+        tens: TorchTensor
+
+    doc = MyDoc(tens=torch.rand(10, requires_grad=False))
+    assert doc.json()
+
+    doc = MyDoc(tens=torch.rand(10, requires_grad=True))
+    assert doc.json()
