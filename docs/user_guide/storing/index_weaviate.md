@@ -377,15 +377,7 @@ This will perform a hybrid search for the word "hello" and the vector [1, 2] and
 **Note**: Hybrid search searches through the object vector and all fields. Accordingly, the `search_field` keyword it will have no effect. 
 
 ```python
-q = (
-    store.build_query()
-    .text_search(
-        "world"
-    )  # No need to set search_field as it has no effect in hybird search
-    .find([1, 2])
-    .limit(2)
-    .build()
-)
+q = store.build_query().text_search("world").find([1, 2]).limit(2).build()
 
 docs = store.execute_query(q)
 docs
