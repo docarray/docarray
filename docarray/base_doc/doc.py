@@ -104,6 +104,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return cls.__fields__[field].outer_type_
 
     def __str__(self) -> str:
+        content: Any = None
         if self.is_view():
             attr_str = ", ".join(
                 f"{field}={self.__getattr__(field)}" for field in self.__dict__.keys()
