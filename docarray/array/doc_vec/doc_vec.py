@@ -106,7 +106,6 @@ class DocVec(AnyDocArray[T_doc]):
         docs: Sequence[T_doc],
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
-
         if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
             raise TypeError(
                 f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
@@ -137,7 +136,6 @@ class DocVec(AnyDocArray[T_doc]):
             first_doc_is_none = getattr(docs[0], field_name) is None
 
             def _verify_optional_field_of_docs(docs):
-
                 if is_field_required:
                     if first_doc_is_none:
                         raise ValueError(
@@ -452,7 +450,6 @@ class DocVec(AnyDocArray[T_doc]):
                     f'{len(self._storage)} , got {len(values)}'
                 )
             if field in self._storage.tensor_columns.keys():
-
                 col = self._storage.tensor_columns[field]
                 if col is not None:
                     validation_class = col.__unparametrizedcls__ or col.__class__
@@ -582,7 +579,6 @@ class DocVec(AnyDocArray[T_doc]):
             unstacked_doc_column[field] = doc_col.to_doc_list() if doc_col else None
 
         for field, da_col in self._storage.docs_vec_columns.items():
-
             unstacked_da_column[field] = (
                 [docs.to_doc_list() for docs in da_col] if da_col else None
             )

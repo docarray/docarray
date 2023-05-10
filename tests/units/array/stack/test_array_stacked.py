@@ -568,6 +568,5 @@ def test_doc_view_nested(batch_nested_doc):
 
 
 def test_type_error_no_doc_type():
-
     with pytest.raises(TypeError):
         DocVec([BaseDoc() for _ in range(10)])

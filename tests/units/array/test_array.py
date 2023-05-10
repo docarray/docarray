@@ -467,7 +467,6 @@ def test_optional_field():
 
 
 def test_validate_list_dict():
-
     images = [
         dict(url=f'http://url.com/foo_{i}.png', tensor=NdArray(i)) for i in [2, 0, 1]
     ]
