@@ -104,8 +104,16 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return cls.__fields__[field].outer_type_
 
     def __str__(self) -> str:
+        if self.is_view():
+            attr_str = ", ".join(
+                f"{field}={self.__getattr__(field)}" for field in self.__dict__.keys()
+            )
+            content = f"{self.__class__.__name__}({attr_str})"
+        else:
+            content = self
+
         with _console.capture() as capture:
-            _console.print(self)
+            _console.print(content)
 
         return capture.get().strip()
 
