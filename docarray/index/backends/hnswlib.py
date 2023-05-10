@@ -198,11 +198,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return None  # all types allowed, but no db type needed
 
-    # TODO fix mypy here
-    def _index(  # type: ignore
+    def _index(
         self,
         column_to_data: Dict[str, Generator[Any, None, None]],
-        docs_validated: Sequence[BaseDoc],
+        docs_validated: Sequence[BaseDoc] = [],
     ):
         self._index_subindex(column_to_data)
 

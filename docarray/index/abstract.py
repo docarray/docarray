@@ -158,6 +158,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     @property
     def index_name(self):
+        """Return the name of the index in the database."""
         ...
 
     #####################################
