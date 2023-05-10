@@ -1,4 +1,4 @@
-# FastAPI
+# Send over FastAPI
 
 [FastAPI](https://fastapi.tiangolo.com/) is a high-performance web framework for building APIs with Python based on Python type hints. It's designed to be easy to use and supports asynchronous programming. 
 Since [`DocArray` documents are Pydantic Models (with a twist)](../../representing/first_step.md) they can be easily integrated with FastAPI, 
@@ -142,3 +142,60 @@ assert response.status_code == 200
 # You can read FastAPI's response in the following way
 docs = DocList[TextDoc].from_json(response.content.decode())
 ```
+
+## Specify tensor shapes
+
+DocArray enables you to serve web apps that work on tensors (from numpy, PyTorch, or TensorFlow) as input and/or output,
+and lets you specify and validate the shapes of said tensors.
+
+To do that, you have to specify the expected shape in the type hint of your document.
+For example, you can create the following FastAPI app in `main.py`:
+
+```python
+from docarray import BaseDoc
+from docarray.typing import TorchTensor, NdArray
+from fastapi import FastAPI
+
+from docarray.base_doc import DocArrayResponse
+
+
+class Doc(BaseDoc):
+    # specify shapes of tensors
+    embedding_torch: TorchTensor[10]
+    embedding_np: NdArray[3, 4]
+
+
+app = FastAPI()
+
+
+@app.post("/foo", response_model=Doc, response_class=DocArrayResponse)
+async def foo(doc: Doc) -> Doc:
+    return Doc(embedding=doc.embedding_np)
+```
+
+You can start the app using:
+```terminal
+uvicorn main:app --reload
+```
+
+This API will now only accept an `embedding_torch` of shape `(10,)` and an `embedding_np` of shape `(3, 4)`.
+
+This is also reflected in the OpenAPI specification and SwaggerUI.
+Navigate to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to see the API documentation:
+
+=== "Example payload"
+
+    ![Image title](./fastapi-example-request.png){ align=left }
+
+
+=== "Schema definition"
+
+    ![Image title](fastapi-example-schema.png){ align=left }
+
+!!! note "Large tensors"
+    Rendering an example payload of a large (say, 3x224x224) tensor would prohibitively slow down the API documentation.
+    Therefore, only tensors with a maximum of 256 elements generate a valid payload example.
+
+    If you specify a larget tensor (e.g. `TorchTensor[3, 224, 224]`), the example payload will show a tensor with a single
+    elemnt. But data validation will stil work as expected.
+

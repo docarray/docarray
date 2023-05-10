@@ -1,6 +1,6 @@
 site_name: DocArray
 site_description: DocArray, DocArray is a library for representing, sending and storing multi-modal data, with a focus on applications in ML and Neural Search.
-site_url: https://docs.docarray.org/
+site_url: https://docarray.jina.ai/
 repo_name: docarray/docarray
 repo_url: https://github.com/docarray/docarray
 edit_uri: ''
@@ -91,23 +91,19 @@ nav:
       - user_guide/representing/array.md
     - Sending data:
       - user_guide/sending/first_step.md
-      - Serialization:
-        - user_guide/sending/ser/send_doc.md
-        - user_guide/sending/ser/send_doclist.md
-        - user_guide/sending/ser/send_docvec.md
-      - Building API:
-          - user_guide/sending/api/jina.md
-          - user_guide/sending/api/fastAPI.md
+      - user_guide/sending/serialization.md
+      - user_guide/sending/api/jina.md
+      - user_guide/sending/api/fastAPI.md
     - Storing data:
       - user_guide/storing/first_step.md
-      - DocIndex:
+      - DocIndex - Vector search:
           - user_guide/storing/docindex.md
           - user_guide/storing/index_in_memory.md
           - user_guide/storing/index_hnswlib.md
           - user_guide/storing/index_weaviate.md
           - user_guide/storing/index_elastic.md
           - user_guide/storing/index_qdrant.md
-      - DocStore:
+      - DocStore - Bulk storage:
         - user_guide/storing/doc_store/store_file.md
         - user_guide/storing/doc_store/store_jac.md
         - user_guide/storing/doc_store/store_s3.md
