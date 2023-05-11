@@ -132,6 +132,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def index_name(self):
         return self._db_config.work_dir  # type: ignore
 
+    @property
+    def out_schema(self) -> Type[BaseDoc]:
+        """Return the real schema of the index."""
+        if self._is_subindex:
+            return self._ori_schema
+        return cast(Type[BaseDoc], self._schema)
+
     ###############################################
     # Inner classes for query builder and configs #
     ###############################################
@@ -354,8 +361,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
 
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
-        out_docs = self._get_docs_sqlite_doc_id(doc_ids)
+    def _get_items(self, doc_ids: Sequence[str], out: bool = True) -> Sequence[TSchema]:
+        out_docs = self._get_docs_sqlite_doc_id(doc_ids, out)
         if len(out_docs) == 0:
             raise KeyError(f'No document with id {doc_ids} found')
         return out_docs
@@ -422,7 +429,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
         )
 
-    def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int]):
+    def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int], out: bool = True):
         for id_ in univ_ids:
             # I hope this protects from injection attacks
             # properly binding with '?' doesn't work for some reason
@@ -432,14 +439,17 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-        return docs_cls([self._doc_from_bytes(row[0]) for row in rows])
+        schema = self.out_schema if out else self._schema
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], schema))
+        return docs_cls([self._doc_from_bytes(row[0], out) for row in rows])
 
-    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocList[TSchema]:
-        # TODO remove parent id from results
+    def _get_docs_sqlite_doc_id(
+        self, doc_ids: Sequence[str], out: bool = True
+    ) -> DocList[TSchema]:
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
-        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids, out)
+        schema = self.out_schema if out else self._schema
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], schema))
         return docs_cls(sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id)))
 
     def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocList:
@@ -448,7 +458,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def _in_position(doc):
             return hashed_ids.index(self._to_hashed_id(doc.id))
 
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self.out_schema))
         return docs_cls(sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
@@ -468,6 +478,32 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _doc_to_bytes(self, doc: BaseDoc) -> bytes:
         return doc.to_protobuf().SerializeToString()
 
-    def _doc_from_bytes(self, data: bytes) -> BaseDoc:
-        schema_cls = cast(Type[BaseDoc], self._schema)
+    def _doc_from_bytes(self, data: bytes, out: bool = True) -> BaseDoc:
+        schema = self.out_schema if out else self._schema
+        schema_cls = cast(Type[BaseDoc], schema)
         return schema_cls.from_protobuf(DocProto.FromString(data))
+
+    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        """Get the root_id given the id of a subindex Document and the root and subindex name for hnswlib.
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex = self._subindices[root]
+
+        if not sub:
+            sub_doc = subindex._get_items([id], out=False)  # type: ignore
+            parent_id = (
+                sub_doc[0]['parent_id']
+                if isinstance(sub_doc[0], dict)
+                else sub_doc[0].parent_id
+            )
+            return parent_id
+        else:
+            fields = sub.split('__')
+            cur_root_id = subindex._get_root_doc_id(
+                id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_doc_id(cur_root_id, root, '')

@@ -92,23 +92,23 @@ def test_subindex_index(index):
 
 def test_subindex_get(index):
     doc = index['1']
-    assert isinstance(doc, MyDoc)
+    assert type(doc) == MyDoc
     assert doc.id == '1'
 
     assert len(doc.docs) == 5
-    assert isinstance(doc.docs[0], SimpleDoc)
+    assert type(doc.docs[0]) == SimpleDoc
     assert doc.docs[0].id == 'docs-1-0'
     assert np.allclose(doc.docs[0].simple_tens, np.ones(10))
 
     assert len(doc.list_docs) == 5
-    assert isinstance(doc.list_docs[0], ListDoc)
+    assert type(doc.list_docs[0]) == ListDoc
     assert doc.list_docs[0].id == 'list_docs-1-0'
     assert len(doc.list_docs[0].docs) == 5
-    assert isinstance(doc.list_docs[0].docs[0], SimpleDoc)
+    assert type(doc.list_docs[0].docs[0]) == SimpleDoc
     assert doc.list_docs[0].docs[0].id == 'list_docs-docs-1-0-0'
     assert np.allclose(doc.list_docs[0].docs[0].simple_tens, np.ones(10))
     assert doc.list_docs[0].docs[0].simple_text == 'hello 0'
-    assert isinstance(doc.list_docs[0].simple_doc, SimpleDoc)
+    assert type(doc.list_docs[0].simple_doc) == SimpleDoc
     assert doc.list_docs[0].simple_doc.id == 'list_docs-simple_doc-1-0'
     assert np.allclose(doc.list_docs[0].simple_doc.simple_tens, np.ones(10))
     assert doc.list_docs[0].simple_doc.simple_text == 'hello 0'
@@ -128,8 +128,8 @@ def test_find_subindex(index):
     root_docs, docs, scores = index.find_subindex(
         query, subindex='docs', search_field='simple_tens', limit=5
     )
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
     assert len(scores) == 5
     for root_doc, doc in zip(root_docs, docs):
         assert np.allclose(doc.simple_tens, np.ones(10))
@@ -142,8 +142,8 @@ def test_find_subindex(index):
     )
     assert len(docs) == 5
     assert len(scores) == 5
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
     for root_doc, doc in zip(root_docs, docs):
         assert np.allclose(doc.simple_tens, np.ones(10))
         assert root_doc.id == f'{doc.id.split("-")[2]}'
