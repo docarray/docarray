@@ -366,7 +366,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         If no document is found, a KeyError is raised.
 
         :param doc_ids: ids to get from the Document index
-        :param out: whether to return the documents in the original schema or inner schema for subindex
+        :param out: return the documents in the original schema(True) or inner schema(False) for subindex
         :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
         """
         out_docs = self._get_docs_sqlite_doc_id(doc_ids, out)
