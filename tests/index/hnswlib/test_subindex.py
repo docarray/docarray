@@ -117,47 +117,16 @@ def test_subindex_get(index):
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
 
-def test_subindex_find(index):
-    # root level
-    query = np.ones((30,))
-    docs, scores = index.find(query, search_field='my_tens', limit=5)
-    assert len(scores) == 5
-    assert isinstance(docs[0], MyDoc)
-    assert [doc.id for doc in docs] == [f'{i}' for i in range(5)]
-    assert docs[0].id == '0'
-
-    # sub level
-    query = np.ones((10,))
-    docs, scores = index.find(query, search_field='docs__simple_tens', limit=5)
-    assert len(scores) == 5
-    assert isinstance(docs[0], SimpleDoc)
-    assert set([doc.id for doc in docs]) == set([f'docs-{i}-0' for i in range(5)])
-    for doc in docs:
-        assert np.allclose(doc.simple_tens, np.ones(10))
-
-    # sub sub level
-    query = np.ones((10,))
-    docs, scores = index.find(
-        query, search_field='list_docs__docs__simple_tens', limit=5
-    )
-    assert len(docs) == 5
-    assert len(scores) == 5
-    assert isinstance(docs[0], SimpleDoc)
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
-        assert np.allclose(doc.simple_tens, np.ones(10))
-
-
 def test_find_subindex(index):
     # root level
     query = np.ones((30,))
     with pytest.raises(ValueError):
-        _, _ = index.find_subindex(query, search_field='my_tens', limit=5)
+        _, _ = index.find_subindex(query, subindex='', search_field='my_tens', limit=5)
 
     # sub level
     query = np.ones((10,))
     root_docs, docs, scores = index.find_subindex(
-        query, search_field='docs__simple_tens', limit=5
+        query, subindex='docs', search_field='simple_tens', limit=5
     )
     assert isinstance(root_docs[0], MyDoc)
     assert isinstance(docs[0], SimpleDoc)
@@ -169,7 +138,7 @@ def test_find_subindex(index):
     # sub sub level
     query = np.ones((10,))
     root_docs, docs, scores = index.find_subindex(
-        query, search_field='list_docs__docs__simple_tens', limit=5
+        query, subindex='list_docs__docs', search_field='simple_tens', limit=5
     )
     assert len(docs) == 5
     assert len(scores) == 5

@@ -457,14 +457,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
 
-        if search_field:
-            if '__' in search_field:
-                fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
-                    return self._subindices[fields[0]].find(
-                        query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
-                    )
-
         self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
@@ -483,6 +475,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     def find_subindex(
         self,
         query: Union[AnyTensor, BaseDoc],
+        subindex: str = '',
         search_field: str = '',
         limit: int = 10,
         **kwargs,
@@ -492,27 +485,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param query: query vector for KNN/ANN search.
             Can be either a tensor-like (np.array, torch.Tensor, etc.)
             with a single axis, or a Document
-        :param search_field: name of the field to search on.
-            The search field must be a subindex field.
+        :param subindex: name of the subindex to search on
+        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return
         :return: a named tuple containing root docs, subindex docs and scores
         """
-        self._logger.debug(
-            f'Executing `find` for search field {search_field} and return both root and sub level results'
+        self._logger.debug(f'Executing `find_subindex` for search field {search_field}')
+
+        sub_docs, scores = self._find_subdocs(
+            query, subindex=subindex, search_field=search_field, limit=limit, **kwargs
         )
 
-        fields = search_field.split('__')
-        if len(fields) < 2 or not issubclass(
-            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
-        ):
-            raise ValueError(
-                f'search_field {search_field} is not a valid subindex field'
-            )
-
-        sub_docs, scores = self._subindices[fields[0]].find(
-            query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
-        )
-
+        fields = subindex.split('__')
         root_ids = [
             self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
             for doc in sub_docs
@@ -520,6 +504,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         root_docs = DocList[self._schema]()  # type: ignore
         for id in root_ids:
             root_docs.append(self[id])
+
         return SubindexFindResult(
             root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
         )
@@ -1125,6 +1110,34 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     nested_docs_id
                 )
 
+    def _find_subdocs(
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        subindex: str = '',
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        """Find documents in the subindex and return subindex docs and scores."""
+        fields = subindex.split('__')
+        if not subindex or not issubclass(
+            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
+        ):
+            raise ValueError(f'subindex {subindex} is not valid')
+
+        if len(fields) == 1:
+            return self._subindices[fields[0]].find(
+                query, search_field=search_field, limit=limit, **kwargs
+            )
+
+        return self._subindices[fields[0]]._find_subdocs(
+            query,
+            subindex='___'.join(fields[1:]),
+            search_field=search_field,
+            limit=limit,
+            **kwargs,
+        )
+
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
         """Get the root_id given the id of a subindex Document and the root and subindex name
 
@@ -1135,7 +1148,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         subindex = self._subindices[root]
 
-        if sub in subindex._column_infos.keys():
+        if not sub:
             sub_doc = subindex._get_items([id])
             parent_id = (
                 sub_doc[0]['parent_id']
@@ -1148,4 +1161,4 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             cur_root_id = subindex._get_root_doc_id(
                 id, fields[0], '__'.join(fields[1:])
             )
-            return self._get_root_doc_id(cur_root_id, root, fields[0])
+            return self._get_root_doc_id(cur_root_id, root, '')

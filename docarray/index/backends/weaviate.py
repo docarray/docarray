@@ -32,7 +32,7 @@ from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal.misc import import_library
-from docarray.utils.find import FindResult, SubindexFindResult, _FindResult
+from docarray.utils.find import FindResult, _FindResult
 
 if TYPE_CHECKING:
     import weaviate
@@ -343,18 +343,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug('Executing `find`')
-
         if search_field != '':
-            fields = search_field.split('__')
-            if fields[0] in self._schema.__fields__.keys() and issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
-                return self._subindices[fields[0]].find(
-                    query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
-                )
-            else:
-                raise ValueError(
-                    'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
-                )
-
+            raise ValueError(
+                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+            )
         embedding_field = self._get_embedding_field()
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], embedding_field)[0]
@@ -369,47 +361,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
-
-    def find_subindex(
-        self,
-        query: Union[AnyTensor, BaseDoc],
-        search_field: str = '',
-        limit: int = 10,
-        **kwargs,
-    ) -> SubindexFindResult:
-        """
-        Find k-nearest neighbors of the query.
-
-        :param query: query vector for KNN/ANN search. Has single axis.
-        :param search_field: name of the field to search on
-        :param limit: maximum number of documents to return per query
-        :return: a named tuple containing `documents` and `scores`
-        """
-        self._logger.debug(
-            'Executing `find` and return both root and sub level results'
-        )
-
-        fields = search_field.split('__')
-        if len(fields) == 0 or fields[0] == '' or not issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
-            raise ValueError(
-                f'search_field {search_field} is not a valid subindex field'
-            )
-
-        sub_docs, scores = self._subindices[fields[0]].find(
-            query, search_field='__'.join(fields[1:]), limit=limit, **kwargs
-        )
-
-        root_ids = [
-            self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
-            for doc in sub_docs
-        ]
-        root_docs = DocList[self._schema]()  # type: ignore
-        for id in root_ids:
-            root_docs.append(self[id])
-
-        return SubindexFindResult(
-            root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
-        )
 
     def _overwrite_id(self, where_filter):
         """
@@ -810,24 +761,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for res in results['data']['Get'][self._db_config.index_name]
         ]
         return ids
-
-    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
-        subindex = self._subindices[root]
-
-        if sub == '':
-            sub_doc = subindex._get_items([id])
-            parent_id = (
-                sub_doc[0]['parent_id']
-                if isinstance(sub_doc[0], dict)
-                else sub_doc[0].parent_id
-            )
-            return parent_id
-        else:
-            fields = sub.split('__')
-            cur_root_id = subindex._get_root_doc_id(
-                id, fields[0], '__'.join(fields[1:])
-            )
-            return self._get_root_doc_id(cur_root_id, root, '')
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
