@@ -140,3 +140,6 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
 
     def __len__(self):
         return len(self.storage.columns)
+
+    def keys(self):
+        return self.storage.columns.keys()

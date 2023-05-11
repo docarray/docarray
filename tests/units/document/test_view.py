@@ -13,7 +13,14 @@ def test_document_view():
 
     docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
 
-    storage = DocVec[MyDoc](docs)._storage
+    doc_vec = DocVec[MyDoc](docs)
+    storage = doc_vec._storage
+
+    result = str(doc_vec[0])
+    assert 'MyDoc' in result
+    assert 'id' in result
+    assert 'tensor' in result
+    assert 'name' in result
 
     doc = MyDoc.from_view(ColumnStorageView(0, storage))
     assert doc.is_view()
