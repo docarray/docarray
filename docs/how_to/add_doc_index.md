@@ -402,6 +402,16 @@ in your backend, if such a concept exists in your case. In your implementation y
 (Strictly speaking, this uniqueness property is not guaranteed, since a user could override the auto-generated `.id` field with a custom value.
 If your implementation encounters a duplicate `.id`, it is okay to fail and raise an Exception.)
 
+### The `_filter_by_parent_id()` method
+
+The default implementatin return `None`. You can choose to override this function with database specific filter API when needed. 
+This function should return a list of ids of subindex level documents given the id of root document.
+
+### The `index_name()` property
+
+The `index_name` property is used in the initialization of subindices, and the default implementation is empty. This function should return the name of the index. And if the property of the index name in your backend is not `index_name`, you need to convert it as the first step in `__init__()`, like `index_name` is assigned to `work_dir` in `docarray/index/backends/hnswlib.py`.
+
+
 ## Implement a Query Builder for your Document Index
 
 Every Document Index exposes a Query Builder interface which the user can use to build composed, hybrid queries.

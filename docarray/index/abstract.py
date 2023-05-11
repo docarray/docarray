@@ -1,3 +1,4 @@
+import copy
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
@@ -25,13 +26,14 @@ from typing_inspect import get_args, is_optional_type, is_union_type
 
 from docarray import BaseDoc, DocList
 from docarray.array.any_array import AnyDocArray
-from docarray.typing import AnyTensor
+from docarray.typing import ID, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
+    SubindexFindResult,
     _FindResult,
     _FindResultBatched,
 )
@@ -85,12 +87,20 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     # for subclasses this is filled automatically
     _schema: Optional[Type[BaseDoc]] = None
 
-    def __init__(self, db_config=None, **kwargs):
+    def __init__(self, db_config=None, subindex: bool = False, **kwargs):
         if self._schema is None:
             raise ValueError(
                 'A DocumentIndex must be typed with a Document type.'
                 'To do so, use the syntax: DocumentIndex[DocumentType]'
             )
+        if subindex:
+
+            class _NewSchema(self._schema):  # type: ignore
+                parent_id: Optional[ID] = None
+
+            self._ori_schema = self._schema
+            self._schema = cast(Type[BaseDoc], _NewSchema)
+
         self._logger = logging.getLogger('docarray')
         self._db_config = db_config or self.DBConfig(**kwargs)
         if not isinstance(self._db_config, self.DBConfig):
@@ -101,6 +111,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._column_infos: Dict[str, _ColumnInfo] = self._create_column_infos(
             self._schema
         )
+        self._is_subindex = subindex
+        self._subindices: Dict[str, BaseDocIndex] = {}
+        self._init_subindex()
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -116,6 +129,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             """
             ...
 
+        # TODO support subindex in QueryBuilder
+
         # the methods below need to be implemented by subclasses
         # If, in your subclass, one of these is not usable in a query builder, but
         # can be called directly on the DocumentIndex, use `_raise_not_composable`.
@@ -129,7 +144,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     @dataclass
     class DBConfig(ABC):
-        ...
+        index_name: Optional[str] = None
 
     @dataclass
     class RuntimeConfig(ABC):
@@ -140,6 +155,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # of a field in the Document schema (`cls._schema`)
         # Example: `default_column_config['VARCHAR'] = {'length': 255}`
         default_column_config: Dict[Type, Dict[str, Any]] = field(default_factory=dict)
+
+    @property
+    def index_name(self):
+        """Return the name of the index in the database."""
+        ...
 
     #####################################
     # Abstract methods                  #
@@ -329,11 +349,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             key = [key]
         else:
             return_singleton = False
+
         # retrieve data
         doc_sequence = self._get_items(key)
+
         # check data
         if len(doc_sequence) == 0:
             raise KeyError(f'No document with id {key} found')
+
+        # retrieve nested data
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
+                for doc in doc_sequence:
+                    self._get_subindex_doclist(doc, field_name)  # type: ignore
 
         # cast output
         if isinstance(doc_sequence, DocList):
@@ -355,6 +385,19 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.info(f'Deleting documents with id(s) {key} from the index')
         if isinstance(key, str):
             key = [key]
+
+        # delete nested data
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if issubclass(type_, AnyDocArray):
+                for doc_id in key:
+                    nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
+                        doc_id
+                    )
+                    if nested_docs_id:
+                        del self._subindices[field_name][nested_docs_id]
+        # delete data
         self._del_items(key)
 
     def configure(self, runtime_config=None, **kwargs):
@@ -390,6 +433,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
         self._logger.debug(f'Indexing {n_docs} documents')
         docs_validated = self._validate_docs(docs)
+        self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)
         self._index(data_by_columns, **kwargs)
 
@@ -412,6 +456,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
+
         self._validate_search_field(search_field)
         if isinstance(query, BaseDoc):
             query_vec = self._get_values_by_column([query], search_field)[0]
@@ -426,6 +471,43 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
+
+    def find_subindex(
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        subindex: str = '',
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> SubindexFindResult:
+        """Find documents in subindex level.
+
+        :param query: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.)
+            with a single axis, or a Document
+        :param subindex: name of the subindex to search on
+        :param search_field: name of the field to search on
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing root docs, subindex docs and scores
+        """
+        self._logger.debug(f'Executing `find_subindex` for search field {search_field}')
+
+        sub_docs, scores = self._find_subdocs(
+            query, subindex=subindex, search_field=search_field, limit=limit, **kwargs
+        )
+
+        fields = subindex.split('__')
+        root_ids = [
+            self._get_root_doc_id(doc.id, fields[0], '__'.join(fields[1:]))
+            for doc in sub_docs
+        ]
+        root_docs = DocList[self._schema]()  # type: ignore
+        for id in root_ids:
+            root_docs.append(self[id])
+
+        return SubindexFindResult(
+            root_documents=root_docs, sub_documents=sub_docs, scores=scores  # type: ignore
+        )
 
     def find_batched(
         self,
@@ -447,6 +529,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
+
+        if search_field:
+            if '__' in search_field:
+                fields = search_field.split('__')
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                    return self._subindices[fields[0]].find_batched(
+                        queries,
+                        search_field='__'.join(fields[1:]),
+                        limit=limit,
+                        **kwargs,
+                    )
+
         self._validate_search_field(search_field)
         if isinstance(queries, Sequence):
             query_vec_list = self._get_values_by_column(queries, search_field)
@@ -484,6 +578,33 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             docs = self._dict_list_to_docarray(docs)
 
         return docs
+
+    def filter_subindex(
+        self,
+        filter_query: Any,
+        subindex: str,
+        limit: int = 10,
+        **kwargs,
+    ) -> DocList:
+        """Find documents in subindex level based on a filter query
+
+        :param filter_query: the DB specific filter query to execute
+        :param subindex: name of the subindex to search on
+        :param limit: maximum number of documents to return
+        :return: a DocList containing the subindex level documents that match the filter query
+        """
+        self._logger.debug(
+            f'Executing `filter` for the query {filter_query} in subindex {subindex}'
+        )
+        if '__' in subindex:
+            fields = subindex.split('__')
+            return self._subindices[fields[0]].filter_subindex(
+                filter_query, '__'.join(fields[1:]), limit=limit, **kwargs
+            )
+        else:
+            return self._subindices[subindex].filter(
+                filter_query, limit=limit, **kwargs
+            )
 
     def filter_batched(
         self,
@@ -572,6 +693,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         da_list_ = cast(List[DocList], da_list)
         return FindResultBatched(documents=da_list_, scores=scores)
 
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        """Filter the ids of the subindex documents given id of root document.
+
+        :param id: the root document id to filter by
+        :return: a list of ids of the subindex documents
+        """
+        return None
+
     ##########################################################
     # Helper methods                                         #
     # These might be useful in your subclass implementation  #
@@ -634,6 +763,28 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
 
         return {col_name: _col_gen(col_name) for col_name in self._column_infos}
+
+    def _update_subindex_data(
+        self,
+        docs: DocList[BaseDoc],
+    ):
+        """
+        Add `parent_id` to all sublevel documents.
+
+        :param docs: The document(s) to update the `parent_id` for
+        """
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if issubclass(type_, AnyDocArray):
+                for doc in docs:
+                    _list = getattr(doc, field_name)
+                    for i, nested_doc in enumerate(_list):
+                        nested_doc = self._subindices[field_name]._schema(  # type: ignore
+                            **nested_doc.__dict__
+                        )
+                        nested_doc.parent_id = doc.id
+                        _list[i] = nested_doc
 
     ##################################################
     # Behind-the-scenes magic                        #
@@ -729,8 +880,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, field_ in self._flatten_schema(schema):
             # Union types are handle in _flatten_schema
             if issubclass(type_, AnyDocArray):
-                raise ValueError(
-                    'Indexing field of DocList type (=subindex)' 'is not yet supported.'
+                column_infos[field_name] = _ColumnInfo(
+                    docarray_type=type_, db_type=None, config=dict(), n_dim=None
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
@@ -764,6 +915,18 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return _ColumnInfo(
             docarray_type=type_, db_type=db_type, config=config, n_dim=n_dim
         )
+
+    def _init_subindex(
+        self,
+    ):
+        """Initialize subindices if any column is subclass of AnyDocArray."""
+        for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                sub_db_config = copy.deepcopy(self._db_config)
+                sub_db_config.index_name = f'{self.index_name}__{col_name}'
+                self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](  # type: ignore
+                    db_config=sub_db_config, subindex=True
+                )
 
     def _validate_docs(
         self, docs: Union[BaseDoc, Sequence[BaseDoc]]
@@ -864,7 +1027,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc]
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc], inner=False
     ) -> BaseDoc:
         """
         Convert a dict to a Document object.
@@ -875,6 +1038,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
+
+            if not is_union_type(t_) and issubclass(t_, AnyDocArray):
+                self._get_subindex_doclist(doc_dict, field_name)
+
             if is_optional_type(t_):
                 for t_arg in get_args(t_):
                     if t_arg is not type(None):
@@ -890,17 +1057,108 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     nested_name = key[len(f'{field_name}__') :]
                     inner_dict[nested_name] = doc_dict.pop(key)
 
-                doc_dict[field_name] = self._convert_dict_to_doc(inner_dict, t_)
+                doc_dict[field_name] = self._convert_dict_to_doc(
+                    inner_dict, t_, inner=True
+                )
 
-        schema_cls = cast(Type[BaseDoc], schema)
-        return schema_cls(**doc_dict)
+        if self._is_subindex and not inner:
+            doc_dict.pop('parent_id', None)
+            schema_cls = cast(Type[BaseDoc], self._ori_schema)
+        else:
+            schema_cls = cast(Type[BaseDoc], schema)
+        doc = schema_cls(**doc_dict)
+        return doc
 
     def _dict_list_to_docarray(self, dict_list: Sequence[Dict[str, Any]]) -> DocList:
         """Convert a list of docs in dict type to a DocList of the schema type."""
-
         doc_list = [self._convert_dict_to_doc(doc_dict, self._schema) for doc_dict in dict_list]  # type: ignore
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        if self._is_subindex:
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._ori_schema))
+        else:
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
         return docs_cls(doc_list)
 
     def __len__(self) -> int:
         return self.num_docs()
+
+    def _index_subindex(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        """Index subindex documents in the corresponding subindex.
+
+        :param column_to_data: A dictionary from column name to a generator
+        """
+        for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                docs = [
+                    doc for doc_list in column_to_data[col_name] for doc in doc_list
+                ]
+                self._subindices[col_name].index(docs)
+                column_to_data.pop(col_name, None)
+
+    def _get_subindex_doclist(self, doc: Dict[str, Any], field_name: str):
+        """Get subindex Documents from the index and assign them to `field_name`.
+
+        :param doc: a dictionary mapping from column name to value
+        :param field_name: field name of the subindex Documents
+        """
+        if field_name not in doc.keys():
+            parent_id = doc['id']
+            nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
+                parent_id
+            )
+            if nested_docs_id:
+                doc[field_name] = self._subindices[field_name].__getitem__(
+                    nested_docs_id
+                )
+
+    def _find_subdocs(
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        subindex: str = '',
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        """Find documents in the subindex and return subindex docs and scores."""
+        fields = subindex.split('__')
+        if not subindex or not issubclass(
+            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
+        ):
+            raise ValueError(f'subindex {subindex} is not valid')
+
+        if len(fields) == 1:
+            return self._subindices[fields[0]].find(
+                query, search_field=search_field, limit=limit, **kwargs
+            )
+
+        return self._subindices[fields[0]]._find_subdocs(
+            query,
+            subindex='___'.join(fields[1:]),
+            search_field=search_field,
+            limit=limit,
+            **kwargs,
+        )
+
+    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        """Get the root_id given the id of a subindex Document and the root and subindex name
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex = self._subindices[root]
+
+        if not sub:
+            sub_doc = subindex._get_items([id])
+            parent_id = (
+                sub_doc[0]['parent_id']
+                if isinstance(sub_doc[0], dict)
+                else sub_doc[0].parent_id
+            )
+            return parent_id
+        else:
+            fields = sub.split('__')
+            cur_root_id = subindex._get_root_doc_id(
+                id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_doc_id(cur_root_id, root, '')

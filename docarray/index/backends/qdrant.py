@@ -21,6 +21,7 @@ from grpc import RpcError  # type: ignore[import]
 
 import docarray.typing.id
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import (
     BaseDocIndex,
     _ColumnInfo,
@@ -65,6 +66,9 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
+        if db_config is not None and getattr(db_config, 'index_name'):
+            db_config.collection_name = db_config.index_name
+
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -97,6 +101,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         return self._db_config.collection_name or default_collection_name
+
+    @property
+    def index_name(self):
+        return self.collection_name
 
     @dataclass
     class Query:
@@ -264,11 +272,14 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         try:
             self._client.get_collection(self.collection_name)
         except (UnexpectedResponse, RpcError, ValueError):
-            vectors_config = {
-                column_name: self._to_qdrant_vector_params(column_info)
-                for column_name, column_info in self._column_infos.items()
-                if column_info.db_type == 'vector'
-            }
+            vectors_config = {}
+
+            for column_name, column_info in self._column_infos.items():
+                if column_info.db_type == 'vector':
+                    vectors_config[column_name] = self._to_qdrant_vector_params(
+                        column_info
+                    )
+
             self._client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=vectors_config,
@@ -288,6 +299,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        self._index_subindex(column_to_data)
+
         rows = self._transpose_col_value_dict(column_to_data)
         # TODO: add batching the documents to avoid timeouts
         points = [self._build_point_from_row(row) for row in rows]
@@ -332,7 +345,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             with_payload=True,
             with_vectors=True,
         )
-        return [self._convert_to_doc(point) for point in response]
+        return sorted(
+            [self._convert_to_doc(point) for point in response],
+            key=lambda x: doc_ids.index(x['id']),
+        )
 
     def execute_query(self, query: Union[Query, RawQuery], *args, **kwargs) -> DocList:
         """
@@ -532,11 +548,29 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ],
         )
 
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        response, _ = self._client.scroll(
+            collection_name=self._db_config.collection_name,  # type: ignore
+            scroll_filter=rest.Filter(
+                must=[
+                    rest.FieldCondition(
+                        key='parent_id', match=rest.MatchValue(value=id)
+                    )
+                ]
+            ),
+            with_payload=rest.PayloadSelectorInclude(include=['id']),
+        )
+
+        ids = [point.payload['id'] for point in response]  # type: ignore
+        return ids
+
     def _build_point_from_row(self, row: Dict[str, Any]) -> rest.PointStruct:
         point_id = self._to_qdrant_id(row.get('id'))
         vectors: Dict[str, List[float]] = {}
         payload: Dict[str, Any] = {'__generated_vectors': []}
         for column_name, column_info in self._column_infos.items():
+            if issubclass(column_info.docarray_type, AnyDocArray):
+                continue
             if column_info.db_type in ['id', 'payload']:
                 payload[column_name] = row.get(column_name)
                 continue
