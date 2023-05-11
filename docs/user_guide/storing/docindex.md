@@ -251,7 +251,7 @@ which one to use for the search.
 The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
-When searching on subindex level, the `find()` method returns subindex documents. And the [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
 
@@ -296,7 +296,7 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 
 In addition to vector similarity search, the Document Index interface offers methods for text search and filtered search:
 [text_search()][docarray.index.abstract.BaseDocIndex.text_search] and [filter()][docarray.index.abstract.BaseDocIndex.filter],
-as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]. [filter_subindex()][docarray.index.abstract.BaseDocIndex.filter_subindex] if for filter on subindex level.
+as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]. [filter_subindex()][docarray.index.abstract.BaseDocIndex.filter_subindex] is for filter on subindex level.
 
 !!! note
     The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
@@ -709,22 +709,16 @@ doc_index.index(index_docs)
 
 **Search**
 
-You can perform search on any subindex level by using the dunder operator `'subindex__field'` to specify the index to search on.
+You can perform search on any subindex level by using `find_subindex()` method and the dunder operator `'root__subindex'` to specify the index to search on.
 
 ```python
 # find by the `VideoDoc` tensor
-sub_docs, scores = doc_index.find(
-    np.ones(128), search_field='docs__tensor_video', limit=3
-)  # return subindex docs
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(128), search_field='docs__tensor_video', limit=3
-)  # return both root and subindex docs
+    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
+)
 
 # find by the `ImageDoc` tensor
-sub_docs, scores = doc_index.find(
-    np.ones(64), search_field='docs__images__tensor_image', limit=3
-)  # return subindex docs
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(64), search_field='docs__images__tensor_image', limit=3
-)  # return both root and subindex docs
+    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
+)
 ```

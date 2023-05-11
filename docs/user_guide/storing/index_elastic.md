@@ -257,18 +257,18 @@ In the following example you can see a complex schema that contains nested Docum
 ```python
 class ImageDoc(BaseDoc):
     url: ImageUrl
-    tensor_image: AnyTensor = Field(space='cosine', dim=64)
+    tensor_image: AnyTensor = Field(dims=64)
 
 
 class VideoDoc(BaseDoc):
     url: VideoUrl
     images: DocList[ImageDoc]
-    tensor_video: AnyTensor = Field(space='cosine', dim=128)
+    tensor_video: AnyTensor = Field(dims=128)
 
 
 class MyDoc(BaseDoc):
     docs: DocList[VideoDoc]
-    tensor: AnyTensor = Field(space='cosine', dim=256)
+    tensor: AnyTensor = Field(dims=256)
 
 
 # create a Document Index
@@ -304,19 +304,13 @@ index_docs = [
 doc_index.index(index_docs)
 
 # find by the `VideoDoc` tensor
-sub_docs, scores = doc_index.find(
-    np.ones(128), search_field='docs__tensor_video', limit=3
-)  # return subindex docs
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(128), search_field='docs__tensor_video', limit=3
-)  # return both root and subindex docs
+    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
+)
 
 # find by the `ImageDoc` tensor
-sub_docs, scores = doc_index.find(
-    np.ones(64), search_field='docs__images__tensor_image', limit=3
-)  # return subindex docs
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(64), search_field='docs__images__tensor_image', limit=3
+    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )  # return both root and subindex docs
 
 # filter on subindex level
