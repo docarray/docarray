@@ -6,7 +6,6 @@ on:
 
 jobs:
   docarray-test-uncaped:
-    needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
