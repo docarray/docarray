@@ -48,9 +48,9 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         if docs and index_file_path:
             raise ValueError(
-                f'Initialize `InMemoryExactNNIndex` with either `docs` or '
-                f'`index_file_path`, not both. Provide `docs` for a fresh index, or '
-                f'`index_file_path` to use an existing file.'
+                'Initialize `InMemoryExactNNIndex` with either `docs` or '
+                '`index_file_path`, not both. Provide `docs` for a fresh index, or '
+                '`index_file_path` to use an existing file.'
             )
 
         if index_file_path:
