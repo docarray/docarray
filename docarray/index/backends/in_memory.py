@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -57,15 +58,32 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             )
 
         if index_file_path:
-            self._docs = DocList.__class_getitem__(
-                cast(Type[BaseDoc], self._schema)
-            ).load_binary(file=index_file_path)
+            if os.path.exists(index_file_path):
+                self._logger.info(
+                    f'Loading index from a binary file: {index_file_path}'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                ).load_binary(file=index_file_path)
+            else:
+                self._logger.warning(
+                    f'Index file does not exist: {index_file_path}. '
+                    f'Initializing empty InMemoryExactNNIndex.'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                )()
         else:
-            self._docs = (
-                docs
-                if docs is not None
-                else DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))()
-            )
+            if docs:
+                self._logger.info('Docs provided. Initializing with provided docs.')
+                self._docs = docs
+            else:
+                self._logger.info(
+                    'No docs or index file provided. Initializing empty InMemoryExactNNIndex.'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                )()
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.

@@ -135,3 +135,9 @@ def test_save_and_load(doc_index, tmpdir):
     assert len(docs) == 5
     assert len(scores) == 5
     assert new_doc_index.num_docs() == initial_num_docs
+
+    newer_doc_index = InMemoryExactNNIndex[SchemaDoc](
+        index_file_path='some_nonexistent_file.bin'
+    )
+
+    assert newer_doc_index.num_docs() == 0
