@@ -194,7 +194,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Executing `find` for search field {search_field}')
         self._validate_search_field(search_field)
 
-        if not len(self._docs):
+        if not self.num_docs():
             return FindResult(documents=[], scores=[])  # type: ignore
 
         config = self._column_infos[search_field].config
@@ -238,7 +238,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
         self._validate_search_field(search_field)
 
-        if not len(self._docs):
+        if not self.num_docs():
             return FindResultBatched(documents=[], scores=[])
 
         config = self._column_infos[search_field].config
