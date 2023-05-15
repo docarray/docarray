@@ -304,5 +304,6 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
-    def save_binary(self, file: str = 'in_memory_index.bin') -> None:
+    def persist(self, file: str = 'in_memory_index.bin') -> None:
+        """Persist InMemoryExactNNIndex into a binary file."""
         self._docs.save_binary(file=file)

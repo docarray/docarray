@@ -116,7 +116,7 @@ def test_save_and_load(doc_index, tmpdir):
     initial_num_docs = doc_index.num_docs()
 
     binary_file = str(tmpdir / 'docs.bin')
-    doc_index.save_binary(binary_file)
+    doc_index.persist(binary_file)
 
     new_doc_index = InMemoryExactNNIndex[SchemaDoc](index_file_path=binary_file)
 
