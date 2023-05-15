@@ -70,6 +70,11 @@ def test_find(doc_index, space, is_query_doc):
     assert len(scores) == 5
     assert doc_index.num_docs() == 10
 
+    empty_index = InMemoryExactNNIndex[MyDoc]()
+    docs, scores = empty_index.find(query, search_field='tensor', limit=5)
+    assert len(docs) == 0
+    assert len(scores) == 0
+
 
 @pytest.mark.parametrize('space', ['cosine_sim', 'euclidean_dist', 'sqeuclidean_dist'])
 @pytest.mark.parametrize('is_query_doc', [True, False])
@@ -95,6 +100,11 @@ def test_find_batched(doc_index, space, is_query_doc):
     for result in docs:
         assert len(result) == 5
     assert doc_index.num_docs() == 10
+
+    empty_index = InMemoryExactNNIndex[MyDoc]()
+    docs, scores = empty_index.find_batched(query, search_field='tensor', limit=5)
+    assert len(docs) == 0
+    assert len(scores) == 0
 
 
 def test_concatenated_queries(doc_index):

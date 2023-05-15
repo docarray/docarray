@@ -280,6 +280,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
+        if self.num_docs() == 0:
+            return _FindResultBatched(documents=[], scores=[])  # type: ignore
+
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(queries, k=limit)
         result_das = [
@@ -293,6 +296,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
+        if self.num_docs() == 0:
+            return _FindResult(documents=[], scores=[])  # type: ignore
+
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
