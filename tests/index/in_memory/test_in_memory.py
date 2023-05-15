@@ -120,3 +120,18 @@ def test_concatenated_queries(doc_index):
     docs, scores = doc_index.execute_query(q)
 
     assert len(docs) == 4
+
+
+def test_save_and_load(doc_index, tmpdir):
+    initial_num_docs = doc_index.num_docs()
+
+    binary_file = str(tmpdir / 'docs.bin')
+    doc_index.persist(binary_file)
+
+    new_doc_index = InMemoryExactNNIndex[SchemaDoc](index_file_path=binary_file)
+
+    docs, scores = new_doc_index.find(np.ones(10), search_field='tensor', limit=5)
+
+    assert len(docs) == 5
+    assert len(scores) == 5
+    assert new_doc_index.num_docs() == initial_num_docs
