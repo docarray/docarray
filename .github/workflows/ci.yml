@@ -179,7 +179,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Check run number
         id: check_run
-        run: echo "::set-output name=should_run::$(if (( ${GITHUB_RUN_NUMBER} % 10 == 0 )); then echo 'true'; else echo 'false'; fi)"
+        run: echo "::set-output name=should_run::$(if (( ${GITHUB_RUN_NUMBER} % 2 == 0 )); then echo 'true'; else echo 'false'; fi)"
       - name: Prepare environment
         if: steps.check_run.outputs.should_run == 'true'
         run: |
