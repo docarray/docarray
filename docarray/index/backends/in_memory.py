@@ -74,7 +74,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                     cast(Type[BaseDoc], self._schema)
                 )()
         else:
-            if docs is not None:
+            if docs:
                 self._logger.info('Docs provided. Initializing with provided docs.')
                 self._docs = docs
             else:
