@@ -39,7 +39,7 @@ Additionally, you can preserve your index as a binary file and instantiate a new
 doc_index.save_binary('docs.bin')
 
 # Initialize a new document index using the saved binary file
-new_doc_index = InMemoryExactNNIndex[MyDoc](file_path='docs.bin')
+new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
 ```
 
 ## Configuration
