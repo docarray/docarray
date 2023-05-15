@@ -24,7 +24,7 @@ def test_init_from_doc_list():
     assert list(docs) == ['a', 'b']
 
 
-def test_init_from_doc_list_rawä():
+def test_init_from_doc_list_raw():
     docs = DocDict[MyDoc].from_doc_list(
         DocList([MyDoc(id='a', text='a'), MyDoc(id='b', text='b')])
     )

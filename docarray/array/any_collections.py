@@ -11,8 +11,6 @@ from typing import (
     cast,
 )
 
-from pydantic import ValidationError
-
 from docarray.base_doc import BaseDoc
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name
@@ -144,4 +142,4 @@ class AnyCollections(Generic[T_doc], AbstractType):
         if isinstance(value, cls):
             return value
         else:
-            raise ValidationError(f'Value {value} is not a valid DocDict type')
+            raise ValueError(f'Value {value} is not a valid DocDict type')

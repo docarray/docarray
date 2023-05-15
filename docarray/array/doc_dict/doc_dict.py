@@ -27,7 +27,7 @@ class DocDict(AnyCollections[T_doc]):
         return doc
 
     @classmethod
-    def from_doc_list(cls, docs: DocList) -> 'DocDict':
+    def from_doc_list(cls: Type[T], docs: DocList) -> T:
         return cls(**{doc.id: doc for doc in docs})
 
     def __iter__(self):
