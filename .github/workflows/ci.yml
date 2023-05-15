@@ -164,7 +164,6 @@ jobs:
   docarray-test-uncaped:
     # Test without poetry lock. This does not block CI passing.
     # Run once every 10 CI runs so that it doesn't slow down the workflow.
-    if: github.run_number % 10 == 0
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
@@ -178,7 +177,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Check run number
+        id: check_run
+        run: echo "::set-output name=should_run::$(if (( ${GITHUB_RUN_NUMBER} % 10 == 0 )); then echo 'true'; else echo 'false'; fi)"
       - name: Prepare environment
+        if: steps.check_run.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           python -m pip install poetry
@@ -187,8 +190,8 @@ jobs:
           poetry run pip install elasticsearch==8.6.2
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
-
       - name: Test
+        if: steps.check_run.outputs.should_run == 'true'
         id: test
         run: |
           poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
