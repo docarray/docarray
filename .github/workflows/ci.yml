@@ -162,8 +162,8 @@ jobs:
 
 
   docarray-test-uncaped:
-    # do test without using poetry lock. This does not block ci passing
-    # run once every 10 CI runs so that it doesn't slow down the workflow
+    # Test without poetry lock. This does not block CI passing.
+    # Run once every 10 CI runs so that it doesn't slow down the workflow.
     if: github.run_number % 10 == 0
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
