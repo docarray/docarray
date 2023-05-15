@@ -161,7 +161,10 @@ jobs:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
 
-  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
+  docarray-test-uncaped:
+    # do test without using poetry lock. This does not block ci passing
+    # run once every 10 CI runs so that it doesn't slow down the workflow
+    if: github.run_number % 10 == 0
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
