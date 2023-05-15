@@ -33,6 +33,15 @@ doc_index.index(docs)
 doc_index = InMemoryExactNNIndex[MyDoc](docs)
 ```
 
+Additionally, you can preserve your index as a binary file and instantiate a new one using this file:
+```python
+# Save your existing index as a binary file
+doc_index.save_binary('docs.bin')
+
+# Initialize a new document index using the saved binary file
+new_doc_index = InMemoryExactNNIndex[MyDoc](file_path='docs.bin')
+```
+
 ## Configuration
 
 This section lays out the configurations and options that are specific to [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex].
@@ -222,4 +231,17 @@ To delete nested data, you need to specify the `id`.
 ```python
 # example of deleting nested and flat index
 del doc_index[index_docs[6].id]
+```
+
+## Save and Load
+
+You can save binary file of your index and load it in the following way:
+
+```python
+# Save your documents as a binary file
+doc_index.save_binary('docs.bin')
+# I
+new_doc_index = InMemoryExactNNIndex[SchemaDoc](index_file_path=binary_file)
+
+
 ```

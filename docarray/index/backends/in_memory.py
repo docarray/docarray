@@ -40,7 +40,10 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(
-        self, docs: Optional[DocList] = None, index_file_path: str = None, **kwargs
+        self,
+        docs: Optional[DocList] = None,
+        index_file_path: Optional[str] = None,
+        **kwargs,
     ):
         """Initialize InMemoryExactNNIndex"""
         super().__init__(db_config=None, **kwargs)
