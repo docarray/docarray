@@ -232,16 +232,3 @@ To delete nested data, you need to specify the `id`.
 # example of deleting nested and flat index
 del doc_index[index_docs[6].id]
 ```
-
-## Save and Load
-
-You can save binary file of your index and load it in the following way:
-
-```python
-# Save your documents as a binary file
-doc_index.save_binary('docs.bin')
-# I
-new_doc_index = InMemoryExactNNIndex[SchemaDoc](index_file_path=binary_file)
-
-
-```
