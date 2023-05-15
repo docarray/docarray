@@ -71,3 +71,32 @@ def test_setattr(docs):
     assert docs.text == {'x': 'c', 'y': 'd'}
 
     assert docs['x'].text == 'c'
+
+
+class InerDoc(BaseDoc):
+    text: str
+
+
+class NestedDoc(BaseDoc):
+    doc: InerDoc
+
+
+@pytest.fixture
+def docs_nested():
+    return DocDict[NestedDoc](
+        x=NestedDoc(id='a', doc=InerDoc(id='a', text='a')),
+        y=NestedDoc(id='b', doc=InerDoc(id='b', text='b')),
+    )
+
+
+def test_getatr_nested(docs_nested):
+    assert docs_nested.id == {'x': 'a', 'y': 'b'}
+
+    nested = docs_nested.doc
+    assert isinstance(nested, DocDict[InerDoc])
+    assert nested.text == {'x': 'a', 'y': 'b'}
+
+
+def test_setattr_nested(docs_nested):
+    docs_nested.doc = {'x': InerDoc(id='c', text='c'), 'y': InerDoc(id='d', text='d')}
+    assert docs_nested.doc.text == {'x': 'c', 'y': 'd'}

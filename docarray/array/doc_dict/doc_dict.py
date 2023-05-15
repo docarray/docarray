@@ -55,7 +55,7 @@ class DocDict(AnyCollections[T_doc], Dict[str, T_doc]):
             and issubclass(field_type, BaseDoc)
         ):
             return DocDict.__class_getitem__(field_type)(  # todo skip validation
-                {key: getattr(doc, field) for key, doc in self.items()},
+                **{key: getattr(doc, field) for key, doc in self.items()},
             )
         else:
             return {key: getattr(doc, field) for key, doc in self.items()}
