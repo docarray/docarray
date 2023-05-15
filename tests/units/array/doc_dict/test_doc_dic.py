@@ -12,6 +12,11 @@ def test_init():
     assert list(docs) == ['x', 'y']
 
 
+def test_init_validate_fail():
+    with pytest.raises(ValueError):
+        DocDict[MyDoc](x='hello')
+
+
 def test_init_raw():
     docs = DocDict(x=MyDoc(id='a', text='a'), y=MyDoc(id='b', text='b'))
     assert list(docs) == ['x', 'y']
@@ -59,3 +64,10 @@ def test_getitem(docs):
 def test_getatr(docs):
     assert docs.text == {'x': 'a', 'y': 'b'}
     assert docs.id == {'x': 'a', 'y': 'b'}
+
+
+def test_setattr(docs):
+    docs.text = {'x': 'c', 'y': 'd'}
+    assert docs.text == {'x': 'c', 'y': 'd'}
+
+    assert docs['x'].text == 'c'

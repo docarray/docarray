@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Type, TypeVar, Union
 
 from typing_inspect import is_union_type
 
@@ -8,17 +8,19 @@ from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
 
 if TYPE_CHECKING:
-    from docarray.typing import AbstractTensor, NdArray, TorchTensor
+    from docarray.typing import NdArray, TorchTensor
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocDict')
 
 
-class DocDict(AnyCollections[T_doc]):
+class DocDict(AnyCollections[T_doc], Dict[str, T_doc]):
     doc_type: Type[BaseDoc] = AnyDoc
 
     def __init__(self, **mapping):
-        self._data = {key: self._validate_one_doc(val) for key, val in mapping.items()}
+        super().__init__(
+            {key: self._validate_one_doc(val) for key, val in mapping.items()}
+        )
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this `DocList`"""
@@ -30,23 +32,14 @@ class DocDict(AnyCollections[T_doc]):
     def from_doc_list(cls: Type[T], docs: DocList) -> T:
         return cls(**{doc.id: doc for doc in docs})
 
-    def __iter__(self):
-        for key in self._data.keys():
-            yield key
-
-    def update(self, other: Union['DocDict', Dict[str, T_doc], DocList]):
+    # here we need to ignore type as the DocDict as a signature incompatible with Dict (it is more restrictive)
+    def update(self, other: Union['DocDict', Dict[str, T_doc], DocList]):  # type: ignore
         if isinstance(other, DocDict):
-            self._data.update(other._data)
+            super().update(other)
         elif isinstance(other, DocList):
-            self._data.update(DocDict.from_doc_list(other)._data)
+            super().update(DocDict.from_doc_list(other))
         else:
-            self._data.update(other)
-
-    def __getitem__(self, item):
-        return self._data[item]
-
-    def items(self):
-        return self._data.items()
+            super().update(other)
 
     def _get_data_column(
         self: T,
@@ -61,10 +54,7 @@ class DocDict(AnyCollections[T_doc]):
             and isinstance(field_type, type)
             and issubclass(field_type, BaseDoc)
         ):
-            # calling __class_getitem__ ourselves is a hack otherwise mypy complain
-            # most likely a bug in mypy though
-            # bug reported here https://github.com/python/mypy/issues/14111
-            return DocDict.__class_getitem__(field_type)(
+            return DocDict.__class_getitem__(field_type)(  # todo skip validation
                 {key: getattr(doc, field) for key, doc in self.items()},
             )
         else:
@@ -73,14 +63,20 @@ class DocDict(AnyCollections[T_doc]):
     def _set_data_column(
         self: T,
         field: str,
-        values: Union[List, T, 'AbstractTensor'],
+        values: Union[Mapping[str, Any]],
     ):
-        """Set all Documents in this `DocList` using the passed values
+        """Set all Documents in this `DocDict` using the passed values
 
         :param field: name of the fields to set
         :values: the values to set at the `DocList` level
         """
-        raise NotImplementedError
+        if values.keys() != self.keys():
+            raise ValueError(
+                f'Keys of the values {values.keys()} do not match the keys of the DocDict {self.keys()}'
+            )
+
+        for key, value in values.items():
+            setattr(self[key], field, value)
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg) -> T:
