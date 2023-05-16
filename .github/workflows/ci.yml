@@ -161,39 +161,6 @@ jobs:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
 
 
-  docarray-test-uncaped: # do test without using poetry lock. This does not block ci passing
-    needs: [lint-ruff, check-black, import-test]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.7]
-        test-path: [tests/integrations, tests/units, tests/documentation]
-    steps:
-      - uses: actions/checkout@v2.5.0
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Prepare environment
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install poetry
-          rm poetry.lock
-          poetry install --all-extras
-          poetry run pip install elasticsearch==8.6.2
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends ffmpeg
-
-      - name: Test
-        id: test
-        run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
-        timeout-minutes: 30
-        env:
-          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
-
-
   docarray-test-proto3:
     needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
@@ -215,7 +182,6 @@ jobs:
           poetry run pip install protobuf==3.19.0 # we check that we support 3.19
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
-
       - name: Test
         id: test
         run: |
