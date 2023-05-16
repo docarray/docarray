@@ -54,6 +54,15 @@ def test_find_simple_schema(tmp_path, space):
         assert np.allclose(result.tens, np.zeros(10))
 
 
+def test_find_empty_index(tmp_path):
+    empty_index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    query = SimpleDoc(tens=np.ones(10))
+
+    docs, scores = empty_index.find(query, search_field='tens', limit=5)
+    assert len(docs) == 0
+    assert len(scores) == 0
+
+
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_torch(tmp_path, space):
     index = HnswDocumentIndex[TorchDoc](work_dir=str(tmp_path))

@@ -55,6 +55,17 @@ class MyDocument(BaseDoc):
 qdrant_config = QdrantDocumentIndex.DBConfig(":memory:")
 doc_index = QdrantDocumentIndex[MyDocument](qdrant_config)
 
+# Connecting to a local Qdrant instance running as a Docker container
+qdrant_config = QdrantDocumentIndex.DBConfig("http://localhost:6333")
+doc_index = QdrantDocumentIndex[MyDocument](qdrant_config)
+
+# Connecting to Qdrant Cloud service
+qdrant_config = QdrantDocumentIndex.DBConfig(
+    "https://YOUR-CLUSTER-URL.aws.cloud.qdrant.io", 
+    api_key="<your-api-key>",
+)
+doc_index = QdrantDocumentIndex[MyDocument](qdrant_config)
+
 # Indexing the documents
 doc_index.index(
     [
@@ -115,4 +126,22 @@ results = doc_index.filter(
         ],
     ),
 )
+
+# Vector search with additional filtering. Qdrant has the additional filters
+# incorporated directly into the vector search phase, without a need to perform
+# pre or post-filtering.
+query = (
+    index.build_query()
+        .find(np.random.random(512), search_field="image_embedding")
+        .filter(filter_query=models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="title",
+                    match=models.MatchText(text="document 2"),
+                ),
+            ],
+        ))
+        .build(limit=5)
+)
+results = index.execute_query(query)
 ```

@@ -355,7 +355,7 @@ def test_hybrid_query(test_index):
     q = (
         test_index.build_query()
         .find(query=query_embedding)
-        .text_search(query=query_text, search_field="text")
+        .text_search(query=query_text)
         .filter(where_filter)
         .build()
     )
@@ -373,7 +373,7 @@ def test_hybrid_query_batched(test_index):
         .find_batched(
             queries=query_embeddings, score_name="certainty", score_threshold=0.99
         )
-        .text_search_batched(queries=query_texts, search_field="text")
+        .text_search_batched(queries=query_texts)
         .build()
     )
 

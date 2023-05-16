@@ -251,6 +251,8 @@ which one to use for the search.
 The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
+When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+
 How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
 
 ### Batched search
@@ -294,7 +296,7 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 
 In addition to vector similarity search, the Document Index interface offers methods for text search and filtered search:
 [text_search()][docarray.index.abstract.BaseDocIndex.text_search] and [filter()][docarray.index.abstract.BaseDocIndex.filter],
-as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched].
+as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]. [filter_subindex()][docarray.index.abstract.BaseDocIndex.filter_subindex] is for filter on subindex level.
 
 !!! note
     The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
@@ -596,7 +598,7 @@ class YouTubeVideoDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp2')
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='/tmp2')
 
 # create some data
 index_docs = [
@@ -638,4 +640,85 @@ docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit
 
 # find by the `video` tensor; neseted level
 docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
+```
+
+### Nested data with subindex
+
+Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
+
+If a Document contains a DocList, it can still be stored in a Document Index.
+In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
+
+This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.
+
+
+**Index**
+
+In the following example you can see a complex schema that contains nested Documents with subindex.
+The `MyDoc` contains a `DocList` of `VideoDoc`, which contains a `DocList` of `ImageDoc`, alongside some "basic" fields:
+
+```python
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor_image: AnyTensor = Field(space='cosine', dim=64)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    images: DocList[ImageDoc]
+    tensor_video: AnyTensor = Field(space='cosine', dim=128)
+
+
+class MyDoc(BaseDoc):
+    docs: DocList[VideoDoc]
+    tensor: AnyTensor = Field(space='cosine', dim=256)
+
+
+# create a Document Index
+doc_index = HnswDocumentIndex[MyDoc](work_dir='/tmp3')
+
+# create some data
+index_docs = [
+    MyDoc(
+        docs=DocList[VideoDoc](
+            [
+                VideoDoc(
+                    url=f'http://example.ai/videos/{i}-{j}',
+                    images=DocList[ImageDoc](
+                        [
+                            ImageDoc(
+                                url=f'http://example.ai/images/{i}-{j}-{k}',
+                                tensor_image=np.ones(64),
+                            )
+                            for k in range(10)
+                        ]
+                    ),
+                    tensor_video=np.ones(128),
+                )
+                for j in range(10)
+            ]
+        ),
+        tensor=np.ones(256),
+    )
+    for i in range(10)
+]
+
+# index the Documents
+doc_index.index(index_docs)
+```
+
+**Search**
+
+You can perform search on any subindex level by using `find_subindex()` method and the dunder operator `'root__subindex'` to specify the index to search on.
+
+```python
+# find by the `VideoDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
+)
+
+# find by the `ImageDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
+)
 ```

@@ -1,3 +1,4 @@
+import glob
 import hashlib
 import os
 import sqlite3
@@ -7,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Generator,
     Generic,
     List,
     Optional,
@@ -21,6 +23,7 @@ from typing import (
 import numpy as np
 
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import (
     BaseDocIndex,
     _ColumnInfo,
@@ -67,11 +70,16 @@ T = TypeVar('T', bound='HnswDocumentIndex')
 class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         """Initialize HnswDocumentIndex"""
+        if db_config is not None and getattr(db_config, 'index_name'):
+            db_config.work_dir = db_config.index_name.replace("__", "/")
+
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(HnswDocumentIndex.DBConfig, self._db_config)
         self._work_dir = self._db_config.work_dir
         self._logger.debug(f'Working directory set to {self._work_dir}')
-        load_existing = os.path.exists(self._work_dir) and os.listdir(self._work_dir)
+        load_existing = os.path.exists(self._work_dir) and glob.glob(
+            f'{self._work_dir}/*.bin'
+        )
         Path(self._work_dir).mkdir(parents=True, exist_ok=True)
 
         # HNSWLib setup
@@ -90,6 +98,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                continue
             if not col.config:
                 # non-tensor type; don't create an index
                 continue
@@ -117,6 +127,17 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._create_docs_table()
         self._sqlite_conn.commit()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
+
+    @property
+    def index_name(self):
+        return self._db_config.work_dir  # type: ignore
+
+    @property
+    def out_schema(self) -> Type[BaseDoc]:
+        """Return the real schema of the index."""
+        if self._is_subindex:
+            return self._ori_schema
+        return cast(Type[BaseDoc], self._schema)
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -184,9 +205,23 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return None  # all types allowed, but no db type needed
 
-    def _index(self, column_data_dic, **kwargs):
+    def _index(
+        self,
+        column_to_data: Dict[str, Generator[Any, None, None]],
+        docs_validated: Sequence[BaseDoc] = [],
+    ):
+        self._index_subindex(column_to_data)
+
         # not needed, we implement `index` directly
-        ...
+        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
+        # indexing into HNSWLib and SQLite sequentially
+        # could be improved by processing in parallel
+        for col_name, index in self._hnsw_indices.items():
+            data = column_to_data[col_name]
+            data_np = [self._to_numpy(arr) for arr in data]
+            data_stacked = np.stack(data_np)
+            index.add_items(data_stacked, ids=hashed_ids)
+            index.save_index(self._hnsw_locations[col_name])
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """Index Documents into the index.
@@ -206,16 +241,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
         self._logger.debug(f'Indexing {n_docs} documents')
         docs_validated = self._validate_docs(docs)
+        self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)
-        hashed_ids = tuple(self._to_hashed_id(doc.id) for doc in docs_validated)
-        # indexing into HNSWLib and SQLite sequentially
-        # could be improved by processing in parallel
-        for col_name, index in self._hnsw_indices.items():
-            data = data_by_columns[col_name]
-            data_np = [self._to_numpy(arr) for arr in data]
-            data_stacked = np.stack(data_np)
-            index.add_items(data_stacked, ids=hashed_ids)
-            index.save_index(self._hnsw_locations[col_name])
+
+        self._index(data_by_columns, docs_validated, **kwargs)
 
         self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
@@ -251,6 +280,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
+        if self.num_docs() == 0:
+            return _FindResultBatched(documents=[], scores=[])  # type: ignore
+
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(queries, k=limit)
         result_das = [
@@ -264,6 +296,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
+        if self.num_docs() == 0:
+            return _FindResult(documents=[], scores=[])  # type: ignore
+
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
@@ -312,6 +347,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _del_items(self, doc_ids: Sequence[str]):
         # delete from the indices
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if issubclass(type_, AnyDocArray):
+                for id in doc_ids:
+                    doc = self.__getitem__(id)
+                    sub_ids = [sub_doc.id for sub_doc in getattr(doc, field_name)]
+                    del self._subindices[field_name][sub_ids]
+
         try:
             for doc_id in doc_ids:
                 id_ = self._to_hashed_id(doc_id)
@@ -323,8 +367,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
 
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
-        out_docs = self._get_docs_sqlite_doc_id(doc_ids)
+    def _get_items(self, doc_ids: Sequence[str], out: bool = True) -> Sequence[TSchema]:
+        """Get Documents from the hnswlib index, by `id`.
+        If no document is found, a KeyError is raised.
+
+        :param doc_ids: ids to get from the Document index
+        :param out: return the documents in the original schema(True) or inner schema(False) for subindex
+        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`. Duplicate `doc_ids` can be omitted in the output.
+        """
+        out_docs = self._get_docs_sqlite_doc_id(doc_ids, out)
         if len(out_docs) == 0:
             raise KeyError(f'No document with id {doc_ids} found')
         return out_docs
@@ -391,7 +442,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
         )
 
-    def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int]):
+    def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int], out: bool = True):
         for id_ in univ_ids:
             # I hope this protects from injection attacks
             # properly binding with '?' doesn't work for some reason
@@ -401,13 +452,17 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
         rows = self._sqlite_cursor.fetchall()
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
-        return docs_cls([self._doc_from_bytes(row[0]) for row in rows])
+        schema = self.out_schema if out else self._schema
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], schema))
+        return docs_cls([self._doc_from_bytes(row[0], out) for row in rows])
 
-    def _get_docs_sqlite_doc_id(self, doc_ids: Sequence[str]) -> DocList[TSchema]:
+    def _get_docs_sqlite_doc_id(
+        self, doc_ids: Sequence[str], out: bool = True
+    ) -> DocList[TSchema]:
         hashed_ids = tuple(self._to_hashed_id(id_) for id_ in doc_ids)
-        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids)
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        docs_unsorted = self._get_docs_sqlite_unsorted(hashed_ids, out)
+        schema = self.out_schema if out else self._schema
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], schema))
         return docs_cls(sorted(docs_unsorted, key=lambda doc: doc_ids.index(doc.id)))
 
     def _get_docs_sqlite_hashed_id(self, hashed_ids: Sequence[int]) -> DocList:
@@ -416,7 +471,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         def _in_position(doc):
             return hashed_ids.index(self._to_hashed_id(doc.id))
 
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))
+        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self.out_schema))
         return docs_cls(sorted(docs_unsorted, key=_in_position))
 
     def _delete_docs_from_sqlite(self, doc_ids: Sequence[Union[str, int]]):
@@ -436,6 +491,32 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _doc_to_bytes(self, doc: BaseDoc) -> bytes:
         return doc.to_protobuf().SerializeToString()
 
-    def _doc_from_bytes(self, data: bytes) -> BaseDoc:
-        schema_cls = cast(Type[BaseDoc], self._schema)
+    def _doc_from_bytes(self, data: bytes, out: bool = True) -> BaseDoc:
+        schema = self.out_schema if out else self._schema
+        schema_cls = cast(Type[BaseDoc], schema)
         return schema_cls.from_protobuf(DocProto.FromString(data))
+
+    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        """Get the root_id given the id of a subindex Document and the root and subindex name for hnswlib.
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex = self._subindices[root]
+
+        if not sub:
+            sub_doc = subindex._get_items([id], out=False)  # type: ignore
+            parent_id = (
+                sub_doc[0]['parent_id']
+                if isinstance(sub_doc[0], dict)
+                else sub_doc[0].parent_id
+            )
+            return parent_id
+        else:
+            fields = sub.split('__')
+            cur_root_id = subindex._get_root_doc_id(
+                id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_doc_id(cur_root_id, root, '')

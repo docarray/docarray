@@ -137,7 +137,7 @@ class TorchTensor(
         Convert `TorchTensor` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        return self.numpy()  ## might need to check device later
+        return self.detach().numpy()  # might need to check device later
 
     def unwrap(self) -> torch.Tensor:
         """
