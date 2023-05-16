@@ -95,13 +95,21 @@ Image(
 )  # fails validation because it does not have enough dimensions
 ```
 
+## Use DocList with FastAPI
 
-Further, you can send and receive lists of documents represented as a `DocList` object:
+Further, you can send and receive lists of documents represented as a `DocList` object.
 
-!!! note
-    Currently, `FastAPI` receives `DocList` objects as lists, so you have to construct a DocList inside the function.
-    Also, if you want to return a `DocList` object, first you have to convert it to a list. 
-    (Shown in the example below)
+To do that, you need to receive a list of documents (`List[TextDoc]`) in your FastAPI function, and then convert it to a `DocList` object.
+To return a `DocList` object, similarly, you need to convert it to a list first.
+
+!!! note "Why is there no native support for `DocList`?"
+    We would love to natively support `DocList` in FastAPI, but it's not possible at the moment due to some behaviour
+    stemming from Pydantic. This should be resolved once [Pydantic v2](https://docs.pydantic.dev/latest/blog/pydantic-v2/) is released.
+
+    If you are curious about the root cause of this, you can check out the following issues:
+    - [Pydantic issue #1457](https://github.com/pydantic/pydantic/issues/1457)
+    - [Should be resolved in Pydantic v2 (#4161)](https://github.com/pydantic/pydantic/issues/4161)
+    - [DocArray needs the above (#1521)](https://github.com/docarray/docarray/issues/1521)
 
 ```python
 from typing import List
