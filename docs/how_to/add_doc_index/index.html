@@ -956,6 +956,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-_filter_by_parent_id-method" class="md-nav__link">
+    The _filter_by_parent_id() method
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-index_name-property" class="md-nav__link">
+    The index_name() property
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2280,6 +2294,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#the-_filter_by_parent_id-method" class="md-nav__link">
+    The _filter_by_parent_id() method
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-index_name-property" class="md-nav__link">
+    The index_name() property
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2647,6 +2675,11 @@ That way you have full control over whether the input data gets flattened or not
 in your backend, if such a concept exists in your case. In your implementation you can assume that <code>.id</code>s are <strong>unique</strong> and <strong>non-empty</strong>.
 (Strictly speaking, this uniqueness property is not guaranteed, since a user could override the auto-generated <code>.id</code> field with a custom value.
 If your implementation encounters a duplicate <code>.id</code>, it is okay to fail and raise an Exception.)</p>
+<h3 id="the-_filter_by_parent_id-method">The <code>_filter_by_parent_id()</code> method</h3>
+<p>The default implementatin return <code>None</code>. You can choose to override this function with database specific filter API when needed. 
+This function should return a list of ids of subindex level documents given the id of root document.</p>
+<h3 id="the-index_name-property">The <code>index_name()</code> property</h3>
+<p>The <code>index_name</code> property is used in the initialization of subindices, and the default implementation is empty. This function should return the name of the index. And if the property of the index name in your backend is not <code>index_name</code>, you need to convert it as the first step in <code>__init__()</code>, like <code>index_name</code> is assigned to <code>work_dir</code> in <code>docarray/index/backends/hnswlib.py</code>.</p>
 <h2 id="implement-a-query-builder-for-your-document-index">Implement a Query Builder for your Document Index</h2>
 <p>Every Document Index exposes a Query Builder interface which the user can use to build composed, hybrid queries.</p>
 <p>For you as a backend integrator, there are three main things that are related to this:</p>

@@ -2090,10 +2090,6 @@
 </span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># pull from Jina AI Cloud</span>
 </span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">dl_pull</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="sa">f</span><span class="s1">'jac://</span><span class="si">{</span><span class="n">DL_NAME</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When using <code>.push()</code> and <code>.pull()</code>, <code>DocList</code> calls the default <code>boto3</code> client. Be sure your default session is correctly set up.</p>
-</div>
 <h2 id="push-and-pull-with-streaming">Push and pull with streaming</h2>
 <p>When you have a large amount of documents to push and pull, you can use the streaming function. 
 <a class="autorefs autorefs-internal" href="../../../../API_reference/array/da/#docarray.array.doc_list.pushpull.PushPullMixin.push_stream"><code>.push_stream()</code></a> and 
