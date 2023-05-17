@@ -519,6 +519,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#use-doclist-with-fastapi" class="md-nav__link">
+    Use DocList with FastAPI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#specify-tensor-shapes" class="md-nav__link">
     Specify tensor shapes
   </a>
@@ -2036,6 +2043,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#use-doclist-with-fastapi" class="md-nav__link">
+    Use DocList with FastAPI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#specify-tensor-shapes" class="md-nav__link">
     Specify tensor shapes
   </a>
@@ -2141,12 +2155,18 @@ and provide a seamless and efficient way to work with multimodal data in FastAPI
 </span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
 </span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="p">)</span>  <span class="c1"># fails validation because it does not have enough dimensions</span>
 </span></code></pre></div>
-<p>Further, you can send and receive lists of documents represented as a <code>DocList</code> object:</p>
+<h2 id="use-doclist-with-fastapi">Use DocList with FastAPI</h2>
+<p>Further, you can send and receive lists of documents represented as a <code>DocList</code> object.</p>
+<p>To do that, you need to receive a list of documents (<code>List[TextDoc]</code>) in your FastAPI function, and then convert it to a <code>DocList</code> object.
+To return a <code>DocList</code> object, similarly, you need to convert it to a list first.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Currently, <code>FastAPI</code> receives <code>DocList</code> objects as lists, so you have to construct a DocList inside the function.
-Also, if you want to return a <code>DocList</code> object, first you have to convert it to a list. 
-(Shown in the example below)</p>
+<p class="admonition-title">Why is there no native support for <code>DocList</code>?</p>
+<p>We would love to natively support <code>DocList</code> in FastAPI, but it's not possible at the moment due to some behaviour
+stemming from Pydantic. This should be resolved once <a href="https://docs.pydantic.dev/latest/blog/pydantic-v2/">Pydantic v2</a> is released.</p>
+<p>If you are curious about the root cause of this, you can check out the following issues:
+- <a href="https://github.com/pydantic/pydantic/issues/1457">Pydantic issue #1457</a>
+- <a href="https://github.com/pydantic/pydantic/issues/4161">Should be resolved in Pydantic v2 (#4161)</a>
+- <a href="https://github.com/docarray/docarray/issues/1521">DocArray needs the above (#1521)</a></p>
 </div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
