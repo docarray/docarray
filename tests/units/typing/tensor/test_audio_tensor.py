@@ -6,6 +6,7 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
+from docarray.typing import AudioTensor
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.audio.audio_torch_tensor import AudioTorchTensor
@@ -134,3 +135,31 @@ def test_save_audio_tensor_to_bytes(audio_tensor):
     b = audio_tensor.to_bytes()
     isinstance(b, bytes)
     isinstance(b, AudioBytes)
+
+
+@pytest.mark.parametrize(
+    'tensor,cls_audio_tensor,cls_tensor',
+    [
+        (torch.zeros(1000, 2), AudioTorchTensor, torch.Tensor),
+        (np.zeros((1000, 2)), AudioNdArray, np.ndarray),
+    ],
+)
+def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
+    class MyAudioDoc(BaseDoc):
+        tensor: AudioTensor
+
+    doc = MyAudioDoc(tensor=tensor)
+    assert isinstance(doc.tensor, cls_audio_tensor)
+    assert isinstance(doc.tensor, cls_tensor)
+    assert (doc.tensor == tensor).all()
+
+
+@pytest.mark.tensorflow
+def test_tensorflow_coercion():
+    class MyAudioDoc(BaseDoc):
+        tensor: AudioTensor
+
+    doc = MyAudioDoc(tensor=tf.zeros((1000, 2)))
+    assert isinstance(doc.tensor, AudioTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
+    assert tnp.allclose(doc.tensor.tensor, tf.zeros((1000, 2)))

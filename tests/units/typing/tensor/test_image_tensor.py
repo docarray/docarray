@@ -5,7 +5,9 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray.typing import ImageBytes, ImageNdArray, ImageTorchTensor
+from docarray import BaseDoc
+from docarray.computation.tensorflow_backend import tnp
+from docarray.typing import ImageBytes, ImageNdArray, ImageTensor, ImageTorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -48,3 +50,31 @@ def test_save_image_tensor_to_bytes(image_tensor):
     b = image_tensor.to_bytes()
     isinstance(b, bytes)
     isinstance(b, ImageBytes)
+
+
+@pytest.mark.parametrize(
+    'tensor,cls_audio_tensor,cls_tensor',
+    [
+        (torch.zeros(1000, 2), ImageTorchTensor, torch.Tensor),
+        (np.zeros((1000, 2)), ImageNdArray, np.ndarray),
+    ],
+)
+def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
+    class MyAudioDoc(BaseDoc):
+        tensor: ImageTensor
+
+    doc = MyAudioDoc(tensor=tensor)
+    assert isinstance(doc.tensor, cls_audio_tensor)
+    assert isinstance(doc.tensor, cls_tensor)
+    assert (doc.tensor == tensor).all()
+
+
+@pytest.mark.tensorflow
+def test_tensorflow_coercion():
+    class MyAudioDoc(BaseDoc):
+        tensor: ImageTensor
+
+    doc = MyAudioDoc(tensor=tf.zeros((1000, 2)))
+    assert isinstance(doc.tensor, ImageTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
+    assert tnp.allclose(doc.tensor.tensor, tf.zeros((1000, 2)))
