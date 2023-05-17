@@ -39,7 +39,7 @@ def test_dump_json():
         (np.zeros((1000, 2)), NdArrayEmbedding, np.ndarray),
     ],
 )
-def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
+def test_torch_ndarray_to_any_embedding(tensor, cls_audio_tensor, cls_tensor):
     class MyAudioDoc(BaseDoc):
         tensor: AnyEmbedding
 
@@ -50,7 +50,7 @@ def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
 
 
 @pytest.mark.tensorflow
-def test_tensorflow_coercion():
+def test_tensorflow_to_any_embedding():
     class MyAudioDoc(BaseDoc):
         tensor: AnyEmbedding
 

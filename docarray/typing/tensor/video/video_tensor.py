@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -69,6 +69,10 @@ class VideoTensor:
     """
 
     @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
@@ -78,18 +82,21 @@ class VideoTensor:
         # Check for TorchTensor first, then TensorFlowTensor, then NdArray
         if torch_available:
             if isinstance(value, TorchTensor):
-                return value
+                return cast(VideoTorchTensor, value)
             elif isinstance(value, torch.Tensor):
                 return VideoTorchTensor._docarray_from_native(value)  # noqa
         if tf_available:
             if isinstance(value, TensorFlowTensor):
-                return value
+                return cast(VideoTensorFlowTensor, value)
             elif isinstance(value, tf.Tensor):
                 return VideoTensorFlowTensor._docarray_from_native(value)  # noqa
-        try:
-            return VideoNdArray.validate(value, field, config)
-        except Exception:  # noqa
-            pass
+        if isinstance(value, VideoNdArray):
+            return cast(VideoNdArray, value)
+        if isinstance(value, np.ndarray):
+            try:
+                return VideoNdArray.validate(value, field, config)
+            except Exception as e:  # noqa
+                raise e
         raise TypeError(
             f"Expected one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray] "
             f"compatible type, got {type(value)}"

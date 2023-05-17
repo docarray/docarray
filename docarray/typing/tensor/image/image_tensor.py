@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
-from docarray.typing import TensorFlowTensor, TorchTensor
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
+from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
+from docarray.typing.tensor.torch_tensor import TorchTensor
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
@@ -66,6 +67,10 @@ class ImageTensor:
     Raises:
         TypeError: If the input type is not one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray].
     """
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
 
     @classmethod
     def validate(

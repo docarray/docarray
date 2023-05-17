@@ -2,8 +2,22 @@ from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Unio
 
 import numpy as np
 
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import is_tf_available, is_torch_available  # noqa
+
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+
+    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -12,7 +26,6 @@ if TYPE_CHECKING:
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
-from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -31,7 +44,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of `np.ndarray`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like `torch.Tensor`.
+    and coercion from compatible types like `torch.Tensor`.
 
     This type can also be used in a parametrized way, specifying the shape of the array.
 
@@ -105,6 +118,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
+        elif torch_available and isinstance(value, torch.Tensor):
+            return cls._docarray_from_native(value.detach().cpu().numpy())
+        elif torch_available and isinstance(value, TorchTensor):
+            return cls._docarray_from_native(value.detach().cpu().numpy())
+        elif tf_available and isinstance(value, tf.Tensor):
+            return cls._docarray_from_native(value.numpy())
+        elif tf_available and isinstance(value, TensorFlowTensor):
+            return cls._docarray_from_native(value.numpy())
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)

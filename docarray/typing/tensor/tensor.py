@@ -65,6 +65,10 @@ class AnyTensor:
     """
 
     @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],

@@ -144,7 +144,7 @@ def test_save_audio_tensor_to_bytes(audio_tensor):
         (np.zeros((1000, 2)), AudioNdArray, np.ndarray),
     ],
 )
-def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
+def test_torch_ndarray_to_audio_tensor(tensor, cls_audio_tensor, cls_tensor):
     class MyAudioDoc(BaseDoc):
         tensor: AudioTensor
 
@@ -155,7 +155,7 @@ def test_torch_ndarray_coercion(tensor, cls_audio_tensor, cls_tensor):
 
 
 @pytest.mark.tensorflow
-def test_tensorflow_coercion():
+def test_tensorflow_to_audio_tensor():
     class MyAudioDoc(BaseDoc):
         tensor: AudioTensor
 

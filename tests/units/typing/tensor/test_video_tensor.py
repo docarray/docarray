@@ -11,6 +11,7 @@ from docarray.typing import (
     AudioTorchTensor,
     VideoBytes,
     VideoNdArray,
+    VideoTensor,
     VideoTorchTensor,
 )
 from docarray.utils._internal.misc import is_tf_available
@@ -170,3 +171,31 @@ def test_save_video_tensor_to_file_including_audio(video_tensor, audio_tensor, t
     tmp_file = str(tmpdir / 'tmp.mp4')
     video_tensor.save(tmp_file, audio_tensor=audio_tensor)
     assert os.path.isfile(tmp_file)
+
+
+@pytest.mark.parametrize(
+    'tensor,cls_audio_tensor,cls_tensor',
+    [
+        (torch.zeros(2, 10, 10, 3), VideoTorchTensor, torch.Tensor),
+        (np.zeros((2, 10, 10, 3)), VideoNdArray, np.ndarray),
+    ],
+)
+def test_torch_ndarray_to_video_tensor(tensor, cls_audio_tensor, cls_tensor):
+    class MyAudioDoc(BaseDoc):
+        tensor: VideoTensor
+
+    doc = MyAudioDoc(tensor=tensor)
+    assert isinstance(doc.tensor, cls_audio_tensor)
+    assert isinstance(doc.tensor, cls_tensor)
+    assert (doc.tensor == tensor).all()
+
+
+@pytest.mark.tensorflow
+def test_tensorflow_to_video_tensor():
+    class MyAudioDoc(BaseDoc):
+        tensor: VideoTensor
+
+    doc = MyAudioDoc(tensor=tf.zeros((2, 10, 10, 3)))
+    assert isinstance(doc.tensor, VideoTensorFlowTensor)
+    assert isinstance(doc.tensor.tensor, tf.Tensor)
+    assert tnp.allclose(doc.tensor.tensor, tf.zeros((2, 10, 10, 3)))
