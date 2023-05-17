@@ -42,6 +42,7 @@ INSTALL_INSTRUCTIONS = {
     'smart_open': '"docarray[aws]"',
     'boto3': '"docarray[aws]"',
     'botocore': '"docarray[aws]"',
+    'redis': '"docarray[redis]'
 }
 
 

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
     from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
     from docarray.index.backends.weaviate import WeaviateDocumentIndex  # noqa: F401
+    from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
 
 __all__ = ['InMemoryExactNNIndex']
 
@@ -34,6 +35,9 @@ def __getattr__(name: str):
     elif name == 'WeaviateDocumentIndex':
         import_library('weaviate', raise_error=True)
         import docarray.index.backends.weaviate as lib
+    elif name == 'RedisDocumentIndex':
+        import_library('redis', raise_error=True)
+        import docarray.index.backends.redis as lib
     else:
         raise ImportError(
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''

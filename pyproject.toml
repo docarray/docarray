@@ -59,6 +59,7 @@ smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 elastic-transport = {version ="^8.4.0", optional = true }
 qdrant-client = {version = ">=1.1.4", python = "<3.12", optional = true }
+redis = {version = "^4.5.5", optional = true }
 
 [tool.poetry.extras]
 proto = ["protobuf", "lz4"]
@@ -75,6 +76,7 @@ torch = ["torch"]
 web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
+redis = ['redis']
 
 # all
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
