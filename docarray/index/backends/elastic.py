@@ -311,11 +311,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             }
             self.default_column_config['dense_vector'] = self.dense_vector_config()
 
-            self._outer_instance._logger.debug('RuntimeConfig has been initialized')
-
         def dense_vector_config(self):
             """Get the dense vector config."""
-            self._outer_instance._logger.debug('Retrieving dense vector config')
 
             config = {
                 'dims': -1,
