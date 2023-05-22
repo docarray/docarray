@@ -151,8 +151,12 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
     def keys(self):
         return self.storage.columns.keys()
 
-    def values(self):
+    # type ignore because return type dict_values is private and we cannot use it.
+    # context: https://github.com/python/typing/discussions/1033
+    def values(self) -> ValuesView:  # type: ignore
         return ValuesView(self._local_dict())
 
-    def items(self):
+    # type ignore because return type dict_items is private and we cannot use it.
+    # context: https://github.com/python/typing/discussions/1033
+    def items(self) -> ItemsView:  # type: ignore
         return ItemsView(self._local_dict())
