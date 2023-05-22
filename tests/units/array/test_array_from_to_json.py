@@ -1,3 +1,5 @@
+import pytest
+
 from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
@@ -9,7 +11,8 @@ class MyDoc(BaseDoc):
     image: ImageDoc
 
 
-def test_from_to_json():
+@pytest.mark.parametrize('doc_vec', [True])
+def test_from_to_json(doc_vec):
     da = DocList[MyDoc](
         [
             MyDoc(
@@ -18,6 +21,8 @@ def test_from_to_json():
             MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ]
     )
+    if doc_vec:
+        da = da.to_doc_vec()
     json_da = da.to_json()
     da2 = DocList[MyDoc].from_json(json_da)
     assert len(da2) == 2
