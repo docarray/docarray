@@ -3,7 +3,7 @@ from typing import Optional
 import pandas as pd
 import pytest
 
-from docarray import BaseDoc, DocList
+from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
 
 
@@ -19,7 +19,8 @@ def nested_doc_cls():
     return MyDocNested
 
 
-def test_to_from_pandas_df(nested_doc_cls):
+@pytest.mark.parametrize('doc_vec', [False, True])
+def test_to_from_pandas_df(nested_doc_cls, doc_vec):
     da = DocList[nested_doc_cls](
         [
             nested_doc_cls(
@@ -30,6 +31,8 @@ def test_to_from_pandas_df(nested_doc_cls):
             nested_doc_cls(text='hello world', image=ImageDoc()),
         ]
     )
+    if doc_vec:
+        da = da.to_doc_vec()
     df = da.to_dataframe()
     assert isinstance(df, pd.DataFrame)
     assert len(df) == 2
@@ -47,7 +50,12 @@ def test_to_from_pandas_df(nested_doc_cls):
         ]
     ).all()
 
-    da_from_df = DocList[nested_doc_cls].from_dataframe(df)
+    if doc_vec:
+        da_from_df = DocVec[nested_doc_cls].from_dataframe(df)
+        assert isinstance(da_from_df, DocVec)
+    else:
+        da_from_df = DocList[nested_doc_cls].from_dataframe(df)
+        assert isinstance(da_from_df, DocList)
     for doc1, doc2 in zip(da, da_from_df):
         assert doc1 == doc2
 
@@ -71,26 +79,29 @@ def nested_doc():
     return doc
 
 
-def test_from_pandas_without_schema_raise_exception():
+@pytest.mark.parametrize('array_cls', [DocList, DocVec])
+def test_from_pandas_without_schema_raise_exception(array_cls):
     with pytest.raises(TypeError, match='no document schema defined'):
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocList.from_dataframe(df=df)
+        array_cls.from_dataframe(df=df)
 
 
-def test_from_pandas_with_wrong_schema_raise_exception(nested_doc):
+@pytest.mark.parametrize('array_cls', [DocList, DocVec])
+def test_from_pandas_with_wrong_schema_raise_exception(nested_doc, array_cls):
     with pytest.raises(ValueError, match='Column names do not match the schema'):
         df = pd.DataFrame(
             columns=['title', 'count'], data=[['title 0', 0], ['title 1', 1]]
         )
-        DocList[nested_doc.__class__].from_dataframe(df=df)
+        array_cls[nested_doc.__class__].from_dataframe(df=df)
 
 
 def test_doc_list_error():
     class Book(BaseDoc):
         title: str
 
+    # not testing DocVec bc it already fails here (as it should!)
     docs = DocList([Book(title='hello'), Book(title='world')])
     with pytest.raises(TypeError):
         docs.to_dataframe()
