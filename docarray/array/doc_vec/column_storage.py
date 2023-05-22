@@ -9,6 +9,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    ValuesView,
 )
 
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
@@ -143,3 +144,13 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
 
     def keys(self):
         return self.storage.columns.keys()
+
+    def values(self):
+        storage_items = self.storage.columns.items()
+        print(f'{storage_items=}')
+        return ValuesView(
+            {
+                key: val[self.index] if val is not None else val
+                for key, val in storage_items
+            }
+        )
