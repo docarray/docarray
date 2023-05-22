@@ -571,3 +571,11 @@ def test_type_error_no_doc_type():
 
     with pytest.raises(TypeError):
         DocVec([BaseDoc() for _ in range(10)])
+
+
+def test_doc_view_dict(batch):
+    doc_view = batch[0]
+    assert doc_view.is_view()
+    d = doc_view.dict()
+    assert d['tensor'].shape == (3, 224, 224)
+    assert d['id'] == doc_view.id
