@@ -3,6 +3,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    ItemsView,
     Iterable,
     MutableMapping,
     Optional,
@@ -142,15 +143,16 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
     def __len__(self):
         return len(self.storage.columns)
 
+    def _local_dict(self):
+        """The storage.columns dictionary with every value at position self.index"""
+
+        return {key: self[key] for key in self.storage.columns.keys()}
+
     def keys(self):
         return self.storage.columns.keys()
 
     def values(self):
-        storage_items = self.storage.columns.items()
-        print(f'{storage_items=}')
-        return ValuesView(
-            {
-                key: val[self.index] if val is not None else val
-                for key, val in storage_items
-            }
-        )
+        return ValuesView(self._local_dict())
+
+    def items(self):
+        return ItemsView(self._local_dict())
