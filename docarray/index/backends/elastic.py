@@ -133,10 +133,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 'A ElasticDocIndex must be typed with a Document type.'
                 'To do so, use the syntax: ElasticDocIndex[DocumentType]'
             )
-            raise ValueError(
-                'A ElasticDocIndex must be typed with a Document type.'
-                'To do so, use the syntax: ElasticDocIndex[DocumentType]'
-            )
+            raise ValueError
         index_name = self._db_config.index_name or default_index_name
         self._logger.debug(f'Retrieved index name: {index_name}')
         return index_name
@@ -365,7 +362,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 return elastic_py_types[type]
 
         self._logger.error(f'Unsupported column type for {type(self)}: {python_type}')
-        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+        raise ValueError
 
     def _index(
         self,
