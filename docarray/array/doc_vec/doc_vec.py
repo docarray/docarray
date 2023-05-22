@@ -21,6 +21,7 @@ from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
+from docarray.array.doc_list.io import IOMixinArray
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
@@ -54,7 +55,7 @@ T = TypeVar('T', bound='DocVec')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocVec(AnyDocArray[T_doc]):
+class DocVec(IOMixinArray, AnyDocArray[T_doc]):
     """
     DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -508,6 +509,9 @@ class DocVec(AnyDocArray[T_doc]):
     ####################
     # IO related       #
     ####################
+
+    def _docarray_to_json_compatible(self) -> List[Dict]:
+        return [doc._docarray_to_json_compatible() for doc in self]
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
