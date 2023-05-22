@@ -377,13 +377,12 @@ class IOMixinArray(Iterable[T_doc]):
     @classmethod
     def _from_csv_file(
         cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
-    ) -> 'DocList':
-        from docarray import DocList
+    ) -> 'T':
 
         rows = csv.DictReader(file, dialect=dialect)
 
         doc_type = cls.doc_type
-        docs = DocList.__class_getitem__(doc_type)()
+        docs = []
 
         field_names: List[str] = (
             [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
@@ -405,7 +404,7 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
-        return docs
+        return cls(docs)
 
     def to_csv(
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
