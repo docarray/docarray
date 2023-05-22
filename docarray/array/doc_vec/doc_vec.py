@@ -100,7 +100,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         AnyTensor or Union of NdArray and TorchTensor
     """
 
-    doc_type: Type[T_doc]
+    doc_type: Type[T_doc] = AnyDoc
 
     def __init__(
         self: T,

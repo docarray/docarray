@@ -443,7 +443,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_dataframe(cls, df: 'pd.DataFrame') -> 'DocList':
+    def from_dataframe(cls, df: 'pd.DataFrame') -> 'T':
         """
         Load a `DocList` from a `pandas.DataFrame` following the schema
         defined in the [`.doc_type`][docarray.DocList] attribute.
@@ -515,6 +515,8 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
+        if not isinstance(docs, cls):
+            return cls(docs)
         return docs
 
     def to_dataframe(self) -> 'pd.DataFrame':
