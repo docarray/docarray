@@ -579,3 +579,9 @@ def test_doc_view_dict(batch):
     d = doc_view.dict()
     assert d['tensor'].shape == (3, 224, 224)
     assert d['id'] == doc_view.id
+
+    doc_view_two = batch[1]
+    assert doc_view_two.is_view()
+    d = doc_view_two.dict()
+    assert d['tensor'].shape == (3, 224, 224)
+    assert d['id'] == doc_view_two.id
