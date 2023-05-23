@@ -5,6 +5,7 @@ from typing_extensions import TYPE_CHECKING
 from docarray.typing.tensor.audio import AudioNdArray
 from docarray.typing.tensor.embedding import AnyEmbedding, NdArrayEmbedding
 from docarray.typing.tensor.image import ImageNdArray, ImageTensor
+from docarray.typing.tensor.jaxarray import JaxArray
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video import VideoNdArray
@@ -34,6 +35,7 @@ __all__ = [
     'ImageTensor',
     'AudioNdArray',
     'VideoNdArray',
+    'JaxArray',
 ]
 
 
