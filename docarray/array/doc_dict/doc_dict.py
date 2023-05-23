@@ -63,7 +63,7 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
     def _set_data_column(
         self: T,
         field: str,
-        values: Union[Mapping[str, Any]],
+        values: Mapping[str, Any],
     ):
         """Set all Documents in this `DocDict` using the passed values
 
