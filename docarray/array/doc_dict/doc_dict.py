@@ -4,12 +4,13 @@ import orjson
 from typing_inspect import is_union_type
 
 from docarray.array.any_collections import AnyCollection
-from docarray.array.doc_list.doc_list import DocList
 from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 
 if TYPE_CHECKING:
+    from docarray.array.doc_list.doc_list import DocList
+    from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocDictProto
     from docarray.typing import NdArray, TorchTensor
 
@@ -32,7 +33,7 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         return doc
 
     @classmethod
-    def from_doc_list(cls: Type[T], docs: Union[DocList, Iterable[BaseDoc]]) -> T:
+    def from_doc_list(cls: Type[T], docs: Union['DocList', Iterable[BaseDoc]]) -> T:
         """
         Create a `DocDict` from a `DocList` or an iterable of `BaseDoc`. The id of each `BaseDoc` will be used as key for the `DocDict`
 
@@ -126,6 +127,16 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
 
     def to_json(self) -> bytes:
         """Convert the object into JSON bytes. Can be loaded via `.from_json`.
-        :return: JSON serialization of `DocList`
+        :return: JSON serialization of `DocDict`
         """
         return orjson_dumps(self)
+
+    def to_doc_list(self) -> 'DocList[T_doc]':
+        """Convert the object into a [`DocList`][docarray.array.doc_list.doc_list.DocList]. Key of the `DocDict` are discarded"""
+        from docarray.array.doc_list.doc_list import DocList
+
+        return DocList.__class_getitem__(self.doc_type)(self.values())
+
+    def to_doc_vec(self) -> 'DocVec[T_doc]':
+        """Convert the object into a [`DocList`][docarray.array.doc_vec.doc_vec.DocVec]`. Key of the `DocDict` are discarded"""
+        return self.to_doc_list().to_doc_vec()

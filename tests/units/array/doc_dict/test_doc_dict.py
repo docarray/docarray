@@ -1,6 +1,8 @@
+import numpy as np
 import pytest
 
-from docarray import BaseDoc, DocDict, DocList
+from docarray import BaseDoc, DocDict, DocList, DocVec
+from docarray.typing import NdArray
 
 
 class MyDoc(BaseDoc):
@@ -105,3 +107,28 @@ def test_getatr_nested(docs_nested):
 def test_setattr_nested(docs_nested):
     docs_nested.doc = {'x': InerDoc(id='c', text='c'), 'y': InerDoc(id='d', text='d')}
     assert docs_nested.doc.text == {'x': 'c', 'y': 'd'}
+
+
+def test_to_doc_list(docs):
+    assert docs.to_doc_list() == DocList(
+        [MyDoc(id='a', text='a'), MyDoc(id='b', text='b')]
+    )
+
+
+def test_to_doc_vec():
+    class MyDoc(BaseDoc):
+        tensor: NdArray[2, 3]
+
+    docs = DocDict[MyDoc](
+        a=MyDoc(id='a', tensor=np.array([[1, 2, 3], [4, 5, 6]])),
+        b=MyDoc(id='b', tensor=np.array([[7, 8, 9], [10, 11, 12]])),
+    )
+
+    docs2 = docs.to_doc_vec()
+
+    assert isinstance(docs2, DocVec)
+    assert isinstance(docs2, DocVec[MyDoc])
+
+    assert docs2.tensor.shape == (2, 2, 3)
+
+    assert (docs2[0].tensor == docs2[0].tensor).all()
