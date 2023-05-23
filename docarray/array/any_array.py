@@ -22,6 +22,7 @@ from docarray.display.document_array_summary import DocArraySummary
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
+    from docarray.array.doc_dict.doc_dict import DocDict
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocArray')
@@ -208,3 +209,14 @@ class AnyDocArray(AnyCollection[T_doc], AbstractType):
     @abstractmethod
     def __iter__(self) -> Iterator[T_doc]:
         ...
+
+    def to_doc_dict(self) -> 'DocDict[T_doc]':
+        """
+        Convert this DocList to a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        The keys of the resulting [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] are the id of Documenti inside the  DocList
+
+        :return: a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        """
+        from docarray.array.doc_dict.doc_dict import DocDict
+
+        return DocDict.__class_getitem__(self.doc_type).from_doc_list(self)
