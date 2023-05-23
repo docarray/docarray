@@ -149,8 +149,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 'query': defaultdict(lambda: defaultdict(list))
             }
 
-            self._outer_instance._logger.debug('QueryBuilder is being initialized')
-
         def build(self, *args, **kwargs) -> Any:
             """Build the elastic search query object."""
             self._outer_instance._logger.debug(
