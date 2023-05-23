@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
+from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
@@ -29,7 +30,72 @@ if TYPE_CHECKING:
 T = TypeVar("T", bound="AudioTensor")
 
 
-class AudioTensor:
+class AudioTensor(AbstractAudioTensor):
+    """
+    Represents an audio tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
+
+    ---
+
+    '''python
+    from docarray import BaseDoc
+    from docarray.typing import AudioTensor
+
+
+    class MyAudioDoc(BaseDoc):
+        tensor: AudioTensor
+
+
+    # Example usage with TensorFlow:
+    import tensorflow as tf
+
+    doc = MyAudioDoc(tensor=tf.zeros(1000, 2))
+
+    # Example usage with PyTorch:
+    import torch
+
+    doc = MyAudioDoc(tensor=torch.zeros(1000, 2))
+
+    # Example usage with NumPy:
+    import numpy as np
+
+    doc = MyAudioDoc(tensor=np.zeros((1000, 2)))
+    '''
+
+    Raises:
+        TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
+
+    """
+
+    def __getitem__(self: T, item):
+        pass
+
+    def __setitem__(self, index, value):
+        pass
+
+    def __iter__(self):
+        pass
+
+    def __len__(self):
+        pass
+
+    @classmethod
+    def _docarray_from_native(cls: Type[T], value: Any):
+        raise AttributeError('This method should not be called on AudioTensor.')
+
+    @staticmethod
+    def get_comp_backend():
+        raise AttributeError('This method should not be called on AudioTensor.')
+
+    def to_protobuf(self):
+        raise AttributeError('This method should not be called on AudioTensor.')
+
+    def _docarray_to_json_compatible(self):
+        raise AttributeError('This method should not be called on AudioTensor.')
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: T):
+        raise AttributeError('This method should not be called on AudioTensor.')
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
@@ -40,8 +106,7 @@ class AudioTensor:
         value: Union[T, np.ndarray, Any],
         field: "ModelField",
         config: "BaseConfig",
-    ):
-        # Check for TorchTensor first, then TensorFlowTensor, then NdArray
+    ) -> Union[AudioTorchTensor, AudioTensorFlowTensor, AudioNdArray]:
         if torch_available:
             if isinstance(value, TorchTensor):
                 return cast(AudioTorchTensor, value)
@@ -51,7 +116,7 @@ class AudioTensor:
             if isinstance(value, TensorFlowTensor):
                 return cast(AudioTensorFlowTensor, value)
             elif isinstance(value, tf.Tensor):
-                return AudioTFTensor._docarray_from_native(value)  # noqa
+                return AudioTensorFlowTensor._docarray_from_native(value)  # noqa
         try:
             return AudioNdArray.validate(value, field, config)
         except Exception:  # noqa

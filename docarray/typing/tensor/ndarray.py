@@ -125,7 +125,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
         elif tf_available and isinstance(value, TensorFlowTensor):
-            return cls._docarray_from_native(value.numpy())
+            return cls._docarray_from_native(value.tensor.numpy())
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)

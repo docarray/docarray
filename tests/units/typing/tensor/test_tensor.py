@@ -26,6 +26,7 @@ def test_torch_ndarray_to_any_tensor(tensor, cls_audio_tensor, cls_tensor):
     doc = MyAudioDoc(tensor=tensor)
     assert isinstance(doc.tensor, cls_audio_tensor)
     assert isinstance(doc.tensor, cls_tensor)
+    assert doc.tensor.shape == (1000, 2)
     assert (doc.tensor == tensor).all()
 
 
