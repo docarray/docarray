@@ -291,7 +291,7 @@ class DocList(
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
-        """create a Document from a protobuf message
+        """create a DocList from a protobuf message
         :param pb_msg: The protobuf message from where to construct the `DocList`
         """
         return super().from_protobuf(pb_msg)

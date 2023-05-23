@@ -8,6 +8,7 @@ from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
 
 if TYPE_CHECKING:
+    from docarray.proto import DocDictProto
     from docarray.typing import NdArray, TorchTensor
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
@@ -93,10 +94,17 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
             setattr(self[key], field, value)
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg) -> T:
-        """create a Document from a protobuf message"""
-        raise NotImplementedError
+    def from_protobuf(cls: Type[T], pb_msg: 'DocDictProto') -> T:
+        """create a DocDict from a protobuf message"""
+        return cls(
+            **{
+                key: cls.doc_type.from_protobuf(doc_proto)
+                for key, doc_proto in pb_msg.docs.items()
+            }
+        )
 
-    def to_protobuf(self):
-        """Convert DocList into a Protobuf message"""
-        raise NotImplementedError
+    def to_protobuf(self) -> 'DocDictProto':
+        """Convert `DocDict` into a Protobuf message"""
+        from docarray.proto import DocDictProto
+
+        return DocDictProto(docs={key: doc.to_protobuf() for key, doc in self.items()})
