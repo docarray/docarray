@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Mapping, Type, TypeVar, Union
 
 from typing_inspect import is_union_type
 
-from docarray.array.any_collections import AnyCollections
+from docarray.array.any_collections import AnyCollection
 from docarray.array.doc_list.doc_list import DocList
 from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
@@ -14,7 +14,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocDict')
 
 
-class DocDict(AnyCollections[T_doc], Dict[str, T_doc]):
+class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
     doc_type: Type[BaseDoc] = AnyDoc
 
     def __init__(self, **mapping):

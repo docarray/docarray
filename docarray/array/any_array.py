@@ -16,7 +16,7 @@ from typing import (
 
 import numpy as np
 
-from docarray.array.any_collections import AnyCollections
+from docarray.array.any_collections import AnyCollection
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
 from docarray.typing.abstract_type import AbstractType
@@ -29,9 +29,9 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class AnyDocArray(AnyCollections[T_doc], AbstractType):
+class AnyDocArray(AnyCollection[T_doc], AbstractType):
     doc_type: Type[BaseDoc]
-    __typed_da__: Dict[Type['AnyCollections'], Dict[Type[BaseDoc], Type]] = {}
+    __typed_subclass__: Dict[Type['AnyCollection'], Dict[Type[BaseDoc], Type]] = {}
 
     @overload
     def __getitem__(self: T, item: int) -> T_doc:

@@ -21,14 +21,18 @@ if TYPE_CHECKING:
 
     from docarray.proto import DocListProto, NodeProto
 
-T = TypeVar('T', bound='AnyCollections')
+T = TypeVar('T', bound='AnyCollection')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class AnyCollections(Generic[T_doc], AbstractType):
+class AnyCollection(Generic[T_doc], AbstractType):
     doc_type: Type[BaseDoc]
-    __typed_da__: Dict[Type['AnyCollections'], Dict[Type[BaseDoc], Type]] = {}
+    __typed_subclass__: Dict[
+        Type['AnyCollection'], Dict[Type[BaseDoc], Type]
+    ] = (
+        {}
+    )  # this dict is used to store and cache the typed child class of AnyCollections (ex. AnyCollections[MyDoc])
 
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)})>'
@@ -43,17 +47,17 @@ class AnyCollections(Generic[T_doc], AbstractType):
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )
 
-        if cls not in cls.__typed_da__:
-            cls.__typed_da__[cls] = {}
+        if cls not in cls.__typed_subclass__:
+            cls.__typed_subclass__[cls] = {}
 
-        if item not in cls.__typed_da__[cls]:
+        if item not in cls.__typed_subclass__[cls]:
             # Promote to global scope so multiprocessing can pickle it
-            global _DocArrayTyped
+            global _DocCollectionTyped
 
-            class _DocArrayTyped(cls):  # type: ignore
+            class _DocCollectionTyped(cls):  # type: ignore
                 doc_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
 
-            for field in _DocArrayTyped.doc_type.__fields__.keys():
+            for field in _DocCollectionTyped.doc_type.__fields__.keys():
 
                 def _property_generator(val: str):
                     def _getter(self):
@@ -65,18 +69,18 @@ class AnyCollections(Generic[T_doc], AbstractType):
                     # need docstring for the property
                     return property(fget=_getter, fset=_setter)
 
-                setattr(_DocArrayTyped, field, _property_generator(field))
+                setattr(_DocCollectionTyped, field, _property_generator(field))
                 # this generates property on the fly based on the schema of the item
 
             # The global scope and qualname need to refer to this class a unique name.
-            # Otherwise, creating another _DocArrayTyped will overwrite this one.
+            # Otherwise, creating another _DocCollectionTyped will overwrite this one.
             change_cls_name(
-                _DocArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
+                _DocCollectionTyped, f'{cls.__name__}[{item.__name__}]', globals()
             )
 
-            cls.__typed_da__[cls][item] = _DocArrayTyped
+            cls.__typed_subclass__[cls][item] = _DocCollectionTyped
 
-        return cls.__typed_da__[cls][item]
+        return cls.__typed_subclass__[cls][item]
 
     def __getattr__(self, item: str):
         # Needs to be explicitly defined here for the purpose to disable PyCharm's complaints
