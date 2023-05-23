@@ -368,15 +368,12 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
-        self._logger.debug('Starting indexing process')
 
         self._index_subindex(column_to_data)
 
-        self._logger.debug('Transposing column value dictionary')
         data = self._transpose_col_value_dict(column_to_data)
         requests = []
 
-        self._logger.debug('Processing rows for indexing')
         for row in data:
             request = {
                 '_index': self.index_name,
@@ -392,7 +389,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 request[col_name] = row[col_name]
             requests.append(request)
 
-        self._logger.debug('Sending requests for indexing')
         _, warning_info = self._send_requests(requests, chunk_size)
         for info in warning_info:
             warnings.warn(str(info))
@@ -414,7 +410,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         doc_ids: Sequence[str],
         chunk_size: Optional[int] = None,
     ):
-        self._logger.debug(f'Deleting items with ids: {doc_ids}')
         requests = []
         for _id in doc_ids:
             requests.append(
@@ -431,7 +426,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._refresh(self.index_name)
 
     def _get_items(self, doc_ids: Sequence[str]) -> Sequence[Dict[str, Any]]:
-        self._logger.debug(f'Getting items with ids: {doc_ids}')
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 
@@ -480,7 +474,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
-        self._logger.debug('Executing _find operation')
 
         body = self._form_search_body(query, limit, search_field)
 
@@ -496,7 +489,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        self._logger.debug('Executing _find_batched operation')
 
         request = []
         for query in queries:
@@ -516,7 +508,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Dict[str, Any],
         limit: int,
     ) -> List[Dict]:
-        self._logger.debug('Executing _filter operation')
 
         resp = self._client_search(query=filter_query, size=limit)
 
@@ -529,7 +520,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_queries: Any,
         limit: int,
     ) -> List[List[Dict]]:
-        self._logger.debug('Executing batched filter query')
 
         request = []
         for query in filter_queries:
@@ -548,7 +538,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-        self._logger.debug('Executing single text search query')
 
         body = self._form_text_search_body(query, limit, search_field)
         resp = self._client_search(**body)
@@ -563,7 +552,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        self._logger.debug('Executing batched text search query')
 
         request = []
         for query in queries:
@@ -578,7 +566,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResultBatched(documents=list(das), scores=scores)
 
     def _filter_by_parent_id(self, id: str) -> List[str]:
-        self._logger.debug('Filtering by parent id')
 
         resp = self._client_search(
             query={'term': {'parent_id': id}}, fields=['id'], _source=False
@@ -684,7 +671,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return docs, [parse_obj_as(NdArray, np.array(s)) for s in scores]
 
     def _refresh(self, index_name: str):
-        self._logger.debug(f'Refreshing the index {index_name}')
 
         self._client.indices.refresh(index=index_name)
 
@@ -693,33 +679,27 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ###############################################
 
     def _client_put_mapping(self, mappings: Dict[str, Any]):
-        self._logger.debug('Putting mapping to Elastic client')
 
         self._client.indices.put_mapping(
             index=self.index_name, properties=mappings['properties']
         )
 
     def _client_create(self, mappings: Dict[str, Any]):
-        self._logger.debug('Creating Elastic client')
 
         self._client.indices.create(index=self.index_name, mappings=mappings)
 
     def _client_put_settings(self, settings: Dict[str, Any]):
-        self._logger.debug('Putting settings to Elastic client')
 
         self._client.indices.put_settings(index=self.index_name, settings=settings)
 
     def _client_mget(self, ids: Sequence[str]):
-        self._logger.debug('Getting multiple items from Elastic client')
 
         return self._client.mget(index=self.index_name, ids=ids)
 
     def _client_search(self, **kwargs):
-        self._logger.debug('Searching in Elastic client')
 
         return self._client.search(index=self.index_name, **kwargs)
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
-        self._logger.debug('Searching multiple items in Elastic client')
 
         return self._client.msearch(index=self.index_name, searches=request)
