@@ -31,7 +31,7 @@ def test_init_from_doc_list():
 
 def test_init_from_doc_list_raw():
     docs = DocDict[MyDoc].from_doc_list(
-        DocList([MyDoc(id='a', text='a'), MyDoc(id='b', text='b')])
+        [MyDoc(id='a', text='a'), MyDoc(id='b', text='b')]
     )
     assert list(docs) == ['a', 'b']
 
