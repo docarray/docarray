@@ -17,6 +17,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 from pydantic import BaseConfig, parse_obj_as
 
 from docarray.array.any_array import AnyDocArray
@@ -33,7 +34,7 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocVecProto
+    from docarray.proto import DocVecProto, NdArrayProto
 
 torch_available = is_torch_available()
 if torch_available:
@@ -52,6 +53,29 @@ else:
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
+
+NONE_NDARRAY_PROTO_SHAPE = (0,)
+NONE_NDARRAY_PROTO_DTYPE = 'None'
+
+
+def _none_ndarray_proto() -> 'NdArrayProto':
+    from docarray.proto import NdArrayProto
+
+    zeros_arr = parse_obj_as(NdArray, np.zeros(NONE_NDARRAY_PROTO_SHAPE))
+    nd_proto = NdArrayProto()
+    nd_proto.dense.buffer = zeros_arr.tobytes()
+    nd_proto.dense.ClearField('shape')
+    nd_proto.dense.shape.extend(list(zeros_arr.shape))
+    nd_proto.dense.dtype = NONE_NDARRAY_PROTO_DTYPE
+
+    return nd_proto
+
+
+def _is_none_ndarray_proto(proto: 'NdArrayProto') -> bool:
+    return (
+        proto.dense.shape == list(NONE_NDARRAY_PROTO_SHAPE)
+        and proto.dense.dtype == NONE_NDARRAY_PROTO_DTYPE
+    )
 
 
 class DocVec(AnyDocArray[T_doc]):
@@ -512,8 +536,17 @@ class DocVec(AnyDocArray[T_doc]):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
         """create a Document from a protobuf message"""
+
+        # handle values that were None before serialization
+        tensor_columns = {}
+        for tens_col_name, tens_col in pb_msg.tensor_columns.items():
+            if _is_none_ndarray_proto(tens_col):
+                tensor_columns[tens_col_name] = None
+            else:
+                tensor_columns[tens_col_name] = tens_col
+
         storage = ColumnStorage(
-            pb_msg.tensor_columns,
+            tensor_columns,
             pb_msg.doc_columns,
             pb_msg.docs_vec_columns,
             pb_msg.any_columns,
@@ -545,9 +578,13 @@ class DocVec(AnyDocArray[T_doc]):
                 col_doc.to_protobuf() if col_doc is not None else None
             )
         for field, col_tens in self._storage.tensor_columns.items():
-            tensor_columns_proto[field] = (
-                col_tens.to_protobuf() if col_tens is not None else None
-            )
+            if col_tens is None:
+                # put dummy empty NdArrayProto for serialization
+                tensor_columns_proto[field] = _none_ndarray_proto()
+            else:
+                tensor_columns_proto[field] = (
+                    col_tens.to_protobuf() if col_tens is not None else None
+                )
         for field, col_da in self._storage.docs_vec_columns.items():
             list_proto = ListOfDocArrayProto()
             if col_da:
