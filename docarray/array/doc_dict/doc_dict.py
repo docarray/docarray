@@ -46,12 +46,14 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
             super().update(other)
         if isinstance(other, DocList):
             super().update(DocDict.from_doc_list(other))
+        elif isinstance(other, Mapping):
+            super().update(other)
         elif isinstance(other, Iterable):
             super().update(
                 DocDict.from_doc_list(DocList.__class_getitem__(self.doc_type)(other))
             )
         else:
-            super().update(other)
+            raise ValueError(f'Cannot update DocDict with {other}')
 
     def _get_data_column(
         self: T,

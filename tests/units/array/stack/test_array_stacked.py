@@ -601,5 +601,3 @@ def test_to_doc_dict():
         assert doc.url == doc_2.url
         assert doc == doc_2
         assert key == doc.id
-
-    print(len(docs_vec))
