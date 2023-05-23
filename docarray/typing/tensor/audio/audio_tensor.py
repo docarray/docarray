@@ -106,7 +106,7 @@ class AudioTensor(AbstractAudioTensor):
         value: Union[T, np.ndarray, Any],
         field: "ModelField",
         config: "BaseConfig",
-    ) -> Union[AudioTorchTensor, AudioTensorFlowTensor, AudioNdArray]:
+    ):
         if torch_available:
             if isinstance(value, TorchTensor):
                 return cast(AudioTorchTensor, value)

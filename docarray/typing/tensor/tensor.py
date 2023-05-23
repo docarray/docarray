@@ -106,7 +106,7 @@ class AnyTensor(AbstractTensor, Generic[ShapeT]):
         value: Union[T, np.ndarray, Any],
         field: "ModelField",
         config: "BaseConfig",
-    ) -> Union[NdArray, TorchTensor, TensorFlowTensor]:
+    ):
         # Check for TorchTensor first, then TensorFlowTensor, then NdArray
         if torch_available:
             if isinstance(value, TorchTensor):
