@@ -25,6 +25,7 @@ from pydantic import parse_obj_as
 
 import docarray.typing
 from docarray import BaseDoc
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import BaseDocIndex, _ColumnInfo, _raise_not_composable
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -39,6 +40,8 @@ ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
 
 if TYPE_CHECKING:
+    import tensorflow as tf  # type: ignore
+    import torch
     from elastic_transport import NodeConfig
     from elasticsearch import Elasticsearch
     from elasticsearch.helpers import parallel_bulk
@@ -90,6 +93,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         mappings.update(self._db_config.index_mappings)
 
         for col_name, col in self._column_infos.items():
+            if issubclass(col.docarray_type, AnyDocArray):
+                continue
             if col.db_type == 'dense_vector' and (
                 not col.n_dim and col.config['dims'] < 0
             ):
@@ -100,7 +105,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
             mappings['properties'][col_name] = self._create_index_mapping(col)
 
-        # print(mappings['properties'])
         if self._client.indices.exists(index=self.index_name):
             self._client_put_mapping(mappings)
         else:
@@ -334,6 +338,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
+        self._index_subindex(column_to_data)
+
         data = self._transpose_col_value_dict(column_to_data)
         requests = []
 
@@ -343,6 +349,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
+                if issubclass(col.docarray_type, AnyDocArray):
+                    continue
                 if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
                 if row[col_name] is None:
@@ -383,7 +391,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         self._refresh(self.index_name)
 
-    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[TSchema]:
+    def _get_items(self, doc_ids: Sequence[str]) -> Sequence[Dict[str, Any]]:
         accumulated_docs = []
         accumulated_docs_id_not_found = []
 
@@ -514,6 +522,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             *[self._format_response(resp) for resp in responses['responses']]
         )
         return _FindResultBatched(documents=list(das), scores=scores)
+
+    def _filter_by_parent_id(self, id: str) -> List[str]:
+        resp = self._client_search(
+            query={'term': {'parent_id': id}}, fields=['id'], _source=False
+        )
+        ids = [hit['fields']['id'][0] for hit in resp['hits']['hits']]
+        return ids
 
     ###############################################
     # Helpers                                     #

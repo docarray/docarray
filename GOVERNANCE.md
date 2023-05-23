@@ -25,7 +25,7 @@ Currently core developers of DocArray are (in alphabetic order):  [Alaeddine Abd
 
 Contributors can become core developers by beeing nominated by at least one other core developers of DocArray. There will be a vote by the current core developers. While it is expected that most votes will be unanimous, a two-thirds majority of the cast votes is enough.
 
-If you want to become a core developers, reach out to docs.docarray.org. 
+If you want to become a core developers, reach out to docarray.jina.ai. 
 
 ## TSC members
 

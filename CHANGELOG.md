@@ -3,6 +3,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -242,4 +243,43 @@
  - [[```8c7eb95f```](https://github.com/jina-ai/docarray/commit/8c7eb95fac2b5064fc90bd59c25fa2de0df9508e)] __-__ bump version (#1514) (*samsja*)
  - [[```94cccbb5```](https://github.com/jina-ai/docarray/commit/94cccbb5fb296e7b2639ecec12c0f163f06546d6)] __-__ fix cd for documentation (#1509) (*samsja*)
  - [[```04b930f4```](https://github.com/jina-ai/docarray/commit/04b930f4751a44188b6cb531c1cb4d2f5c43ae02)] __-__ __version__: the next version will be 0.31.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-32-0></a>
+## Release Note (`0.32.0`)
+
+> Release time: 2023-05-16 11:29:36
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ samsja,  Saba Sturua,  Anne Yang,  Zhaofeng Miao,  Mohammad Kalim Akram,  Kacper Łukawski,  Joan Fontanals,  Johannes Messner,  IyadhKhalfallah,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```db4cc1a7```](https://github.com/jina-ai/docarray/commit/db4cc1a770f29368683e6b2be094e4062972f3ca)] __-__ save and load inmemory index (#1534) (*Saba Sturua*)
+ - [[```44977b75```](https://github.com/jina-ai/docarray/commit/44977b75ee9c96a272637ebf21a14285b1c6aeab)] __-__ subindex for document index (#1428) (*Anne Yang*)
+ - [[```096f6449```](https://github.com/jina-ai/docarray/commit/096f644980e63391e3ca7bfc8486b877b181b07f)] __-__ search_field  should be optional in hybrid text search (#1516) (*Anne Yang*)
+ - [[```e9fc57af```](https://github.com/jina-ai/docarray/commit/e9fc57af6b7fb0a70534971a8f6a2062be444f94)] __-__ openapi tensor shapes (#1510) (*Johannes Messner*)
+
+### 🐞 Bug fixes
+
+ - [[```2d3bcd2e```](https://github.com/jina-ai/docarray/commit/2d3bcd2ef2886e938cd1d47a7cebb5bc5cb14b34)] __-__ check if filepath exists for inmemory index (#1537) (*Saba Sturua*)
+ - [[```1f2dcea6```](https://github.com/jina-ai/docarray/commit/1f2dcea6e91140de9dc84b251604197dfbae4e53)] __-__ add empty judgement to index search (#1533) (*Anne Yang*)
+ - [[```8dd050f5```](https://github.com/jina-ai/docarray/commit/8dd050f554f44f0f79aa5b8ce19948848940a283)] __-__ detach the torch tensors (#1526) (*Mohammad Kalim Akram*)
+ - [[```bfebad6b```](https://github.com/jina-ai/docarray/commit/bfebad6be30acd24bd4b9ff92c30522fc803c87c)] __-__ DocVec display (#1522) (*Anne Yang*)
+ - [[```cdde136c```](https://github.com/jina-ai/docarray/commit/cdde136c8002a9a114945648e6d4e135b15a14cd)] __-__ docs link (#1518) (*IyadhKhalfallah*)
+
+### 📗 Documentation
+
+ - [[```02afeb9f```](https://github.com/jina-ai/docarray/commit/02afeb9f6be25406beb2f6480fde8954729a272b)] __-__ __store_jac__: remove wrong info (#1531) (*Zhaofeng Miao*)
+ - [[```bc7f7253```](https://github.com/jina-ai/docarray/commit/bc7f72533cbe2af18fd99ea2bfe393ec4157e2de)] __-__ fix link to documentation in readme (#1525) (*Joan Fontanals*)
+ - [[```0ef6772d```](https://github.com/jina-ai/docarray/commit/0ef6772d35e2a4747e0fd7c39384424a79f8ec62)] __-__ flatten structure (#1520) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```9657d6fb```](https://github.com/jina-ai/docarray/commit/9657d6fbd69cc0f3686da9b056989fe8ce23cd00)] __-__ bump to 0.32.0 (#1541) (*samsja*)
+ - [[```9705431b```](https://github.com/jina-ai/docarray/commit/9705431b8937a090924fe875f5550dc926802315)] __-__ Add more Qdrant examples (#1527) (*Kacper Łukawski*)
+ - [[```445a72fa```](https://github.com/jina-ai/docarray/commit/445a72fa2a32c30de801f4d3203866d85de23990)] __-__ add protobuf in the hnsw extra (#1524) (*Saba Sturua*)
+ - [[```20fdcd27```](https://github.com/jina-ai/docarray/commit/20fdcd27b786f7fea9ab4bc4ee5bbbd244ba66f0)] __-__ __version__: the next version will be 0.31.2 (*Jina Dev Bot*)
 

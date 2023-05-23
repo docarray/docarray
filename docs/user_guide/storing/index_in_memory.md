@@ -33,6 +33,15 @@ doc_index.index(docs)
 doc_index = InMemoryExactNNIndex[MyDoc](docs)
 ```
 
+Additionally, you can preserve your index as a binary file and instantiate a new one using this file:
+```python
+# Save your existing index as a binary file
+doc_index.persist('docs.bin')
+
+# Initialize a new document index using the saved binary file
+new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
+```
+
 ## Configuration
 
 This section lays out the configurations and options that are specific to [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex].

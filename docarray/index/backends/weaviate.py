@@ -26,6 +26,7 @@ from typing_extensions import Literal
 
 import docarray
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResultBatched
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -129,6 +130,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             field_overwrites.get(k, k)
             for k, v in self._column_infos.items()
             if v.config.get('is_embedding', False) is False
+            and not issubclass(v.docarray_type, AnyDocArray)
         ]
 
     def _validate_columns(self) -> None:
@@ -199,6 +201,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         for column_name, column_info in column_infos.items():
             # in weaviate, we do not create a property for the doc's embeddings
+            if issubclass(column_info.docarray_type, AnyDocArray):
+                continue
             if column_name == self.embedding_column:
                 continue
             if column_info.db_type == 'blob':
@@ -564,6 +568,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return result
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        self._index_subindex(column_to_data)
+
         docs = self._transpose_col_value_dict(column_to_data)
         index_name = self.index_name
 
@@ -741,6 +747,21 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if doc[column] is not None:
                 doc[column] = doc[column].tolist()
 
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        results = (
+            self._client.query.get(self._db_config.index_name, ['docarrayid'])
+            .with_where(
+                {'path': ['parent_id'], 'operator': 'Equal', 'valueString': f'{id}'}
+            )
+            .do()
+        )
+
+        ids = [
+            res['docarrayid']
+            for res in results['data']['Get'][self._db_config.index_name]
+        ]
+        return ids
+
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
             self._queries = [
@@ -891,18 +912,23 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def text_search(self, query, search_field) -> Any:
+        def text_search(self, query: str, search_field: Optional[str] = None) -> Any:
+
             """Find documents in the index based on a text search query
 
             :param query: The text to search for
             :param search_field: name of the field to search on
             :return: self
             """
-            bm25 = {"query": query, "properties": [search_field]}
+            bm25: Dict[str, Any] = {"query": query}
+            if search_field:
+                bm25["properties"] = [search_field]
             self._queries[0] = self._queries[0].with_bm25(**bm25)
             return self
 
-        def text_search_batched(self, queries, search_field) -> Any:
+        def text_search_batched(
+            self, queries: Sequence[str], search_field: Optional[str] = None
+        ) -> Any:
             """Find documents in the index based on a text search query
 
             :param queries: The texts to search for
@@ -915,7 +941,9 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             new_queries = []
 
             for query, clause in zip(adj_queries, adj_clauses):
-                bm25 = {"query": clause, "properties": [search_field]}
+                bm25 = {"query": clause}
+                if search_field:
+                    bm25["properties"] = [search_field]
                 new_queries.append(query.with_bm25(**bm25))
 
             self._queries = new_queries

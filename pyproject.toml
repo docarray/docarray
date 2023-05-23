@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "docarray"
-version = '0.31.1'
+version = '0.32.0'
 description='The data structure for multimodal data'
 readme = 'README.md'
 authors=['DocArray']
 license='Apache 2.0'
-homepage = "https://docs.docarray.org/"
+homepage = "https://docarray.jina.ai/"
 repository = "https://github.com/docarray/docarray"
-documentation = "https://docs.docarray.org/"
+documentation = "https://docarray.jina.ai/"
 keywords = ['docarray', 'deep-learning', 'data-structures cross-modal multi-modal',' unstructured-data',' nested-data','neural-search']
 classifiers = [
         'Development Status :: 5 - Production/Stable',
@@ -67,7 +67,7 @@ image = ["pillow", "types-pillow"]
 video = ["av"]
 audio = ["pydub"]
 mesh = ["trimesh"]
-hnswlib = ["hnswlib"]
+hnswlib = ["hnswlib", "protobuf"]
 elasticsearch = ["elasticsearch", "elastic-transport"]
 jac = ["jina-hubble-sdk"]
 aws = ["smart-open"]

@@ -287,6 +287,7 @@ from docarray import BaseDoc
 from docarray.typing import NdArray
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
 
+
 # Define a document schema
 class Document(BaseDoc):
     text: str
@@ -376,15 +377,7 @@ This will perform a hybrid search for the word "hello" and the vector [1, 2] and
 **Note**: Hybrid search searches through the object vector and all fields. Accordingly, the `search_field` keyword it will have no effect. 
 
 ```python
-q = (
-    store.build_query()
-    .text_search(
-        "world", search_field=None  # Set as None as it is required but has no effect
-    )
-    .find([1, 2])
-    .limit(2)
-    .build()
-)
+q = store.build_query().text_search("world").find([1, 2]).limit(2).build()
 
 docs = store.execute_query(q)
 docs

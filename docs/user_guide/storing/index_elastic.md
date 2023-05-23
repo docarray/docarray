@@ -250,6 +250,74 @@ To delete a nested data, you need to specify the `id`.
 del doc_index[index_docs[3].id, index_docs[4].id]
 ```
 
+### Nested data with subindex
+
+In the following example you can see a complex schema that contains nested Documents with subindex.
+
+```python
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor_image: AnyTensor = Field(dims=64)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    images: DocList[ImageDoc]
+    tensor_video: AnyTensor = Field(dims=128)
+
+
+class MyDoc(BaseDoc):
+    docs: DocList[VideoDoc]
+    tensor: AnyTensor = Field(dims=256)
+
+
+# create a Document Index
+doc_index = ElasticDocIndex[MyDoc](index_name='subindex')
+
+# create some data
+index_docs = [
+    MyDoc(
+        docs=DocList[VideoDoc](
+            [
+                VideoDoc(
+                    url=f'http://example.ai/videos/{i}-{j}',
+                    images=DocList[ImageDoc](
+                        [
+                            ImageDoc(
+                                url=f'http://example.ai/images/{i}-{j}-{k}',
+                                tensor_image=np.ones(64),
+                            )
+                            for k in range(10)
+                        ]
+                    ),
+                    tensor_video=np.ones(128),
+                )
+                for j in range(10)
+            ]
+        ),
+        tensor=np.ones(256),
+    )
+    for i in range(10)
+]
+
+# index the Documents
+doc_index.index(index_docs)
+
+# find by the `VideoDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
+)
+
+# find by the `ImageDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
+)  # return both root and subindex docs
+
+# filter on subindex level
+query = {'match': {'url': 'http://example.ai/images/0-0-0'}}
+docs = doc_index.filter_subindex(query, subindex='docs__images')
+```
+
 ## Other Elasticsearch queries
 
 Besides vector search, you can also perform other queries supported by Elasticsearch, such as text search, and various filters.

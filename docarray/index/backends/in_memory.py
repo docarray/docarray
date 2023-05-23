@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -39,15 +40,50 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
 class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
-    def __init__(self, docs: Optional[DocList] = None, **kwargs):
+    def __init__(
+        self,
+        docs: Optional[DocList] = None,
+        index_file_path: Optional[str] = None,
+        **kwargs,
+    ):
         """Initialize InMemoryExactNNIndex"""
         super().__init__(db_config=None, **kwargs)
         self._runtime_config = self.RuntimeConfig()
-        self._docs = (
-            docs
-            if docs is not None
-            else DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))()
-        )
+
+        if docs and index_file_path:
+            raise ValueError(
+                'Initialize `InMemoryExactNNIndex` with either `docs` or '
+                '`index_file_path`, not both. Provide `docs` for a fresh index, or '
+                '`index_file_path` to use an existing file.'
+            )
+
+        if index_file_path:
+            if os.path.exists(index_file_path):
+                self._logger.info(
+                    f'Loading index from a binary file: {index_file_path}'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                ).load_binary(file=index_file_path)
+            else:
+                self._logger.warning(
+                    f'Index file does not exist: {index_file_path}. '
+                    f'Initializing empty InMemoryExactNNIndex.'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                )()
+        else:
+            if docs:
+                self._logger.info('Docs provided. Initializing with provided docs.')
+                self._docs = docs
+            else:
+                self._logger.info(
+                    'No docs or index file provided. Initializing empty InMemoryExactNNIndex.'
+                )
+                self._docs = DocList.__class_getitem__(
+                    cast(Type[BaseDoc], self._schema)
+                )()
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
@@ -193,6 +229,10 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         self._logger.debug(f'Executing `find` for search field {search_field}')
         self._validate_search_field(search_field)
+
+        if self.num_docs() == 0:
+            return FindResult(documents=[], scores=[])  # type: ignore
+
         config = self._column_infos[search_field].config
 
         docs, scores = find(
@@ -233,6 +273,10 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
         self._validate_search_field(search_field)
+
+        if self.num_docs() == 0:
+            return FindResultBatched(documents=[], scores=[])  # type: ignore
+
         config = self._column_infos[search_field].config
 
         find_res = find_batched(
@@ -285,3 +329,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
+
+    def persist(self, file: str = 'in_memory_index.bin') -> None:
+        """Persist InMemoryExactNNIndex into a binary file."""
+        self._docs.save_binary(file=file)

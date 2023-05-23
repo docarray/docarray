@@ -1,9 +1,17 @@
+import json
+
 import pytest
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
+from docarray.proto import DocProto
 from docarray.typing import TorchEmbedding, TorchTensor
+
+
+class MyDoc(BaseDoc):
+    tens: TorchTensor
 
 
 @pytest.mark.proto
@@ -63,7 +71,7 @@ def test_wrong_but_reshapable():
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
 
 
-def test_inependent_variable_dim():
+def test_independent_variable_dim():
     # test independent variable dimensions
     tensor = parse_obj_as(TorchTensor[3, 'x', 'y'], torch.zeros(3, 224, 224))
     assert isinstance(tensor, TorchTensor)
@@ -177,3 +185,53 @@ def test_deepcopy():
 
     doc_copy.embedding = torch.randn(32)
     assert not (doc.embedding == doc_copy.embedding).all()
+
+
+@pytest.mark.parametrize('requires_grad', [True, False])
+def test_json_serialization(requires_grad):
+    orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))
+    serialized_doc = orig_doc.to_json()
+    assert serialized_doc
+    assert isinstance(serialized_doc, str)
+
+    json_doc = json.loads(serialized_doc)
+    assert json_doc['tens']
+    assert len(json_doc['tens']) == 10
+
+
+@pytest.mark.parametrize('protocol', ['pickle', 'protobuf'])
+@pytest.mark.parametrize('requires_grad', [True, False])
+def test_bytes_serialization(requires_grad, protocol):
+    orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))
+    serialized_doc = orig_doc.to_bytes(protocol=protocol)
+    assert serialized_doc
+    assert isinstance(serialized_doc, bytes)
+
+    conv_doc = MyDoc.from_bytes(serialized_doc, protocol=protocol)
+    assert isinstance(conv_doc.tens, TorchTensor)
+    assert conv_doc.tens.shape == (10,)
+
+
+@pytest.mark.parametrize('protocol', ['pickle', 'protobuf'])
+@pytest.mark.parametrize('requires_grad', [True, False])
+def test_base64_serialization(requires_grad, protocol):
+    orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))
+    serialized_doc = orig_doc.to_base64(protocol=protocol)
+    assert serialized_doc
+    assert isinstance(serialized_doc, str)
+
+    conv_doc = MyDoc.from_base64(serialized_doc, protocol=protocol)
+    assert isinstance(conv_doc.tens, TorchTensor)
+    assert conv_doc.tens.shape == (10,)
+
+
+@pytest.mark.parametrize('requires_grad', [True, False])
+def test_protobuf_serialization(requires_grad):
+    orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))
+    serialized_doc = orig_doc.to_protobuf()
+    assert serialized_doc
+    assert isinstance(serialized_doc, DocProto)
+
+    conv_doc = MyDoc.from_protobuf(serialized_doc)
+    assert isinstance(conv_doc.tens, TorchTensor)
+    assert conv_doc.tens.shape == (10,)
