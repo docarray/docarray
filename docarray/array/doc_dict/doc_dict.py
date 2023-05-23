@@ -4,12 +4,12 @@ import orjson
 from typing_inspect import is_union_type
 
 from docarray.array.any_collections import AnyCollection
+from docarray.array.doc_list.doc_list import DocList
 from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 
 if TYPE_CHECKING:
-    from docarray.array.doc_list.doc_list import DocList
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocDictProto
     from docarray.typing import NdArray, TorchTensor
