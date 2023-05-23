@@ -5,7 +5,7 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDoc, DocList
+from docarray import BaseDoc, DocDict, DocList
 from docarray.array import DocVec
 from docarray.documents import ImageDoc
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
@@ -585,3 +585,21 @@ def test_doc_view_dict(batch):
     d = doc_view_two.dict()
     assert d['tensor'].shape == (3, 224, 224)
     assert d['id'] == doc_view_two.id
+
+
+def test_to_doc_dict():
+    docs = DocList[ImageDoc](
+        [ImageDoc(url='http://url.com/foo.png') for _ in range(10)]
+    )
+    docs_vec = docs.to_doc_vec()
+    docs_dict = docs_vec.to_doc_dict()
+    assert isinstance(docs_dict, dict)
+    assert isinstance(docs_dict, DocDict)
+    assert isinstance(docs_dict, DocDict[ImageDoc])
+
+    for doc, (key, doc_2) in zip(docs, docs_dict.items()):
+        assert doc.url == doc_2.url
+        assert doc == doc_2
+        assert key == doc.id
+
+    print(len(docs_vec))

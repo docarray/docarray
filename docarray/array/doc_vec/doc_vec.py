@@ -33,6 +33,7 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
+    from docarray.array.doc_dict.doc_dict import DocDict
     from docarray.proto import DocVecProto
 
 torch_available = is_torch_available()
@@ -628,3 +629,15 @@ class DocVec(AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    def to_doc_dict(self) -> 'DocDict[T_doc]':
+        """
+        Convert this DocList to a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        The keys of the resulting [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] are the id of Documenti inside the  DocList
+
+        :return: a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        """
+        from docarray.array.doc_dict.doc_dict import DocDict
+
+        doc_list = self.to_doc_list()
+        return DocDict.__class_getitem__(self.doc_type).from_doc_list(doc_list)
