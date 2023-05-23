@@ -29,8 +29,16 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         return doc
 
     @classmethod
-    def from_doc_list(cls: Type[T], docs: DocList) -> T:
-        return cls(**{doc.id: doc for doc in docs})
+    def from_doc_list(cls: Type[T], docs: Union[DocList, Iterable[BaseDoc]]) -> T:
+        """
+        Create a `DocDict` from a `DocList` or an iterable of `BaseDoc`. The id of each `BaseDoc` will be used as key for the `DocDict`
+
+        :docs: the `DocList` or iterable of `BaseDoc` to convert to a `DocDict`
+        :return: a `DocDict` with the id of each `BaseDoc` as key
+        """
+        return cls(
+            **{str(doc.id): doc for doc in docs}
+        )  # here str(doc.id) should do noting because ID should already be a string. This makes mypy happy
 
     # here we need to ignore type as the DocDict as a signature incompatible with Dict (it is more restrictive)
     def update(self, other: Union['DocDict', Dict[str, T_doc], Iterable[BaseDoc]]):  # type: ignore
@@ -39,7 +47,9 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         if isinstance(other, DocList):
             super().update(DocDict.from_doc_list(other))
         elif isinstance(other, Iterable):
-            super().update(DocDict.from_doc_list(DocList[self.doc_type](other)))
+            super().update(
+                DocDict.from_doc_list(DocList.__class_getitem__(self.doc_type)(other))
+            )
         else:
             super().update(other)
 
