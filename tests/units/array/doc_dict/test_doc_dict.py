@@ -56,6 +56,11 @@ def test_update_doc_list(docs):
     assert list(docs) == ['x', 'y', 'c']
 
 
+def test_update_iterable(docs):
+    docs.update([MyDoc(id='c', text='c')])
+    assert list(docs) == ['x', 'y', 'c']
+
+
 def test_getitem(docs):
     assert docs['x'] == MyDoc(id='a', text='a')
     assert docs['y'] == MyDoc(id='b', text='b')

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Mapping, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Mapping, Type, TypeVar, Union
 
 from typing_inspect import is_union_type
 
@@ -33,11 +33,13 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         return cls(**{doc.id: doc for doc in docs})
 
     # here we need to ignore type as the DocDict as a signature incompatible with Dict (it is more restrictive)
-    def update(self, other: Union['DocDict', Dict[str, T_doc], DocList]):  # type: ignore
+    def update(self, other: Union['DocDict', Dict[str, T_doc], Iterable[BaseDoc]]):  # type: ignore
         if isinstance(other, DocDict):
             super().update(other)
-        elif isinstance(other, DocList):
+        if isinstance(other, DocList):
             super().update(DocDict.from_doc_list(other))
+        elif isinstance(other, Iterable):
+            super().update(DocDict.from_doc_list(DocList[self.doc_type](other)))
         else:
             super().update(other)
 
