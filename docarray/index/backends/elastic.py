@@ -129,11 +129,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self._schema.__name__.lower() if self._schema is not None else None
         )
         if default_index_name is None:
-            self._logger.error(
-                'A ElasticDocIndex must be typed with a Document type.'
-                'To do so, use the syntax: ElasticDocIndex[DocumentType]'
+            err_msg = (
+                'A ElasticDocIndex must be typed with a Document type.To do so, use the syntax: '
+                'ElasticDocIndex[DocumentType] '
             )
-            raise ValueError
+
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
         index_name = self._db_config.index_name or default_index_name
         self._logger.debug(f'Retrieved index name: {index_name}')
         return index_name
@@ -359,8 +361,9 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 )
                 return elastic_py_types[type]
 
-        self._logger.error(f'Unsupported column type for {type(self)}: {python_type}')
-        raise ValueError
+        err_msg = f'Unsupported column type for {type(self)}: {python_type}'
+        self._logger.error(err_msg)
+        raise ValueError(err_msg)
 
     def _index(
         self,
@@ -462,9 +465,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Executing query: {query}')
 
         if args or kwargs:
-            raise ValueError(
+            err_msg = (
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
 
         resp = self._client.search(index=self.index_name, **query)
         docs, scores = self._format_response(resp)
