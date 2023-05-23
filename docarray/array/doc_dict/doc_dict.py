@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING, Any, Dict, Iterable, Mapping, Type, TypeVar, Union
 
+import orjson
 from typing_inspect import is_union_type
 
 from docarray.array.any_collections import AnyCollection
 from docarray.array.doc_list.doc_list import DocList
 from docarray.base_doc import AnyDoc
 from docarray.base_doc.doc import BaseDoc
+from docarray.base_doc.io.json import orjson_dumps
 
 if TYPE_CHECKING:
     from docarray.proto import DocDictProto
@@ -108,3 +110,22 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         from docarray.proto import DocDictProto
 
         return DocDictProto(docs={key: doc.to_protobuf() for key, doc in self.items()})
+
+    @classmethod
+    def from_json(
+        cls: Type[T],
+        file: Union[str, bytes, bytearray],
+    ) -> T:
+        """Deserialize JSON strings or bytes into a `DocList`.
+
+        :param file: JSON object from where to deserialize a `DocList`
+        :return: the deserialized `DocList`
+        """
+        json_docs = orjson.loads(file)
+        return cls(**{key: cls.doc_type(**doc) for key, doc in json_docs.items()})
+
+    def to_json(self) -> bytes:
+        """Convert the object into JSON bytes. Can be loaded via `.from_json`.
+        :return: JSON serialization of `DocList`
+        """
+        return orjson_dumps(self)

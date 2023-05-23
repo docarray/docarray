@@ -28,3 +28,14 @@ def test_from_protobuf(docs):
 
     assert docs == docs2
     assert list(docs) == ['x', 'y']
+
+
+def test_to_json(docs):
+    return docs.to_json()
+
+
+def test_from_json(docs):
+    docs2 = DocDict[MyDoc].from_json(docs.to_json())
+
+    assert docs == docs2
+    assert list(docs) == ['x', 'y']
