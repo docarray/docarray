@@ -343,23 +343,23 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 * [jq](https://stedolan.github.io/jq/download/)
 
 #### Steps to build locally
-
-```bash
-cd docs
-pip install -r requirements.txt
-export NUM_RELEASES=10
-bash makedoc.sh
+First install the documentation dependency
+```
+poetry install --with docs
 ```
 
-The docs website will be generated in `site`.
-To serve it, run:
+Note if you need to install extra (proto, database, ...) you need to specified it as well
 
+
+Then to build the docs
 ```bash
-mkdocs serve
-python -m http.server
+cp README.md docs/README.md
+cp CONTRIBUTING.md docs/CONTRIBUTING.md
+poetry run mkdocs serve
 ```
+this should create a localhost link for the documentation
 
-You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser.
+You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser. (might need to change the port)
 
 ## 🙏 Thank you
 
