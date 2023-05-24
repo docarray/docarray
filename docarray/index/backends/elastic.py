@@ -80,6 +80,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             hosts=self._db_config.hosts,
             **self._db_config.es_config,
         )
+        self._logger.debug('ElasticSearch client has been created')
 
         # ElasticSearh index setup
         self._index_vector_params = ('dims', 'similarity', 'index')
@@ -91,6 +92,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             'properties': {},
         }
         mappings.update(self._db_config.index_mappings)
+
+        self._logger.debug('Mappings have been updated with db_config.index_mappings')
 
         for col_name, col in self._column_infos.items():
             if issubclass(col.docarray_type, AnyDocArray):
@@ -104,16 +107,21 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 continue
 
             mappings['properties'][col_name] = self._create_index_mapping(col)
+            self._logger.debug(f'Index mapping created for column {col_name}')
 
         if self._client.indices.exists(index=self.index_name):
             self._client_put_mapping(mappings)
+            self._logger.debug(f'Put mapping for index {self.index_name}')
         else:
             self._client_create(mappings)
+            self._logger.debug(f'Created new index {self.index_name} with mappings')
 
         if len(self._db_config.index_settings):
             self._client_put_settings(self._db_config.index_settings)
+            self._logger.debug('Updated index settings')
 
         self._refresh(self.index_name)
+        self._logger.debug(f'Refreshed index {self.index_name}')
 
     @property
     def index_name(self):
@@ -121,12 +129,16 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self._schema.__name__.lower() if self._schema is not None else None
         )
         if default_index_name is None:
-            raise ValueError(
-                'A ElasticDocIndex must be typed with a Document type.'
-                'To do so, use the syntax: ElasticDocIndex[DocumentType]'
+            err_msg = (
+                'A ElasticDocIndex must be typed with a Document type.To do so, use the syntax: '
+                'ElasticDocIndex[DocumentType] '
             )
 
-        return self._db_config.index_name or default_index_name
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
+        index_name = self._db_config.index_name or default_index_name
+        self._logger.debug(f'Retrieved index name: {index_name}')
+        return index_name
 
     ###############################################
     # Inner classes for query builder and configs #
@@ -141,6 +153,10 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         def build(self, *args, **kwargs) -> Any:
             """Build the elastic search query object."""
+            self._outer_instance._logger.debug(
+                'Building the Elastic Search query object'
+            )
+
             if len(self._query['query']) == 0:
                 del self._query['query']
             elif 'knn' in self._query:
@@ -165,6 +181,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             :param num_candidates: number of candidates
             :return: self
             """
+            self._outer_instance._logger.debug('Executing find query')
+
             self._outer_instance._validate_search_field(search_field)
             if isinstance(query, BaseDoc):
                 query_vec = BaseDocIndex._get_values_by_column([query], search_field)[0]
@@ -189,6 +207,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             :param limit: maximum number of documents to return
             :return: self
             """
+            self._outer_instance._logger.debug('Executing filter query')
+
             self._query['size'] = limit
             self._query['query']['bool']['filter'].append(query)
             return self
@@ -201,6 +221,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             :param limit: maximum number of documents to find
             :return: self
             """
+            self._outer_instance._logger.debug('Executing text search query')
+
             self._outer_instance._validate_search_field(search_field)
             self._query['size'] = limit
             self._query['query']['bool']['must'].append(
@@ -288,6 +310,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         def dense_vector_config(self):
             """Get the dense vector config."""
+
             config = {
                 'dims': -1,
                 'index': True,
@@ -311,8 +334,13 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         :return: the corresponding database column type,
             or None if ``python_type`` is not supported.
         """
+        self._logger.debug(f'Mapping Python type {python_type} to database type')
+
         for allowed_type in ELASTIC_PY_VEC_TYPES:
             if issubclass(python_type, allowed_type):
+                self._logger.info(
+                    f'Mapped Python type {python_type} to database type "dense_vector"'
+                )
                 return 'dense_vector'
 
         elastic_py_types = {
@@ -328,9 +356,14 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         for type in elastic_py_types.keys():
             if issubclass(python_type, type):
+                self._logger.info(
+                    f'Mapped Python type {python_type} to database type "{elastic_py_types[type]}"'
+                )
                 return elastic_py_types[type]
 
-        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
+        err_msg = f'Unsupported column type for {type(self)}: {python_type}'
+        self._logger.error(err_msg)
+        raise ValueError(err_msg)
 
     def _index(
         self,
@@ -338,6 +371,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
+
         self._index_subindex(column_to_data)
 
         data = self._transpose_col_value_dict(column_to_data)
@@ -361,14 +395,17 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         _, warning_info = self._send_requests(requests, chunk_size)
         for info in warning_info:
             warnings.warn(str(info))
+            self._logger.warning('Warning: %s', str(info))
 
         if refresh:
+            self._logger.debug('Refreshing the index')
             self._refresh(self.index_name)
 
     def num_docs(self) -> int:
         """
         Get the number of documents.
         """
+        self._logger.debug('Getting the number of documents in the index')
         return self._client.count(index=self.index_name)['count']
 
     def _del_items(
@@ -425,10 +462,14 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         :param kwargs: keyword arguments to pass to the query
         :return: the result of the query
         """
+        self._logger.debug(f'Executing query: {query}')
+
         if args or kwargs:
-            raise ValueError(
+            err_msg = (
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
 
         resp = self._client.search(index=self.index_name, **query)
         docs, scores = self._format_response(resp)
@@ -438,6 +479,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
+
         body = self._form_search_body(query, limit, search_field)
 
         resp = self._client_search(**body)
@@ -452,6 +494,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
+
         request = []
         for query in queries:
             head = {'index': self.index_name}
@@ -470,6 +513,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Dict[str, Any],
         limit: int,
     ) -> List[Dict]:
+
         resp = self._client_search(query=filter_query, size=limit)
 
         docs, _ = self._format_response(resp)
@@ -481,6 +525,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_queries: Any,
         limit: int,
     ) -> List[List[Dict]]:
+
         request = []
         for query in filter_queries:
             head = {'index': self.index_name}
@@ -498,6 +543,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
+
         body = self._form_text_search_body(query, limit, search_field)
         resp = self._client_search(**body)
 
@@ -511,6 +557,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
+
         request = []
         for query in queries:
             head = {'index': self.index_name}
@@ -524,6 +571,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResultBatched(documents=list(das), scores=scores)
 
     def _filter_by_parent_id(self, id: str) -> List[str]:
+
         resp = self._client_search(
             query={'term': {'parent_id': id}}, fields=['id'], _source=False
         )
@@ -628,6 +676,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return docs, [parse_obj_as(NdArray, np.array(s)) for s in scores]
 
     def _refresh(self, index_name: str):
+
         self._client.indices.refresh(index=index_name)
 
     ###############################################
@@ -635,21 +684,27 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ###############################################
 
     def _client_put_mapping(self, mappings: Dict[str, Any]):
+
         self._client.indices.put_mapping(
             index=self.index_name, properties=mappings['properties']
         )
 
     def _client_create(self, mappings: Dict[str, Any]):
+
         self._client.indices.create(index=self.index_name, mappings=mappings)
 
     def _client_put_settings(self, settings: Dict[str, Any]):
+
         self._client.indices.put_settings(index=self.index_name, settings=settings)
 
     def _client_mget(self, ids: Sequence[str]):
+
         return self._client.mget(index=self.index_name, ids=ids)
 
     def _client_search(self, **kwargs):
+
         return self._client.search(index=self.index_name, **kwargs)
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
+
         return self._client.msearch(index=self.index_name, searches=request)
