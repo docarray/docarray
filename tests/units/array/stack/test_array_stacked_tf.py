@@ -4,7 +4,14 @@ import pytest
 
 from docarray import BaseDoc, DocList
 from docarray.array import DocVec
-from docarray.typing import AnyTensor, NdArray
+from docarray.typing import (
+    AnyEmbedding,
+    AnyTensor,
+    AudioTensor,
+    ImageTensor,
+    NdArray,
+    VideoTensor,
+)
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -183,7 +190,7 @@ def test_stack_call():
 @pytest.mark.tensorflow
 def test_stack_union():
     class Image(BaseDoc):
-        tensor: Union[NdArray[3, 224, 224], TensorFlowTensor[3, 224, 224]]
+        tensor: Union[TensorFlowTensor[3, 224, 224], NdArray[3, 224, 224]]
 
     DocVec[Image](
         [Image(tensor=tf.zeros((3, 224, 224))) for _ in range(10)],
@@ -205,12 +212,15 @@ def test_setitem_tensor_direct(batch):
     batch[3].tensor = tf.zeros((3, 224, 224))
 
 
+@pytest.mark.parametrize(
+    'tensor_cls', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
+)
 @pytest.mark.tensorflow
-def test_any_tensor_with_tf():
+def test_generic_tensors_with_tf(tensor_cls):
     tensor = tf.zeros((3, 224, 224))
 
     class Image(BaseDoc):
-        tensor: AnyTensor
+        tensor: tensor_cls
 
     da = DocVec[Image](
         [Image(tensor=tensor) for _ in range(10)],
@@ -224,12 +234,15 @@ def test_any_tensor_with_tf():
     assert isinstance(da._storage.tensor_columns['tensor'], TensorFlowTensor)
 
 
+@pytest.mark.parametrize(
+    'tensor_cls', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
+)
 @pytest.mark.tensorflow
-def test_any_tensor_with_optional():
+def test_generic_tensors_with_optional(tensor_cls):
     tensor = tf.zeros((3, 224, 224))
 
     class Image(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[tensor_cls]
 
     class TopDoc(BaseDoc):
         img: Image

@@ -27,7 +27,7 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import is_tensor_union
+from docarray.utils._internal._typing import is_tensor_any, is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
@@ -159,6 +159,10 @@ class DocVec(AnyDocArray[T_doc]):
 
             if is_tensor_union(field_type):
                 field_type = tensor_type
+            # if field type is a generic tensor type (any one of AnyTensor, AudioTensor, AnyEmbedding, ImageTensor,
+            # VideoTensor), then the field type changes to that of the tensor_type
+            elif is_tensor_any(docs[0], field_name, field_type, tensor_type):
+                field_type = tensor_type
 
             if isinstance(field_type, type):
                 if tf_available and issubclass(field_type, TensorFlowTensor):
@@ -192,10 +196,8 @@ class DocVec(AnyDocArray[T_doc]):
                             if tensor is not None
                             else (len(docs),)
                         )
-                        # call methods directly on tensor as field_type can be a class representing all tensors
-                        # such as `AnyEmbedding` or `AnyTensor` class which do not have these methods defined
-                        tensor_columns[field_name] = tensor._docarray_from_native(
-                            tensor.get_comp_backend().empty(
+                        tensor_columns[field_name] = field_type._docarray_from_native(
+                            field_type.get_comp_backend().empty(
                                 column_shape,
                                 dtype=tensor.dtype
                                 if hasattr(tensor, 'dtype')

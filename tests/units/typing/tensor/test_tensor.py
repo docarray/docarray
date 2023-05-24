@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from docarray import BaseDoc
-from docarray.typing import AnyTensor, NdArray, TensorFlowTensor, TorchTensor
+from docarray.typing import AnyTensor, NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -11,6 +11,7 @@ if tf_available:
     import tensorflow as tf
 
     from docarray.computation.tensorflow_backend import tnp
+    from docarray.typing import TensorFlowTensor
 
 
 @pytest.mark.parametrize(

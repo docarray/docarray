@@ -21,6 +21,19 @@ def is_tensor_union(type_: Any) -> bool:
         )
 
 
+def is_tensor_any(first_doc, field_name, field_type, tensor_type) -> bool:
+    """Return True if the `field_name` in the doc is a subclass of the tensor type."""
+    # all generic tensor types such as AnyTensor, AnyEmbedding, ImageTensor, etc. are subclasses of AbstractTensor
+    if issubclass(field_type, AbstractTensor):
+        # check if the type of the field_name in doc is a subclass of the tensor type
+        # e.g. if the field_type is AnyTensor but the tensor type is ImageTensor, then we return True so that
+        # specific type is picked and not the generic type
+        tensor = getattr(first_doc, field_name)
+        if issubclass(tensor.__class__, tensor_type):
+            return True
+    return False
+
+
 def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> None:
     """Change the name of a class.
 
