@@ -327,4 +327,4 @@ class DocList(
         """
         from docarray.array.doc_dict.doc_dict import DocDict
 
-        return DocDict.__class_getitem__(self.doc_type).from_doc_list(self)
+        return DocDict.__class_getitem__(self.doc_type).from_docs(self)

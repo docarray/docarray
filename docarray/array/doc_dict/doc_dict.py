@@ -33,7 +33,7 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         return doc
 
     @classmethod
-    def from_doc_list(cls: Type[T], docs: Union['DocList', Iterable[BaseDoc]]) -> T:
+    def from_docs(cls: Type[T], docs: Union['DocList', Iterable[BaseDoc]]) -> T:
         """
         Create a `DocDict` from a `DocList` or an iterable of `BaseDoc`. The id of each `BaseDoc` will be used as key for the `DocDict`
 
@@ -49,12 +49,12 @@ class DocDict(AnyCollection[T_doc], Dict[str, T_doc]):
         if isinstance(other, DocDict):
             super().update(other)
         if isinstance(other, DocList):
-            super().update(DocDict.from_doc_list(other))
+            super().update(DocDict.from_docs(other))
         elif isinstance(other, Mapping):
             super().update(other)
         elif isinstance(other, Iterable):
             super().update(
-                DocDict.from_doc_list(DocList.__class_getitem__(self.doc_type)(other))
+                DocDict.from_docs(DocList.__class_getitem__(self.doc_type)(other))
             )
         else:
             raise ValueError(f'Cannot update DocDict with {other}')

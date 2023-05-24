@@ -640,4 +640,4 @@ class DocVec(AnyDocArray[T_doc]):
         from docarray.array.doc_dict.doc_dict import DocDict
 
         doc_list = self.to_doc_list()
-        return DocDict.__class_getitem__(self.doc_type).from_doc_list(doc_list)
+        return DocDict.__class_getitem__(self.doc_type).from_docs(doc_list)

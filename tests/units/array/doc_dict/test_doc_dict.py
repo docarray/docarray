@@ -25,16 +25,14 @@ def test_init_raw():
 
 
 def test_init_from_doc_list():
-    docs = DocDict[MyDoc].from_doc_list(
+    docs = DocDict[MyDoc].from_docs(
         DocList([MyDoc(id='a', text='a'), MyDoc(id='b', text='b')])
     )
     assert list(docs) == ['a', 'b']
 
 
 def test_init_from_doc_list_raw():
-    docs = DocDict[MyDoc].from_doc_list(
-        [MyDoc(id='a', text='a'), MyDoc(id='b', text='b')]
-    )
+    docs = DocDict[MyDoc].from_docs([MyDoc(id='a', text='a'), MyDoc(id='b', text='b')])
     assert list(docs) == ['a', 'b']
 
 
