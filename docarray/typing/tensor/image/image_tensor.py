@@ -4,6 +4,7 @@ import numpy as np
 
 from docarray.typing.tensor.image.abstract_image_tensor import AbstractImageTensor
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
+from docarray.typing.tensor.tensor import AnyTensor
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
 T = TypeVar("T", bound="ImageTensor")
 
 
-class ImageTensor(AbstractImageTensor):
+class ImageTensor(AnyTensor, AbstractImageTensor):
     """
     Represents an image tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
@@ -50,16 +51,19 @@ class ImageTensor(AbstractImageTensor):
     import tensorflow as tf
 
     doc = MyImageDoc(image=tf.zeros((1000, 2)))
+    type(doc.image) # ImageTensorFlowTensor
 
     # Example usage with PyTorch:
     import torch
 
     doc = MyImageDoc(image=torch.zeros((1000, 2)))
+    type(doc.image) # ImageTorchTensor
 
     # Example usage with NumPy:
     import numpy as np
 
     doc = MyImageDoc(image=np.zeros((1000, 2)))
+    type(doc.image) # ImageNdArray
     '''
 
     Returns:
@@ -68,36 +72,6 @@ class ImageTensor(AbstractImageTensor):
     Raises:
         TypeError: If the input type is not one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray].
     """
-
-    def __getitem__(self: T, item):
-        pass
-
-    def __setitem__(self, index, value):
-        pass
-
-    def __iter__(self):
-        pass
-
-    def __len__(self):
-        pass
-
-    @classmethod
-    def _docarray_from_native(cls: Type[T], value: Any):
-        raise AttributeError('This method should not be called on ImageTensor.')
-
-    @staticmethod
-    def get_comp_backend():
-        raise AttributeError('This method should not be called on ImageTensor.')
-
-    def to_protobuf(self):
-        raise AttributeError('This method should not be called on ImageTensor.')
-
-    def _docarray_to_json_compatible(self):
-        raise AttributeError('This method should not be called on ImageTensor.')
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T):
-        raise AttributeError('This method should not be called on ImageTensor.')
 
     @classmethod
     def __get_validators__(cls):

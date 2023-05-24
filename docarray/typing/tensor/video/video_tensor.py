@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
+from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
 from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
@@ -30,7 +31,7 @@ if TYPE_CHECKING:
 T = TypeVar("T", bound="VideoTensor")
 
 
-class VideoTensor(VideoTensorMixin):
+class VideoTensor(AnyTensor, VideoTensorMixin):
     """
     Represents a Video tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
@@ -49,16 +50,19 @@ class VideoTensor(VideoTensorMixin):
     import tensorflow as tf
 
     doc = MyVideoDoc(video=tf.zeros(1000, 2))
+    type(doc.video)  # VideoTensorFlowTensor
 
     # Example usage with PyTorch:
     import torch
 
     doc = MyVideoDoc(video=torch.zeros(1000, 2))
+    type(doc.video)  # VideoTorchTensor
 
     # Example usage with NumPy:
     import numpy as np
 
     doc = MyVideoDoc(video=np.zeros((1000, 2)))
+    type(doc.video)  # VideoNdArray
     '''
 
     Returns:
@@ -68,36 +72,6 @@ class VideoTensor(VideoTensorMixin):
         TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
 
     """
-
-    def __getitem__(self: T, item):
-        pass
-
-    def __setitem__(self, index, value):
-        pass
-
-    def __iter__(self):
-        pass
-
-    def __len__(self):
-        pass
-
-    @classmethod
-    def _docarray_from_native(cls: Type[T], value: Any):
-        raise AttributeError('This method should not be called on VideoTensor.')
-
-    @staticmethod
-    def get_comp_backend():
-        raise AttributeError('This method should not be called on VideoTensor.')
-
-    def to_protobuf(self):
-        raise AttributeError('This method should not be called on VideoTensor.')
-
-    def _docarray_to_json_compatible(self):
-        raise AttributeError('This method should not be called on VideoTensor.')
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T):
-        raise AttributeError('This method should not be called on VideoTensor.')
 
     @classmethod
     def __get_validators__(cls):
@@ -110,7 +84,6 @@ class VideoTensor(VideoTensorMixin):
         field: "ModelField",
         config: "BaseConfig",
     ):
-        # Check for TorchTensor first, then TensorFlowTensor, then NdArray
         if torch_available:
             if isinstance(value, TorchTensor):
                 return cast(VideoTorchTensor, value)

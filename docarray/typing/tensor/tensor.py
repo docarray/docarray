@@ -23,107 +23,123 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
-T = TypeVar("T", bound="AnyTensor")
-ShapeT = TypeVar('ShapeT')
+    # Below is the hack to make the type checker happy. But `AnyTensor` is defined as a class and with same underlying
+    # behavior as `Union[TorchTensor, TensorFlowTensor, NdArray]` so it should be fine to use `AnyTensor` as
+    # the type for `tensor` field in `BaseDoc` class.
+    AnyTensor = Union[NdArray]
+    if torch_available and tf_available:
+        AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor]  # type: ignore
+    elif torch_available:
+        AnyTensor = Union[NdArray, TorchTensor]  # type: ignore
+    elif tf_available:
+        AnyTensor = Union[NdArray, TensorFlowTensor]  # type: ignore
+
+else:
+
+    T = TypeVar("T", bound="AnyTensor")
+    ShapeT = TypeVar('ShapeT')
+
+    class AnyTensor(AbstractTensor, Generic[ShapeT]):
+        """
+        Represents a tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
+
+        ---
+
+        '''python
+        from docarray import BaseDoc
+        from docarray.typing import AnyTensor
 
 
-class AnyTensor(AbstractTensor, Generic[ShapeT]):
-    """
-    Represents a tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
-
-    ---
-
-    '''python
-    from docarray import BaseDoc
-    from docarray.typing import AnyTensor
+        class MyTensorDoc(BaseDoc):
+            tensor: AnyTensor
 
 
-    class MyTensorDoc(BaseDoc):
-        tensor: AnyTensor
+        # Example usage with TensorFlow:
+        import tensorflow as tf
 
+        doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
 
-    # Example usage with TensorFlow:
-    import tensorflow as tf
+        # Example usage with PyTorch:
+        import torch
 
-    doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
+        doc = MyTensorDoc(tensor=torch.zeros(1000, 2))
 
-    # Example usage with PyTorch:
-    import torch
+        # Example usage with NumPy:
+        import numpy as np
 
-    doc = MyTensorDoc(tensor=torch.zeros(1000, 2))
+        doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
+        '''
 
-    # Example usage with NumPy:
-    import numpy as np
+        Returns:
+            Union[TorchTensor, TensorFlowTensor, NdArray]: The validated and converted tensor.
 
-    doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
-    '''
+        Raises:
+            TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
 
-    Returns:
-        Union[TorchTensor, TensorFlowTensor, NdArray]: The validated and converted tensor.
+        """
 
-    Raises:
-        TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
-
-    """
-
-    def __getitem__(self: T, item):
-        pass
-
-    def __setitem__(self, index, value):
-        pass
-
-    def __iter__(self):
-        pass
-
-    def __len__(self):
-        pass
-
-    @classmethod
-    def _docarray_from_native(cls: Type[T], value: Any):
-        raise AttributeError('This method should not be called on AnyTensor.')
-
-    @staticmethod
-    def get_comp_backend():
-        raise AttributeError('This method should not be called on AnyTensor.')
-
-    def to_protobuf(self):
-        raise AttributeError('This method should not be called on AnyTensor.')
-
-    def _docarray_to_json_compatible(self):
-        raise AttributeError('This method should not be called on AnyTensor.')
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T):
-        raise AttributeError('This method should not be called on AnyTensor.')
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: "ModelField",
-        config: "BaseConfig",
-    ):
-        # Check for TorchTensor first, then TensorFlowTensor, then NdArray
-        if torch_available:
-            if isinstance(value, TorchTensor):
-                return value
-            elif isinstance(value, torch.Tensor):
-                return TorchTensor._docarray_from_native(value)  # noqa
-        if tf_available:
-            if isinstance(value, TensorFlowTensor):
-                return value
-            elif isinstance(value, tf.Tensor):
-                return TensorFlowTensor._docarray_from_native(value)  # noqa
-        try:
-            return NdArray.validate(value, field, config)
-        except Exception as e:  # noqa
-            print(e)
+        def __getitem__(self: T, item):
             pass
-        raise TypeError(
-            f"Expected one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray] "
-            f"compatible type, got {type(value)}"
-        )
+
+        def __setitem__(self, index, value):
+            pass
+
+        def __iter__(self):
+            pass
+
+        def __len__(self):
+            pass
+
+        @classmethod
+        def _docarray_from_native(cls: Type[T], value: Any):
+            raise AttributeError(f'This method should not be called on {cls}.')
+
+        @staticmethod
+        def get_comp_backend():
+            raise AttributeError('This method should not be called on AnyTensor.')
+
+        def to_protobuf(self):
+            raise AttributeError(
+                f'This method should not be called on {self.__class__}.'
+            )
+
+        def _docarray_to_json_compatible(self):
+            raise AttributeError(
+                f'This method should not be called on {self.__class__}.'
+            )
+
+        @classmethod
+        def from_protobuf(cls: Type[T], pb_msg: T):
+            raise AttributeError(f'This method should not be called on {cls}.')
+
+        @classmethod
+        def __get_validators__(cls):
+            yield cls.validate
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[T, np.ndarray, Any],
+            field: "ModelField",
+            config: "BaseConfig",
+        ):
+            # Check for TorchTensor first, then TensorFlowTensor, then NdArray
+            if torch_available:
+                if isinstance(value, TorchTensor):
+                    return value
+                elif isinstance(value, torch.Tensor):
+                    return TorchTensor._docarray_from_native(value)  # noqa
+            if tf_available:
+                if isinstance(value, TensorFlowTensor):
+                    return value
+                elif isinstance(value, tf.Tensor):
+                    return TensorFlowTensor._docarray_from_native(value)  # noqa
+            try:
+                return NdArray.validate(value, field, config)
+            except Exception as e:  # noqa
+                print(e)
+                pass
+            raise TypeError(
+                f"Expected one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray] "
+                f"compatible type, got {type(value)}"
+            )
