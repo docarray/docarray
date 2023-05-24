@@ -162,7 +162,7 @@ class DocVec(AnyDocArray[T_doc]):
 
             if is_tensor_union(field_type):
                 field_type = tensor_type
-            # all generic tensor types such as AnyTensor, AnyEmbedding, ImageTensor, etc. are subclasses of AbstractTensor.
+            # all generic tensor types such as AnyTensor, ImageTensor, etc. are subclasses of AbstractTensor.
             # Perform check only if the field_type is not an alias and is a subclass of AbstractTensor
             elif not isinstance(field_type, typingGenericAlias) and issubclass(
                 field_type, AbstractTensor
