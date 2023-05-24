@@ -4,8 +4,6 @@ import numpy as np
 
 from docarray.typing.tensor.image.abstract_image_tensor import AbstractImageTensor
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
-from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
-from docarray.typing.tensor.torch_tensor import TorchTensor
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 torch_available = is_torch_available()
@@ -13,6 +11,7 @@ if torch_available:
     import torch
 
     from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
+    from docarray.typing.tensor.torch_tensor import TorchTensor
 
 tf_available = is_tf_available()
 if tf_available:
@@ -21,6 +20,7 @@ if tf_available:
     from docarray.typing.tensor.image.image_tensorflow_tensor import (
         ImageTensorFlowTensor,
     )
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 
 
 if TYPE_CHECKING:
