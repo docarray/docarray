@@ -108,41 +108,6 @@ class MyDocument(BaseDoc):
 
 So not only can you define the types of your data, you can even **specify the shape of your tensors!**
 
-> :bulb: **Type coercion:** When submitting a tensor-like structure to a tensor field, the resulting `TorchTensor` is typed after the provided data.
-
-See:
-
-```python
-from docarray import BaseDoc
-from docarray.typing import TorchTensor
-import numpy as np
-
-
-class MyTensorsDoc(BaseDoc):
-    tensor1: TorchTensor[512]
-    tensor2: TorchTensor[512]
-
-
-rand_series_f64 = np.random.rand(512).astype('float64')
-rand_series_f32 = np.random.rand(512).astype('float32')
-
-doc = MyTensorsDoc(tensor1=rand_series_f64, tensor2=rand_series_f32)
-doc.summary()
-```
-
-```
-📄 MyTensorsDoc : 84877dd ...
-╭──────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────╮
-│ Attribute            │ Value                                                                                    │
-├──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────┤
-│ tensor1: TorchTensor │ TorchTensor of shape (512,), dtype: torch.float64                                        │
-│ tensor2: TorchTensor │ TorchTensor of shape (512,), dtype: torch.float32                                        │
-╰──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────╯
-```
-
-
-Once you have your model in the form of a document, you can work with it!
-
 ```python
 # Create a document
 doc = MyDocument(
