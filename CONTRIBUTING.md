@@ -337,13 +337,17 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 ### Building documentation on your local machine
 
-#### Requirements
-
-* Python 3
-* [MkDocs](https://www.mkdocs.org/user-guide/installation/): `pip install mkdocs`
 
 #### Steps to build locally
 
+First install the documentation dependency
+```
+poetry install --with docs
+```
+
+Note: if you need to install extra (proto, database, ...) you need to specify those as well.
+
+Then build the documentation:
 ```bash
 cd docs
 ./makedoc.sh
@@ -354,10 +358,11 @@ To serve it, run:
 
 ```bash
 cd ..
-mkdocs serve
+poetry run mkdocs serve
 ```
 
 You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser.
+Note: You may have to change the port from 8000 to something else if you already have a server running on that port.
 
 ## 🙏 Thank you
 
