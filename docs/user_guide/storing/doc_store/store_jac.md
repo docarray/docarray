@@ -37,9 +37,6 @@ dl.push(f'jac://{DL_NAME}')
 dl_pull = DocList[SimpleDoc].pull(f'jac://{DL_NAME}')
 ```
 
-!!! note
-    When using `.push()` and `.pull()`, `DocList` calls the default `boto3` client. Be sure your default session is correctly set up.
-
 ## Push and pull with streaming
 
 When you have a large amount of documents to push and pull, you can use the streaming function. 

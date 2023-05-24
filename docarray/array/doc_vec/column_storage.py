@@ -3,12 +3,14 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    ItemsView,
     Iterable,
     MutableMapping,
     Optional,
     Type,
     TypeVar,
     Union,
+    ValuesView,
 )
 
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
@@ -141,5 +143,20 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
     def __len__(self):
         return len(self.storage.columns)
 
+    def _local_dict(self):
+        """The storage.columns dictionary with every value at position self.index"""
+
+        return {key: self[key] for key in self.storage.columns.keys()}
+
     def keys(self):
         return self.storage.columns.keys()
+
+    # type ignore because return type dict_values is private and we cannot use it.
+    # context: https://github.com/python/typing/discussions/1033
+    def values(self) -> ValuesView:  # type: ignore
+        return ValuesView(self._local_dict())
+
+    # type ignore because return type dict_items is private and we cannot use it.
+    # context: https://github.com/python/typing/discussions/1033
+    def items(self) -> ItemsView:  # type: ignore
+        return ItemsView(self._local_dict())
