@@ -267,8 +267,10 @@ class DocList(
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 
-        if isinstance(value, (cls, DocVec)):
+        if isinstance(value, cls):
             return value
+        elif isinstance(value, DocVec):
+            return value.to_doc_list()
         elif isinstance(value, cls):
             return cls(value)
         elif isinstance(value, Iterable):
