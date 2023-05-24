@@ -340,23 +340,21 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 #### Requirements
 
 * Python 3
-* [jq](https://stedolan.github.io/jq/download/)
+* [MkDocs](https://www.mkdocs.org/user-guide/installation/): `pip install mkdocs`
 
 #### Steps to build locally
 
 ```bash
 cd docs
-pip install -r requirements.txt
-export NUM_RELEASES=10
-bash makedoc.sh
+./makedoc.sh
 ```
 
 The docs website will be generated in `site`.
 To serve it, run:
 
 ```bash
+cd ..
 mkdocs serve
-python -m http.server
 ```
 
 You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser.
