@@ -6,7 +6,6 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
-from docarray.computation.tensorflow_backend import tnp
 from docarray.typing import ImageBytes, ImageNdArray, ImageTensor, ImageTorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
@@ -14,6 +13,7 @@ tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf
 
+    from docarray.computation.tensorflow_backend import tnp
     from docarray.typing.tensor.image import ImageTensorFlowTensor
 
 
@@ -60,10 +60,10 @@ def test_save_image_tensor_to_bytes(image_tensor):
     ],
 )
 def test_torch_ndarray_to_image_tensor(tensor, cls_audio_tensor, cls_tensor):
-    class MyAudioDoc(BaseDoc):
+    class MyImageDoc(BaseDoc):
         tensor: ImageTensor
 
-    doc = MyAudioDoc(tensor=tensor)
+    doc = MyImageDoc(tensor=tensor)
     assert isinstance(doc.tensor, cls_audio_tensor)
     assert isinstance(doc.tensor, cls_tensor)
     assert (doc.tensor == tensor).all()
@@ -71,10 +71,10 @@ def test_torch_ndarray_to_image_tensor(tensor, cls_audio_tensor, cls_tensor):
 
 @pytest.mark.tensorflow
 def test_tensorflow_to_image_tensor():
-    class MyAudioDoc(BaseDoc):
+    class MyImageDoc(BaseDoc):
         tensor: ImageTensor
 
-    doc = MyAudioDoc(tensor=tf.zeros((1000, 2)))
+    doc = MyImageDoc(tensor=tf.zeros((1000, 2)))
     assert isinstance(doc.tensor, ImageTensorFlowTensor)
     assert isinstance(doc.tensor.tensor, tf.Tensor)
     assert tnp.allclose(doc.tensor.tensor, tf.zeros((1000, 2)))

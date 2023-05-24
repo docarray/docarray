@@ -38,24 +38,24 @@ class AnyTensor(AbstractTensor, Generic[ShapeT]):
     from docarray.typing import AnyTensor
 
 
-    class MyDoc(BaseDoc):
+    class MyTensorDoc(BaseDoc):
         tensor: AnyTensor
 
 
     # Example usage with TensorFlow:
     import tensorflow as tf
 
-    doc = MyDoc(tensor=tf.zeros(1000, 2))
+    doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
 
     # Example usage with PyTorch:
     import torch
 
-    doc = MyDoc(tensor=torch.zeros(1000, 2))
+    doc = MyTensorDoc(tensor=torch.zeros(1000, 2))
 
     # Example usage with NumPy:
     import numpy as np
 
-    doc = MyDoc(tensor=np.zeros((1000, 2)))
+    doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
     '''
 
     Returns:

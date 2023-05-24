@@ -192,8 +192,10 @@ class DocVec(AnyDocArray[T_doc]):
                             if tensor is not None
                             else (len(docs),)
                         )
-                        tensor_columns[field_name] = field_type._docarray_from_native(
-                            field_type.get_comp_backend().empty(
+                        # call methods directly on tensor as field_type can be a class representing all tensors
+                        # such as `AnyEmbedding` or `AnyTensor` class which do not have these methods defined
+                        tensor_columns[field_name] = tensor._docarray_from_native(
+                            tensor.get_comp_backend().empty(
                                 column_shape,
                                 dtype=tensor.dtype
                                 if hasattr(tensor, 'dtype')
