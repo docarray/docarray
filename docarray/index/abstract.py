@@ -18,6 +18,7 @@ from typing import (
     TypeVar,
     Union,
     cast,
+    get_origin,
 )
 
 import numpy as np
@@ -707,6 +708,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ##########################################################
 
     @staticmethod
+    def custom_issubclass(x, A_tuple) -> bool:
+        """
+        This is a modified version of the built-in 'issubclass' function to support non-class input.
+        Traditional 'issubclass' calls can result in a crash if the input is list/tuple.
+
+        :param x: A class 'x'
+        :param A_tuple: A class, or a tuple of classes.
+        :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
+                 Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
+        """
+        if get_origin(x) in (list, tuple):
+            return False
+        return issubclass(x, A_tuple)
+
+    @staticmethod
     def _get_values_by_column(docs: Sequence[BaseDoc], col_name: str) -> List[Any]:
         """Get the value of a column of a document.
 
@@ -776,7 +792,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray):
+            if self.custom_issubclass(type_, AnyDocArray):
                 for doc in docs:
                     _list = getattr(doc, field_name)
                     for i, nested_doc in enumerate(_list):
@@ -857,11 +873,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     raise ValueError(
                         f'Union type {t_} is not supported. Only Union of subclasses of AbstractTensor or Union[type, None] are supported.'
                     )
-            elif issubclass(t_, BaseDoc):
+            elif BaseDocIndex.custom_issubclass(t_, BaseDoc):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)
                 )
-            elif issubclass(t_, AbstractTensor):
+            elif BaseDocIndex.custom_issubclass(t_, AbstractTensor):
                 names_types_fields.append(
                     (name_prefix + field_name, AbstractTensor, field_)
                 )
@@ -879,7 +895,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
             # Union types are handle in _flatten_schema
-            if issubclass(type_, AnyDocArray):
+            if self.custom_issubclass(type_, AnyDocArray):
                 column_infos[field_name] = _ColumnInfo(
                     docarray_type=type_, db_type=None, config=dict(), n_dim=None
                 )
@@ -921,7 +937,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ):
         """Initialize subindices if any column is subclass of AnyDocArray."""
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if BaseDocIndex.custom_issubclass(col.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
                 sub_db_config.index_name = f'{self.index_name}__{col_name}'
                 self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](  # type: ignore
@@ -1087,7 +1103,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param column_to_data: A dictionary from column name to a generator
         """
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if self.custom_issubclass(col.docarray_type, AnyDocArray):
                 docs = [
                     doc for doc_list in column_to_data[col_name] for doc in doc_list
                 ]

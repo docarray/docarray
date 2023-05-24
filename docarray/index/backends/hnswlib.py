@@ -98,7 +98,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
         self._hnsw_indices = {}
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if BaseDocIndex.custom_issubclass(col.docarray_type, AnyDocArray):
                 continue
             if not col.config:
                 # non-tensor type; don't create an index
@@ -200,7 +200,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             or None if ``python_type`` is not supported.
         """
         for allowed_type in HNSWLIB_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if BaseDocIndex.custom_issubclass(python_type, allowed_type):
                 return np.ndarray
 
         return None  # all types allowed, but no db type needed
@@ -350,7 +350,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray):
+            if BaseDocIndex.custom_issubclass(type_, AnyDocArray):
                 for id in doc_ids:
                     doc = self.__getitem__(id)
                     sub_ids = [sub_doc.id for sub_doc in getattr(doc, field_name)]
