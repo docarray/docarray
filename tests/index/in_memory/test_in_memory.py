@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from pydantic import Field
+from typing import Optional
 
 from docarray import BaseDoc, DocList
 from docarray.index.backends.in_memory import InMemoryExactNNIndex
@@ -141,3 +142,23 @@ def test_save_and_load(doc_index, tmpdir):
     )
 
     assert newer_doc_index.num_docs() == 0
+
+
+def test_index_with_None_embedding():
+    class DocTest(BaseDoc):
+        index: int
+        embedding: Optional[NdArray[4]]
+
+    # Some of the documents have the embedding field set to None
+    dl = DocList[DocTest](
+        [
+            DocTest(index=i, embedding=np.random.rand(4) if i % 2 else None)
+            for i in range(100)
+        ]
+    )
+
+    index = InMemoryExactNNIndex[DocTest](dl)
+    res = index.find(np.random.rand(4), search_field="embedding", limit=70)
+    assert len(res.documents) == 50
+    for doc in res.documents:
+        assert doc.index % 2 != 0
