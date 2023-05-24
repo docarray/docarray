@@ -213,14 +213,14 @@ def test_setitem_tensor_direct(batch):
 
 
 @pytest.mark.parametrize(
-    'tensor_cls', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
+    'cls_tensor', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
 )
 @pytest.mark.tensorflow
-def test_generic_tensors_with_tf(tensor_cls):
+def test_generic_tensors_with_tf(cls_tensor):
     tensor = tf.zeros((3, 224, 224))
 
     class Image(BaseDoc):
-        tensor: tensor_cls
+        tensor: cls_tensor
 
     da = DocVec[Image](
         [Image(tensor=tensor) for _ in range(10)],
@@ -235,14 +235,14 @@ def test_generic_tensors_with_tf(tensor_cls):
 
 
 @pytest.mark.parametrize(
-    'tensor_cls', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
+    'cls_tensor', [ImageTensor, AudioTensor, VideoTensor, AnyEmbedding, AnyTensor]
 )
 @pytest.mark.tensorflow
-def test_generic_tensors_with_optional(tensor_cls):
+def test_generic_tensors_with_optional(cls_tensor):
     tensor = tf.zeros((3, 224, 224))
 
     class Image(BaseDoc):
-        tensor: Optional[tensor_cls]
+        tensor: Optional[cls_tensor]
 
     class TopDoc(BaseDoc):
         img: Image

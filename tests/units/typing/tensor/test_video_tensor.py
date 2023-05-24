@@ -80,18 +80,22 @@ def test_validation_tensorflow():
 
 
 @pytest.mark.parametrize(
-    'cls_tensor,tensor',
+    'cls_tensor,tensor,expect_error',
     [
-        (VideoNdArray, torch.zeros(1, 224, 224, 3)),
-        (VideoTorchTensor, torch.zeros(224, 3)),
-        (VideoTorchTensor, torch.zeros(1, 224, 224, 100)),
-        (VideoNdArray, 'hello'),
-        (VideoTorchTensor, 'hello'),
+        (VideoNdArray, torch.zeros(1, 224, 224, 3), False),
+        (VideoNdArray, torch.zeros(1, 224, 224, 100), True),
+        (VideoTorchTensor, torch.zeros(1, 224, 224, 3), False),
+        (VideoTorchTensor, torch.zeros(1, 224, 224, 100), True),
+        (VideoNdArray, 'hello', True),
+        (VideoTorchTensor, 'hello', True),
     ],
 )
-def test_illegal_validation(cls_tensor, tensor):
+def test_illegal_validation(cls_tensor, tensor, expect_error):
     match = str(cls_tensor).split('.')[-1][:-2]
-    with pytest.raises(ValueError, match=match):
+    if expect_error:
+        with pytest.raises(ValueError, match=match):
+            parse_obj_as(cls_tensor, tensor)
+    else:
         parse_obj_as(cls_tensor, tensor)
 
 
