@@ -26,64 +26,9 @@ class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ign
     pass
 
 
-@_register_proto(proto_type_name='ndarray')
+@_register_proto(proto_type_name='jaxarray')
 class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
-    """
-    Subclass of `np.ndarray`, intended for use in a Document.
-    This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like `torch.Tensor`.
-
-    This type can also be used in a parametrized way, specifying the shape of the array.
-
-    ---
-
-    ```python
-    from docarray import BaseDoc
-    from docarray.typing import NdArray
-    import numpy as np
-
-
-    class MyDoc(BaseDoc):
-        arr: NdArray
-        image_arr: NdArray[3, 224, 224]
-        square_crop: NdArray[3, 'x', 'x']
-        random_image: NdArray[3, ...]  # first dimension is fixed, can have arbitrary shape
-
-
-    # create a document with tensors
-    doc = MyDoc(
-        arr=np.zeros((128,)),
-        image_arr=np.zeros((3, 224, 224)),
-        square_crop=np.zeros((3, 64, 64)),
-        random_image=np.zeros((3, 128, 256)),
-    )
-    assert doc.image_arr.shape == (3, 224, 224)
-
-    # automatic shape conversion
-    doc = MyDoc(
-        arr=np.zeros((128,)),
-        image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
-        square_crop=np.zeros((3, 128, 128)),
-        random_image=np.zeros((3, 64, 128)),
-    )
-    assert doc.image_arr.shape == (3, 224, 224)
-
-    # !! The following will raise an error due to shape mismatch !!
-    from pydantic import ValidationError
-
-    try:
-        doc = MyDoc(
-            arr=np.zeros((128,)),
-            image_arr=np.zeros((224, 224)),  # this will fail validation
-            square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
-            random_image=np.zeros((4, 64, 128)),  # this will also fail validation
-        )
-    except ValidationError as e:
-        pass
-    ```
-
-    ---
-    """
+    """ """
 
     __parametrized_meta__ = metaNumpy
 

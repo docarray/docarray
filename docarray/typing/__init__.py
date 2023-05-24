@@ -5,6 +5,7 @@ from docarray.typing.id import ID
 from docarray.typing.tensor import ImageNdArray, ImageTensor
 from docarray.typing.tensor.audio import AudioNdArray, AudioTensor
 from docarray.typing.tensor.embedding.embedding import AnyEmbedding, NdArrayEmbedding
+from docarray.typing.tensor.jaxarray import JaxArray
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video import VideoNdArray, VideoTensor
@@ -56,6 +57,7 @@ __all__ = [
     'ImageBytes',
     'VideoBytes',
     'AudioBytes',
+    'JaxArray',
 ]
 
 
