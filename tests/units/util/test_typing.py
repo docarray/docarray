@@ -1,10 +1,10 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List, Set, Tuple
 
 import pytest
 
 from docarray.typing import NdArray, TorchTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import is_tensor_union, is_type_tensor
+from docarray.utils._internal._typing import is_tensor_union, is_type_tensor, safe_issubclass
 from docarray.utils._internal.misc import is_tf_available
 
 tf_available = is_tf_available()
@@ -73,3 +73,17 @@ def test_is_union_type_tensor(type_, is_union_tensor):
 )
 def test_is_union_type_tensor_with_tf(type_, is_union_tensor):
     assert is_tensor_union(type_) == is_union_tensor
+
+
+@pytest.mark.parametrize(
+    'type_, cls, is_subclass',
+    [
+        (List[str], object, False),
+        (List[List[int]], object, False),
+        (Set[str], object, False),
+        (Dict, object, False),
+        (Tuple[int, int], object, False),
+    ],
+)
+def test_safe_issubclass(type_, cls, is_subclass):
+    assert safe_issubclass(type_, cls) == is_subclass
