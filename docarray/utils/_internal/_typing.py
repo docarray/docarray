@@ -1,6 +1,6 @@
 from typing import Any, Optional, get_origin
 
-from typing_inspect import get_args, is_union_type
+from typing_inspect import get_args, is_union_type, is_typevar
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -43,6 +43,6 @@ def safe_issubclass(x, a_tuple) -> bool:
     :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
              Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
     """
-    if get_origin(x) in (list, tuple):
+    if (get_origin(x) in (list, tuple, dict, set)) or is_typevar(x):
         return False
     return issubclass(x, a_tuple)

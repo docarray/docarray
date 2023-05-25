@@ -390,7 +390,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray):
+            if safe_issubclass(type_, AnyDocArray):
                 for doc_id in key:
                     nested_docs_id = self._subindices[field_name]._filter_by_parent_id(
                         doc_id
