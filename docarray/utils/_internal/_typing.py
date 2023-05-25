@@ -1,6 +1,6 @@
 from typing import Any, Optional, get_origin
 
-from typing_inspect import get_args, is_union_type, is_typevar
+from typing_inspect import get_args, is_typevar, is_union_type
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -32,6 +32,7 @@ def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> N
         scope[new_name] = cls
     cls.__qualname__ = cls.__qualname__[: -len(cls.__name__)] + new_name
     cls.__name__ = new_name
+
 
 def safe_issubclass(x: type, a_tuple: tuple) -> bool:
     """
