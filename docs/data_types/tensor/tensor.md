@@ -2,16 +2,16 @@
 
 
 
-DocArray support several tensor type that can be used to inside BaseDoc. 
+DocArray support several tensor type that can be used inside BaseDoc. 
 
-The main one are : 
+The main ones are : 
 - [`NdArray`][docarray.typing.tensor.NdArray] for numpy tensor
 - [`TorchTensor`][docarray.typing.tensor.TorchTensor] for Pytorch tensor
 - [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] for tensorflow tensor
 
-The three of them inherit from their respective framework tensor type. This mean that they can be used natively inside their framework.
+The three of them inherit from their respective framework tensor type. This means that they can be used natively inside their framework.
 
-We also have a [`AnyTensor`][docarray.typing.tensor.AnyTensor] that is the Union of the three previous tensor type . 
+We also have a [`AnyTensor`][docarray.typing.tensor.AnyTensor] that is the Union of the three previous tensor type. 
 This is a generic placeholder to specify that it can work with any tensor type (numpy, torch, tensorflow).
 
 ## Tensor typed validation
@@ -42,7 +42,7 @@ here you see that the `doc.tensor` is a `NdArray`.
 assert isinstance(doc.tensor, np.ndarray)  # True as well
 ``` 
 
-But since it inherit from `np.ndarray` you can use it as a numpy array.
+But since it inherits from `np.ndarray` you can use it as a numpy array.
 
 ## Type coercion from numpy to pytorch 
 
@@ -92,7 +92,7 @@ But this is not the case if you pass a numpy array to a tensorflow tensor field.
 
 DocVec can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or a Union of tensor type. 
 
- But to do so DocVec need to know the tensor type of the tensor field beforehand to create the right column.
+ But to do so DocVec needs to know the tensor type of the tensor field beforehand to create the right column.
  
 You can precise these parameters with the `tensor_type` parameter of the [`DocVec`][docarray.vectorizer.doc_vec.DocVec] constructor.
 
@@ -116,4 +116,3 @@ assert isinstance(docs.tensor, NdArray)
 
 !!! note
     If you don't precise the `tensor_type` parameter it will use NdArray as default.
-
