@@ -34,7 +34,7 @@ def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> N
     cls.__name__ = new_name
 
 
-def safe_issubclass(x: type, a_tuple: tuple) -> bool:
+def safe_issubclass(x: type, a_tuple: type) -> bool:
     """
     This is a modified version of the built-in 'issubclass' function to support non-class input.
     Traditional 'issubclass' calls can result in a crash if the input is non-class type (e.g. list/tuple).
