@@ -128,8 +128,10 @@ def test_index_tf(tmp_path):
     for index in index._hnsw_indices.values():
         assert index.get_current_count() == 10
 
+
 def test_index_lst_str(tmp_path):
     from typing import List
+
     class ListDoc(BaseDoc):
         list_str: List[str]
 
@@ -142,10 +144,12 @@ def test_index_lst_str(tmp_path):
     for index in index._hnsw_indices.values():
         assert index.get_current_count() == 10
 
+
 def test_index_typevar(tmp_path):
     from typing import TypeVar
 
     T = TypeVar("T")
+
     class TypeDoc(BaseDoc):
         list_str: T
 
@@ -153,6 +157,7 @@ def test_index_typevar(tmp_path):
     docs = [TypeDoc(list_str=10) for _ in range(10)]
     index.index(docs)
     assert index.num_docs() == 10
+
 
 def test_index_builtin_docs(tmp_path):
     # TextDoc
