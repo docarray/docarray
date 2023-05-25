@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, get_origin
 
 from typing_inspect import get_args, is_union_type
 
@@ -32,3 +32,17 @@ def change_cls_name(cls: type, new_name: str, scope: Optional[dict] = None) -> N
         scope[new_name] = cls
     cls.__qualname__ = cls.__qualname__[: -len(cls.__name__)] + new_name
     cls.__name__ = new_name
+
+def safe_issubclass(x, a_tuple) -> bool:
+    """
+    This is a modified version of the built-in 'issubclass' function to support non-class input.
+    Traditional 'issubclass' calls can result in a crash if the input is non-class type (e.g. list/tuple).
+
+    :param x: A class 'x'
+    :param a_tuple: A class, or a tuple of classes.
+    :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
+             Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
+    """
+    if get_origin(x) in (list, tuple):
+        return False
+    return issubclass(x, a_tuple)

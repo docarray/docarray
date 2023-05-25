@@ -18,7 +18,6 @@ from typing import (
     TypeVar,
     Union,
     cast,
-    get_origin,
 )
 
 import numpy as np
@@ -29,7 +28,7 @@ from docarray import BaseDoc, DocList
 from docarray.array.any_array import AnyDocArray
 from docarray.typing import ID, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import is_tensor_union
+from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import (
     FindResult,
@@ -708,21 +707,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ##########################################################
 
     @staticmethod
-    def custom_issubclass(x, A_tuple) -> bool:
-        """
-        This is a modified version of the built-in 'issubclass' function to support non-class input.
-        Traditional 'issubclass' calls can result in a crash if the input is list/tuple.
-
-        :param x: A class 'x'
-        :param A_tuple: A class, or a tuple of classes.
-        :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
-                 Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
-        """
-        if get_origin(x) in (list, tuple):
-            return False
-        return issubclass(x, A_tuple)
-
-    @staticmethod
     def _get_values_by_column(docs: Sequence[BaseDoc], col_name: str) -> List[Any]:
         """Get the value of a column of a document.
 
@@ -792,7 +776,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if self.custom_issubclass(type_, AnyDocArray):
+            if safe_issubclass(type_, AnyDocArray):
                 for doc in docs:
                     _list = getattr(doc, field_name)
                     for i, nested_doc in enumerate(_list):
@@ -873,11 +857,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     raise ValueError(
                         f'Union type {t_} is not supported. Only Union of subclasses of AbstractTensor or Union[type, None] are supported.'
                     )
-            elif BaseDocIndex.custom_issubclass(t_, BaseDoc):
+            elif safe_issubclass(t_, BaseDoc):
                 names_types_fields.extend(
                     cls._flatten_schema(t_, name_prefix=inner_prefix)
                 )
-            elif BaseDocIndex.custom_issubclass(t_, AbstractTensor):
+            elif safe_issubclass(t_, AbstractTensor):
                 names_types_fields.append(
                     (name_prefix + field_name, AbstractTensor, field_)
                 )
@@ -895,7 +879,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         column_infos: Dict[str, _ColumnInfo] = dict()
         for field_name, type_, field_ in self._flatten_schema(schema):
             # Union types are handle in _flatten_schema
-            if self.custom_issubclass(type_, AnyDocArray):
+            if safe_issubclass(type_, AnyDocArray):
                 column_infos[field_name] = _ColumnInfo(
                     docarray_type=type_, db_type=None, config=dict(), n_dim=None
                 )
@@ -937,7 +921,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ):
         """Initialize subindices if any column is subclass of AnyDocArray."""
         for col_name, col in self._column_infos.items():
-            if BaseDocIndex.custom_issubclass(col.docarray_type, AnyDocArray):
+            if safe_issubclass(col.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
                 sub_db_config.index_name = f'{self.index_name}__{col_name}'
                 self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](  # type: ignore
@@ -1103,7 +1087,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param column_to_data: A dictionary from column name to a generator
         """
         for col_name, col in self._column_infos.items():
-            if self.custom_issubclass(col.docarray_type, AnyDocArray):
+            if safe_issubclass(col.docarray_type, AnyDocArray):
                 docs = [
                     doc for doc_list in column_to_data[col_name] for doc in doc_list
                 ]
