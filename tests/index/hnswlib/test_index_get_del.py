@@ -129,6 +129,36 @@ def test_index_tf(tmp_path):
         assert index.get_current_count() == 10
 
 
+def test_index_lst_str(tmp_path):
+    from typing import List
+
+    class ListDoc(BaseDoc):
+        list_str: List[str]
+
+    docs = [ListDoc(list_str=[str(i) for i in range(10)]) for _ in range(10)]
+    assert isinstance(docs[0].list_str, List)
+
+    index = HnswDocumentIndex[ListDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 10
+    for index in index._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_typevar(tmp_path):
+    from typing import TypeVar
+
+    T = TypeVar("T")
+
+    class TypeDoc(BaseDoc):
+        list_str: T
+
+    index = HnswDocumentIndex[TypeDoc](work_dir=str(tmp_path))
+    docs = [TypeDoc(list_str=10) for _ in range(10)]
+    index.index(docs)
+    assert index.num_docs() == 10
+
+
 def test_index_builtin_docs(tmp_path):
     # TextDoc
     class TextSchema(TextDoc):
