@@ -4,6 +4,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -282,4 +283,40 @@
  - [[```9705431b```](https://github.com/jina-ai/docarray/commit/9705431b8937a090924fe875f5550dc926802315)] __-__ Add more Qdrant examples (#1527) (*Kacper Łukawski*)
  - [[```445a72fa```](https://github.com/jina-ai/docarray/commit/445a72fa2a32c30de801f4d3203866d85de23990)] __-__ add protobuf in the hnsw extra (#1524) (*Saba Sturua*)
  - [[```20fdcd27```](https://github.com/jina-ai/docarray/commit/20fdcd27b786f7fea9ab4bc4ee5bbbd244ba66f0)] __-__ __version__: the next version will be 0.31.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-32-1></a>
+## Release Note (`0.32.1`)
+
+> Release time: 2023-05-26 14:50:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  maxwelljin,  Johannes Messner,  aman-exp-infy,  Saba Sturua,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```8651e6e8```](https://github.com/jina-ai/docarray/commit/8651e6e88cef3f66c6a6eeca0531e26e2b4ca18d)] __-__ logs added for es8 index (#1551) (*aman-exp-infy*)
+
+### 🐞 Bug fixes
+
+ - [[```5d41c13c```](https://github.com/jina-ai/docarray/commit/5d41c13c96de299ac8035fd09d3bdd32dc518036)] __-__ fix None embedding exact nn search (#1575) (*Joan Fontanals*)
+ - [[```7a7a83a5```](https://github.com/jina-ai/docarray/commit/7a7a83a5d7526b8840e4b98c966cdbc635280bbc)] __-__ support list in document class (#1557) (#1569) (*maxwelljin*)
+ - [[```40549f4a```](https://github.com/jina-ai/docarray/commit/40549f4aeacde1522fb6a3406c98b8dbd14e0858)] __-__ fix anydoc deserialization (#1571) (*Joan Fontanals*)
+ - [[```44317570```](https://github.com/jina-ai/docarray/commit/44317570395380bcdff8d7de9e815b42460f5b9c)] __-__ dict method for document view (#1559) (*Johannes Messner*)
+
+### 🧼 Code Refactoring
+
+ - [[```0bcc956d```](https://github.com/jina-ai/docarray/commit/0bcc956da6d9d4971ee0b92f69fa776d7aae24f1)] __-__ uncaped tests as a nightly job (#1540) (*Saba Sturua*)
+
+### 📗 Documentation
+
+ - [[```0e6aa3b6```](https://github.com/jina-ai/docarray/commit/0e6aa3b6f43d1762500af96b646e538af44be1b5)] __-__ update doc building guide (#1566) (*Johannes Messner*)
+ - [[```a01a0554```](https://github.com/jina-ai/docarray/commit/a01a05542d17264b8a164bec783633658deeedb8)] __-__ explain the state of doclist in fastapi (#1546) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```8a2e92a3```](https://github.com/jina-ai/docarray/commit/8a2e92a3f94efc77d90e0747c246bdcf2ce72dfd)] __-__ update pyproject.toml (#1581) (*Joan Fontanals*)
+ - [[```9b5cbeda```](https://github.com/jina-ai/docarray/commit/9b5cbedaa43ea392b985e0ad293839523ce57030)] __-__ __version__: the next version will be 0.32.1 (*Jina Dev Bot*)
 
