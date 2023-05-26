@@ -1,5 +1,6 @@
-from typing import Any, Optional, get_origin
+from typing import Any, Optional
 
+from typing_extensions import get_origin
 from typing_inspect import get_args, is_typevar, is_union_type
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
