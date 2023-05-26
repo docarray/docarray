@@ -722,3 +722,6 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
 ```
+
+!!! note "Subindex not supported with InMemoryExactNNIndex"
+    Currently, subindex feature is not available for InMemoryExactNNIndex
