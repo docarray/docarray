@@ -2207,13 +2207,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#steps-to-build-locally" class="md-nav__link">
     Steps to build locally
   </a>
@@ -2516,13 +2509,6 @@
   
     <nav class="md-nav" aria-label="Building documentation on your local machine">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#steps-to-build-locally" class="md-nav__link">
@@ -2842,23 +2828,22 @@ versions. Therefore, compilation is a two-step process:</p>
 <li><strong>Know when to break the rules</strong>. Documentation writing is as much art as it is science. Sometimes you will have to deviate from these rules in order to write good documentation.</li>
 </ol>
 <h3 id="building-documentation-on-your-local-machine">Building documentation on your local machine</h3>
-<h4 id="requirements">Requirements</h4>
-<ul>
-<li>Python 3</li>
-<li><a href="https://stedolan.github.io/jq/download/">jq</a></li>
-</ul>
 <h4 id="steps-to-build-locally">Steps to build locally</h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>docs
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">NUM_RELEASES</span><span class="o">=</span><span class="m">10</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>bash<span class="w"> </span>makedoc.sh
+<p>First install the documentation dependency
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>poetry install --with docs
+</span></code></pre></div>
+<p>Note: if you need to install extra (proto, database, ...) you need to specify those as well.</p>
+<p>Then build the documentation:
+</p><div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>docs
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>./makedoc.sh
 </span></code></pre></div>
 <p>The docs website will be generated in <code>site</code>.
 To serve it, run:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>mkdocs<span class="w"> </span>serve
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>python<span class="w"> </span>-m<span class="w"> </span>http.server
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>poetry<span class="w"> </span>run<span class="w"> </span>mkdocs<span class="w"> </span>serve
 </span></code></pre></div>
-<p>You can now see docs website on <a href="http://localhost:8000">http://localhost:8000</a> on your browser.</p>
+<p>You can now see docs website on <a href="http://localhost:8000">http://localhost:8000</a> on your browser.
+Note: You may have to change the port from 8000 to something else if you already have a server running on that port.</p>
 <h2 id="thank-you">🙏 Thank you</h2>
 <p>Once again, thanks so much for your interest in contributing to DocArray. We're excited to see your contributions!</p></div>
 
