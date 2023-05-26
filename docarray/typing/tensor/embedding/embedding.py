@@ -35,7 +35,6 @@ class AnyEmbedding(AnyTensor, EmbeddingMixin):
     Represents an embedding tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
     ---
-
     '''python
     from docarray import BaseDoc
     from docarray.typing import AnyEmbedding
@@ -63,6 +62,7 @@ class AnyEmbedding(AnyTensor, EmbeddingMixin):
     doc = MyEmbeddingDoc(embedding=np.zeros((1000, 2)))
     type(doc.embedding)  # NdArrayEmbedding
     '''
+    ---
 
     Raises:
         TypeError: If the type of the value is not one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray]

@@ -36,7 +36,6 @@ class AudioTensor(AnyTensor, AbstractAudioTensor):
     Represents an audio tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
     ---
-
     '''python
     from docarray import BaseDoc
     from docarray.typing import AudioTensor
@@ -64,6 +63,7 @@ class AudioTensor(AnyTensor, AbstractAudioTensor):
     doc = MyAudioDoc(tensor=np.zeros((1000, 2)))
     type(doc.tensor) # AudioNdArray
     '''
+    ---
 
     Raises:
         TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).

@@ -120,8 +120,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cast(T, value)
         elif torch_available and isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value.detach().cpu().numpy())
-        elif torch_available and isinstance(value, TorchTensor):
-            return cls._docarray_from_native(value.detach().cpu().numpy())
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
         elif tf_available and isinstance(value, TensorFlowTensor):

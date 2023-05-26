@@ -44,7 +44,6 @@ else:
         Represents a tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
         ---
-
         '''python
         from docarray import BaseDoc
         from docarray.typing import AnyTensor
@@ -69,6 +68,7 @@ else:
 
         doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
         '''
+        ---
 
         Returns:
             Union[TorchTensor, TensorFlowTensor, NdArray]: The validated and converted tensor.
@@ -92,25 +92,21 @@ else:
 
         @classmethod
         def _docarray_from_native(cls: Type[T], value: Any):
-            raise AttributeError(f'This method should not be called on {cls}.')
+            raise RuntimeError(f'This method should not be called on {cls}.')
 
         @staticmethod
         def get_comp_backend():
-            raise AttributeError('This method should not be called on AnyTensor.')
+            raise RuntimeError('This method should not be called on AnyTensor.')
 
         def to_protobuf(self):
-            raise AttributeError(
-                f'This method should not be called on {self.__class__}.'
-            )
+            raise RuntimeError(f'This method should not be called on {self.__class__}.')
 
         def _docarray_to_json_compatible(self):
-            raise AttributeError(
-                f'This method should not be called on {self.__class__}.'
-            )
+            raise RuntimeError(f'This method should not be called on {self.__class__}.')
 
         @classmethod
         def from_protobuf(cls: Type[T], pb_msg: T):
-            raise AttributeError(f'This method should not be called on {cls}.')
+            raise RuntimeError(f'This method should not be called on {cls}.')
 
         @classmethod
         def __get_validators__(cls):

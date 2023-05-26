@@ -37,7 +37,6 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
     Represents an image tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
     ---
-
     '''python
     from docarray import BaseDoc
     from docarray.typing import ImageTensor
@@ -65,6 +64,7 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
     doc = MyImageDoc(image=np.zeros((1000, 2)))
     type(doc.image) # ImageNdArray
     '''
+    ---
 
     Returns:
         Union[ImageTorchTensor, ImageTensorFlowTensor, ImageNdArray]: The validated and converted image tensor.

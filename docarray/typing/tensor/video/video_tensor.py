@@ -36,7 +36,6 @@ class VideoTensor(AnyTensor, VideoTensorMixin):
     Represents a Video tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
 
     ---
-
     '''python
     from docarray import BaseDoc
     from docarray.typing import VideoTensor
@@ -64,6 +63,7 @@ class VideoTensor(AnyTensor, VideoTensorMixin):
     doc = MyVideoDoc(video=np.zeros((1000, 2)))
     type(doc.video)  # VideoNdArray
     '''
+    ---
 
     Returns:
         Union[VideoTorchTensor, VideoTensorFlowTensor, VideoNdArray]: The validated and converted audio tensor.
