@@ -141,6 +141,8 @@ def find_batched(
         search using approximate nearest neighbours search or hybrid search or
         multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
 
+    !!! note
+        Only non-None embeddings will be considered from the `index` array
 
     ---
 
@@ -204,7 +206,7 @@ def find_batched(
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    index_embeddings, valid_idcs = _extract_embeddings(
+    index_embeddings, valid_idx = _extract_embeddings(
         index, search_field, embedding_type
     )
     query_embeddings, _ = _extract_embeddings(query, search_field, embedding_type)
@@ -218,8 +220,8 @@ def find_batched(
 
     batched_docs: List[DocList] = []
     candidate_index = index
-    if valid_idcs is not None and len(valid_idcs) < len(index):
-        candidate_index = index[valid_idcs]
+    if valid_idx is not None and len(valid_idx) < len(index):
+        candidate_index = index[valid_idx]
     scores = []
     for _, (indices_per_query, scores_per_query) in enumerate(
         zip(top_indices, top_scores)
