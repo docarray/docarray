@@ -1,6 +1,6 @@
 __all__ = ['find', 'find_batched']
 
-from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -47,6 +47,7 @@ def find(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
+    cache: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {},
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -119,6 +120,7 @@ def find(
         limit=limit,
         device=device,
         descending=descending,
+        cache=cache,
     )
     return FindResult(documents=docs[0], scores=scores[0])
 
@@ -131,6 +133,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
+    cache: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {},
 ) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
@@ -141,6 +144,8 @@ def find_batched(
         search using approximate nearest neighbours search or hybrid search or
         multi vector search please take a look at the [`BaseDoc`][docarray.base_doc.doc.BaseDoc]
 
+    !!! note
+        Only non-None embeddings will be considered from the `index` array
 
     ---
 
@@ -204,8 +209,17 @@ def find_batched(
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    index_embeddings = _extract_embeddings(index, search_field, embedding_type)
-    query_embeddings = _extract_embeddings(query, search_field, embedding_type)
+    if search_field in cache:
+        index_embeddings, valid_idx = cache[search_field]
+    else:
+        index_embeddings, valid_idx = _extract_embeddings(
+            index, search_field, embedding_type
+        )
+        cache[search_field] = (
+            index_embeddings,
+            valid_idx,
+        )  # cache embedding for next query
+    query_embeddings, _ = _extract_embeddings(query, search_field, embedding_type)
 
     # compute distances and return top results
     metric_fn = getattr(comp_backend.Metrics, metric)
@@ -215,6 +229,9 @@ def find_batched(
     )
 
     batched_docs: List[DocList] = []
+    candidate_index = index
+    if valid_idx is not None and len(valid_idx) < len(index):
+        candidate_index = index[valid_idx]
     scores = []
     for _, (indices_per_query, scores_per_query) in enumerate(
         zip(top_indices, top_scores)
@@ -222,7 +239,7 @@ def find_batched(
         doc_type = cast(Type[BaseDoc], index.doc_type)
         docs_per_query: DocList = DocList.__class_getitem__(doc_type)()
         for idx in indices_per_query:  # workaround until #930 is fixed
-            docs_per_query.append(index[int(idx)])
+            docs_per_query.append(candidate_index[int(idx)])
         batched_docs.append(docs_per_query)
         scores.append(scores_per_query)
     return FindResultBatched(documents=batched_docs, scores=scores)
@@ -255,17 +272,23 @@ def _extract_embeddings(
     data: Union[AnyDocArray, BaseDoc, AnyTensor],
     search_field: str,
     embedding_type: Type,
-) -> AnyTensor:
+) -> Tuple[AnyTensor, Optional[List[int]]]:
     """Extract the embeddings from the data.
 
     :param data: the data
     :param search_field: the embedding field
     :param embedding_type: type of the embedding: torch.Tensor, numpy.ndarray etc.
-    :return: the embeddings
+    :return: a tuple of the embeddings and optionally a list of the non-null indices
     """
     emb: AnyTensor
+    valid_idx = None
     if isinstance(data, DocList):
-        emb_list = list(AnyDocArray._traverse(data, search_field))
+        emb_valid = [
+            (emb, i)
+            for i, emb in enumerate(AnyDocArray._traverse(data, search_field))
+            if emb is not None
+        ]
+        emb_list, valid_idx = zip(*emb_valid)
         emb = embedding_type._docarray_stack(emb_list)
     elif isinstance(data, (DocVec, BaseDoc)):
         emb = next(AnyDocArray._traverse(data, search_field))
@@ -274,7 +297,7 @@ def _extract_embeddings(
 
     if len(emb.shape) == 1:
         emb = emb.get_comp_backend().reshape(array=emb, shape=(1, -1))
-    return emb
+    return emb, valid_idx
 
 
 def _da_attr_type(docs: AnyDocArray, access_path: str) -> Type[AnyTensor]:
