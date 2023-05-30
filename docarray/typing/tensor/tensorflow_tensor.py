@@ -42,7 +42,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     intended for use in a Document.
 
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like numpy.ndarray.
+    and coercion from compatible types like numpy.ndarray.
 
     This type can also be used in a parametrized way, specifying the shape of the
     tensor.
