@@ -21,6 +21,91 @@ The three of them wrap from their respective framework tensor type.
 DocArray also supports [`AnyTensor`][docarray.typing.tensor.AnyTensor] which is the Union of the three previous tensor types. 
 This is a generic placeholder to specify that it can work with any tensor type (numpy, torch, tensorflow).
 
+
+## Tensor Shape validation
+
+All three tensor types support shape validation. This means that you can specify the shape of the tensor using type hint syntax: `NdArray[100, 100]`, `TorchTensor[100, 100]`, `TensorFlowTensor[100, 100]`.
+
+Let's take an example:
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+
+
+class MyDoc(BaseDoc):
+    tensor: NdArray[100, 100]
+``` 
+
+If you try to pass a tensor with a different shape, an error will be raised:
+
+```python
+import numpy as np
+
+try:
+    doc = MyDoc(tensor=np.zeros((100, 200)))
+except ValueError as e:
+    print(e)
+```
+
+```bash
+1 validation error for MyDoc
+tensor
+  cannot reshape array of size 20000 into shape (100,100) (type=value_error)
+``` 
+
+
+Whereas if you just pass a tensor with the correct shape, no error will be raised:
+
+```python
+doc = MyDoc(tensor=np.zeros((100, 100)))
+``` 
+
+### Axes validation
+
+You can check that the number of axis is correct as well `NdArray['x','y']`, `TorchTensor['x','y']`, `TensorFlowTensor['x','y']`.
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+
+
+class MyDoc(BaseDoc):
+    tensor: NdArray['x', 'y']
+``` 
+
+Here you can only pass a tensor with two axis. `np.zeros(10, 12)` will work but `np.zeros(10, 12, 3)` will raise an error.
+
+### Axis names
+
+You can as well specify that two axis should have the same dimension with the syntax `NdArray['x', 'x']`, `TorchTensor['x', 'x']`, `TensorFlowTensor['x', 'x']`.
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+
+
+class MyDoc(BaseDoc):
+    tensor: NdArray['x', 'x']
+``` 
+
+Here you can only pass a tensor with two axis with the same dimension. `np.zeros(10, 10)` will work but `np.zeros(10, 12)` will raise an error.
+
+### Arbitrary number of axis
+
+You can specify that your shape can have an arbitrary number of axis with the syntax `NdArray['x', ...]`, or `NdArray[..., 'x']`
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+
+
+class MyDoc(BaseDoc):
+    tensor: NdArray[100, ...]
+``` 
+
+Here you can only pass a tensor with at least one axis with dimension 100. `np.zeros(100, 10)` will work but `np.zeros(10, 12)` will raise an error.
+
 ## Tensor type validation
 
 You don't need to directly instantiate the  [`NdArray`][docarray.typing.tensor.NdArray] , [`TorchTensor`][docarray.typing.tensor.TorchTensor], or [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] by yourself.
