@@ -53,12 +53,12 @@ assert isinstance(doc.tensor, np.ndarray)  # True as well
 
 But since it inherits from `np.ndarray` you can also use it as a normal numpy array. The same holds for pytorch and `TorchTensor`.
 
-## Type coercion from NumPy to PyTorch 
+## Type coercion with different tensor types 
 
-If you pass a numpy array to a pytorch tensor field, the numpy array will be converted to a pytorch tensor. 
 
-Example:
+DocArray also supports type coercion between different tensor types. This mean that if you pass a different tensor type to a tensor field, it will be converted to the right tensor type.
 
+For instance if you define a field of type [`TorchTensor`][docarray.typing.tensor.TorchTensor] and you pass a numpy array to it, it will be converted to a [`TorchTensor`][docarray.typing.tensor.TorchTensor].
 
 ```python
 from docarray import BaseDoc
@@ -67,32 +67,49 @@ import numpy as np
 
 
 class MyTensorsDoc(BaseDoc):
-    tensor1: TorchTensor[512]
-    tensor2: TorchTensor[512]
+    tensor: TorchTensor
 
 
-rand_series_f64 = np.random.rand(512).astype('float64')
-rand_series_f32 = np.random.rand(512).astype('float32')
-
-doc = MyTensorsDoc(tensor1=rand_series_f64, tensor2=rand_series_f32)
+doc = MyTensorsDoc(tensor=np.zeros(512))
 doc.summary()
 ```
 
+```bash
+📄 MyTensorsDoc : 0a10f88 ...
+╭─────────────────────┬────────────────────────────────────────────────────────╮
+│ Attribute           │ Value                                                  │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ tensor: TorchTensor │ TorchTensor of shape (512,), dtype: torch.float64      │
+╰─────────────────────┴────────────────────────────────────────────────────────╯
 ```
-📄 MyTensorsDoc : 84877dd ...
-╭──────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────╮
-│ Attribute            │ Value                                                                                    │
-├──────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────┤
-│ tensor1: TorchTensor │ TorchTensor of shape (512,), dtype: torch.float64                                        │
-│ tensor2: TorchTensor │ TorchTensor of shape (512,), dtype: torch.float32                                        │
-╰──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────╯
+
+And the same will work in the other direction
+
+```python
+from docarray import BaseDoc
+from docarray.typing import NdArray
+import torch
+
+
+class MyTensorsDoc(BaseDoc):
+    tensor: NdArray
+
+
+doc = MyTensorsDoc(tensor=torch.zeros(512))
+doc.summary()
 ```
 
+```bash
+📄 MyTensorsDoc : 157e6f5 ...
+╭─────────────────┬────────────────────────────────────────────────────────────╮
+│ Attribute       │ Value                                                      │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ tensor: NdArray │ NdArray of shape (512,), dtype: float32                    │
+╰─────────────────┴────────────────────────────────────────────────────────────╯
+```
 
-But this is not the case if you pass a numpy array to a tensorflow tensor field. 
-
-!!! warning 
-    Tensor field type coercion is only supported from numpy to pytorch, not the other way around.
+!!! warning
+    Type coercion from [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] to [`TorchTensor`][docarray.typing.tensor.TorchTensor] and vice versa is not supported yet.
 
 
 ## DocVec with AnyTensor
