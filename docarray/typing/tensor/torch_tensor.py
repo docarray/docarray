@@ -240,3 +240,11 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
+
+    @classmethod
+    def __docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls.from_ndarray(value)
