@@ -4,7 +4,8 @@
 
 DocArray support several tensor type that can be used inside BaseDoc. 
 
-The main ones are : 
+The main ones are:
+
 - [`NdArray`][docarray.typing.tensor.NdArray] for numpy tensor
 - [`TorchTensor`][docarray.typing.tensor.TorchTensor] for Pytorch tensor
 - [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] for tensorflow tensor
