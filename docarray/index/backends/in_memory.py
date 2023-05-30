@@ -150,6 +150,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
         self._docs.extend(docs)
+        self._rebuild_embedding()
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         raise NotImplementedError
