@@ -2,25 +2,27 @@
 
 
 
-DocArray support several tensor type that can be used inside BaseDoc. 
+DocArray support several tensor types that can be used inside BaseDoc. 
 
 The main ones are:
 
-- [`NdArray`][docarray.typing.tensor.NdArray] for numpy tensor
-- [`TorchTensor`][docarray.typing.tensor.TorchTensor] for Pytorch tensor
-- [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] for tensorflow tensor
+- [`NdArray`][docarray.typing.tensor.NdArray] for numpy tensors
+- [`TorchTensor`][docarray.typing.tensor.TorchTensor] for Pytorch tensors
+- [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] for tensorflow tensors
 
 The three of them inherit from their respective framework tensor type. This means that they can be used natively inside their framework.
 
-We also have a [`AnyTensor`][docarray.typing.tensor.AnyTensor] that is the Union of the three previous tensor type. 
+DocArray also supports [`AnyTensor`][docarray.typing.tensor.AnyTensor] which is the Union of the three previous tensor types. 
 This is a generic placeholder to specify that it can work with any tensor type (numpy, torch, tensorflow).
 
-## Tensor typed validation
+## Tensor type validation
 
-You don't need to instantiate directly the  [`NdArray`][docarray.typing.tensor.NdArray] , [`TorchTensor`][docarray.typing.tensor.TorchTensor], [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] directly by yourself. They are only use as type hint field fot the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] validation.
-[`BaseDoc`][docarray.base_doc.doc.BaseDoc] will cast the native tensor type into the respective DocArray tensor type.
+You don't need to directly instantiate the  [`NdArray`][docarray.typing.tensor.NdArray] , [`TorchTensor`][docarray.typing.tensor.TorchTensor], or [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] by yourself.
 
-Let's take an example 
+Instead, you should use them as type hints on [`BaseDoc`][docarray.base_doc.doc.BaseDoc] fields, where they perform data validation.
+During this process, [`BaseDoc`][docarray.base_doc.doc.BaseDoc] will cast the native tensor type into the respective DocArray tensor type.
+
+Let's take an example:
 
 ```python
 from docarray import BaseDoc
@@ -37,21 +39,21 @@ doc = MyDoc(tensor=np.zeros(100))
 
 assert isinstance(doc.tensor, NdArray)  # True
 ``` 
-here you see that the `doc.tensor` is a `NdArray`. 
+Here you see that the `doc.tensor` is an `NdArray`. 
 
 ```python
 assert isinstance(doc.tensor, np.ndarray)  # True as well
 ``` 
 
-But since it inherits from `np.ndarray` you can use it as a numpy array.
+But since it inherits from `np.ndarray` you can also use it as a normal numpy array. The same holds for pytorch and `TorchTensor`.
 
-## Type coercion from numpy to pytorch 
+## Type coercion from NumPy to PyTorch 
 
 !!! note
     If you pass a numpy array to a pytorch tensor field, the numpy array will be converted to a pytorch tensor. 
 
 
-example:
+Example:
 
 
 ```python
@@ -91,7 +93,7 @@ But this is not the case if you pass a numpy array to a tensorflow tensor field.
 
 ## DocVec with AnyTensor
 
-DocVec can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or a Union of tensor type. 
+DocVec can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
 
  But to do so DocVec needs to know the tensor type of the tensor field beforehand to create the right column.
  
