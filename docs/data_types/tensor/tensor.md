@@ -122,4 +122,4 @@ assert isinstance(docs.tensor, NdArray)
 ```
 
 !!! note
-    If you don't precise the `tensor_type` parameter it will use NdArray as default.
+    If you don't precise the `tensor_type` parameter and you tensor field is a Union of tensor or [`AnyTensor`][docarray.typing.tensor.AnyTensor] it will use NdArray as default.
