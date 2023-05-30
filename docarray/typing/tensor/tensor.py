@@ -56,9 +56,9 @@ else:
 
 
         # Example usage with TensorFlow:
-        import tensorflow as tf
+        # import tensorflow as tf
 
-        doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
+        # doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
 
         # Example usage with PyTorch:
         import torch
