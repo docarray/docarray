@@ -10,7 +10,13 @@ The main ones are:
 - [`TorchTensor`][docarray.typing.tensor.TorchTensor] for Pytorch tensors
 - [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] for tensorflow tensors
 
-The three of them inherit from their respective framework tensor type. This means that they can be used natively inside their framework.
+The three of them wrap from their respective framework tensor type. 
+
+!!! note
+    [`NdArray`][docarray.typing.tensor.NdArray] and [`TorchTensor`][docarray.typing.tensor.TorchTensor] are a subclass of their native tensor type. This means that they can be used natively inside their framework.
+
+!!! note
+    [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] stores the pure `tf.Tensor` object inside the `tensor` attribute. This is due to a limitation on the TensorFlow framework that does not allow to subclass the `tf.Tensor` object.
 
 DocArray also supports [`AnyTensor`][docarray.typing.tensor.AnyTensor] which is the Union of the three previous tensor types. 
 This is a generic placeholder to specify that it can work with any tensor type (numpy, torch, tensorflow).
