@@ -46,7 +46,6 @@ else:
             when doing type checking (mypy or pycharm type checker), this class will actually be replace by a Union of the three
             tensor types. You can reason about this class as if it was a Union.
 
-
         ```python
         from docarray import BaseDoc
         from docarray.typing import AnyTensor
@@ -71,9 +70,6 @@ else:
 
         doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
         ```
-
-        :raises: TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
-        :return: a `numpy.ndarray`Union[TorchTensor, TensorFlowTensor, NdArray]: The validated and converted tensor.
         """
 
         def __getitem__(self: T, item):
