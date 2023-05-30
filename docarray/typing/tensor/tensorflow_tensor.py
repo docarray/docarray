@@ -202,6 +202,8 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cast(T, value)
         elif isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value)
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
         else:
             try:
                 arr: tf.Tensor = tf.constant(value)
@@ -322,7 +324,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
         return len(self.tensor)
 
     @classmethod
-    def __docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         """Create a `tensor from a numpy array
         PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
         This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.

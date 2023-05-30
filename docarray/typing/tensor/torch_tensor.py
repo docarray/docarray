@@ -123,6 +123,8 @@ class TorchTensor(
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value)
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
@@ -242,7 +244,7 @@ class TorchTensor(
         return super().__torch_function__(func, types_, args, kwargs)
 
     @classmethod
-    def __docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         """Create a `tensor from a numpy array
         PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
         This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.

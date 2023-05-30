@@ -221,7 +221,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
 
     @classmethod
-    def __docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         """Create a `tensor from a numpy array
         PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
         This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
