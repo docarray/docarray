@@ -199,7 +199,7 @@ doc.summary()
 
 ## DocVec with AnyTensor
 
-DocVec can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
+[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
 
  But to do so DocVec needs to know the tensor type of the tensor field beforehand to create the right column.
  
