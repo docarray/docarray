@@ -129,7 +129,7 @@ class TorchTensor(
         elif isinstance(value, AbstractTensor):
             return cls._docarray_from_ndarray(value._docarray_to_ndarray())
         elif tf_available and isinstance(value, tf.Tensor):
-            return cls._docarray_from_native(value.numpy())
+            return cls._docarray_from_ndarray(value.numpy())
         elif isinstance(value, np.ndarray):
             return cls._docarray_from_ndarray(value)
         else:
