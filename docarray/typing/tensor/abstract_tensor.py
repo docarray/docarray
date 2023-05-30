@@ -246,7 +246,9 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
                 <= DISPLAY_TENSOR_OPENAPI_MAX_ITEMS
             ):
                 # custom example only for 'small' shapes, otherwise it is too big to display
-                example_payload = orjson_dumps(np.zeros(cls.__docarray_target_shape__))
+                example_payload = orjson_dumps(
+                    np.zeros(cls.__docarray_target_shape__)
+                ).decode()
                 field_schema.update(example=example_payload)
         else:
             shape_info = 'not specified'
