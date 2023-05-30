@@ -55,9 +55,7 @@ But since it inherits from `np.ndarray` you can also use it as a normal numpy ar
 
 ## Type coercion from NumPy to PyTorch 
 
-!!! note
-    If you pass a numpy array to a pytorch tensor field, the numpy array will be converted to a pytorch tensor. 
-
+If you pass a numpy array to a pytorch tensor field, the numpy array will be converted to a pytorch tensor. 
 
 Example:
 
