@@ -123,7 +123,6 @@ class TorchTensor(
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value)
-
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
