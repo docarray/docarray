@@ -1,4 +1,4 @@
-# Tensor
+# 🔢 Tensor
 
 DocArray supports several tensor types that can you can use inside `BaseDoc`. 
 
