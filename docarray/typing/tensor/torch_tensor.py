@@ -250,3 +250,7 @@ class TorchTensor(
         This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
         """
         return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.detach().cpu().numpy()
