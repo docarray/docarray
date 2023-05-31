@@ -42,9 +42,11 @@ else:
     class AnyTensor(AbstractTensor, Generic[ShapeT]):
         """
         Represents a tensor object that can be used with TensorFlow, PyTorch, and NumPy type.
+        !!! note:
+            when doing type checking (mypy or pycharm type checker), this class will actually be replace by a Union of the three
+            tensor types. You can reason about this class as if it was a Union.
 
-        ---
-        '''python
+        ```python
         from docarray import BaseDoc
         from docarray.typing import AnyTensor
 
@@ -54,9 +56,9 @@ else:
 
 
         # Example usage with TensorFlow:
-        import tensorflow as tf
+        # import tensorflow as tf
 
-        doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
+        # doc = MyTensorDoc(tensor=tf.zeros(1000, 2))
 
         # Example usage with PyTorch:
         import torch
@@ -67,15 +69,7 @@ else:
         import numpy as np
 
         doc = MyTensorDoc(tensor=np.zeros((1000, 2)))
-        '''
-        ---
-
-        Returns:
-            Union[TorchTensor, TensorFlowTensor, NdArray]: The validated and converted tensor.
-
-        Raises:
-            TypeError: If the input value is not a compatible type (torch.Tensor, tensorflow.Tensor, numpy.ndarray).
-
+        ```
         """
 
         def __getitem__(self: T, item):
