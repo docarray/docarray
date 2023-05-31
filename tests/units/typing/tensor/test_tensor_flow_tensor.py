@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-import torch
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
@@ -13,7 +12,7 @@ if tf_available:
     import tensorflow._api.v2.experimental.numpy as tnp  # type: ignore
     from tensorflow.python.framework.errors_impl import InvalidArgumentError
 
-    from docarray.typing import TensorFlowTensor, TorchTensor
+    from docarray.typing import TensorFlowTensor
 
 
 @pytest.mark.tensorflow
@@ -200,25 +199,3 @@ def test_set_item():
     assert tnp.allclose(t.tensor[0], tf.ones((1, 224, 224)))
     assert tnp.allclose(t.tensor[1], tf.zeros((1, 224, 224)))
     assert tnp.allclose(t.tensor[2], tf.zeros((1, 224, 224)))
-
-
-@pytest.mark.tensorflow
-def test_from_torch_tensor():
-    t = parse_obj_as(TensorFlowTensor, torch.zeros(3, 224, 224))
-    assert isinstance(t, TensorFlowTensor)
-
-    t2 = TorchTensor._docarray_from_native(torch.zeros(3, 224, 224))
-    t = parse_obj_as(TensorFlowTensor, t2)
-
-    assert isinstance(t, TensorFlowTensor)
-
-
-@pytest.mark.tensorflow
-def test_torch_tensor_from_tf():
-    t = parse_obj_as(TorchTensor, tf.zeros((3, 224, 224)))
-    assert isinstance(t, TorchTensor)
-
-    t2 = TensorFlowTensor._docarray_from_native(tf.zeros((3, 224, 224)))
-    t = parse_obj_as(TorchTensor, t2)
-
-    assert isinstance(t, TorchTensor)
