@@ -19,7 +19,6 @@ The three of them wrap their respective framework's tensor type.
 DocArray also supports [`AnyTensor`][docarray.typing.tensor.AnyTensor], which is the Union of the three previous tensor types. 
 This is a generic placeholder to specify that it can work with any tensor type (NumPy, PyTorch, TensorFlow).
 
-
 ## Tensor Shape validation
 
 All three tensor types support shape validation. This means that you can specify the shape of the tensor using type hint syntax: `NdArray[100, 100]`, `TorchTensor[100, 100]`, `TensorFlowTensor[100, 100]`.
@@ -61,7 +60,7 @@ doc = MyDoc(tensor=np.zeros((100, 100)))
 
 ### Axes validation
 
-You can check that the number of axis is correct as well `NdArray['x','y']`, `TorchTensor['x','y']`, `TensorFlowTensor['x','y']`.
+You can check that the number of axes is correct by specifying `NdArray['x','y']`, `TorchTensor['x','y']`, `TensorFlowTensor['x','y']`.
 
 ```python
 from docarray import BaseDoc
@@ -72,11 +71,11 @@ class MyDoc(BaseDoc):
     tensor: NdArray['x', 'y']
 ``` 
 
-Here you can only pass a tensor with two axis. `np.zeros(10, 12)` will work but `np.zeros(10, 12, 3)` will raise an error.
+Here you can only pass a tensor with two axes. `np.zeros(10, 12)` will work, but `np.zeros(10, 12, 3)` will raise an error.
 
 ### Axis names
 
-You can as well specify that two axis should have the same dimension with the syntax `NdArray['x', 'x']`, `TorchTensor['x', 'x']`, `TensorFlowTensor['x', 'x']`.
+You can specify that two axes should have the same dimensions with the syntax `NdArray['x', 'x']`, `TorchTensor['x', 'x']`, `TensorFlowTensor['x', 'x']`.
 
 ```python
 from docarray import BaseDoc
@@ -87,11 +86,11 @@ class MyDoc(BaseDoc):
     tensor: NdArray['x', 'x']
 ``` 
 
-Here you can only pass a tensor with two axis with the same dimension. `np.zeros(10, 10)` will work but `np.zeros(10, 12)` will raise an error.
+Here you can only pass a tensor with two axes that have the same dimensions. `np.zeros(10, 10)` will work but `np.zeros(10, 12)` will raise an error.
 
 ### Arbitrary number of axis
 
-You can specify that your shape can have an arbitrary number of axis with the syntax `NdArray['x', ...]`, or `NdArray[..., 'x']`
+To specify that your shape can have an arbitrary number of axes, use the syntax `NdArray['x', ...]`, or `NdArray[..., 'x']`.
 
 ```python
 from docarray import BaseDoc
@@ -138,10 +137,9 @@ But since it inherits from `np.ndarray`, you can also use it as a normal NumPy a
 
 ## Type coercion with different tensor types 
 
+DocArray also supports type coercion between different tensor types. This mean that if you pass a different tensor type to a tensor field, it will be converted to the correct tensor type.
 
-DocArray also supports type coercion between different tensor types. This mean that if you pass a different tensor type to a tensor field, it will be converted to the right tensor type.
-
-For instance if you define a field of type [`TorchTensor`][docarray.typing.tensor.TorchTensor] and you pass a Numpy array to it, it will be converted to a [`TorchTensor`][docarray.typing.tensor.TorchTensor].
+For instance, if you define a field of type [`TorchTensor`][docarray.typing.tensor.TorchTensor] and you pass a NumPy array to it, it will be converted to a [`TorchTensor`][docarray.typing.tensor.TorchTensor].
 
 ```python
 from docarray import BaseDoc
@@ -166,7 +164,7 @@ doc.summary()
 ╰─────────────────────┴────────────────────────────────────────────────────────╯
 ```
 
-And the same will work in the other direction
+It also works in the other direction:
 
 ```python
 from docarray import BaseDoc
@@ -193,11 +191,11 @@ doc.summary()
 
 ## `DocVec` with `AnyTensor`
 
-[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
+[`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] can be used with a `BaseDoc` which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
 
 However, the `DocVec` needs to know the tensor type of the tensor field beforehand to create the correct column.
  
-You can specify these parameters with the `tensor_type` parameter of the [`DocVec`][docarray.vectorizer.doc_vec.DocVec] constructor.
+You can specify these parameters with the `tensor_type` parameter of the [`DocVec`][docarray.vectorizer.doc_vec.DocVec] constructor:
 
 ```python
 from docarray import BaseDoc, DocVec
