@@ -118,12 +118,12 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_native(value._docarray_to_ndarray())
         elif torch_available and isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value.detach().cpu().numpy())
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
-        elif tf_available and isinstance(value, TensorFlowTensor):
-            return cls._docarray_from_native(value.tensor.numpy())
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
@@ -219,3 +219,18 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls._docarray_from_native(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return self.unwrap()

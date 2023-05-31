@@ -21,8 +21,9 @@ def test_np_schema():
     assert schema['properties']['embedding']['tensor/array shape'] == '[3, 4]'
     assert schema['properties']['embedding']['type'] == 'array'
     assert schema['properties']['embedding']['items']['type'] == 'number'
-    assert schema['properties']['embedding']['example'] == orjson_dumps(
-        np.zeros([3, 4])
+    assert (
+        schema['properties']['embedding']['example']
+        == orjson_dumps(np.zeros([3, 4])).decode()
     )
 
     assert (
@@ -38,8 +39,9 @@ def test_torch_schema():
     assert schema['properties']['embedding']['tensor/array shape'] == '[3, 4]'
     assert schema['properties']['embedding']['type'] == 'array'
     assert schema['properties']['embedding']['items']['type'] == 'number'
-    assert schema['properties']['embedding']['example'] == orjson_dumps(
-        np.zeros([3, 4])
+    assert (
+        schema['properties']['embedding']['example']
+        == orjson_dumps(np.zeros([3, 4])).decode()
     )
 
     assert (
@@ -62,8 +64,9 @@ def test_tensorflow_schema():
     assert schema['properties']['embedding']['tensor/array shape'] == '[3, 4]'
     assert schema['properties']['embedding']['type'] == 'array'
     assert schema['properties']['embedding']['items']['type'] == 'number'
-    assert schema['properties']['embedding']['example'] == orjson_dumps(
-        np.zeros([3, 4])
+    assert (
+        schema['properties']['embedding']['example']
+        == orjson_dumps(np.zeros([3, 4])).decode()
     )
 
     assert (
