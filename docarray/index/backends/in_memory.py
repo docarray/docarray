@@ -168,11 +168,14 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         Note: '_embedding_map' is a dictionary mapping fields to their corresponding embeddings.
         """
-        for field_, embedding in self._embedding_map.items():
-            embedding_type = _da_attr_type(self._docs, field_)
-            self._embedding_map[field_] = _extract_embeddings(
-                self._docs, field_, embedding_type
-            )
+        if self.num_docs() == 0:
+            self._embedding_map = dict()
+        else:
+            for field_, embedding in self._embedding_map.items():
+                embedding_type = _da_attr_type(self._docs, field_)
+                self._embedding_map[field_] = _extract_embeddings(
+                    self._docs, field_, embedding_type
+                )
 
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.

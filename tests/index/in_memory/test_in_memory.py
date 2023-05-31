@@ -1,11 +1,12 @@
+from typing import Optional
+
 import numpy as np
 import pytest
 from pydantic import Field
-from typing import Optional
 
 from docarray import BaseDoc, DocList
 from docarray.index.backends.in_memory import InMemoryExactNNIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 class SchemaDoc(BaseDoc):
@@ -162,3 +163,44 @@ def test_index_with_None_embedding():
     assert len(res.documents) == 50
     for doc in res.documents:
         assert doc.index % 2 != 0
+
+
+def test_index_avoid_stack_embedding():
+    from torch import rand
+
+    class MyDoc(BaseDoc):
+        embedding1: TorchTensor
+        embedding2: TorchTensor
+        embedding3: TorchTensor
+
+    data = DocList[MyDoc](
+        [
+            MyDoc(
+                embedding1=rand(128),
+                embedding2=rand(128),
+                embedding3=rand(128),
+            )
+            for _ in range(10)
+        ]
+    )
+
+    db = InMemoryExactNNIndex[MyDoc](data)
+
+    query = MyDoc(
+        embedding1=rand(128),
+        embedding2=rand(128),
+        embedding3=rand(128),
+    )
+
+    for i in range(3):
+        db.find(query, search_field=f"embedding{i + 1}")
+        assert len(db._embedding_map) == i + 1
+
+    data_copy = data.copy()
+
+    for i in range(9):
+        db._del_items(data_copy[i].id)
+        assert db._embedding_map["embedding1"][0].shape[0] == db.num_docs()
+
+    db._del_items(data_copy[9].id)  # Delete the last element
+    assert len(db._embedding_map) == 0
