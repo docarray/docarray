@@ -89,3 +89,24 @@ def test_validation(path_to_file):
     url = parse_obj_as(TextUrl, path_to_file)
     assert isinstance(url, TextUrl)
     assert isinstance(url, str)
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        *[('text', file) for file in LOCAL_TEXT_FILES],
+        ('text', REMOTE_TEXT_FILE),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.aac')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
+        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != TextUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(TextUrl, file_source)
+    else:
+        parse_obj_as(TextUrl, file_source)

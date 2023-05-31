@@ -1,4 +1,4 @@
-from typing import Optional, TypeVar
+from typing import List, Optional, TypeVar
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -12,6 +12,15 @@ class TextUrl(AnyUrl):
     URL to a text file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def mime_type(cls) -> str:
+        return 'text'
+
+    @classmethod
+    def allowed_extensions(cls) -> List[str]:
+        # add only those extensions that can not be identified by the mimetypes library but are valid
+        return ['.md']
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """

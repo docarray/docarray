@@ -9,6 +9,7 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import ImageUrl
+from tests import TOYDATA_DIR
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_IMAGE_DATA = os.path.join(CUR_DIR, '..', '..', '..', 'toydata', 'image-data')
@@ -174,3 +175,27 @@ def test_validation(path_to_img):
     url = parse_obj_as(ImageUrl, path_to_img)
     assert isinstance(url, ImageUrl)
     assert isinstance(url, str)
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        ('image', IMAGE_PATHS['png']),
+        ('image', IMAGE_PATHS['jpg']),
+        ('image', IMAGE_PATHS['jpeg']),
+        ('image', REMOTE_JPG),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.wav')),
+        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != ImageUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(ImageUrl, file_source)
+    else:
+        parse_obj_as(ImageUrl, file_source)

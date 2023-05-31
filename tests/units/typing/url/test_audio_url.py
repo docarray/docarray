@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import numpy as np
@@ -123,3 +124,25 @@ def test_load_bytes():
     assert isinstance(audio_bytes, bytes)
     assert isinstance(audio_bytes, AudioBytes)
     assert len(audio_bytes) > 0
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        ('audio', AUDIO_FILES[0]),
+        ('audio', AUDIO_FILES[1]),
+        ('audio', REMOTE_AUDIO_FILE),
+        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
+        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != AudioUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(AudioUrl, file_source)
+    else:
+        parse_obj_as(AudioUrl, file_source)

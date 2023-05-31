@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
@@ -79,3 +81,28 @@ def test_validation(path_to_file):
 def test_proto_point_cloud_url():
     uri = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
     uri._to_node_protobuf()
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        ('application', MESH_FILES['obj']),
+        ('application', MESH_FILES['glb']),
+        ('application', MESH_FILES['ply']),
+        ('application', REMOTE_OBJ_FILE),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.aac')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != PointCloud3DUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(PointCloud3DUrl, file_source)
+    else:
+        parse_obj_as(PointCloud3DUrl, file_source)

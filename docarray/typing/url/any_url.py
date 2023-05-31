@@ -1,8 +1,9 @@
+import mimetypes
 import os
 import urllib
 import urllib.parse
 import urllib.request
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Type, TypeVar, Union
 
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
@@ -26,6 +27,14 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )
+
+    @classmethod
+    def mime_type(cls) -> str:
+        raise NotImplementedError
+
+    @classmethod
+    def allowed_extensions(cls) -> List[str]:
+        raise NotImplementedError
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
@@ -60,6 +69,33 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             abs_path = value
 
         url = super().validate(abs_path, field, config)  # basic url validation
+
+        # Use mimetypes to validate file formats
+        mimetype, encoding = mimetypes.guess_type(value.split("?")[0])
+        if not mimetype:
+            # try reading from the request headers if mimetypes failed - could be slow
+            try:
+                r = urllib.request.urlopen(value)
+            except Exception:  # noqa
+                pass  # should we raise an error/warning here, since url is not reachable(invalid)?
+            else:
+                mimetype = r.headers.get_content_maintype()
+
+        skip_check = False
+        if not mimetype:  # not able to automatically detect mimetype
+            # check if the file extension is among one of the allowed extensions
+            if not any(
+                value.endswith(ext) or value.split("?")[0].endswith(ext)
+                for ext in cls.allowed_extensions()
+            ):
+                raise ValueError(
+                    f'file {value} is not a valid file format for class {cls}'
+                )
+            else:
+                skip_check = True  # one of the allowed extensions, skip the check
+
+        if not skip_check and not mimetype.startswith(cls.mime_type()):
+            raise ValueError(f'file {value} is not a {cls.mime_type()} file format')
 
         if input_is_relative_path:
             return cls(str(value), scheme=None)
