@@ -3,7 +3,7 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDoc
+from docarray import BaseDoc, DocList
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 
@@ -220,3 +220,20 @@ def test_find_nested_schema(tmp_path, space):
     assert len(scores) == 5
     assert docs[0].id == index_docs[-3].id
     assert np.allclose(docs[0].d.d.tens, index_docs[-3].d.d.tens)
+
+
+def test_simple_usage(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir), index_name='index')
+    index.index(docs=DocList[MyDoc](docs))
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
