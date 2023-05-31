@@ -162,13 +162,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        """Dataclass that contains all "static" configurations of WeaviateDocumentIndex."""
+        """Dataclass that contains all "static" configurations of HnswDocumentIndex."""
 
         work_dir: str = '.'
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
+        """Dataclass that contains all "dynamic" configurations of HnswDocumentIndex."""
 
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
@@ -221,6 +221,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             data = column_to_data[col_name]
             data_np = [self._to_numpy(arr) for arr in data]
             data_stacked = np.stack(data_np)
+            num_docs_to_index = len(hashed_ids)
+            index_max_elements = index.get_max_elements()
+            current_elements = index.get_current_count()
+            if current_elements + num_docs_to_index > index_max_elements:
+                new_capacity = max(
+                    index_max_elements, current_elements + num_docs_to_index
+                )
+                self._logger.info(f'Resizing the index to {new_capacity}')
+                index.resize_index(new_capacity)
             index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
@@ -405,9 +414,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
-        index.load_index(
-            self._hnsw_locations[col_name], max_elements=col.config['max_elements']
-        )
+        index.load_index(self._hnsw_locations[col_name])
         return index
 
     # HNSWLib helpers

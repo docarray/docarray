@@ -237,3 +237,58 @@ def test_simple_usage(tmpdir):
     for q, matches in zip(queries, docs_responses):
         assert len(matches) == 10
         assert q.id == matches[0].id
+
+
+def test_usage_adapt_max_elements(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.configure()  # trying to configure the index but I am not managing to do so.
+    index.index(docs=docs)
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+
+def test_usage_adapt_max_elements_after_restore(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.configure()  # trying to configure the index but I am not managing to do so.
+    index.index(docs=docs)
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+    new_docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    restored_index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    restored_index.index(docs=new_docs)
+    queries = new_docs[0:3]
+    resp = restored_index.find_batched(
+        queries=queries, search_field='embedding', limit=10
+    )
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
