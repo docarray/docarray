@@ -47,6 +47,8 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         **kwargs,
     ):
         """Initialize InMemoryExactNNIndex"""
+        if 'db_config' in kwargs:
+            kwargs.pop('db_config')
         super().__init__(db_config=None, **kwargs)
         self._runtime_config = self.RuntimeConfig()
 
