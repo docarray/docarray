@@ -47,7 +47,7 @@ def find(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-    cache: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {},
+    cache: Optional[Dict[str, Tuple[AnyTensor, Optional[List[int]]]]] = None,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -133,7 +133,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
-    cache: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {},
+    cache: Optional[Dict[str, Tuple[AnyTensor, Optional[List[int]]]]] = None,
 ) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
@@ -209,16 +209,17 @@ def find_batched(
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    if search_field in cache:
+    if cache is not None and search_field in cache:
         index_embeddings, valid_idx = cache[search_field]
     else:
         index_embeddings, valid_idx = _extract_embeddings(
             index, search_field, embedding_type
         )
-        cache[search_field] = (
-            index_embeddings,
-            valid_idx,
-        )  # cache embedding for next query
+        if cache is not None:
+            cache[search_field] = (
+                index_embeddings,
+                valid_idx,
+            )  # cache embedding for next query
     query_embeddings, _ = _extract_embeddings(query, search_field, embedding_type)
 
     # compute distances and return top results
