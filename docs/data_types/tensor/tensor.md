@@ -191,10 +191,6 @@ doc.summary()
 ╰─────────────────┴────────────────────────────────────────────────────────────╯
 ```
 
-!!! warning
-    Type coercion from [`TensorFlowTensor`][docarray.typing.tensor.TensorFlowTensor] to [`TorchTensor`][docarray.typing.tensor.TorchTensor] and vice versa is not supported yet.
-
-
 ## `DocVec` with `AnyTensor`
 
 [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] can be used with a BaseDoc which has a field of [`AnyTensor`][docarray.typing.tensor.AnyTensor] or any other Union of tensor types. 
