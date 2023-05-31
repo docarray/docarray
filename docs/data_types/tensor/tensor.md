@@ -141,7 +141,7 @@ But since it inherits from `np.ndarray`, you can also use it as a normal NumPy a
 
 DocArray also supports type coercion between different tensor types. This mean that if you pass a different tensor type to a tensor field, it will be converted to the right tensor type.
 
-For instance if you define a field of type [`TorchTensor`][docarray.typing.tensor.TorchTensor] and you pass a numpy array to it, it will be converted to a [`TorchTensor`][docarray.typing.tensor.TorchTensor].
+For instance if you define a field of type [`TorchTensor`][docarray.typing.tensor.TorchTensor] and you pass a Numpy array to it, it will be converted to a [`TorchTensor`][docarray.typing.tensor.TorchTensor].
 
 ```python
 from docarray import BaseDoc
