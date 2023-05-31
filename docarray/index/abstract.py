@@ -553,8 +553,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         da_list, scores = self._find_batched(
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
-
-        if len(da_list) > 0 and isinstance(da_list[0], List):
+        if (
+            len(da_list) > 0
+            and isinstance(da_list[0], List)
+            and not isinstance(da_list[0], DocList)
+        ):
             da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
 
         return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
@@ -885,6 +888,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
+
         return column_infos
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
