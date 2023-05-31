@@ -3,6 +3,7 @@ from typing import Optional
 import numpy as np
 import pytest
 from pydantic import Field
+from torch import rand
 
 from docarray import BaseDoc, DocList
 from docarray.index.backends.in_memory import InMemoryExactNNIndex
@@ -166,8 +167,6 @@ def test_index_with_None_embedding():
 
 
 def test_index_avoid_stack_embedding():
-    from torch import rand
-
     class MyDoc(BaseDoc):
         embedding1: TorchTensor
         embedding2: TorchTensor
@@ -204,3 +203,50 @@ def test_index_avoid_stack_embedding():
 
     db._del_items(data_copy[9].id)  # Delete the last element
     assert len(db._embedding_map) == 0
+
+
+def test_index_find_speedup():
+    class MyDocument(BaseDoc):
+        embedding: TorchTensor
+        embedding2: TorchTensor
+        embedding3: TorchTensor
+
+    def generate_doc_list(num_docs: int, dims: int) -> DocList[MyDocument]:
+        return DocList[MyDocument](
+            [
+                MyDocument(
+                    embedding=rand(dims),
+                    embedding2=rand(dims),
+                    embedding3=rand(dims),
+                )
+                for _ in range(num_docs)
+            ]
+        )
+
+    def create_inmemory_index(
+        data_list: DocList[MyDocument],
+    ) -> InMemoryExactNNIndex[MyDocument]:
+        return InMemoryExactNNIndex[MyDocument](data_list)
+
+    def find_similar_docs(
+        index: InMemoryExactNNIndex[MyDocument],
+        queries: DocList[MyDocument],
+        search_field: str = 'embedding',
+        limit: int = 5,
+    ) -> tuple:
+        return index.find_batched(queries, search_field=search_field, limit=limit)
+
+    # Generating document lists
+    num_docs, num_queries, dims = 20000, 10000, 128
+    data_list = generate_doc_list(num_docs, dims)
+    queries = generate_doc_list(num_queries, dims)
+
+    # Creating index
+    db = create_inmemory_index(data_list)
+
+    # Finding similar documents
+    # First Trial
+    matches, scores = find_similar_docs(db, queries, 'embedding', 5)
+
+    # Second Trial
+    matches, scores = find_similar_docs(db, queries, 'embedding', 5)
