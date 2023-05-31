@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 import pandas as pd
 import pytest
@@ -27,9 +27,11 @@ def test_to_from_pandas_df(nested_doc_cls):
                 count=0,
                 text='hello',
                 image=ImageDoc(url='aux.png'),
-                lst = ["hello", "world"]
+                lst=["hello", "world"],
             ),
-            nested_doc_cls(text='hello world', image=ImageDoc(), lst = ["hello","world"]),
+            nested_doc_cls(
+                text='hello world', image=ImageDoc(), lst=["hello", "world"]
+            ),
         ]
     )
     df = da.to_dataframe()
@@ -46,7 +48,7 @@ def test_to_from_pandas_df(nested_doc_cls):
             'image__tensor',
             'image__embedding',
             'image__bytes_',
-            'lst'
+            'lst',
         ]
     ).all()
 

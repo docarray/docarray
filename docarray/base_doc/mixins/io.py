@@ -20,9 +20,9 @@ from typing_inspect import is_union_type
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
 from docarray.utils._internal.misc import import_library
-from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
