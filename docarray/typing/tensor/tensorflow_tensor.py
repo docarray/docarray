@@ -5,7 +5,7 @@ import numpy as np
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import import_library, is_torch_available
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 else:
     tf = import_library('tensorflow', raise_error=True)
 
+torch_available = is_torch_available()
+if torch_available:
+    import torch
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
@@ -202,6 +205,12 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cast(T, value)
         elif isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value)
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_ndarray(value._docarray_to_ndarray())
+        elif torch_available and isinstance(value, torch.Tensor):
+            return cls._docarray_from_native(value.detach().cpu().numpy())
         else:
             try:
                 arr: tf.Tensor = tf.constant(value)
@@ -320,3 +329,15 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __len__(self) -> int:
         return len(self.tensor)
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.tensor.numpy()
