@@ -11,6 +11,7 @@ pure_tensor_to_test = [
     torch.zeros(3, 224, 224),
     tf.zeros((3, 224, 224)),
 ]
+
 docarray_tensor_to_test = [
     NdArray._docarray_from_native(np.zeros((3, 224, 224))),
     TorchTensor._docarray_from_native(torch.zeros(3, 224, 224)),
@@ -24,3 +25,7 @@ docarray_tensor_to_test = [
 def test_torch_tensor_coerse(tensor_cls, tensor):
     t = parse_obj_as(tensor_cls, tensor)
     assert isinstance(t, tensor_cls)
+
+    t_numpy = t._docarray_to_numpy()
+    assert t_numpy.shape == (3, 224, 224)
+    assert (t_numpy == np.zeros((3, 224, 224))).all()
