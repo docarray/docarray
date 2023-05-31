@@ -339,3 +339,17 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         :return: a representation of the tensor compatible with orjson
         """
         return self
+
+    @classmethod
+    @abc.abstractmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        ...
+
+    @abc.abstractmethod
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        ...
