@@ -212,3 +212,37 @@ Check [here](docindex#nested-data-with-subindex) for nested data with subindex.
 
 ### Update elements
 In order to update a Document inside the index, you only need to reindex it with the updated attributes.
+
+```python
+import numpy as np
+
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import HnswDocumentIndex
+
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = HnswDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```
