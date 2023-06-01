@@ -128,7 +128,7 @@ You can work around this problem by subclassing the predefined Document and addi
 
 
     class MyDoc(TextDoc):
-        embedding: AnyTensor = Field(n_dim=128)
+        embedding: AnyTensor = Field(dim=128)
 
 
     db = HnswDocumentIndex[MyDoc](work_dir='test_db3')
