@@ -30,6 +30,8 @@ from docarray.utils.filter import filter_docs
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
+    _da_attr_type,
+    _extract_embeddings,
     _FindResult,
     _FindResultBatched,
     find,
@@ -86,6 +88,8 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 self._docs = DocList.__class_getitem__(
                     cast(Type[BaseDoc], self._schema)
                 )()
+
+        self._embedding_map: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {}
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
@@ -148,6 +152,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
         self._docs.extend(docs)
+        self._rebuild_embedding()
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         raise NotImplementedError
@@ -157,6 +162,22 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         Get the number of documents.
         """
         return len(self._docs)
+
+    def _rebuild_embedding(self):
+        """
+        Reconstructs the embeddings map for each field. This is performed to store pre-stacked
+        embeddings, thereby optimizing performance by avoiding repeated stacking of embeddings.
+
+        Note: '_embedding_map' is a dictionary mapping fields to their corresponding embeddings.
+        """
+        if self.num_docs() == 0:
+            self._embedding_map = dict()
+        else:
+            for field_, embedding in self._embedding_map.items():
+                embedding_type = _da_attr_type(self._docs, field_)
+                self._embedding_map[field_] = _extract_embeddings(
+                    self._docs, field_, embedding_type
+                )
 
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
@@ -169,6 +190,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 indices.append(i)
 
         del self._docs[indices]
+        self._rebuild_embedding()
 
     def _get_items(
         self, doc_ids: Sequence[str]
@@ -243,6 +265,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             search_field=search_field,
             limit=limit,
             metric=config['space'],
+            cache=self._embedding_map,
         )
         docs_with_schema = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))(
             docs
@@ -287,6 +310,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             search_field=search_field,
             limit=limit,
             metric=config['space'],
+            cache=self._embedding_map,
         )
 
         return find_res

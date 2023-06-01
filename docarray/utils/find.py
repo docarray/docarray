@@ -1,6 +1,6 @@
 __all__ = ['find', 'find_batched']
 
-from typing import Any, Dict, List, NamedTuple, Optional, Type, Union, cast, Tuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Type, Union, cast
 
 from typing_inspect import is_union_type
 
@@ -47,6 +47,7 @@ def find(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
+    cache: Optional[Dict[str, Tuple[AnyTensor, Optional[List[int]]]]] = None,
 ) -> FindResult:
     """
     Find the closest Documents in the index to the query.
@@ -119,6 +120,7 @@ def find(
         limit=limit,
         device=device,
         descending=descending,
+        cache=cache,
     )
     return FindResult(documents=docs[0], scores=scores[0])
 
@@ -131,6 +133,7 @@ def find_batched(
     limit: int = 10,
     device: Optional[str] = None,
     descending: Optional[bool] = None,
+    cache: Optional[Dict[str, Tuple[AnyTensor, Optional[List[int]]]]] = None,
 ) -> FindResultBatched:
     """
     Find the closest Documents in the index to the queries.
@@ -206,9 +209,17 @@ def find_batched(
     comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
-    index_embeddings, valid_idx = _extract_embeddings(
-        index, search_field, embedding_type
-    )
+    if cache is not None and search_field in cache:
+        index_embeddings, valid_idx = cache[search_field]
+    else:
+        index_embeddings, valid_idx = _extract_embeddings(
+            index, search_field, embedding_type
+        )
+        if cache is not None:
+            cache[search_field] = (
+                index_embeddings,
+                valid_idx,
+            )  # cache embedding for next query
     query_embeddings, _ = _extract_embeddings(query, search_field, embedding_type)
 
     # compute distances and return top results
