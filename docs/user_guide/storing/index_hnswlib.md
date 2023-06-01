@@ -213,4 +213,56 @@ To delete nested data, you need to specify the `id`.
 del doc_index[index_docs[6].id]
 ```
 
-Check [here](docindex#nested-data-with-subindex) for nested data with subindex.
+Check [here](../docindex#nested-data-with-subindex) for nested data with subindex.
+
+### Update elements
+In order to update a Document inside the index, you only need to reindex it with the updated attributes.
+
+First lets create a schema for our Index
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import HnswDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+Now we can instantiate our Index and index some data.
+
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = HnswDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Now we can find relevant documents
+
+```python
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+and update all of the text of this documents and reindex them
+
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly
+
+```python
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```

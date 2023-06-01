@@ -446,7 +446,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _send_docs_to_sqlite(self, docs: Sequence[BaseDoc]):
         ids = (self._to_hashed_id(doc.id) for doc in docs)
         self._sqlite_cursor.executemany(
-            'INSERT INTO docs VALUES (?, ?)',
+            'INSERT OR REPLACE INTO docs VALUES (?, ?)',
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
         )
 
