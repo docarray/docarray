@@ -63,6 +63,16 @@ def test_find_empty_index(tmp_path):
     assert len(scores) == 0
 
 
+def test_find_limit_larger_than_index(tmp_path):
+    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    query = SimpleDoc(tens=np.ones(10))
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    index.index(index_docs)
+    docs, scores = index.find(query, search_field='tens', limit=20)
+    assert len(docs) == 10
+    assert len(scores) == 10
+
+
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_torch(tmp_path, space):
     index = HnswDocumentIndex[TorchDoc](work_dir=str(tmp_path))
