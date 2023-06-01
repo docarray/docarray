@@ -237,7 +237,7 @@ def test_index_find_speedup():
         return index.find_batched(queries, search_field=search_field, limit=limit)
 
     # Generating document lists
-    num_docs, num_queries, dims = 20000, 10000, 128
+    num_docs, num_queries, dims = 2000, 1000, 128
     data_list = generate_doc_list(num_docs, dims)
     queries = generate_doc_list(num_queries, dims)
 
@@ -245,8 +245,7 @@ def test_index_find_speedup():
     db = create_inmemory_index(data_list)
 
     # Finding similar documents
-    # First Trial
-    matches, scores = find_similar_docs(db, queries, 'embedding', 5)
-
-    # Second Trial
-    matches, scores = find_similar_docs(db, queries, 'embedding', 5)
+    for _ in range(5):
+        matches, scores = find_similar_docs(db, queries, 'embedding', 5)
+        assert len(matches) == num_queries
+        assert len(matches[0]) == 5
