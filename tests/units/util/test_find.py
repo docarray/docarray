@@ -102,7 +102,6 @@ def test_find_np(random_nd_query, random_nd_index, metric):
         search_field='tensor',
         limit=7,
         metric=metric,
-        cache={},
     )
     assert len(top_k) == 7
     assert len(scores) == 7
@@ -214,7 +213,6 @@ def test_find_batched_np(random_nd_batch_query, random_nd_index, metric):
         search_field='tensor',
         limit=7,
         metric=metric,
-        cache={},
     )
     assert len(documents) == len(random_nd_batch_query)
     assert len(scores) == len(random_nd_batch_query)
