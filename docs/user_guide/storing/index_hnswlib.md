@@ -208,7 +208,7 @@ To delete nested data, you need to specify the `id`.
 del doc_index[index_docs[6].id]
 ```
 
-Check [here](docindex#nested-data-with-subindex) for nested data with subindex.
+Check [here](../docindex#nested-data-with-subindex) for nested data with subindex.
 
 ### Update elements
 In order to update a Document inside the index, you only need to reindex it with the updated attributes.
