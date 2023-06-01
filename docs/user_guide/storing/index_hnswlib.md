@@ -99,7 +99,7 @@ This will set the default configuration for all vector fields to the one specifi
 !!! note
    max_elements is considered to have the initial maximum capacity of the index. However, the capacity of the index is doubled every time
    that the number of Documents in the index exceeds this capacity. Expanding the capacity is an expensive operation, therefore it can be important to
-   choose an appropiate max_elements value.
+   choose an appropiate max_elements value at init time.
 
 For more information on these settings, see [below](#field-wise-configurations).
 
