@@ -35,7 +35,7 @@ or recommender systems.
 DocArray's Document Index concept achieves this by providing a unified interface to a number of [vector databases](https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb).
 In fact, you can think of Document Index as an **[ORM](https://sqlmodel.tiangolo.com/db-to-code/) for vector databases**.
 
-Currently, DocArray supports the following vector indexes. Some of them wrap a Vector Databases (Weaviate, Qdrant, ElasticSearch) acting as a client for them, while others
+Currently, DocArray supports the following vector indexes. Some of them wrap vector databases (Weaviate, Qdrant, ElasticSearch) and act as a client for them, while others
 use a vector search library locally (HNSWLib, Exact NN search):
 
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
