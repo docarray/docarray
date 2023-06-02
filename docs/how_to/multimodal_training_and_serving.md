@@ -135,7 +135,7 @@ class PairTextImage(BaseDoc):
     image: ImageDoc
 ```
 
-You then need to forward declare the following types, this will allow the objects to be properly pickled and unpickled.
+You then need to forward declare the following types. This will allow the objects to be properly pickled and unpickled.
 
 This will be unnecessary once [this issue](https://github.com/docarray/docarray/issues/1330) is resolved.
 
