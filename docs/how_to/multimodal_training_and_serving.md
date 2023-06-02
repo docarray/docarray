@@ -135,6 +135,18 @@ class PairTextImage(BaseDoc):
     image: ImageDoc
 ```
 
+You then need to forward declare the following types, this will allow the objects to be properly pickled and unpickled.
+
+This will be unnecessary once [this issue](https://github.com/docarray/docarray/issues/1330) is resolved.
+
+```python
+from docarray import DocVec
+DocVec[Tokens]
+DocVec[TextDoc]
+DocVec[ImageDoc]
+DocVec[PairTextImage]
+```
+
 ### Create the dataset 
 
 In this section we will create a multimodal pytorch dataset around the Flick8k dataset using DocArray.
