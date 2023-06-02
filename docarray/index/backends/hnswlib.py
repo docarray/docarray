@@ -293,6 +293,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if self.num_docs() == 0:
             return _FindResultBatched(documents=[], scores=[])  # type: ignore
 
+        limit = min(limit, self.num_docs())
+
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(queries, k=limit)
         result_das = [
