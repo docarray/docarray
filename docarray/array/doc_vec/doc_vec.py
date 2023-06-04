@@ -279,7 +279,13 @@ class DocVec(AnyDocArray[T_doc]):
         if isinstance(value, cls):
             return value
         elif isinstance(value, DocList):
-            return value.to_doc_vec()
+            if (
+                issubclass(value.doc_type, cls.doc_type)
+                or value.doc_type == cls.doc_type
+            ):
+                return cast(T, value.to_doc_list())
+            else:
+                raise ValueError(f'DocVec[value.doc_type] is not compatible with {cls}')
         elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
             return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
