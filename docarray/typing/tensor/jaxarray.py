@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import jax.numpy as jnp
+from jax import Array
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -46,7 +47,7 @@ class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        if isinstance(value, jnp.ndarray):
+        if isinstance(value, Array):
             return cls._docarray_from_native(value)
         elif isinstance(value, JaxArray):
             return cast(T, value)
@@ -111,29 +112,13 @@ class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
         :param pb_msg:
         :return: a numpy array
         """
-        source = pb_msg.dense
-        if source.buffer:
-            x = jnp.frombuffer(bytearray(source.buffer), dtype=source.dtype)
-            return cls._docarray_from_native(x.reshape(source.shape))
-        elif len(source.shape) > 0:
-            return cls._docarray_from_native(jnp.zeros(source.shape))
-        else:
-            raise ValueError(f'proto message {pb_msg} cannot be cast to a NdArray')
+        pass
 
     def to_protobuf(self) -> 'NdArrayProto':
         """
         Transform self into a NdArrayProto protobuf message
         """
-        from docarray.proto import NdArrayProto
-
-        nd_proto = NdArrayProto()
-
-        nd_proto.dense.buffer = self.tobytes()
-        nd_proto.dense.ClearField('shape')
-        nd_proto.dense.shape.extend(list(self.shape))
-        nd_proto.dense.dtype = self.dtype.str
-
-        return nd_proto
+        pass
 
     @staticmethod
     def get_comp_backend() -> 'JaxCompBackend':
