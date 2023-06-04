@@ -10,6 +10,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 
@@ -270,7 +271,15 @@ class DocList(
         if isinstance(value, cls):
             return value
         elif isinstance(value, DocVec):
-            return value.to_doc_list()
+            if (
+                issubclass(value.doc_type, cls.doc_type)
+                or value.doc_type == cls.doc_type
+            ):
+                return cast(T, value.to_doc_list())
+            else:
+                raise ValueError(
+                    f'DocList[value.doc_type] is not compatible with {cls}'
+                )
         elif isinstance(value, cls):
             return cls(value)
         elif isinstance(value, Iterable):
