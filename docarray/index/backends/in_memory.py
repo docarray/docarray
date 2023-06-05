@@ -25,8 +25,10 @@ from docarray.index.backends.helper import (
     _execute_find_and_filter_query,
 )
 from docarray.typing import AnyTensor, NdArray
+from docarray.array.any_array import AnyDocArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils.filter import filter_docs
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
@@ -151,6 +153,11 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
+
+        data_by_columns = self._get_col_value_dict(docs)
+        self._update_subindex_data(docs)
+        self._index_subindex(data_by_columns)
+
         self._docs.extend(docs)
         self._rebuild_embedding()
 
@@ -184,6 +191,15 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         :param doc_ids: ids to delete from the Document Store
         """
+        for field, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self._schema)
+        ):
+            if safe_issubclass(type_, AnyDocArray):
+                for id in doc_ids:
+                    doc = self._get_items([id])
+                    sub_ids = [sub_doc.id for sub_doc in getattr(doc, field)]
+                    del self._subindices[field][sub_ids]
+
         indices = []
         for i, doc in enumerate(self._docs):
             if doc.id in doc_ids:

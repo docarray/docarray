@@ -249,3 +249,40 @@ def test_index_find_speedup():
         matches, scores = find_similar_docs(db, queries, 'embedding', 5)
         assert len(matches) == num_queries
         assert len(matches[0]) == 5
+
+def test_nested_document_find():
+    from docarray.typing import VideoUrl
+
+    class VideoDoc(BaseDoc):
+        url: VideoUrl
+        tensor_video: TorchTensor
+    class MyDoc(BaseDoc):
+        docs: DocList[VideoDoc]
+        tensor: TorchTensor
+
+    doc_index = InMemoryExactNNIndex[MyDoc]()
+
+    index_docs = [
+        MyDoc(
+            docs=DocList[VideoDoc](
+                [
+                    VideoDoc(
+                        url=f'http://example.ai/videos/{i}-{j}',
+                        tensor_video=rand(256),
+                    )
+                    for j in range(10)
+                ]
+            ),
+            tensor=rand(256),
+        )
+        for i in range(10)
+    ]
+
+    # index the Documents
+    doc_index.index(index_docs)
+
+    root_docs, sub_docs, scores = doc_index.find_subindex(
+        rand(256), subindex='docs', search_field='tensor_video', limit=3
+    )
+
+    assert len(scores) == 3
