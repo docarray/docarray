@@ -305,11 +305,11 @@ def test_usage_adapt_max_elements_after_restore(tmpdir):
 
 
 @pytest.mark.parametrize(
-    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 3)]
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 5)]
 )
 def test_query_builder_limits(find_limit, filter_limit, expected_docs, tmp_path):
     class SimpleSchema(BaseDoc):
-        tensor: NdArray[10] = Field(space='cosine')
+        tensor: NdArray[10] = Field(space='l2')
         price: int
 
     index = HnswDocumentIndex[SimpleSchema](work_dir=str(tmp_path))
@@ -317,7 +317,7 @@ def test_query_builder_limits(find_limit, filter_limit, expected_docs, tmp_path)
     index_docs = [SimpleSchema(tensor=np.array([i] * 10), price=i) for i in range(10)]
     index.index(index_docs)
 
-    query = SimpleSchema(tensor=np.ones(10), price=3)
+    query = SimpleSchema(tensor=np.array([3] * 10), price=3)
 
     q = (
         index.build_query()
