@@ -125,6 +125,45 @@ def test_concatenated_queries(doc_index):
     assert len(docs) == 4
 
 
+@pytest.mark.parametrize(
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 3)]
+)
+def test_query_builder_limits(doc_index, find_limit, filter_limit, expected_docs):
+    query = SchemaDoc(text='query', price=3, tensor=np.array([3] * 10))
+
+    q = (
+        doc_index.build_query()
+        .find(query=query, search_field='tensor', limit=find_limit)
+        .filter(filter_query={'price': {'$lte': 5}}, limit=filter_limit)
+        .build()
+    )
+
+    docs, scores = doc_index.execute_query(q)
+
+    assert len(docs) == expected_docs
+
+
+def test_filter(doc_index):
+    docs = doc_index.filter({'price': {'$eq': 3}})
+    assert len(docs) == 1
+    assert docs[0].price == 3
+
+    docs = doc_index.filter({'price': {'$lte': 5}})
+    assert len(docs) == 6
+    for doc in docs:
+        assert doc.price <= 5
+
+    docs = doc_index.filter({'price': {'$gte': 5}}, limit=3)
+    assert len(docs) == 3
+    for doc in docs:
+        assert doc.price >= 5
+
+    docs = doc_index.filter({'price': {'$neq': 2}}, limit=10)
+    assert len(docs) == 9
+    for doc in docs:
+        assert doc.price != 2
+
+
 def test_save_and_load(doc_index, tmpdir):
     initial_num_docs = doc_index.num_docs()
 

@@ -31,6 +31,7 @@ def _execute_find_and_filter_query(
     """
     docs_found = DocList.__class_getitem__(cast(Type[BaseDoc], doc_index._schema))([])
     filter_conditions = []
+    filter_limit = None
     doc_to_score: Dict[BaseDoc, Any] = {}
     for op, op_kwargs in query:
         if op == 'find':
@@ -39,6 +40,7 @@ def _execute_find_and_filter_query(
             doc_to_score.update(zip(docs.__getattribute__('id'), scores))
         elif op == 'filter':
             filter_conditions.append(op_kwargs['filter_query'])
+            filter_limit = op_kwargs.get('limit')
         else:
             raise ValueError(f'Query operation is not supported: {op}')
 
@@ -47,6 +49,9 @@ def _execute_find_and_filter_query(
     for cond in filter_conditions:
         docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], doc_index._schema))
         docs_filtered = docs_cls(filter_docs(docs_filtered, cond))
+
+    if filter_limit:
+        docs_filtered = docs_filtered[:filter_limit]
 
     doc_index._logger.debug(f'{len(docs_filtered)} results found')
     docs_and_scores = zip(
