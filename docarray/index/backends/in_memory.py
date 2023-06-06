@@ -335,7 +335,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
 
-        docs = filter_docs(docs=self._docs, query=filter_query)
+        docs = filter_docs(docs=self._docs, query=filter_query)[:limit]
         return cast(DocList, docs)
 
     def _filter(self, filter_query: Any, limit: int) -> Union[DocList, List[Dict]]:
