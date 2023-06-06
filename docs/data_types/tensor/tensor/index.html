@@ -10,20 +10,20 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/storing/first_step/">
+        <link rel="canonical" href="https://docarray.jina.ai/data_types/tensor/tensor/">
       
       
-        <link rel="prev" href="../../sending/api/fastAPI/">
+        <link rel="prev" href="../../multimodal/multimodal/">
       
       
-        <link rel="next" href="../docindex/">
+        <link rel="next" href="../../../migration_guide/">
       
       <link rel="icon" href="../../../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
-        <title>Introduction - DocArray</title>
+        <title>🔢 Tensor - DocArray</title>
       
     
     
@@ -91,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction" class="md-skip">
+        <a href="#tensor" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Introduction
+              🔢 Tensor
             
           </span>
         </div>
@@ -267,16 +267,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -295,7 +293,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           User Guide
@@ -308,7 +306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../intro/" class="md-nav__link">
+      <a href="../../../user_guide/intro/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -355,7 +353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../representing/first_step/" class="md-nav__link">
+      <a href="../../../user_guide/representing/first_step/" class="md-nav__link">
         Document
       </a>
     </li>
@@ -369,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../representing/array/" class="md-nav__link">
+      <a href="../../../user_guide/representing/array/" class="md-nav__link">
         Array of documents
       </a>
     </li>
@@ -427,7 +425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sending/first_step/" class="md-nav__link">
+      <a href="../../../user_guide/sending/first_step/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -441,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sending/serialization/" class="md-nav__link">
+      <a href="../../../user_guide/sending/serialization/" class="md-nav__link">
         Serialization
       </a>
     </li>
@@ -455,7 +453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sending/api/jina/" class="md-nav__link">
+      <a href="../../../user_guide/sending/api/jina/" class="md-nav__link">
         Send over Jina
       </a>
     </li>
@@ -469,7 +467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sending/api/fastAPI/" class="md-nav__link">
+      <a href="../../../user_guide/sending/api/fastAPI/" class="md-nav__link">
         Send over FastAPI
       </a>
     </li>
@@ -488,16 +486,14 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
       
       
         
@@ -514,7 +510,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_4">
           <span class="md-nav__icon md-icon"></span>
           Storing data
@@ -525,59 +521,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Introduction
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/first_step/" class="md-nav__link">
         Introduction
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#document-store" class="md-nav__link">
-    Document Store
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#document-index" class="md-nav__link">
-    Document Index
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -630,7 +578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../docindex/" class="md-nav__link">
+      <a href="../../../user_guide/storing/docindex/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -644,7 +592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../index_in_memory/" class="md-nav__link">
+      <a href="../../../user_guide/storing/index_in_memory/" class="md-nav__link">
         In-Memory Document Index
       </a>
     </li>
@@ -658,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../index_hnswlib/" class="md-nav__link">
+      <a href="../../../user_guide/storing/index_hnswlib/" class="md-nav__link">
         Hnswlib Document Index
       </a>
     </li>
@@ -672,7 +620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../index_weaviate/" class="md-nav__link">
+      <a href="../../../user_guide/storing/index_weaviate/" class="md-nav__link">
         Weaviate Document Index
       </a>
     </li>
@@ -686,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../index_elastic/" class="md-nav__link">
+      <a href="../../../user_guide/storing/index_elastic/" class="md-nav__link">
         Elasticsearch Document Index
       </a>
     </li>
@@ -700,7 +648,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../index_qdrant/" class="md-nav__link">
+      <a href="../../../user_guide/storing/index_qdrant/" class="md-nav__link">
         Qdrant Document Index
       </a>
     </li>
@@ -756,7 +704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../doc_store/store_file/" class="md-nav__link">
+      <a href="../../../user_guide/storing/doc_store/store_file/" class="md-nav__link">
         Store on-disk
       </a>
     </li>
@@ -770,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../doc_store/store_jac/" class="md-nav__link">
+      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
         Store on Jina AI Cloud
       </a>
     </li>
@@ -784,7 +732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../doc_store/store_s3/" class="md-nav__link">
+      <a href="../../../user_guide/storing/doc_store/store_s3/" class="md-nav__link">
         Store on S3
       </a>
     </li>
@@ -903,14 +851,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
         
@@ -939,7 +889,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Data Types
@@ -952,7 +902,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/first_steps/" class="md-nav__link">
+      <a href="../../first_steps/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -966,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/text/text/" class="md-nav__link">
+      <a href="../../text/text/" class="md-nav__link">
         🔤 Text
       </a>
     </li>
@@ -980,7 +930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/image/image/" class="md-nav__link">
+      <a href="../../image/image/" class="md-nav__link">
         🖼️ Image
       </a>
     </li>
@@ -994,7 +944,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/audio/audio/" class="md-nav__link">
+      <a href="../../audio/audio/" class="md-nav__link">
         🔊 Audio
       </a>
     </li>
@@ -1008,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/video/video/" class="md-nav__link">
+      <a href="../../video/video/" class="md-nav__link">
         🎥 Video
       </a>
     </li>
@@ -1022,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/3d_mesh/3d_mesh/" class="md-nav__link">
+      <a href="../../3d_mesh/3d_mesh/" class="md-nav__link">
         🧬 3D Mesh
       </a>
     </li>
@@ -1036,7 +986,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/table/table/" class="md-nav__link">
+      <a href="../../table/table/" class="md-nav__link">
         📊 Table
       </a>
     </li>
@@ -1050,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../data_types/multimodal/multimodal/" class="md-nav__link">
+      <a href="../../multimodal/multimodal/" class="md-nav__link">
         🗃 Multimodal
       </a>
     </li>
@@ -1062,11 +1012,100 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../../data_types/tensor/tensor/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          🔢 Tensor
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         🔢 Tensor
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tensor-shape-validation" class="md-nav__link">
+    Tensor Shape validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Tensor Shape validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#axes-validation" class="md-nav__link">
+    Axes validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-names" class="md-nav__link">
+    Axis names
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arbitrary-number-of-axis" class="md-nav__link">
+    Arbitrary number of axis
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tensor-type-validation" class="md-nav__link">
+    Tensor type validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-coercion-with-different-tensor-types" class="md-nav__link">
+    Type coercion with different tensor types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docvec-with-anytensor" class="md-nav__link">
+    DocVec with AnyTensor
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2031,15 +2070,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#document-store" class="md-nav__link">
-    Document Store
+  <a href="#tensor-shape-validation" class="md-nav__link">
+    Tensor Shape validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Tensor Shape validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#axes-validation" class="md-nav__link">
+    Axes validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-names" class="md-nav__link">
+    Axis names
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arbitrary-number-of-axis" class="md-nav__link">
+    Arbitrary number of axis
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tensor-type-validation" class="md-nav__link">
+    Tensor type validation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#document-index" class="md-nav__link">
-    Document Index
+  <a href="#type-coercion-with-different-tensor-types" class="md-nav__link">
+    Type coercion with different tensor types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docvec-with-anytensor" class="md-nav__link">
+    DocVec with AnyTensor
   </a>
   
 </li>
@@ -2059,44 +2139,173 @@
                   
 
 
-<div><h1 id="introduction">Introduction</h1>
-<p>In the previous sections we saw how to use <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>, <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> to represent multi-modal data and send it over the wire.
-In this section we will see how to store and persist this data.</p>
-<p>DocArray offers two ways of storing your data, each of which have their own documentation sections:</p>
-<ol>
-<li><strong><a href="#document-store">Document Store</a></strong> for simple long-term storage</li>
-<li><strong><a href="#document-index">Document Index</a></strong> for fast retrieval using vector similarity</li>
-</ol>
-<h2 id="document-store">Document Store</h2>
-<p><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a> can be persisted using the
-<a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.pushpull.PushPullMixin.push"><code>.push()</code></a> and 
-<a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.pushpull.PushPullMixin.pull"><code>.pull()</code></a> methods. 
-Under the hood, <a class="autorefs autorefs-internal" href="../../../API_reference/doc_store/doc_store/#docarray.store.abstract_doc_store.AbstractDocStore">DocStore</a> is used to persist a <code>DocList</code>. 
-You can either store your documents on-disk or upload them to <a href="https://aws.amazon.com/s3/">AWS S3</a>, 
-<a href="https://min.io">minio</a> or <a href="https://cloud.jina.ai/user/storage">Jina AI Cloud</a>. </p>
-<p>This section covers the following three topics:</p>
+<div><h1 id="tensor">🔢 Tensor</h1>
+<p>DocArray supports several tensor types that can you can use inside <code>BaseDoc</code>. </p>
+<p>The main ones are:</p>
 <ul>
-<li><a href="../doc_store/store_file/">Storing</a> <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>, <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> on-disk</li>
-<li><a href="../doc_store/store_jac/">Storing on Jina AI Cloud</a> </li>
-<li><a href="../doc_store/store_s3/">Storing on S3</a></li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.ndarray.NdArray"><code>NdArray</code></a> for NumPy tensors</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a> for PyTorch tensors</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor"><code>TensorFlowTensor</code></a> for TensorFlow tensors</li>
 </ul>
-<h2 id="document-index">Document Index</h2>
-<p>A Document Index lets you store your Documents and search through them using vector similarity.</p>
-<p>This is useful if you want to store a bunch of data, and at a later point retrieve documents that are similar to
-a query that you provide.
-Relevant concrete examples are neural search applications, augmenting LLMs and chatbots with domain knowledge (<a href="https://arxiv.org/abs/2005.11401">Retrieval-Augmented Generation</a>)]),
-or recommender systems.</p>
-<p>DocArray's Document Index concept achieves this by providing a unified interface to a number of <a href="https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb">vector databases</a>.
-In fact, you can think of Document Index as an <strong><a href="https://sqlmodel.tiangolo.com/db-to-code/">ORM</a> for vector databases</strong>.</p>
-<p>Currently, DocArray supports the following vector indexes. Some of them wrap vector databases (Weaviate, Qdrant, ElasticSearch) and act as a client for them, while others
-use a vector search library locally (HNSWLib, Exact NN search):</p>
+<p>The three of them wrap their respective framework's tensor type. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.ndarray.NdArray"><code>NdArray</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a> are a subclass of their native tensor type. This means that they can be used natively in their framework.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor"><code>TensorFlowTensor</code></a> stores the pure <code>tf.Tensor</code> object inside the <code>tensor</code> attribute. This is due to a limitation of the TensorFlow framework that prevents you from subclassing the <code>tf.Tensor</code> object.</p>
+</div>
+<p>DocArray also supports <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.AnyTensor"><code>AnyTensor</code></a>, which is the Union of the three previous tensor types. 
+This is a generic placeholder to specify that it can work with any tensor type (NumPy, PyTorch, TensorFlow).</p>
+<h2 id="tensor-shape-validation">Tensor Shape validation</h2>
+<p>All three tensor types support shape validation. This means that you can specify the shape of the tensor using type hint syntax: <code>NdArray[100, 100]</code>, <code>TorchTensor[100, 100]</code>, <code>TensorFlowTensor[100, 100]</code>.</p>
+<p>Let's take an example:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+</span></code></pre></div>
+<p>If you try to pass a tensor with a different shape, an error will be raised:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">doc</span> <span class="o">=</span> <span class="n">MyDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)))</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="m">1</span><span class="w"> </span>validation<span class="w"> </span>error<span class="w"> </span><span class="k">for</span><span class="w"> </span>MyDoc
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>tensor
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>cannot<span class="w"> </span>reshape<span class="w"> </span>array<span class="w"> </span>of<span class="w"> </span>size<span class="w"> </span><span class="m">20000</span><span class="w"> </span>into<span class="w"> </span>shape<span class="w"> </span><span class="o">(</span><span class="m">100</span>,100<span class="o">)</span><span class="w"> </span><span class="o">(</span><span class="nv">type</span><span class="o">=</span>value_error<span class="o">)</span>
+</span></code></pre></div>
+<p>Whereas if you just pass a tensor with the correct shape, no error will be raised:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
+</span></code></pre></div>
+<h3 id="axes-validation">Axes validation</h3>
+<p>You can check that the number of axes is correct by specifying <code>NdArray['x','y']</code>, <code>TorchTensor['x','y']</code>, <code>TensorFlowTensor['x','y']</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">]</span>
+</span></code></pre></div>
+<p>Here you can only pass a tensor with two axes. <code>np.zeros(10, 12)</code> will work, but <code>np.zeros(10, 12, 3)</code> will raise an error.</p>
+<h3 id="axis-names">Axis names</h3>
+<p>You can specify that two axes should have the same dimensions with the syntax <code>NdArray['x', 'x']</code>, <code>TorchTensor['x', 'x']</code>, <code>TensorFlowTensor['x', 'x']</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">]</span>
+</span></code></pre></div>
+<p>Here you can only pass a tensor with two axes that have the same dimensions. <code>np.zeros(10, 10)</code> will work but <code>np.zeros(10, 12)</code> will raise an error.</p>
+<h3 id="arbitrary-number-of-axis">Arbitrary number of axis</h3>
+<p>To specify that your shape can have an arbitrary number of axes, use the syntax <code>NdArray['x', ...]</code>, or <code>NdArray[..., 'x']</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</span></code></pre></div>
+<p>Here you can only pass a tensor with at least one axis with dimension 100. <code>np.zeros(100, 10)</code> will work but <code>np.zeros(10, 12)</code> will raise an error.</p>
+<h2 id="tensor-type-validation">Tensor type validation</h2>
+<p>You don't need to directly instantiate the  <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.ndarray.NdArray"><code>NdArray</code></a> , <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a>, or <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor"><code>TensorFlowTensor</code></a> by yourself.</p>
+<p>Instead, you should use them as type hints on <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a> fields, where they perform data validation.
+During this process, <a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a> will cast the native tensor type into the respective DocArray tensor type.</p>
+<p>Let's look at an example:</p>
+<p></p><div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">)</span>  <span class="c1"># True</span>
+</span></code></pre></div>
+Here you see that the <code>doc.tensor</code> is an <code>NdArray</code>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>  <span class="c1"># True as well</span>
+</span></code></pre></div>
+<p>But since it inherits from <code>np.ndarray</code>, you can also use it as a normal NumPy array. The same holds for PyTorch and <code>TorchTensor</code>.</p>
+<h2 id="type-coercion-with-different-tensor-types">Type coercion with different tensor types</h2>
+<p>DocArray also supports type coercion between different tensor types. This mean that if you pass a different tensor type to a tensor field, it will be converted to the correct tensor type.</p>
+<p>For instance, if you define a field of type <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a> and you pass a NumPy array to it, it will be converted to a <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">class</span> <span class="nc">MyTensorsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyTensorsDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">512</span><span class="p">))</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="n">doc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>📄<span class="w"> </span>MyTensorsDoc<span class="w"> </span>:<span class="w"> </span>0a10f88<span class="w"> </span>...
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>╭─────────────────────┬────────────────────────────────────────────────────────╮
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>│<span class="w"> </span>Attribute<span class="w">           </span>│<span class="w"> </span>Value<span class="w">                                                  </span>│
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>├─────────────────────┼────────────────────────────────────────────────────────┤
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>│<span class="w"> </span>tensor:<span class="w"> </span>TorchTensor<span class="w"> </span>│<span class="w"> </span>TorchTensor<span class="w"> </span>of<span class="w"> </span>shape<span class="w"> </span><span class="o">(</span><span class="m">512</span>,<span class="o">)</span>,<span class="w"> </span>dtype:<span class="w"> </span>torch.float64<span class="w">      </span>│
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>╰─────────────────────┴────────────────────────────────────────────────────────╯
+</span></code></pre></div>
+<p>It also works in the other direction:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">class</span> <span class="nc">MyTensorsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyTensorsDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">512</span><span class="p">))</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">doc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>📄<span class="w"> </span>MyTensorsDoc<span class="w"> </span>:<span class="w"> </span>157e6f5<span class="w"> </span>...
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>╭─────────────────┬────────────────────────────────────────────────────────────╮
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>│<span class="w"> </span>Attribute<span class="w">       </span>│<span class="w"> </span>Value<span class="w">                                                      </span>│
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>├─────────────────┼────────────────────────────────────────────────────────────┤
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>│<span class="w"> </span>tensor:<span class="w"> </span>NdArray<span class="w"> </span>│<span class="w"> </span>NdArray<span class="w"> </span>of<span class="w"> </span>shape<span class="w"> </span><span class="o">(</span><span class="m">512</span>,<span class="o">)</span>,<span class="w"> </span>dtype:<span class="w"> </span>float32<span class="w">                    </span>│
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>╰─────────────────┴────────────────────────────────────────────────────────────╯
+</span></code></pre></div>
+<h2 id="docvec-with-anytensor"><code>DocVec</code> with <code>AnyTensor</code></h2>
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> can be used with a <code>BaseDoc</code> which has a field of <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.AnyTensor"><code>AnyTensor</code></a> or any other Union of tensor types. </p>
+<p>However, the <code>DocVec</code> needs to know the tensor type of the tensor field beforehand to create the correct column.</p>
+<p>You can specify these parameters with the <code>tensor_type</code> parameter of the [<code>DocVec</code>][docarray.vectorizer.doc_vec.DocVec] constructor:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">NdArray</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    <span class="p">[</span><span class="n">MyDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">NdArray</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="p">)</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>NdArray</code> will be used by default if:</p>
 <ul>
-<li><a href="https://weaviate.io/">Weaviate</a>  |  <a href="../index_weaviate/">Docs</a></li>
-<li><a href="https://qdrant.tech/">Qdrant</a>  |  <a href="../index_qdrant/">Docs</a></li>
-<li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
-<li><a href="https://github.com/nmslib/hnswlib">Hnswlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
-<li>InMemoryExactNNSearch  |  <a href="../index_in_memory/">Docs</a></li>
-</ul></div>
+<li>you don't specify the <code>tensor_type</code> parameter</li>
+<li>your tensor field is a Union of tensor or <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.AnyTensor"><code>AnyTensor</code></a></li>
+</ul>
+</div></div>
 
 
   

@@ -1003,6 +1003,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -1123,6 +1125,20 @@
     <li class="md-nav__item">
       <a href="data_types/multimodal/multimodal/" class="md-nav__link">
         🗃 Multimodal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data_types/tensor/tensor/" class="md-nav__link">
+        🔢 Tensor
       </a>
     </li>
   
@@ -2301,7 +2317,6 @@ Also, we have a <a href="#coming-from-pydantic">dedicated section</a> just for y
 </span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTensor</span><span class="p">]</span>
 </span></code></pre></div>
 <p>So not only can you define the types of your data, you can even <strong>specify the shape of your tensors!</strong></p>
-<p>Once you have your model in the form of a document, you can work with it!</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Create a document</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyDocument</span><span class="p">(</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"This is a photo of a mountain"</span><span class="p">,</span>
@@ -2311,14 +2326,15 @@ Also, we have a <a href="#coming-from-pydantic">dedicated section</a> just for y
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Load image tensor from URL</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">doc</span><span class="o">.</span><span class="n">image_tensor</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">image_url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Compute embedding with any model of your choice</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">def</span> <span class="nf">clip_image_encoder</span><span class="p">(</span><span class="n">image_tensor</span><span class="p">:</span> <span class="n">TorchTensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TorchTensor</span><span class="p">:</span>  <span class="c1"># dummy function</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># Compute embedding with any model of your choice</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">def</span> <span class="nf">clip_image_encoder</span><span class="p">(</span><span class="n">image_tensor</span><span class="p">:</span> <span class="n">TorchTensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TorchTensor</span><span class="p">:</span>  <span class="c1"># dummy function</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">clip_image_encoder</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">image_tensor</span><span class="p">)</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># torch.Size([512])</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">clip_image_encoder</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">image_tensor</span><span class="p">)</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># torch.Size([512])</span>
 </span></code></pre></div>
 <h3 id="compose-nested-documents">Compose nested Documents</h3>
 <p>Of course, you can compose Documents into a nested structure:</p>
