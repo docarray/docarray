@@ -330,20 +330,22 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
+        search_field: str = '',
         limit: int = 10,
-        **kwargs: Any,
+        **kwargs,
     ):
         """
         Find k-nearest neighbors of the query.
 
         :param query: query vector for KNN/ANN search. Has single axis.
+        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug('Executing `find`')
-        if kwargs.get('search_field'):
-            logging.warning(
-                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
+        if search_field != '':
+            raise ValueError(
+                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
             )
         embedding_field = self._get_embedding_field()
         if isinstance(query, BaseDoc):
@@ -352,7 +354,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
         docs, scores = self._find(
-            query_vec_np, limit=limit, **kwargs
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
         if isinstance(docs, List):
@@ -379,12 +381,12 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self,
         query: np.ndarray,
         limit: int,
+        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
-        **kwargs: Any,
     ) -> _FindResult:
         index_name = self.index_name
-        if kwargs.get('search_field'):
+        if search_field:
             logging.warning(
                 'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
@@ -431,6 +433,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def find_batched(
         self,
         queries: Union[AnyTensor, DocList],
+        search_field: str = '',
         limit: int = 10,
         **kwargs: Any,
     ) -> FindResultBatched:
@@ -440,11 +443,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
             or a DocList.
             If a tensor-like is passed, it should have shape (batch_size, vector_dim)
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug('Executing `find_batched`')
-        if kwargs.get('search_field'):
+        if search_field != '':
             logging.warning(
                 'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
@@ -459,7 +465,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec_np = self._to_numpy(queries)
 
         da_list, scores = self._find_batched(
-            query_vec_np, limit=limit, **kwargs
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
@@ -471,6 +477,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self,
         queries: np.ndarray,
         limit: int,
+        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
@@ -824,12 +831,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query,
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
-            **kwargs: Any,
+            **kwargs,
         ) -> Any:
             """
             Find k-nearest neighbors of the query.
 
             :param query: query vector for search. Has single axis.
+            :param search_field: name of the field to search on
             :param score_name: either `"certainty"` (default) or `"distance"`
             :param score_threshold: the threshold of the score
             :return: self
