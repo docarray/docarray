@@ -770,7 +770,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 )
             ]
 
-        def build(self) -> Any:
+        def build(self, *args, **kwargs) -> Any:
             """Build the query object."""
             num_queries = len(self._queries)
 
@@ -831,6 +831,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query,
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
+            search_field: str = '',
         ) -> Any:
             """
             Find k-nearest neighbors of the query.
@@ -838,8 +839,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             :param query: query vector for search. Has single axis.
             :param score_name: either `"certainty"` (default) or `"distance"`
             :param score_threshold: the threshold of the score
+            :param search_field: name of the field to search on
             :return: self
             """
+            if search_field != '':
+                raise ValueError(
+                    'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+                )
+
             near_vector = {
                 "vector": query,
             }
@@ -883,12 +890,12 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def filter(self, where_filter) -> Any:
+        def filter(self, filter_query: Any) -> Any:
             """Find documents in the index based on a filter query
-            :param where_filter: a filter
+            :param filter_query: a filter
             :return: self
             """
-            where_filter = where_filter.copy()
+            where_filter = filter_query.copy()
             self._overwrite_id(where_filter)
             self._queries[0] = self._queries[0].with_where(where_filter)
             return self
@@ -913,7 +920,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def text_search(self, query: str, search_field: Optional[str] = None) -> Any:
-
             """Find documents in the index based on a text search query
 
             :param query: The text to search for
