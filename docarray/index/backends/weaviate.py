@@ -837,7 +837,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             Find k-nearest neighbors of the query.
 
             :param query: query vector for search. Has single axis.
-            :param search_field: name of the field to search on
             :param score_name: either `"certainty"` (default) or `"distance"`
             :param score_threshold: the threshold of the score
             :return: self
