@@ -2,7 +2,7 @@ blank_issues_enabled: true
 contact_links:
   - name: 🤔 Ask a Question
     url: 'https://github.com/docarray/docarray/discussions/new?category=question'
-    about: Ask a question about how to use pydantic using github discussions
+    about: Ask a question about how to use docarray using github discussions
   - name: 🤔 Ask a Question in discord
     url: 'https://discord.com/invite/WaMp6PVPgR'
     about: Or in our discord channel
