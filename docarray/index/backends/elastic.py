@@ -200,17 +200,17 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
         # filter accepts Leaf/Compound query clauses
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html
-        def filter(self, filter_query: Dict[str, Any], limit: int = 10):
+        def filter(self, query: Dict[str, Any], limit: int = 10):
             """Find documents in the index based on a filter query
 
-            :param filter_query: the query to execute
+            :param query: the query to execute
             :param limit: maximum number of documents to return
             :return: self
             """
             self._outer_instance._logger.debug('Executing filter query')
 
             self._query['size'] = limit
-            self._query['query']['bool']['filter'].append(filter_query)
+            self._query['query']['bool']['filter'].append(query)
             return self
 
         def text_search(self, query: str, search_field: str = 'text', limit: int = 10):

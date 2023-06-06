@@ -890,12 +890,12 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def filter(self, filter_query: Any) -> Any:
+        def filter(self, where_filter: Any) -> Any:
             """Find documents in the index based on a filter query
-            :param filter_query: a filter
+            :param where_filter: a filter
             :return: self
             """
-            where_filter = filter_query.copy()
+            where_filter = where_filter.copy()
             self._overwrite_id(where_filter)
             self._queries[0] = self._queries[0].with_where(where_filter)
             return self
