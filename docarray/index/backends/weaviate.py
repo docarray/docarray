@@ -330,7 +330,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def find(
         self,
         query: Union[AnyTensor, BaseDoc],
-        search_field: str = '',
         limit: int = 10,
         **kwargs: Any,
     ):
@@ -353,7 +352,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec = query
         query_vec_np = self._to_numpy(query_vec)
         docs, scores = self._find(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs
+            query_vec_np, limit=limit, **kwargs
         )
 
         if isinstance(docs, List):
@@ -432,7 +431,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def find_batched(
         self,
         queries: Union[AnyTensor, DocList],
-        search_field: str = '',
         limit: int = 10,
         **kwargs: Any,
     ) -> FindResultBatched:
@@ -461,7 +459,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec_np = self._to_numpy(queries)
 
         da_list, scores = self._find_batched(
-            query_vec_np, search_field=search_field, limit=limit, **kwargs
+            query_vec_np, limit=limit, **kwargs
         )
 
         if len(da_list) > 0 and isinstance(da_list[0], List):
@@ -473,7 +471,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self,
         queries: np.ndarray,
         limit: int,
-        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
     ) -> _FindResultBatched:
