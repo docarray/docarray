@@ -332,20 +332,19 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         query: Union[AnyTensor, BaseDoc],
         search_field: str = '',
         limit: int = 10,
-        **kwargs,
+        **kwargs: Any,
     ):
         """
         Find k-nearest neighbors of the query.
 
         :param query: query vector for KNN/ANN search. Has single axis.
-        :param search_field: name of the field to search on
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug('Executing `find`')
-        if search_field != '':
-            raise ValueError(
-                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+        if kwargs.get('search_field'):
+            logging.warning(
+                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
         embedding_field = self._get_embedding_field()
         if isinstance(query, BaseDoc):
@@ -381,14 +380,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self,
         query: np.ndarray,
         limit: int,
-        search_field: str = '',
         score_name: Literal["certainty", "distance"] = "certainty",
         score_threshold: Optional[float] = None,
+        **kwargs: Any,
     ) -> _FindResult:
         index_name = self.index_name
-        if search_field:
+        if kwargs.get('search_field'):
             logging.warning(
-                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
+                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
         near_vector: Dict[str, Any] = {
             "vector": query,
@@ -435,7 +434,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         queries: Union[AnyTensor, DocList],
         search_field: str = '',
         limit: int = 10,
-        **kwargs,
+        **kwargs: Any,
     ) -> FindResultBatched:
         """Find documents in the index using nearest neighbor search.
 
@@ -443,16 +442,13 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
             or a DocList.
             If a tensor-like is passed, it should have shape (batch_size, vector_dim)
-        :param search_field: name of the field to search on.
-            Documents in the index are retrieved based on this similarity
-            of this field to the query.
         :param limit: maximum number of documents to return per query
         :return: a named tuple containing `documents` and `scores`
         """
         self._logger.debug('Executing `find_batched`')
-        if search_field != '':
-            raise ValueError(
-                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+        if kwargs.get('search_field'):
+            logging.warning(
+                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
         embedding_field = self._get_embedding_field()
 
@@ -831,7 +827,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query,
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
-            search_field: str = '',
+            **kwargs: Any,
         ) -> Any:
             """
             Find k-nearest neighbors of the query.
@@ -839,12 +835,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             :param query: query vector for search. Has single axis.
             :param score_name: either `"certainty"` (default) or `"distance"`
             :param score_threshold: the threshold of the score
-            :param search_field: name of the field to search on
             :return: self
             """
-            if search_field != '':
-                raise ValueError(
-                    'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
+            if kwargs.get('search_field'):
+                logging.warning(
+                    'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
                 )
 
             near_vector = {
