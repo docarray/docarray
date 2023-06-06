@@ -388,7 +388,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_name = self.index_name
         if search_field:
             logging.warning(
-                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
+                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
         near_vector: Dict[str, Any] = {
             "vector": query,
@@ -435,7 +435,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         queries: Union[AnyTensor, DocList],
         search_field: str = '',
         limit: int = 10,
-        **kwargs,
+        **kwargs: Any,
     ) -> FindResultBatched:
         """Find documents in the index using nearest neighbor search.
 
@@ -770,7 +770,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 )
             ]
 
-        def build(self) -> Any:
+        def build(self, *args, **kwargs) -> Any:
             """Build the query object."""
             num_queries = len(self._queries)
 
@@ -831,6 +831,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query,
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
+            **kwargs,
         ) -> Any:
             """
             Find k-nearest neighbors of the query.
@@ -840,6 +841,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             :param score_threshold: the threshold of the score
             :return: self
             """
+            if kwargs.get('search_field'):
+                logging.warning(
+                    'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
+                )
+
             near_vector = {
                 "vector": query,
             }
@@ -883,7 +889,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def filter(self, where_filter) -> Any:
+        def filter(self, where_filter: Any) -> Any:
             """Find documents in the index based on a filter query
             :param where_filter: a filter
             :return: self
@@ -913,7 +919,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def text_search(self, query: str, search_field: Optional[str] = None) -> Any:
-
             """Find documents in the index based on a text search query
 
             :param query: The text to search for
