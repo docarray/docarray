@@ -371,7 +371,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         refresh: bool = True,
         chunk_size: Optional[int] = None,
     ):
-
         self._index_subindex(column_to_data)
 
         data = self._transpose_col_value_dict(column_to_data)
@@ -479,7 +478,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
-
         body = self._form_search_body(query, limit, search_field)
 
         resp = self._client_search(**body)
@@ -494,7 +492,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-
         request = []
         for query in queries:
             head = {'index': self.index_name}
@@ -513,7 +510,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Dict[str, Any],
         limit: int,
     ) -> List[Dict]:
-
         resp = self._client_search(query=filter_query, size=limit)
 
         docs, _ = self._format_response(resp)
@@ -525,7 +521,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         filter_queries: Any,
         limit: int,
     ) -> List[List[Dict]]:
-
         request = []
         for query in filter_queries:
             head = {'index': self.index_name}
@@ -543,7 +538,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-
         body = self._form_text_search_body(query, limit, search_field)
         resp = self._client_search(**body)
 
@@ -557,7 +551,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-
         request = []
         for query in queries:
             head = {'index': self.index_name}
@@ -571,7 +564,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResultBatched(documents=list(das), scores=scores)
 
     def _filter_by_parent_id(self, id: str) -> List[str]:
-
         resp = self._client_search(
             query={'term': {'parent_id': id}}, fields=['id'], _source=False
         )
@@ -676,7 +668,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return docs, [parse_obj_as(NdArray, np.array(s)) for s in scores]
 
     def _refresh(self, index_name: str):
-
         self._client.indices.refresh(index=index_name)
 
     ###############################################
@@ -684,27 +675,21 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     ###############################################
 
     def _client_put_mapping(self, mappings: Dict[str, Any]):
-
         self._client.indices.put_mapping(
             index=self.index_name, properties=mappings['properties']
         )
 
     def _client_create(self, mappings: Dict[str, Any]):
-
         self._client.indices.create(index=self.index_name, mappings=mappings)
 
     def _client_put_settings(self, settings: Dict[str, Any]):
-
         self._client.indices.put_settings(index=self.index_name, settings=settings)
 
     def _client_mget(self, ids: Sequence[str]):
-
         return self._client.mget(index=self.index_name, ids=ids)
 
     def _client_search(self, **kwargs):
-
         return self._client.search(index=self.index_name, **kwargs)
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
-
         return self._client.msearch(index=self.index_name, searches=request)
