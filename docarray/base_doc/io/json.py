@@ -1,5 +1,5 @@
 import orjson
-from pydantic.json import ENCODERS_BY_TYPE
+from pydantic.deprecated.json import ENCODERS_BY_TYPE
 
 
 def _default_orjson(obj):

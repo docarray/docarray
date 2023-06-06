@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Type, TypeVar, Union
 from uuid import UUID
 
-from pydantic import BaseConfig, parse_obj_as
-from pydantic.fields import ModelField
+from pydantic import parse_obj_as
+from pydantic_core import core_schema
 
 from docarray.typing.proto_register import _register_proto
 
@@ -28,8 +28,7 @@ class ID(str, AbstractType):
     def validate(
         cls: Type[T],
         value: Union[str, int, UUID],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        _: core_schema.ValidationInfo
     ) -> T:
         try:
             id: str = str(value)

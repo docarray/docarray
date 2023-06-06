@@ -1,8 +1,7 @@
 from abc import abstractmethod
-from typing import Any, Type, TypeVar
+from typing import Type, TypeVar
 
-from pydantic import BaseConfig
-from pydantic.fields import ModelField
+from pydantic_core import core_schema
 
 from docarray.base_doc.base_node import BaseNode
 
@@ -14,12 +13,9 @@ class AbstractType(BaseNode):
     def __get_validators__(cls):
         yield cls.validate
 
+
+    ## TODO: this can stay compatible with pydantic v1
     @classmethod
     @abstractmethod
-    def validate(
-        cls: Type[T],
-        value: Any,
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
+    def validate(cls: Type[T], __input_value: str, _: core_schema.ValidationInfo) -> T:
         ...
