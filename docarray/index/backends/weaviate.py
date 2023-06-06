@@ -451,8 +451,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         self._logger.debug('Executing `find_batched`')
         if search_field != '':
-            logging.warning(
-                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
+            raise ValueError(
+                'Argument search_field is not supported for WeaviateDocumentIndex.\nSet search_field to an empty string to proceed.'
             )
         embedding_field = self._get_embedding_field()
 
