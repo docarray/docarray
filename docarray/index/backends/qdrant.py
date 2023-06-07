@@ -612,7 +612,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
         document = cast(Dict[str, Any], point.payload)
-        generated_vectors = document.pop('__generated_vectors')
+        generated_vectors = (
+            document.pop('__generated_vectors')
+            if '__generated_vectors' in document else []
+        )
         vectors = point.vector if point.vector else dict()
         if not isinstance(vectors, dict):
             vectors = {'__default__': vectors}
