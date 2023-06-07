@@ -75,12 +75,12 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
 
     class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps_and_decode
+        json_loads = orjson.loads # todo deprecated
+        json_dumps = orjson_dumps_and_decode # todo deprecated
         # `DocArrayResponse` is able to handle tensors by itself.
         # Therefore, we stop FastAPI from doing any transformations
         # on tensors by setting an identity function as a custom encoder.
-        json_encoders = {AbstractTensor: lambda x: x}
+        json_encoders = {AbstractTensor: lambda x: x} # todo deprecated
 
         validate_assignment = True
         _load_extra_fields_from_protobuf = False

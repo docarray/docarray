@@ -109,6 +109,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
+        _: Any,
     ) -> T:
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)

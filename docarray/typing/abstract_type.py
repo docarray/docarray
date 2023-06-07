@@ -14,7 +14,7 @@ class AbstractType(BaseNode):
     ## TODO: this can stay compatible with pydantic v1
     @classmethod
     @abstractmethod
-    def validate(cls: Type[T], __input_value: Any) -> T:
+    def validate(cls: Type[T], __input_value: Any, _: Any) -> T:
         ...
 
     @classmethod
