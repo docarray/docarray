@@ -29,7 +29,8 @@ def tmp_collection_name():
 def qdrant() -> qdrant_client.QdrantClient:
     """This fixture takes care of removing the collection before each test case"""
     client = qdrant_client.QdrantClient(path='/tmp/qdrant-local')
-    client.delete_collection(collection_name='documents')
+    for collection in client.get_collections().collections:
+        client.delete_collection(collection.name)
     return client
 
 
