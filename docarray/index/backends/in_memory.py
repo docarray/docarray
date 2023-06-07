@@ -203,12 +203,12 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         for field_, type_, _ in self._flatten_schema(cast(Type[BaseDoc], self._schema)):
             if safe_issubclass(type_, AnyDocArray):
                 for id in doc_ids:
-                    doc = self._get_items([id])
-                    if len(doc) == 0:
+                    doc_ = self._get_items([id])
+                    if len(doc_) == 0:
                         raise KeyError(
                             f"The document (id = '{id}') does not exist in the ExactNNIndexer."
                         )
-                    sub_ids = [sub_doc.id for sub_doc in getattr(doc[0], field_)]
+                    sub_ids = [sub_doc.id for sub_doc in getattr(doc_[0], field_)]
                     del self._subindices[field_][sub_ids]
 
         indices = []
@@ -236,11 +236,14 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             if safe_issubclass(type_, AnyDocArray):
                 _list = getattr(ori_doc, field_name)
                 for i, nested_doc in enumerate(_list):
+                    sub_indexer: InMemoryExactNNIndex = cast(
+                        InMemoryExactNNIndex, self._subindices[field_name]
+                    )
                     nested_doc = self._subindices[field_name]._ori_schema(
                         **nested_doc.__dict__
                     )
 
-                    _list[i] = self._subindices[field_name]._ori_items(nested_doc)
+                    _list[i] = sub_indexer._ori_items(nested_doc)
 
         return ori_doc
 
@@ -437,7 +440,9 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         :param sub: subindex name
         :return: the root_id of the Document
         """
-        subindex = self._subindices[root]
+        subindex: InMemoryExactNNIndex = cast(
+            InMemoryExactNNIndex, self._subindices[root]
+        )
 
         if not sub:
             sub_doc = subindex._get_items([id], raw=True)
