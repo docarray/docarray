@@ -120,7 +120,7 @@ class UpdateMixin:
                             dict_fields.append(field_name)
                         else:
                             v = getattr(doc, field_name)
-                            if v:
+                            if v is not None:
                                 if isinstance(v, UpdateMixin):
                                     nested_docs_fields.append(field_name)
                                 else:
