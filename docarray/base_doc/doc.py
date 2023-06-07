@@ -1,25 +1,10 @@
 import os
-import warnings
-from typing import (
-    TYPE_CHECKING,
-    AbstractSet,
-    Any,
-    Callable,
-    Dict,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-    no_type_check,
-)
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, no_type_check
 
 import orjson
 from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
+
 # from pydantic.main import ROOT_KEY
 from rich.console import Console
 
@@ -32,7 +17,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 if TYPE_CHECKING:
     from pydantic import Protocol
     from pydantic.types import StrBytes
-    from pydantic.typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
 
     from docarray.array.doc_vec.column_storage import ColumnStorageView
 
@@ -42,7 +26,7 @@ T = TypeVar('T', bound='BaseDoc')
 T_update = TypeVar('T_update', bound='UpdateMixin')
 
 
-ExcludeType = Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']]
+# ExcludeType = Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']]
 
 
 class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
@@ -73,14 +57,14 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
 
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
-
+    # id : ID
     class Config:
-        json_loads = orjson.loads # todo deprecated
-        json_dumps = orjson_dumps_and_decode # todo deprecated
+        json_loads = orjson.loads  # todo deprecated
+        json_dumps = orjson_dumps_and_decode  # todo deprecated
         # `DocArrayResponse` is able to handle tensors by itself.
         # Therefore, we stop FastAPI from doing any transformations
         # on tensors by setting an identity function as a custom encoder.
-        json_encoders = {AbstractTensor: lambda x: x} # todo deprecated
+        json_encoders = {AbstractTensor: lambda x: x}  # todo deprecated
 
         validate_assignment = True
         _load_extra_fields_from_protobuf = False
@@ -212,7 +196,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     # https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
     ########################################################################################################################################################
 
-    def json(self, *args, **kwargs) -> str: # todo: remove
+    def json(self, *args, **kwargs) -> str:  # todo: remove
         return super().json(*args, **kwargs)
 
     # def json(
@@ -346,30 +330,30 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     #
     #     return data
 
-    def _exclude_doclist(
-        self, exclude: ExcludeType
-    ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
-        doclist_exclude_fields = []
-        for field in self.__fields__.keys():
-            from docarray import DocList
-
-            type_ = self._get_field_type(field)
-            if isinstance(type_, type) and issubclass(type_, DocList):
-                doclist_exclude_fields.append(field)
-
-        original_exclude = exclude
-        if exclude is None:
-            exclude = set(doclist_exclude_fields)
-        elif isinstance(exclude, AbstractSet):
-            exclude = set([*exclude, *doclist_exclude_fields])
-        elif isinstance(exclude, Mapping):
-            exclude = dict(**exclude)
-            exclude.update({field: ... for field in doclist_exclude_fields})
-
-        return (
-            exclude,
-            original_exclude,
-            doclist_exclude_fields,
-        )
+    # def _exclude_doclist(
+    #     self, exclude: ExcludeType
+    # ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
+    #     doclist_exclude_fields = []
+    #     for field in self.__fields__.keys():
+    #         from docarray import DocList
+    #
+    #         type_ = self._get_field_type(field)
+    #         if isinstance(type_, type) and issubclass(type_, DocList):
+    #             doclist_exclude_fields.append(field)
+    #
+    #     original_exclude = exclude
+    #     if exclude is None:
+    #         exclude = set(doclist_exclude_fields)
+    #     elif isinstance(exclude, AbstractSet):
+    #         exclude = set([*exclude, *doclist_exclude_fields])
+    #     elif isinstance(exclude, Mapping):
+    #         exclude = dict(**exclude)
+    #         exclude.update({field: ... for field in doclist_exclude_fields})
+    #
+    #     return (
+    #         exclude,
+    #         original_exclude,
+    #         doclist_exclude_fields,
+    #     )
 
     to_json = json

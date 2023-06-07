@@ -19,12 +19,12 @@ from typing import (
 )
 
 import numpy as np
+from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
-from pydantic import GetJsonSchemaHandler, GetCoreSchemaHandler
 
 if TYPE_CHECKING:
     from docarray.proto import NdArrayProto, NodeProto
@@ -233,9 +233,10 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             raise TypeError(f'{item} is not a valid tensor shape.')
         return item
 
-
     @classmethod
-    def __get_pydantic_json_schema__(cls, schema: CoreSchema, handler: GetJsonSchemaHandler) -> Dict[str, Any]:
+    def __get_pydantic_json_schema__(
+        cls, schema: CoreSchema, handler: GetJsonSchemaHandler
+    ) -> Dict[str, Any]:
         json_schema = handler(schema)
         json_schema.update(type='array', items={'type': 'number'})
         if cls.__docarray_target_shape__ is not None:
@@ -271,8 +272,9 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             def validate(
                 _cls,
                 value: Any,
+                _: Any,
             ):
-                t = super().validate(value)
+                t = super().validate(value, None)
                 return _cls.__docarray_validate_shape__(
                     t, _cls.__docarray_target_shape__
                 )

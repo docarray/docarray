@@ -12,6 +12,8 @@ def test_base_document_init():
     doc = BaseDoc()
 
     assert doc.id is not None
+
+
 def test_update():
     class MyDocument(BaseDoc):
         content: str
@@ -29,6 +31,26 @@ def test_update():
     assert doc1.tags_ == ['python', 'AI', 'docarray']
 
 
+def test_init_class():
+    class MyDoc(BaseDoc):
+        content: str
+
+    doc = MyDoc(content='hello world')
+    assert doc.content == 'hello world'
+    assert doc.id is not None
+
+
+def test_nested_class():
+    class InnerDoc(BaseDoc):
+        content: str
+
+    class OuterDoc(BaseDoc):
+        inner: InnerDoc
+
+    doc = OuterDoc(inner=InnerDoc(content='hello world'))
+    assert doc.inner.content == 'hello world'
+    assert doc.id is not None
+
 
 def test_equal_nested_docs():
     import numpy as np
@@ -41,7 +63,6 @@ def test_equal_nested_docs():
 
     class NestedDoc(BaseDoc):
         docs: DocList[SimpleDoc]
-
 
     nested_docs = [SimpleDoc(simple_tens=np.ones(10)) for j in range(2)]
 

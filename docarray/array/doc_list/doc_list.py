@@ -10,11 +10,11 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    overload, Dict,
+    overload,
 )
 
-from pydantic import parse_obj_as, GetJsonSchemaHandler
-from pydantic_core import CoreSchema
+from pydantic import GetCoreSchemaHandler, parse_obj_as
+from pydantic_core import core_schema
 from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
@@ -26,9 +26,6 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocListProto
     from docarray.typing import TorchTensor
@@ -47,7 +44,7 @@ class DocList(
     """
      DocList is a container of Documents.
 
-    A DocList is a list of Documents of any schema. However, many
+    A DocList is a list of Documents of any schema. However, many2
     DocList features are only available if these Documents are
     homogeneous and follow the same schema. To precise this schema you can use
     the `DocList[MyDocument]` syntax where MyDocument is a Document class
@@ -260,7 +257,7 @@ class DocList(
         return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
-    def validate(cls: Type[T], value: Union[T, Iterable[BaseDoc]]) -> T:
+    def validate(cls: Type[T], value: Union[T, Iterable[BaseDoc]], _: Any) -> T:
         from docarray.array.doc_vec.doc_vec import DocVec
 
         if isinstance(value, (cls, DocVec)):
@@ -312,3 +309,11 @@ class DocList(
 
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, _source_type: Any, _handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.general_plain_validator_function(
+            cls.validate,
+        )

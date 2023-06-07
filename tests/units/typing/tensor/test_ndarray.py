@@ -277,3 +277,13 @@ def test_tensorflow_to_ndarray():
     assert isinstance(doc.tensor, np.ndarray)
     assert isinstance(doc.tensor, NdArray)
     assert isinstance(doc.tensor, NdArray[10])
+
+
+def test_base_doc_ndarray():
+    class MyAudioDoc(BaseDoc):
+        tensor: NdArray[10]
+
+    doc = MyAudioDoc(tensor=np.zeros(10))
+
+    assert isinstance(doc.tensor, np.ndarray)
+    assert isinstance(doc.tensor, NdArray)
