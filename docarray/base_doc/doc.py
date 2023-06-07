@@ -19,6 +19,7 @@ from typing import (
 
 import orjson
 from pydantic import BaseModel, Field
+from pydantic.fields import FieldInfo
 # from pydantic.main import ROOT_KEY
 from rich.console import Console
 
@@ -93,6 +94,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         doc._init_private_attributes()
         return doc
 
+    @property
+    def __fields__(self) -> dict[str, FieldInfo]:
+        return self.model_fields
+
     @classmethod
     def _get_field_type(cls, field: str) -> Type:
         """
@@ -101,7 +106,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
-        return cls.__fields__[field].outer_type_
+        return cls.__fields__[field].annotation
 
     def __str__(self) -> str:
         content: Any = None
@@ -206,6 +211,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     ### this section is just for documentation purposes will be removed later once
     # https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
     ########################################################################################################################################################
+
+    def json(self, *args, **kwargs) -> str: # todo: remove
+        return super().json(*args, **kwargs)
 
     # def json(
     #     self,

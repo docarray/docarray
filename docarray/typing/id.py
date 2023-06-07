@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Type, TypeVar, Union, Any
 from uuid import UUID
 
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, GetCoreSchemaHandler
 from pydantic_core import core_schema
 
 from docarray.typing.proto_register import _register_proto
@@ -21,20 +21,17 @@ class ID(str, AbstractType):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
     def validate(
         cls: Type[T],
         value: Union[str, int, UUID],
-        _: core_schema.ValidationInfo
     ) -> T:
         try:
             id: str = str(value)
             return cls(id)
         except Exception:
             raise ValueError(f'Expected a str, int or UUID, got {type(value)}')
+
+
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert an ID into a NodeProto message. This function should
@@ -55,3 +52,12 @@ class ID(str, AbstractType):
         :return: a string
         """
         return parse_obj_as(cls, pb_msg)
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, _source_type: Any, _handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.no_info_after_validator_function(
+            cls.validate,
+            core_schema.StringSchema(),
+        )

@@ -12,8 +12,6 @@ def test_base_document_init():
     doc = BaseDoc()
 
     assert doc.id is not None
-
-
 def test_update():
     class MyDocument(BaseDoc):
         content: str
@@ -31,6 +29,7 @@ def test_update():
     assert doc1.tags_ == ['python', 'AI', 'docarray']
 
 
+
 def test_equal_nested_docs():
     import numpy as np
 
@@ -43,8 +42,11 @@ def test_equal_nested_docs():
     class NestedDoc(BaseDoc):
         docs: DocList[SimpleDoc]
 
+
+    nested_docs = [SimpleDoc(simple_tens=np.ones(10)) for j in range(2)]
+
     nested_docs = NestedDoc(
-        docs=DocList[SimpleDoc]([SimpleDoc(simple_tens=np.ones(10)) for j in range(2)]),
+        docs=DocList[SimpleDoc](nested_docs),
     )
 
     assert nested_docs == nested_docs
@@ -66,23 +68,23 @@ def nested_docs():
     return nested_docs
 
 
-def test_nested_to_dict(nested_docs):
-    d = nested_docs.dict()
+def test_nested_to_model_dump(nested_docs):
+    d = nested_docs.model_dump()
     assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
 
 
-def test_nested_to_dict_exclude(nested_docs):
-    d = nested_docs.dict(exclude={'docs'})
+def test_nested_to_model_dump_exclude(nested_docs):
+    d = nested_docs.model_dump(exclude={'docs'})
     assert 'docs' not in d.keys()
 
 
-def test_nested_to_dict_exclude_set(nested_docs):
-    d = nested_docs.dict(exclude={'hello'})
+def test_nested_to_model_dump_exclude_set(nested_docs):
+    d = nested_docs.model_dump(exclude={'hello'})
     assert 'hello' not in d.keys()
 
 
-def test_nested_to_dict_exclude_dict(nested_docs):
-    d = nested_docs.dict(exclude={'hello': True})
+def test_nested_to_model_dump_exclude_model_dump(nested_docs):
+    d = nested_docs.model_dump(exclude={'hello': True})
     assert 'hello' not in d.keys()
 
 
@@ -105,12 +107,12 @@ def nested_none_docs():
     return nested_docs
 
 
-def test_nested_none_to_dict(nested_none_docs):
-    d = nested_none_docs.dict()
+def test_nested_none_to_model_dump(nested_none_docs):
+    d = nested_none_docs.model_dump()
     assert d == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
 
 
 def test_nested_none_to_json(nested_none_docs):
     d = nested_none_docs.json()
     d = nested_none_docs.__class__.parse_raw(d)
-    assert d.dict() == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
+    assert d.model_dump() == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}

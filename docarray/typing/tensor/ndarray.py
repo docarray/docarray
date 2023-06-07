@@ -20,9 +20,6 @@ if tf_available:
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
@@ -107,12 +104,11 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         # the value returned from the previous validator
         yield cls.validate
 
+
     @classmethod
     def validate(
         cls: Type[T],
         value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)

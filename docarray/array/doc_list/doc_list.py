@@ -10,10 +10,11 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    overload,
+    overload, Dict,
 )
 
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, GetJsonSchemaHandler
+from pydantic_core import CoreSchema
 from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
@@ -259,12 +260,7 @@ class DocList(
         return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ):
+    def validate(cls: Type[T], value: Union[T, Iterable[BaseDoc]]) -> T:
         from docarray.array.doc_vec.doc_vec import DocVec
 
         if isinstance(value, (cls, DocVec)):
