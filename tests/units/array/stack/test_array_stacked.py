@@ -359,7 +359,7 @@ def test_to_device():
 
 def test_to_device_with_nested_da():
     class Video(BaseDoc):
-        images: DocList[ImageDoc]
+        images: DocVec[ImageDoc]
 
     da_image = DocVec[ImageDoc](
         [ImageDoc(tensor=torch.zeros(3, 5))], tensor_type=TorchTensor
