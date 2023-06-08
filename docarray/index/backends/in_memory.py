@@ -19,6 +19,8 @@ from typing import (
 import numpy as np
 
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
+from docarray.helper import _shallow_copy_doc
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
 from docarray.index.backends.helper import (
     _collect_query_args,
@@ -26,6 +28,7 @@ from docarray.index.backends.helper import (
 )
 from docarray.typing import AnyTensor, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.filter import filter_docs
 from docarray.utils.find import (
     FindResult,
@@ -69,6 +72,11 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 self._docs = DocList.__class_getitem__(
                     cast(Type[BaseDoc], self._schema)
                 ).load_binary(file=index_file_path)
+
+                data_by_columns = self._get_col_value_dict(self._docs)
+                self._update_subindex_data(self._docs)
+                self._index_subindex(data_by_columns)
+
             else:
                 self._logger.warning(
                     f'Index file does not exist: {index_file_path}. '
@@ -100,6 +108,13 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             or None if ``python_type`` is not supported.
         """
         return python_type
+
+    @property
+    def out_schema(self) -> Type[BaseDoc]:
+        """Return the original schema (without the parent_id from new_schema type)"""
+        if self._is_subindex:
+            return self._ori_schema
+        return cast(Type[BaseDoc], self._schema)
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
@@ -152,6 +167,12 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
         self._docs.extend(docs)
+
+        # Add parent_id to all sub-index documents and store sub-index documents
+        data_by_columns = self._get_col_value_dict(docs)
+        self._update_subindex_data(docs)
+        self._index_subindex(data_by_columns)
+
         self._rebuild_embedding()
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
@@ -184,6 +205,17 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         :param doc_ids: ids to delete from the Document Store
         """
+        for field_, type_, _ in self._flatten_schema(cast(Type[BaseDoc], self._schema)):
+            if safe_issubclass(type_, AnyDocArray):
+                for id in doc_ids:
+                    doc_ = self._get_items([id])
+                    if len(doc_) == 0:
+                        raise KeyError(
+                            f"The document (id = '{id}') does not exist in the ExactNNIndexer."
+                        )
+                    sub_ids = [sub_doc.id for sub_doc in getattr(doc_[0], field_)]
+                    del self._subindices[field_][sub_ids]
+
         indices = []
         for i, doc in enumerate(self._docs):
             if doc.id in doc_ids:
@@ -192,21 +224,58 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         del self._docs[indices]
         self._rebuild_embedding()
 
+    def _ori_items(self, doc: BaseDoc) -> BaseDoc:
+        """
+        The Indexer's backend stores parent_id to support nested data. However,
+        this method enables us to retrieve the original items in their original
+        type, which is what the user interacts with.
+
+        :param doc: The input document in New_Schema format from the Indexer's backend.
+        :return: The input document with its original schema.
+        """
+
+        ori_doc = _shallow_copy_doc(doc)
+        for field_name, type_, _ in self._flatten_schema(
+            cast(Type[BaseDoc], self.out_schema)
+        ):
+            if safe_issubclass(type_, AnyDocArray):
+                _list = getattr(ori_doc, field_name)
+                for i, nested_doc in enumerate(_list):
+                    sub_indexer: InMemoryExactNNIndex = cast(
+                        InMemoryExactNNIndex, self._subindices[field_name]
+                    )
+                    nested_doc = self._subindices[field_name]._ori_schema(
+                        **nested_doc.__dict__
+                    )
+
+                    _list[i] = sub_indexer._ori_items(nested_doc)
+
+        return ori_doc
+
     def _get_items(
-        self, doc_ids: Sequence[str]
+        self, doc_ids: Sequence[str], raw: bool = False
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
 
         :param doc_ids: ids to get from the Document index
+        :param raw: if raw, output the new_schema type (with parent id)
         :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`.
             Duplicate `doc_ids` can be omitted in the output.
         """
-        indices = []
+
+        out_docs = []
         for i, doc in enumerate(self._docs):
             if doc.id in doc_ids:
-                indices.append(i)
-        return self._docs[indices]
+                if raw:
+                    out_docs.append(doc)
+                else:
+                    ori_doc = self._ori_items(doc)
+                    schema_cls = cast(Type[BaseDoc], self.out_schema)
+                    new_doc = schema_cls(**ori_doc.__dict__)
+                    out_docs.append(new_doc)
+
+        return out_docs
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
@@ -267,9 +336,17 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             metric=config['space'],
             cache=self._embedding_map,
         )
-        docs_with_schema = DocList.__class_getitem__(cast(Type[BaseDoc], self._schema))(
-            docs
-        )
+
+        docs_ = []
+        for doc in docs:
+            ori_doc = self._ori_items(doc)
+            schema_cls = cast(Type[BaseDoc], self.out_schema)
+            docs_.append(schema_cls(**ori_doc.__dict__))
+
+        docs_with_schema = DocList.__class_getitem__(
+            cast(Type[BaseDoc], self.out_schema)
+        )(docs_)
+
         return FindResult(documents=docs_with_schema, scores=scores)
 
     def _find(
@@ -359,3 +436,30 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     def persist(self, file: str = 'in_memory_index.bin') -> None:
         """Persist InMemoryExactNNIndex into a binary file."""
         self._docs.save_binary(file=file)
+
+    def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
+        """Get the root_id given the id of a subindex Document and the root and subindex name
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex: InMemoryExactNNIndex = cast(
+            InMemoryExactNNIndex, self._subindices[root]
+        )
+
+        if not sub:
+            sub_doc = subindex._get_items([id], raw=True)
+            parent_id = (
+                sub_doc[0]['parent_id']
+                if isinstance(sub_doc[0], dict)
+                else sub_doc[0].parent_id
+            )
+            return parent_id
+        else:
+            fields = sub.split('__')
+            cur_root_id = subindex._get_root_doc_id(
+                id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_doc_id(cur_root_id, root, '')

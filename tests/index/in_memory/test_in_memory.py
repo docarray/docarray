@@ -288,3 +288,56 @@ def test_index_find_speedup():
         matches, scores = find_similar_docs(db, queries, 'embedding', 5)
         assert len(matches) == num_queries
         assert len(matches[0]) == 5
+
+
+def test_nested_document_find():
+    from numpy import all
+
+    from docarray.typing import VideoUrl
+
+    class VideoDoc(BaseDoc):
+        url: VideoUrl
+        tensor_video: NdArray[256]
+
+    class MyDoc(BaseDoc):
+        docs: DocList[VideoDoc]
+        tensor: NdArray[256]
+
+    doc_index = InMemoryExactNNIndex[MyDoc]()
+
+    index_docs = [
+        MyDoc(
+            id=f'{i}',
+            docs=DocList[VideoDoc](
+                [
+                    VideoDoc(
+                        url=f'http://example.ai/videos/{i}-{j}',
+                        tensor_video=(np.ones(256)) * i,
+                    )
+                    for j in range(10)
+                ]
+            ),
+            tensor=np.ones(256),
+        )
+        for i in range(10)
+    ]
+
+    # index the Documents
+    doc_index.index(index_docs)
+
+    root_docs, sub_docs, scores = doc_index.find_subindex(
+        np.ones(256), subindex='docs', search_field='tensor_video', limit=5
+    )
+
+    assert doc_index.num_docs() == 10
+    assert doc_index._subindices['docs'].num_docs() == 100
+
+    assert type(sub_docs) == DocList[VideoDoc]
+    assert type(sub_docs[0]) == VideoDoc
+    assert type(root_docs[0]) == MyDoc
+    assert len(scores) == 5
+    assert all(scores) == 1.0
+
+    del doc_index['0']
+    assert doc_index.num_docs() == 9
+    assert doc_index._subindices['docs'].num_docs() == 90
