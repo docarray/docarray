@@ -72,6 +72,11 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 self._docs = DocList.__class_getitem__(
                     cast(Type[BaseDoc], self._schema)
                 ).load_binary(file=index_file_path)
+
+                data_by_columns = self._get_col_value_dict(self._docs)
+                self._update_subindex_data(self._docs)
+                self._index_subindex(data_by_columns)
+
             else:
                 self._logger.warning(
                     f'Index file does not exist: {index_file_path}. '
