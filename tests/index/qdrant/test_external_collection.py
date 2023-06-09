@@ -18,13 +18,11 @@ def test_external_collection_without_generated_vectors(qdrant_config):
 
     qdrant_client.recreate_collection(
         collection_name='test',
-
         vectors_config={
             'cuisine_vector': models.VectorParams(
-                size=4,
-                distance=models.Distance.COSINE
+                size=4, distance=models.Distance.COSINE
             )
-        }
+        },
     )
 
     qdrant_client.upsert(
@@ -54,7 +52,7 @@ def test_external_collection_without_generated_vectors(qdrant_config):
                     'price': 1.99,
                 },
             ),
-        ]
+        ],
     )
 
     results = doc_index.find(
@@ -64,4 +62,3 @@ def test_external_collection_without_generated_vectors(qdrant_config):
     )
 
     assert results is not None
-

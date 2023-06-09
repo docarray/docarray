@@ -614,7 +614,8 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         document = cast(Dict[str, Any], point.payload)
         generated_vectors = (
             document.pop('__generated_vectors')
-            if '__generated_vectors' in document else []
+            if '__generated_vectors' in document
+            else []
         )
         vectors = point.vector if point.vector else dict()
         if not isinstance(vectors, dict):
