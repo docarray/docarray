@@ -341,3 +341,9 @@ def test_nested_document_find():
     del doc_index['0']
     assert doc_index.num_docs() == 9
     assert doc_index._subindices['docs'].num_docs() == 90
+
+
+def test_document_contain(doc_index):
+    num_docs = doc_index.num_docs()
+    for i in range(num_docs):
+        assert (doc_index._docs[i] in doc_index) is True
