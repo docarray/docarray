@@ -2,11 +2,11 @@ __version__ = '0.33.1'
 
 import logging
 
-from docarray.array import DocList, DocVec
+from docarray.array import DocDict, DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.utils._internal.misc import _get_path_from_docarray_root_level
 
-__all__ = ['BaseDoc', 'DocList', 'DocVec']
+__all__ = ['BaseDoc', 'DocList', 'DocVec', 'DocDict']
 
 logger = logging.getLogger('docarray')
 

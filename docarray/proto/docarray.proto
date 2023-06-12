@@ -64,6 +64,8 @@ message NodeProto {
     ListOfAnyProto tuple = 11;
     // dictionary with string as keys
     DictOfAnyProto dict = 12;
+
+    DocDictProto doc_dict = 14;
   }
 
   oneof docarray_type {
@@ -105,4 +107,8 @@ message DocVecProto{
   map<string, DocVecProto> doc_columns = 2; // a dict of tensor columns
   map<string, ListOfDocArrayProto> docs_vec_columns = 3; // a dict of document array columns
   map<string, ListOfAnyProto> any_columns = 4; // a dict of any columns. Used for the rest of the data
+}
+
+message DocDictProto{
+    map<string, DocProto> docs = 1;
 }

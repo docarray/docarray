@@ -5,7 +5,8 @@ import pytest
 import torch
 from pydantic import parse_obj_as
 
-from docarray import BaseDoc, DocList
+from docarray import BaseDoc, DocDict, DocList
+from docarray.documents import ImageDoc
 from docarray.typing import ImageUrl, NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
@@ -479,3 +480,18 @@ def test_validate_list_dict():
         'http://url.com/foo_0.png',
         'http://url.com/foo_1.png',
     ]
+
+
+def test_to_doc_dict():
+    docs = DocList[ImageDoc](
+        [ImageDoc(url='http://url.com/foo.png') for _ in range(10)]
+    )
+    docs_dict = docs.to_doc_dict()
+    assert isinstance(docs_dict, dict)
+    assert isinstance(docs_dict, DocDict)
+    assert isinstance(docs_dict, DocDict[ImageDoc])
+
+    for doc, (key, doc_2) in zip(docs, docs_dict.items()):
+        assert doc.url == doc_2.url
+        assert doc == doc_2
+        assert key == doc.id

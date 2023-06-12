@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
+    from docarray.array.doc_dict.doc_dict import DocDict
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocListProto
     from docarray.typing import TorchTensor
@@ -301,7 +302,7 @@ class DocList(
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocListProto') -> T:
-        """create a Document from a protobuf message
+        """create a DocList from a protobuf message
         :param pb_msg: The protobuf message from where to construct the `DocList`
         """
         return super().from_protobuf(pb_msg)
@@ -327,3 +328,14 @@ class DocList(
 
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
+
+    def to_doc_dict(self) -> 'DocDict[T_doc]':
+        """
+        Convert this DocList to a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        The keys of the resulting [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] are the id of Documenti inside the  DocList
+
+        :return: a [`DocDict`][docarray.array.doc_dict.doc_dict.DocDict] with the same Document type.
+        """
+        from docarray.array.doc_dict.doc_dict import DocDict
+
+        return DocDict.__class_getitem__(self.doc_type).from_docs(self)
