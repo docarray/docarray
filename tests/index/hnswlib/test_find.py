@@ -3,7 +3,7 @@ import pytest
 import torch
 from pydantic import Field
 
-from docarray import BaseDoc
+from docarray import BaseDoc, DocList
 from docarray.index import HnswDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 
@@ -61,6 +61,16 @@ def test_find_empty_index(tmp_path):
     docs, scores = empty_index.find(query, search_field='tens', limit=5)
     assert len(docs) == 0
     assert len(scores) == 0
+
+
+def test_find_limit_larger_than_index(tmp_path):
+    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    query = SimpleDoc(tens=np.ones(10))
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    index.index(index_docs)
+    docs, scores = index.find(query, search_field='tens', limit=20)
+    assert len(docs) == 10
+    assert len(scores) == 10
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
@@ -220,3 +230,102 @@ def test_find_nested_schema(tmp_path, space):
     assert len(scores) == 5
     assert docs[0].id == index_docs[-3].id
     assert np.allclose(docs[0].d.d.tens, index_docs[-3].d.d.tens)
+
+
+def test_simple_usage(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir), index_name='index')
+    index.index(docs=DocList[MyDoc](docs))
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+
+def test_usage_adapt_max_elements(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.configure()  # trying to configure the index but I am not managing to do so.
+    index.index(docs=docs)
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+
+def test_usage_adapt_max_elements_after_restore(tmpdir):
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128]
+
+    docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    queries = docs[0:3]
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.configure()  # trying to configure the index but I am not managing to do so.
+    index.index(docs=docs)
+    resp = index.find_batched(queries=queries, search_field='embedding', limit=10)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+    new_docs = DocList[MyDoc](
+        [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    restored_index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    restored_index.index(docs=new_docs)
+    queries = new_docs[0:3]
+    resp = restored_index.find_batched(
+        queries=queries, search_field='embedding', limit=10
+    )
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 10
+        assert q.id == matches[0].id
+
+
+@pytest.mark.parametrize(
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 5)]
+)
+def test_query_builder_limits(find_limit, filter_limit, expected_docs, tmp_path):
+    class SimpleSchema(BaseDoc):
+        tensor: NdArray[10] = Field(space='l2')
+        price: int
+
+    index = HnswDocumentIndex[SimpleSchema](work_dir=str(tmp_path))
+
+    index_docs = [SimpleSchema(tensor=np.array([i] * 10), price=i) for i in range(10)]
+    index.index(index_docs)
+
+    query = SimpleSchema(tensor=np.array([3] * 10), price=3)
+
+    q = (
+        index.build_query()
+        .find(query=query, search_field='tensor', limit=find_limit)
+        .filter(filter_query={'price': {'$lte': 5}}, limit=filter_limit)
+        .build()
+    )
+
+    docs, scores = index.execute_query(q)
+
+    assert len(docs) == expected_docs

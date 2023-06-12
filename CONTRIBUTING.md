@@ -337,29 +337,32 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 ### Building documentation on your local machine
 
-#### Requirements
-
-* Python 3
-* [jq](https://stedolan.github.io/jq/download/)
 
 #### Steps to build locally
 
+First install the documentation dependency
+```
+poetry install --with docs
+```
+
+Note: if you need to install extra (proto, database, ...) you need to specify those as well.
+
+Then build the documentation:
 ```bash
 cd docs
-pip install -r requirements.txt
-export NUM_RELEASES=10
-bash makedoc.sh
+./makedoc.sh
 ```
 
 The docs website will be generated in `site`.
 To serve it, run:
 
 ```bash
-mkdocs serve
-python -m http.server
+cd ..
+poetry run mkdocs serve
 ```
 
 You can now see docs website on [http://localhost:8000](http://localhost:8000) on your browser.
+Note: You may have to change the port from 8000 to something else if you already have a server running on that port.
 
 ## 🙏 Thank you
 
