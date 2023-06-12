@@ -401,7 +401,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             rows = self._sqlite_cursor.fetchall()
             return len(rows) > 0
         else:
-            raise NotImplementedError
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     def num_docs(self) -> int:
         """

@@ -30,6 +30,7 @@ from docarray.index.abstract import BaseDocIndex, _ColumnInfo, _raise_not_compos
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import _FindResult, _FindResultBatched
 
@@ -693,3 +694,12 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
         return self._client.msearch(index=self.index_name, searches=request)
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        if safe_issubclass(type(item), BaseDoc):
+            ret = self._client_mget([item.id])
+            return ret["docs"][0]["found"]
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
