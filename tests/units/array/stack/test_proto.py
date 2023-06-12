@@ -53,7 +53,7 @@ def test_stacked_proto():
 
 
 @pytest.mark.proto
-def test_proto_none_column():
+def test_proto_none_tensor_column():
     class MyOtherDoc(BaseDoc):
         embedding: Union[NdArray, None]
         other_embedding: NdArray
@@ -81,6 +81,32 @@ def test_proto_none_column():
         == da._storage.tensor_columns['other_embedding']
     ).all()
     assert da_after._storage.tensor_columns['third_embedding'] is None
+
+
+@pytest.mark.proto
+def test_proto_none_doc_column():
+    class InnerDoc(BaseDoc):
+        embedding: NdArray
+
+    class MyDoc(BaseDoc):
+        inner: Union[InnerDoc, None]
+        other_inner: Union[InnerDoc, None]
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(other_inner=InnerDoc(embedding=np.random.random(512))),
+            MyDoc(other_inner=InnerDoc(embedding=np.random.random(512))),
+        ]
+    )
+    assert da._storage.doc_columns['inner'] is None
+    assert len(da._storage.doc_columns['other_inner']) == 2
+
+    proto = da.to_protobuf()
+    da_after = DocVec[MyDoc].from_protobuf(proto)
+
+    assert da_after._storage.doc_columns['inner'] is None
+    assert len(da._storage.doc_columns['other_inner']) == 2
+    assert (da.other_inner.embedding == da_after.other_inner.embedding).all()
 
 
 @pytest.mark.proto

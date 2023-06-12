@@ -77,10 +77,25 @@ def _none_ndarray_proto() -> 'NdArrayProto':
     return nd_proto
 
 
+def _none_docvec_proto() -> 'DocVecProto':
+    from docarray.proto import DocVecProto
+
+    return DocVecProto()
+
+
 def _is_none_ndarray_proto(proto: 'NdArrayProto') -> bool:
     return (
         proto.dense.shape == list(NONE_NDARRAY_PROTO_SHAPE)
         and proto.dense.dtype == NONE_NDARRAY_PROTO_DTYPE
+    )
+
+
+def _is_none_docvec_proto(proto: 'DocVecProto') -> bool:
+    return (
+        proto.tensor_columns == {}
+        and proto.doc_columns == {}
+        and proto.docs_vec_columns == {}
+        and proto.any_columns == {}
     )
 
 
@@ -559,8 +574,14 @@ class DocVec(AnyDocArray[T_doc]):
 
         for doc_col_name, doc_col_proto in pb_msg.doc_columns.items():
             doc_col_proto: 'DocVecProto'
-            # TODO(johannes): can this also have a None case like above?
-            doc_columns[doc_col_name] = DocVec.from_protobuf(doc_col_proto)
+            if _is_none_docvec_proto(doc_col_proto):
+                # handle values that were None before serialization
+                doc_columns[doc_col_name] = None
+            else:
+                col_doc_type = cls.doc_type._get_field_type(doc_col_name)
+                doc_columns[doc_col_name] = DocVec[col_doc_type].from_protobuf(
+                    doc_col_proto
+                )
 
         for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
             docs_vec_col_proto: 'ListOfDocArrayProto'
@@ -611,9 +632,11 @@ class DocVec(AnyDocArray[T_doc]):
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
 
         for field, col_doc in self._storage.doc_columns.items():
-            doc_columns_proto[field] = (
-                col_doc.to_protobuf() if col_doc is not None else None
-            )
+            if col_doc is None:
+                # put dummy empty DocVecProto for serialization
+                doc_columns_proto[field] = _none_docvec_proto()
+            else:
+                doc_columns_proto[field] = col_doc.to_protobuf()
         for field, col_tens in self._storage.tensor_columns.items():
             if col_tens is None:
                 # put dummy empty NdArrayProto for serialization
