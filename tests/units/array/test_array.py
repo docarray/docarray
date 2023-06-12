@@ -479,3 +479,10 @@ def test_validate_list_dict():
         'http://url.com/foo_0.png',
         'http://url.com/foo_1.png',
     ]
+
+def test_legacy_doc():
+    from docarray.documents.legacy import LegacyDocument
+
+    newDoc = LegacyDocument()
+    da = DocList[LegacyDocument]([newDoc])
+    da.summary()
