@@ -480,6 +480,7 @@ def test_validate_list_dict():
         'http://url.com/foo_1.png',
     ]
 
+
 def test_legacy_doc():
     from docarray.documents.legacy import LegacyDocument
 

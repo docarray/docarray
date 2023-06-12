@@ -1,10 +1,9 @@
-from typing import Any, Optional
+from typing import Any, ForwardRef, Optional
 
 from typing_extensions import get_origin
 from typing_inspect import get_args, is_typevar, is_union_type
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from typing import ForwardRef
 
 
 def is_type_tensor(type_: Any) -> bool:
@@ -46,6 +45,10 @@ def safe_issubclass(x: type, a_tuple: type) -> bool:
     :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
              Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
     """
-    if (get_origin(x) in (list, tuple, dict, set)) or is_typevar(x) or (type(x) == ForwardRef):
+    if (
+        (get_origin(x) in (list, tuple, dict, set))
+        or is_typevar(x)
+        or (type(x) == ForwardRef)
+    ):
         return False
     return issubclass(x, a_tuple)
