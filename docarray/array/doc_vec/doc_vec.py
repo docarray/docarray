@@ -528,12 +528,13 @@ class DocVec(AnyDocArray[T_doc]):
     def __len__(self):
         return len(self._storage)
 
-    def __eq__(self, other: Any) -> bool:
-        if self.__len__() != other.__len__():
+    def __eq__(self, other: 'DocVec') -> bool:
+        if self.doc_type != other.doc_type:
             return False
-        for doc_self, doc_other in zip(self, other):
-            if doc_self != doc_other:
-                return False
+        if self.tensor_type != other.tensor_type:
+            return False
+        if self._storage != other._storage:
+            return False
         return True
 
     ####################
