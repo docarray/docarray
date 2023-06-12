@@ -528,6 +528,14 @@ class DocVec(AnyDocArray[T_doc]):
     def __len__(self):
         return len(self._storage)
 
+    def __eq__(self, other: Any) -> bool:
+        if self.__len__() != other.__len__():
+            return False
+        for doc_self, doc_other in zip(self, other):
+            if doc_self != doc_other:
+                return False
+        return True
+
     ####################
     # IO related       #
     ####################
