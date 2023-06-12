@@ -21,13 +21,23 @@ def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
 
 
 def _execute_find_and_filter_query(
-    doc_index: BaseDocIndex, query: List[Tuple[str, Dict]]
+    doc_index: BaseDocIndex, query: List[Tuple[str, Dict]], reverse_order: bool = False
 ) -> FindResult:
     """
     Executes all find calls from query first using `doc_index.find()`,
     and filtering queries after that using DocArray's `filter_docs()`.
 
     Text search is not supported.
+
+    Args:
+        doc_index: Document index instance.
+            Either InMemoryExactNNIndex or HnswDocumentIndex.
+        query: Dictionary containing search and filtering configuration.
+        reverse_order: Flag indicating whether to sort in descending order. If set to
+            False (default), the sorting will be in ascending order.
+
+    Returns:
+        Sorted documents and their corresponding scores.
     """
     docs_found = DocList.__class_getitem__(cast(Type[BaseDoc], doc_index._schema))([])
     filter_conditions = []
@@ -57,7 +67,7 @@ def _execute_find_and_filter_query(
     docs_and_scores = zip(
         docs_filtered, (doc_to_score[doc.id] for doc in docs_filtered)
     )
-    docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
+    docs_sorted = sorted(docs_and_scores, key=lambda x: x[1], reverse=reverse_order)
     out_docs, out_scores = zip(*docs_sorted)
 
     return FindResult(documents=out_docs, scores=out_scores)
