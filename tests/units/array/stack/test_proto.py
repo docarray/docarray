@@ -115,3 +115,7 @@ def test_proto_any_column():
     ).all()
     assert da._storage.any_columns['text'] == ['hi', 'there']
     assert da._storage.any_columns['d'] == [{'a': 1}, {'b': 2}]
+
+    assert (da_after.embedding == da.embedding).all()
+    assert da_after.text == da.text
+    assert da_after.d == da.d
