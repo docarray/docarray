@@ -34,7 +34,13 @@ from docarray.utils._internal.misc import is_tf_available, is_torch_available
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
 
-    from docarray.proto import DocVecProto, NdArrayProto
+    from docarray.proto import (
+        DocVecProto,
+        ListOfAnyProto,
+        ListOfDocArrayProto,
+        NdArrayProto,
+        NodeProto,
+    )
 
 torch_available = is_torch_available()
 if torch_available:
@@ -535,21 +541,52 @@ class DocVec(AnyDocArray[T_doc]):
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
-        """create a Document from a protobuf message"""
+        """create a DocVec from a protobuf message"""
 
-        # handle values that were None before serialization
-        tensor_columns = {}
-        for tens_col_name, tens_col in pb_msg.tensor_columns.items():
-            if _is_none_ndarray_proto(tens_col):
+        tensor_columns: Dict[str, Optional[AbstractTensor]] = {}
+        doc_columns: Dict[str, Optional['DocVec']] = {}
+        docs_vec_columns: Dict[str, Optional[ListAdvancedIndexing['DocVec']]] = {}
+        any_columns: Dict[str, ListAdvancedIndexing] = {}
+
+        for tens_col_name, tens_col_proto in pb_msg.tensor_columns.items():
+            tens_col_proto: 'NdArrayProto'
+            if _is_none_ndarray_proto(tens_col_proto):
+                # handle values that were None before serialization
                 tensor_columns[tens_col_name] = None
             else:
-                tensor_columns[tens_col_name] = tens_col
+                # TODO(johannes): handle torch, tf, numpy
+                tensor_columns[tens_col_name] = NdArray.from_protobuf(tens_col_proto)
+
+        for doc_col_name, doc_col_proto in pb_msg.doc_columns.items():
+            doc_col_proto: 'DocVecProto'
+            # TODO(johannes): can this also have a None case like above?
+            doc_columns[doc_col_name] = DocVec.from_protobuf(doc_col_proto)
+
+        for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
+            docs_vec_col_proto: 'ListOfDocArrayProto'
+            # TODO(johannes): can this also have a None case like above?
+            vec_list = ListAdvancedIndexing()
+            for doc_vec_proto in docs_vec_col_proto:
+                vec_list.append(DocVec.from_protobuf(doc_vec_proto))
+            docs_vec_columns[docs_vec_col_name] = vec_list
+
+        for any_col_name, any_col_proto in pb_msg.any_columns.items():
+            any_col_proto: 'ListOfAnyProto'
+            # TODO(johannes): can this also have a None case like above?
+            any_column = ListAdvancedIndexing()
+            for node_proto in any_col_proto.data:
+                node_proto: 'NodeProto'
+                content = cls.doc_type._get_content_from_node_proto(
+                    node_proto, any_col_name
+                )
+                any_column.append(content)
+            any_columns[any_col_name] = any_column
 
         storage = ColumnStorage(
-            tensor_columns,
-            pb_msg.doc_columns,
-            pb_msg.docs_vec_columns,
-            pb_msg.any_columns,
+            tensor_columns=tensor_columns,
+            doc_columns=doc_columns,
+            docs_vec_columns=docs_vec_columns,
+            any_columns=any_columns,
         )
 
         return cls.from_columns_storage(storage)
