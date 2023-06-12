@@ -8,7 +8,7 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
-from docarray.typing import TorchTensor
+from docarray.typing import NdArray, TorchTensor
 from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     start_storage,
     weaviate_client,
@@ -68,55 +68,23 @@ def test_find_tensorflow():
     )
 
 
-def test_comprehensive():
-    import numpy as np
-    from pydantic import Field
+def test_contain():
+    class SimpleDoc(BaseDoc):
+        tens: NdArray[10] = Field(dims=1000)
 
-    from docarray import BaseDoc
-    from docarray.index.backends.weaviate import WeaviateDocumentIndex
-    from docarray.typing import NdArray
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10]
 
-    class Document(BaseDoc):
-        text: str
-        embedding: NdArray[2] = Field(
-            dims=2, is_embedding=True
-        )  # Embedding column -> vector representation of the document
-        file: NdArray[100] = Field(dims=100)
+    index = WeaviateDocumentIndex[SimpleSchema]()
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
 
-    docs = [
-        Document(
-            text="Hello world",
-            embedding=np.array([1, 2]),
-            file=np.random.rand(100),
-            id="1",
-        ),
-        Document(
-            text="Hello world, how are you?",
-            embedding=np.array([3, 4]),
-            file=np.random.rand(100),
-            id="2",
-        ),
-        Document(
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-            embedding=np.array([5, 6]),
-            file=np.random.rand(100),
-            id="3",
-        ),
-    ]
+    assert (index_docs[0] in index) is False
 
-    batch_config = {
-        "batch_size": 20,
-        "dynamic": False,
-        "timeout_retries": 3,
-        "num_workers": 1,
-    }
+    index.index(index_docs)
 
-    dbconfig = WeaviateDocumentIndex.DBConfig(
-        host="https://docarray-test-4mfexsso.weaviate.network",  # Replace with your endpoint
-        auth_api_key="JPsfPHB3OLHrgnN80JAa7bmPApOxOfaHy0SO",
-    )
+    for doc in index_docs:
+        assert (doc in index) is True
 
-    runtimeconfig = WeaviateDocumentIndex.RuntimeConfig(batch_config=batch_config)
-    store = WeaviateDocumentIndex[Document](db_config=dbconfig)
-    store.configure(runtimeconfig)  # Batch settings being passed on
-    store.index(docs)
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False
