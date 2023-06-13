@@ -280,19 +280,19 @@ def test_proto_tensor_type(tensor_type):
 @pytest.mark.proto
 @pytest.mark.tensorflow
 def test_proto_tensor_type_tf():
-    from docarray.typing import TensorflowTensor
+    from docarray.typing import TensorFlowTensor
 
     class InnerDoc(BaseDoc):
-        embedding: TensorflowTensor
+        embedding: TensorFlowTensor
 
     class MyDoc(BaseDoc):
-        tensor: TensorflowTensor
+        tensor: TensorFlowTensor
         inner: InnerDoc
         inner_v: DocVec[InnerDoc]
 
     def _get_rand_tens():
         arr = np.random.random(512)
-        return TensorflowTensor.from_ndarray(arr)
+        return TensorFlowTensor.from_ndarray(arr)
 
     da = DocVec[MyDoc](
         [
@@ -308,19 +308,19 @@ def test_proto_tensor_type_tf():
             ),
         ]
     )
-    assert isinstance(da.tensor, TensorflowTensor)
+    assert isinstance(da.tensor, TensorFlowTensor)
     assert da.tensor.shape == (2, 512)
-    assert isinstance(da.inner.embedding, TensorflowTensor)
+    assert isinstance(da.inner.embedding, TensorFlowTensor)
     assert da.inner.embedding.shape == (2, 512)
-    assert isinstance(da.inner_v[0].embedding, TensorflowTensor)
+    assert isinstance(da.inner_v[0].embedding, TensorFlowTensor)
     assert da.inner_v[0].embedding.shape == (1, 512)
 
     proto = da.to_protobuf()
-    da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=TensorflowTensor)
+    da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=TensorFlowTensor)
 
-    assert isinstance(da_after.tensor, TensorflowTensor)
+    assert isinstance(da_after.tensor, TensorFlowTensor)
     assert (da.tensor == da_after.tensor).all()
-    assert isinstance(da_after.inner.embedding, TensorflowTensor)
+    assert isinstance(da_after.inner.embedding, TensorFlowTensor)
     assert (da.inner.embedding == da_after.inner.embedding).all()
-    assert isinstance(da_after.inner_v[0].embedding, TensorflowTensor)
+    assert isinstance(da_after.inner_v[0].embedding, TensorFlowTensor)
     assert (da.inner_v[0].embedding == da_after.inner_v[0].embedding).all()
