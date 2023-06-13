@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 import numpy as np
 import pytest
@@ -206,3 +206,25 @@ def test_proto_any_column():
     assert (da_after.embedding == da.embedding).all()
     assert da_after.text == da.text
     assert da_after.d == da.d
+
+
+@pytest.mark.proto
+def test_proto_none_any_column():
+    class MyDoc(BaseDoc):
+        text: Optional[str]
+        d: Optional[Dict]
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(),
+            MyDoc(),
+        ]
+    )
+    assert da._storage.any_columns['text'] == [None, None]
+    assert da._storage.any_columns['d'] == [None, None]
+
+    proto = da.to_protobuf()
+    da_after = DocVec[MyDoc].from_protobuf(proto)
+
+    assert da_after._storage.any_columns['text'] == [None, None]
+    assert da_after._storage.any_columns['d'] == [None, None]
