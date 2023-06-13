@@ -10,6 +10,7 @@ from docarray.base_doc.doc import BaseDoc
 from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from rich.console import Console, ConsoleOptions, RenderResult
@@ -62,10 +63,7 @@ class DocumentSummary:
 
         for field_name, value in cls.__fields__.items():
             if field_name != 'id':
-                field_type = value.type_
-                if not value.required:
-                    field_type = Optional[field_type]
-
+                field_type = value.annotation
                 field_cls = str(field_type).replace('[', '\[')
                 field_cls = re.sub('<class \'|\'>|[a-zA-Z_]*[.]', '', field_cls)
 
@@ -74,18 +72,18 @@ class DocumentSummary:
                 if is_union_type(field_type) or is_optional_type(field_type):
                     sub_tree = Tree(node_name, highlight=True)
                     for arg in field_type.__args__:
-                        if issubclass(arg, BaseDoc):
+                        if safe_issubclass(arg, BaseDoc):
                             sub_tree.add(DocumentSummary._get_schema(cls=arg))
-                        elif issubclass(arg, DocList):
+                        elif safe_issubclass(arg, DocList):
                             sub_tree.add(DocumentSummary._get_schema(cls=arg.doc_type))
                     tree.add(sub_tree)
 
-                elif issubclass(field_type, BaseDoc):
+                elif safe_issubclass(field_type, BaseDoc):
                     tree.add(
                         DocumentSummary._get_schema(cls=field_type, doc_name=field_name)
                     )
 
-                elif issubclass(field_type, DocList):
+                elif safe_issubclass(field_type, DocList):
                     sub_tree = Tree(node_name, highlight=True)
                     sub_tree.add(DocumentSummary._get_schema(cls=field_type.doc_type))
                     tree.add(sub_tree)

@@ -128,7 +128,7 @@ You can work around this problem by subclassing the predefined Document and addi
 
 
     class MyDoc(TextDoc):
-        embedding: AnyTensor = Field(n_dim=128)
+        embedding: AnyTensor = Field(dim=128)
 
 
     db = HnswDocumentIndex[MyDoc](work_dir='test_db3')
@@ -722,3 +722,6 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
 ```
+
+!!! note "Subindex not supported with InMemoryExactNNIndex"
+    Currently, subindex feature is not available for InMemoryExactNNIndex

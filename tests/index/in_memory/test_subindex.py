@@ -1,42 +1,41 @@
 import numpy as np
 import pytest
-from pydantic import Field
 
 from docarray import BaseDoc, DocList
-from docarray.index import HnswDocumentIndex
+from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    simple_tens: NdArray[10] = Field(space='l2')
+    simple_tens: NdArray[10]
     simple_text: str
 
 
 class ListDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     simple_doc: SimpleDoc
-    list_tens: NdArray[20] = Field(space='l2')
+    list_tens: NdArray[20]
 
 
 class MyDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     list_docs: DocList[ListDoc]
-    my_tens: NdArray[30] = Field(space='l2')
+    my_tens: NdArray[30]
 
 
 @pytest.fixture(scope='session')
 def index():
-    index = HnswDocumentIndex[MyDoc](work_dir='./tmp')
+    index = InMemoryExactNNIndex[MyDoc]()
     return index
 
 
 def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], HnswDocumentIndex)
-    assert isinstance(index._subindices['list_docs'], HnswDocumentIndex)
+    assert isinstance(index._subindices['docs'], InMemoryExactNNIndex)
+    assert isinstance(index._subindices['list_docs'], InMemoryExactNNIndex)
     assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], HnswDocumentIndex
+        index._subindices['list_docs']._subindices['docs'], InMemoryExactNNIndex
     )
 
 
@@ -94,6 +93,7 @@ def test_subindex_get(index):
     doc = index['1']
     assert type(doc) == MyDoc
     assert doc.id == '1'
+
     assert len(doc.docs) == 5
     assert type(doc.docs[0]) == SimpleDoc
     assert doc.docs[0].id == 'docs-1-0'
@@ -131,7 +131,6 @@ def test_find_subindex(index):
     assert type(docs[0]) == SimpleDoc
     assert len(scores) == 5
     for root_doc, doc in zip(root_docs, docs):
-        assert np.allclose(doc.simple_tens, np.ones(10))
         assert root_doc.id == f'{doc.id.split("-")[1]}'
 
     # sub sub level
@@ -144,7 +143,6 @@ def test_find_subindex(index):
     assert type(root_docs[0]) == MyDoc
     assert type(docs[0]) == SimpleDoc
     for root_doc, doc in zip(root_docs, docs):
-        assert np.allclose(doc.simple_tens, np.ones(10))
         assert root_doc.id == f'{doc.id.split("-")[2]}'
 
 

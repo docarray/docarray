@@ -20,6 +20,7 @@ from typing_inspect import is_union_type
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
 from docarray.utils._internal.misc import import_library
 
@@ -309,7 +310,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-                field_type = cls.__fields__[field_name].type_ if field_name else None
+                field_type = (
+                    cls.__fields__[field_name].type_
+                    if field_name and field_name in cls.__fields__
+                    else None
+                )
                 return_field = arg_to_container[content_key](
                     cls._get_content_from_node_proto(node, field_type=field_type)
                     for node in getattr(value, content_key).data
@@ -317,7 +322,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key == 'dict':
                 deser_dict: Dict[str, Any] = dict()
-                field_type = cls.__fields__[field_name].type_ if field_name else None
+                field_type = (
+                    cls.__fields__[field_name].type_
+                    if field_name and field_name in cls.__fields__
+                    else None
+                )
                 for key_name, node in value.dict.data.items():
                     deser_dict[key_name] = cls._get_content_from_node_proto(
                         node, field_type=field_type
@@ -386,7 +395,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         paths = []
         for field in cls.__fields__.keys():
             field_type = cls._get_field_type(field)
-            if not is_union_type(field_type) and issubclass(field_type, BaseDoc):
+            if not is_union_type(field_type) and safe_issubclass(field_type, BaseDoc):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:
                     paths.append(f'{field}__{path}')

@@ -19,6 +19,7 @@ from typing import (
 
 import numpy as np
 from pydantic import BaseConfig, parse_obj_as
+from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
@@ -204,7 +205,9 @@ class DocVec(AnyDocArray[T_doc]):
                     for i, doc in enumerate(docs):
                         if getattr(doc, field_name) is not None:
                             raise ValueError(
-                                f'Field {field_name} is put to None for the first doc. This mean that all of the other docs should have this field set to None as well. This is not the case for {doc} at index {i}'
+                                f'Field {field_name} is put to None for the first doc. This mean that '
+                                f'all of the other docs should have this field set to None as well. '
+                                f'This is not the case for {doc} at index {i}'
                             )
 
             def _check_doc_field_not_none(field_name, doc):
@@ -215,6 +218,18 @@ class DocVec(AnyDocArray[T_doc]):
 
             if is_tensor_union(field_type):
                 field_type = tensor_type
+            # all generic tensor types such as AnyTensor, ImageTensor, etc. are subclasses of AbstractTensor.
+            # Perform check only if the field_type is not an alias and is a subclass of AbstractTensor
+            elif not isinstance(field_type, typingGenericAlias) and issubclass(
+                field_type, AbstractTensor
+            ):
+                # check if the tensor associated with the field_name in the document is a subclass of the tensor_type
+                # e.g. if the field_type is AnyTensor but the type(docs[0][field_name]) is ImageTensor,
+                # then we change the field_type to ImageTensor, since AnyTensor is a union of all the tensor types
+                # and does not override any methods of specific tensor types
+                tensor = getattr(docs[0], field_name)
+                if issubclass(tensor.__class__, tensor_type):
+                    field_type = tensor_type
 
             if isinstance(field_type, type):
                 if tf_available and issubclass(field_type, TensorFlowTensor):
@@ -334,6 +349,14 @@ class DocVec(AnyDocArray[T_doc]):
     ) -> T:
         if isinstance(value, cls):
             return value
+        elif isinstance(value, DocList):
+            if (
+                issubclass(value.doc_type, cls.doc_type)
+                or value.doc_type == cls.doc_type
+            ):
+                return cast(T, value.to_doc_vec())
+            else:
+                raise ValueError(f'DocVec[value.doc_type] is not compatible with {cls}')
         elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
             return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):

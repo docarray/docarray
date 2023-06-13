@@ -108,8 +108,6 @@ class MyDocument(BaseDoc):
 
 So not only can you define the types of your data, you can even **specify the shape of your tensors!**
 
-Once you have your model in the form of a document, you can work with it!
-
 ```python
 # Create a document
 doc = MyDocument(
@@ -119,6 +117,7 @@ doc = MyDocument(
 
 # Load image tensor from URL
 doc.image_tensor = doc.image_url.load()
+
 
 # Compute embedding with any model of your choice
 def clip_image_encoder(image_tensor: TorchTensor) -> TorchTensor:  # dummy function
