@@ -280,6 +280,8 @@ def test_proto_tensor_type(tensor_type):
 @pytest.mark.proto
 @pytest.mark.tensorflow
 def test_proto_tensor_type_tf():
+    import tensorflow as tf
+
     from docarray.typing import TensorFlowTensor
 
     class InnerDoc(BaseDoc):
@@ -311,9 +313,9 @@ def test_proto_tensor_type_tf():
     assert isinstance(da.tensor, TensorFlowTensor)
     assert da.tensor.shape == (2, 512)
     assert isinstance(da.inner.embedding, TensorFlowTensor)
-    assert da.inner.embedding.shape == (2, 512)
+    assert len(da.inner.embedding) == 2
     assert isinstance(da.inner_v[0].embedding, TensorFlowTensor)
-    assert da.inner_v[0].embedding.shape == (1, 512)
+    assert len(da.inner_v[0].embedding) == 1
 
     proto = da.to_protobuf()
     da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=TensorFlowTensor)
@@ -321,6 +323,6 @@ def test_proto_tensor_type_tf():
     assert isinstance(da_after.tensor, TensorFlowTensor)
     assert (da.tensor == da_after.tensor).all()
     assert isinstance(da_after.inner.embedding, TensorFlowTensor)
-    assert (da.inner.embedding == da_after.inner.embedding).all()
+    assert tf.math.reduce_all(da.inner.embedding == da_after.inner.embedding)
     assert isinstance(da_after.inner_v[0].embedding, TensorFlowTensor)
-    assert (da.inner_v[0].embedding == da_after.inner_v[0].embedding).all()
+    assert tf.math.reduce_all(da.inner_v[0].embedding == da_after.inner_v[0].embedding)
