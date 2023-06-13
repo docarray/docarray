@@ -36,11 +36,9 @@ if TYPE_CHECKING:
 
     from docarray.proto import (
         DocVecProto,
-        ListOfAnyProto,
         ListOfDocArrayProto,
         ListOfDocVecProto,
         NdArrayProto,
-        NodeProto,
     )
 
 torch_available = is_torch_available()
@@ -577,7 +575,6 @@ class DocVec(AnyDocArray[T_doc]):
         any_columns: Dict[str, ListAdvancedIndexing] = {}
 
         for tens_col_name, tens_col_proto in pb_msg.tensor_columns.items():
-            tens_col_proto: 'NdArrayProto'
             if _is_none_ndarray_proto(tens_col_proto):
                 # handle values that were None before serialization
                 tensor_columns[tens_col_name] = None
@@ -586,36 +583,36 @@ class DocVec(AnyDocArray[T_doc]):
                 tensor_columns[tens_col_name] = NdArray.from_protobuf(tens_col_proto)
 
         for doc_col_name, doc_col_proto in pb_msg.doc_columns.items():
-            doc_col_proto: 'DocVecProto'
             if _is_none_docvec_proto(doc_col_proto):
                 # handle values that were None before serialization
                 doc_columns[doc_col_name] = None
             else:
-                col_doc_type = cls.doc_type._get_field_type(doc_col_name)
-                doc_columns[doc_col_name] = DocVec[col_doc_type].from_protobuf(
-                    doc_col_proto
-                )
+                col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
+                doc_columns[doc_col_name] = DocVec.__class_getitem__(
+                    col_doc_type
+                ).from_protobuf(doc_col_proto)
 
         for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
-            docs_vec_col_proto: 'ListOfDocVecProto'
-            vec_list = ListAdvancedIndexing()
+            vec_list: Optional[ListAdvancedIndexing]
             if _is_none_list_of_docvec_proto(docs_vec_col_proto):
                 # handle values that were None before serialization
                 vec_list = None
             else:
+                vec_list = ListAdvancedIndexing()
                 for doc_list_proto in docs_vec_col_proto.data:
                     col_doc_type = cls.doc_type._get_field_type(
                         docs_vec_col_name
                     ).doc_type
-                    vec_list.append(DocVec[col_doc_type].from_protobuf(doc_list_proto))
+                    vec_list.append(
+                        DocVec.__class_getitem__(col_doc_type).from_protobuf(
+                            doc_list_proto
+                        )
+                    )
             docs_vec_columns[docs_vec_col_name] = vec_list
 
         for any_col_name, any_col_proto in pb_msg.any_columns.items():
-            any_col_proto: 'ListOfAnyProto'
-            # TODO(johannes): can this also have a None case like above?
-            any_column = ListAdvancedIndexing()
+            any_column: ListAdvancedIndexing = ListAdvancedIndexing()
             for node_proto in any_col_proto.data:
-                node_proto: 'NodeProto'
                 content = cls.doc_type._get_content_from_node_proto(
                     node_proto, any_col_name
                 )
