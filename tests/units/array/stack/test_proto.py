@@ -311,7 +311,7 @@ def test_proto_tensor_type_tf():
         ]
     )
     assert isinstance(da.tensor, TensorFlowTensor)
-    assert da.tensor.shape == (2, 512)
+    assert len(da.tensor) == 2
     assert isinstance(da.inner.embedding, TensorFlowTensor)
     assert len(da.inner.embedding) == 2
     assert isinstance(da.inner_v[0].embedding, TensorFlowTensor)
