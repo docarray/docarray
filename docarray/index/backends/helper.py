@@ -29,15 +29,14 @@ def _execute_find_and_filter_query(
 
     Text search is not supported.
 
-    Args:
-        doc_index: Document index instance.
-            Either InMemoryExactNNIndex or HnswDocumentIndex.
-        query: Dictionary containing search and filtering configuration.
-        reverse_order: Flag indicating whether to sort in descending order. If set to
-            False (default), the sorting will be in ascending order.
-
-    Returns:
-        Sorted documents and their corresponding scores.
+    :param doc_index: Document index instance.
+        Either InMemoryExactNNIndex or HnswDocumentIndex.
+    :param query: Dictionary containing search and filtering configuration.
+    :param reverse_order: Flag indicating whether to sort in descending order.
+        If set to False (default), the sorting will be in ascending order.
+        This option is necessary because, depending on the index, lower scores
+        can correspond to better matches, and vice versa.
+    :return: Sorted documents and their corresponding scores.
     """
     docs_found = DocList.__class_getitem__(cast(Type[BaseDoc], doc_index._schema))([])
     filter_conditions = []
