@@ -321,10 +321,12 @@ def test_proto_tensor_type_tf():
     da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=TensorFlowTensor)
 
     assert isinstance(da_after.tensor, TensorFlowTensor)
-    assert tf.math.reduce_all(tf.equal(da.tensor, da_after.tensor))
+    assert tf.math.reduce_all(tf.equal(da.tensor.tensor, da_after.tensor.tensor))
     assert isinstance(da_after.inner.embedding, TensorFlowTensor)
-    assert tf.math.reduce_all(tf.equal(da.inner.embedding, da_after.inner.embedding))
+    assert tf.math.reduce_all(
+        tf.equal(da.inner.embedding.tensor, da_after.inner.embedding.tensor)
+    )
     assert isinstance(da_after.inner_v[0].embedding, TensorFlowTensor)
     assert tf.math.reduce_all(
-        tf.equal(da.inner_v[0].embedding, da_after.inner_v[0].embedding)
+        tf.equal(da.inner_v[0].embedding.tensor, da_after.inner_v[0].embedding.tensor)
     )
