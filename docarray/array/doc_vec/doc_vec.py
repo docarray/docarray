@@ -107,7 +107,7 @@ def _is_none_docvec_proto(proto: 'DocVecProto') -> bool:
 def _is_none_list_of_docvec_proto(proto: 'ListOfDocVecProto') -> bool:
     from docarray.proto import ListOfDocVecProto
 
-    return isinstance(proto, ListOfDocVecProto) and proto.data == []
+    return isinstance(proto, ListOfDocVecProto) and len(proto.data) == 0
 
 
 class DocVec(AnyDocArray[T_doc]):
