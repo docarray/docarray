@@ -589,8 +589,16 @@ class DocVec(AnyDocArray[T_doc]):
     ####################
 
     @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'DocVecProto') -> T:
-        """create a DocVec from a protobuf message"""
+    def from_protobuf(
+        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray
+    ) -> T:
+        """create a DocVec from a protobuf message
+        :param pb_msg: the protobuf message to deserialize
+        :param tensor_type: the tensor type to use for the tensor columns.
+            Could be NdArray, TorchTensor, or TensorFlowTensor. Defaults to NdArray.
+            All tensors of the output DocVec will be of this type.
+        :return: The deserialized DocVec
+        """
 
         tensor_columns: Dict[str, Optional[AbstractTensor]] = {}
         doc_columns: Dict[str, Optional['DocVec']] = {}
@@ -602,8 +610,9 @@ class DocVec(AnyDocArray[T_doc]):
                 # handle values that were None before serialization
                 tensor_columns[tens_col_name] = None
             else:
-                # TODO(johannes): handle torch, tf, numpy
-                tensor_columns[tens_col_name] = NdArray.from_protobuf(tens_col_proto)
+                tensor_columns[tens_col_name] = tensor_type.from_protobuf(
+                    tens_col_proto
+                )
 
         for doc_col_name, doc_col_proto in pb_msg.doc_columns.items():
             if _is_none_docvec_proto(doc_col_proto):
@@ -613,7 +622,7 @@ class DocVec(AnyDocArray[T_doc]):
                 col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
                 doc_columns[doc_col_name] = DocVec.__class_getitem__(
                     col_doc_type
-                ).from_protobuf(doc_col_proto)
+                ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
 
         for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
             vec_list: Optional[ListAdvancedIndexing]
@@ -628,7 +637,7 @@ class DocVec(AnyDocArray[T_doc]):
                     ).doc_type
                     vec_list.append(
                         DocVec.__class_getitem__(col_doc_type).from_protobuf(
-                            doc_list_proto
+                            doc_list_proto, tensor_type=tensor_type
                         )
                     )
             docs_vec_columns[docs_vec_col_name] = vec_list
@@ -647,6 +656,7 @@ class DocVec(AnyDocArray[T_doc]):
             doc_columns=doc_columns,
             docs_vec_columns=docs_vec_columns,
             any_columns=any_columns,
+            tensor_type=tensor_type,
         )
 
         return cls.from_columns_storage(storage)
