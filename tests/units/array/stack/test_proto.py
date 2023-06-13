@@ -110,6 +110,67 @@ def test_proto_none_doc_column():
 
 
 @pytest.mark.proto
+def test_proto_none_docvec_column():
+    class InnerDoc(BaseDoc):
+        embedding: NdArray
+
+    class MyDoc(BaseDoc):
+        inner_l: Union[DocList[InnerDoc], None]
+        inner_v: Union[DocVec[InnerDoc], None]
+        inner_exists_v: Union[DocVec[InnerDoc], None]
+        inner_exists_l: Union[DocList[InnerDoc], None]
+
+    def _make_inner_list():
+        return DocList[InnerDoc](
+            [
+                InnerDoc(embedding=np.random.random(512)),
+                InnerDoc(embedding=np.random.random(512)),
+            ]
+        )
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                inner_exists_l=_make_inner_list(),
+                inner_exists_v=_make_inner_list().to_doc_vec(),
+            ),
+            MyDoc(
+                inner_exists_l=_make_inner_list(),
+                inner_exists_v=_make_inner_list().to_doc_vec(),
+            ),
+        ]
+    )
+    assert da._storage.docs_vec_columns['inner_l'] is None
+    assert da._storage.docs_vec_columns['inner_v'] is None
+    assert len(da._storage.docs_vec_columns['inner_exists_l']) == 2
+    assert len(da._storage.docs_vec_columns['inner_exists_v']) == 2
+    assert da.inner_exists_l[0].embedding.shape == (2, 512)
+    assert da.inner_exists_l[1].embedding.shape == (2, 512)
+    assert da.inner_exists_v[0].embedding.shape == (2, 512)
+    assert da.inner_exists_v[1].embedding.shape == (2, 512)
+
+    proto = da.to_protobuf()
+    da_after = DocVec[MyDoc].from_protobuf(proto)
+
+    assert da_after._storage.docs_vec_columns['inner_l'] is None
+    assert da_after._storage.docs_vec_columns['inner_v'] is None
+    assert len(da._storage.docs_vec_columns['inner_exists_l']) == 2
+    assert len(da._storage.docs_vec_columns['inner_exists_v']) == 2
+    assert (
+        da.inner_exists_l[0].embedding == da_after.inner_exists_l[0].embedding
+    ).all()
+    assert (
+        da.inner_exists_l[1].embedding == da_after.inner_exists_l[1].embedding
+    ).all()
+    assert (
+        da.inner_exists_v[0].embedding == da_after.inner_exists_v[0].embedding
+    ).all()
+    assert (
+        da.inner_exists_v[1].embedding == da_after.inner_exists_v[1].embedding
+    ).all()
+
+
+@pytest.mark.proto
 def test_proto_any_column():
     class MyDoc(BaseDoc):
         embedding: NdArray

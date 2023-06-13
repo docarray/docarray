@@ -38,6 +38,7 @@ if TYPE_CHECKING:
         DocVecProto,
         ListOfAnyProto,
         ListOfDocArrayProto,
+        ListOfDocVecProto,
         NdArrayProto,
         NodeProto,
     )
@@ -83,6 +84,12 @@ def _none_docvec_proto() -> 'DocVecProto':
     return DocVecProto()
 
 
+def _none_list_of_docvec_proto() -> 'ListOfDocArrayProto':
+    from docarray.proto import ListOfDocVecProto
+
+    return ListOfDocVecProto()
+
+
 def _is_none_ndarray_proto(proto: 'NdArrayProto') -> bool:
     return (
         proto.dense.shape == list(NONE_NDARRAY_PROTO_SHAPE)
@@ -97,6 +104,12 @@ def _is_none_docvec_proto(proto: 'DocVecProto') -> bool:
         and proto.docs_vec_columns == {}
         and proto.any_columns == {}
     )
+
+
+def _is_none_list_of_docvec_proto(proto: 'ListOfDocVecProto') -> bool:
+    from docarray.proto import ListOfDocVecProto
+
+    return isinstance(proto, ListOfDocVecProto) and proto.data == []
 
 
 class DocVec(AnyDocArray[T_doc]):
@@ -273,7 +286,7 @@ class DocVec(AnyDocArray[T_doc]):
                 elif issubclass(field_type, AnyDocArray):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
-                        doc_columns[field_name] = None
+                        docs_vec_columns[field_name] = None
                     else:
                         docs_list = list()
                         for doc in docs:
@@ -584,11 +597,17 @@ class DocVec(AnyDocArray[T_doc]):
                 )
 
         for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
-            docs_vec_col_proto: 'ListOfDocArrayProto'
-            # TODO(johannes): can this also have a None case like above?
+            docs_vec_col_proto: 'ListOfDocVecProto'
             vec_list = ListAdvancedIndexing()
-            for doc_vec_proto in docs_vec_col_proto:
-                vec_list.append(DocVec.from_protobuf(doc_vec_proto))
+            if _is_none_list_of_docvec_proto(docs_vec_col_proto):
+                # handle values that were None before serialization
+                vec_list = None
+            else:
+                for doc_list_proto in docs_vec_col_proto.data:
+                    col_doc_type = cls.doc_type._get_field_type(
+                        docs_vec_col_name
+                    ).doc_type
+                    vec_list.append(DocVec[col_doc_type].from_protobuf(doc_list_proto))
             docs_vec_columns[docs_vec_col_name] = vec_list
 
         for any_col_name, any_col_proto in pb_msg.any_columns.items():
@@ -615,16 +634,12 @@ class DocVec(AnyDocArray[T_doc]):
     def to_protobuf(self) -> 'DocVecProto':
         """Convert DocVec into a Protobuf message"""
         from docarray.proto import (
-            DocListProto,
             DocVecProto,
             ListOfAnyProto,
             ListOfDocArrayProto,
+            ListOfDocVecProto,
             NdArrayProto,
         )
-
-        da_proto = DocListProto()
-        for doc in self:
-            da_proto.docs.append(doc.to_protobuf())
 
         doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
@@ -646,10 +661,13 @@ class DocVec(AnyDocArray[T_doc]):
                     col_tens.to_protobuf() if col_tens is not None else None
                 )
         for field, col_da in self._storage.docs_vec_columns.items():
-            list_proto = ListOfDocArrayProto()
+            list_proto = ListOfDocVecProto()
             if col_da:
                 for docs in col_da:
                     list_proto.data.append(docs.to_protobuf())
+            else:
+                # put dummy empty ListOfDocVecProto for serialization
+                list_proto = _none_list_of_docvec_proto()
             da_columns_proto[field] = list_proto
         for field, col_any in self._storage.any_columns.items():
             list_proto = ListOfAnyProto()
