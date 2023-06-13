@@ -91,7 +91,9 @@ class ColumnStorage:
             self.tensor_type,
         )
 
-    def __eq__(self, other: 'ColumnStorage') -> bool:
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, ColumnStorage):
+            return False
         if self.tensor_type != other.tensor_type:
             return False
         for col_map_self, col_map_other in zip(self.columns.maps, other.columns.maps):
