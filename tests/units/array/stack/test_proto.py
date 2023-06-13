@@ -277,7 +277,6 @@ def test_proto_tensor_type(tensor_type):
     assert (da.inner_v[0].embedding == da_after.inner_v[0].embedding).all()
 
 
-@pytest.mark.proto
 @pytest.mark.tensorflow
 def test_proto_tensor_type_tf():
     import tensorflow as tf
