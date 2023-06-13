@@ -299,6 +299,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         find_res = _execute_find_and_filter_query(
             doc_index=self,
             query=query,
+            reverse_order=True,
         )
         return find_res
 
