@@ -145,6 +145,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     @dataclass
     class DBConfig(ABC):
         index_name: Optional[str] = None
+
+    @dataclass
+    class RuntimeConfig(ABC):
         # default configurations for every column type
         # a dictionary from a column type (DB specific) to a dictionary
         # of default configurations for that type
@@ -152,10 +155,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # of a field in the Document schema (`cls._schema`)
         # Example: `default_column_config['VARCHAR'] = {'length': 255}`
         default_column_config: Dict[Type, Dict[str, Any]] = field(default_factory=dict)
-
-    @dataclass
-    class RuntimeConfig(ABC):
-        pass
 
     @property
     def index_name(self):
@@ -897,14 +896,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
-            if db_type not in self._db_config.default_column_config.keys():
+            if db_type not in self._runtime_config.default_column_config.keys():
                 raise ValueError(
                     f'The given col_type is not a valid db type: {db_type}'
                 )
         else:
             db_type = self.python_type_to_db_type(type_)
 
-        config = self._db_config.default_column_config[db_type].copy()
+        config = self._runtime_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
         if (

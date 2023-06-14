@@ -23,6 +23,10 @@ class FakeQueryBuilder:
 class DBConfig(BaseDocIndex.DBConfig):
     work_dir: str = '.'
     other: int = 5
+
+
+@dataclass
+class RuntimeConfig(BaseDocIndex.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = field(
         default_factory=lambda: {
             str: {
@@ -32,11 +36,6 @@ class DBConfig(BaseDocIndex.DBConfig):
         }
     )
     default_ef: int = 50
-
-
-@dataclass
-class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-    pass
 
 
 def _identity(*x, **y):

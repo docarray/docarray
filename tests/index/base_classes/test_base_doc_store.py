@@ -66,11 +66,6 @@ class DummyDocIndex(BaseDocIndex):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        pass
-
-    @dataclass
-    class DBConfig(BaseDocIndex.DBConfig):
-        work_dir: str = '.'
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 str: {'hi': 'there'},
@@ -79,6 +74,10 @@ class DummyDocIndex(BaseDocIndex):
                 AbstractTensor: {'dim': 1000},
             }
         )
+
+    @dataclass
+    class DBConfig(BaseDocIndex.DBConfig):
+        work_dir: str = '.'
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def build(self):

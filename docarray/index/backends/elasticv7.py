@@ -36,9 +36,9 @@ class ElasticV7DocIndex(ElasticDocIndex):
         def build(self, *args, **kwargs) -> Any:
             """Build the elastic search v7 query object."""
             if (
-                    'script_score' in self._query['query']
-                    and 'bool' in self._query['query']
-                    and len(self._query['query']['bool']) > 0
+                'script_score' in self._query['query']
+                and 'bool' in self._query['query']
+                and len(self._query['query']['bool']) > 0
             ):
                 self._query['query']['script_score']['query'] = {}
                 self._query['query']['script_score']['query']['bool'] = self._query[
@@ -49,11 +49,11 @@ class ElasticV7DocIndex(ElasticDocIndex):
             return self._query
 
         def find(
-                self,
-                query: Union[AnyTensor, BaseDoc],
-                search_field: str = 'embedding',
-                limit: int = 10,
-                num_candidates: Optional[int] = None,
+            self,
+            query: Union[AnyTensor, BaseDoc],
+            search_field: str = 'embedding',
+            limit: int = 10,
+            num_candidates: Optional[int] = None,
         ):
             """
             Find k-nearest neighbors of the query.
@@ -90,13 +90,12 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
         hosts: Union[str, List[str], None] = 'http://localhost:9200'  # type: ignore
 
-        def dense_vector_config(self):
-            return {'dims': 128}
-
     @dataclass
     class RuntimeConfig(ElasticDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
-        pass
+
+        def dense_vector_config(self):
+            return {'dims': 128}
 
     ###############################################
     # Implementation of abstract methods          #
@@ -142,8 +141,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
         return index
 
-    def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[
-        str, Any]:  # type: ignore
+    def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
         body = {
             'size': limit,
             'query': {
