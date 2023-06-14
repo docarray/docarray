@@ -589,6 +589,12 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
     # IO related       #
     ####################
 
+    @classmethod
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocVecProto
+
+        return DocVecProto
+
     def _docarray_to_json_compatible(self) -> List[Dict]:
         return [doc._docarray_to_json_compatible() for doc in self]
 

@@ -565,6 +565,11 @@ class IOMixinArray(Iterable[T_doc]):
         return version_byte + num_docs_as_bytes
 
     @classmethod
+    @abstractmethod
+    def _get_proto_class(cls: Type[T]):
+        ...
+
+    @classmethod
     def _load_binary_all(
         cls: Type[T],
         file_ctx: Union[ContextManager[io.BufferedReader], ContextManager[bytes]],
@@ -594,12 +599,10 @@ class IOMixinArray(Iterable[T_doc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocListProto
+            proto = cls._get_proto_class()()
+            proto.ParseFromString(d)
 
-            dap = DocListProto()
-            dap.ParseFromString(d)
-
-            return cls.from_protobuf(dap)
+            return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
 
