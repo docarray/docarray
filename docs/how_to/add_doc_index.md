@@ -288,12 +288,12 @@ To define what can be stored in them, and what the default values are, you need 
 ```python
 @dataclass
 class DBConfig(BaseDocIndex.DBConfig):
-    ...
+    default_column_config: Dict[Type, Dict[str, Any]] = ...
 
 
 @dataclass
 class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-    default_column_config: Dict[Type, Dict[str, Any]] = ...
+    ...
 ```
 
 !!! note
@@ -306,16 +306,8 @@ The `DBConfig` class defines the static configurations of your Document Index.
 These are configurations that are tied to the database (or library) running in the background, such as `host`, `port`, etc.
 Here you should put everything that the user cannot or should not change after initialization.
 
-### The `RuntimeConfig` class
-
-The `RuntimeConfig` class defines the dynamic configurations of your Document Index.
-These are configurations that can be changed at runtime, for example default behaviours such as batch sizes, consistency levels, etc.
-
-It is a common pattern to allow such parameters both in the `RuntimeConfig`, where they will act as global defaults, and
-in specific methods (`index`, `find`, etc.), where they will act as local overrides.
-
 !!! note
-    Every `RuntimeConfig` needs to contain a `default_column_config` field.
+    Every `DBConfig` needs to contain a `default_column_config` field.
     This is a dictionary that, for each possible column type in your database, defines a default configuration for that column type.
     This will automatically be passed to a `_ColumnInfo` whenever a user does not manually specify a configuration for that column.
 
@@ -326,6 +318,15 @@ For example, for `np.ndarray` columns you could define the configurations `index
 and for `varchar` columns you could define a `max_length` configuration.
 
 It is probably best to see this in action, so you should check out the `HnswDocumentIndex` implementation.
+
+### The `RuntimeConfig` class
+
+The `RuntimeConfig` class defines the dynamic configurations of your Document Index.
+These are configurations that can be changed at runtime, for example default behaviours such as batch sizes, consistency levels, etc.
+
+It is a common pattern to allow such parameters both in the `RuntimeConfig`, where they will act as global defaults, and
+in specific methods (`index`, `find`, etc.), where they will act as local overrides.
+
 
 ## Implement abstract methods for indexing, searching, and deleting
 
@@ -374,7 +375,7 @@ class MySchema(BaseDoc):
 
 In this case, the `db_type` of `my_num` will be `'float64'` and the `db_type` of `my_text` will be `'varchar'`. 
 Additional information regarding the `col_type`, such as `max_len` for `varchar` will be stored in the `_ColumnsInfo.config`.
-The given `col_type` has to be a valid `db_type`, meaning that has to be described in the index's `RuntimeConfig.default_column_config`.
+The given `col_type` has to be a valid `db_type`, meaning that has to be described in the index's `DBConfig.default_column_config`.
 
 ### The `_index()` method
 

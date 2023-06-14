@@ -69,20 +69,23 @@ If you want to set configurations globally, i.e. for all vector fields in your d
 import numpy as np
 
 
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db', default_column_config={
-                                                             np.ndarray: {
-                                                                 'dim': -1,
-                                                                 'index': True,
-                                                                 'space': 'ip',
-                                                                 'max_elements': 2048,
-                                                                 'ef_construction': 100,
-                                                                 'ef': 15,
-                                                                 'M': 8,
-                                                                 'allow_replace_deleted': True,
-                                                                 'num_threads': 5,
-                                                             },
-                                                             None: {},
-                                                         })
+db = HnswDocumentIndex[MyDoc](
+    work_dir='/tmp/my_db',
+    default_column_config={
+        np.ndarray: {
+            'dim': -1,
+            'index': True,
+            'space': 'ip',
+            'max_elements': 2048,
+            'ef_construction': 100,
+            'ef': 15,
+            'M': 8,
+            'allow_replace_deleted': True,
+            'num_threads': 5,
+        },
+        None: {},
+    },
+)
 ```
 
 This will set the default configuration for all vector fields to the one specified in the example above.
