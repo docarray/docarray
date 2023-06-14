@@ -558,7 +558,33 @@ The `HnswDocumentIndex` above contains two columns which are configured differen
 - `tens` has a dimensionality of `100`, can take up to `12` elements, and uses the `cosine` similarity space
 - `tens_two` has a dimensionality of `10`, and uses the `ip` similarity space, and an `M` hyperparameter of 4
 
-All configurations that are not explicitly set will be taken from the `default_column_config` of the `RuntimeConfig`.
+All configurations that are not explicitly set will be taken from the `default_column_config` of the `DBConfig`.
+You can modify these defaults in the following way:
+
+```python
+import numpy as np
+from pydantic import Field
+
+from docarray import BaseDoc
+from docarray.index import HnswDocumentIndex
+from docarray.typing import NdArray
+
+
+class Schema(BaseDoc):
+    tens: NdArray[100] = Field(max_elements=12, space='cosine')
+    tens_two: NdArray[10] = Field(M=4, space='ip')
+
+
+# create a DBConfig for your Document Index
+conf = HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+# update the default max_elements for np.ndarray columns
+conf.default_column_config.get(np.ndarray).update(max_elements=2048)
+# create Document Index
+# tens has a max_elements of 12, specified in the schema
+# tens_two has a max_elements of 2048, specified by the default in the DBConfig
+db = HnswDocumentIndex[Schema](conf)
+```
+
 
 For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` [documentation](index_hnswlib.md).
 
