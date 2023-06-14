@@ -323,3 +323,22 @@ def test_query_builder(tmp_index_name):  # noqa: F811
 
     docs, _ = index.execute_query(query)
     assert [doc['id'] for doc in docs] == ['7', '6', '5', '4']
+
+
+def test_contain():
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10]
+
+    index = ElasticV7DocIndex[SimpleSchema]()
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+
+    assert (index_docs[0] in index) is False
+
+    index.index(index_docs)
+
+    for doc in index_docs:
+        assert (doc in index) is True
+
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False

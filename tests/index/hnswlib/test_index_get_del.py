@@ -129,6 +129,36 @@ def test_index_tf(tmp_path):
         assert index.get_current_count() == 10
 
 
+def test_index_lst_str(tmp_path):
+    from typing import List
+
+    class ListDoc(BaseDoc):
+        list_str: List[str]
+
+    docs = [ListDoc(list_str=[str(i) for i in range(10)]) for _ in range(10)]
+    assert isinstance(docs[0].list_str, List)
+
+    index = HnswDocumentIndex[ListDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 10
+    for index in index._hnsw_indices.values():
+        assert index.get_current_count() == 10
+
+
+def test_index_typevar(tmp_path):
+    from typing import TypeVar
+
+    T = TypeVar("T")
+
+    class TypeDoc(BaseDoc):
+        list_str: T
+
+    index = HnswDocumentIndex[TypeDoc](work_dir=str(tmp_path))
+    docs = [TypeDoc(list_str=10) for _ in range(10)]
+    index.index(docs)
+    assert index.num_docs() == 10
+
+
 def test_index_builtin_docs(tmp_path):
     # TextDoc
     class TextSchema(TextDoc):
@@ -332,3 +362,53 @@ def test_num_docs(ten_simple_docs, tmp_path):
 
     del index[more_docs[2].id, ten_simple_docs[7].id]
     assert index.num_docs() == 10
+
+
+def test_update_payload(tmp_path):
+    class TextSimpleDoc(SimpleDoc):
+        text: str = 'hey'
+
+    docs = DocList[TextSimpleDoc](
+        [TextSimpleDoc(tens=np.random.rand(10), text=f'hey {i}') for i in range(100)]
+    )
+    index = HnswDocumentIndex[TextSimpleDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    for doc in docs:
+        doc.text += '_changed'
+
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    res = index.find(query=docs[0], search_field='tens', limit=100)
+    assert len(res.documents) == 100
+    for doc in res.documents:
+        assert '_changed' in doc.text
+
+
+def test_update_embedding(tmp_path):
+    class TextSimpleDoc(SimpleDoc):
+        text: str = 'hey'
+
+    docs = DocList[TextSimpleDoc](
+        [TextSimpleDoc(tens=np.random.rand(10), text=f'hey {i}') for i in range(100)]
+    )
+    index = HnswDocumentIndex[TextSimpleDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    new_tensor = np.random.rand(10)
+    docs[0].tens = new_tensor
+
+    index.index(docs[0])
+    assert index.num_docs() == 100
+
+    res = index.find(query=docs[0], search_field='tens', limit=100)
+    assert len(res.documents) == 100
+    found = False
+    for doc in res.documents:
+        if doc.id == docs[0].id:
+            found = True
+            assert (doc.tens == new_tensor).all()
+    assert found

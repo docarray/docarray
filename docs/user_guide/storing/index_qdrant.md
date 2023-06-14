@@ -52,7 +52,7 @@ class MyDocument(BaseDoc):
 
 
 # Creating an in-memory Qdrant document index
-qdrant_config = QdrantDocumentIndex.DBConfig(":memory:")
+qdrant_config = QdrantDocumentIndex.DBConfig(location=":memory:")
 doc_index = QdrantDocumentIndex[MyDocument](qdrant_config)
 
 # Connecting to a local Qdrant instance running as a Docker container

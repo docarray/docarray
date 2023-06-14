@@ -6,7 +6,7 @@ import numpy as np
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import import_library, is_tf_available
 
 if TYPE_CHECKING:
     import torch
@@ -18,6 +18,9 @@ if TYPE_CHECKING:
 else:
     torch = import_library('torch', raise_error=True)
 
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -123,7 +126,12 @@ class TorchTensor(
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value)
-
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_ndarray(value._docarray_to_ndarray())
+        elif tf_available and isinstance(value, tf.Tensor):
+            return cls._docarray_from_ndarray(value.numpy())
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
@@ -241,3 +249,15 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.detach().cpu().numpy()

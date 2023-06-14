@@ -1,10 +1,13 @@
+from typing import Optional
+
 import numpy as np
 import pytest
 from pydantic import Field
+from torch import rand
 
 from docarray import BaseDoc, DocList
 from docarray.index.backends.in_memory import InMemoryExactNNIndex
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 class SchemaDoc(BaseDoc):
@@ -17,7 +20,9 @@ class SchemaDoc(BaseDoc):
 def docs():
     docs = DocList[SchemaDoc](
         [
-            SchemaDoc(text=f'hello {i}', price=i, tensor=np.array([i] * 10))
+            SchemaDoc(
+                text=f'hello {i}', price=i, tensor=np.array([i + j for j in range(10)])
+            )
             for i in range(9)
         ]
     )
@@ -122,6 +127,45 @@ def test_concatenated_queries(doc_index):
     assert len(docs) == 4
 
 
+@pytest.mark.parametrize(
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 1)]
+)
+def test_query_builder_limits(doc_index, find_limit, filter_limit, expected_docs):
+    query = SchemaDoc(text='query', price=3, tensor=np.array([3] * 10))
+
+    q = (
+        doc_index.build_query()
+        .find(query=query, search_field='tensor', limit=find_limit)
+        .filter(filter_query={'price': {'$lte': 5}}, limit=filter_limit)
+        .build()
+    )
+
+    docs, scores = doc_index.execute_query(q)
+
+    assert len(docs) == expected_docs
+
+
+def test_filter(doc_index):
+    docs = doc_index.filter({'price': {'$eq': 3}})
+    assert len(docs) == 1
+    assert docs[0].price == 3
+
+    docs = doc_index.filter({'price': {'$lte': 5}})
+    assert len(docs) == 6
+    for doc in docs:
+        assert doc.price <= 5
+
+    docs = doc_index.filter({'price': {'$gte': 5}}, limit=3)
+    assert len(docs) == 3
+    for doc in docs:
+        assert doc.price >= 5
+
+    docs = doc_index.filter({'price': {'$neq': 2}}, limit=10)
+    assert len(docs) == 9
+    for doc in docs:
+        assert doc.price != 2
+
+
 def test_save_and_load(doc_index, tmpdir):
     initial_num_docs = doc_index.num_docs()
 
@@ -141,3 +185,167 @@ def test_save_and_load(doc_index, tmpdir):
     )
 
     assert newer_doc_index.num_docs() == 0
+
+
+def test_index_with_None_embedding():
+    class DocTest(BaseDoc):
+        index: int
+        embedding: Optional[NdArray[4]]
+
+    # Some of the documents have the embedding field set to None
+    dl = DocList[DocTest](
+        [
+            DocTest(index=i, embedding=np.random.rand(4) if i % 2 else None)
+            for i in range(100)
+        ]
+    )
+
+    index = InMemoryExactNNIndex[DocTest](dl)
+    res = index.find(np.random.rand(4), search_field="embedding", limit=70)
+    assert len(res.documents) == 50
+    for doc in res.documents:
+        assert doc.index % 2 != 0
+
+
+def test_index_avoid_stack_embedding():
+    class MyDoc(BaseDoc):
+        embedding1: TorchTensor
+        embedding2: TorchTensor
+        embedding3: TorchTensor
+
+    data = DocList[MyDoc](
+        [
+            MyDoc(
+                embedding1=rand(128),
+                embedding2=rand(128),
+                embedding3=rand(128),
+            )
+            for _ in range(10)
+        ]
+    )
+
+    db = InMemoryExactNNIndex[MyDoc](data)
+
+    query = MyDoc(
+        embedding1=rand(128),
+        embedding2=rand(128),
+        embedding3=rand(128),
+    )
+
+    for i in range(3):
+        db.find(query, search_field=f"embedding{i + 1}")
+        assert len(db._embedding_map) == i + 1
+
+    data_copy = data.copy()
+
+    for i in range(9):
+        db._del_items(data_copy[i].id)
+        assert db._embedding_map["embedding1"][0].shape[0] == db.num_docs()
+
+    db._del_items(data_copy[9].id)  # Delete the last element
+    assert len(db._embedding_map) == 0
+
+
+def test_index_find_speedup():
+    class MyDocument(BaseDoc):
+        embedding: TorchTensor
+        embedding2: TorchTensor
+        embedding3: TorchTensor
+
+    def generate_doc_list(num_docs: int, dims: int) -> DocList[MyDocument]:
+        return DocList[MyDocument](
+            [
+                MyDocument(
+                    embedding=rand(dims),
+                    embedding2=rand(dims),
+                    embedding3=rand(dims),
+                )
+                for _ in range(num_docs)
+            ]
+        )
+
+    def create_inmemory_index(
+        data_list: DocList[MyDocument],
+    ) -> InMemoryExactNNIndex[MyDocument]:
+        return InMemoryExactNNIndex[MyDocument](data_list)
+
+    def find_similar_docs(
+        index: InMemoryExactNNIndex[MyDocument],
+        queries: DocList[MyDocument],
+        search_field: str = 'embedding',
+        limit: int = 5,
+    ) -> tuple:
+        return index.find_batched(queries, search_field=search_field, limit=limit)
+
+    # Generating document lists
+    num_docs, num_queries, dims = 2000, 1000, 128
+    data_list = generate_doc_list(num_docs, dims)
+    queries = generate_doc_list(num_queries, dims)
+
+    # Creating index
+    db = create_inmemory_index(data_list)
+
+    # Finding similar documents
+    for _ in range(5):
+        matches, scores = find_similar_docs(db, queries, 'embedding', 5)
+        assert len(matches) == num_queries
+        assert len(matches[0]) == 5
+
+
+def test_nested_document_find():
+    from numpy import all
+
+    from docarray.typing import VideoUrl
+
+    class VideoDoc(BaseDoc):
+        url: VideoUrl
+        tensor_video: NdArray[256]
+
+    class MyDoc(BaseDoc):
+        docs: DocList[VideoDoc]
+        tensor: NdArray[256]
+
+    doc_index = InMemoryExactNNIndex[MyDoc]()
+
+    index_docs = [
+        MyDoc(
+            id=f'{i}',
+            docs=DocList[VideoDoc](
+                [
+                    VideoDoc(
+                        url=f'http://example.ai/videos/{i}-{j}',
+                        tensor_video=(np.ones(256)) * i,
+                    )
+                    for j in range(10)
+                ]
+            ),
+            tensor=np.ones(256),
+        )
+        for i in range(10)
+    ]
+
+    # index the Documents
+    doc_index.index(index_docs)
+
+    root_docs, sub_docs, scores = doc_index.find_subindex(
+        np.ones(256), subindex='docs', search_field='tensor_video', limit=5
+    )
+
+    assert doc_index.num_docs() == 10
+    assert doc_index._subindices['docs'].num_docs() == 100
+
+    assert type(sub_docs) == DocList[VideoDoc]
+    assert type(sub_docs[0]) == VideoDoc
+    assert type(root_docs[0]) == MyDoc
+    assert len(scores) == 5
+    assert all(scores) == 1.0
+
+    del doc_index['0']
+    assert doc_index.num_docs() == 9
+    assert doc_index._subindices['docs'].num_docs() == 90
+
+
+def test_document_contain(doc_index):
+    num_docs = doc_index.num_docs()
+    for i in range(num_docs):
+        assert (doc_index._docs[i] in doc_index) is True

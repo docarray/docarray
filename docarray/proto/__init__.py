@@ -17,6 +17,7 @@ if __pb__version__.startswith('4'):
         DocVecProto,
         ListOfAnyProto,
         ListOfDocArrayProto,
+        ListOfDocVecProto,
         NdArrayProto,
         NodeProto,
     )
@@ -28,6 +29,7 @@ else:
         DocVecProto,
         ListOfAnyProto,
         ListOfDocArrayProto,
+        ListOfDocVecProto,
         NdArrayProto,
         NodeProto,
     )
@@ -40,6 +42,7 @@ __all__ = [
     'DocVecProto',
     'DocListProto',
     'ListOfDocArrayProto',
+    'ListOfDocVecProto',
     'ListOfAnyProto',
     'DictOfAnyProto',
 ]

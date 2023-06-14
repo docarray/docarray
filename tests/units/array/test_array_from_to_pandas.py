@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 import pandas as pd
 import pytest
@@ -15,6 +15,7 @@ def nested_doc_cls():
 
     class MyDocNested(MyDoc):
         image: ImageDoc
+        lst: List[str]
 
     return MyDocNested
 
@@ -27,8 +28,11 @@ def test_to_from_pandas_df(nested_doc_cls, doc_vec):
                 count=0,
                 text='hello',
                 image=ImageDoc(url='aux.png'),
+                lst=["hello", "world"],
             ),
-            nested_doc_cls(text='hello world', image=ImageDoc()),
+            nested_doc_cls(
+                text='hello world', image=ImageDoc(), lst=["hello", "world"]
+            ),
         ]
     )
     if doc_vec:
@@ -47,6 +51,7 @@ def test_to_from_pandas_df(nested_doc_cls, doc_vec):
             'image__tensor',
             'image__embedding',
             'image__bytes_',
+            'lst',
         ]
     ).all()
 

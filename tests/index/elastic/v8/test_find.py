@@ -342,3 +342,22 @@ def test_index_name():
 
     index = ElasticDocIndex[MyDoc]()
     assert index.index_name == MyDoc.__name__.lower()
+
+
+def test_contain():
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10]
+
+    index = ElasticDocIndex[SimpleSchema]()
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+
+    assert (index_docs[0] in index) is False
+
+    index.index(index_docs)
+
+    for doc in index_docs:
+        assert (doc in index) is True
+
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False
