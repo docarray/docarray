@@ -671,6 +671,23 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
 
+    def __contains__(self, item: BaseDoc) -> bool:
+        if safe_issubclass(type(item), BaseDoc):
+            if len(item.id) == 0:
+                return False
+            ret = self._client_mget([item.id])
+            return ret["docs"][0]["found"]
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
+
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        response = self._client.search(index=self.index_name)
+        return self._dict_list_to_docarray(
+            [item["_source"] for item in response["hits"]["hits"]]
+        )
+
     ###############################################
     # API Wrappers                                #
     ###############################################
@@ -694,12 +711,3 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
 
     def _client_msearch(self, request: List[Dict[str, Any]]):
         return self._client.msearch(index=self.index_name, searches=request)
-
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            ret = self._client_mget([item.id])
-            return ret["docs"][0]["found"]
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )

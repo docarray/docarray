@@ -332,6 +332,16 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
             )
 
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        response, _ = self._client.scroll(
+            collection_name=self.index_name,
+            with_payload=True,
+            with_vectors=True,
+        )
+        return self._dict_list_to_docarray(
+            [self._convert_to_doc(point) for point in response]
+        )
+
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)
         if len(items) < len(doc_ids):

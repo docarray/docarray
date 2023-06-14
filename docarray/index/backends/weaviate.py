@@ -776,11 +776,24 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 )
                 .do()
             )
-            return len(result["data"]["Get"][self.index_name]) > 0
+            docs = result["data"]["Get"][self.index_name]
+            return docs is not None and len(docs) > 0
         else:
             raise TypeError(
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
             )
+
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        result = self._client.query.get(self.index_name, ['docarrayid']).do()
+
+        return self._dict_list_to_docarray(
+            self._get_items(
+                [
+                    list(doc.values())[0]
+                    for doc in result["data"]["Get"][self.index_name]
+                ]
+            )
+        )
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):

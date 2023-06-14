@@ -1166,3 +1166,46 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        """Checks if a given BaseDoc item is contained in the index.
+
+        :param item: the given BaseDoc
+        :return: if the given BaseDoc item is contained in the index
+        """
+        ...
+
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        """Retrieve all documents from the index
+
+        :return: a DocArray or list of documents
+        """
+        ...
+
+    def subindex_contains(self, item: BaseDoc) -> bool:
+        """Checks if a given BaseDoc item is contained in the index or any of its subindices.
+
+        :param item: the given BaseDoc
+        :return: if the given BaseDoc item is contained in the index/subindices
+        """
+        if self.num_docs() == 0:
+            return False
+
+        if safe_issubclass(type(item), BaseDoc):
+            docs = self._get_all_documents()
+            for doc in docs:
+                for field_name in doc.__fields__:
+                    sub_doc = getattr(doc, field_name)
+                    if (
+                        safe_issubclass(type(sub_doc), BaseDoc)
+                        and sub_doc.id == item.id
+                    ):
+                        return True
+
+            return self.__contains__(item) or any(
+                index.subindex_contains(item) for index in self._subindices.values()
+            )
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )

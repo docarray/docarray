@@ -405,6 +405,11 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
             )
 
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        self._sqlite_cursor.execute("SELECT data FROM docs")
+        rows = self._sqlite_cursor.fetchall()
+        return [self._doc_from_bytes(row[0]) for row in rows]
+
     def num_docs(self) -> int:
         """
         Get the number of documents.

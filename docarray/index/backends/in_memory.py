@@ -441,6 +441,9 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
             )
 
+    def _get_all_documents(self) -> Union[AnyDocArray, List]:
+        return self._docs
+
     def persist(self, file: str = 'in_memory_index.bin') -> None:
         """Persist InMemoryExactNNIndex into a binary file."""
         self._docs.save_binary(file=file)
