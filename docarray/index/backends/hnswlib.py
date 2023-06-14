@@ -165,11 +165,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """Dataclass that contains all "static" configurations of HnswDocumentIndex."""
 
         work_dir: str = '.'
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of HnswDocumentIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
@@ -187,6 +182,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 None: {},  # type: ignore
             }
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of HnswDocumentIndex."""
+
+        pass
 
     ###############################################
     # Implementation of abstract methods          #

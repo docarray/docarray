@@ -137,12 +137,6 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of InMemoryExactNNIndex."""
 
-        pass
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
                 dict,
@@ -151,6 +145,12 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 },
             )
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
+
+        pass
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
