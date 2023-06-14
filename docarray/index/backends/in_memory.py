@@ -136,6 +136,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of InMemoryExactNNIndex."""
+
         index_file_path: Optional[str] = None
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
@@ -450,7 +451,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             self._logger.warning(
                 f'persisting index to {DEFAULT_INDEX_FILE_PATH} because no `index_file_path` has been used inside DBConfig and no `file` has been passed as argument'
             )
-        file_to_save = file_to_save or 'in_memory_index.bin'  # to keep
+        file_to_save = file_to_save or DEFAULT_INDEX_FILE_PATH
         self._docs.save_binary(file=file_to_save)
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
