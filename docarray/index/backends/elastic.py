@@ -682,12 +682,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
             )
 
-    def _get_all_documents(self) -> Union[AnyDocArray, List]:
-        response = self._client.search(index=self.index_name)
-        return self._dict_list_to_docarray(
-            [item["_source"] for item in response["hits"]["hits"]]
-        )
-
     ###############################################
     # API Wrappers                                #
     ###############################################

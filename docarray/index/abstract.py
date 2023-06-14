@@ -1176,14 +1176,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         ...
 
-    @abstractmethod
-    def _get_all_documents(self) -> Union[AnyDocArray, List]:
-        """Retrieve all documents from the index
-
-        :return: a DocArray or list of documents
-        """
-        ...
-
     def subindex_contains(self, item: BaseDoc) -> bool:
         """Checks if a given BaseDoc item is contained in the index or any of its subindices.
 
@@ -1194,16 +1186,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             return False
 
         if safe_issubclass(type(item), BaseDoc):
-            docs = self._get_all_documents()
-            for doc in docs:
-                for field_name in doc.__fields__:
-                    sub_doc = getattr(doc, field_name)
-                    if (
-                        safe_issubclass(type(sub_doc), BaseDoc)
-                        and sub_doc.id == item.id
-                    ):
-                        return True
-
             return self.__contains__(item) or any(
                 index.subindex_contains(item) for index in self._subindices.values()
             )
