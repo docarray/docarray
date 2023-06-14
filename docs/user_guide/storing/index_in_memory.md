@@ -46,26 +46,21 @@ new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
 
 This section lays out the configurations and options that are specific to [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex].
 
-### RuntimeConfig
-
-The `RuntimeConfig` of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] contains only one entry:
+The `DBConfig` of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] contains only one entry:
 the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using `RuntimeConfig`:
+If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using `DBConfig` or passing it at `__init__`::
 
 ```python
 from collections import defaultdict
 from docarray.typing import AbstractTensor
-
-index.configure(
-    default_column_config=defaultdict(
-        dict,
-        {
-            AbstractTensor: {'space': 'cosine_sim'},
-        },
-    )
-)
+new_doc_index = InMemoryExactNNIndex[MyDoc](default_column_config=defaultdict(
+                                                    dict,
+                                                    {
+                                                        AbstractTensor: {'space': 'cosine_sim'},
+                                                    },
+                                                ))
 ```
 
 This will set the default configuration for all vector fields to the one specified in the example above.

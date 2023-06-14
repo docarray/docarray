@@ -491,18 +491,10 @@ The following configs can be set in `DBConfig`:
 | `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None. Data will be stored in an index named after the Document type used as schema. |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
+| `default_column_config`  | The default configurations for every column type. | dict  |
 
 You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
 See [here](docindex.md#configuration-options#customize-configurations) for more information.
-
-### RuntimeConfig
-
-The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `default_column_config` and `chunk_size`. You can change `chunk_size` for batch operations:
-
-```python
-doc_index = ElasticDocIndex[SimpleDoc]()
-doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
-```
 
 `default_column_config` is the default configurations for every column type. Since there are many column types in Elasticsearch, you can also consider changing the column config when defining the schema.
 
@@ -512,6 +504,15 @@ class SimpleDoc(BaseDoc):
 
 
 doc_index = ElasticDocIndex[SimpleDoc]()
+```
+
+### RuntimeConfig
+
+The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `chunk_size`. You can change `chunk_size` for batch operations:
+
+```python
+doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
 ```
 
 You can pass the above as keyword arguments to the `configure()` method or pass an entire configuration object.

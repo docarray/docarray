@@ -241,11 +241,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         optimizers_config: Optional[types.OptimizersConfigDiff] = None
         wal_config: Optional[types.WalConfigDiff] = None
         quantization_config: Optional[types.QuantizationConfig] = None
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of QdrantDocumentIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 'id': {},  # type: ignore[dict-item]
@@ -253,6 +248,12 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'payload': {},  # type: ignore[dict-item]
             }
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of QdrantDocumentIndex."""
+
+        pass
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
