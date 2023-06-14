@@ -31,12 +31,12 @@ class DBConfig(BaseDocIndex.DBConfig):
             },
         }
     )
-    default_ef: int = 50
 
 
 @dataclass
 class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-    pass
+
+    default_ef: int = 50
 
 
 def _identity(*x, **y):

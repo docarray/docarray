@@ -254,20 +254,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         index_mappings: Dict[str, Any] = field(default_factory=dict)
         default_column_config: Dict[Any, Dict[str, Any]] = field(default_factory=dict)
 
-        def dense_vector_config(self):
-            """Get the dense vector config."""
-
-            config = {
-                'dims': -1,
-                'index': True,
-                'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
-                'm': 16,
-                'ef_construction': 100,
-                'num_candidates': 10000,
-            }
-
-            return config
-
         def __post_init__(self):
             self.default_column_config = {
                 'binary': {},
@@ -314,6 +300,20 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 None: {},  # type: ignore
             }
             self.default_column_config['dense_vector'] = self.dense_vector_config()
+
+        def dense_vector_config(self):
+            """Get the dense vector config."""
+
+            config = {
+                'dims': -1,
+                'index': True,
+                'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
+                'm': 16,
+                'ef_construction': 100,
+                'num_candidates': 10000,
+            }
+
+            return config
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):

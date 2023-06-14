@@ -245,6 +245,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
         auth_api_key: Optional[str] = None
         embedded_options: Optional[EmbeddedOptions] = None
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
+
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {},
@@ -258,10 +263,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'blob': {},
             }
         )
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
 
         batch_config: Dict[str, Any] = field(
             default_factory=lambda: DEFAULT_BATCH_CONFIG
