@@ -1167,6 +1167,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
             return self._get_root_doc_id(cur_root_id, root, '')
 
+    @abstractmethod
     def __contains__(self, item: BaseDoc) -> bool:
         """Checks if a given BaseDoc item is contained in the index.
 
@@ -1175,6 +1176,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         ...
 
+    @abstractmethod
     def _get_all_documents(self) -> Union[AnyDocArray, List]:
         """Retrieve all documents from the index
 
