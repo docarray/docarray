@@ -228,3 +228,104 @@ def test_proto_none_any_column():
 
     assert da_after._storage.any_columns['text'] == [None, None]
     assert da_after._storage.any_columns['d'] == [None, None]
+
+
+@pytest.mark.proto
+@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+def test_proto_tensor_type(tensor_type):
+    class InnerDoc(BaseDoc):
+        embedding: tensor_type
+
+    class MyDoc(BaseDoc):
+        tensor: tensor_type
+        inner: InnerDoc
+        inner_v: DocVec[InnerDoc]
+
+    def _get_rand_tens():
+        arr = np.random.random(512)
+        return tensor_type.from_ndarray(arr) if tensor_type == TorchTensor else arr
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                tensor=_get_rand_tens(),
+                inner=InnerDoc(embedding=_get_rand_tens()),
+                inner_v=DocVec[InnerDoc]([InnerDoc(embedding=_get_rand_tens())]),
+            ),
+            MyDoc(
+                tensor=_get_rand_tens(),
+                inner=InnerDoc(embedding=_get_rand_tens()),
+                inner_v=DocVec[InnerDoc]([InnerDoc(embedding=_get_rand_tens())]),
+            ),
+        ]
+    )
+    assert isinstance(da.tensor, tensor_type)
+    assert da.tensor.shape == (2, 512)
+    assert isinstance(da.inner.embedding, tensor_type)
+    assert da.inner.embedding.shape == (2, 512)
+    assert isinstance(da.inner_v[0].embedding, tensor_type)
+    assert da.inner_v[0].embedding.shape == (1, 512)
+
+    proto = da.to_protobuf()
+    da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=tensor_type)
+
+    assert isinstance(da_after.tensor, tensor_type)
+    assert (da.tensor == da_after.tensor).all()
+    assert isinstance(da_after.inner.embedding, tensor_type)
+    assert (da.inner.embedding == da_after.inner.embedding).all()
+    assert isinstance(da_after.inner_v[0].embedding, tensor_type)
+    assert (da.inner_v[0].embedding == da_after.inner_v[0].embedding).all()
+
+
+@pytest.mark.tensorflow
+def test_proto_tensor_type_tf():
+    import tensorflow as tf
+
+    from docarray.typing import TensorFlowTensor
+
+    class InnerDoc(BaseDoc):
+        embedding: TensorFlowTensor
+
+    class MyDoc(BaseDoc):
+        tensor: TensorFlowTensor
+        inner: InnerDoc
+        inner_v: DocVec[InnerDoc]
+
+    def _get_rand_tens():
+        arr = np.random.random(512)
+        return TensorFlowTensor.from_ndarray(arr)
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                tensor=_get_rand_tens(),
+                inner=InnerDoc(embedding=_get_rand_tens()),
+                inner_v=DocVec[InnerDoc]([InnerDoc(embedding=_get_rand_tens())]),
+            ),
+            MyDoc(
+                tensor=_get_rand_tens(),
+                inner=InnerDoc(embedding=_get_rand_tens()),
+                inner_v=DocVec[InnerDoc]([InnerDoc(embedding=_get_rand_tens())]),
+            ),
+        ]
+    )
+    assert isinstance(da.tensor, TensorFlowTensor)
+    assert len(da.tensor) == 2
+    assert isinstance(da.inner.embedding, TensorFlowTensor)
+    assert len(da.inner.embedding) == 2
+    assert isinstance(da.inner_v[0].embedding, TensorFlowTensor)
+    assert len(da.inner_v[0].embedding) == 1
+
+    proto = da.to_protobuf()
+    da_after = DocVec[MyDoc].from_protobuf(proto, tensor_type=TensorFlowTensor)
+
+    assert isinstance(da_after.tensor, TensorFlowTensor)
+    assert tf.math.reduce_all(tf.equal(da.tensor.tensor, da_after.tensor.tensor))
+    assert isinstance(da_after.inner.embedding, TensorFlowTensor)
+    assert tf.math.reduce_all(
+        tf.equal(da.inner.embedding.tensor, da_after.inner.embedding.tensor)
+    )
+    assert isinstance(da_after.inner_v[0].embedding, TensorFlowTensor)
+    assert tf.math.reduce_all(
+        tf.equal(da.inner_v[0].embedding.tensor, da_after.inner_v[0].embedding.tensor)
+    )
