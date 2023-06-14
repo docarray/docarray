@@ -1,5 +1,4 @@
 import os
-import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -55,7 +54,6 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """Initialize InMemoryExactNNIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._runtime_config = self.RuntimeConfig()
-        self._db_config = cast(InMemoryExactNNIndex.DBConfig, self._db_config)
         self._db_config = cast(InMemoryExactNNIndex.DBConfig, self._db_config)
         self._index_file_path = self._db_config.index_file_path
 
@@ -449,7 +447,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         DEFAULT_INDEX_FILE_PATH = 'in_memory_index.bin'
         file_to_save = self._index_file_path or file
         if file_to_save is None:
-            warnings.warn(
+            self._logger.warning(
                 f'persisting index to {DEFAULT_INDEX_FILE_PATH} because no `index_file_path` has been used inside DBConfig and no `file` has been passed as argument'
             )
         file_to_save = file_to_save or 'in_memory_index.bin'  # to keep
