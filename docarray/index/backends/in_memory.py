@@ -46,10 +46,10 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(
-        self,
-        docs: Optional[DocList] = None,
-        index_file_path: Optional[str] = None,
-        **kwargs,
+            self,
+            docs: Optional[DocList] = None,
+            index_file_path: Optional[str] = None,
+            **kwargs,
     ):
         """Initialize InMemoryExactNNIndex"""
         if 'db_config' in kwargs:
@@ -137,12 +137,6 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of InMemoryExactNNIndex."""
 
-        pass
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
                 dict,
@@ -151,6 +145,11 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 },
             )
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
+        pass
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
@@ -236,7 +235,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         ori_doc = _shallow_copy_doc(doc)
         for field_name, type_, _ in self._flatten_schema(
-            cast(Type[BaseDoc], self.out_schema)
+                cast(Type[BaseDoc], self.out_schema)
         ):
             if safe_issubclass(type_, AnyDocArray):
                 _list = getattr(ori_doc, field_name)
@@ -253,7 +252,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         return ori_doc
 
     def _get_items(
-        self, doc_ids: Sequence[str], raw: bool = False
+            self, doc_ids: Sequence[str], raw: bool = False
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         """Get Documents from the index, by `id`.
         If no document is found, a KeyError is raised.
@@ -304,11 +303,11 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         return find_res
 
     def find(
-        self,
-        query: Union[AnyTensor, BaseDoc],
-        search_field: str = '',
-        limit: int = 10,
-        **kwargs,
+            self,
+            query: Union[AnyTensor, BaseDoc],
+            search_field: str = '',
+            limit: int = 10,
+            **kwargs,
     ) -> FindResult:
         """Find Documents in the index using nearest-neighbor search.
 
@@ -351,16 +350,16 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         return FindResult(documents=docs_with_schema, scores=scores)
 
     def _find(
-        self, query: np.ndarray, limit: int, search_field: str = ''
+            self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         raise NotImplementedError
 
     def find_batched(
-        self,
-        queries: Union[AnyTensor, DocList],
-        search_field: str = '',
-        limit: int = 10,
-        **kwargs,
+            self,
+            queries: Union[AnyTensor, DocList],
+            search_field: str = '',
+            limit: int = 10,
+            **kwargs,
     ) -> FindResultBatched:
         """Find Documents in the index using nearest-neighbor search.
 
@@ -394,15 +393,15 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         return find_res
 
     def _find_batched(
-        self, queries: np.ndarray, limit: int, search_field: str = ''
+            self, queries: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         raise NotImplementedError
 
     def filter(
-        self,
-        filter_query: Any,
-        limit: int = 10,
-        **kwargs,
+            self,
+            filter_query: Any,
+            limit: int = 10,
+            **kwargs,
     ) -> DocList:
         """Find documents in the index based on a filter query
 
@@ -420,17 +419,17 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         raise NotImplementedError
 
     def _filter_batched(
-        self, filter_queries: Any, limit: int
+            self, filter_queries: Any, limit: int
     ) -> Union[List[DocList], List[List[Dict]]]:
         raise NotImplementedError(f'{type(self)} does not support filtering.')
 
     def _text_search(
-        self, query: str, limit: int, search_field: str = ''
+            self, query: str, limit: int, search_field: str = ''
     ) -> _FindResult:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _text_search_batched(
-        self, queries: Sequence[str], limit: int, search_field: str = ''
+            self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 

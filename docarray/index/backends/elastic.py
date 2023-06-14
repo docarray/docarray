@@ -39,7 +39,6 @@ T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
-
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
@@ -56,7 +55,6 @@ else:
 
     torch = import_library('torch', raise_error=False)
     tf = import_library('tensorflow', raise_error=False)
-
 
 if torch is not None:
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
@@ -100,7 +98,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             if issubclass(col.docarray_type, AnyDocArray):
                 continue
             if col.db_type == 'dense_vector' and (
-                not col.n_dim and col.config['dims'] < 0
+                    not col.n_dim and col.config['dims'] < 0
             ):
                 self._logger.info(
                     f'Not indexing column {col_name}, the dimensionality is not specified'
@@ -167,11 +165,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             return self._query
 
         def find(
-            self,
-            query: Union[AnyTensor, BaseDoc],
-            search_field: str = 'embedding',
-            limit: int = 10,
-            num_candidates: Optional[int] = None,
+                self,
+                query: Union[AnyTensor, BaseDoc],
+                search_field: str = 'embedding',
+                limit: int = 10,
+                num_candidates: Optional[int] = None,
         ):
             """
             Find k-nearest neighbors of the query.
@@ -254,13 +252,21 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
         index_mappings: Dict[str, Any] = field(default_factory=dict)
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
-
         default_column_config: Dict[Any, Dict[str, Any]] = field(default_factory=dict)
-        chunk_size: int = 500
+
+        def dense_vector_config(self):
+            """Get the dense vector config."""
+
+            config = {
+                'dims': -1,
+                'index': True,
+                'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
+                'm': 16,
+                'ef_construction': 100,
+                'num_candidates': 10000,
+            }
+
+            return config
 
         def __post_init__(self):
             self.default_column_config = {
@@ -309,19 +315,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             }
             self.default_column_config['dense_vector'] = self.dense_vector_config()
 
-        def dense_vector_config(self):
-            """Get the dense vector config."""
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
 
-            config = {
-                'dims': -1,
-                'index': True,
-                'similarity': 'cosine',  # 'l2_norm', 'dot_product', 'cosine'
-                'm': 16,
-                'ef_construction': 100,
-                'num_candidates': 10000,
-            }
-
-            return config
+        chunk_size: int = 500
 
     ###############################################
     # Implementation of abstract methods          #
@@ -367,10 +365,10 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         raise ValueError(err_msg)
 
     def _index(
-        self,
-        column_to_data: Mapping[str, Generator[Any, None, None]],
-        refresh: bool = True,
-        chunk_size: Optional[int] = None,
+            self,
+            column_to_data: Mapping[str, Generator[Any, None, None]],
+            refresh: bool = True,
+            chunk_size: Optional[int] = None,
     ):
         self._index_subindex(column_to_data)
 
@@ -409,9 +407,9 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return self._client.count(index=self.index_name)['count']
 
     def _del_items(
-        self,
-        doc_ids: Sequence[str],
-        chunk_size: Optional[int] = None,
+            self,
+            doc_ids: Sequence[str],
+            chunk_size: Optional[int] = None,
     ):
         requests = []
         for _id in doc_ids:
@@ -477,7 +475,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     def _find(
-        self, query: np.ndarray, limit: int, search_field: str = ''
+            self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
         body = self._form_search_body(query, limit, search_field)
 
@@ -488,10 +486,10 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs, scores=parse_obj_as(NdArray, scores))
 
     def _find_batched(
-        self,
-        queries: np.ndarray,
-        limit: int,
-        search_field: str = '',
+            self,
+            queries: np.ndarray,
+            limit: int,
+            search_field: str = '',
     ) -> _FindResultBatched:
         request = []
         for query in queries:
@@ -507,9 +505,9 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResultBatched(documents=list(das), scores=scores)
 
     def _filter(
-        self,
-        filter_query: Dict[str, Any],
-        limit: int,
+            self,
+            filter_query: Dict[str, Any],
+            limit: int,
     ) -> List[Dict]:
         resp = self._client_search(query=filter_query, size=limit)
 
@@ -518,9 +516,9 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return docs
 
     def _filter_batched(
-        self,
-        filter_queries: Any,
-        limit: int,
+            self,
+            filter_queries: Any,
+            limit: int,
     ) -> List[List[Dict]]:
         request = []
         for query in filter_queries:
@@ -534,10 +532,10 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return list(das)
 
     def _text_search(
-        self,
-        query: str,
-        limit: int,
-        search_field: str = '',
+            self,
+            query: str,
+            limit: int,
+            search_field: str = '',
     ) -> _FindResult:
         body = self._form_text_search_body(query, limit, search_field)
         resp = self._client_search(**body)
@@ -547,10 +545,10 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return _FindResult(documents=docs, scores=np.array(scores))  # type: ignore
 
     def _text_search_batched(
-        self,
-        queries: Sequence[str],
-        limit: int,
-        search_field: str = '',
+            self,
+            queries: Sequence[str],
+            limit: int,
+            search_field: str = '',
     ) -> _FindResultBatched:
         request = []
         for query in queries:
@@ -592,22 +590,22 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return index
 
     def _send_requests(
-        self,
-        request: Iterable[Dict[str, Any]],
-        chunk_size: Optional[int] = None,
-        **kwargs,
+            self,
+            request: Iterable[Dict[str, Any]],
+            chunk_size: Optional[int] = None,
+            **kwargs,
     ) -> Tuple[List[Dict], List[Any]]:
         """Send bulk request to Elastic and gather the successful info"""
 
         accumulated_info = []
         warning_info = []
         for success, info in parallel_bulk(
-            self._client,
-            request,
-            raise_on_error=False,
-            raise_on_exception=False,
-            chunk_size=chunk_size if chunk_size else self._runtime_config.chunk_size,  # type: ignore
-            **kwargs,
+                self._client,
+                request,
+                raise_on_error=False,
+                raise_on_exception=False,
+                chunk_size=chunk_size if chunk_size else self._runtime_config.chunk_size,  # type: ignore
+                **kwargs,
         ):
             if not success:
                 warning_info.append(info)
@@ -617,11 +615,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return accumulated_info, warning_info
 
     def _form_search_body(
-        self,
-        query: np.ndarray,
-        limit: int,
-        search_field: str = '',
-        num_candidates: Optional[int] = None,
+            self,
+            query: np.ndarray,
+            limit: int,
+            search_field: str = '',
+            num_candidates: Optional[int] = None,
     ) -> Dict[str, Any]:
         if not num_candidates:
             num_candidates = self._runtime_config.default_column_config['dense_vector'][
@@ -639,7 +637,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         return body
 
     def _form_text_search_body(
-        self, query: str, limit: int, search_field: str = ''
+            self, query: str, limit: int, search_field: str = ''
     ) -> Dict[str, Any]:
         body = {
             'size': limit,
