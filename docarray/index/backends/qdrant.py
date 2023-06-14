@@ -255,8 +255,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         pass
 
-
-
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
         Takes any python type and returns the corresponding database column type.
