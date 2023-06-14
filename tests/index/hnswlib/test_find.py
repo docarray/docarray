@@ -345,5 +345,3 @@ def test_contain(tmp_path):
     index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
     for doc in index_docs_new:
         assert (doc in index) is False
-
-    print(index._get_all_documents())

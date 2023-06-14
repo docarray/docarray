@@ -1167,15 +1167,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             )
             return self._get_root_doc_id(cur_root_id, root, '')
 
-    @abstractmethod
-    def __contains__(self, item: BaseDoc) -> bool:
-        """Checks if a given BaseDoc item is contained in the index.
-
-        :param item: the given BaseDoc
-        :return: if the given BaseDoc item is contained in the index
-        """
-        ...
-
     def subindex_contains(self, item: BaseDoc) -> bool:
         """Checks if a given BaseDoc item is contained in the index or any of its subindices.
 
