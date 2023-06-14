@@ -31,6 +31,7 @@ from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResult
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
@@ -761,6 +762,26 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for res in results['data']['Get'][self._db_config.index_name]
         ]
         return ids
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        if safe_issubclass(type(item), BaseDoc):
+            result = (
+                self._client.query.get(self.index_name, ['docarrayid'])
+                .with_where(
+                    {
+                        "path": ['docarrayid'],
+                        "operator": "Equal",
+                        "valueString": f'{item.id}',
+                    }
+                )
+                .do()
+            )
+            docs = result["data"]["Get"][self.index_name]
+            return docs is not None and len(docs) > 0
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):

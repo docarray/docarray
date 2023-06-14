@@ -329,3 +329,19 @@ def test_query_builder_limits(find_limit, filter_limit, expected_docs, tmp_path)
     docs, scores = index.execute_query(q)
 
     assert len(docs) == expected_docs
+
+
+def test_contain(tmp_path):
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10] = Field(space="cosine")
+
+    index = HnswDocumentIndex[SimpleSchema](work_dir=str(tmp_path))
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    index.index(index_docs)
+
+    for doc in index_docs:
+        assert (doc in index) is True
+
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False
