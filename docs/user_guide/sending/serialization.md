@@ -265,4 +265,42 @@ proto_message_dv = dv.to_protobuf()
 dv_from_proto = DocVec[SimpleVecDoc].from_protobuf(proto_message_dv)
 ```
 
+You can deserialize any [DocVec][docarray.array.doc_list.doc_list.DocVec] protobuf message to any tensor type,
+by passing the `tensor_type=...` parameter to [`from_protobuf`][docarray.array.doc_list.doc_list.DocVec.from_protobuf]
+
+This means that you can choose at deserialization time if you are working with numpy, PyTorch, or TensorFlow tensors.
+
+If no `tensor_type` is passed, the default is `NdArray`.
+
+
+```python
+import torch
+
+from docarray import BaseDoc, DocVec
+from docarray.typing import TorchTensor, NdArray, AnyTensor
+
+
+class AnyTensorDoc(BaseDoc):
+    tensor: AnyTensor
+
+
+dv = DocVec[AnyTensorDoc](
+    [AnyTensorDoc(tensor=torch.ones(16)) for _ in range(8)], tensor_type=TorchTensor
+)
+
+proto_message_dv = dv.to_protobuf()
+
+# deserialize to torch
+dv_from_proto_torch = DocVec[AnyTensorDoc].from_protobuf(
+    proto_message_dv, tensor_type=TorchTensor
+)
+assert dv_from_proto_torch.tensor_type == TorchTensor
+assert isinstance(dv_from_proto_torch.tensor, TorchTensor)
+
+# deserialize to numpy (default)
+dv_from_proto_numpy = DocVec[AnyTensorDoc].from_protobuf(proto_message_dv)
+assert dv_from_proto_numpy.tensor_type == NdArray
+assert isinstance(dv_from_proto_numpy.tensor, NdArray)
+```
+
 

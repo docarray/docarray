@@ -3,6 +3,7 @@ from typing import Any, ForwardRef, Optional
 from typing_extensions import get_origin
 from typing_inspect import get_args, is_typevar, is_union_type
 
+from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
@@ -49,6 +50,8 @@ def safe_issubclass(x: type, a_tuple: type) -> bool:
         (get_origin(x) in (list, tuple, dict, set))
         or is_typevar(x)
         or (type(x) == ForwardRef)
+        or is_typevar(x) 
+        or x == ID
     ):
         return False
     return issubclass(x, a_tuple)

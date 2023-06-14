@@ -154,3 +154,32 @@ def test_subindex_del(index):
     assert index._subindices['docs'].num_docs() == 20
     assert index._subindices['list_docs'].num_docs() == 20
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 100
+
+
+def test_subindex_contain(index):
+    # Checks for individual simple_docs within list_docs
+    for i in range(4):
+        doc = index[f'{i + 1}']
+        for simple_doc in doc.list_docs:
+            assert index.subindex_contains(simple_doc) is True
+            for nested_doc in simple_doc.docs:
+                assert index.subindex_contains(nested_doc) is True
+
+    invalid_doc = SimpleDoc(
+        id='non_existent',
+        simple_tens=np.zeros(10),
+        simple_text='invalid',
+    )
+    assert index.subindex_contains(invalid_doc) is False
+
+    # Checks for an empty doc
+    empty_doc = SimpleDoc(
+        id='',
+        simple_tens=np.zeros(10),
+        simple_text='',
+    )
+    assert index.subindex_contains(empty_doc) is False
+
+    # Empty index
+    empty_index = HnswDocumentIndex[MyDoc]()
+    assert (empty_doc in empty_index) is False

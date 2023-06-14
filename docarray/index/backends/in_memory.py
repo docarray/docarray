@@ -299,6 +299,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         find_res = _execute_find_and_filter_query(
             doc_index=self,
             query=query,
+            reverse_order=True,
         )
         return find_res
 
@@ -432,6 +433,14 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self, queries: Sequence[str], limit: int, search_field: str = ''
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
+
+    def __contains__(self, item: BaseDoc):
+        if safe_issubclass(type(item), BaseDoc):
+            return any(doc.id == item.id for doc in self._docs)
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     def persist(self, file: str = 'in_memory_index.bin') -> None:
         """Persist InMemoryExactNNIndex into a binary file."""
