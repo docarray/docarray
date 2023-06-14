@@ -50,7 +50,7 @@ def safe_issubclass(x: type, a_tuple: type) -> bool:
         (get_origin(x) in (list, tuple, dict, set))
         or is_typevar(x)
         or (type(x) == ForwardRef)
-        or is_typevar(x) 
+        or is_typevar(x)
         or x == ID
     ):
         return False
