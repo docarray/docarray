@@ -123,6 +123,11 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
             return None
         return col[self.index]
 
+    def __reduce__(self):
+        # implementing __reduce__ to solve a pickle issue when subclassing dict
+        # see here: https://stackoverflow.com/questions/21144845/how-can-i-unpickle-a-subclass-of-dict-that-validates-with-setitem-in-pytho
+        return (ColumnStorageView, (self.index, self.storage))
+
     def __setitem__(self, name, value) -> None:
         if self.storage.columns[name] is None:
             raise ValueError(

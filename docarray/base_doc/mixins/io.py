@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Literal,
     Optional,
     Tuple,
     Type,
@@ -170,7 +171,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'protobuf',
+        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
