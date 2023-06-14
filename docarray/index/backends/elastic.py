@@ -622,7 +622,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         num_candidates: Optional[int] = None,
     ) -> Dict[str, Any]:
         if not num_candidates:
-            num_candidates = self._runtime_config.default_column_config['dense_vector'][
+            num_candidates = self._db_config.default_column_config['dense_vector'][
                 'num_candidates'
             ]
         body = {

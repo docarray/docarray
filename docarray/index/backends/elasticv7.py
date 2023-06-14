@@ -143,9 +143,7 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
         return index
 
-    def _form_search_body(
-        self, query: np.ndarray, limit: int, search_field: str = ''
-    ) -> Dict[str, Any]:  # type: ignore
+    def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
         body = {
             'size': limit,
             'query': {
