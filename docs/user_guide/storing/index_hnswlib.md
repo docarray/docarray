@@ -31,10 +31,10 @@ This section lays out the configurations and options that are specific to [HnswD
 
 ### DBConfig
 
-The `DBConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] expects only one argument:
-`work_dir`.
+The `DBConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] contains two argument:
+`work_dir` and `default_column_configs`
 
-This is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.
+`work_dir` is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.
 
 You can pass this directly to the constructor:
 
@@ -58,36 +58,31 @@ To load existing data, you can specify a directory that stores data from a previ
     Hnswlib uses a file lock to prevent multiple processes from accessing the same index at the same time.
     This means that if you try to open an index that is already open in another process, you will get an error.
     To avoid this, you can specify a different `work_dir` for each process.
+    
+`default_column_configs` contains the default mapping from Python types to column configurations.
 
-### RuntimeConfig
-
-The `RuntimeConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] contains only one entry:
-the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using `RuntimeConfig`:
+If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using `DBConfig` or passing it at `__init__`:
 
 ```python
 import numpy as np
 
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
 
-db.configure(
-    default_column_config={
-        np.ndarray: {
-            'dim': -1,
-            'index': True,
-            'space': 'ip',
-            'max_elements': 2048,
-            'ef_construction': 100,
-            'ef': 15,
-            'M': 8,
-            'allow_replace_deleted': True,
-            'num_threads': 5,
-        },
-        None: {},
-    }
-)
+db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db', default_column_config={
+                                                             np.ndarray: {
+                                                                 'dim': -1,
+                                                                 'index': True,
+                                                                 'space': 'ip',
+                                                                 'max_elements': 2048,
+                                                                 'ef_construction': 100,
+                                                                 'ef': 15,
+                                                                 'M': 8,
+                                                                 'allow_replace_deleted': True,
+                                                                 'num_threads': 5,
+                                                             },
+                                                             None: {},
+                                                         })
 ```
 
 This will set the default configuration for all vector fields to the one specified in the example above.

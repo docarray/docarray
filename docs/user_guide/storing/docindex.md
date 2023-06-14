@@ -445,26 +445,25 @@ You can customize every field in this configuration:
 
 ### Runtime configurations
 
-_Runtime configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
-and that you can dynamically change at runtime.
+_Runtime configurations_ are configurations that relate to the way how an `instance` operates with respect to a specific 
+database. 
 
 
 This commonly includes:
 - default batch size for batching operations
-- default mapping from pythong types to database column types
 - default consistency level for various database operations
 - ...
 
 For every backend, you can get the full list of configurations and their defaults:
 
 ```python
-from docarray.index import HnswDocumentIndex
+from docarray.index import ElasticDocIndex
 
 
-runtime_config = HnswDocumentIndex.RuntimeConfig()
+runtime_config = ElasticDocIndex.RuntimeConfig()
 print(runtime_config)
 
-# > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'l2', 'max_elements': 1024, 'ef_construction': 200, 'ef': 10, 'M': 16, 'allow_replace_deleted': True, 'num_threads': 1}, None: {}})
+# > ElasticDocIndex.RuntimeConfig(chunk_size=500)
 ```
 
 As you can see, `HnswDocumentIndex.RuntimeConfig` is a dataclass that contains only one configuration:
