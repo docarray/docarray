@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import jax.numpy as jnp
+import numpy as np
 from jax import Array
 
 from docarray.typing.proto_register import _register_proto
@@ -18,20 +19,47 @@ from docarray.base_doc.base_node import BaseNode
 T = TypeVar('T', bound='JaxArray')
 ShapeT = TypeVar('ShapeT')
 
-tensor_base: type = type(BaseNode)
+node_base: type = type(BaseNode)
 
 
 # the mypy error suppression below should not be necessary anymore once the following
 # is released in mypy: https://github.com/python/mypy/pull/14135
-class metaNumpy(AbstractTensor.__parametrized_meta__, tensor_base):  # type: ignore
+class metaJax(
+    AbstractTensor.__parametrized_meta__,  # type: ignore
+    node_base,  # type: ignore
+):  # type: ignore
     pass
 
 
 @_register_proto(proto_type_name='jaxarray')
-class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
+class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
     """ """
 
-    __parametrized_meta__ = metaNumpy
+    __parametrized_meta__ = metaJax
+
+    def __init__(self, tensor: jnp.ndarray):
+        super().__init__()
+        self.tensor = tensor
+
+    def __getitem__(self, item):
+        from docarray.computation.jax_backend import JaxCompBackend
+
+        tensor = self.unwrap()
+        if tensor is not None:
+            tensor = tensor[item]
+        return JaxCompBackend._cast_output(t=tensor)
+
+    def __setitem__(self, index, value):
+        """"""
+        # print(index, value)
+        self.tensor = self.tensor.at[index : index + 1].set(value)
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self[i]
+
+    def __len__(self):
+        return len(self.tensor)
 
     @classmethod
     def __get_validators__(cls):
@@ -67,9 +95,29 @@ class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
 
     @classmethod
     def _docarray_from_native(cls: Type[T], value: jnp.ndarray) -> T:
-        if cls.__unparametrizedcls__:  # This is not None if the tensor is parametrized
-            return cast(T, value.view(cls.__unparametrizedcls__))
-        return value.view(cls)
+        if isinstance(value, JaxArray):
+            if cls.__unparametrizedcls__:  # None if the tensor is parametrized
+                value.__class__ = cls.__unparametrizedcls__  # type: ignore
+            else:
+                value.__class__ = cls
+            return cast(T, value)
+        else:
+            if cls.__unparametrizedcls__:  # None if the tensor is parametrized
+                cls_param_ = cls.__unparametrizedcls__
+                cls_param = cast(Type[T], cls_param_)
+            else:
+                cls_param = cls
+
+            return cls_param(tensor=value)
+
+    @classmethod
+    def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `TensorFlowTensor` from a numpy array.
+
+        :param value: the numpy array
+        :return: a `TensorFlowTensor`
+        """
+        return cls._docarray_from_native(jnp.array(value))
 
     def _docarray_to_json_compatible(self) -> jnp.ndarray:
         """
@@ -103,7 +151,7 @@ class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
 
         :return: a `jnp.ndarray`
         """
-        return self.view(jnp.ndarray)
+        return self.tensor
 
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
@@ -112,13 +160,32 @@ class JaxArray(jnp.ndarray, AbstractTensor, Generic[ShapeT]):
         :param pb_msg:
         :return: a numpy array
         """
-        pass
+        source = pb_msg.dense
+        if source.buffer:
+            x = np.frombuffer(bytearray(source.buffer), dtype=source.dtype)
+            return cls.from_ndarray(x.reshape(source.shape))
+        elif len(source.shape) > 0:
+            return cls.from_ndarray(np.zeros(source.shape))
+        else:
+            raise ValueError(
+                f'Proto message {pb_msg} cannot be cast to a TensorFlowTensor.'
+            )
 
     def to_protobuf(self) -> 'NdArrayProto':
         """
         Transform self into a NdArrayProto protobuf message
         """
-        pass
+        from docarray.proto import NdArrayProto
+
+        nd_proto = NdArrayProto()
+
+        value_np = self.tensor
+        nd_proto.dense.buffer = value_np.tobytes()
+        nd_proto.dense.ClearField('shape')
+        nd_proto.dense.shape.extend(list(value_np.shape))
+        nd_proto.dense.dtype = value_np.dtype.str
+
+        return nd_proto
 
     @staticmethod
     def get_comp_backend() -> 'JaxCompBackend':

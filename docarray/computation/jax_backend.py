@@ -1,17 +1,18 @@
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple
 
+import jax
+import jax.numpy as jnp
 import numpy as np
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
-from docarray.utils._internal.misc import import_library
+from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
+from docarray.typing import JaxArray
 
 if TYPE_CHECKING:
-    import jax
-else:
-    torch = import_library('jax', raise_error=True)
+    pass
 
 
-def _unsqueeze_if_single_axis(*matrices) -> List[torch.Tensor]:
+def _unsqueeze_if_single_axis(*matrices) -> List[jnp.ndarray]:
     """Unsqueezes tensors that only have one axis, at dim 0.
     This ensures that all outputs can be treated as matrices, not vectors.
 
@@ -26,18 +27,22 @@ def _unsqueeze_if_scalar(t):
     pass
 
 
-def identity(array: jax.numpy.ndarray) -> jax.numpy.ndarray:
-    return array
+def norm_left(t: jnp.ndarray) -> JaxArray:
+    return JaxArray(tensor=t)
 
 
-class JaxCompBackend(AbstractComputationalBackend[torch.Tensor]):
+def norm_right(t: JaxArray) -> jnp.ndarray:
+    return t.tensor
+
+
+class JaxCompBackend(AbstractNumpyBasedBackend):
     """
     Computational backend for Numpy.
     """
 
-    _module = np
-    _cast_output = identity
-    _get_tensor = identity
+    _module = jnp
+    _cast_output: Callable = norm_left
+    _get_tensor: Callable = norm_right
 
     @classmethod
     def to_device(cls, tensor: 'jax.numpy.array', device: str) -> 'jax.numpy.array':
