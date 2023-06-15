@@ -19,6 +19,7 @@ from typing import (
 
 import orjson
 from pydantic import BaseModel, Field
+from pydantic.fields import FieldInfo
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
@@ -99,6 +100,17 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return doc
 
     @classmethod
+    @property
+    def _docarray_fields(cls) -> Dict[str, FieldInfo]:
+        """
+        Returns a dictionary of all fields of this document.
+        """
+        if is_pydantic_v2():
+            return cls.model_fields
+        else:
+            return cls.__fields__
+
+    @classmethod
     def _get_field_type(cls, field: str) -> Type:
         """
         Accessing the nested python Class define in the schema. Could be useful for
@@ -106,7 +118,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
-        return cls.__fields__[field].outer_type_
+
+        if is_pydantic_v2():
+            return cls._docarray_fields[field].annotation
+        else:
+            return cls._docarray_fields[field].outer_type_
 
     def __str__(self) -> str:
         content: Any = None
