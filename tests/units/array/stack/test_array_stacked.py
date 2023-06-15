@@ -585,3 +585,35 @@ def test_doc_view_dict(batch):
     d = doc_view_two.dict()
     assert d['tensor'].shape == (3, 224, 224)
     assert d['id'] == doc_view_two.id
+
+
+def test_doc_vec_equality():
+    class Text(BaseDoc):
+        text: str
+
+    da = DocVec[Text]([Text(text='hello') for _ in range(10)])
+    da2 = DocList[Text]([Text(text='hello') for _ in range(10)])
+
+    assert da != da2
+    assert da == da2.to_doc_vec()
+
+
+def test_doc_vec_nested(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+    batch2 = DocVec[Doc]([Doc(inner=Inner(hello='hello')) for _ in range(10)])
+
+    assert batch == batch2
+
+
+def test_doc_vec_tensor_type():
+    class ImageDoc(BaseDoc):
+        tensor: AnyTensor
+
+    da = DocVec[ImageDoc]([ImageDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)])
+
+    da2 = DocVec[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)],
+        tensor_type=TorchTensor,
+    )
+
+    assert da != da2
