@@ -29,14 +29,20 @@ docs = DocList[MyDoc](MyDoc() for _ in range(10))
 doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
 
-# or in one step:
+# or in one step, create with inserted docs.
 doc_index = InMemoryExactNNIndex[MyDoc](docs)
 ```
 
-Additionally, you can preserve your index as a binary file and instantiate a new one using this file:
+Alternatively, you can pass an `index_file_path` argument to make sure that the index can be restored if persisted from that specific file.
 ```python
 # Save your existing index as a binary file
-doc_index.persist('docs.bin')
+docs = DocList[MyDoc](MyDoc() for _ in range(10))
+
+doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
+doc_index.index(docs)
+
+# or in one step:
+doc_index.persist()
 
 # Initialize a new document index using the saved binary file
 new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
@@ -46,19 +52,16 @@ new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
 
 This section lays out the configurations and options that are specific to [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex].
 
-### RuntimeConfig
-
-The `RuntimeConfig` of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] contains only one entry:
-the default mapping from Python types to column configurations.
+The `DBConfig` of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] contains two entries:
+`index_file_path` and `default_column_mapping`, the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using `RuntimeConfig`:
+If you want to set configurations globally, i.e. for all vector fields in your Documents, you can do that using `DBConfig` or passing it at `__init__`::
 
 ```python
 from collections import defaultdict
 from docarray.typing import AbstractTensor
-
-index.configure(
+new_doc_index = InMemoryExactNNIndex[MyDoc](
     default_column_config=defaultdict(
         dict,
         {

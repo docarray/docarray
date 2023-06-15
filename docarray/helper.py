@@ -240,3 +240,17 @@ def get_paths(
         num_docs += 1
         if size is not None and num_docs >= size:
             break
+
+
+def _shallow_copy_doc(doc):
+    cls = doc.__class__
+    shallow_copy = cls.__new__(cls)
+
+    field_set = set(doc.__fields_set__)
+    object.__setattr__(shallow_copy, '__fields_set__', field_set)
+
+    for field_name, field_ in doc.__fields__.items():
+        val = doc.__getattr__(field_name)
+        setattr(shallow_copy, field_name, val)
+
+    return shallow_copy

@@ -131,3 +131,36 @@ def test_get_paths_exclude():
 
     assert len(paths_wo_init) <= len(paths)
     assert '__init__.py' not in paths_wo_init
+
+
+def test_shallow_copy():
+    from torch import rand
+
+    from docarray import BaseDoc
+    from docarray.helper import _shallow_copy_doc
+    from docarray.typing import TorchTensor, VideoUrl
+
+    class VideoDoc(BaseDoc):
+        url: VideoUrl
+        tensor_video: TorchTensor
+
+    class MyDoc(BaseDoc):
+        docs: DocList[VideoDoc]
+        tensor: TorchTensor
+
+    doc_ori = MyDoc(
+        docs=DocList[VideoDoc](
+            [
+                VideoDoc(
+                    url=f'http://example.ai/videos/{i}',
+                    tensor_video=rand(256),
+                )
+                for i in range(10)
+            ]
+        ),
+        tensor=rand(256),
+    )
+
+    doc_copy = _shallow_copy_doc(doc_ori)
+
+    assert doc_copy == doc_ori

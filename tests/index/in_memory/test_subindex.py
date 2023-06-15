@@ -1,36 +1,45 @@
 import numpy as np
 import pytest
-from pydantic import Field
-from qdrant_client.http import models as rest
 
 from docarray import BaseDoc, DocList
-from docarray.index import QdrantDocumentIndex
+from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
-from tests.index.qdrant.fixtures import start_storage  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    simple_tens: NdArray[10] = Field(space='l2')
+    simple_tens: NdArray[10]
     simple_text: str
 
 
 class ListDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     simple_doc: SimpleDoc
-    list_tens: NdArray[20] = Field(space='l2')
+    list_tens: NdArray[20]
 
 
 class MyDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     list_docs: DocList[ListDoc]
-    my_tens: NdArray[30] = Field(space='l2')
+    my_tens: NdArray[30]
 
 
 @pytest.fixture(scope='session')
 def index():
-    index = QdrantDocumentIndex[MyDoc](QdrantDocumentIndex.DBConfig(host='localhost'))
+    index = InMemoryExactNNIndex[MyDoc]()
+    return index
+
+
+def test_subindex_init(index):
+    assert isinstance(index._subindices['docs'], InMemoryExactNNIndex)
+    assert isinstance(index._subindices['list_docs'], InMemoryExactNNIndex)
+    assert isinstance(
+        index._subindices['list_docs']._subindices['docs'], InMemoryExactNNIndex
+    )
+
+
+def test_subindex_index(index):
     my_docs = [
         MyDoc(
             id=f'{i}',
@@ -74,18 +83,6 @@ def index():
     ]
 
     index.index(my_docs)
-    return index
-
-
-def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], QdrantDocumentIndex)
-    assert isinstance(index._subindices['list_docs'], QdrantDocumentIndex)
-    assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], QdrantDocumentIndex
-    )
-
-
-def test_subindex_index(index):
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
@@ -99,28 +96,22 @@ def test_subindex_get(index):
 
     assert len(doc.docs) == 5
     assert type(doc.docs[0]) == SimpleDoc
-    for d in doc.docs:
-        i = int(d.id.split('-')[-1])
-        assert d.id == f'docs-1-{i}'
-        assert np.allclose(d.simple_tens, np.ones(10) * (i + 1))
+    assert doc.docs[0].id == 'docs-1-0'
+    assert np.allclose(doc.docs[0].simple_tens, np.ones(10))
 
     assert len(doc.list_docs) == 5
     assert type(doc.list_docs[0]) == ListDoc
-    assert set([d.id for d in doc.list_docs]) == set(
-        [f'list_docs-1-{i}' for i in range(5)]
-    )
+    assert doc.list_docs[0].id == 'list_docs-1-0'
     assert len(doc.list_docs[0].docs) == 5
     assert type(doc.list_docs[0].docs[0]) == SimpleDoc
-    i = int(doc.list_docs[0].docs[0].id.split('-')[-2])
-    j = int(doc.list_docs[0].docs[0].id.split('-')[-1])
-    assert doc.list_docs[0].docs[0].id == f'list_docs-docs-1-{i}-{j}'
-    assert np.allclose(doc.list_docs[0].docs[0].simple_tens, np.ones(10) * (j + 1))
-    assert doc.list_docs[0].docs[0].simple_text == f'hello {j}'
+    assert doc.list_docs[0].docs[0].id == 'list_docs-docs-1-0-0'
+    assert np.allclose(doc.list_docs[0].docs[0].simple_tens, np.ones(10))
+    assert doc.list_docs[0].docs[0].simple_text == 'hello 0'
     assert type(doc.list_docs[0].simple_doc) == SimpleDoc
-    assert doc.list_docs[0].simple_doc.id == f'list_docs-simple_doc-1-{i}'
-    assert np.allclose(doc.list_docs[0].simple_doc.simple_tens, np.ones(10) * (i + 1))
-    assert doc.list_docs[0].simple_doc.simple_text == f'hello {i}'
-    assert np.allclose(doc.list_docs[0].list_tens, np.ones(20) * (i + 1))
+    assert doc.list_docs[0].simple_doc.id == 'list_docs-simple_doc-1-0'
+    assert np.allclose(doc.list_docs[0].simple_doc.simple_tens, np.ones(10))
+    assert doc.list_docs[0].simple_doc.simple_text == 'hello 0'
+    assert np.allclose(doc.list_docs[0].list_tens, np.ones(20))
 
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
@@ -138,10 +129,9 @@ def test_find_subindex(index):
     )
     assert type(root_docs[0]) == MyDoc
     assert type(docs[0]) == SimpleDoc
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert np.allclose(doc.simple_tens, np.ones(10))
+    assert len(scores) == 5
+    for root_doc, doc in zip(root_docs, docs):
         assert root_doc.id == f'{doc.id.split("-")[1]}'
-        assert score == 0.0
 
     # sub sub level
     query = np.ones((10,))
@@ -149,42 +139,11 @@ def test_find_subindex(index):
         query, subindex='list_docs__docs', search_field='simple_tens', limit=5
     )
     assert len(docs) == 5
+    assert len(scores) == 5
     assert type(root_docs[0]) == MyDoc
     assert type(docs[0]) == SimpleDoc
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert np.allclose(doc.simple_tens, np.ones(10))
+    for root_doc, doc in zip(root_docs, docs):
         assert root_doc.id == f'{doc.id.split("-")[2]}'
-        assert score == 0.0
-
-
-def test_subindex_filter(index):
-    query = rest.Filter(
-        must=[
-            rest.FieldCondition(
-                key='simple_doc__simple_text',
-                match=rest.MatchText(text='hello 0'),
-            )
-        ]
-    )
-    docs = index.filter_subindex(query, subindex='list_docs', limit=5)
-    assert len(docs) == 5
-    assert type(docs[0]) == ListDoc
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
-
-    query = rest.Filter(
-        must=[
-            rest.FieldCondition(
-                key='simple_text',
-                match=rest.MatchText(text='hello 0'),
-            )
-        ]
-    )
-    docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
-    assert len(docs) == 5
-    assert type(docs[0]) == SimpleDoc
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
 
 
 def test_subindex_del(index):
@@ -220,5 +179,5 @@ def test_subindex_contain(index):
     assert index.subindex_contains(empty_doc) is False
 
     # Empty index
-    empty_index = QdrantDocumentIndex[MyDoc]()
+    empty_index = InMemoryExactNNIndex[MyDoc]()
     assert (empty_doc in empty_index) is False

@@ -5,6 +5,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -319,4 +320,52 @@
 
  - [[```8a2e92a3```](https://github.com/jina-ai/docarray/commit/8a2e92a3f94efc77d90e0747c246bdcf2ce72dfd)] __-__ update pyproject.toml (#1581) (*Joan Fontanals*)
  - [[```9b5cbeda```](https://github.com/jina-ai/docarray/commit/9b5cbedaa43ea392b985e0ad293839523ce57030)] __-__ __version__: the next version will be 0.32.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-33-0></a>
+## Release Note (`0.33.0`)
+
+> Release time: 2023-06-06 14:05:56
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Saba Sturua,  samsja,  maxwelljin,  Mohammad Kalim Akram,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```110f714f```](https://github.com/jina-ai/docarray/commit/110f714fda40689c4c743bc825bd1e017a739d9d)] __-__ avoid stack embedding for every search (#1586) (*maxwelljin*)
+ - [[```5e74fcca```](https://github.com/jina-ai/docarray/commit/5e74fcca1ef0ef03f823b888b8585c3a0177144e)] __-__ tensor coersion (#1588) (*samsja*)
+
+### 🐞 Bug fixes
+
+ - [[```f7371b48```](https://github.com/jina-ai/docarray/commit/f7371b48df7e93de4808a9cbfcf0c89420a12129)] __-__ filter limits (#1618) (*Saba Sturua*)
+ - [[```6903c773```](https://github.com/jina-ai/docarray/commit/6903c773490459a002fad2751dd3238b735e8d5e)] __-__ hnswlib must be able to search with limit more than num docs (#1611) (*Joan Fontanals*)
+ - [[```e24be8d6```](https://github.com/jina-ai/docarray/commit/e24be8d6eff48baef440d184171a0c2e3356d0bf)] __-__ allow update on HNSWLibIndex (#1604) (*Joan Fontanals*)
+ - [[```3cef708c```](https://github.com/jina-ai/docarray/commit/3cef708cce24aaa017fb2a5af5aed33bc029df09)] __-__ dynamically resize internal index to adapt to increasing number of docs (#1602) (*Joan Fontanals*)
+ - [[```a5c90064```](https://github.com/jina-ai/docarray/commit/a5c90064cb2da0120ee6bdfcec613ef8f1447596)] __-__ fix simple usage of HNSWLib (#1596) (*Joan Fontanals*)
+ - [[```88414ce2```](https://github.com/jina-ai/docarray/commit/88414ce25ec1808565f6f46d9051a08646f765b4)] __-__ fix InMemoryExactNN index initialization with nested DocList (#1582) (*Joan Fontanals*)
+ - [[```5d0e24c9```](https://github.com/jina-ai/docarray/commit/5d0e24c94457e04f3e902b6ecd33d4e607c7636e)] __-__ fix summary of Doc with list (#1595) (*Joan Fontanals*)
+ - [[```f765d9f4```](https://github.com/jina-ai/docarray/commit/f765d9f4f01089d0ab361cecd771efc97970ce92)] __-__ solve issues caused by issubclass (#1594) (*maxwelljin*)
+ - [[```5ee87876```](https://github.com/jina-ai/docarray/commit/5ee878763cbc35f95d26a0fc3842211d8add3e16)] __-__ make example payload a string and not bytes (#1587) (*Joan Fontanals*)
+
+### 🧼 Code Refactoring
+
+ - [[```f9e504ef```](https://github.com/jina-ai/docarray/commit/f9e504efbc7229dd5d29d4fecef7f9d0bfb3dbc9)] __-__ minor changes in weaviate (#1621) (*Saba Sturua*)
+ - [[```4eec5599```](https://github.com/jina-ai/docarray/commit/4eec5599bf2905a191e4cc5614a1813e91f4c02f)] __-__ make AnyTensor a class (#1552) (*Mohammad Kalim Akram*)
+
+### 📗 Documentation
+
+ - [[```29c2d23a```](https://github.com/jina-ai/docarray/commit/29c2d23a618704e9ed13108c754e09c6ef053a93)] __-__ add forward declaration steps to example to avoid pickling error (#1615) (*Joan Fontanals*)
+ - [[```5e6bf755```](https://github.com/jina-ai/docarray/commit/5e6bf7550bf2395244633c4a19b7d812b7d6fe9d)] __-__ fix n_dim to dim in docs (#1610) (*Joan Fontanals*)
+ - [[```de8c654b```](https://github.com/jina-ai/docarray/commit/de8c654bd2f4c5465943c974520021e39ff07ab4)] __-__ add in memory to documentation as list of supported vector index (#1607) (*Joan Fontanals*)
+ - [[```1e41b5c5```](https://github.com/jina-ai/docarray/commit/1e41b5c59e4f2c7d14de1619141ed35898bbc815)] __-__ add a tensor section to docs (#1576) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```68194f49```](https://github.com/jina-ai/docarray/commit/68194f492a84ecfb61ffda1b669debe156a24a37)] __-__ update version to 0.33 (#1626) (*Joan Fontanals*)
+ - [[```ac2e417e```](https://github.com/jina-ai/docarray/commit/ac2e417e9fc23ac06ebed515de0b0688827c145a)] __-__ fix issue template (#1624) (*samsja*)
+ - [[```e1777144```](https://github.com/jina-ai/docarray/commit/e177714491caaa28dd1990db52ce3359416b8ab0)] __-__ add a better looking issue template (#1623) (*samsja*)
+ - [[```692584d6```](https://github.com/jina-ai/docarray/commit/692584d6b8a2b9c1f1d6a869ecf7a0114e7e6c5c)] __-__ simplify find batched (#1598) (*Joan Fontanals*)
+ - [[```91350882```](https://github.com/jina-ai/docarray/commit/91350882817cc6ed0f24aa02a6f14e7fe182fb9c)] __-__ __version__: the next version will be 0.32.2 (*Jina Dev Bot*)
 
