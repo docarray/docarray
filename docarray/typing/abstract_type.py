@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Type, TypeVar
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
-    if is_pydantic_v2():
+    if is_pydantic_v2:
         from pydantic import GetCoreSchemaHandler
         from pydantic_core import core_schema
 
@@ -23,7 +23,7 @@ class AbstractType(BaseNode):
     def _docarray_validate(cls: Type[T], value: Any) -> T:
         ...
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         def validate(cls: Type[T], value: Any, _: Any) -> T:
@@ -38,7 +38,7 @@ class AbstractType(BaseNode):
         ) -> T:
             return cls._docarray_validate(value)
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         @abstractmethod

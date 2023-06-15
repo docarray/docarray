@@ -26,7 +26,7 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
-if is_pydantic_v2():
+if is_pydantic_v2:
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
 
@@ -329,7 +329,7 @@ class DocList(
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         def __get_pydantic_core_schema__(

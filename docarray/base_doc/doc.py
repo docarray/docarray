@@ -23,7 +23,7 @@ from pydantic.fields import FieldInfo
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
-if not is_pydantic_v2():
+if not is_pydantic_v2:
     from pydantic.main import ROOT_KEY
 
 from rich.console import Console
@@ -105,7 +105,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
         Returns a dictionary of all fields of this document.
         """
-        if is_pydantic_v2():
+        if is_pydantic_v2:
             return cls.model_fields
         else:
             return cls.__fields__
@@ -119,7 +119,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :return:
         """
 
-        if is_pydantic_v2():
+        if is_pydantic_v2:
             return cls._docarray_fields[field].annotation
         else:
             return cls._docarray_fields[field].outer_type_

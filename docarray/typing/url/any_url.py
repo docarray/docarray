@@ -13,7 +13,7 @@ from docarray.typing.proto_register import _register_proto
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
-    if not is_pydantic_v2():
+    if not is_pydantic_v2:
         from pydantic import BaseConfig
         from pydantic.fields import ModelField
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AnyUrl')
 
 
-if is_pydantic_v2():
+if is_pydantic_v2:
 
     @_register_proto(proto_type_name='any_url')
     class AnyUrl:

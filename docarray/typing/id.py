@@ -5,7 +5,7 @@ from pydantic import parse_obj_as
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
-if is_pydantic_v2():
+if is_pydantic_v2:
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
 
@@ -56,7 +56,7 @@ class ID(str, AbstractType):
         """
         return parse_obj_as(cls, pb_msg)
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         def __get_pydantic_core_schema__(

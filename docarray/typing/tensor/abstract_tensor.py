@@ -25,7 +25,7 @@ from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
-if is_pydantic_v2():
+if is_pydantic_v2:
     from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
     from pydantic_core import CoreSchema, core_schema
 
@@ -239,7 +239,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             raise TypeError(f'{item} is not a valid tensor shape.')
         return item
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         def __get_pydantic_json_schema__(
@@ -389,7 +389,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
         """cast itself to a numpy array"""
         ...
 
-    if is_pydantic_v2():
+    if is_pydantic_v2:
 
         @classmethod
         def __get_pydantic_core_schema__(

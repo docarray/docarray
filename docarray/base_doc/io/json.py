@@ -2,7 +2,7 @@ import orjson
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
-if not is_pydantic_v2():
+if not is_pydantic_v2:
     from pydantic.json import ENCODERS_BY_TYPE
 
 
