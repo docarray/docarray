@@ -599,7 +599,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         results = (
             self._client.query.get(index_name, self.properties)
-            .with_bm25(bm25)
+            .with_bm25(**bm25)
             .with_limit(limit)
             .with_additional(["score", "vector"])
             .do()
@@ -620,7 +620,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             q = (
                 self._client.query.get(self.index_name, self.properties)
-                .with_bm25(bm25)
+                .with_bm25(**bm25)
                 .with_limit(limit)
                 .with_additional(["score", "vector"])
                 .with_alias(f'query_{i}')
