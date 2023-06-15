@@ -11,8 +11,6 @@ from docarray.utils._internal.misc import import_library
 from docarray.utils._internal.pydantic import bytes_validator
 
 if TYPE_CHECKING:
-    from pydantic.fields import BaseConfig, ModelField
-
     from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='AudioBytes')
@@ -25,11 +23,9 @@ class AudioBytes(bytes, AbstractType):
     """
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Any,
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         value = bytes_validator(value)
         return cls(value)

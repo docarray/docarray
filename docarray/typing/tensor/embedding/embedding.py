@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -22,10 +22,6 @@ if tf_available:
     from docarray.typing.tensor.embedding.tensorflow import TensorFlowEmbedding
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
-
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
 T = TypeVar("T", bound="AnyEmbedding")
 
@@ -69,15 +65,9 @@ class AnyEmbedding(AnyTensor, EmbeddingMixin):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
-        field: "ModelField",
-        config: "BaseConfig",
     ):
         if torch_available:
             if isinstance(value, TorchTensor):
@@ -90,7 +80,7 @@ class AnyEmbedding(AnyTensor, EmbeddingMixin):
             elif isinstance(value, tf.Tensor):
                 return TensorFlowEmbedding._docarray_from_native(value)  # noqa
         try:
-            return NdArrayEmbedding.validate(value, field, config)
+            return NdArrayEmbedding._docarray_validate(value)
         except Exception:  # noqa
             pass
         raise TypeError(

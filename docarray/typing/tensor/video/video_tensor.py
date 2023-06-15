@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -24,9 +24,6 @@ if tf_available:
         VideoTensorFlowTensor,
     )
 
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
 T = TypeVar("T", bound="VideoTensor")
 
@@ -74,15 +71,9 @@ class VideoTensor(AnyTensor, VideoTensorMixin):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
-        field: "ModelField",
-        config: "BaseConfig",
     ):
         if torch_available:
             if isinstance(value, TorchTensor):
@@ -98,7 +89,7 @@ class VideoTensor(AnyTensor, VideoTensorMixin):
             return cast(VideoNdArray, value)
         if isinstance(value, np.ndarray):
             try:
-                return VideoNdArray.validate(value, field, config)
+                return VideoNdArray._docarray_validate(value)
             except Exception as e:  # noqa
                 raise e
         raise TypeError(

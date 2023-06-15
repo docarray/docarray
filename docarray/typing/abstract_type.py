@@ -1,14 +1,10 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING, Any, Type, TypeVar
 
-from pydantic import BaseConfig
-
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
-    if not is_pydantic_v2():
-        from pydantic.fields import ModelField
-    else:
+    if is_pydantic_v2():
         from pydantic import GetCoreSchemaHandler
         from pydantic_core import core_schema
 
@@ -39,8 +35,6 @@ class AbstractType(BaseNode):
         def validate(
             cls: Type[T],
             value: Any,
-            field: 'ModelField',
-            config: 'BaseConfig',
         ) -> T:
             return cls._docarray_validate(value)
 

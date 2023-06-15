@@ -26,8 +26,6 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocListProto
@@ -260,11 +258,9 @@ class DocList(
         return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -23,10 +23,6 @@ if tf_available:
     )
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 
-
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
 T = TypeVar("T", bound="AudioTensor")
 
@@ -71,15 +67,9 @@ class AudioTensor(AnyTensor, AbstractAudioTensor):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
-        field: "ModelField",
-        config: "BaseConfig",
     ):
         if torch_available:
             if isinstance(value, TorchTensor):
@@ -92,7 +82,7 @@ class AudioTensor(AnyTensor, AbstractAudioTensor):
             elif isinstance(value, tf.Tensor):
                 return AudioTensorFlowTensor._docarray_from_native(value)  # noqa
         try:
-            return AudioNdArray.validate(value, field, config)
+            return AudioNdArray._docarray_validate(value)
         except Exception:  # noqa
             pass
         raise TypeError(

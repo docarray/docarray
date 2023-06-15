@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, Tuple, Type, TypeVar, Union
+from typing import Any, List, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
@@ -7,10 +7,6 @@ from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor, metaTenso
 from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
 
 T = TypeVar('T', bound='VideoTensorFlowTensor')
-
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
 
 @_register_proto(proto_type_name='video_tensorflow_tensor')
@@ -57,11 +53,9 @@ class VideoTensorFlowTensor(
     """
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
-        tensor = super().validate(value=value, field=field, config=config)
+        tensor = super()._docarray_validate(value=value)
         return cls.validate_shape(value=tensor)

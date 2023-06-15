@@ -20,8 +20,6 @@ if tf_available:
 
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     # Below is the hack to make the type checker happy. But `AnyTensor` is defined as a class and with same underlying
     # behavior as `Union[TorchTensor, TensorFlowTensor, NdArray]` so it should be fine to use `AnyTensor` as
@@ -103,15 +101,9 @@ else:
             raise RuntimeError(f'This method should not be called on {cls}.')
 
         @classmethod
-        def __get_validators__(cls):
-            yield cls.validate
-
-        @classmethod
-        def validate(
+        def _docarray_validate(
             cls: Type[T],
             value: Union[T, np.ndarray, Any],
-            field: "ModelField",
-            config: "BaseConfig",
         ):
             # Check for TorchTensor first, then TensorFlowTensor, then NdArray
             if torch_available:
@@ -125,7 +117,7 @@ else:
                 elif isinstance(value, tf.Tensor):
                     return TensorFlowTensor._docarray_from_native(value)  # noqa
             try:
-                return NdArray.validate(value, field, config)
+                return NdArray._docarray_validate(value)
             except Exception as e:  # noqa
                 print(e)
                 pass

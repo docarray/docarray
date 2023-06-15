@@ -13,8 +13,10 @@ from docarray.typing.proto_register import _register_proto
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
+    if not is_pydantic_v2():
+        from pydantic import BaseConfig
+        from pydantic.fields import ModelField
+
     from pydantic.networks import Parts
 
     from docarray.proto import NodeProto

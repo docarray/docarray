@@ -9,8 +9,6 @@ from docarray.utils._internal.misc import import_library, is_torch_available
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.proto import NdArrayProto
@@ -188,18 +186,9 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             yield self[i]
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, TensorFlowTensor):
             return cast(T, value)

@@ -25,8 +25,6 @@ from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.proto import NdArrayProto, NodeProto
 
@@ -266,13 +264,11 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             __docarray_target_shape__ = shape
 
             @classmethod
-            def validate(
+            def _docarray_validate(
                 _cls,
                 value: Any,
-                field: 'ModelField',
-                config: 'BaseConfig',
             ):
-                t = super().validate(value, field, config)
+                t = super()._docarray_validate(value)
                 return _cls.__docarray_validate_shape__(
                     t, _cls.__docarray_target_shape__
                 )

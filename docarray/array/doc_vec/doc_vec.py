@@ -18,7 +18,7 @@ from typing import (
 )
 
 import numpy as np
-from pydantic import BaseConfig, parse_obj_as
+from pydantic import parse_obj_as
 from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray
@@ -33,7 +33,6 @@ from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
-    from pydantic.fields import ModelField
 
     from docarray.proto import (
         DocVecProto,
@@ -341,11 +340,9 @@ class DocVec(AnyDocArray[T_doc]):
         return docs
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, Iterable[T_doc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, cls):
             return value

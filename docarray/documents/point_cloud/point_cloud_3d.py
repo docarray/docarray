@@ -113,7 +113,7 @@ class PointCloud3D(BaseDoc):
     bytes_: Optional[bytes]
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[str, AbstractTensor, Any],
     ) -> T:
