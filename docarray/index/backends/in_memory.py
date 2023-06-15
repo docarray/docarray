@@ -48,30 +48,30 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(
         self,
         docs: Optional[DocList] = None,
-        index_file_path: Optional[str] = None,
+        db_config=None,
         **kwargs,
     ):
         """Initialize InMemoryExactNNIndex"""
-        if 'db_config' in kwargs:
-            kwargs.pop('db_config')
-        super().__init__(db_config=None, **kwargs)
+        super().__init__(db_config=db_config, **kwargs)
         self._runtime_config = self.RuntimeConfig()
+        self._db_config = cast(InMemoryExactNNIndex.DBConfig, self._db_config)
+        self._index_file_path = self._db_config.index_file_path
 
-        if docs and index_file_path:
+        if docs and self._index_file_path:
             raise ValueError(
                 'Initialize `InMemoryExactNNIndex` with either `docs` or '
                 '`index_file_path`, not both. Provide `docs` for a fresh index, or '
                 '`index_file_path` to use an existing file.'
             )
 
-        if index_file_path:
-            if os.path.exists(index_file_path):
+        if self._index_file_path:
+            if os.path.exists(self._index_file_path):
                 self._logger.info(
-                    f'Loading index from a binary file: {index_file_path}'
+                    f'Loading index from a binary file: {self._index_file_path}'
                 )
                 self._docs = DocList.__class_getitem__(
                     cast(Type[BaseDoc], self._schema)
-                ).load_binary(file=index_file_path)
+                ).load_binary(file=self._index_file_path)
 
                 data_by_columns = self._get_col_value_dict(self._docs)
                 self._update_subindex_data(self._docs)
@@ -79,7 +79,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
             else:
                 self._logger.warning(
-                    f'Index file does not exist: {index_file_path}. '
+                    f'Index file does not exist: {self._index_file_path}. '
                     f'Initializing empty InMemoryExactNNIndex.'
                 )
                 self._docs = DocList.__class_getitem__(
@@ -137,12 +137,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of InMemoryExactNNIndex."""
 
-        pass
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
-
+        index_file_path: Optional[str] = None
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
                 dict,
@@ -151,6 +146,12 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 },
             )
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of InMemoryExactNNIndex."""
+
+        pass
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """index Documents into the index.
@@ -299,6 +300,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         find_res = _execute_find_and_filter_query(
             doc_index=self,
             query=query,
+            reverse_order=True,
         )
         return find_res
 
@@ -433,9 +435,24 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
-    def persist(self, file: str = 'in_memory_index.bin') -> None:
+    def __contains__(self, item: BaseDoc):
+        if safe_issubclass(type(item), BaseDoc):
+            return any(doc.id == item.id for doc in self._docs)
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
+
+    def persist(self, file: Optional[str] = None) -> None:
         """Persist InMemoryExactNNIndex into a binary file."""
-        self._docs.save_binary(file=file)
+        DEFAULT_INDEX_FILE_PATH = 'in_memory_index.bin'
+        file_to_save = self._index_file_path or file
+        if file_to_save is None:
+            self._logger.warning(
+                f'persisting index to {DEFAULT_INDEX_FILE_PATH} because no `index_file_path` has been used inside DBConfig and no `file` has been passed as argument'
+            )
+        file_to_save = file_to_save or DEFAULT_INDEX_FILE_PATH
+        self._docs.save_binary(file=file_to_save)
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
         """Get the root_id given the id of a subindex Document and the root and subindex name

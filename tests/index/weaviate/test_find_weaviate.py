@@ -8,7 +8,7 @@ from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
-from docarray.typing import TorchTensor
+from docarray.typing import NdArray, TorchTensor
 from tests.index.weaviate.fixture_weaviate import (  # noqa: F401
     start_storage,
     weaviate_client,
@@ -66,3 +66,25 @@ def test_find_tensorflow():
     assert np.allclose(
         docs[0].tens.unwrap().numpy(), index_docs[-1].tens.unwrap().numpy()
     )
+
+
+def test_contain():
+    class SimpleDoc(BaseDoc):
+        tens: NdArray[10] = Field(dims=1000)
+
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10]
+
+    index = WeaviateDocumentIndex[SimpleSchema]()
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+
+    assert (index_docs[0] in index) is False
+
+    index.index(index_docs)
+
+    for doc in index_docs:
+        assert (doc in index) is True
+
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False

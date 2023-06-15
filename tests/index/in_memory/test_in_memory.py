@@ -20,7 +20,9 @@ class SchemaDoc(BaseDoc):
 def docs():
     docs = DocList[SchemaDoc](
         [
-            SchemaDoc(text=f'hello {i}', price=i, tensor=np.array([i] * 10))
+            SchemaDoc(
+                text=f'hello {i}', price=i, tensor=np.array([i + j for j in range(10)])
+            )
             for i in range(9)
         ]
     )
@@ -126,7 +128,7 @@ def test_concatenated_queries(doc_index):
 
 
 @pytest.mark.parametrize(
-    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 3)]
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 1)]
 )
 def test_query_builder_limits(doc_index, find_limit, filter_limit, expected_docs):
     query = SchemaDoc(text='query', price=3, tensor=np.array([3] * 10))
@@ -341,3 +343,9 @@ def test_nested_document_find():
     del doc_index['0']
     assert doc_index.num_docs() == 9
     assert doc_index._subindices['docs'].num_docs() == 90
+
+
+def test_document_contain(doc_index):
+    num_docs = doc_index.num_docs()
+    for i in range(num_docs):
+        assert (doc_index._docs[i] in doc_index) is True
