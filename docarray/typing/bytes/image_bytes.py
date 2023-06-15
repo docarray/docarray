@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
-from pydantic.validators import bytes_validator
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import bytes_validator
 
 if TYPE_CHECKING:
     from PIL import Image as PILImage

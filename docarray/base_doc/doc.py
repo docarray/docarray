@@ -19,7 +19,12 @@ from typing import (
 
 import orjson
 from pydantic import BaseModel, Field
-from pydantic.main import ROOT_KEY
+
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if not is_pydantic_v2():
+    from pydantic.main import ROOT_KEY
+
 from rich.console import Console
 
 from docarray.base_doc.base_node import BaseNode

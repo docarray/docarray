@@ -2,7 +2,11 @@ from abc import abstractmethod
 from typing import Any, Type, TypeVar
 
 from pydantic import BaseConfig
-from pydantic.fields import ModelField
+
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if not is_pydantic_v2():
+    from pydantic.fields import ModelField
 
 from docarray.base_doc.base_node import BaseNode
 

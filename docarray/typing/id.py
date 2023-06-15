@@ -2,7 +2,11 @@ from typing import TYPE_CHECKING, Type, TypeVar, Union
 from uuid import UUID
 
 from pydantic import BaseConfig, parse_obj_as
-from pydantic.fields import ModelField
+
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if not is_pydantic_v2():
+    from pydantic.fields import ModelField
 
 from docarray.typing.proto_register import _register_proto
 
