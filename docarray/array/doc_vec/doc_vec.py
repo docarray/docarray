@@ -31,6 +31,11 @@ from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import core_schema
 
 if TYPE_CHECKING:
 
@@ -770,3 +775,13 @@ class DocVec(AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+            )
