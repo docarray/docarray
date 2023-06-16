@@ -303,4 +303,6 @@ assert dv_from_proto_numpy.tensor_type == NdArray
 assert isinstance(dv_from_proto_numpy.tensor, NdArray)
 ```
 
+!!! note
+    Currently, union type hints are not supported for serialization to protobuf formats.
 

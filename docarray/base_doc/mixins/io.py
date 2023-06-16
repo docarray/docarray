@@ -286,9 +286,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 raise ValueError(
                     'field_type cannot be None when trying to deserialize a BaseDoc'
                 )
-            return_field = field_type.from_protobuf(
-                getattr(value, content_key)
-            )  # we get to the parent class
+            try:
+                return_field = field_type.from_protobuf(
+                    getattr(value, content_key)
+                )  # we get to the parent class
+            except Exception:
+                raise ValueError(f'{field_type} is not supported for deserialization')
         elif content_key == 'doc_array':
             if field_name is None:
                 raise ValueError(
