@@ -114,3 +114,10 @@ def test_union_type_error():
 
     with pytest.raises(ValueError):
         DocList[CustomDoc].from_dataframe(docs.to_dataframe())
+
+    class BasisUnion(BaseDoc):
+        ud: Union[int, str]
+
+    docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
+    docs_copy = DocList[BasisUnion].from_dataframe(docs_basic.to_dataframe())
+    assert docs_copy == docs_basic

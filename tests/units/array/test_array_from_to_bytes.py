@@ -83,3 +83,10 @@ def test_union_type_error(tmp_path):
 
     with pytest.raises(ValueError):
         docs.from_bytes(docs.to_bytes())
+
+    class BasisUnion(BaseDoc):
+        ud: Union[int, str]
+
+    docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
+    docs_copy = DocList[BasisUnion].from_bytes(docs_basic.to_bytes())
+    assert docs_copy == docs_basic
