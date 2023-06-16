@@ -102,10 +102,10 @@ class TextDoc(BaseDoc):
 
     """
 
-    text: Optional[str]
-    url: Optional[TextUrl]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    text: Optional[str] = None
+    url: Optional[TextUrl] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:

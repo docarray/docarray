@@ -92,10 +92,10 @@ class ImageDoc(BaseDoc):
     ```
     """
 
-    url: Optional[ImageUrl]
-    tensor: Optional[ImageTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[ImageBytes]
+    url: Optional[ImageUrl] = None
+    tensor: Optional[ImageTensor] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[ImageBytes] = None
 
     @classmethod
     def validate(
