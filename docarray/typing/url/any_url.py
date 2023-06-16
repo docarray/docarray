@@ -32,16 +32,17 @@ T = TypeVar('T', bound='AnyUrl')
 if is_pydantic_v2:
 
     @_register_proto(proto_type_name='any_url')
-    class AnyUrl(AbstractType):
-        def __init__(self, *args, **kwargs):
-            raise NotImplementedError('AnyUrl is not supported in pydantic v2 for now')
-
+    class AnyUrl(str, AbstractType):  # todo dummy url for now
         @classmethod
         def _docarray_validate(
             cls: Type[T],
             value: Any,
+            _: Any,
         ):
-            raise NotImplementedError('AnyUrl is not supported in pydantic v2 for now')
+            if isinstance(value, str):
+                return value
+            else:
+                raise ValueError(f'Invalid value for AnyUrl: {value}. ')
 
         def __get_pydantic_core_schema__(
             cls, source: type[Any], handler: Optional['GetCoreSchemaHandler'] = None

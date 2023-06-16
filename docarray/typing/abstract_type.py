@@ -27,7 +27,10 @@ class AbstractType(BaseNode):
 
         @classmethod
         def validate(cls: Type[T], value: Any, _: Any) -> T:
-            return cls._docarray_validate(value)
+            try:
+                return cls._docarray_validate(value)
+            except Exception as e:
+                raise ValueError(str(e)) from e
 
     else:
 
