@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
+from pydantic_core import core_schema
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
@@ -16,6 +17,8 @@ if TYPE_CHECKING:
     if not is_pydantic_v2:
         from pydantic import BaseConfig
         from pydantic.fields import ModelField
+    else:
+        from pydantic import GetCoreSchemaHandler
 
     from pydantic.networks import Parts
 
@@ -27,9 +30,25 @@ T = TypeVar('T', bound='AnyUrl')
 if is_pydantic_v2:
 
     @_register_proto(proto_type_name='any_url')
-    class AnyUrl:
+    class AnyUrl(AbstractType):
         def __init__(self, *args, **kwargs):
-            raise NotImplementedError('AnyUrl is not supported in pydantic v2')
+            raise NotImplementedError('AnyUrl is not supported in pydantic v2 for now')
+
+        @classmethod
+        def _docarray_validate(
+            cls: Type[T],
+            value: Any,
+        ):
+            raise NotImplementedError('AnyUrl is not supported in pydantic v2 for now')
+
+        def __get_pydantic_core_schema__(
+            cls, source: type[Any], handler: Optional['GetCoreSchemaHandler'] = None
+        ) -> core_schema.CoreSchema:
+
+            return core_schema.general_after_validator_function(
+                cls._docarray_validate,
+                core_schema.str_schema(),
+            )
 
 else:
 

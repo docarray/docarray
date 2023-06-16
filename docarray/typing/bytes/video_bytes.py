@@ -1,17 +1,13 @@
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, List, NamedTuple, Type, TypeVar
+from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
 
-from docarray.typing.abstract_type import AbstractType
+from docarray.typing.bytes.base_bytes import BaseBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor import AudioNdArray, NdArray, VideoNdArray
 from docarray.utils._internal.misc import import_library
-from docarray.utils._internal.pydantic import bytes_validator
-
-if TYPE_CHECKING:
-    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='VideoBytes')
 
@@ -23,27 +19,10 @@ class VideoLoadResult(NamedTuple):
 
 
 @_register_proto(proto_type_name='video_bytes')
-class VideoBytes(bytes, AbstractType):
+class VideoBytes(BaseBytes):
     """
     Bytes that store a video and that can be load into a video tensor
     """
-
-    @classmethod
-    def _docarray_validate(
-        cls: Type[T],
-        value: Any,
-    ) -> T:
-        value = bytes_validator(value)
-        return cls(value)
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T) -> T:
-        return parse_obj_as(cls, pb_msg)
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        from docarray.proto import NodeProto
-
-        return NodeProto(blob=self, type=self._proto_type_name)
 
     def load(self, **kwargs) -> VideoLoadResult:
         """

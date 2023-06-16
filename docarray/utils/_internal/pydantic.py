@@ -7,6 +7,6 @@ if not is_pydantic_v2:
     from pydantic.validators import bytes_validator
 
 else:
+    from pydantic.v1.validators import bytes_validator
 
-    def bytes_validator(*args, **kwargs):
-        raise NotImplementedError('bytes_validator is not implemented in pydantic v2')
+__all__ = ['is_pydantic_v2', 'bytes_validator']
