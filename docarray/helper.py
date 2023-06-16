@@ -15,6 +15,8 @@ from typing import (
     Union,
 )
 
+from docarray.utils._internal._typing import safe_issubclass
+
 if TYPE_CHECKING:
     from docarray import BaseDoc
 
@@ -147,9 +149,9 @@ def _get_field_type_by_access_path(
             return doc_type._get_field_type(field)
         else:
             d = doc_type._get_field_type(field)
-            if issubclass(d, DocList):
+            if safe_issubclass(d, DocList):
                 return _get_field_type_by_access_path(d.doc_type, remaining)
-            elif issubclass(d, BaseDoc):
+            elif safe_issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:
                 return None
