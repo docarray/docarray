@@ -304,7 +304,7 @@ assert isinstance(dv_from_proto_numpy.tensor, NdArray)
 ```
 
 !!! note
-    Serialization to protobuf formats is not supported for union type hints (unless your union type consists solely of basic types). Please use JSON serialization as an alternative for these cases.
+    Serialization to protobuf is not supported for union types involving `BaseDoc` types.
 
 
 
