@@ -7,11 +7,13 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
-from pydantic_core import core_schema
 
 from docarray.typing.abstract_type import AbstractType
 from docarray.typing.proto_register import _register_proto
 from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic_core import core_schema
 
 if TYPE_CHECKING:
     if not is_pydantic_v2:
