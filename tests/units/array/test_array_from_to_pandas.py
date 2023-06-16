@@ -99,3 +99,18 @@ def test_doc_list_error():
     docs = DocList([Book(title='hello'), Book(title='world')])
     with pytest.raises(TypeError):
         docs.to_dataframe()
+
+
+@pytest.mark.proto
+def test_union_type_error():
+    from typing import Union
+
+    from docarray.documents import TextDoc
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    with pytest.raises(ValueError):
+        DocList[CustomDoc].from_dataframe(docs.to_dataframe())

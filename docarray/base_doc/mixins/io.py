@@ -12,6 +12,8 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
+    Union,
+    get_origin,
 )
 
 import numpy as np
@@ -291,7 +293,13 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                     getattr(value, content_key)
                 )  # we get to the parent class
             except Exception:
-                raise ValueError(f'{field_type} is not supported for deserialization')
+                if get_origin(field_type) is Union:
+                    raise ValueError(
+                        'Union type is not supported for proto deserialization. Please use JSON serialization instead'
+                    )
+                raise ValueError(
+                    f'{field_type} is not supported for proto deserialization'
+                )
         elif content_key == 'doc_array':
             if field_name is None:
                 raise ValueError(

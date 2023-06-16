@@ -120,3 +120,18 @@ def test_doc_list_error(tmpdir):
     tmp_file = str(tmpdir / 'tmp.csv')
     with pytest.raises(TypeError):
         docs.to_csv(tmp_file)
+
+
+def test_union_type_error(tmp_path):
+    from typing import Union
+
+    from docarray.documents import TextDoc
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    with pytest.raises(ValueError):
+        docs.to_csv(str(tmp_path) + ".csv")
+        DocList[CustomDoc].from_csv(str(tmp_path) + ".csv")

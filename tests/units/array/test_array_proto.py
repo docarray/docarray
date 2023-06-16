@@ -91,3 +91,16 @@ def test_any_nested_doc_list_proto():
     assert docs[0].matches[0].id == '0'
     assert len(docs[0].matches) == 2
     assert len(docs) == 1
+
+
+@pytest.mark.proto
+def test_union_type_error():
+    from typing import Union
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    with pytest.raises(ValueError):
+        DocList[CustomDoc].from_protobuf(docs.to_protobuf())
