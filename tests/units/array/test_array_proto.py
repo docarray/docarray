@@ -104,3 +104,10 @@ def test_union_type_error():
 
     with pytest.raises(ValueError):
         DocList[CustomDoc].from_protobuf(docs.to_protobuf())
+
+    class BasisUnion(BaseDoc):
+        ud: Union[int, str]
+
+    docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
+    docs_copy = DocList[BasisUnion].from_protobuf(docs_basic.to_protobuf())
+    assert docs_copy == docs_basic
