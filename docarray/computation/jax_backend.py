@@ -11,6 +11,8 @@ from docarray.typing import JaxArray
 if TYPE_CHECKING:
     pass
 
+jax.config.update("jax_enable_x64", True)
+
 
 def _unsqueeze_if_single_axis(*matrices) -> List[jnp.ndarray]:
     """Unsqueezes tensors that only have one axis, at dim 0.
@@ -45,23 +47,29 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
     _get_tensor: Callable = norm_right
 
     @classmethod
-    def to_device(cls, tensor: 'jax.numpy.array', device: str) -> 'jax.numpy.array':
+    def to_device(cls, tensor: 'JaxArray', device: str) -> 'JaxArray':
         """Move the tensor to the specified device."""
-        raise NotImplementedError('Numpy does not support devices (GPU).')
+        if cls.device(tensor) == device:
+            return tensor
+        else:
+            jax_devices = jax.devices(device)
+            return cls._cast_output(
+                jax.device_put(cls._get_tensor(tensor), jax_devices)
+            )
 
     @classmethod
-    def device(cls, tensor: 'jax.numpy.array') -> Optional[str]:
+    def device(cls, tensor: 'JaxArray') -> Optional[str]:
         """Return device on which the tensor is allocated."""
-        return None
+        return cls._get_tensor(tensor).device().platform
 
     @classmethod
     def to_numpy(cls, array: 'jax.numpy.array') -> 'np.ndarray':
-        return array
+        return np.array(cls._get_tensor(array))
 
     @classmethod
     def none_value(cls) -> Any:
         """Provide a compatible value that represents None in numpy."""
-        return None
+        return jnp.nan
 
     @classmethod
     def detach(cls, tensor: 'jax.numpy.array') -> 'jax.numpy.array':
@@ -71,17 +79,18 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         :param tensor: tensor to be detached
         :return: a detached tensor with the same data.
         """
-        pass
+        return cls._cast_output(jax.lax.stop_gradient(cls._get_tensor(tensor)))
 
     @classmethod
-    def dtype(cls, tensor: 'jax.numpy.array') -> np.dtype:
+    def dtype(cls, tensor: 'JaxArray') -> np.dtype:
         """Get the data type of the tensor."""
-        pass
+        d_type = cls._get_tensor(tensor).dtype
+        return d_type.name
 
     @classmethod
     def minmax_normalize(
         cls,
-        tensor: 'jax.numpy.array',
+        tensor: 'JaxArray',
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
@@ -104,7 +113,16 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         :param eps: a small jitter to avoid divide by zero
         :return: normalized data in `t_range`
         """
-        pass
+        a, b = t_range
+
+        t = jnp.asarray(cls._get_tensor(tensor), jnp.float32)
+
+        min_d = x_range[0] if x_range else jnp.min(t, axis=-1, keepdims=True)
+        max_d = x_range[1] if x_range else jnp.max(t, axis=-1, keepdims=True)
+        r = (b - a) * (t - min_d) / (max_d - min_d + eps) + a
+
+        normalized = jnp.clip(r, *((a, b) if a < b else (b, a)))
+        return cls._cast_output(jnp.asarray(normalized, cls._get_tensor(tensor).dtype))
 
     class Retrieval(AbstractComputationalBackend.Retrieval[jax.numpy.array]):
         """
@@ -113,11 +131,11 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
 
         @staticmethod
         def top_k(
-            values: 'jax.numpy.array',
+            values: 'JaxArray',
             k: int,
             descending: bool = False,
             device: Optional[str] = None,
-        ) -> Tuple['jax.numpy.array', 'jax.numpy.array']:
+        ) -> Tuple['JaxArray', 'JaxArray']:
             """
             Retrieves the top k smallest values in `values`,
             and returns them alongside their indices in the input `values`.
@@ -134,7 +152,32 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             :return: Tuple containing the retrieved values, and their indices.
                 Both ar of shape (n_queries, k)
             """
-            pass
+            comp_be = JaxCompBackend
+            if device is not None:
+                values = comp_be.to_device(values, device)
+
+            values: jnp.ndarray = comp_be._get_tensor(values)
+
+            if len(values.shape) == 1:
+                values = jnp.expand_dims(values, axis=0)
+
+            if descending:
+                values = -values
+
+            if k >= values.shape[1]:
+                idx = values.argsort(axis=1)[:, :k]
+                values = jnp.take_along_axis(values, idx, axis=1)
+            else:
+                idx_ps = values.argpartition(kth=k, axis=1)[:, :k]
+                values = jnp.take_along_axis(values, idx_ps, axis=1)
+                idx_fs = values.argsort(axis=1)
+                idx = jnp.take_along_axis(idx_ps, idx_fs, axis=1)
+                values = jnp.take_along_axis(values, idx_fs, axis=1)
+
+            if descending:
+                values = -values
+
+            return comp_be._cast_output(values), comp_be._cast_output(idx)
 
     class Metrics(AbstractComputationalBackend.Metrics[jax.numpy.array]):
         """
@@ -143,11 +186,11 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
 
         @staticmethod
         def cosine_sim(
-            x_mat: jax.numpy.array,
-            y_mat: jax.numpy.array,
+            x_mat: 'JaxArray',
+            y_mat: 'JaxArray',
             eps: float = 1e-7,
             device: Optional[str] = None,
-        ) -> jax.numpy.array:
+        ) -> 'JaxArray':
             """Pairwise cosine similarities between all vectors in x_mat and y_mat.
 
             :param x_mat: jax.numpy.array of shape (n_vectors, n_dim), where n_vectors is
@@ -168,10 +211,10 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         @classmethod
         def euclidean_dist(
             cls,
-            x_mat: jax.numpy.array,
-            y_mat: jax.numpy.array,
+            x_mat: 'JaxArray',
+            y_mat: 'JaxArray',
             device: Optional[str] = None,
-        ) -> jax.numpy.array:
+        ) -> 'JaxArray':
             """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
             :param x_mat: jax.numpy.array of shape (n_vectors, n_dim), where n_vectors is
@@ -191,10 +234,10 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
 
         @staticmethod
         def sqeuclidean_dist(
-            x_mat: jax.numpy.array,
-            y_mat: jax.numpy.array,
+            x_mat: 'JaxArray',
+            y_mat: 'JaxArray',
             device: Optional[str] = None,
-        ) -> jax.numpy.array:
+        ) -> 'JaxArray':
             """Pairwise Squared Euclidian distances between all vectors in
             x_mat and y_mat.
 

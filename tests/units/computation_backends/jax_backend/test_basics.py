@@ -1,9 +1,11 @@
+import jax
 import jax.numpy as jnp
-import numpy as np
 import pytest
 
 from docarray.computation.jax_backend import JaxCompBackend
 from docarray.typing import JaxArray
+
+jax.config.update("jax_enable_x64", True)
 
 
 @pytest.mark.tensorflow
@@ -39,9 +41,9 @@ def test_shape(shape, result):
 
 @pytest.mark.tensorflow
 def test_to_device():
-    array = JaxArray(jnp.constant([1, 2, 3]))
-    array = JaxCompBackend.to_device(array, 'CPU:0')
-    assert array.tensor.device.endswith('CPU:0')
+    array = JaxArray(jnp.zeros((3)))
+    array = JaxCompBackend.to_device(array, 'cpu')
+    assert array.tensor.device().platform.endswith('cpu')
 
 
 @pytest.mark.tensorflow
@@ -55,7 +57,7 @@ def test_to_device():
     ],
 )
 def test_dtype(dtype, result_type):
-    array = JaxArray(jnp.constant([1, 2, 3], dtype=getattr(jnp, dtype)))
+    array = JaxArray(jnp.array([1, 2, 3], dtype=dtype))
     assert JaxCompBackend.dtype(array) == result_type
 
 
@@ -74,9 +76,9 @@ def test_empty_dtype():
 
 @pytest.mark.tensorflow
 def test_empty_device():
-    tensor = JaxCompBackend.empty((10, 3), device='CPU:0')
+    tensor = JaxCompBackend.empty((10, 3), device='cpu')
     assert tensor.tensor.shape == (10, 3)
-    assert tensor.tensor.device.endswith('CPU:0')
+    assert tensor.tensor.device().platform.endswith('cpu')
 
 
 @pytest.mark.tensorflow
@@ -111,11 +113,11 @@ def test_squeeze():
     ],
 )
 def test_minmax_normalize(data_input, t_range, x_range, data_result):
-    array = JaxArray(jnp.constant(data_input))
+    array = JaxArray(jnp.array(data_input))
     output = JaxCompBackend.minmax_normalize(
         tensor=array, t_range=t_range, x_range=x_range
     )
-    assert np.allclose(output.tensor, jnp.constant(data_result))
+    assert jnp.allclose(output.tensor, jnp.array(data_result))
 
 
 @pytest.mark.tensorflow
