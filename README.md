@@ -691,7 +691,7 @@ class OutputDoc(BaseDoc):
 
 app = FastAPI()
 
-model_img, model_text = SomeEmbeddingModelImage(), SomeEmbeddingModelText()
+model_img, model_text = lambda img: np.zeros((100, 1)), lambda text: np.zeros((100, 1))
 
 @app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
@@ -699,6 +699,10 @@ async def create_item(doc: InputDoc) -> OutputDoc:
         embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
+
+async with AsyncClient(app=app, base_url="http://test") as ac:
+    response = await ac.post("/embed/", data=input_doc.json())
+
 ```
 
 Just like a vanilla Pydantic model!
