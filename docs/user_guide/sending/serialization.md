@@ -303,4 +303,8 @@ assert dv_from_proto_numpy.tensor_type == NdArray
 assert isinstance(dv_from_proto_numpy.tensor, NdArray)
 ```
 
+!!! note
+    Serialization to protobuf is not supported for union types involving `BaseDoc` types.
+
+
 

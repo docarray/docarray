@@ -36,8 +36,9 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from Pydantic](#coming-from-pydantic)
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
+> - [Coming from Langchain](#coming-from-langchain)
 
-DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
+DocArray has been distributed under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) since January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
@@ -674,16 +675,14 @@ And to seal the deal, let us show you how easily documents slot into your FastAP
 ```python
 import numpy as np
 from fastapi import FastAPI
-from httpx import AsyncClient
-
+from docarray.base_doc import DocArrayResponse
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_doc import DocArrayResponse
-
 
 class InputDoc(BaseDoc):
     img: ImageDoc
+    text: str
 
 
 class OutputDoc(BaseDoc):
@@ -691,24 +690,24 @@ class OutputDoc(BaseDoc):
     embedding_bert: NdArray
 
 
-input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
-
 app = FastAPI()
 
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
 
-@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
+
+@app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
-    ## call my fancy model to generate the embeddings
     doc = OutputDoc(
-        embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+        embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
 
-
 async with AsyncClient(app=app, base_url="http://test") as ac:
-    response = await ac.post("/doc/", data=input_doc.json())
-    resp_doc = await ac.get("/docs")
-    resp_redoc = await ac.get("/redoc")
+    response = await ac.post("/embed/", data=input_doc.json())
+
 ```
 
 Just like a vanilla Pydantic model!
@@ -777,6 +776,88 @@ Of course this is only one of the things that DocArray can do, so we encourage y
 
 </details>
 
+
+## Coming from Langchain
+
+<details markdown="1">
+  <summary>Click to expand</summary>
+
+With DocArray, you can connect external data to LLMs through Langchain. DocArray gives you the freedom to establish 
+flexible document schemas and choose from different backends for document storage.
+After creating your document index, you can connect it to your Langchain app using [DocArrayRetriever](https://python.langchain.com/docs/modules/data_connection/retrievers/integrations/docarray_retriever).
+
+Install Langchain via:
+```shell
+pip install langchain
+```
+
+1. Define a schema and create documents:
+```python
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from langchain.embeddings.openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings()
+
+# Define a document schema
+class MovieDoc(BaseDoc):
+    title: str
+    description: str
+    year: int
+    embedding: NdArray[1536]
+
+
+movies = [
+    {"title": "#1 title", "description": "#1 description", "year": 1999},
+    {"title": "#2 title", "description": "#2 description", "year": 2001},
+]
+
+# Embed `description` and create documents
+docs = DocList[MovieDoc](
+    MovieDoc(embedding=embeddings.embed_query(movie["description"]), **movie)
+    for movie in movies
+)
+```
+
+2. Initialize a document index using any supported backend:
+```python
+from docarray.index import (
+    InMemoryExactNNIndex,
+    HnswDocumentIndex,
+    WeaviateDocumentIndex,
+    QdrantDocumentIndex,
+    ElasticDocIndex,
+)
+
+# Select a suitable backend and initialize it with data
+db = InMemoryExactNNIndex[MovieDoc](docs)
+```
+
+3. Finally, initialize a retriever and integrate it into your chain!
+```python
+
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.retrievers import DocArrayRetriever
+
+
+# Create a retriever
+retriever = DocArrayRetriever(
+    index=db,
+    embeddings=embeddings,
+    search_field="embedding",
+    content_field="description",
+)
+
+# Use the retriever in your chain
+model = ChatOpenAI()
+qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
+```
+
+Alternatively, you can use built-in vector stores. Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
+Both are user-friendly and are best suited to small to medium-sized datasets.
+
+</details>
 
 ## Installation
 

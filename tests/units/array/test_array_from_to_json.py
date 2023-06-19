@@ -33,3 +33,17 @@ def test_from_to_json(doc_vec):
         assert d1.image.url == d2.image.url
     assert da[1].image.url is None
     assert da2[1].image.url is None
+
+
+def test_union_type():
+    from typing import Union
+
+    from docarray.documents import TextDoc
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    docs_copy = docs.from_json(docs.to_json())
+    assert docs == docs_copy

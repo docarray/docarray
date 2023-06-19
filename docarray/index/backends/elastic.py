@@ -39,7 +39,6 @@ T = TypeVar('T', bound='ElasticDocIndex')
 
 ELASTIC_PY_VEC_TYPES: List[Any] = [list, tuple, np.ndarray, AbstractTensor]
 
-
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
@@ -56,7 +55,6 @@ else:
 
     torch = import_library('torch', raise_error=False)
     tf = import_library('tensorflow', raise_error=False)
-
 
 if torch is not None:
     ELASTIC_PY_VEC_TYPES.append(torch.Tensor)
@@ -254,13 +252,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         es_config: Dict[str, Any] = field(default_factory=dict)
         index_settings: Dict[str, Any] = field(default_factory=dict)
         index_mappings: Dict[str, Any] = field(default_factory=dict)
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
-
         default_column_config: Dict[Any, Dict[str, Any]] = field(default_factory=dict)
-        chunk_size: int = 500
 
         def __post_init__(self):
             self.default_column_config = {
@@ -322,6 +314,12 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             }
 
             return config
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
+
+        chunk_size: int = 500
 
     ###############################################
     # Implementation of abstract methods          #
@@ -624,7 +622,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         num_candidates: Optional[int] = None,
     ) -> Dict[str, Any]:
         if not num_candidates:
-            num_candidates = self._runtime_config.default_column_config['dense_vector'][
+            num_candidates = self._db_config.default_column_config['dense_vector'][
                 'num_candidates'
             ]
         body = {

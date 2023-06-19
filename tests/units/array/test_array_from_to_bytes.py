@@ -71,3 +71,24 @@ def test_from_to_base64(protocol, compress, show_progress, array_cls):
         assert d1.image.url == d2.image.url
     assert da[1].image.url is None
     assert da2[1].image.url is None
+
+
+def test_union_type_error(tmp_path):
+    from typing import Union
+
+    from docarray.documents import TextDoc
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    with pytest.raises(ValueError):
+        docs.from_bytes(docs.to_bytes())
+
+    class BasisUnion(BaseDoc):
+        ud: Union[int, str]
+
+    docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
+    docs_copy = DocList[BasisUnion].from_bytes(docs_basic.to_bytes())
+    assert docs_copy == docs_basic

@@ -90,12 +90,14 @@ class ElasticV7DocIndex(ElasticDocIndex):
 
         hosts: Union[str, List[str], None] = 'http://localhost:9200'  # type: ignore
 
+        def dense_vector_config(self):
+            return {'dims': 128}
+
     @dataclass
     class RuntimeConfig(ElasticDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of ElasticDocIndex."""
 
-        def dense_vector_config(self):
-            return {'dims': 128}
+        pass
 
     ###############################################
     # Implementation of abstract methods          #

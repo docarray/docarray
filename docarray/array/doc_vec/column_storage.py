@@ -118,6 +118,21 @@ class ColumnStorage:
             tens_cols, doc_cols, doc_vec_cols, self.any_columns
         )
 
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, ColumnStorage):
+            return False
+        if self.tensor_type != other.tensor_type:
+            return False
+        for col_map_self, col_map_other in zip(self.columns.maps, other.columns.maps):
+            if col_map_self.keys() != col_map_other.keys():
+                return False
+            for key_self in col_map_self.keys():
+                if key_self == 'id':
+                    continue
+                if col_map_self[key_self] != col_map_other[key_self]:
+                    return False
+        return True
+
 
 class ColumnStorageView(dict, MutableMapping[str, Any]):
     index: int
