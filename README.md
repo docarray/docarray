@@ -36,6 +36,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from Pydantic](#coming-from-pydantic)
 > - [Coming from FastAPI](#coming-from-fastapi)
 > - [Coming from a vector database](#coming-from-vector-database)
+> - [Coming from Langchain](#coming-from-langchain)
 
 DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
@@ -777,6 +778,119 @@ Of course this is only one of the things that DocArray can do, so we encourage y
 
 </details>
 
+
+## Coming from Langchain
+
+<details markdown="1">
+  <summary>Click to expand</summary>
+
+With DocArray, you can connect external data to LLMs via Langchain. You have two 
+options: take advantage of the built-in DocArray vector stores provided in Langchain, or establish your 
+own document index with DocArray, which can then be tied to your Langchain apps using DocArrayRetriever.
+
+### Built-in Vector Stores
+Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
+They are user-friendly and catered towards small to medium-sized datasets. 
+
+Below is an example of how to utilize these built-in vector stores:
+
+```python
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import DocArrayInMemorySearch
+from langchain.document_loaders import TextLoader
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+
+# Load and split the document
+documents = TextLoader("../../../state_of_the_union.txt").load()
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+docs = text_splitter.split_documents(documents)
+
+embeddings = OpenAIEmbeddings()
+
+# Initialize the vector store (you may alternatively use `DocArrayHnswSearch`)
+db = DocArrayInMemorySearch.from_documents(docs, embeddings)
+
+# Convert the vector store into a retriever
+retriever = db.as_retriever()
+
+# Connect the retriever to your preferred chain
+model = ChatOpenAI()
+qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
+```
+
+### DocArrayRetriever
+If you require more flexibility, DocArray enables you to create a custom document index. 
+This gives you the freedom to establish flexible schemas and choose from different backends for document storage. 
+After creating your document index, you can connect it to your Langchain app using [DocArrayRetriever](https://python.langchain.com/docs/modules/data_connection/retrievers/integrations/docarray_retriever).
+
+Follow these steps to create a document index:
+
+1. Define a schema and create documents:
+```python
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from langchain.embeddings.openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings()
+
+# Define a document schema
+class MovieDoc(BaseDoc):
+    title: str
+    description: str
+    year: int
+    embedding: NdArray[1536]
+
+
+movies = [
+    {"title": "#1 title", "description": "#1 description", "year": 1999},
+    {"title": "#2 title", "description": "#2 description", "year": 2001},
+]
+
+# Embed `description` and create documents
+docs = DocList[MovieDoc](
+    MovieDoc(embedding=embeddings.embed_query(movie["description"]), **movie)
+    for movie in movies
+)
+```
+
+2. Initialize a document index using any supported backend:
+```python
+from docarray.index import (
+    InMemoryExactNNIndex,
+    HnswDocumentIndex,
+    WeaviateDocumentIndex,
+    QdrantDocumentIndex,
+    ElasticDocIndex,
+)
+
+# Select a suitable backend and initialize it with data
+db = InMemoryExactNNIndex[MovieDoc](docs)
+```
+
+3. Finally, initialize a retriever and integrate it into your chain!
+```python
+
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.retrievers import DocArrayRetriever
+
+
+# Create a retriever
+retriever = DocArrayRetriever(
+    index=db,
+    embeddings=embeddings,
+    search_field="embedding",
+    content_field="description",
+)
+
+# Use the retriever in your chain
+model = ChatOpenAI()
+qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
+```
+
+</details>
 
 ## Installation
 
