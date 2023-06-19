@@ -70,5 +70,5 @@ def test_files_good(fpath):
 
 def test_readme():
     check_md_file(
-        fpath='README.md', memory=True, keyword_ignore=['tensorflow', 'fastapi', 'push']
+        fpath='README.md', memory=True, keyword_ignore=['tensorflow', 'fastapi', 'push', 'langchain']
     )

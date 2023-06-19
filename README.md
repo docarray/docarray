@@ -38,7 +38,7 @@ DocArray handles your data while integrating seamlessly with the rest of your **
 > - [Coming from a vector database](#coming-from-vector-database)
 > - [Coming from Langchain](#coming-from-langchain)
 
-DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
+DocArray has been distributed under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) since January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## Represent
 
@@ -788,9 +788,9 @@ own document index with DocArray, which can then be tied to your Langchain apps 
 
 ### Built-in Vector Stores
 Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
-They are user-friendly and catered towards small to medium-sized datasets. 
+They are user-friendly and are best suited to small to medium-sized datasets. 
 
-Below is an example of how to utilize these built-in vector stores:
+Below is an example of how to use these built-in vector stores:
 
 ```python
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -819,7 +819,7 @@ qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
 ```
 
 ### DocArrayRetriever
-If you require more flexibility, DocArray enables you to create a custom document index. 
+If you need more flexibility, DocArray lets you create custom document indices. 
 This gives you the freedom to establish flexible schemas and choose from different backends for document storage. 
 After creating your document index, you can connect it to your Langchain app using [DocArrayRetriever](https://python.langchain.com/docs/modules/data_connection/retrievers/integrations/docarray_retriever).
 
