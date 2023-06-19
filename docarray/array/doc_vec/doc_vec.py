@@ -193,7 +193,10 @@ class DocVec(AnyDocArray[T_doc]):
             # from each document and put them in the corresponding column
             field_type = self.doc_type._get_field_type(field_name)
 
-            is_field_required = self.doc_type._docarray_fields[field_name].required
+            field_info = self.doc_type._docarray_fields[field_name]
+            is_field_required = (
+                field_info.is_required() if is_pydantic_v2 else field_info.required
+            )
 
             first_doc_is_none = getattr(docs[0], field_name) is None
 

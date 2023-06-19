@@ -216,10 +216,14 @@ class DocList(
               in the doc_list like container
         """
         field_type = self.__class__.doc_type._get_field_type(field)
+        field_info = self.__class__.doc_type._docarray_fields[field]
+        is_field_required = (
+            field_info.is_required() if is_pydantic_v2 else field_info.required
+        )
 
         if (
             not is_union_type(field_type)
-            and self.__class__.doc_type._docarray_fields[field].required
+            and is_field_required
             and isinstance(field_type, type)
             and issubclass(field_type, BaseDoc)
         ):
