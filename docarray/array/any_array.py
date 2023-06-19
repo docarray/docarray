@@ -60,7 +60,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             class _DocArrayTyped(cls):  # type: ignore
                 doc_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
 
-            for field in _DocArrayTyped.doc_type.__fields__.keys():
+            for field in _DocArrayTyped.doc_type._docarray_fields.keys():
 
                 def _property_generator(val: str):
                     def _getter(self):

@@ -162,7 +162,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return isinstance(self.__dict__, ColumnStorageView)
 
     def __getattr__(self, item) -> Any:
-        if item in self.__fields__.keys():
+        if item in self._docarray_fields.keys():
             return self.__dict__[item]
         else:
             return super().__getattribute__(item)
@@ -184,10 +184,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if not isinstance(other, BaseDoc):
             return False
 
-        if self.__fields__.keys() != other.__fields__.keys():
+        if self._docarray_fields.keys() != other._docarray_fields.keys():
             return False
 
-        for field_name in self.__fields__:
+        for field_name in self._docarray_fields:
             value1 = getattr(self, field_name)
             value2 = getattr(other, field_name)
 
@@ -363,7 +363,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self, exclude: ExcludeType
     ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
         doclist_exclude_fields = []
-        for field in self.__fields__.keys():
+        for field in self._docarray_fields.keys():
             from docarray import DocList
 
             type_ = self._get_field_type(field)

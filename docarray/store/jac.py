@@ -65,7 +65,7 @@ def _get_raw_summary(self: 'DocList') -> List[Dict[str, Any]]:
         ),
         dict(
             name='Fields',
-            value=tuple(self[0].__class__.__fields__.keys()),
+            value=tuple(self[0].__class__._docarray_fields.keys()),
             description='The fields of the Document',
         ),
         dict(

@@ -219,7 +219,7 @@ class DocList(
 
         if (
             not is_union_type(field_type)
-            and self.__class__.doc_type.__fields__[field].required
+            and self.__class__.doc_type._docarray_fields[field].required
             and isinstance(field_type, type)
             and issubclass(field_type, BaseDoc)
         ):

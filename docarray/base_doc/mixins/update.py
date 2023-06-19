@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class UpdateMixin:
-    __fields__: Dict[str, 'ModelField']
+    _docarray_fields: Dict[str, 'ModelField']
 
     def _get_string_for_regex_filter(self):
         return str(self)
@@ -104,7 +104,7 @@ class UpdateMixin:
             nested_docs_fields: List[str] = []
             nested_docarray_fields: List[str] = []
 
-            for field_name, field in doc.__fields__.items():
+            for field_name, field in doc._docarray_fields.items():
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_type(field_name)
 

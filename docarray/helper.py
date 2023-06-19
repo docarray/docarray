@@ -140,7 +140,7 @@ def _get_field_type_by_access_path(
     from docarray import BaseDoc, DocList
 
     field, _, remaining = access_path.partition('__')
-    field_valid = field in doc_type.__fields__.keys()
+    field_valid = field in doc_type._docarray_fields.keys()
 
     if field_valid:
         if len(remaining) == 0:
@@ -249,7 +249,7 @@ def _shallow_copy_doc(doc):
     field_set = set(doc.__fields_set__)
     object.__setattr__(shallow_copy, '__fields_set__', field_set)
 
-    for field_name, field_ in doc.__fields__.items():
+    for field_name, field_ in doc._docarray_fields.items():
         val = doc.__getattr__(field_name)
         setattr(shallow_copy, field_name, val)
 
