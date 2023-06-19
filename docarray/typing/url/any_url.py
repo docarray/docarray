@@ -40,18 +40,36 @@ if is_pydantic_v2:
             _: Any,
         ):
             if isinstance(value, str):
-                return value
+                return cls(value)
             else:
                 raise ValueError(f'Invalid value for AnyUrl: {value}. ')
 
         def __get_pydantic_core_schema__(
             cls, source: type[Any], handler: Optional['GetCoreSchemaHandler'] = None
         ) -> core_schema.CoreSchema:
-
             return core_schema.general_after_validator_function(
                 cls._docarray_validate,
                 core_schema.str_schema(),
             )
+
+        def load_bytes(self, timeout: Optional[float] = None) -> bytes:
+            """Convert url to bytes. This will either load or download the file and save
+            it into a bytes object.
+            :param timeout: timeout for urlopen. Only relevant if URI is not local
+            :return: bytes.
+            """
+            if urllib.parse.urlparse(self).scheme in {'http', 'https', 'data'}:
+                req = urllib.request.Request(
+                    self, headers={'User-Agent': 'Mozilla/5.0'}
+                )
+                urlopen_kwargs = {'timeout': timeout} if timeout is not None else {}
+                with urllib.request.urlopen(req, **urlopen_kwargs) as fp:  # type: ignore
+                    return fp.read()
+            elif os.path.exists(self):
+                with open(self, 'rb') as fp:
+                    return fp.read()
+            else:
+                raise FileNotFoundError(f'`{self}` is not a URL or a valid local path')
 
 else:
 
