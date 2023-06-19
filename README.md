@@ -691,7 +691,11 @@ class OutputDoc(BaseDoc):
 
 app = FastAPI()
 
-model_img, model_text = lambda img: np.zeros((100, 1)), lambda text: np.zeros((100, 1))
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
+
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
 
 @app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
