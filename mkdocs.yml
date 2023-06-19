@@ -1,6 +1,6 @@
 site_name: DocArray
 site_description: DocArray, DocArray is a library for representing, sending and storing multi-modal data, with a focus on applications in ML and Neural Search.
-site_url: https://docarray.jina.ai/
+site_url: https://docs.docarray.org/
 repo_name: docarray/docarray
 repo_url: https://github.com/docarray/docarray
 edit_uri: ''
