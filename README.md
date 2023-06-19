@@ -691,12 +691,12 @@ class OutputDoc(BaseDoc):
 
 app = FastAPI()
 
+model_img, model_text = SomeEmbeddingModelImage(), SomeEmbeddingModelText()
 
 @app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
-    ## call my fancy model to generate the embeddings
     doc = OutputDoc(
-        embedding_clip=doc.image, embedding_bert=doc.text
+        embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
 ```
