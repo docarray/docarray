@@ -782,48 +782,14 @@ Of course this is only one of the things that DocArray can do, so we encourage y
 <details markdown="1">
   <summary>Click to expand</summary>
 
-With DocArray, you can connect external data to LLMs via Langchain. You have two 
-options: take advantage of the built-in DocArray vector stores provided in Langchain, or establish your 
-own document index with DocArray, which can then be tied to your Langchain apps using DocArrayRetriever.
-
-### Built-in Vector Stores
-Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
-They are user-friendly and are best suited to small to medium-sized datasets. 
-
-Below is an example of how to use these built-in vector stores:
-
-```python
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import DocArrayInMemorySearch
-from langchain.document_loaders import TextLoader
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import ConversationalRetrievalChain
-
-# Load and split the document
-documents = TextLoader("../../../state_of_the_union.txt").load()
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-docs = text_splitter.split_documents(documents)
-
-embeddings = OpenAIEmbeddings()
-
-# Initialize the vector store (you may alternatively use `DocArrayHnswSearch`)
-db = DocArrayInMemorySearch.from_documents(docs, embeddings)
-
-# Convert the vector store into a retriever
-retriever = db.as_retriever()
-
-# Connect the retriever to your preferred chain
-model = ChatOpenAI()
-qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
-```
-
-### DocArrayRetriever
-If you need more flexibility, DocArray lets you create custom document indices. 
-This gives you the freedom to establish flexible schemas and choose from different backends for document storage. 
+With DocArray, you can connect external data to LLMs through Langchain. DocArray gives you the freedom to establish 
+flexible document schemas and choose from different backends for document storage.
 After creating your document index, you can connect it to your Langchain app using [DocArrayRetriever](https://python.langchain.com/docs/modules/data_connection/retrievers/integrations/docarray_retriever).
 
-Follow these steps to create a document index:
+Install Langchain via:
+```shell
+pip install langchain
+```
 
 1. Define a schema and create documents:
 ```python
@@ -887,6 +853,9 @@ retriever = DocArrayRetriever(
 model = ChatOpenAI()
 qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
 ```
+
+Alternatively, you can use built-in vector stores. Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
+Both are user-friendly and are best suited to small to medium-sized datasets.
 
 </details>
 
