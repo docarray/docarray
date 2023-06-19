@@ -674,16 +674,14 @@ And to seal the deal, let us show you how easily documents slot into your FastAP
 ```python
 import numpy as np
 from fastapi import FastAPI
-from httpx import AsyncClient
-
+from docarray.base_doc import DocArrayResponse
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray
-from docarray.base_doc import DocArrayResponse
-
 
 class InputDoc(BaseDoc):
     img: ImageDoc
+    text: str
 
 
 class OutputDoc(BaseDoc):
@@ -691,24 +689,24 @@ class OutputDoc(BaseDoc):
     embedding_bert: NdArray
 
 
-input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
-
 app = FastAPI()
 
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
 
-@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
+
+@app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
-    ## call my fancy model to generate the embeddings
     doc = OutputDoc(
-        embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+        embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
 
-
 async with AsyncClient(app=app, base_url="http://test") as ac:
-    response = await ac.post("/doc/", data=input_doc.json())
-    resp_doc = await ac.get("/docs")
-    resp_redoc = await ac.get("/redoc")
+    response = await ac.post("/embed/", data=input_doc.json())
+
 ```
 
 Just like a vanilla Pydantic model!
