@@ -18,6 +18,7 @@ from typing import (
 )
 
 import numpy as np
+from orjson import orjson
 from pydantic import BaseConfig, parse_obj_as
 from typing_inspect import typingGenericAlias
 
@@ -595,8 +596,83 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
 
         return DocVecProto
 
-    def _docarray_to_json_compatible(self) -> List[Dict]:
-        return [doc._docarray_to_json_compatible() for doc in self]
+    def _docarray_to_json_compatible(self) -> Dict[str, Dict[str, Any]]:
+        tup = self._storage.columns_json_compatible()
+        return tup._asdict()
+
+    @classmethod
+    def from_json(
+        cls: Type[T],
+        file: Union[str, bytes, bytearray],
+        tensor_type: Type[AbstractTensor] = NdArray,
+    ) -> T:
+        """Deserialize JSON strings or bytes into a `DocList`.
+
+        :param file: JSON object from where to deserialize a `DocList`
+        :param tensor_type: the tensor type to use for the tensor columns.
+            Could be NdArray, TorchTensor, or TensorFlowTensor. Defaults to NdArray.
+            All tensors of the output DocVec will be of this type.
+        :return: the deserialized `DocList`
+        """
+        json_columns = orjson.loads(file)
+        return cls._from_json_col_dict(json_columns, tensor_type=tensor_type)
+
+    @classmethod
+    def _from_json_col_dict(
+        cls, json_columns: Dict[str, Any], tensor_type: Type[AbstractTensor] = NdArray
+    ) -> T:
+
+        tensor_cols = json_columns['tensor_columns']
+        doc_cols = json_columns['doc_columns']
+        docs_vec_cols = json_columns['docs_vec_columns']
+        any_cols = json_columns['any_columns']
+
+        for key, col in tensor_cols.items():
+            if col is not None:
+                tensor_cols[key] = parse_obj_as(tensor_type, col)
+            else:
+                tensor_cols[key] = None
+
+        for key, col in doc_cols.items():
+            if col is not None:
+                col_doc_type = cls.doc_type._get_field_type(key)
+                doc_cols[key] = DocVec.__class_getitem__(
+                    col_doc_type
+                )._from_json_col_dict(col, tensor_type=tensor_type)
+            else:
+                doc_cols[key] = None
+
+        for key, col in docs_vec_cols.items():
+            if col is not None:
+                col_doc_type = cls.doc_type._get_field_type(key).doc_type
+                col_ = ListAdvancedIndexing(
+                    DocVec.__class_getitem__(col_doc_type)._from_json_col_dict(
+                        vec, tensor_type=tensor_type
+                    )
+                    for vec in col
+                )
+                docs_vec_cols[key] = col_
+            else:
+                docs_vec_cols[key] = None
+
+        for key, col in any_cols.items():
+            if col is not None:
+                col_type = cls.doc_type._get_field_type(key)
+                col_type = (
+                    col_type
+                    if cls.doc_type.__fields__[key].required
+                    else Optional[col_type]
+                )
+                col_ = ListAdvancedIndexing(parse_obj_as(col_type, val) for val in col)
+                any_cols[key] = col_
+            else:
+                any_cols[key] = None
+
+        return cls.from_columns_storage(
+            ColumnStorage(
+                tensor_cols, doc_cols, docs_vec_cols, any_cols, tensor_type=tensor_type
+            )
+        )
 
     @classmethod
     def from_protobuf(
