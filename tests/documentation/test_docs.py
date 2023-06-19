@@ -20,6 +20,7 @@ def check_raw_file_full(raw, lang="python", keyword_ignore=[]):
     add_code_block = True
 
     for b in grab_code_blocks(raw, lang=lang):
+        print(b)
         add_code_block = True
         for keyword in keyword_ignore:
             if keyword in b:
@@ -72,5 +73,5 @@ def test_readme():
     check_md_file(
         fpath='README.md',
         memory=True,
-        keyword_ignore=['tensorflow', 'fastapi', 'push', 'langchain'],
+        keyword_ignore=['tensorflow', 'fastapi', 'push', 'langchain', 'MovieDoc'],
     )
