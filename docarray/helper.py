@@ -299,7 +299,9 @@ def _tensor_equals(tens1: Any, tens2: Any) -> bool:
         import tensorflow as tf  # type: ignore
 
         if tf.is_tensor(tens1) and tf.is_tensor(tens2):
-            return tf.math.reduce_all(tf.equal(tens1, tens2))
+            return tens1.shape == tens2.shape and tf.math.reduce_all(
+                tf.equal(tens1, tens2)
+            )
 
     are_np_arrays = isinstance(tens1, np.ndarray) and isinstance(tens2, np.ndarray)
     if are_np_arrays:
