@@ -14,7 +14,6 @@ from typing import (
 )
 
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
-from docarray.helper import _is_tensor, _tensor_equals
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -105,8 +104,10 @@ class ColumnStorage:
                     continue
 
                 val1, val2 = col_map_self[key_self], col_map_other[key_self]
-                if _is_tensor(val1) or _is_tensor(val2):
-                    values_are_equal = _tensor_equals(val1, val2)
+                if isinstance(val1, AbstractTensor):
+                    values_are_equal = val1.get_comp_backend().equal(val1, val2)
+                elif isinstance(val2, AbstractTensor):
+                    values_are_equal = val2.get_comp_backend().equal(val1, val2)
                 else:
                     values_are_equal = val1 == val2
                 if not values_are_equal:

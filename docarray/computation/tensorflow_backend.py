@@ -121,6 +121,21 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
         normalized = tnp.clip(i, *((a, b) if a < b else (b, a)))
         return cls._cast_output(tf.cast(normalized, tensor.tensor.dtype))
 
+    @classmethod
+    def equal(cls, tensor1: 'TensorFlowTensor', tensor2: 'TensorFlowTensor') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first tensor
+        :param tensor2: the second tensor
+        :return: True if two tensors are equal, False otherwise.
+            If one or more of the inputs is not a TensorFlowTensor, return False.
+        """
+        t1, t2 = getattr(tensor1, 'tensor', None), getattr(tensor2, 'tensor', None)
+        if tf.is_tensor(t1) and tf.is_tensor(t2):
+            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))
+        return False
+
     class Retrieval(AbstractComputationalBackend.Retrieval[TensorFlowTensor]):
         """
         Abstract class for retrieval and ranking functionalities
