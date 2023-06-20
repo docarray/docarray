@@ -197,3 +197,11 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.tensor.__array__()
