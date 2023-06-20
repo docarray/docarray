@@ -273,7 +273,7 @@ def _is_tensor(x: Any) -> bool:
             return True
 
     if is_tf_available():
-        import tensorflow as tf
+        import tensorflow as tf  # type: ignore
 
         if tf.is_tensor(x):
             return True
@@ -296,7 +296,7 @@ def _tensor_equals(tens1: Any, tens2: Any) -> bool:
             return torch.equal(tens1, tens2)
 
     if is_tf_available():
-        import tensorflow as tf
+        import tensorflow as tf  # type: ignore
 
         if tf.is_tensor(tens1) and tf.is_tensor(tens2):
             return tf.math.reduce_all(tf.equal(tens1, tens2))
