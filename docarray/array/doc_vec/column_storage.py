@@ -102,7 +102,15 @@ class ColumnStorage:
             for key_self in col_map_self.keys():
                 if key_self == 'id':
                     continue
-                if col_map_self[key_self] != col_map_other[key_self]:
+
+                val1, val2 = col_map_self[key_self], col_map_other[key_self]
+                if isinstance(val1, AbstractTensor):
+                    values_are_equal = val1.get_comp_backend().equal(val1, val2)
+                elif isinstance(val2, AbstractTensor):
+                    values_are_equal = val2.get_comp_backend().equal(val1, val2)
+                else:
+                    values_are_equal = val1 == val2
+                if not values_are_equal:
                     return False
         return True
 
