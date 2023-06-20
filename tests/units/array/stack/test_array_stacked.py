@@ -618,7 +618,7 @@ def test_doc_vec_equality_tensor(tensor_type):
 
 
 @pytest.mark.tensorflow
-def test_doc_vec_equality_tf(tensor_type):
+def test_doc_vec_equality_tf():
     from docarray.typing import TensorflowTensor
 
     class Text(BaseDoc):
