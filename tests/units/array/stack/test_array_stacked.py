@@ -598,6 +598,25 @@ def test_doc_vec_equality():
     assert da == da2.to_doc_vec()
 
 
+@pytest.mark.parametrize('tensor_type', [TorchTensor, NdArray])
+def test_doc_vec_equality_tensor(tensor_type):
+    class Text(BaseDoc):
+        tens: tensor_type
+
+    da = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=tensor_type
+    )
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=tensor_type
+    )
+    assert da == da2
+
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4, 5]) for _ in range(10)], tensor_type=tensor_type
+    )
+    assert da != da2
+
+
 def test_doc_vec_nested(batch_nested_doc):
     batch, Doc, Inner = batch_nested_doc
     batch2 = DocVec[Doc]([Doc(inner=Inner(hello='hello')) for _ in range(10)])

@@ -15,7 +15,10 @@ from typing import (
     Union,
 )
 
+import numpy as np
+
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
     from docarray import BaseDoc
@@ -256,3 +259,50 @@ def _shallow_copy_doc(doc):
         setattr(shallow_copy, field_name, val)
 
     return shallow_copy
+
+
+def _is_tensor(x: Any) -> bool:
+    """
+    Determines whether `x` is either np.ndarray, torch.tensor, or tf.tensor
+    """
+
+    if is_torch_available():
+        import torch
+
+        if isinstance(x, torch.Tensor):
+            return True
+
+    if is_tf_available():
+        import tensorflow as tf
+
+        if tf.is_tensor(x):
+            return True
+
+    if isinstance(x, np.ndarray):
+        return True
+
+    return False
+
+
+def _tensor_equals(tens1: Any, tens2: Any) -> bool:
+    """
+    Determines if two {torch, tf, np} tensors are equal.
+    If at least one of them is not a tensor, of if they are tensors of different frameworks, False is returned.
+    """
+    if is_torch_available():
+        import torch
+
+        if isinstance(tens1, torch.Tensor) and isinstance(tens2, torch.Tensor):
+            return torch.equal(tens1, tens2)
+
+    if is_tf_available():
+        import tensorflow as tf
+
+        if tf.is_tensor(tens1) and tf.is_tensor(tens2):
+            return tf.math.reduce_all(tf.equal(tens1, tens2))
+
+    are_np_arrays = isinstance(tens1, np.ndarray) and isinstance(tens2, np.ndarray)
+    if are_np_arrays:
+        return np.array_equal(tens1, tens2)
+
+    return False
