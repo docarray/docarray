@@ -301,7 +301,7 @@ def _tensor_equals(tens1: Any, tens2: Any) -> bool:
 
         t1, t2 = getattr(tens1, 'tensor', None), getattr(tens2, 'tensor', None)
         if tf.is_tensor(t1) and tf.is_tensor(t2):
-            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))
+            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))  # type: ignore
 
     are_np_arrays = isinstance(tens1, np.ndarray) and isinstance(tens2, np.ndarray)
     if are_np_arrays:
