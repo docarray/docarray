@@ -275,7 +275,8 @@ def _is_tensor(x: Any) -> bool:
     if is_tf_available():
         import tensorflow as tf  # type: ignore
 
-        if tf.is_tensor(x):
+        t = getattr(x, 'tensor', None)
+        if tf.is_tensor(t):
             return True
 
     if isinstance(x, np.ndarray):
@@ -298,10 +299,9 @@ def _tensor_equals(tens1: Any, tens2: Any) -> bool:
     if is_tf_available():
         import tensorflow as tf  # type: ignore
 
-        if tf.is_tensor(tens1) and tf.is_tensor(tens2):
-            return tens1.shape == tens2.shape and tf.math.reduce_all(
-                tf.equal(tens1, tens2)
-            )
+        t1, t2 = getattr(tens1, 'tensor', None), getattr(tens2, 'tensor', None)
+        if tf.is_tensor(t1) and tf.is_tensor(t2):
+            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))
 
     are_np_arrays = isinstance(tens1, np.ndarray) and isinstance(tens2, np.ndarray)
     if are_np_arrays:
