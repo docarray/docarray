@@ -619,21 +619,21 @@ def test_doc_vec_equality_tensor(tensor_type):
 
 @pytest.mark.tensorflow
 def test_doc_vec_equality_tf():
-    from docarray.typing import TensorflowTensor
+    from docarray.typing import TensorFlowTensor
 
     class Text(BaseDoc):
-        tens: TensorflowTensor
+        tens: TensorFlowTensor
 
     da = DocVec[Text](
-        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorflowTensor
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorFlowTensor
     )
     da2 = DocVec[Text](
-        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorflowTensor
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorFlowTensor
     )
     assert da == da2
 
     da2 = DocVec[Text](
-        [Text(tens=[1, 2, 3, 4, 5]) for _ in range(10)], tensor_type=TensorflowTensor
+        [Text(tens=[1, 2, 3, 4, 5]) for _ in range(10)], tensor_type=TensorFlowTensor
     )
     assert da != da2
 
