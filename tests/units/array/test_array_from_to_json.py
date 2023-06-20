@@ -106,7 +106,7 @@ def test_from_to_json_docvec_tf():
             inner_vec_none: Optional[DocVec[InnerDoc]]
 
         inner = InnerDoc(tens=np.random.rand(5))
-        inner_vec = DocVec[InnerDoc]([inner, inner])
+        inner_vec = DocVec[InnerDoc]([inner, inner], tensor_type=TensorFlowTensor)
         vec = DocVec[MyDoc](
             [
                 MyDoc(
@@ -119,7 +119,8 @@ def test_from_to_json_docvec_tf():
                     inner_vec_none=None,
                 )
                 for i in range(5)
-            ]
+            ],
+            tensor_type=TensorFlowTensor,
         )
         return vec
 
