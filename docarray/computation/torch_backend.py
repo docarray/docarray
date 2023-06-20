@@ -114,6 +114,21 @@ class TorchCompBackend(AbstractComputationalBackend[torch.Tensor]):
         return tensor.reshape(shape)
 
     @classmethod
+    def equal(cls, tensor1: 'torch.Tensor', tensor2: 'torch.Tensor') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first tensor
+        :param tensor2: the second tensor
+        :return: True if two tensors are equal, False otherwise.
+            If one or more of the inputs is not a torch.Tensor, return False.
+        """
+        are_torch = isinstance(tensor1, torch.Tensor) and isinstance(
+            tensor2, torch.Tensor
+        )
+        return are_torch and torch.equal(tensor1, tensor2)
+
+    @classmethod
     def detach(cls, tensor: 'torch.Tensor') -> 'torch.Tensor':
         """
         Returns the tensor detached from its current graph.
