@@ -133,7 +133,8 @@ class TensorFlowCompBackend(AbstractNumpyBasedBackend[TensorFlowTensor]):
         """
         t1, t2 = getattr(tensor1, 'tensor', None), getattr(tensor2, 'tensor', None)
         if tf.is_tensor(t1) and tf.is_tensor(t2):
-            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))
+            # mypy doesn't know that tf.is_tensor implies that t1, t2 are not None
+            return t1.shape == t2.shape and tf.math.reduce_all(tf.equal(t1, t1))  # type: ignore
         return False
 
     class Retrieval(AbstractComputationalBackend.Retrieval[TensorFlowTensor]):
