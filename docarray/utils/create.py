@@ -1,11 +1,12 @@
 from docarray import DocList, BaseDoc
 from docarray.typing import AnyTensor
 from pydantic import create_model
-from typing import Dict, List, Any, Union, Optional
+from typing import Dict, List, Any, Union, Optional, Tuple, Type
+from typing_extensions import TypeAlias
 
 
-def _create_aux_model_doc_list_to_list(model):
-    fields = {}
+def create_new_model_cast_doclist_to_list(model: BaseDoc) -> BaseDoc:
+    fields: Dict[str, Tuple[Type, Dict]] = {}
     for field_name, field in model.__annotations__.items():
         try:
             if issubclass(field, DocList):
@@ -29,6 +30,7 @@ def _get_field_from_type(
 ):
     field_type = field_schema.get('type', None)
     tensor_shape = field_schema.get('tensor/array shape', None)
+    ret: TypeAlias
     if 'anyOf' in field_schema:
         any_of_types = []
         for any_of_schema in field_schema['anyOf']:
@@ -143,8 +145,8 @@ def _get_field_from_type(
 
 
 def create_base_doc_from_schema(
-    schema: Dict[str, any], model_name: str, cached_models: Optional[Dict] = None
-) -> type:
+    schema: Dict[str, Any], model_name: str, cached_models: Optional[Dict] = None
+) -> Type:
     cached_models = cached_models if cached_models is not None else {}
     fields = {}
     if model_name in cached_models:

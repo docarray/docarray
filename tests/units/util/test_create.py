@@ -2,7 +2,7 @@ import pytest
 from typing import List, Dict, Union, Any
 from docarray.utils.create import (
     create_base_doc_from_schema,
-    _create_aux_model_doc_list_to_list,
+    create_new_model_cast_doclist_to_list,
 )
 import numpy as np
 from typing import Optional
@@ -26,7 +26,7 @@ def test_create_pydantic_model_from_schema(transformation):
         lu: List[Union[str, int]] = [0, 1, 2]
         tags: Optional[Dict[str, Any]] = None
 
-    CustomDocCopy = _create_aux_model_doc_list_to_list(CustomDoc)
+    CustomDocCopy = create_new_model_cast_doclist_to_list(CustomDoc)
     new_custom_doc_model = create_base_doc_from_schema(
         CustomDocCopy.schema(), 'CustomDoc', {}
     )
@@ -95,7 +95,7 @@ def test_create_pydantic_model_from_schema(transformation):
     class TextDocWithId(BaseDoc):
         ia: str
 
-    TextDocWithIdCopy = _create_aux_model_doc_list_to_list(TextDocWithId)
+    TextDocWithIdCopy = create_new_model_cast_doclist_to_list(TextDocWithId)
     new_textdoc_with_id_model = create_base_doc_from_schema(
         TextDocWithIdCopy.schema(), 'TextDocWithId', {}
     )
@@ -125,7 +125,7 @@ def test_create_pydantic_model_from_schema(transformation):
     class ResultTestDoc(BaseDoc):
         matches: DocList[TextDocWithId]
 
-    ResultTestDocCopy = _create_aux_model_doc_list_to_list(ResultTestDoc)
+    ResultTestDocCopy = create_new_model_cast_doclist_to_list(ResultTestDoc)
     new_result_test_doc_with_id_model = create_base_doc_from_schema(
         ResultTestDocCopy.schema(), 'ResultTestDoc', {}
     )
@@ -171,7 +171,7 @@ def test_create_empty_doc_list_from_schema(transformation):
         tags: Optional[Dict[str, Any]] = None
         lf: List[float] = [3.0, 4.1]
 
-    CustomDocCopy = _create_aux_model_doc_list_to_list(CustomDoc)
+    CustomDocCopy = create_new_model_cast_doclist_to_list(CustomDoc)
     new_custom_doc_model = create_base_doc_from_schema(
         CustomDocCopy.schema(), 'CustomDoc'
     )
@@ -196,7 +196,7 @@ def test_create_empty_doc_list_from_schema(transformation):
     class TextDocWithId(BaseDoc):
         ia: str
 
-    TextDocWithIdCopy = _create_aux_model_doc_list_to_list(TextDocWithId)
+    TextDocWithIdCopy = create_new_model_cast_doclist_to_list(TextDocWithId)
     new_textdoc_with_id_model = create_base_doc_from_schema(
         TextDocWithIdCopy.schema(), 'TextDocWithId', {}
     )
@@ -219,7 +219,7 @@ def test_create_empty_doc_list_from_schema(transformation):
     class ResultTestDoc(BaseDoc):
         matches: DocList[TextDocWithId]
 
-    ResultTestDocCopy = _create_aux_model_doc_list_to_list(ResultTestDoc)
+    ResultTestDocCopy = create_new_model_cast_doclist_to_list(ResultTestDoc)
     new_result_test_doc_with_id_model = create_base_doc_from_schema(
         ResultTestDocCopy.schema(), 'ResultTestDoc', {}
     )
