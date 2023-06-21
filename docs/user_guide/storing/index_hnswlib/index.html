@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/storing/index_hnswlib/">
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/storing/index_hnswlib/">
       
       
         <link rel="prev" href="../index_in_memory/">
@@ -663,13 +663,6 @@
           <li class="md-nav__item">
   <a href="#dbconfig" class="md-nav__link">
     DBConfig
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#runtimeconfig" class="md-nav__link">
-    RuntimeConfig
   </a>
   
 </li>
@@ -2102,13 +2095,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#runtimeconfig" class="md-nav__link">
-    RuntimeConfig
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#field-wise-configurations" class="md-nav__link">
     Field-wise configurations
   </a>
@@ -2182,9 +2168,9 @@ perform search, etc. see the <a href="../docindex/">general user guide</a>.</p>
 <h2 id="configuration">Configuration</h2>
 <p>This section lays out the configurations and options that are specific to <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>.</p>
 <h3 id="dbconfig">DBConfig</h3>
-<p>The <code>DBConfig</code> of <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> expects only one argument:
-<code>work_dir</code>.</p>
-<p>This is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.</p>
+<p>The <code>DBConfig</code> of <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> contains two argument:
+<code>work_dir</code> and <code>default_column_configs</code></p>
+<p><code>work_dir</code> is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.</p>
 <p>You can pass this directly to the constructor:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
@@ -2205,16 +2191,14 @@ perform search, etc. see the <a href="../docindex/">general user guide</a>.</p>
 This means that if you try to open an index that is already open in another process, you will get an error.
 To avoid this, you can specify a different <code>work_dir</code> for each process.</p>
 </div>
-<h3 id="runtimeconfig">RuntimeConfig</h3>
-<p>The <code>RuntimeConfig</code> of <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> contains only one entry:
-the default mapping from Python types to column configurations.</p>
+<p><code>default_column_configs</code> contains the default mapping from Python types to column configurations.</p>
 <p>You can see in the <a href="#field-wise-configurations">section below</a> how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using <code>RuntimeConfig</code>:</p>
+If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using <code>DBConfig</code> or passing it at <code>__init__</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">db</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">,</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">default_column_config</span><span class="o">=</span><span class="p">{</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="p">{</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>            <span class="s1">'dim'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -2228,7 +2212,7 @@ If you want to set configurations globally, i.e. for all vector fields in your d
 </span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>            <span class="s1">'num_threads'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
 </span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="p">},</span>
 </span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="kc">None</span><span class="p">:</span> <span class="p">{},</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="p">}</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="p">},</span>
 </span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>This will set the default configuration for all vector fields to the one specified in the example above.</p>

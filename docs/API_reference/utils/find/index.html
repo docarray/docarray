@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/API_reference/utils/find/">
+        <link rel="canonical" href="https://docs.docarray.org/API_reference/utils/find/">
       
       
         <link rel="prev" href="../filter/">
@@ -2092,7 +2092,7 @@
 
 
 
-<h2 class="doc doc-heading" id="docarray.utils.find">
+<h2 id="docarray.utils.find" class="doc doc-heading">
           <code>docarray.utils.find</code>
 
 
@@ -2116,7 +2116,7 @@
 
 
 
-<h3 class="doc doc-heading" id="docarray.utils.find.find">
+<h3 id="docarray.utils.find.find" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">find</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
@@ -2446,7 +2446,7 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 
 
 
-<h3 class="doc doc-heading" id="docarray.utils.find.find_batched">
+<h3 id="docarray.utils.find.find_batched" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">find_batched</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
@@ -2821,7 +2821,7 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 </span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a>    <span class="n">metric_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">comp_backend</span><span class="o">.</span><span class="n">Metrics</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
 </span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a>    <span class="n">dists</span> <span class="o">=</span> <span class="n">metric_fn</span><span class="p">(</span><span class="n">query_embeddings</span><span class="p">,</span> <span class="n">index_embeddings</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 </span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a>    <span class="n">top_scores</span><span class="p">,</span> <span class="n">top_indices</span> <span class="o">=</span> <span class="n">comp_backend</span><span class="o">.</span><span class="n">Retrieval</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span>
-</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>        <span class="n">dists</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="n">descending</span>
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a>        <span class="n">dists</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="n">descending</span>
 </span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a>    <span class="p">)</span>
 </span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a>
 </span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a>    <span class="n">batched_docs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DocList</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>

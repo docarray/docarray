@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/sending/serialization/">
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/sending/serialization/">
       
       
         <link rel="prev" href="../first_step/">
@@ -2481,7 +2481,43 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 </span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="n">proto_message_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span>
 </span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
 </span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="n">dv_from_proto</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleVecDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">proto_message_dv</span><span class="p">)</span>
-</span></code></pre></div></div>
+</span></code></pre></div>
+<p>You can deserialize any <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> protobuf message to any tensor type,
+by passing the <code>tensor_type=...</code> parameter to <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec.from_protobuf"><code>from_protobuf</code></a></p>
+<p>This means that you can choose at deserialization time if you are working with numpy, PyTorch, or TensorFlow tensors.</p>
+<p>If no <code>tensor_type</code> is passed, the default is <code>NdArray</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">,</span> <span class="n">AnyTensor</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">class</span> <span class="nc">AnyTensorDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">AnyTensorDoc</span><span class="p">](</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="p">[</span><span class="n">AnyTensorDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)],</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="p">)</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="n">proto_message_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="c1"># deserialize to torch</span>
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="n">dv_from_proto_torch</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">AnyTensorDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span>
+</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    <span class="n">proto_message_dv</span><span class="p">,</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span>
+</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="p">)</span>
+</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="k">assert</span> <span class="n">dv_from_proto_torch</span><span class="o">.</span><span class="n">tensor_type</span> <span class="o">==</span> <span class="n">TorchTensor</span>
+</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dv_from_proto_torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">TorchTensor</span><span class="p">)</span>
+</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>
+</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="c1"># deserialize to numpy (default)</span>
+</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="n">dv_from_proto_numpy</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">AnyTensorDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">proto_message_dv</span><span class="p">)</span>
+</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="k">assert</span> <span class="n">dv_from_proto_numpy</span><span class="o">.</span><span class="n">tensor_type</span> <span class="o">==</span> <span class="n">NdArray</span>
+</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dv_from_proto_numpy</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Serialization to protobuf is not supported for union types involving <code>BaseDoc</code> types.</p>
+</div></div>
 
 
   

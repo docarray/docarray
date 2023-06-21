@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/representing/array/">
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/representing/array/">
       
       
         <link rel="prev" href="../first_step/">
@@ -2343,19 +2343,19 @@ the Array level.</p>
 <p class="admonition-title">Note</p>
 <p><code>DocList[DocType]</code> creates a custom <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> that can only contain <code>DocType</code> Documents.</p>
 </div>
-<p>This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of <code>BaseDoc</code>s rather than just an array of non-homogenous <code>BaseDoc</code>s.</p>
-<p>That said, <code>AnyDocArray</code> can also be used to create a non-homogenous <code>AnyDocArray</code>:</p>
+<p>This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of <code>BaseDoc</code>s rather than just an array of heterogeneous <code>BaseDoc</code>s.</p>
+<p>That said, <code>AnyDocArray</code> can also be used to create a heterogeneous <code>AnyDocArray</code>:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The default <code>DocList</code> can be used to create a non-homogenous list of <code>BaseDoc</code>.</p>
+<p>The default <code>DocList</code> can be used to create a heterogeneous list of <code>BaseDoc</code>.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><code>DocVec</code> cannot store non-homogenous <code>BaseDoc</code> and always needs the <code>DocVec[DocType]</code> syntax.</p>
+<p><code>DocVec</code> cannot store heterogeneous <code>BaseDoc</code> and always needs the <code>DocVec[DocType]</code> syntax.</p>
 </div>
-<p>The usage of a non-homogenous <code>DocList</code> is similar to a normal Python list but still offers DocArray functionality
+<p>The usage of a heterogeneous <code>DocList</code> is similar to a normal Python list but still offers DocArray functionality
 like <a href="../../sending/first_step/">serialization and sending over the wire</a>. However, it won't be able to extend the API of your custom schema to the Array level.</p>
-<p>Here is how you can instantiate a non-homogenous <code>DocList</code>:</p>
+<p>Here is how you can instantiate a heterogeneous <code>DocList</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">ImageUrl</span><span class="p">,</span> <span class="n">AudioUrl</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
@@ -2441,10 +2441,10 @@ which is at the heart of Machine Learning, especially in Deep Learning.</p>
 </span></code></pre></div>
 <p>this means that if you call <code>docs.image</code> multiple times, under the hood you will collect the image from each document and stack them several times. This is not optimal.</p>
 <p>Let's see how it will work with <code>DocVec</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocList</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocVec</span>
 </span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
-</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">](</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">](</span>
 </span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    <span class="p">[</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 </span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="p">)</span>
 </span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>
@@ -2497,10 +2497,12 @@ or extend your data.</p>
 </span></code></pre></div>
 </div>
 <p>Using nested optional fields differs slightly between DocList and DocVes, so watch out. But in a nutshell:</p>
-<p>When accessing a nested BaseDoc:
-* DocList will return a list of documents if the field is optional and a DocList if the field is not optional
-* DocVec will return a DocVec if all documents are there, or None if all docs are None. No mix of docs and None allowed!
-* DocVec will behave the same for a tensor field instead of a BaseDoc</p>
+<p>When accessing a nested BaseDoc:</p>
+<ul>
+<li>DocList will return a list of documents if the field is optional and a DocList if the field is not optional</li>
+<li>DocVec will return a DocVec if all documents are there, or None if all docs are None. No mix of docs and None allowed!</li>
+<li>DocVec will behave the same for a tensor field instead of a BaseDoc</li>
+</ul>
 <h4 id="doclist-with-nested-optional-field">DocList with nested optional Field</h4>
 <p>Let's take an example to illustrate the exact behavior:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>

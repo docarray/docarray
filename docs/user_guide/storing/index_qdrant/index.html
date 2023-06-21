@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/storing/index_qdrant/">
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/storing/index_qdrant/">
       
       
         <link rel="prev" href="../index_elastic/">
@@ -2048,7 +2048,7 @@ the data will be stored in a collection name MyDoc if no specific collection_nam
 </span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
 </span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
 </span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="c1"># Creating an in-memory Qdrant document index</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="n">qdrant_config</span> <span class="o">=</span> <span class="n">QdrantDocumentIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">(</span><span class="s2">":memory:"</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="n">qdrant_config</span> <span class="o">=</span> <span class="n">QdrantDocumentIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">":memory:"</span><span class="p">)</span>
 </span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">QdrantDocumentIndex</span><span class="p">[</span><span class="n">MyDocument</span><span class="p">](</span><span class="n">qdrant_config</span><span class="p">)</span>
 </span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
 </span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="c1"># Connecting to a local Qdrant instance running as a Docker container</span>

@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/user_guide/storing/index_elastic/">
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/storing/index_elastic/">
       
       
         <link rel="prev" href="../index_weaviate/">
@@ -2434,21 +2434,26 @@ This can lead to poor performance when the search involves many vectors.
 <td>Other <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html">index mappings</a> in a Dict for creating the index</td>
 <td>dict</td>
 </tr>
+<tr>
+<td><code>default_column_config</code></td>
+<td>The default configurations for every column type.</td>
+<td>dict</td>
+</tr>
 </tbody>
 </table>
 <p>You can pass any of the above as keyword arguments to the <code>__init__()</code> method or pass an entire configuration object.
 See <a href="../docindex/#configuration-options#customize-configurations">here</a> for more information.</p>
-<h3 id="runtimeconfig">RuntimeConfig</h3>
-<p>The <code>RuntimeConfig</code> dataclass of <code>ElasticDocIndex</code> consists of <code>default_column_config</code> and <code>chunk_size</code>. You can change <code>chunk_size</code> for batch operations:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">ElasticDocIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
-</span></code></pre></div>
 <p><code>default_column_config</code> is the default configurations for every column type. Since there are many column types in Elasticsearch, you can also consider changing the column config when defining the schema.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'l2_norm'</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_candidates</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'l2_norm'</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_candidates</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
+</span></code></pre></div>
+<h3 id="runtimeconfig">RuntimeConfig</h3>
+<p>The <code>RuntimeConfig</code> dataclass of <code>ElasticDocIndex</code> consists of <code>chunk_size</code>. You can change <code>chunk_size</code> for batch operations:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">ElasticDocIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
 </span></code></pre></div>
 <p>You can pass the above as keyword arguments to the <code>configure()</code> method or pass an entire configuration object.
 See <a href="../docindex/#configuration-options#customize-configurations">here</a> for more information.</p></div>

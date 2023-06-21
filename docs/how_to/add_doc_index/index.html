@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://docarray.jina.ai/how_to/add_doc_index/">
+        <link rel="canonical" href="https://docs.docarray.org/how_to/add_doc_index/">
       
       
         <link rel="prev" href="../../user_guide/storing/doc_store/store_s3/">
@@ -2595,12 +2595,12 @@ Otherwise, raise an Exception.</p>
 <p>To define what can be stored in them, and what the default values are, you need to create two inner classes:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nd">@dataclass</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">class</span> <span class="nc">DBConfig</span><span class="p">(</span><span class="n">BaseDocIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">):</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="o">...</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">default_column_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="o">...</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nd">@dataclass</span>
 </span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">class</span> <span class="nc">RuntimeConfig</span><span class="p">(</span><span class="n">BaseDocIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">):</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">default_column_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="o">...</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="o">...</span>
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2613,14 +2613,9 @@ Otherwise, raise an Exception.</p>
 <p>The <code>DBConfig</code> class defines the static configurations of your Document Index.
 These are configurations that are tied to the database (or library) running in the background, such as <code>host</code>, <code>port</code>, etc.
 Here you should put everything that the user cannot or should not change after initialization.</p>
-<h3 id="the-runtimeconfig-class">The <code>RuntimeConfig</code> class</h3>
-<p>The <code>RuntimeConfig</code> class defines the dynamic configurations of your Document Index.
-These are configurations that can be changed at runtime, for example default behaviours such as batch sizes, consistency levels, etc.</p>
-<p>It is a common pattern to allow such parameters both in the <code>RuntimeConfig</code>, where they will act as global defaults, and
-in specific methods (<code>index</code>, <code>find</code>, etc.), where they will act as local overrides.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Every <code>RuntimeConfig</code> needs to contain a <code>default_column_config</code> field.
+<p>Every <code>DBConfig</code> needs to contain a <code>default_column_config</code> field.
 This is a dictionary that, for each possible column type in your database, defines a default configuration for that column type.
 This will automatically be passed to a <code>_ColumnInfo</code> whenever a user does not manually specify a configuration for that column.</p>
 <p>For example, in the <code>MyDoc</code> schema above, the <code>tensor</code> <code>_ColumnInfo</code> would have a default configuration specified for <code>np.ndarray</code> columns.</p>
@@ -2629,6 +2624,11 @@ This will automatically be passed to a <code>_ColumnInfo</code> whenever a user 
 For example, for <code>np.ndarray</code> columns you could define the configurations <code>index_type</code> and <code>metric_type</code>,
 and for <code>varchar</code> columns you could define a <code>max_length</code> configuration.</p>
 <p>It is probably best to see this in action, so you should check out the <code>HnswDocumentIndex</code> implementation.</p>
+<h3 id="the-runtimeconfig-class">The <code>RuntimeConfig</code> class</h3>
+<p>The <code>RuntimeConfig</code> class defines the dynamic configurations of your Document Index.
+These are configurations that can be changed at runtime, for example default behaviours such as batch sizes, consistency levels, etc.</p>
+<p>It is a common pattern to allow such parameters both in the <code>RuntimeConfig</code>, where they will act as global defaults, and
+in specific methods (<code>index</code>, <code>find</code>, etc.), where they will act as local overrides.</p>
 <h2 id="implement-abstract-methods-for-indexing-searching-and-deleting">Implement abstract methods for indexing, searching, and deleting</h2>
 <p>After you've done the basic setup above, you can jump into the good stuff: implementing the actual indexing, searching, and deleting.</p>
 <p>In general, the following is true:</p>
@@ -2668,7 +2668,7 @@ The details of each method should become clear from the docstrings and type hint
 </span></code></pre></div>
 <p>In this case, the <code>db_type</code> of <code>my_num</code> will be <code>'float64'</code> and the <code>db_type</code> of <code>my_text</code> will be <code>'varchar'</code>. 
 Additional information regarding the <code>col_type</code>, such as <code>max_len</code> for <code>varchar</code> will be stored in the <code>_ColumnsInfo.config</code>.
-The given <code>col_type</code> has to be a valid <code>db_type</code>, meaning that has to be described in the index's <code>RuntimeConfig.default_column_config</code>.</p>
+The given <code>col_type</code> has to be a valid <code>db_type</code>, meaning that has to be described in the index's <code>DBConfig.default_column_config</code>.</p>
 <h3 id="the-_index-method">The <code>_index()</code> method</h3>
 <p>When indexing documents, your implementation should behave in the following way:</p>
 <ul>
