@@ -15,6 +15,8 @@ from typing import (
     Union,
 )
 
+from docarray.utils._internal._typing import safe_issubclass
+
 if TYPE_CHECKING:
     from docarray import BaseDoc
 
@@ -147,9 +149,9 @@ def _get_field_type_by_access_path(
             return doc_type._get_field_type(field)
         else:
             d = doc_type._get_field_type(field)
-            if issubclass(d, DocList):
+            if safe_issubclass(d, DocList):
                 return _get_field_type_by_access_path(d.doc_type, remaining)
-            elif issubclass(d, BaseDoc):
+            elif safe_issubclass(d, BaseDoc):
                 return _get_field_type_by_access_path(d, remaining)
             else:
                 return None
@@ -240,3 +242,17 @@ def get_paths(
         num_docs += 1
         if size is not None and num_docs >= size:
             break
+
+
+def _shallow_copy_doc(doc):
+    cls = doc.__class__
+    shallow_copy = cls.__new__(cls)
+
+    field_set = set(doc.__fields_set__)
+    object.__setattr__(shallow_copy, '__fields_set__', field_set)
+
+    for field_name, field_ in doc.__fields__.items():
+        val = doc.__getattr__(field_name)
+        setattr(shallow_copy, field_name, val)
+
+    return shallow_copy

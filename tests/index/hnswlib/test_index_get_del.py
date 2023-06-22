@@ -362,3 +362,53 @@ def test_num_docs(ten_simple_docs, tmp_path):
 
     del index[more_docs[2].id, ten_simple_docs[7].id]
     assert index.num_docs() == 10
+
+
+def test_update_payload(tmp_path):
+    class TextSimpleDoc(SimpleDoc):
+        text: str = 'hey'
+
+    docs = DocList[TextSimpleDoc](
+        [TextSimpleDoc(tens=np.random.rand(10), text=f'hey {i}') for i in range(100)]
+    )
+    index = HnswDocumentIndex[TextSimpleDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    for doc in docs:
+        doc.text += '_changed'
+
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    res = index.find(query=docs[0], search_field='tens', limit=100)
+    assert len(res.documents) == 100
+    for doc in res.documents:
+        assert '_changed' in doc.text
+
+
+def test_update_embedding(tmp_path):
+    class TextSimpleDoc(SimpleDoc):
+        text: str = 'hey'
+
+    docs = DocList[TextSimpleDoc](
+        [TextSimpleDoc(tens=np.random.rand(10), text=f'hey {i}') for i in range(100)]
+    )
+    index = HnswDocumentIndex[TextSimpleDoc](work_dir=str(tmp_path))
+    index.index(docs)
+    assert index.num_docs() == 100
+
+    new_tensor = np.random.rand(10)
+    docs[0].tens = new_tensor
+
+    index.index(docs[0])
+    assert index.num_docs() == 100
+
+    res = index.find(query=docs[0], search_field='tens', limit=100)
+    assert len(res.documents) == 100
+    found = False
+    for doc in res.documents:
+        if doc.id == docs[0].id:
+            found = True
+            assert (doc.tens == new_tensor).all()
+    assert found

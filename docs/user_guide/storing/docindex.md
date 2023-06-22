@@ -128,7 +128,7 @@ You can work around this problem by subclassing the predefined Document and addi
 
 
     class MyDoc(TextDoc):
-        embedding: AnyTensor = Field(n_dim=128)
+        embedding: AnyTensor = Field(dim=128)
 
 
     db = HnswDocumentIndex[MyDoc](work_dir='test_db3')
@@ -445,26 +445,25 @@ You can customize every field in this configuration:
 
 ### Runtime configurations
 
-_Runtime configurations_ are configurations that pertain to the entire database or table (as opposed to just a specific column),
-and that you can dynamically change at runtime.
+_Runtime configurations_ are configurations that relate to the way how an `instance` operates with respect to a specific 
+database. 
 
 
 This commonly includes:
 - default batch size for batching operations
-- default mapping from pythong types to database column types
 - default consistency level for various database operations
 - ...
 
 For every backend, you can get the full list of configurations and their defaults:
 
 ```python
-from docarray.index import HnswDocumentIndex
+from docarray.index import ElasticDocIndex
 
 
-runtime_config = HnswDocumentIndex.RuntimeConfig()
+runtime_config = ElasticDocIndex.RuntimeConfig()
 print(runtime_config)
 
-# > HnswDocumentIndex.RuntimeConfig(default_column_config={<class 'numpy.ndarray'>: {'dim': -1, 'index': True, 'space': 'l2', 'max_elements': 1024, 'ef_construction': 200, 'ef': 10, 'M': 16, 'allow_replace_deleted': True, 'num_threads': 1}, None: {}})
+# > ElasticDocIndex.RuntimeConfig(chunk_size=500)
 ```
 
 As you can see, `HnswDocumentIndex.RuntimeConfig` is a dataclass that contains only one configuration:
@@ -559,7 +558,33 @@ The `HnswDocumentIndex` above contains two columns which are configured differen
 - `tens` has a dimensionality of `100`, can take up to `12` elements, and uses the `cosine` similarity space
 - `tens_two` has a dimensionality of `10`, and uses the `ip` similarity space, and an `M` hyperparameter of 4
 
-All configurations that are not explicitly set will be taken from the `default_column_config` of the `RuntimeConfig`.
+All configurations that are not explicitly set will be taken from the `default_column_config` of the `DBConfig`.
+You can modify these defaults in the following way:
+
+```python
+import numpy as np
+from pydantic import Field
+
+from docarray import BaseDoc
+from docarray.index import HnswDocumentIndex
+from docarray.typing import NdArray
+
+
+class Schema(BaseDoc):
+    tens: NdArray[100] = Field(max_elements=12, space='cosine')
+    tens_two: NdArray[10] = Field(M=4, space='ip')
+
+
+# create a DBConfig for your Document Index
+conf = HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')
+# update the default max_elements for np.ndarray columns
+conf.default_column_config.get(np.ndarray).update(max_elements=2048)
+# create Document Index
+# tens has a max_elements of 12, specified in the schema
+# tens_two has a max_elements of 2048, specified by the default in the DBConfig
+db = HnswDocumentIndex[Schema](conf)
+```
+
 
 For an explanation of the configurations that are tweaked in this example, see the `HnswDocumentIndex` [documentation](index_hnswlib.md).
 

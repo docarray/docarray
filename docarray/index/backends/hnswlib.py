@@ -37,8 +37,8 @@ from docarray.index.backends.helper import (
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
-from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.misc import import_library, is_np_int
 from docarray.utils.find import _FindResult, _FindResultBatched
 
 if TYPE_CHECKING:
@@ -162,14 +162,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
-        """Dataclass that contains all "static" configurations of WeaviateDocumentIndex."""
+        """Dataclass that contains all "static" configurations of HnswDocumentIndex."""
 
         work_dir: str = '.'
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {
@@ -187,6 +182,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 None: {},  # type: ignore
             }
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of HnswDocumentIndex."""
+
+        pass
 
     ###############################################
     # Implementation of abstract methods          #
@@ -221,6 +222,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             data = column_to_data[col_name]
             data_np = [self._to_numpy(arr) for arr in data]
             data_stacked = np.stack(data_np)
+            num_docs_to_index = len(hashed_ids)
+            index_max_elements = index.get_max_elements()
+            current_elements = index.get_current_count()
+            if current_elements + num_docs_to_index > index_max_elements:
+                new_capacity = max(
+                    index_max_elements, current_elements + num_docs_to_index
+                )
+                self._logger.info(f'Resizing the index to {new_capacity}')
+                index.resize_index(new_capacity)
             index.add_items(data_stacked, ids=hashed_ids)
             index.save_index(self._hnsw_locations[col_name])
 
@@ -284,8 +294,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if self.num_docs() == 0:
             return _FindResultBatched(documents=[], scores=[])  # type: ignore
 
+        limit = min(limit, self.num_docs())
+
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(queries, k=limit)
+        labels, distances = index.knn_query(queries, k=int(limit))
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),
@@ -381,6 +393,19 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise KeyError(f'No document with id {doc_ids} found')
         return out_docs
 
+    def __contains__(self, item: BaseDoc):
+        if safe_issubclass(type(item), BaseDoc):
+            hash_id = self._to_hashed_id(item.id)
+            self._sqlite_cursor.execute(
+                f"SELECT data FROM docs WHERE doc_id = '{hash_id}'"
+            )
+            rows = self._sqlite_cursor.fetchall()
+            return len(rows) > 0
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
+
     def num_docs(self) -> int:
         """
         Get the number of documents.
@@ -405,9 +430,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
         index = self._create_index_class(col)
-        index.load_index(
-            self._hnsw_locations[col_name], max_elements=col.config['max_elements']
-        )
+        index.load_index(self._hnsw_locations[col_name])
         return index
 
     # HNSWLib helpers
@@ -439,7 +462,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _send_docs_to_sqlite(self, docs: Sequence[BaseDoc]):
         ids = (self._to_hashed_id(doc.id) for doc in docs)
         self._sqlite_cursor.executemany(
-            'INSERT INTO docs VALUES (?, ?)',
+            'INSERT OR REPLACE INTO docs VALUES (?, ?)',
             ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
         )
 

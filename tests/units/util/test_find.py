@@ -295,7 +295,7 @@ def test_find_union():
         index,
         query,
         search_field='embedding',
-        limit=7,
+        limit=7.0,
     )
     assert len(top_k) == 7
     assert len(scores) == 7
@@ -371,7 +371,7 @@ def test_find_nested_union_optional():
         index,
         query,
         search_field='embedding2',
-        limit=7,
+        limit=7.0,
     )
     assert len(top_k) == 7
     assert len(scores) == 7

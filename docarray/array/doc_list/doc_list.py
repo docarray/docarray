@@ -10,6 +10,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 
@@ -267,8 +268,18 @@ class DocList(
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 
-        if isinstance(value, (cls, DocVec)):
+        if isinstance(value, cls):
             return value
+        elif isinstance(value, DocVec):
+            if (
+                issubclass(value.doc_type, cls.doc_type)
+                or value.doc_type == cls.doc_type
+            ):
+                return cast(T, value.to_doc_list())
+            else:
+                raise ValueError(
+                    f'DocList[value.doc_type] is not compatible with {cls}'
+                )
         elif isinstance(value, cls):
             return cls(value)
         elif isinstance(value, Iterable):

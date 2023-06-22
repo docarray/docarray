@@ -1,6 +1,6 @@
 # Introduction
 
-In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multi-modal data and send it over the wire.
+In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multimodal data and send it over the wire.
 In this section we will see how to store and persist this data.
 
 DocArray offers two ways of storing your data, each of which have their own documentation sections:
@@ -35,9 +35,11 @@ or recommender systems.
 DocArray's Document Index concept achieves this by providing a unified interface to a number of [vector databases](https://learn.microsoft.com/en-us/semantic-kernel/concepts-ai/vectordb).
 In fact, you can think of Document Index as an **[ORM](https://sqlmodel.tiangolo.com/db-to-code/) for vector databases**.
 
-Currently, DocArray supports the following vector databases:
+Currently, DocArray supports the following vector indexes. Some of them wrap vector databases (Weaviate, Qdrant, ElasticSearch) and act as a client for them, while others
+use a vector search library locally (HNSWLib, Exact NN search):
 
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
 - [Hnswlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
+- InMemoryExactNNSearch  |  [Docs](index_in_memory.md)

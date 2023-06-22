@@ -31,10 +31,10 @@ This section lays out the configurations and options that are specific to [HnswD
 
 ### DBConfig
 
-The `DBConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] expects only one argument:
-`work_dir`.
+The `DBConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] contains two argument:
+`work_dir` and `default_column_configs`
 
-This is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.
+`work_dir` is the location where all of the Index's data will be stored, namely the various HNSWLib indexes and the SQLite database.
 
 You can pass this directly to the constructor:
 
@@ -58,21 +58,19 @@ To load existing data, you can specify a directory that stores data from a previ
     Hnswlib uses a file lock to prevent multiple processes from accessing the same index at the same time.
     This means that if you try to open an index that is already open in another process, you will get an error.
     To avoid this, you can specify a different `work_dir` for each process.
+    
+`default_column_configs` contains the default mapping from Python types to column configurations.
 
-### RuntimeConfig
-
-The `RuntimeConfig` of [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] contains only one entry:
-the default mapping from Python types to column configurations.
 
 You can see in the [section below](#field-wise-configurations) how to override configurations for specific fields.
-If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using `RuntimeConfig`:
+If you want to set configurations globally, i.e. for all vector fields in your documents, you can do that using `DBConfig` or passing it at `__init__`:
 
 ```python
 import numpy as np
 
-db = HnswDocumentIndex[MyDoc](work_dir='/tmp/my_db')
 
-db.configure(
+db = HnswDocumentIndex[MyDoc](
+    work_dir='/tmp/my_db',
     default_column_config={
         np.ndarray: {
             'dim': -1,
@@ -86,7 +84,7 @@ db.configure(
             'num_threads': 5,
         },
         None: {},
-    }
+    },
 )
 ```
 
@@ -95,6 +93,11 @@ This will set the default configuration for all vector fields to the one specifi
 !!! note
     Even if your vectors come from PyTorch or TensorFlow, you can (and should) still use the `np.ndarray` configuration.
     This is because all tensors are converted to `np.ndarray` under the hood.
+    
+!!! note
+   max_elements is considered to have the initial maximum capacity of the index. However, the capacity of the index is doubled every time
+   that the number of Documents in the index exceeds this capacity. Expanding the capacity is an expensive operation, therefore it can be important to
+   choose an appropiate max_elements value at init time.
 
 For more information on these settings, see [below](#field-wise-configurations).
 
@@ -208,4 +211,56 @@ To delete nested data, you need to specify the `id`.
 del doc_index[index_docs[6].id]
 ```
 
-Check [here](docindex#nested-data-with-subindex) for nested data with subindex.
+Check [here](../docindex#nested-data-with-subindex) for nested data with subindex.
+
+### Update elements
+In order to update a Document inside the index, you only need to reindex it with the updated attributes.
+
+First lets create a schema for our Index
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import HnswDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+Now we can instantiate our Index and index some data.
+
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = HnswDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Now we can find relevant documents
+
+```python
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+and update all of the text of this documents and reindex them
+
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly
+
+```python
+res = index.find(query=docs[0], search_field='tens', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```

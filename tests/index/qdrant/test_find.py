@@ -221,3 +221,25 @@ def test_find_batched(space, tmp_collection_name):  # noqa: F811
     assert len(scores[1]) == 1
     assert docs[0][0].id == index_docs[0].id
     assert docs[1][0].id == index_docs[-1].id
+
+
+def test_contain():
+    class SimpleDoc(BaseDoc):
+        tens: NdArray[10] = Field(dims=1000)
+
+    class SimpleSchema(BaseDoc):
+        tens: NdArray[10]
+
+    index = QdrantDocumentIndex[SimpleSchema]()
+    index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+
+    assert (index_docs[0] in index) is False
+
+    index.index(index_docs)
+
+    for doc in index_docs:
+        assert (doc in index) is True
+
+    index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
+    for doc in index_docs_new:
+        assert (doc in index) is False
