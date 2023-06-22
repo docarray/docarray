@@ -20,6 +20,7 @@ from typing import (
 import orjson
 from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
+from typing_inspect import is_optional_type
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
@@ -140,7 +141,14 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
 
         if is_pydantic_v2:
-            return cls._docarray_fields[field].annotation
+            annotation = cls._docarray_fields[field].annotation
+
+            if is_optional_type(
+                annotation
+            ):  # this is equivalent to `outer_type_` in pydantic v1
+                return annotation.__args__[0]
+            else:
+                return annotation
         else:
             return cls._docarray_fields[field].outer_type_
 

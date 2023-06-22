@@ -15,6 +15,8 @@ from typing import (
     Union,
 )
 
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
 if TYPE_CHECKING:
     from docarray import BaseDoc
 
@@ -247,7 +249,10 @@ def _shallow_copy_doc(doc):
     shallow_copy = cls.__new__(cls)
 
     field_set = set(doc.__fields_set__)
-    object.__setattr__(shallow_copy, '__fields_set__', field_set)
+
+    field_key = '__pydantic_fields_set__' if is_pydantic_v2 else '__fields_set__'
+
+    object.__setattr__(shallow_copy, field_key, field_set)
 
     for field_name, field_ in doc._docarray_fields.items():
         val = doc.__getattr__(field_name)
