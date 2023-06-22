@@ -12,7 +12,7 @@
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
-> > **Note**
+> **Note**
 > The README you're currently viewing is for DocArray>0.30, which introduces some significant changes from DocArray 0.21. If you wish to continue using the older DocArray <=0.21, ensure you install it via `pip install docarray==0.21`. Refer to its [codebase](https://github.com/docarray/docarray/tree/v0.21.0), [documentation](https://docarray.jina.ai), and [its hot-fixes branch](https://github.com/docarray/docarray/tree/docarray-v1-fixes) for more information.
 
 
@@ -33,16 +33,17 @@ To install DocArray from the CLI, run the following command:
 pip install -U docarray
 ```
 
-> > **Note**
+> **Note**
 > To use DocArray <=0.21, make sure you install via `pip install docarray==0.21` and check out its [codebase](https://github.com/docarray/docarray/tree/v0.21.0) and [docs](https://docarray.jina.ai) and [its hot-fixes branch](https://github.com/docarray/docarray/tree/docarray-v1-fixes).
 
-> :bulb: **New to DocArray?** Depending on your use case and background, there are multiple ways to learn about DocArray:
-> 
-> - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
-> - [Coming from Pydantic](#coming-from-pydantic)
-> - [Coming from FastAPI](#coming-from-fastapi)
-> - [Coming from a vector database](#coming-from-vector-database)
-> - [Coming from Langchain](#coming-from-langchain)
+## Get Started
+New to DocArray? Depending on your use case and background, there are multiple ways to learn about DocArray:
+ 
+- [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
+- [Coming from Pydantic](#coming-from-pydantic)
+- [Coming from FastAPI](#coming-from-fastapi)
+- [Coming from a vector database](#coming-from-vector-database)
+- [Coming from Langchain](#coming-from-langchain)
 
 
 ## Represent
