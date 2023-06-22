@@ -4,7 +4,7 @@ from pydantic import create_model
 from typing import Dict, List, Any, Union, Optional, Type
 
 
-def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
+def create_pure_python_type_model(model: Any) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
 
@@ -206,7 +206,7 @@ def create_base_doc_from_schema(
         texts: DocList[TextDoc]
 
 
-    MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
+    MyDocCorrected = create_pure_python_type_model(CustomDoc)
     new_my_doc_cls = create_base_doc_from_schema(CustomDocCopy.schema(), 'MyDoc')
     ```
 
