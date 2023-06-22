@@ -5,6 +5,30 @@ from typing import Dict, List, Any, Union, Optional, Type
 
 
 def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
+    """
+    Take a Pydantic model and cast DocList fields into List fields.
+
+    This can be needed because of this limitation of Pydantic:
+
+    (https://docs.pydantic.dev/latest/blog/pydantic-v2/)
+
+    ---
+
+    ```python
+    from docarray import BaseDoc
+    class MyDoc(BaseDoc):
+        tensor: Optional[AnyTensor]
+        url: ImageUrl
+        title: str
+        texts: DocList[TextDoc]
+
+    MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
+    ```
+
+    ---
+    :param model: The input model
+    :return: A BaseDoc class dynamically created with List instead of DocList in the schema.
+    """
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         try:
@@ -144,6 +168,38 @@ def _get_field_from_type(
 def create_base_doc_from_schema(
     schema: Dict[str, Any], model_name: str, cached_models: Optional[Dict] = None
 ) -> Type:
+    """
+    Dynamically create a `BaseDoc` class from a `schema` of another `BaseDoc`.
+    This method is intended to dynamically create a `BaseDoc` compatible with the schema
+    of another BaseDoc that is not available in the context. For instance, you may have stored the schema
+    as a JSON, or sent it to another service, etc ...
+
+    Due to this Pydantic limitation (https://docs.pydantic.dev/latest/blog/pydantic-v2/), we need to make sure that the
+    input schema uses `List` and not `DocList`, therefore this is recommended to be used in combination with `create_new_model_cast_doclist_to_list`
+    to make sure that `DocLists` in schema are converted to `List`.
+
+    ---
+
+    ```python
+    from docarray import BaseDoc
+    class MyDoc(BaseDoc):
+        tensor: Optional[AnyTensor]
+        url: ImageUrl
+        title: str
+        texts: DocList[TextDoc]
+
+    MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
+    new_my_doc_cls = create_base_doc_from_schema(
+        CustomDocCopy.schema(), 'MyDoc'
+    )
+    ```
+
+    ---
+    :param schema: The schema of the original `BaseDoc` where DocLists are passed as regular Lists of Documents.
+    :param model_name: The name of the new pydantic model created.
+    :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
+    :return: A BaseDoc class dynamically created following the `schema`.
+    """
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
     if model_name in cached_models:
