@@ -90,14 +90,34 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         validate_assignment = True
         _load_extra_fields_from_protobuf = False
 
-    @classmethod
-    def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
-        doc = cls.__new__(cls)
-        object.__setattr__(doc, '__dict__', storage_view)
-        object.__setattr__(doc, '__fields_set__', set(storage_view.keys()))
+    if is_pydantic_v2:
 
-        doc._init_private_attributes()
-        return doc
+        @classmethod
+        def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
+            doc = cls.__new__(cls)
+
+            object.__setattr__(doc, '__dict__', storage_view)
+            object.__setattr__(doc, '__pydantic_fields_set__', set(storage_view.keys()))
+
+            if cls.__pydantic_post_init__:
+                doc.model_post_init(None)
+            else:
+                # Note: if there are any private attributes, cls.__pydantic_post_init__ would exist
+                # Since it doesn't, that means that `__pydantic_private__` should be set to None
+                object.__setattr__(doc, '__pydantic_private__', None)
+
+            return doc
+
+    else:
+
+        @classmethod
+        def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
+            doc = cls.__new__(cls)
+            object.__setattr__(doc, '__dict__', storage_view)
+            object.__setattr__(doc, '__fields_set__', set(storage_view.keys()))
+
+            doc._init_private_attributes()
+            return doc
 
     @classmethod
     @property
