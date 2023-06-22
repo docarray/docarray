@@ -1,6 +1,6 @@
 # Array of documents
 
-DocArray allows users to represent and manipulate multimodaldata to build AI applications such as neural search and generative AI. 
+DocArray allows users to represent and manipulate multimodal data to build AI applications such as neural search and generative AI. 
 
 As you have seen in the [previous section](array.md), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which represents a *single* document, a *single* datapoint.
 
