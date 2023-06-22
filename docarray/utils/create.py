@@ -8,9 +8,10 @@ def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
 
-    This can be needed because of this limitation of Pydantic:
+    This may be necessary due to limitations in Pydantic:
 
-    (https://docs.pydantic.dev/latest/blog/pydantic-v2/)
+    https://github.com/docarray/docarray/issues/1521
+    https://github.com/pydantic/pydantic/issues/1457
 
     ---
 
@@ -30,7 +31,7 @@ def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
 
     ---
     :param model: The input model
-    :return: A BaseDoc class dynamically created with List instead of DocList in the schema.
+    :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
@@ -48,12 +49,12 @@ def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
 
 
 def _get_field_type_from_schema(
-        field_schema: Dict[str, Any],
-        field_name: str,
-        root_schema: Dict[str, Any],
-        cached_models: Dict[str, Any],
-        is_tensor: bool = False,
-        num_recursions: int = 0,
+    field_schema: Dict[str, Any],
+    field_name: str,
+    root_schema: Dict[str, Any],
+    cached_models: Dict[str, Any],
+    is_tensor: bool = False,
+    num_recursions: int = 0,
 ) -> type:
     """
     Private method used to extract the corresponding field type from the schema.
@@ -179,16 +180,17 @@ def _get_field_type_from_schema(
 
 
 def create_base_doc_from_schema(
-        schema: Dict[str, Any], base_doc_name: str, cached_models: Optional[Dict] = None
+    schema: Dict[str, Any], base_doc_name: str, cached_models: Optional[Dict] = None
 ) -> Type:
     """
-    Dynamically create a `BaseDoc` class from a `schema` of another `BaseDoc`.
-    This method is intended to dynamically create a `BaseDoc` compatible with the schema
-    of another BaseDoc that is not available in the context. For instance, you may have stored the schema
-    as a JSON, or sent it to another service, etc ...
+    Dynamically create a `BaseDoc` subclass from a `schema` of another `BaseDoc`.
 
-    Due to this Pydantic limitation (https://docs.pydantic.dev/latest/blog/pydantic-v2/), we need to make sure that the
-    input schema uses `List` and not `DocList`, therefore this is recommended to be used in combination with `create_new_model_cast_doclist_to_list`
+    This method is intended to dynamically create a `BaseDoc` compatible with the schema
+    of another BaseDoc. This is useful when that other `BaseDoc` is not available in the current scope. For instance, you may have stored the schema
+    as a JSON, or sent it to another service, etc.
+
+    Due to this Pydantic limitation (https://github.com/docarray/docarray/issues/1521, https://github.com/pydantic/pydantic/issues/1457), we need to make sure that the
+    input schema uses `List` and not `DocList`. Therefore this is recommended to be used in combination with `create_new_model_cast_doclist_to_list`
     to make sure that `DocLists` in schema are converted to `List`.
 
     ---
