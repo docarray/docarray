@@ -99,6 +99,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
             object.__setattr__(doc, '__dict__', storage_view)
             object.__setattr__(doc, '__pydantic_fields_set__', set(storage_view.keys()))
+            object.__setattr__(doc, '__pydantic_extra__', {})
 
             if cls.__pydantic_post_init__:
                 doc.model_post_init(None)
