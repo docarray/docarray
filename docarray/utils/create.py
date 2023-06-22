@@ -16,11 +16,14 @@ def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
 
     ```python
     from docarray import BaseDoc
+
+
     class MyDoc(BaseDoc):
         tensor: Optional[AnyTensor]
         url: ImageUrl
         title: str
         texts: DocList[TextDoc]
+
 
     MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
     ```
@@ -44,14 +47,24 @@ def create_new_model_cast_doclist_to_list(model: Any) -> BaseDoc:
     )
 
 
-def _get_field_from_type(
-    field_schema,
-    field_name,
-    root_schema,
-    cached_models,
-    is_tensor=False,
-    num_recursions=0,
-):
+def _get_field_type_from_schema(
+        field_schema: Dict[str, Any],
+        field_name: str,
+        root_schema: Dict[str, Any],
+        cached_models: Dict[str, Any],
+        is_tensor: bool = False,
+        num_recursions: int = 0,
+) -> type:
+    """
+    Private method used to extract the corresponding field type from the schema.
+    :param field_schema: The schema from which to extract the type
+    :param field_name: The name of the field to be created
+    :param root_schema: The schema of the root object, important to get references
+    :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
+    :param is_tensor: Boolean used to tell between tensor and list
+    :param num_recursions: Number of recursions to properly handle nested types (Dict, List, etc ..)
+    :return: A type created from the schema
+    """
     field_type = field_schema.get('type', None)
     tensor_shape = field_schema.get('tensor/array shape', None)
     ret: Any
@@ -70,7 +83,7 @@ def _get_field_from_type(
                 )
             else:
                 any_of_types.append(
-                    _get_field_from_type(
+                    _get_field_type_from_schema(
                         any_of_schema,
                         field_name,
                         root_schema=root_schema,
@@ -145,7 +158,7 @@ def _get_field_from_type(
                     )
                     ret = DocList[doc_type]
     elif field_type == 'array':
-        ret = _get_field_from_type(
+        ret = _get_field_type_from_schema(
             field_schema=field_schema.get('items', {}),
             field_name=field_name,
             root_schema=root_schema,
@@ -166,7 +179,7 @@ def _get_field_from_type(
 
 
 def create_base_doc_from_schema(
-    schema: Dict[str, Any], model_name: str, cached_models: Optional[Dict] = None
+        schema: Dict[str, Any], base_doc_name: str, cached_models: Optional[Dict] = None
 ) -> Type:
     """
     Dynamically create a `BaseDoc` class from a `schema` of another `BaseDoc`.
@@ -182,30 +195,31 @@ def create_base_doc_from_schema(
 
     ```python
     from docarray import BaseDoc
+
+
     class MyDoc(BaseDoc):
         tensor: Optional[AnyTensor]
         url: ImageUrl
         title: str
         texts: DocList[TextDoc]
 
+
     MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
-    new_my_doc_cls = create_base_doc_from_schema(
-        CustomDocCopy.schema(), 'MyDoc'
-    )
+    new_my_doc_cls = create_base_doc_from_schema(CustomDocCopy.schema(), 'MyDoc')
     ```
 
     ---
     :param schema: The schema of the original `BaseDoc` where DocLists are passed as regular Lists of Documents.
-    :param model_name: The name of the new pydantic model created.
+    :param base_doc_name: The name of the new pydantic model created.
     :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
-    if model_name in cached_models:
-        return cached_models[model_name]
+    if base_doc_name in cached_models:
+        return cached_models[base_doc_name]
     for field_name, field_schema in schema.get('properties', {}).items():
-        field_type = _get_field_from_type(
+        field_type = _get_field_type_from_schema(
             field_schema=field_schema,
             field_name=field_name,
             root_schema=schema,
@@ -215,6 +229,6 @@ def create_base_doc_from_schema(
         )
         fields[field_name] = (field_type, field_schema.get('description'))
 
-    model = create_model(model_name, __base__=BaseDoc, **fields)
-    cached_models[model_name] = model
+    model = create_model(base_doc_name, __base__=BaseDoc, **fields)
+    cached_models[base_doc_name] = model
     return model
