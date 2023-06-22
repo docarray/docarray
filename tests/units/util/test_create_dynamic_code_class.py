@@ -1,6 +1,6 @@
 import pytest
 from typing import List, Dict, Union, Any
-from docarray.utils.create import (
+from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_new_model_cast_doclist_to_list,
 )
