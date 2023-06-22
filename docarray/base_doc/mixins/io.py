@@ -314,7 +314,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key in arg_to_container.keys():
                 field_type = (
-                    cls._docarray_fields[field_name].type_
+                    cls._get_field_type(field_name)
                     if field_name and field_name in cls._docarray_fields
                     else None
                 )

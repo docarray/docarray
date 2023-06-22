@@ -412,7 +412,7 @@ def test_reverse():
 
 
 class Image(BaseDoc):
-    tensor: Optional[NdArray]
+    tensor: Optional[NdArray] = None
     url: ImageUrl
 
 

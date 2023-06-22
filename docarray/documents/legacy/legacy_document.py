@@ -34,12 +34,12 @@ class LegacyDocument(BaseDoc):
 
     """
 
-    tensor: Optional[AnyTensor]
-    chunks: Optional[DocList[LegacyDocument]]
-    matches: Optional[DocList[LegacyDocument]]
-    blob: Optional[bytes]
-    text: Optional[str]
-    url: Optional[str]
-    embedding: Optional[AnyEmbedding]
+    tensor: Optional[AnyTensor] = None
+    chunks: Optional[DocList[LegacyDocument]] = None
+    matches: Optional[DocList[LegacyDocument]] = None
+    blob: Optional[bytes] = None
+    text: Optional[str] = None
+    url: Optional[str] = None
+    embedding: Optional[AnyEmbedding] = None
     tags: Dict[str, Any] = dict()
-    scores: Optional[Dict[str, Any]]
+    scores: Optional[Dict[str, Any]] = None

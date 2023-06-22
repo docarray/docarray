@@ -541,7 +541,7 @@ class DocVec(AnyDocArray[T_doc]):
                 if col is not None:
                     validation_class = col.__unparametrizedcls__ or col.__class__
                 else:
-                    validation_class = self.doc_type._docarray_fields[field].type_
+                    validation_class = self.doc_type._get_field_type(field)
 
                 # TODO shape check should be handle by the tensor validation
 
