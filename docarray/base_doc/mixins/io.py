@@ -23,14 +23,17 @@ from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
-    from pydantic.fields import ModelField
+    from pydantic.fields import FieldInfo
 
     from docarray.proto import DocProto, NodeProto
     from docarray.typing import TensorFlowTensor, TorchTensor
+
+
 else:
     tf = import_library('tensorflow', raise_error=False)
     if tf is not None:
@@ -125,7 +128,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     IOMixin to define all the bytes/protobuf/json related part of BaseDoc
     """
 
-    _docarray_fields: Dict[str, 'ModelField']
+    _docarray_fields: Dict[str, 'FieldInfo']
 
     class Config:
         _load_extra_fields_from_protobuf: bool
@@ -322,11 +325,17 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key == 'dict':
                 deser_dict: Dict[str, Any] = dict()
-                field_type = (
-                    cls._docarray_fields[field_name].type_
-                    if field_name and field_name in cls._docarray_fields
-                    else None
-                )
+
+                if field_name and field_name in cls._docarray_fields:
+
+                    field_type = (
+                        cls._docarray_fields[field_name].annotation
+                        if is_pydantic_v2
+                        else cls._docarray_fields[field_name].type_
+                    )
+                else:
+                    field_type = None
+
                 for key_name, node in value.dict.data.items():
                     deser_dict[key_name] = cls._get_content_from_node_proto(
                         node, field_type=field_type
