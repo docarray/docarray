@@ -135,12 +135,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
     @classmethod
     @abstractmethod
-    def _get_field_type(cls, field: str) -> Type:
+    def _get_field_annotation(cls, field: str) -> Type:
         ...
 
     @classmethod
     def _get_field_type_array(cls, field: str) -> Type:
-        return cls._get_field_type(field)
+        return cls._get_field_annotation(field)
 
     def __bytes__(self) -> bytes:
         return self.to_bytes()
@@ -268,7 +268,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             raise ValueError("field_type and field_name cannot be both passed")
 
         field_type = field_type or (
-            cls._get_field_type(field_name) if field_name else None
+            cls._get_field_annotation(field_name) if field_name else None
         )
 
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
@@ -408,7 +408,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
         paths = []
         for field in cls._docarray_fields.keys():
-            field_type = cls._get_field_type(field)
+            field_type = cls._get_field_annotation(field)
             if not is_union_type(field_type) and safe_issubclass(field_type, BaseDoc):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:

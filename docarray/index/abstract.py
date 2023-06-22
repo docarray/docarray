@@ -534,7 +534,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                if issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),
@@ -833,7 +833,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         names_types_fields: List[Tuple[str, Type, 'ModelField']] = []
         for field_name, field_ in schema._docarray_fields.items():
-            t_ = schema._get_field_type(field_name)
+            t_ = schema._get_field_annotation(field_name)
             inner_prefix = name_prefix + field_name + '__'
 
             if is_union_type(t_):
@@ -1042,7 +1042,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: A Document object
         """
         for field_name, _ in schema._docarray_fields.items():
-            t_ = schema._get_field_type(field_name)
+            t_ = schema._get_field_annotation(field_name)
 
             if not is_union_type(t_) and issubclass(t_, AnyDocArray):
                 self._get_subindex_doclist(doc_dict, field_name)
@@ -1126,7 +1126,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """Find documents in the subindex and return subindex docs and scores."""
         fields = subindex.split('__')
         if not subindex or not issubclass(
-            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
+            self._schema._get_field_annotation(fields[0]), AnyDocArray  # type: ignore
         ):
             raise ValueError(f'subindex {subindex} is not valid')
 

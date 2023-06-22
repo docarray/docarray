@@ -133,10 +133,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             return cls.__fields__
 
     @classmethod
-    def _get_field_type(cls, field: str) -> Type:
+    def _get_field_annotation(cls, field: str) -> Type:
         """
-        Accessing the nested python Class define in the schema. Could be useful for
-        reconstruction of Document in serialization/deserilization
+        Accessing annotation associated with the field in the schema
         :param field: name of the field
         :return:
         """
@@ -371,7 +370,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             for field in self._docarray_fields.keys():
                 from docarray import DocList
 
-                type_ = self._get_field_type(field)
+                type_ = self._get_field_annotation(field)
                 if isinstance(type_, type) and issubclass(type_, DocList):
                     doclist_exclude_fields.append(field)
 

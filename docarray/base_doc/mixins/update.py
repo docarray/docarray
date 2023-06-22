@@ -17,7 +17,7 @@ class UpdateMixin:
 
     @classmethod
     @abstractmethod
-    def _get_field_type(cls, field: str) -> Type['UpdateMixin']:
+    def _get_field_annotation(cls, field: str) -> Type['UpdateMixin']:
         ...
 
     def update(self, other: T):
@@ -106,7 +106,7 @@ class UpdateMixin:
 
             for field_name, field in doc._docarray_fields.items():
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
-                    field_type = doc._get_field_type(field_name)
+                    field_type = doc._get_field_annotation(field_name)
 
                     if isinstance(field_type, type) and issubclass(field_type, DocList):
                         nested_docarray_fields.append(field_name)

@@ -146,9 +146,9 @@ def _get_field_type_by_access_path(
 
     if field_valid:
         if len(remaining) == 0:
-            return doc_type._get_field_type(field)
+            return doc_type._get_field_annotation(field)
         else:
-            d = doc_type._get_field_type(field)
+            d = doc_type._get_field_annotation(field)
             if issubclass(d, DocList):
                 return _get_field_type_by_access_path(d.doc_type, remaining)
             elif issubclass(d, BaseDoc):

@@ -17,7 +17,7 @@ class AnyDoc(BaseDoc):
         self.__dict__.update(kwargs)
 
     @classmethod
-    def _get_field_type(cls, field: str) -> Type['BaseDoc']:
+    def _get_field_annotation(cls, field: str) -> Type['BaseDoc']:
         """
         Accessing the nested python Class define in the schema.
         Could be useful for reconstruction of Document in

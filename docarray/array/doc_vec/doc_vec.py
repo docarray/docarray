@@ -191,7 +191,7 @@ class DocVec(AnyDocArray[T_doc]):
         for field_name, field in self.doc_type._docarray_fields.items():
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type = self.doc_type._get_field_type(field_name)
+            field_type = self.doc_type._get_field_annotation(field_name)
 
             field_info = self.doc_type._docarray_fields[field_name]
             is_field_required = (
@@ -541,7 +541,7 @@ class DocVec(AnyDocArray[T_doc]):
                 if col is not None:
                     validation_class = col.__unparametrizedcls__ or col.__class__
                 else:
-                    validation_class = self.doc_type._get_field_type(field)
+                    validation_class = self.doc_type._get_field_annotation(field)
 
                 # TODO shape check should be handle by the tensor validation
 
@@ -550,7 +550,9 @@ class DocVec(AnyDocArray[T_doc]):
 
             elif field in self._storage.doc_columns.keys():
                 values_ = parse_obj_as(
-                    DocVec.__class_getitem__(self.doc_type._get_field_type(field)),
+                    DocVec.__class_getitem__(
+                        self.doc_type._get_field_annotation(field)
+                    ),
                     values,
                 )
                 self._storage.doc_columns[field] = values_
@@ -624,7 +626,7 @@ class DocVec(AnyDocArray[T_doc]):
                 # handle values that were None before serialization
                 doc_columns[doc_col_name] = None
             else:
-                col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
+                col_doc_type: Type = cls.doc_type._get_field_annotation(doc_col_name)
                 doc_columns[doc_col_name] = DocVec.__class_getitem__(
                     col_doc_type
                 ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
@@ -637,7 +639,7 @@ class DocVec(AnyDocArray[T_doc]):
             else:
                 vec_list = ListAdvancedIndexing()
                 for doc_list_proto in docs_vec_col_proto.data:
-                    col_doc_type = cls.doc_type._get_field_type(
+                    col_doc_type = cls.doc_type._get_field_annotation(
                         docs_vec_col_name
                     ).doc_type
                     vec_list.append(
