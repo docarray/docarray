@@ -36,7 +36,7 @@ def test_column_storage_view():
         tensor: AnyTensor
         name: str
 
-    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
+    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=str(i)) for i in range(4)]
 
     storage = DocVec[MyDoc](docs)._storage
 
@@ -46,11 +46,11 @@ def test_column_storage_view():
     assert (view['tensor'] == np.zeros(10)).all()
     assert view['name'] == 'hello'
 
-    view['id'] = 1
+    view['id'] = '1'
     view['tensor'] = np.ones(10)
     view['name'] = 'byebye'
 
-    assert storage.any_columns['id'][0] == 1
+    assert storage.any_columns['id'][0] == '1'
     assert (storage.tensor_columns['tensor'][0] == np.ones(10)).all()
     assert storage.any_columns['name'][0] == 'byebye'
 
@@ -60,7 +60,7 @@ def test_storage_view_dict_like():
         tensor: AnyTensor
         name: str
 
-    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
+    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=str(i)) for i in range(4)]
 
     storage = DocVec[MyDoc](docs)._storage
 

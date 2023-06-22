@@ -50,7 +50,7 @@ def test_map_multiprocessing_local_func_raise_exception(da):
 
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_check_order(backend):
-    da = DocList[ImageDoc]([ImageDoc(id=i) for i in range(N_DOCS)])
+    da = DocList[ImageDoc]([ImageDoc(id=str(i)) for i in range(N_DOCS)])
 
     docs = list(map_docs(docs=da, func=load_from_doc, backend=backend))
 
