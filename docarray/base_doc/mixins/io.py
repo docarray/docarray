@@ -13,6 +13,7 @@ from typing import (
     Type,
     TypeVar,
 )
+from typing import _GenericAlias as GenericAlias
 
 import numpy as np
 from typing_inspect import is_union_type
@@ -315,13 +316,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             elif content_key in arg_to_container.keys():
 
                 if field_name and field_name in cls._docarray_fields:
-                    field_type = (
-                        cls._docarray_fields[field_name].annotation
-                        if is_pydantic_v2
-                        else cls._docarray_fields[field_name].type_
-                    )
+                    field_type = cls._get_field_inner_type(field_name)
                 else:
                     field_type = None
+
+                if isinstance(field_type, GenericAlias):
+                    field_type = field_type.__args__[0]
 
                 return_field = arg_to_container[content_key](
                     cls._get_content_from_node_proto(node, field_type=field_type)

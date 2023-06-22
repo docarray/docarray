@@ -152,6 +152,26 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         else:
             return cls._docarray_fields[field].outer_type_
 
+    @classmethod
+    def _get_field_inner_type(cls, field: str) -> Type:
+        """
+        Accessing typed associated with the field in the schema
+        :param field: name of the field
+        :return:
+        """
+
+        if is_pydantic_v2:
+            annotation = cls._docarray_fields[field].annotation
+
+            if is_optional_type(
+                annotation
+            ):  # this is equivalent to `outer_type_` in pydantic v1
+                return annotation.__args__[0]
+            else:
+                return annotation
+        else:
+            return cls._docarray_fields[field].type_
+
     def __str__(self) -> str:
         content: Any = None
         if self.is_view():
