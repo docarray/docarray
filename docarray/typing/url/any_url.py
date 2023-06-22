@@ -71,6 +71,26 @@ if is_pydantic_v2:
             else:
                 raise FileNotFoundError(f'`{self}` is not a URL or a valid local path')
 
+        def _to_node_protobuf(self) -> 'NodeProto':
+            """Convert Document into a NodeProto protobuf message. This function should
+            be called when the Document is nested into another Document that need to
+            be converted into a protobuf
+
+            :return: the nested item protobuf message
+            """
+            from docarray.proto import NodeProto
+
+            return NodeProto(text=str(self), type=self._proto_type_name)
+
+        @classmethod
+        def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+            """
+            Read url from a proto msg.
+            :param pb_msg:
+            :return: url
+            """
+            return parse_obj_as(cls, pb_msg)
+
 else:
 
     @_register_proto(proto_type_name='any_url')
@@ -117,6 +137,34 @@ else:
                 return cls(str(value), scheme=None)
             else:
                 return cls(str(url), scheme=None)
+
+        @classmethod
+        def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+            """
+            Read url from a proto msg.
+            :param pb_msg:
+            :return: url
+            """
+            return parse_obj_as(cls, pb_msg)
+
+        def load_bytes(self, timeout: Optional[float] = None) -> bytes:
+            """Convert url to bytes. This will either load or download the file and save
+            it into a bytes object.
+            :param timeout: timeout for urlopen. Only relevant if URI is not local
+            :return: bytes.
+            """
+            if urllib.parse.urlparse(self).scheme in {'http', 'https', 'data'}:
+                req = urllib.request.Request(
+                    self, headers={'User-Agent': 'Mozilla/5.0'}
+                )
+                urlopen_kwargs = {'timeout': timeout} if timeout is not None else {}
+                with urllib.request.urlopen(req, **urlopen_kwargs) as fp:  # type: ignore
+                    return fp.read()
+            elif os.path.exists(self):
+                with open(self, 'rb') as fp:
+                    return fp.read()
+            else:
+                raise FileNotFoundError(f'`{self}` is not a URL or a valid local path')
 
         @classmethod
         def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
@@ -181,31 +229,3 @@ else:
                 # remove the `://` prefix, since scheme is missing
                 url = url[3:]
             return url
-
-        @classmethod
-        def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
-            """
-            Read url from a proto msg.
-            :param pb_msg:
-            :return: url
-            """
-            return parse_obj_as(cls, pb_msg)
-
-        def load_bytes(self, timeout: Optional[float] = None) -> bytes:
-            """Convert url to bytes. This will either load or download the file and save
-            it into a bytes object.
-            :param timeout: timeout for urlopen. Only relevant if URI is not local
-            :return: bytes.
-            """
-            if urllib.parse.urlparse(self).scheme in {'http', 'https', 'data'}:
-                req = urllib.request.Request(
-                    self, headers={'User-Agent': 'Mozilla/5.0'}
-                )
-                urlopen_kwargs = {'timeout': timeout} if timeout is not None else {}
-                with urllib.request.urlopen(req, **urlopen_kwargs) as fp:  # type: ignore
-                    return fp.read()
-            elif os.path.exists(self):
-                with open(self, 'rb') as fp:
-                    return fp.read()
-            else:
-                raise FileNotFoundError(f'`{self}` is not a URL or a valid local path')
