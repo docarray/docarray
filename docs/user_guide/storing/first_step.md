@@ -1,6 +1,6 @@
 # Introduction
 
-In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multi-modal data and send it over the wire.
+In the previous sections we saw how to use [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] to represent multimodal data and send it over the wire.
 In this section we will see how to store and persist this data.
 
 DocArray offers two ways of storing your data, each of which have their own documentation sections:
