@@ -313,11 +313,16 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-                field_type = (
-                    cls._get_field_type(field_name)
-                    if field_name and field_name in cls._docarray_fields
-                    else None
-                )
+
+                if field_name and field_name in cls._docarray_fields:
+                    field_type = (
+                        cls._docarray_fields[field_name].annotation
+                        if is_pydantic_v2
+                        else cls._docarray_fields[field_name].type_
+                    )
+                else:
+                    field_type = None
+
                 return_field = arg_to_container[content_key](
                     cls._get_content_from_node_proto(node, field_type=field_type)
                     for node in getattr(value, content_key).data
