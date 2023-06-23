@@ -37,6 +37,7 @@ class TextUrl(AnyUrl):
                 # This handles the case where the value is a URL without a file extension
                 # for e.g. https://de.wikipedia.org/wiki/Brixen
                 return True
+        return False
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """

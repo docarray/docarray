@@ -51,7 +51,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         return NodeProto(text=str(self), type=self._proto_type_name)
 
     @classmethod
-    def is_extension_allowed(cls, value: 'AnyUrl') -> bool:
+    def is_extension_allowed(cls, value: Any) -> bool:
         """
         Check if the file extension of the url is allowed for that class.
         First read the mime type of the file, if it fails, then check the file extension.
@@ -59,7 +59,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         :param value: url to the file
         :return: True if the extension is allowed, False otherwise
         """
-        if not issubclass(cls, AnyUrl):  # no check for AnyUrl class
+        if cls == AnyUrl:  # no check for AnyUrl class
             return True
         mimetype, _ = mimetypes.guess_type(value.split("?")[0])
         if mimetype:
@@ -72,7 +72,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             )
 
     @classmethod
-    def is_special_case(cls, value: 'AnyUrl') -> bool:
+    def is_special_case(cls, value: Any) -> bool:
         """
         Check if the url is a special case.
 
@@ -105,8 +105,8 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         url = super().validate(abs_path, field, config)  # basic url validation
 
         # perform check only for subclasses of AnyUrl
-        if not cls.is_extension_allowed(url):
-            if not cls.is_special_case(url):  # check for special cases
+        if not cls.is_extension_allowed(value):
+            if not cls.is_special_case(value):  # check for special cases
                 raise ValueError(
                     f'file {value} is not a valid file format for class {cls}'
                 )
