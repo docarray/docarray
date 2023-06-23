@@ -21,7 +21,7 @@ class Mesh3DUrl(Url3D):
     """
 
     @classmethod
-    def allowed_extensions(cls) -> List[str]:
+    def extra_extensions(cls) -> List[str]:
         # return list of allowed extensions to be used for mesh if mimetypes fail to detect
         # generated with the help of chatGPT and definitely this list is not exhaustive
         # bit hacky because of black formatting, making it a long vertical list

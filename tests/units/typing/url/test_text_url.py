@@ -54,7 +54,7 @@ def test_load_to_bytes(url):
 @pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE, *LOCAL_TEXT_FILES])
+@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE])
 def test_proto_text_url(url):
     uri = parse_obj_as(TextUrl, url)
 

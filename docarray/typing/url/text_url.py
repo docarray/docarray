@@ -18,9 +18,25 @@ class TextUrl(AnyUrl):
         return 'text'
 
     @classmethod
-    def allowed_extensions(cls) -> List[str]:
-        # add only those extensions that can not be identified by the mimetypes library but are valid
+    def extra_extensions(cls) -> List[str]:
+        """
+        List of extra file extensions for this type of URL (outside the scope of mimetype library).
+        """
         return ['.md']
+
+    @classmethod
+    def is_special_case(cls, value: 'AnyUrl') -> bool:
+        """
+        Check if the url is a special case that needs to be handled differently.
+
+        :param value: url to the file
+        :return: True if the url is a special case, False otherwise
+        """
+        if value.startswith('http') or value.startswith('https'):
+            if len(value.split('/')[-1].split('.')) == 1:
+                # This handles the case where the value is a URL without a file extension
+                # for e.g. https://de.wikipedia.org/wiki/Brixen
+                return True
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """

@@ -21,7 +21,7 @@ class VideoUrl(AnyUrl):
         return 'video'
 
     @classmethod
-    def allowed_extensions(cls) -> List[str]:
+    def extra_extensions(cls) -> List[str]:
         # add only those extensions that can not be identified by the mimetypes library but are valid
         return []
 

@@ -30,10 +30,13 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
     @classmethod
     def mime_type(cls) -> str:
+        """Returns the mime type this class deals with."""
         raise NotImplementedError
 
     @classmethod
-    def allowed_extensions(cls) -> List[str]:
+    def extra_extensions(cls) -> List[str]:
+        """Returns a list of allowed file extensions for this class which
+        falls outside the scope of mimetypes library."""
         raise NotImplementedError
 
     def _to_node_protobuf(self) -> 'NodeProto':
@@ -46,6 +49,37 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(text=str(self), type=self._proto_type_name)
+
+    @classmethod
+    def is_extension_allowed(cls, value: 'AnyUrl') -> bool:
+        """
+        Check if the file extension of the url is allowed for that class.
+        First read the mime type of the file, if it fails, then check the file extension.
+
+        :param value: url to the file
+        :return: True if the extension is allowed, False otherwise
+        """
+        if not issubclass(cls, AnyUrl):  # no check for AnyUrl class
+            return True
+        mimetype, _ = mimetypes.guess_type(value.split("?")[0])
+        if mimetype:
+            return mimetype.startswith(cls.mime_type())
+        else:
+            # check if the extension is among the extra extensions of that class
+            return any(
+                value.endswith(ext) or value.split("?")[0].endswith(ext)
+                for ext in cls.extra_extensions()
+            )
+
+    @classmethod
+    def is_special_case(cls, value: 'AnyUrl') -> bool:
+        """
+        Check if the url is a special case.
+
+        :param value: url to the file
+        :return: True if the url is a special case, False otherwise
+        """
+        return False
 
     @classmethod
     def validate(
@@ -70,37 +104,14 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
-        # Use mimetypes to validate file formats
-        mimetype, encoding = mimetypes.guess_type(value.split("?")[0])
-        if not mimetype:
-            # try reading from the request headers if mimetypes failed - could be slow
-            try:
-                r = urllib.request.urlopen(value)
-            except Exception:  # noqa
-                pass  # should we raise an error/warning here, since url is not reachable(invalid)?
-            else:
-                mimetype = r.headers.get_content_maintype()
-
-        skip_check = False
-        if not mimetype:  # not able to automatically detect mimetype
-            # check if the file extension is among one of the allowed extensions
-            if not any(
-                value.endswith(ext) or value.split("?")[0].endswith(ext)
-                for ext in cls.allowed_extensions()
-            ):
+        # perform check only for subclasses of AnyUrl
+        if not cls.is_extension_allowed(url):
+            if not cls.is_special_case(url):  # check for special cases
                 raise ValueError(
                     f'file {value} is not a valid file format for class {cls}'
                 )
-            else:
-                skip_check = True  # one of the allowed extensions, skip the check
 
-        if not skip_check and not mimetype.startswith(cls.mime_type()):
-            raise ValueError(f'file {value} is not a {cls.mime_type()} file format')
-
-        if input_is_relative_path:
-            return cls(str(value), scheme=None)
-        else:
-            return cls(str(url), scheme=None)
+        return cls(str(value if input_is_relative_path else url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
