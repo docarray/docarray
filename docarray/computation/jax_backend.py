@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import jax
 import jax.numpy as jnp
@@ -7,9 +7,6 @@ import numpy as np
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
 from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
 from docarray.typing import JaxArray
-
-if TYPE_CHECKING:
-    pass
 
 
 def _unsqueeze_if_single_axis(*matrices) -> List[jnp.ndarray]:
@@ -62,10 +59,6 @@ def _expand_if_scalar(arr: jnp.ndarray) -> jnp.ndarray:
     if len(arr.shape) == 0:  # avoid scalar output
         arr = jnp.expand_dims(arr, axis=0)
     return arr
-
-
-def identity(array: jnp.ndarray) -> jnp.ndarray:
-    return array
 
 
 def norm_left(t: jnp.ndarray) -> JaxArray:
