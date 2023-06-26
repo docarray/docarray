@@ -9,8 +9,7 @@ from docarray.typing.url.extra_extensions import POINT_CLOUD_EXTRA_EXTENSIONS
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:
-    from docarray.documents.point_cloud.points_and_colors import \
-        PointsAndColors
+    from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 
 
 T = TypeVar('T', bound='PointCloud3DUrl')
@@ -74,8 +73,7 @@ class PointCloud3DUrl(Url3D):
 
         :return: np.ndarray representing the point cloud
         """
-        from docarray.documents.point_cloud.points_and_colors import \
-            PointsAndColors
+        from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 
         if not trimesh_args:
             trimesh_args = {}
