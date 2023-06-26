@@ -62,7 +62,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         if cls == AnyUrl:  # no check for AnyUrl class
             return True
         mimetype, _ = mimetypes.guess_type(value.split("?")[0])
-        print('mimetype for value', mimetype, value)
+        print('mimetype for value', mimetype, value, value.split("?")[0])
         if mimetype:
             return mimetype.startswith(cls.mime_type())
         else:
