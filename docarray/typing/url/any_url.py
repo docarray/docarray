@@ -67,7 +67,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             return mimetype.startswith(cls.mime_type())
         else:
             # check if the extension is among the extra extensions of that class
-            print('extra extensions for value', value,  cls.extra_extensions())
+            print('extra extensions for value', value, cls.extra_extensions())
             return any(
                 value.endswith(ext) or value.split("?")[0].endswith(ext)
                 for ext in cls.extra_extensions()
