@@ -18,6 +18,10 @@ class Url3D(AnyUrl, ABC):
     Can be remote (web) URL, or a local file path.
     """
 
+    @classmethod
+    def mime_type(cls) -> str:
+        return 'application'
+
     def _load_trimesh_instance(
         self: T,
         force: Optional[str] = None,

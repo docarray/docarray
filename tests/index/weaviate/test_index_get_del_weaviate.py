@@ -403,7 +403,7 @@ def test_index_multi_modal_doc():
 
 
 def test_index_document_with_bytes(weaviate_client):
-    doc = ImageDoc(id="1", url="www.foo.com", bytes_=b"foo")
+    doc = ImageDoc(id="1", url="www.foo.com/test.png", bytes_=b"foo")
 
     index = WeaviateDocumentIndex[ImageDoc]()
     index.index([doc])

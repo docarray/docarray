@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import numpy as np
@@ -146,3 +147,26 @@ def test_load_bytes():
     assert isinstance(video_bytes, bytes)
     assert isinstance(video_bytes, VideoBytes)
     assert len(video_bytes) > 0
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        ('video', LOCAL_VIDEO_FILE),
+        ('video', REMOTE_VIDEO_FILE),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.aac')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        ('audio', os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != VideoUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(VideoUrl, file_source)
+    else:
+        parse_obj_as(VideoUrl, file_source)

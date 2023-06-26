@@ -1,8 +1,9 @@
+import mimetypes
 import os
 import urllib
 import urllib.parse
 import urllib.request
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Type, TypeVar, Union
 
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
@@ -27,6 +28,17 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         False  # turn off host requirement to allow passing of local paths as URL
     )
 
+    @classmethod
+    def mime_type(cls) -> str:
+        """Returns the mime type this class deals with."""
+        raise NotImplementedError
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """Returns a list of allowed file extensions for this class which
+        falls outside the scope of mimetypes library."""
+        raise NotImplementedError
+
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to
@@ -37,6 +49,37 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(text=str(self), type=self._proto_type_name)
+
+    @classmethod
+    def is_extension_allowed(cls, value: Any) -> bool:
+        """
+        Check if the file extension of the url is allowed for that class.
+        First read the mime type of the file, if it fails, then check the file extension.
+
+        :param value: url to the file
+        :return: True if the extension is allowed, False otherwise
+        """
+        if cls == AnyUrl:  # no check for AnyUrl class
+            return True
+        mimetype, _ = mimetypes.guess_type(value.split("?")[0])
+        if mimetype:
+            return mimetype.startswith(cls.mime_type())
+        else:
+            # check if the extension is among the extra extensions of that class
+            return any(
+                value.endswith(ext) or value.split("?")[0].endswith(ext)
+                for ext in cls.extra_extensions()
+            )
+
+    @classmethod
+    def is_special_case(cls, value: Any) -> bool:
+        """
+        Check if the url is a special case.
+
+        :param value: url to the file
+        :return: True if the url is a special case, False otherwise
+        """
+        return False
 
     @classmethod
     def validate(
@@ -61,10 +104,14 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
-        if input_is_relative_path:
-            return cls(str(value), scheme=None)
-        else:
-            return cls(str(url), scheme=None)
+        # perform check only for subclasses of AnyUrl
+        if not cls.is_extension_allowed(value):
+            if not cls.is_special_case(value):  # check for special cases
+                raise ValueError(
+                    f'file {value} is not a valid file format for class {cls}'
+                )
+
+        return cls(str(value if input_is_relative_path else url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':

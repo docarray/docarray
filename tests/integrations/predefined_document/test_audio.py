@@ -29,7 +29,6 @@ LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.ogg'),
     str(TOYDATA_DIR / 'hello.wma'),
     str(TOYDATA_DIR / 'hello.aac'),
-    str(TOYDATA_DIR / 'hello'),
 ]
 
 LOCAL_AUDIO_FILES_AND_FORMAT = [
@@ -40,7 +39,6 @@ LOCAL_AUDIO_FILES_AND_FORMAT = [
     (str(TOYDATA_DIR / 'hello.ogg'), 'ogg'),
     (str(TOYDATA_DIR / 'hello.wma'), 'asf'),
     (str(TOYDATA_DIR / 'hello.aac'), 'adts'),
-    (str(TOYDATA_DIR / 'hello'), 'wav'),
 ]
 
 NON_AUDIO_FILES = [

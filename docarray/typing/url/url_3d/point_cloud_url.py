@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
@@ -20,6 +20,17 @@ class PointCloud3DUrl(Url3D):
     URL to a file containing point cloud information.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        # return list of file format for point cloud if mimetypes fail to detect
+        # generated with the help of chatGPT and definitely this list is not exhaustive
+        # bit hacky because of black formatting, making it a long vertical list
+        list_a = ['ascii', 'bin', 'b3dm', 'bpf', 'dp', 'dxf', 'e57', 'fls', 'fls']
+        list_b = ['glb', 'ply', 'gpf', 'las', 'obj', 'osgb', 'pcap', 'pcd', 'pdal']
+        list_c = ['pfm', 'ply', 'ply2', 'pod', 'pods', 'pnts', 'ptg', 'ptx', 'pts']
+        list_d = ['rcp', 'xyz', 'zfs']
+        return list_a + list_b + list_c + list_d
 
     def load(
         self: T,
