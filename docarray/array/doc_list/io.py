@@ -426,11 +426,11 @@ class IOMixinArray(Iterable[T_doc]):
             `'unix'` (for csv file generated on UNIX systems).
 
         """
-        if self.doc_type == AnyDoc:
+        if self.doc_type == AnyDoc or self.doc_type == BaseDoc:
             raise TypeError(
-                'DocList must be homogeneous to be converted to a csv.'
+                f'{type(self)} must be homogeneous to be converted to a csv.'
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {type(self)}\'s Document type using `{type(self)}[MyDoc]`.'
             )
         fields = self.doc_type._get_access_paths()
 

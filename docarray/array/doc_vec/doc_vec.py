@@ -35,6 +35,8 @@ from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
+    import csv
+
     from pydantic.fields import ModelField
 
     from docarray.proto import (
@@ -878,3 +880,35 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    def to_csv(
+        self, file_path: str, dialect: Union[str, 'csv.Dialect'] = 'excel'
+    ) -> None:
+        """
+        DocVec does not support `.to_csv()`. This is because CSV is a row-based format
+        while DocVec has a column-based data layout.
+        To overcome this, do: `doc_vec.to_doc_list().to_csv(...)`.
+        """
+        raise NotImplementedError(
+            f'{type(self)} does not support `.to_csv()`. This is because CSV is a row-based format'
+            f'while {type(self)} has a column-based data layout. '
+            f'To overcome this, do: `doc_vec.to_doc_list().to_csv(...)`.'
+        )
+
+    @classmethod
+    def from_csv(
+        cls: Type['T'],
+        file_path: str,
+        encoding: str = 'utf-8',
+        dialect: Union[str, csv.Dialect] = 'excel',
+    ) -> 'T':
+        """
+        DocVec does not support `.from_csv()`. This is because CSV is a row-based format
+        while DocVec has a column-based data layout.
+        To overcome this, do: `DocList[MyDoc].from_csv(...).to_doc_vec()`.
+        """
+        raise NotImplementedError(
+            f'{cls} does not support `.from_csv()`. This is because CSV is a row-based format while'
+            f'{cls} has a column-based data layout. '
+            f'To overcome this, do: `DocList[MyDoc].from_csv(...).to_doc_vec()`.'
+        )
