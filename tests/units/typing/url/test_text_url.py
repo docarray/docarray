@@ -6,6 +6,13 @@ from pydantic import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import TextUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from tests import TOYDATA_DIR
 
 REMOTE_TEXT_FILE = 'https://www.gutenberg.org/files/1065/1065-0.txt'
@@ -94,14 +101,14 @@ def test_validation(path_to_file):
 @pytest.mark.parametrize(
     'file_type, file_source',
     [
-        *[('text', file) for file in LOCAL_TEXT_FILES],
-        ('text', REMOTE_TEXT_FILE),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.aac')),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.ogg')),
-        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
-        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
-        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+        *[(TEXT_MIMETYPE, file) for file in LOCAL_TEXT_FILES],
+        (TEXT_MIMETYPE, REMOTE_TEXT_FILE),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.aac')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
     ],
 )
 def test_file_validation(file_type, file_source):

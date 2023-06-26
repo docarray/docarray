@@ -9,6 +9,13 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import ImageUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from tests import TOYDATA_DIR
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -180,17 +187,17 @@ def test_validation(path_to_img):
 @pytest.mark.parametrize(
     'file_type, file_source',
     [
-        ('image', IMAGE_PATHS['png']),
-        ('image', IMAGE_PATHS['jpg']),
-        ('image', IMAGE_PATHS['jpeg']),
-        ('image', REMOTE_JPG),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.wav')),
-        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
-        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
-        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+        (IMAGE_MIMETYPE, IMAGE_PATHS['png']),
+        (IMAGE_MIMETYPE, IMAGE_PATHS['jpg']),
+        (IMAGE_MIMETYPE, IMAGE_PATHS['jpeg']),
+        (IMAGE_MIMETYPE, REMOTE_JPG),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.wav')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
     ],
 )
 def test_file_validation(file_type, file_source):

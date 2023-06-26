@@ -9,6 +9,13 @@ from pydantic.tools import parse_obj_as, schema_json_of
 from docarray import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AudioBytes, AudioTorchTensor, AudioUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
@@ -129,15 +136,15 @@ def test_load_bytes():
 @pytest.mark.parametrize(
     'file_type, file_source',
     [
-        ('audio', AUDIO_FILES[0]),
-        ('audio', AUDIO_FILES[1]),
-        ('audio', REMOTE_AUDIO_FILE),
-        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
-        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
-        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
-        ('application', os.path.join(TOYDATA_DIR, 'test.glb')),
+        (AUDIO_MIMETYPE, AUDIO_FILES[0]),
+        (AUDIO_MIMETYPE, AUDIO_FILES[1]),
+        (AUDIO_MIMETYPE, REMOTE_AUDIO_FILE),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
     ],
 )
 def test_file_validation(file_type, file_source):

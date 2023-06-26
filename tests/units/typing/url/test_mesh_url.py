@@ -6,6 +6,13 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import Mesh3DUrl, NdArray
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
@@ -82,18 +89,18 @@ def test_proto_mesh_url():
 @pytest.mark.parametrize(
     'file_type, file_source',
     [
-        ('application', MESH_FILES['obj']),
-        ('application', MESH_FILES['glb']),
-        ('application', MESH_FILES['ply']),
-        ('application', REMOTE_OBJ_FILE),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.aac')),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.mp3')),
-        ('audio', os.path.join(TOYDATA_DIR, 'hello.ogg')),
-        ('video', os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
-        ('image', os.path.join(TOYDATA_DIR, 'test.png')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.html')),
-        ('text', os.path.join(TOYDATA_DIR, 'test' 'test.md')),
-        ('text', os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        (OBJ_MIMETYPE, MESH_FILES['obj']),
+        (OBJ_MIMETYPE, MESH_FILES['glb']),
+        (OBJ_MIMETYPE, MESH_FILES['ply']),
+        (OBJ_MIMETYPE, REMOTE_OBJ_FILE),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.aac')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
     ],
 )
 def test_file_validation(file_type, file_source):
