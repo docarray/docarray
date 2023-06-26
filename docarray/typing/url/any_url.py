@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AnyUrl')
 
 mime_types_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), '..', 'resources', 'mime.types.txt'
+    os.path.dirname(os.path.realpath(__file__)), '..', 'resources', 'mime.types'
 )
 mimetypes.init([mime_types_path])
 
