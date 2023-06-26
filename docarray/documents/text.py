@@ -24,7 +24,7 @@ class TextDoc(BaseDoc):
     from docarray.documents import TextDoc
 
     # use it directly
-    txt_doc = TextDoc(url='http://www.jina.ai/file.txt')
+    txt_doc = TextDoc(url='https://example-files.online-convert.com/document/txt/example.txt')
     txt_doc.text = txt_doc.url.load()
     # model = MyEmbeddingModel()
     # txt_doc.embedding = model(txt_doc.text)
