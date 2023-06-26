@@ -173,7 +173,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
+        protocol: str = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
