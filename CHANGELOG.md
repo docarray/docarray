@@ -142,6 +142,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3588,4 +3589,24 @@
 
  - [[```245d8329```](https://github.com/jina-ai/docarray/commit/245d8329c9878d8d7cf0ffd0dbbd928c18e38784)] __-__ rename license to be consist with lfai standards (#921) (*Nan Wang*)
  - [[```a9edde28```](https://github.com/jina-ai/docarray/commit/a9edde28cb9df79adeaf3955909d0ef8d96396ca)] __-__ __version__: the next version will be 0.20.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-21-1></a>
+## Release Note (`0.21.1`)
+
+> Release time: 2023-06-26 15:50:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals Martinez,  Girish Chandrashekar,  Johannes Messner,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```debbe3f9```](https://github.com/jina-ai/docarray/commit/debbe3f9d1b7f7ac5de8d5c5a9393c3418ab0ecb)] __-__ allow additional_headers parameters to Weaviate client (#1673) (*Girish Chandrashekar*)
+
+### 🍹 Other Improvements
+
+ - [[```cfa06007```](https://github.com/jina-ai/docarray/commit/cfa060074f34410832de7e594c67163c276f9cf3)] __-__ update docarray version (*Joan Fontanals Martinez*)
+ - [[```ca2973f0```](https://github.com/jina-ai/docarray/commit/ca2973f03f8209e5d1f831bf08e84dff033322d7)] __-__ bump version (#1023) (*Johannes Messner*)
 
