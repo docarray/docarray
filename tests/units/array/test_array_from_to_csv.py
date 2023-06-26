@@ -21,9 +21,8 @@ def nested_doc_cls():
     return MyDocNested
 
 
-@pytest.mark.parametrize('array_cls', [DocList, DocVec])
-def test_to_from_csv(tmpdir, nested_doc_cls, array_cls):
-    da = array_cls[nested_doc_cls](
+def test_to_from_csv(tmpdir, nested_doc_cls):
+    da = DocList[nested_doc_cls](
         [
             nested_doc_cls(
                 count=0,
@@ -38,18 +37,17 @@ def test_to_from_csv(tmpdir, nested_doc_cls, array_cls):
     da.to_csv(tmp_file)
     assert os.path.isfile(tmp_file)
 
-    da_from = array_cls[nested_doc_cls].from_csv(tmp_file)
-    assert isinstance(da_from, array_cls)
+    da_from = DocList[nested_doc_cls].from_csv(tmp_file)
+    assert isinstance(da_from, DocList)
     for doc1, doc2 in zip(da, da_from):
         assert doc1 == doc2
 
 
-@pytest.mark.parametrize('array_cls', [DocList, DocVec])
-def test_from_csv_nested(nested_doc_cls, array_cls):
-    da = array_cls[nested_doc_cls].from_csv(
+def test_from_csv_nested(nested_doc_cls):
+    da = DocList[nested_doc_cls].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
     )
-    assert isinstance(da, array_cls)
+    assert isinstance(da, DocList)
     assert len(da) == 3
 
     for i, doc in enumerate(da):
@@ -93,22 +91,17 @@ def nested_doc():
     return doc
 
 
-@pytest.mark.parametrize('array_cls', [DocList, DocVec])
-def test_from_csv_without_schema_raise_exception(array_cls):
+def test_from_csv_without_schema_raise_exception():
     with pytest.raises(TypeError, match='no document schema defined'):
-        array_cls.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
+        DocList.from_csv(file_path=str(TOYDATA_DIR / 'docs_nested.csv'))
 
 
-@pytest.mark.parametrize('array_cls', [DocList, DocVec])
-def test_from_csv_with_wrong_schema_raise_exception(nested_doc, array_cls):
+def test_from_csv_with_wrong_schema_raise_exception(nested_doc):
     with pytest.raises(ValueError, match='Column names do not match the schema'):
-        array_cls[nested_doc.__class__].from_csv(
-            file_path=str(TOYDATA_DIR / 'docs.csv')
-        )
+        DocList[nested_doc.__class__].from_csv(file_path=str(TOYDATA_DIR / 'docs.csv'))
 
 
-@pytest.mark.parametrize('array_cls', [DocList, DocVec])
-def test_from_remote_csv_file(array_cls):
+def test_from_remote_csv_file():
     remote_url = 'https://github.com/docarray/docarray/blob/main/tests/toydata/books.csv?raw=true'
 
     class Book(BaseDoc):
@@ -116,8 +109,8 @@ def test_from_remote_csv_file(array_cls):
         author: str
         year: int
 
-    books = array_cls[Book].from_csv(file_path=remote_url)
-    assert isinstance(books, array_cls)
+    books = DocList[Book].from_csv(file_path=remote_url)
+    assert isinstance(books, DocList)
 
     assert len(books) == 3
 
@@ -154,3 +147,20 @@ def test_union_type_error(tmp_path):
     docs_basic.to_csv(str(tmp_path) + ".csv")
     docs_copy = DocList[BasisUnion].from_csv(str(tmp_path) + ".csv")
     assert docs_copy == docs_basic
+
+
+def test_to_from_csv_docvec_raises():
+    class Book(BaseDoc):
+        title: str
+        author: str
+        year: int
+
+    books = DocVec[Book](
+        [Book(title='It\'s me, hi', author='I\'m the problem it\'s me', year=2022)]
+    )
+
+    with pytest.raises(NotImplementedError):
+        books.to_csv('dummy/file/path')
+
+    with pytest.raises(NotImplementedError):
+        DocVec[Book].from_csv('dummy/file/path')

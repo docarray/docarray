@@ -900,7 +900,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         cls: Type['T'],
         file_path: str,
         encoding: str = 'utf-8',
-        dialect: Union[str, csv.Dialect] = 'excel',
+        dialect: Union[str, 'csv.Dialect'] = 'excel',
     ) -> 'T':
         """
         DocVec does not support `.from_csv()`. This is because CSV is a row-based format
