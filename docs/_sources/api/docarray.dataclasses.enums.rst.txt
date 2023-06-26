@@ -1,0 +1,7 @@
+docarray.dataclasses.enums module
+=================================
+
+.. automodule:: docarray.dataclasses.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:

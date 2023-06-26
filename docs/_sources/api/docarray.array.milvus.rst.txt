@@ -1,0 +1,7 @@
+docarray.array.milvus module
+============================
+
+.. automodule:: docarray.array.milvus
+   :members:
+   :undoc-members:
+   :show-inheritance:
