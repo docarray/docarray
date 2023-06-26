@@ -21,10 +21,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyUrl')
 
-mime_types_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), '..', 'resources', 'mime.types'
-)
-mimetypes.init([mime_types_path])
+mimetypes.init([])
 
 
 @_register_proto(proto_type_name='any_url')
@@ -68,25 +65,12 @@ class AnyUrl(BaseAnyUrl, AbstractType):
             return True
         mimetype, _ = mimetypes.guess_type(value.split("?")[0])
         print('mimetype for value', mimetype, value, value.split("?")[0])
-        if mimetype:
-            return mimetype.startswith(cls.mime_type())
-        else:
-            # check if the extension is among the extra extensions of that class
-            print('extra extensions for value', value, cls.extra_extensions())
-            return any(
-                value.endswith(ext) or value.split("?")[0].endswith(ext)
-                for ext in cls.extra_extensions()
-            )
-
-    @classmethod
-    def is_special_case(cls, value: Any) -> bool:
-        """
-        Check if the url is a special case.
-
-        :param value: url to the file
-        :return: True if the url is a special case, False otherwise
-        """
-        return False
+        if mimetype and mimetype.startswith(cls.mime_type()):
+            return True
+        return any(
+            value.endswith(ext) or value.split("?")[0].endswith(ext)
+            for ext in cls.extra_extensions()
+        )
 
     @classmethod
     def validate(
@@ -112,10 +96,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         url = super().validate(abs_path, field, config)  # basic url validation
 
         if not cls.is_extension_allowed(value):
-            if not cls.is_special_case(value):  # check for special cases
-                raise ValueError(
-                    f'file {value} is not a valid file format for class {cls}'
-                )
+            raise ValueError(f'file {value} is not a valid file format for class {cls}')
 
         return cls(str(value if input_is_relative_path else url), scheme=None)
 
