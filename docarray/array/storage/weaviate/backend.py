@@ -9,6 +9,7 @@ from typing import (
     Union,
     Tuple,
     List,
+    Any,
 )
 
 import numpy as np
@@ -31,6 +32,7 @@ class WeaviateConfig:
     host: Optional[str] = field(default='localhost')
     port: Optional[int] = field(default=8080)
     protocol: Optional[str] = field(default='http')
+    additional_headers: Optional[Dict[str, Any]] = field(default_factory=dict)
     name: Optional[str] = None
     list_like: bool = True
     serialize_config: Dict = field(default_factory=dict)
@@ -124,6 +126,7 @@ class BackendMixin(BaseBackendMixin):
         self._client = weaviate.Client(
             f'{config.protocol}://{config.host}:{config.port}',
             timeout_config=config.timeout_config,
+            additional_headers=config.additional_headers,
         )
         self._config = config
 
