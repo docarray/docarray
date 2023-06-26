@@ -41,7 +41,7 @@ class TextUrl(AnyUrl):
 
 
         doc = MyDoc(
-            remote_url='https://example-files.online-convert.com/document/txt/example.txt',
+            remote_url='https://www.gutenberg.org/files/1065/1065-0.txt',
         )
 
         remote_txt = doc.remote_url.load()

@@ -8,7 +8,7 @@ from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import TextUrl
 from tests import TOYDATA_DIR
 
-REMOTE_TEXT_FILE = 'https://example-files.online-convert.com/document/txt/example.txt'
+REMOTE_TEXT_FILE = 'https://www.gutenberg.org/files/1065/1065-0.txt'
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_TEXT_FILES = [
     str(TOYDATA_DIR / 'penal_colony.txt'),
@@ -32,7 +32,7 @@ LOCAL_TEXT_FILES_AND_BEGINNING = [
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'url,expected_beginning',
-    [(REMOTE_TEXT_FILE, 'TXT test file'), *LOCAL_TEXT_FILES_AND_BEGINNING],
+    [(REMOTE_TEXT_FILE, 'The Project Gutenberg'), *LOCAL_TEXT_FILES_AND_BEGINNING],
 )
 def test_load(url, expected_beginning):
     uri = parse_obj_as(TextUrl, url)

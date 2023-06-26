@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyUrl')
 
-# mimetypes.init([])
+mimetypes.init([])
 
 
 @_register_proto(proto_type_name='any_url')
