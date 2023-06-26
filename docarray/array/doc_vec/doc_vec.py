@@ -168,7 +168,11 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
 
-        if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
+        if (
+            not hasattr(self, 'doc_type')
+            or self.doc_type == AnyDoc
+            or self.doc_type == BaseDoc
+        ):
             raise TypeError(
                 f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
                 f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
