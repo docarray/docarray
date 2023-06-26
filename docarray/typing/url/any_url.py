@@ -62,10 +62,12 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         if cls == AnyUrl:  # no check for AnyUrl class
             return True
         mimetype, _ = mimetypes.guess_type(value.split("?")[0])
+        print('mimetype for value', mimetype, value)
         if mimetype:
             return mimetype.startswith(cls.mime_type())
         else:
             # check if the extension is among the extra extensions of that class
+            print('extra extensions for value', value,  cls.extra_extensions())
             return any(
                 value.endswith(ext) or value.split("?")[0].endswith(ext)
                 for ext in cls.extra_extensions()
@@ -104,19 +106,13 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
-        if input_is_relative_path:
-            return cls(str(value), scheme=None)
-        else:
-            return cls(str(url), scheme=None)
+        if not cls.is_extension_allowed(value):
+            if not cls.is_special_case(value):  # check for special cases
+                raise ValueError(
+                    f'file {value} is not a valid file format for class {cls}'
+                )
 
-        # # perform check only for subclasses of AnyUrl
-        # if not cls.is_extension_allowed(value):
-        #     if not cls.is_special_case(value):  # check for special cases
-        #         raise ValueError(
-        #             f'file {value} is not a valid file format for class {cls}'
-        #         )
-        #
-        # return cls(str(value if input_is_relative_path else url), scheme=None)
+        return cls(str(value if input_is_relative_path else url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
