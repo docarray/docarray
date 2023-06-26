@@ -357,10 +357,10 @@ class IOMixinArray(Iterable[T_doc]):
 
         :return: `DocList` object
         """
-        if cls.doc_type == AnyDoc:
+        if cls.doc_type == AnyDoc or cls.doc_type == BaseDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {cls}\'s Document type using `{cls}[MyDoc]`.'
             )
 
         if file_path.startswith('http'):
