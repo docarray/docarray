@@ -2,15 +2,15 @@ from docarray.documents.text import TextDoc
 
 
 def test_text_document_operators():
-    doc = TextDoc(text='text', url='http://url.com')
+    doc = TextDoc(text='text', url='http://url.com/file.txt')
 
     assert doc == 'text'
     assert doc != 'http://url.com'
 
-    doc2 = TextDoc(id=doc.id, text='text', url='http://url.com')
+    doc2 = TextDoc(id=doc.id, text='text', url='http://url.com/file.txt')
     assert doc == doc2
 
-    doc3 = TextDoc(id='other-id', text='text', url='http://url.com')
+    doc3 = TextDoc(id='other-id', text='text', url='http://url.com/file.txt')
     assert doc == doc3
 
     assert 't' in doc

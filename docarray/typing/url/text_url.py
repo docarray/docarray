@@ -22,7 +22,7 @@ class TextUrl(AnyUrl):
         """
         List of extra file extensions for this type of URL (outside the scope of mimetype library).
         """
-        return ['.md']
+        return ['md', 'log']
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """
@@ -41,7 +41,7 @@ class TextUrl(AnyUrl):
 
 
         doc = MyDoc(
-            remote_url='https://de.wikipedia.org/wiki/Brixen',
+            remote_url='https://example-files.online-convert.com/document/txt/example.txt',
         )
 
         remote_txt = doc.remote_url.load()

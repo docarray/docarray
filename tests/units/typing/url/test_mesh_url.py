@@ -98,7 +98,9 @@ def test_proto_mesh_url():
 )
 def test_file_validation(file_type, file_source):
     if file_type != Mesh3DUrl.mime_type():
+        print('1')
         with pytest.raises(ValueError):
             parse_obj_as(Mesh3DUrl, file_source)
     else:
+        print('2')
         parse_obj_as(Mesh3DUrl, file_source)

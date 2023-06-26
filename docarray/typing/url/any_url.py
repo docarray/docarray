@@ -67,10 +67,12 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         print('mimetype for value', mimetype, value, value.split("?")[0])
         if mimetype and mimetype.startswith(cls.mime_type()):
             return True
-        return any(
-            value.endswith(ext) or value.split("?")[0].endswith(ext)
-            for ext in cls.extra_extensions()
-        )
+        filename = value.split("?")[0].split('.')
+        if len(filename) > 1:
+            extension = filename[-1]
+            return extension in cls.extra_extensions()
+
+        return False
 
     @classmethod
     def validate(
