@@ -104,14 +104,19 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
-        # perform check only for subclasses of AnyUrl
-        if not cls.is_extension_allowed(value):
-            if not cls.is_special_case(value):  # check for special cases
-                raise ValueError(
-                    f'file {value} is not a valid file format for class {cls}'
-                )
+        if input_is_relative_path:
+            return cls(str(value), scheme=None)
+        else:
+            return cls(str(url), scheme=None)
 
-        return cls(str(value if input_is_relative_path else url), scheme=None)
+        # # perform check only for subclasses of AnyUrl
+        # if not cls.is_extension_allowed(value):
+        #     if not cls.is_special_case(value):  # check for special cases
+        #         raise ValueError(
+        #             f'file {value} is not a valid file format for class {cls}'
+        #         )
+        #
+        # return cls(str(value if input_is_relative_path else url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':
