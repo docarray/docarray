@@ -40,7 +40,6 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
-    from docarray import DocList
     from docarray.proto import DocListProto
 
 T = TypeVar('T', bound='IOMixinArray')
@@ -332,11 +331,11 @@ class IOMixinArray(Iterable[T_doc]):
 
     @classmethod
     def from_csv(
-        cls,
+        cls: Type['T'],
         file_path: str,
         encoding: str = 'utf-8',
         dialect: Union[str, csv.Dialect] = 'excel',
-    ) -> 'DocList':
+    ) -> 'T':
         """
         Load a DocList from a csv file following the schema defined in the
         [`.doc_type`][docarray.DocList] attribute.
@@ -376,7 +375,9 @@ class IOMixinArray(Iterable[T_doc]):
 
     @classmethod
     def _from_csv_file(
-        cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
+        cls: Type['T'],
+        file: Union[StringIO, TextIOWrapper],
+        dialect: Union[str, csv.Dialect],
     ) -> 'T':
 
         rows = csv.DictReader(file, dialect=dialect)
@@ -442,7 +443,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_dataframe(cls, df: 'pd.DataFrame') -> 'T':
+    def from_dataframe(cls: Type['T'], df: 'pd.DataFrame') -> 'T':
         """
         Load a `DocList` from a `pandas.DataFrame` following the schema
         defined in the [`.doc_type`][docarray.DocList] attribute.

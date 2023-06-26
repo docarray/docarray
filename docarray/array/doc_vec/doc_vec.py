@@ -18,7 +18,7 @@ from typing import (
 )
 
 import numpy as np
-from orjson import orjson
+import orjson
 from pydantic import BaseConfig, parse_obj_as
 from typing_inspect import typingGenericAlias
 
@@ -60,6 +60,8 @@ else:
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
+T_io_mixin = TypeVar('T_io_mixin', bound='IOMixinArray')
+
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 NONE_NDARRAY_PROTO_SHAPE = (0,)
@@ -158,7 +160,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         AnyTensor or Union of NdArray and TorchTensor
     """
 
-    doc_type: Type[T_doc] = AnyDoc  # TODO(johannes): should this be BaseDoc?
+    doc_type: Type[T_doc] = BaseDoc  # type: ignore
 
     def __init__(
         self: T,
@@ -630,7 +632,9 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
 
     @classmethod
     def _from_json_col_dict(
-        cls, json_columns: Dict[str, Any], tensor_type: Type[AbstractTensor] = NdArray
+        cls: Type[T],
+        json_columns: Dict[str, Any],
+        tensor_type: Type[AbstractTensor] = NdArray,
     ) -> T:
 
         tensor_cols = json_columns['tensor_columns']
