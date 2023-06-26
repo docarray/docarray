@@ -5,6 +5,7 @@ from docarray.typing import AudioNdArray
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import AUDIO_MIMETYPE
 from docarray.utils._internal.misc import is_notebook
 
 T = TypeVar('T', bound='AudioUrl')
@@ -19,7 +20,7 @@ class AudioUrl(AnyUrl):
 
     @classmethod
     def mime_type(cls) -> str:
-        return 'audio'
+        return AUDIO_MIMETYPE
 
     @classmethod
     def extra_extensions(cls) -> List[str]:

@@ -5,6 +5,7 @@ from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.image import ImageNdArray
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import IMAGE_MIMETYPE
 from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
@@ -22,7 +23,7 @@ class ImageUrl(AnyUrl):
 
     @classmethod
     def mime_type(cls) -> str:
-        return 'image'
+        return IMAGE_MIMETYPE
 
     @classmethod
     def extra_extensions(cls) -> List[str]:

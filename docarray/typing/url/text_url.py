@@ -2,7 +2,7 @@ from typing import List, Optional, TypeVar
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
-from docarray.typing.url.extra_extensions import TEXT_EXTRA_EXTENSIONS
+from docarray.typing.url.mimetypes import TEXT_EXTRA_EXTENSIONS, TEXT_MIMETYPE
 
 T = TypeVar('T', bound='TextUrl')
 
@@ -16,7 +16,7 @@ class TextUrl(AnyUrl):
 
     @classmethod
     def mime_type(cls) -> str:
-        return 'text'
+        return TEXT_MIMETYPE
 
     @classmethod
     def extra_extensions(cls) -> List[str]:

@@ -1,3 +1,9 @@
+TEXT_MIMETYPE = 'text'
+AUDIO_MIMETYPE = 'audio'
+IMAGE_MIMETYPE = 'image'
+OBJ_MIMETYPE = 'application/x-tgif'
+VIDEO_MIMETYPE = 'video'
+
 MESH_EXTRA_EXTENSIONS = [
     '3ds',
     '3mf',

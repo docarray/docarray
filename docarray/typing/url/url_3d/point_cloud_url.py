@@ -5,7 +5,7 @@ from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.ndarray import NdArray
-from docarray.typing.url.extra_extensions import POINT_CLOUD_EXTRA_EXTENSIONS
+from docarray.typing.url.mimetypes import POINT_CLOUD_EXTRA_EXTENSIONS
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:

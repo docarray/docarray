@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, TypeVar, Union
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import OBJ_MIMETYPE
 from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class Url3D(AnyUrl, ABC):
 
     @classmethod
     def mime_type(cls) -> str:
-        return 'application'
+        return OBJ_MIMETYPE
 
     def _load_trimesh_instance(
         self: T,
