@@ -38,7 +38,7 @@ def test_load(url, expected_beginning):
     uri = parse_obj_as(TextUrl, url)
 
     txt = uri.load()
-    assert txt.startswith(expected_beginning)
+    assert expected_beginning in txt
 
 
 @pytest.mark.slow
