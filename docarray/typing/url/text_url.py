@@ -2,6 +2,7 @@ from typing import List, Optional, TypeVar
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.extra_extensions import TEXT_EXTRA_EXTENSIONS
 
 T = TypeVar('T', bound='TextUrl')
 
@@ -20,9 +21,10 @@ class TextUrl(AnyUrl):
     @classmethod
     def extra_extensions(cls) -> List[str]:
         """
-        List of extra file extensions for this type of URL (outside the scope of mimetype library).
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
         """
-        return ['md', 'log']
+        return TEXT_EXTRA_EXTENSIONS
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """

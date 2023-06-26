@@ -32,13 +32,13 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
     @classmethod
     def mime_type(cls) -> str:
-        """Returns the mime type this class deals with."""
+        """Returns the mime type associated with the class."""
         raise NotImplementedError
 
     @classmethod
     def extra_extensions(cls) -> List[str]:
-        """Returns a list of allowed file extensions for this class which
-        falls outside the scope of mimetypes library."""
+        """Returns a list of allowed file extensions for the class
+        that are not covered by the mimetypes library."""
         raise NotImplementedError
 
     def _to_node_protobuf(self) -> 'NodeProto':
@@ -55,24 +55,25 @@ class AnyUrl(BaseAnyUrl, AbstractType):
     @classmethod
     def is_extension_allowed(cls, value: Any) -> bool:
         """
-        Check if the file extension of the url is allowed for that class.
-        First read the mime type of the file, if it fails, then check the file extension.
+        Check if the file extension of the URL is allowed for this class.
+        First, it guesses the mime type of the file. If it fails to detect the
+        mime type, it then checks the extra file extension.
 
-        :param value: url to the file
+        :param value: The URL or file path.
         :return: True if the extension is allowed, False otherwise
         """
-        if cls == AnyUrl:  # no check for AnyUrl class
+        if cls is AnyUrl:
             return True
-        mimetype, _ = mimetypes.guess_type(value.split("?")[0])
-        print('mimetype for value', mimetype, value, value.split("?")[0])
+
+        url_parts = value.split("?")
+        mimetype, _ = mimetypes.guess_type(url_parts[0])
         if mimetype and mimetype.startswith(cls.mime_type()):
             return True
-        filename = value.split("?")[0].split('.')
-        if len(filename) > 1:
-            extension = filename[-1]
-            return extension in cls.extra_extensions()
 
-        return False
+        filename = url_parts[0].split('.')
+        extension = filename[-1] if len(filename) > 1 else None
+
+        return extension in cls.extra_extensions()
 
     @classmethod
     def validate(
@@ -98,7 +99,9 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         url = super().validate(abs_path, field, config)  # basic url validation
 
         if not cls.is_extension_allowed(value):
-            raise ValueError(f'file {value} is not a valid file format for class {cls}')
+            raise ValueError(
+                f"The file '{value}' is not in a valid format for class '{cls.__name__}'."
+            )
 
         return cls(str(value if input_is_relative_path else url), scheme=None)
 

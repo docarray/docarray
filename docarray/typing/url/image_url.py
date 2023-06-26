@@ -26,7 +26,10 @@ class ImageUrl(AnyUrl):
 
     @classmethod
     def extra_extensions(cls) -> List[str]:
-        # add only those extensions that can not be identified by the mimetypes library but are valid
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
         return []
 
     def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':

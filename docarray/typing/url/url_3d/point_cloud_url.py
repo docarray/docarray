@@ -5,10 +5,12 @@ from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.url.extra_extensions import POINT_CLOUD_EXTRA_EXTENSIONS
 from docarray.typing.url.url_3d.url_3d import Url3D
 
 if TYPE_CHECKING:
-    from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+    from docarray.documents.point_cloud.points_and_colors import \
+        PointsAndColors
 
 
 T = TypeVar('T', bound='PointCloud3DUrl')
@@ -23,14 +25,11 @@ class PointCloud3DUrl(Url3D):
 
     @classmethod
     def extra_extensions(cls) -> List[str]:
-        # return list of file format for point cloud if mimetypes fail to detect
-        # generated with the help of chatGPT and definitely this list is not exhaustive
-        # bit hacky because of black formatting, making it a long vertical list
-        list_a = ['ascii', 'bin', 'b3dm', 'bpf', 'dp', 'dxf', 'e57', 'fls', 'fls']
-        list_b = ['glb', 'ply', 'gpf', 'las', 'obj', 'osgb', 'pcap', 'pcd', 'pdal']
-        list_c = ['pfm', 'ply', 'ply2', 'pod', 'pods', 'pnts', 'ptg', 'ptx', 'pts']
-        list_d = ['rcp', 'xyz', 'zfs']
-        return list_a + list_b + list_c + list_d
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
+        return POINT_CLOUD_EXTRA_EXTENSIONS
 
     def load(
         self: T,
@@ -75,7 +74,8 @@ class PointCloud3DUrl(Url3D):
 
         :return: np.ndarray representing the point cloud
         """
-        from docarray.documents.point_cloud.points_and_colors import PointsAndColors
+        from docarray.documents.point_cloud.points_and_colors import \
+            PointsAndColors
 
         if not trimesh_args:
             trimesh_args = {}
