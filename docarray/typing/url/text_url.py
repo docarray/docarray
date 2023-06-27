@@ -1,7 +1,8 @@
-from typing import Optional, TypeVar
+from typing import List, Optional, TypeVar
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import TEXT_EXTRA_EXTENSIONS, TEXT_MIMETYPE
 
 T = TypeVar('T', bound='TextUrl')
 
@@ -12,6 +13,18 @@ class TextUrl(AnyUrl):
     URL to a text file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def mime_type(cls) -> str:
+        return TEXT_MIMETYPE
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
+        return TEXT_EXTRA_EXTENSIONS
 
     def load(self, charset: str = 'utf-8', timeout: Optional[float] = None) -> str:
         """

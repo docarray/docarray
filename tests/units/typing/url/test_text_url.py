@@ -6,6 +6,13 @@ from pydantic import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import TextUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from tests import TOYDATA_DIR
 
 REMOTE_TEXT_FILE = 'https://de.wikipedia.org/wiki/Brixen'
@@ -89,3 +96,24 @@ def test_validation(path_to_file):
     url = parse_obj_as(TextUrl, path_to_file)
     assert isinstance(url, TextUrl)
     assert isinstance(url, str)
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        *[(TEXT_MIMETYPE, file) for file in LOCAL_TEXT_FILES],
+        (TEXT_MIMETYPE, REMOTE_TEXT_FILE),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.aac')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != TextUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(TextUrl, file_source)
+    else:
+        parse_obj_as(TextUrl, file_source)
