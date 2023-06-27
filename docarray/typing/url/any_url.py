@@ -57,7 +57,7 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         """
         Check if the file extension of the URL is allowed for this class.
         First, it guesses the mime type of the file. If it fails to detect the
-        mime type, it then checks the extra file extension.
+        mime type, it then checks the extra file extensions.
 
         :param value: The URL or file path.
         :return: True if the extension is allowed, False otherwise
