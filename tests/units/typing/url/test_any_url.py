@@ -49,11 +49,11 @@ def test_get_url_extension():
     assert AnyUrl._get_url_extension('bla.jpg') == 'jpg'
 
     # Test with a URL without extension
-    assert AnyUrl._get_url_extension('https://jina.ai') == None
-    assert AnyUrl._get_url_extension('https://jina.ai/?model=gpt-4') == None
+    assert not AnyUrl._get_url_extension('https://jina.ai')
+    assert not AnyUrl._get_url_extension('https://jina.ai/?model=gpt-4')
 
     # Test with a text without extension
-    assert AnyUrl._get_url_extension('some_text') == None
+    assert not AnyUrl._get_url_extension('some_text')
 
     # Test with empty input
-    assert AnyUrl._get_url_extension('') == None
+    assert not AnyUrl._get_url_extension('')

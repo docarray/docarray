@@ -53,21 +53,21 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         return NodeProto(text=str(self), type=self._proto_type_name)
 
     @staticmethod
-    def _get_url_extension(url):
+    def _get_url_extension(url: str) -> str:
         """
         Extracts and returns the file extension from a given URL.
-        If no file extension is present, the function returns None.
+        If no file extension is present, the function returns an empty string.
 
 
         :param url: The URL to extract the file extension from.
-        :return: The file extension without the period, if one exists, otherwise None.
+        :return: The file extension without the period, if one exists,
+            otherwise an empty string.
         """
 
         parsed_url = urllib.parse.urlparse(url)
-        path = parsed_url.path
-        ext = os.path.splitext(path)[1]
+        ext = os.path.splitext(parsed_url.path)[1]
         ext = ext[1:] if ext.startswith('.') else ext
-        return None if ext == '' else ext
+        return ext
 
     @classmethod
     def is_extension_allowed(cls, value: Any) -> bool:
