@@ -6,6 +6,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -368,4 +369,65 @@
  - [[```e1777144```](https://github.com/jina-ai/docarray/commit/e177714491caaa28dd1990db52ce3359416b8ab0)] __-__ add a better looking issue template (#1623) (*samsja*)
  - [[```692584d6```](https://github.com/jina-ai/docarray/commit/692584d6b8a2b9c1f1d6a869ecf7a0114e7e6c5c)] __-__ simplify find batched (#1598) (*Joan Fontanals*)
  - [[```91350882```](https://github.com/jina-ai/docarray/commit/91350882817cc6ed0f24aa02a6f14e7fe182fb9c)] __-__ __version__: the next version will be 0.32.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-34-0></a>
+## Release Note (`0.34.0`)
+
+> Release time: 2023-06-21 08:15:43
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  Saba Sturua,  samsja,  maxwelljin,  Shukri,  Nikolas Pitsillos,  Joan Fontanals Martinez,  maxwelljin2,  Kacper Łukawski,  Aman Agarwal,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```eb3f8570```](https://github.com/jina-ai/docarray/commit/eb3f8570da5b1e23e21e3fe50ab0a30f136f7940)] __-__ tensor type for protobuf deserialization (#1645) (*Johannes Messner*)
+ - [[```a6fdd80c```](https://github.com/jina-ai/docarray/commit/a6fdd80c69d8c23660113ad240d82167448e39f6)] __-__ sub-document support for indexer (*maxwelljin2*)
+ - [[```78892703```](https://github.com/jina-ai/docarray/commit/788927034da7efc734c2cbc23ba6854dd245c3cb)] __-__ contain func for qdrant (*maxwelljin2*)
+ - [[```74a683c0```](https://github.com/jina-ai/docarray/commit/74a683c04b07872646ccd6f067ae82f44ea7e370)] __-__ contain func for weaviate (*maxwelljin2*)
+ - [[```6ca3aa6e```](https://github.com/jina-ai/docarray/commit/6ca3aa6eb70afc9f23b69ecf1b75b760d43614fa)] __-__ contain func for elastic (*maxwelljin2*)
+ - [[```66b0f716```](https://github.com/jina-ai/docarray/commit/66b0f716a3e3cf92efe40a4346a2ccaf49897a0e)] __-__ check contain in indexer (*maxwelljin2*)
+ - [[```2c123535```](https://github.com/jina-ai/docarray/commit/2c123535c2d150c6f120aad4d58df3cc6798a1c4)] __-__ support subindex on ExactNNSearch (#1617) (*maxwelljin*)
+
+### 🐞 Bug fixes
+
+ - [[```c3c8061f```](https://github.com/jina-ai/docarray/commit/c3c8061f3e22e50fb08404b254660006802f42a0)] __-__ docvec equality if tensors are involved (#1663) (*Johannes Messner*)
+ - [[```0c27fef6```](https://github.com/jina-ai/docarray/commit/0c27fef603970e22dc1010fd2b18aa0af834ef9e)] __-__ bugs when serialize union type (#1655) (*maxwelljin*)
+ - [[```dc96e38a```](https://github.com/jina-ai/docarray/commit/dc96e38a0446d36bb6c7d6f88a9209265032bb3c)] __-__ pass limit as integer (#1657) (*Joan Fontanals*)
+ - [[```7e211a94```](https://github.com/jina-ai/docarray/commit/7e211a940e4a390b059ee9de5acb4afa78c93909)] __-__ pass limit as integer (#1656) (*Joan Fontanals*)
+ - [[```c3db7553```](https://github.com/jina-ai/docarray/commit/c3db75538bb9d70e35b249100b6c9c7372804e4b)] __-__ update text search to match client&#39;s new sig (#1654) (*Shukri*)
+ - [[```4e7e262a```](https://github.com/jina-ai/docarray/commit/4e7e262ab7394becab33cb688a066c6c62dae79c)] __-__ doc vec equality (#1641) (*Nikolas Pitsillos*)
+ - [[```eae44954```](https://github.com/jina-ai/docarray/commit/eae449542c41ef39b853fa1bd3d51ebd77f56e10)] __-__ default column config should be DBConfig and not RuntimeConfig (#1648) (*Joan Fontanals*)
+ - [[```d13c8c45```](https://github.com/jina-ai/docarray/commit/d13c8c450fadf4e5e3094a5b6c843e83c68734a4)] __-__ move default_column_config to DBConfig (*Joan Fontanals Martinez*)
+ - [[```cd3efc6f```](https://github.com/jina-ai/docarray/commit/cd3efc6fbe68f23d1b961ce95f6d62bb26dc8141)] __-__ summary of legacy document (*maxwelljin*)
+ - [[```c13739b8```](https://github.com/jina-ai/docarray/commit/c13739b80532fbcbb1b8257a5e21f08976af160b)] __-__ remove get documents method (*maxwelljin2*)
+ - [[```7c807d4f```](https://github.com/jina-ai/docarray/commit/7c807d4fa8224e1fa90548bbc5e2f44907031d80)] __-__ remove get all documents method (*maxwelljin2*)
+ - [[```00794486```](https://github.com/jina-ai/docarray/commit/00794486336b5bc7a852970b085e11d497de057f)] __-__ mypy issues (*maxwelljin2*)
+ - [[```c8356813```](https://github.com/jina-ai/docarray/commit/c8356813acc81c5b4ce591d9ce2345b713081b08)] __-__ protobuf (de)ser for docvec (#1639) (*Johannes Messner*)
+ - [[```f36c6211```](https://github.com/jina-ai/docarray/commit/f36c621104f64d4e88aeb6673e1a8ba34c3472d1)] __-__ find_and_filter for inmemory (#1642) (*Saba Sturua*)
+ - [[```1abdfce0```](https://github.com/jina-ai/docarray/commit/1abdfce0eca9230bc6f75759c6279f224be23ade)] __-__ legacy document issues (*maxwelljin2*)
+ - [[```b856b0b3```](https://github.com/jina-ai/docarray/commit/b856b0b3f4ccda505acc092bebecfaa00ac3fd83)] __-__ __qdrant__: working with external Qdrant collections #1630 (#1632) (*Kacper Łukawski*)
+ - [[```693f877d```](https://github.com/jina-ai/docarray/commit/693f877d7e1e5921ec69e7dbb4a41f984a14d46d)] __-__ DocList and DocVec are now coerced to each other correctly (#1568) (*Aman Agarwal*)
+ - [[```65afa9a1```](https://github.com/jina-ai/docarray/commit/65afa9a14c6075238aeb95f62620c93ae46aa9ca)] __-__ fix update with tensors (#1628) (*Joan Fontanals*)
+
+### 🧼 Code Refactoring
+
+ - [[```69dc861b```](https://github.com/jina-ai/docarray/commit/69dc861bf857c4f54d4ffc66da5160d570b4bb54)] __-__ implementation of InMemoryExactNNIndex follows DBConfig way (#1649) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```4e6bf49b```](https://github.com/jina-ai/docarray/commit/4e6bf49b82daae82ed25d510dc6d22f9f2e5b473)] __-__ coming from langchain (#1660) (*Saba Sturua*)
+ - [[```e870eb88```](https://github.com/jina-ai/docarray/commit/e870eb8824624f4690edc9a976665d791c5d1135)] __-__ enhance DocVec section (#1658) (*maxwelljin*)
+ - [[```eedd83ce```](https://github.com/jina-ai/docarray/commit/eedd83ce249941493a23bc32fc862ba7353d732c)] __-__ qdrant in memory usage (#1634) (*Saba Sturua*)
+
+### 🍹 Other Improvements
+
+ - [[```dc7b681e```](https://github.com/jina-ai/docarray/commit/dc7b681e1701f41fb500308fbcc154f8d09e3a1f)] __-__ upgrade version to 0.34.0 (#1664) (*Joan Fontanals*)
+ - [[```deb892f1```](https://github.com/jina-ai/docarray/commit/deb892f16200c1180c7a025a11a22f87d7006bec)] __-__ fix link on pypi (#1662) (*samsja*)
+ - [[```7f91e217```](https://github.com/jina-ai/docarray/commit/7f91e21737eacad0d4c7aaaec2445f5eaab3a7f7)] __-__ remove useless file (#1650) (*samsja*)
+ - [[```67a328f4```](https://github.com/jina-ai/docarray/commit/67a328f444777db1f36aa99dbf879e42bd28517a)] __-__ Revert &#34;fix: move default_column_config to DBConfig&#34; (*Joan Fontanals Martinez*)
+ - [[```adc48180```](https://github.com/jina-ai/docarray/commit/adc481807ca02721952501479ce4f2b209c6e62c)] __-__ drop python 3.7 (#1644) (*samsja*)
+ - [[```e66bf106```](https://github.com/jina-ai/docarray/commit/e66bf1060cb020023948498df4f5266c3b23324d)] __-__ __version__: the next version will be 0.33.1 (*Jina Dev Bot*)
 

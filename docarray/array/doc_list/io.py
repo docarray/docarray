@@ -557,7 +557,7 @@ class IOMixinArray(Iterable[T_doc]):
         # Binary format for streaming case
 
         # V2 DocList streaming serialization format
-        # | 1 byte | 8 bytes | 4 bytes | variable(docarray v2) | 4 bytes | variable(docarray v2) ...
+        # | 1 byte | 8 bytes | 4 bytes | variable(DocArray >=0.30) | 4 bytes | variable(DocArray >=0.30) ...
 
         # 1 byte (uint8)
         version_byte = b'\x02'

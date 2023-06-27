@@ -5,7 +5,7 @@ repo_name: docarray/docarray
 repo_url: https://github.com/docarray/docarray
 edit_uri: ''
 theme:
-  logo: assets/logo-light.svg
+  logo: assets/docarray-dark.svg
 
   favicon: assets/favicon.png
   name: material
