@@ -36,7 +36,8 @@ IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 UNUSABLE_ERROR_MSG = (
     'This {cls} instance is in an unusable state. \n'
     'The most common cause of this is converting a DocVec to a DocList. '
-    'After you call `doc_vec.to_doc_list()`, `doc_vec` cannot be used anymore.'
+    'After you call `doc_vec.to_doc_list()`, `doc_vec` cannot be used anymore. '
+    'Instead, you should do `doc_list = doc_vec.to_doc_list()` and only use `doc_list`.'
 )
 
 
