@@ -23,13 +23,23 @@ from docarray.typing import AnyTensor
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    import_library,
+    is_tf_available,
+    is_torch_available,
+)
 from docarray.utils.find import _FindResult, _FindResultBatched
+
+torch_available, tf_available = is_torch_available(), is_tf_available()
+
+if torch_available:
+    import torch
+
+if tf_available:
+    import tensorflow as tf  # type: ignore
 
 if TYPE_CHECKING:
     import numpy as np
-    import tensorflow as tf  # type: ignore
-    import torch
     from pymilvus import (
         Collection,
         CollectionSchema,
@@ -40,8 +50,6 @@ if TYPE_CHECKING:
     )
 else:
     hnswlib = import_library('hnswlib', raise_error=True)
-    torch = import_library('torch', raise_error=False)
-    tf = import_library('tensorflow', raise_error=False)
     np = import_library('numpy', raise_error=False)
     from pymilvus import (
         Collection,
@@ -83,6 +91,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
         collection_name: str = None
+        collection_description: str = ""
         host: str = "localhost"
         port: int = 19530
         user: Optional[str] = ""
@@ -92,6 +101,14 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_type: str = "IVF_FLAT"
         index_metric: str = "L2"
         index_params: Dict = field(default_factory=lambda: {"nlist": 1024})
+        search_params: Dict = field(
+            default_factory=lambda: {
+                "metric_type": "L2",
+                "params": {"nprobe": 10},
+                "offset": 5,
+            }
+        )
+        serialize_config: Dict = field(default_factory=lambda: {"protocol": "protobuf"})
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(dict)
         )
@@ -119,24 +136,28 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _init_index(self) -> Collection:
         if not utility.has_collection(self._db_config.collection_name):
-            print(self._db_config.collection_name)
             fields = [
                 FieldSchema(
+                    name="serialized",
+                    dtype=DataType.VARCHAR,
+                    max_length=SERIALIZED_VARCHAR_LEN,
+                ),
+                FieldSchema(
                     name="id",
-                    dtype=DataType.INT64,
+                    dtype=DataType.VARCHAR,
                     is_primary=True,
-                    auto_id=True,
-                )
+                    max_length=256,
+                ),
             ]  # Initiliaze the id
             fields.extend(
                 [
                     FieldSchema(
-                        name="doc_id" if column_name == "id" else column_name,
-                        dtype=DataType.VARCHAR if column_name == "id" else info.db_type,
+                        name=column_name,
+                        dtype=info.db_type,
                         is_primary=False,
                         **(
                             {'max_length': 256}
-                            if info.db_type == DataType.VARCHAR or column_name == "id"
+                            if info.db_type == DataType.VARCHAR
                             else {}
                         ),
                         **(
@@ -146,6 +167,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                         ),
                     )
                     for column_name, info in self._column_infos.items()
+                    if column_name != "id"
                 ]
             )
             self._logger.info("Collection has been created")
@@ -153,7 +175,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 name=self._db_config.collection_name,
                 schema=CollectionSchema(
                     fields=fields,
-                    description="Collection Schema",
+                    description=self._db_config.collection_description,
                 ),
                 using='default',
             )
@@ -219,14 +241,15 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
 
         docs = self._validate_docs(docs)
-        entities = [[] for _ in range(len(self._column_infos.items()))]
+        entities = [[] for _ in range(len(self._column_infos.items()) + 1)]
 
         for i in range(len(docs)):
+            entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
             for j, (column_name, info) in enumerate(self._column_infos.items()):
                 column_value = docs[i].__getattr__(column_name)
                 if isinstance(column_value, (tf.Tensor, torch.Tensor, np.ndarray)):
                     column_value = self._convert_to_vector(column_value)
-                entities[j].append(column_value)
+                entities[j + 1].append(column_value)
 
         self._collection.insert(entities)
         self._collection.flush()
@@ -242,6 +265,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param column_value: The column value to be converted.
         :return: The converted float vector.
         """
+        if type(column_value) is list:
+            return column_value
+
         if len(column_value.shape) != 1:
             raise ValueError(
                 'Unsupported: Milvus backend only supports one-dimensional vectors'
@@ -249,9 +275,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if isinstance(column_value, np.ndarray):
             return column_value.astype(float).tolist()
-        elif torch.is_tensor(column_value):
+        elif torch_available and torch.is_tensor(column_value):
             return column_value.float().numpy().tolist()
-        elif tf.is_tensor(column_value):
+        elif tf_available and tf.is_tensor(column_value):
             return column_value.numpy().astype(float).tolist()
 
     def num_docs(self) -> int:
@@ -262,18 +288,22 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
         self._collection.load()
         ret = self._collection.query(
-            expr="doc_id in " + str([id for id in doc_ids]),
+            expr="id in " + str([id for id in doc_ids]),
             offset=0,
             limit=self.num_docs(),
-            output_fields=[
-                column_name for column_name, _ in self._column_infos.items()
-            ],
+            output_fields=["serialized"],
         )
 
-        return DocList[self._schema]([self._schema(**ret[i]) for i in range(len(ret))])
+        return [
+            self._schema.from_base64(
+                ret[i]["serialized"], **self._db_config.serialize_config
+            )
+            for i in range(len(ret))
+        ]
 
     def _del_items(self, doc_ids: Sequence[str]):
-        ...
+        self._collection.delete(expr="id in " + str([id for id in doc_ids]))
+        self._logger.info(f"{len(doc_ids)} documents has been deleted")
 
     def _filter(
         self,
@@ -314,7 +344,32 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-        ...
+        self._collection.load()
+
+        results = self._collection.search(
+            data=self._convert_to_vector(query),
+            anns_field=search_field,
+            param=self._db_config.search_params,
+            limit=limit,
+            expr=None,
+            output_fields=["serialized"],
+            consistency_level="Strong",
+        )
+
+        self._collection.release()
+        results = next(iter(results), None)  # Only consider the first element
+
+        return _FindResult(
+            documents=DocList[self._schema](
+                [
+                    self._schema.from_base64(
+                        hit.entity.get('serialized'), **self._db_config.serialize_config
+                    )
+                    for hit in results
+                ]
+            ),
+            scores=[hit.score for hit in results],
+        )
 
     def _find_batched(
         self,
