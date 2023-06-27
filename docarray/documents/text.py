@@ -93,8 +93,8 @@ class TextDoc(BaseDoc):
     ```python
     from docarray.documents import TextDoc
 
-    doc = TextDoc(text='This is the main text', url='exampleurl.com')
-    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')
+    doc = TextDoc(text='This is the main text', url='exampleurl.com/file')
+    doc2 = TextDoc(text='This is the main text', url='exampleurl.com/file')
 
     doc == 'This is the main text'  # True
     doc == doc2  # True
