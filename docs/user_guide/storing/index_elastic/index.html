@@ -1,0 +1,2543 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DocArray, DocArray is a library for representing, sending and storing multi-modal data, with a focus on applications in ML and Neural Search.">
+      
+      
+      
+        <link rel="canonical" href="https://docs.docarray.org/user_guide/storing/index_elastic/">
+      
+      
+        <link rel="prev" href="../index_weaviate/">
+      
+      
+        <link rel="next" href="../index_qdrant/">
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+    
+    
+      
+        <title>Elasticsearch Document Index - DocArray</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.c4a75a56.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a0c5b2b5.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-HTTNBRW3Z2"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-HTTNBRW3Z2",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-HTTNBRW3Z2",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#elasticsearch-document-index" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="DocArray" class="md-header__button md-logo" aria-label="DocArray" data-md-component="logo">
+      
+  <img src="../../../assets/docarray-dark.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DocArray
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Elasticsearch Document Index
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+            </label>
+          
+        
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/docarray/docarray" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    docarray/docarray
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="DocArray" class="md-nav__button md-logo" aria-label="DocArray" data-md-component="logo">
+      
+  <img src="../../../assets/docarray-dark.svg" alt="logo">
+
+    </a>
+    DocArray
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/docarray/docarray" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    docarray/docarray
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        DocArray
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          User Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          User Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          Representing data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Representing data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../representing/first_step/" class="md-nav__link">
+        Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../representing/array/" class="md-nav__link">
+        Array of documents
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+          Sending data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Sending data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sending/first_step/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sending/serialization/" class="md-nav__link">
+        Serialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sending/api/jina/" class="md-nav__link">
+        Send over Jina
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sending/api/fastAPI/" class="md-nav__link">
+        Send over FastAPI
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+          Storing data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Storing data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../first_step/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" checked>
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+          DocIndex - Vector search
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          DocIndex - Vector search
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docindex/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_in_memory/" class="md-nav__link">
+        In-Memory Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_hnswlib/" class="md-nav__link">
+        Hnswlib Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_weaviate/" class="md-nav__link">
+        Weaviate Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Elasticsearch Document Index
+      </a>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_qdrant/" class="md-nav__link">
+        Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_3" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
+          DocStore - Bulk storage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          DocStore - Bulk storage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc_store/store_file/" class="md-nav__link">
+        Store on-disk
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc_store/store_jac/" class="md-nav__link">
+        Store on Jina AI Cloud
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc_store/store_s3/" class="md-nav__link">
+        Store on S3
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          How-to
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          How-to
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how_to/add_doc_index/" class="md-nav__link">
+        Add a new Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how_to/multimodal_training_and_serving/" class="md-nav__link">
+        Multimodal deep learning with DocArray
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how_to/optimize_performance_with_id_generation/" class="md-nav__link">
+        Optimize performance
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          Data Types
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Data Types
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/first_steps/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/text/text/" class="md-nav__link">
+        🔤 Text
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/image/image/" class="md-nav__link">
+        🖼️ Image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/audio/audio/" class="md-nav__link">
+        🔊 Audio
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/video/video/" class="md-nav__link">
+        🎥 Video
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/3d_mesh/3d_mesh/" class="md-nav__link">
+        🧬 3D Mesh
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/table/table/" class="md-nav__link">
+        📊 Table
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/multimodal/multimodal/" class="md-nav__link">
+        🗃 Multimodal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data_types/tensor/tensor/" class="md-nav__link">
+        🔢 Tensor
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../migration_guide/" class="md-nav__link">
+        Migration guide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          API reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+          Array
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          Array
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/array/any_da/" class="md-nav__link">
+        AnyDocArray
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/array/da/" class="md-nav__link">
+        DocList
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/array/da_stack/" class="md-nav__link">
+        DocVec
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+          Base doc
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          Base doc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/base_doc/base_doc/" class="md-nav__link">
+        BaseDoc
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          Data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/data/data/" class="md-nav__link">
+        TorchDataset
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+          Doc index
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          Doc index
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/doc_index/" class="md-nav__link">
+        DocIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4_2" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+          Backends
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_4_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Backends
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/elastic/" class="md-nav__link">
+        ElasticDocIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/elastic7/" class="md-nav__link">
+        ElasticV7DocIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/hnswlib/" class="md-nav__link">
+        HnswDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/in_memory/" class="md-nav__link">
+        In memory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/qdrant/" class="md-nav__link">
+        QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/weaviate/" class="md-nav__link">
+        WeaviateDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_5" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+          Doc store
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          Doc store
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_store/doc_store/" class="md-nav__link">
+        DocStore
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
+        FileDocStore
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
+        JACDocStore
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_store/s3_doc_store/" class="md-nav__link">
+        S3DocStore
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_6" >
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+          Documents
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          Documents
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/documents/documents/" class="md-nav__link">
+        Documents
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_7" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" id="__nav_6_7_label" tabindex="0">
+          Typing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_7_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          Typing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/bytes/" class="md-nav__link">
+        Bytes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/id/" class="md-nav__link">
+        Id
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/url/" class="md-nav__link">
+        Url
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_7_4" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_7_4" id="__nav_6_7_4_label" tabindex="0">
+          Tensor
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_7_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_7_4">
+          <span class="md-nav__icon md-icon"></span>
+          Tensor
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/tensor/audio/" class="md-nav__link">
+        AudioTensor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/tensor/embedding/" class="md-nav__link">
+        Embedding
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/tensor/image/" class="md-nav__link">
+        ImageTensor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/tensor/tensor/" class="md-nav__link">
+        Tensor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/typing/tensor/video/" class="md-nav__link">
+        VideoTensor
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+          Utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          Utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/utils/filter/" class="md-nav__link">
+        filter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/utils/find/" class="md-nav__link">
+        find
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/utils/maps_docs/" class="md-nav__link">
+        map
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/utils/reduce/" class="md-nav__link">
+        reduce
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../glossary/" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../CONTRIBUTING/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<div><h1 id="elasticsearch-document-index">Elasticsearch Document Index</h1>
+<p>DocArray comes with two Document Indexes for <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>:</p>
+<ul>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, based on <a href="https://github.com/elastic/elasticsearch">Elasticsearch 8</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, based on <a href="https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0">Elasticsearch 7.10</a>.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Should you use ES v7 or v8?</p>
+<p><a href="https://www.elastic.co/blog/whats-new-elastic-8-0-0">Elasticsearch v8</a> is the current version of ES and offers
+<strong>native vector search (ANN) support</strong>, alongside text and range search.</p>
+<p><a href="https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-0">Elasticsearch v7.10</a> can store vectors, but
+<strong>does <em>not</em> support native ANN vector search</strong>, but only exhaustive (i.e. slow) vector search, alongside text and range search.</p>
+<p>Some users prefer to use ES v7.10 because it is available under a <a href="https://www.elastic.co/pricing/faq/licensing">different license</a> to ES v8.0.0.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Installation</p>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>, you need to install the following dependencies:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">pip install elasticsearch==8.6.2</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">pip install elastic-transport</span>
+</span></code></pre></div>
+<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>, you need to install the following dependencies:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">pip install elasticsearch==7.10.1</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">pip install elastic-transport</span>
+</span></code></pre></div>
+</div>
+<p>The following example is based on <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a>,
+but will also work for <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a>.</p>
+<h1 id="start-elasticsearch">Start Elasticsearch</h1>
+<p>You can use docker-compose to create a local Elasticsearch service with the following <code>docker-compose.yml</code>.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">"3.3"</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">elastic</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.elastic.co/elasticsearch/elasticsearch:8.6.2</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xpack.security.enabled=false</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">discovery.type=single-node</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ES_JAVA_OPTS=-Xmx1024m</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"9200:9200"</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="nt">networks</span><span class="p">:</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elastic</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="nt">networks</span><span class="p">:</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="nt">elastic</span><span class="p">:</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elastic</span>
+</span></code></pre></div>
+<p>Run the following command in the folder of the above <code>docker-compose.yml</code> to start the service:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker-compose<span class="w"> </span>up
+</span></code></pre></div>
+<h2 id="construct">Construct</h2>
+<p>To construct an index, you first need to define a schema in the form of a <code>Document</code>.</p>
+<p>There are a number of configurations you can pack into your schema:</p>
+<ul>
+<li>Every field in your schema will become one column in the database</li>
+<li>For vector fields, such as <code>NdArray</code>, <code>TorchTensor</code>, or <code>TensorflowTensor</code>, you need to specify a dimensionality to be able to perform vector search</li>
+<li>You can override the default column type for every field by passing any <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping-types.html">ES field data type</a> to <code>field_name: Type = Field(col_type=...)</code>. You can see an example of this in the <a href="#keyword-filter">section on keyword filters</a>.</li>
+</ul>
+<p>Additionally, you can pass a <code>hosts</code> argument to the <code>__init__()</code> method to connect to an ES instance.
+By default, it is <code>http://localhost:9200</code>. </p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">ElasticDocIndex</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="c1"># specify tensor field with dimensionality 128</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="c1"># alternative and equivalent definition:</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="c1"># tensor: NdArray = Field(dims=128)</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span><span class="n">hosts</span><span class="o">=</span><span class="s1">'http://localhost:9200'</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="index-documents">Index documents</h2>
+<p>Use <code>.index()</code> to add documents into the index.
+The<code>.num_docs()</code> method returns the total number of documents in the index.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">64</span><span class="p">)]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'number of docs in the index: </span><span class="si">{</span><span class="n">doc_index</span><span class="o">.</span><span class="n">num_docs</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="access-documents">Access documents</h2>
+<p>To access the <code>Doc</code>, you need to specify the <code>id</code>. You can also pass a list of <code>id</code> to access multiple documents.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># access a single Doc</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">doc_index</span><span class="p">[</span><span class="n">index_docs</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># access multiple Docs</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">doc_index</span><span class="p">[</span><span class="n">index_docs</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">index_docs</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+</span></code></pre></div>
+<h3 id="persistence">Persistence</h3>
+<p>You can hook into a database index that was persisted during a previous session.
+To do so, you need to specify <code>index_name</code> and the <code>hosts</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">hosts</span><span class="o">=</span><span class="s1">'http://localhost:9200'</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s1">'previously_stored'</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">doc_index2</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">hosts</span><span class="o">=</span><span class="s1">'http://localhost:9200'</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s1">'previously_stored'</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'number of docs in the persisted index: </span><span class="si">{</span><span class="n">doc_index2</span><span class="o">.</span><span class="n">num_docs</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="delete-documents">Delete documents</h2>
+<p>To delete the documents, use the built-in function <code>del</code> with the <code>id</code> of the Documents that you want to delete.
+You can also pass a list of <code>id</code>s to delete multiple documents.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># delete a single Doc</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">del</span> <span class="n">doc_index</span><span class="p">[</span><span class="n">index_docs</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># delete multiple Docs</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">del</span> <span class="n">doc_index</span><span class="p">[</span><span class="n">index_docs</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">index_docs</span><span class="p">[</span><span class="mi">18</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+</span></code></pre></div>
+<h2 id="find-nearest-neighbors">Find nearest neighbors</h2>
+<p>The <code>.find()</code> method is used to find the nearest neighbors of a vector.</p>
+<p>You need to specify the <code>search_field</code> that is used when performing the vector search.
+This is the field that serves as the basis of comparison between your query and indexed Documents.</p>
+<p>You can use the <code>limit</code> argument to configure how many documents to return.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic7/#docarray.index.backends.elasticv7.ElasticV7DocIndex">ElasticV7DocIndex</a> uses Elasticsearch v7.10.1, which does not support approximate nearest neighbour algorithms such as HNSW.
+This can lead to poor performance when the search involves many vectors.
+<a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/elastic/#docarray.index.backends.elastic.ElasticDocIndex">ElasticDocIndex</a> does not have this limitation.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">query</span> <span class="o">=</span> <span class="n">SimpleDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor'</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="nested-data">Nested data</h2>
+<p>When using the index you can define multiple fields, including nesting documents inside another document.</p>
+<p>Consider the following example:</p>
+<ul>
+<li>You have <code>YouTubeVideoDoc</code> including the <code>tensor</code> field calculated based on the description.</li>
+<li><code>YouTubeVideoDoc</code> has <code>thumbnail</code> and <code>video</code> fields, each with their own <code>tensor</code>.</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">ImageUrl</span><span class="p">,</span> <span class="n">VideoUrl</span><span class="p">,</span> <span class="n">AnyTensor</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">ImageUrl</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="k">class</span> <span class="nc">VideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">VideoUrl</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="k">class</span> <span class="nc">YouTubeVideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="n">thumbnail</span><span class="p">:</span> <span class="n">ImageDoc</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="n">video</span><span class="p">:</span> <span class="n">VideoDoc</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">YouTubeVideoDoc</span><span class="p">]()</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>    <span class="n">YouTubeVideoDoc</span><span class="p">(</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">'video </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>        <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'this is video from author </span><span class="si">{</span><span class="mi">10</span><span class="o">*</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>        <span class="n">thumbnail</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>        <span class="n">video</span><span class="o">=</span><span class="n">VideoDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>        <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>    <span class="p">)</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="p">]</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>You can perform search on any nesting level</strong> by using the dunder operator to specify the field defined in the nested data.</p>
+<p>In the following example, you can see how to perform vector search on the <code>tensor</code> field of the <code>YouTubeVideoDoc</code> or the <code>tensor</code> field of the <code>thumbnail</code> and <code>video</code> field:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># example of find nested and flat index</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">query_doc</span> <span class="o">=</span> <span class="n">YouTubeVideoDoc</span><span class="p">(</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">'video query'</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'this is a query video'</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">thumbnail</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/1024'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">video</span><span class="o">=</span><span class="n">VideoDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/1024'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p">)</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># find by the youtubevideo tensor</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="c1"># find by the thumbnail tensor</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'thumbnail__tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="c1"># find by the video tensor</span>
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'video__tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span></code></pre></div>
+<p>To delete a nested data, you need to specify the <code>id</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can only delete <code>Doc</code> at the top level. Deletion of <code>Doc</code>s on lower levels is not yet supported.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># example of delete nested and flat index</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">del</span> <span class="n">doc_index</span><span class="p">[</span><span class="n">index_docs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">index_docs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+</span></code></pre></div>
+<h3 id="nested-data-with-subindex">Nested data with subindex</h3>
+<p>In the following example you can see a complex schema that contains nested Documents with subindex.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">ImageUrl</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">tensor_image</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">class</span> <span class="nc">VideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">VideoUrl</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">images</span><span class="p">:</span> <span class="n">DocList</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">]</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">tensor_video</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="n">docs</span><span class="p">:</span> <span class="n">DocList</span><span class="p">[</span><span class="n">VideoDoc</span><span class="p">]</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="c1"># create a Document Index</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">index_name</span><span class="o">=</span><span class="s1">'subindex'</span><span class="p">)</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="c1"># create some data</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>    <span class="n">MyDoc</span><span class="p">(</span>
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>        <span class="n">docs</span><span class="o">=</span><span class="n">DocList</span><span class="p">[</span><span class="n">VideoDoc</span><span class="p">](</span>
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>            <span class="p">[</span>
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>                <span class="n">VideoDoc</span><span class="p">(</span>
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>                    <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a>                    <span class="n">images</span><span class="o">=</span><span class="n">DocList</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">](</span>
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a>                        <span class="p">[</span>
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>                            <span class="n">ImageDoc</span><span class="p">(</span>
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a>                                <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a>                                <span class="n">tensor_image</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>                            <span class="p">)</span>
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>                        <span class="p">]</span>
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a>                    <span class="p">),</span>
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a>                    <span class="n">tensor_video</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+</span><span id="__span-13-37"><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a>                <span class="p">)</span>
+</span><span id="__span-13-38"><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a>                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-13-39"><a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a>            <span class="p">]</span>
+</span><span id="__span-13-40"><a id="__codelineno-13-40" name="__codelineno-13-40" href="#__codelineno-13-40"></a>        <span class="p">),</span>
+</span><span id="__span-13-41"><a id="__codelineno-13-41" name="__codelineno-13-41" href="#__codelineno-13-41"></a>        <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
+</span><span id="__span-13-42"><a id="__codelineno-13-42" name="__codelineno-13-42" href="#__codelineno-13-42"></a>    <span class="p">)</span>
+</span><span id="__span-13-43"><a id="__codelineno-13-43" name="__codelineno-13-43" href="#__codelineno-13-43"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-13-44"><a id="__codelineno-13-44" name="__codelineno-13-44" href="#__codelineno-13-44"></a><span class="p">]</span>
+</span><span id="__span-13-45"><a id="__codelineno-13-45" name="__codelineno-13-45" href="#__codelineno-13-45"></a>
+</span><span id="__span-13-46"><a id="__codelineno-13-46" name="__codelineno-13-46" href="#__codelineno-13-46"></a><span class="c1"># index the Documents</span>
+</span><span id="__span-13-47"><a id="__codelineno-13-47" name="__codelineno-13-47" href="#__codelineno-13-47"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-13-48"><a id="__codelineno-13-48" name="__codelineno-13-48" href="#__codelineno-13-48"></a>
+</span><span id="__span-13-49"><a id="__codelineno-13-49" name="__codelineno-13-49" href="#__codelineno-13-49"></a><span class="c1"># find by the `VideoDoc` tensor</span>
+</span><span id="__span-13-50"><a id="__codelineno-13-50" name="__codelineno-13-50" href="#__codelineno-13-50"></a><span class="n">root_docs</span><span class="p">,</span> <span class="n">sub_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find_subindex</span><span class="p">(</span>
+</span><span id="__span-13-51"><a id="__codelineno-13-51" name="__codelineno-13-51" href="#__codelineno-13-51"></a>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">subindex</span><span class="o">=</span><span class="s1">'docs'</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor_video'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span>
+</span><span id="__span-13-52"><a id="__codelineno-13-52" name="__codelineno-13-52" href="#__codelineno-13-52"></a><span class="p">)</span>
+</span><span id="__span-13-53"><a id="__codelineno-13-53" name="__codelineno-13-53" href="#__codelineno-13-53"></a>
+</span><span id="__span-13-54"><a id="__codelineno-13-54" name="__codelineno-13-54" href="#__codelineno-13-54"></a><span class="c1"># find by the `ImageDoc` tensor</span>
+</span><span id="__span-13-55"><a id="__codelineno-13-55" name="__codelineno-13-55" href="#__codelineno-13-55"></a><span class="n">root_docs</span><span class="p">,</span> <span class="n">sub_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find_subindex</span><span class="p">(</span>
+</span><span id="__span-13-56"><a id="__codelineno-13-56" name="__codelineno-13-56" href="#__codelineno-13-56"></a>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">subindex</span><span class="o">=</span><span class="s1">'docs__images'</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor_image'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span>
+</span><span id="__span-13-57"><a id="__codelineno-13-57" name="__codelineno-13-57" href="#__codelineno-13-57"></a><span class="p">)</span>  <span class="c1"># return both root and subindex docs</span>
+</span><span id="__span-13-58"><a id="__codelineno-13-58" name="__codelineno-13-58" href="#__codelineno-13-58"></a>
+</span><span id="__span-13-59"><a id="__codelineno-13-59" name="__codelineno-13-59" href="#__codelineno-13-59"></a><span class="c1"># filter on subindex level</span>
+</span><span id="__span-13-60"><a id="__codelineno-13-60" name="__codelineno-13-60" href="#__codelineno-13-60"></a><span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'match'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'url'</span><span class="p">:</span> <span class="s1">'http://example.ai/images/0-0-0'</span><span class="p">}}</span>
+</span><span id="__span-13-61"><a id="__codelineno-13-61" name="__codelineno-13-61" href="#__codelineno-13-61"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">filter_subindex</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">subindex</span><span class="o">=</span><span class="s1">'docs__images'</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="other-elasticsearch-queries">Other Elasticsearch queries</h2>
+<p>Besides vector search, you can also perform other queries supported by Elasticsearch, such as text search, and various filters.</p>
+<h3 id="text-search">Text search</h3>
+<p>As in "pure" Elasticsearch, you can use text search directly on the field of type <code>str</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">class</span> <span class="nc">NewsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">NewsDoc</span><span class="p">]()</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'0'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is a news for sport'</span><span class="p">),</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is a news for finance'</span><span class="p">),</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'2'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is another news for sport'</span><span class="p">),</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="p">]</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">query</span> <span class="o">=</span> <span class="s1">'finance'</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="c1"># search with text</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">text_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'text'</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="query-filter">Query Filter</h3>
+<p>The <code>filter()</code> method accepts queries that follow the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">Elasticsearch Query DSL</a> and consists of leaf and compound clauses.</p>
+<p>Using this, you can perform <a href="#keyword-filter">keyword filters</a>, <a href="#geolocation-filter">geolocation filters</a> and <a href="#range-filter">range filters</a>.</p>
+<h4 id="keyword-filter">Keyword filter</h4>
+<p>To filter documents in your index by keyword, you can use <code>Field(col_type='keyword')</code> to enable keyword search for given fields:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">class</span> <span class="nc">NewsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">col_type</span><span class="o">=</span><span class="s1">'keyword'</span><span class="p">)</span>  <span class="c1"># enable keyword filtering</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">NewsDoc</span><span class="p">]()</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'0'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is a news for sport'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">'sport'</span><span class="p">),</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is a news for finance'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">'finance'</span><span class="p">),</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'2'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">'this is another news for sport'</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">'sport'</span><span class="p">),</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="p">]</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="c1"># search with filer</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="n">query_filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'terms'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'sport'</span><span class="p">]}}</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">query_filter</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="geolocation-filter">Geolocation filter</h4>
+<p>To filter documents in your index by geolocation, you can use <code>Field(col_type='geo_point')</code> on a given field:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">class</span> <span class="nc">NewsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">location</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">col_type</span><span class="o">=</span><span class="s1">'geo_point'</span><span class="p">)</span>  <span class="c1"># enable geolocation filtering</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">NewsDoc</span><span class="p">]()</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'this is from Berlin'</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="p">{</span><span class="s1">'lon'</span><span class="p">:</span> <span class="mf">13.24</span><span class="p">,</span> <span class="s1">'lat'</span><span class="p">:</span> <span class="mf">50.31</span><span class="p">}),</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'this is from Beijing'</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="p">{</span><span class="s1">'lon'</span><span class="p">:</span> <span class="mf">116.22</span><span class="p">,</span> <span class="s1">'lat'</span><span class="p">:</span> <span class="mf">39.55</span><span class="p">}),</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'this is from San Jose'</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="p">{</span><span class="s1">'lon'</span><span class="p">:</span> <span class="o">-</span><span class="mf">121.89</span><span class="p">,</span> <span class="s1">'lat'</span><span class="p">:</span> <span class="mf">37.34</span><span class="p">}),</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="p">]</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="c1"># filter the eastern hemisphere</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="s1">'bool'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>        <span class="s1">'filter'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>            <span class="s1">'geo_bounding_box'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>                <span class="s1">'location'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>                    <span class="s1">'top_left'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'lon'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'lat'</span><span class="p">:</span> <span class="mi">90</span><span class="p">},</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>                    <span class="s1">'bottom_right'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'lon'</span><span class="p">:</span> <span class="mi">180</span><span class="p">,</span> <span class="s1">'lat'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>                <span class="p">}</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>            <span class="p">}</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>        <span class="p">}</span>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>    <span class="p">}</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="p">}</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="range-filter">Range filter</h4>
+<p>You can have <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html">range field types</a> in your document schema and set <code>Field(col_type='integer_range')</code>(or also <code>date_range</code>, etc.) to filter documents based on the range of the field. </p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">class</span> <span class="nc">NewsDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">time_frame</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>        <span class="n">col_type</span><span class="o">=</span><span class="s1">'date_range'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'yyyy-MM-dd'</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="p">)</span>  <span class="c1"># enable range filtering</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">NewsDoc</span><span class="p">]()</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">time_frame</span><span class="o">=</span><span class="p">{</span><span class="s1">'gte'</span><span class="p">:</span> <span class="s1">'2023-01-01'</span><span class="p">,</span> <span class="s1">'lt'</span><span class="p">:</span> <span class="s1">'2023-02-01'</span><span class="p">}),</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">time_frame</span><span class="o">=</span><span class="p">{</span><span class="s1">'gte'</span><span class="p">:</span> <span class="s1">'2023-02-01'</span><span class="p">,</span> <span class="s1">'lt'</span><span class="p">:</span> <span class="s1">'2023-03-01'</span><span class="p">}),</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>    <span class="n">NewsDoc</span><span class="p">(</span><span class="n">time_frame</span><span class="o">=</span><span class="p">{</span><span class="s1">'gte'</span><span class="p">:</span> <span class="s1">'2023-03-01'</span><span class="p">,</span> <span class="s1">'lt'</span><span class="p">:</span> <span class="s1">'2023-04-01'</span><span class="p">}),</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="p">]</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>    <span class="s1">'bool'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>        <span class="s1">'filter'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>            <span class="s1">'range'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>                <span class="s1">'time_frame'</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>                    <span class="s1">'gte'</span><span class="p">:</span> <span class="s1">'2023-02-05'</span><span class="p">,</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>                    <span class="s1">'lt'</span><span class="p">:</span> <span class="s1">'2023-02-10'</span><span class="p">,</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>                    <span class="s1">'relation'</span><span class="p">:</span> <span class="s1">'contains'</span><span class="p">,</span>
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a>                <span class="p">}</span>
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>            <span class="p">}</span>
+</span><span id="__span-17-25"><a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a>        <span class="p">}</span>
+</span><span id="__span-17-26"><a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a>    <span class="p">}</span>
+</span><span id="__span-17-27"><a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="p">}</span>
+</span><span id="__span-17-28"><a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a>
+</span><span id="__span-17-29"><a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="hybrid-serach-and-query-builder">Hybrid serach and query builder</h3>
+<p>To combine any of the "atomic" search approaches above, you can use the <code>QueryBuilder</code> to build your own hybrid query. </p>
+<p>For this the <code>find()</code>, <code>filter()</code> and <code>text_search()</code> methods and their combination are supported.</p>
+<p>For example, you can build a hybrid serach query that performs range filtering, vector search and text search:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="n">tens</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'l2_norm'</span><span class="p">)</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">]()</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tens</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'text </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="p">]</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="n">doc_index</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>    <span class="o">.</span><span class="n">filter</span><span class="p">({</span><span class="s1">'range'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'num'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'lte'</span><span class="p">:</span> <span class="mi">3</span><span class="p">}}})</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>    <span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">index_docs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tens'</span><span class="p">)</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>    <span class="o">.</span><span class="n">text_search</span><span class="p">(</span><span class="s1">'0'</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'text'</span><span class="p">)</span>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>    <span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="p">)</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="n">docs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</span></code></pre></div>
+<p>You can also manually build a valid ES query and directly pass it to the <code>execute_query()</code> method.</p>
+<h2 id="configuration-options">Configuration options</h2>
+<h3 id="dbconfig">DBConfig</h3>
+<p>The following configs can be set in <code>DBConfig</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hosts</code></td>
+<td>Hostname of the Elasticsearch server</td>
+<td><code>http://localhost:9200</code></td>
+</tr>
+<tr>
+<td><code>es_config</code></td>
+<td>Other ES <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html">configuration options</a> in a Dict and pass to <code>Elasticsearch</code> client constructor, e.g. <code>cloud_id</code>, <code>api_key</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>index_name</code></td>
+<td>Elasticsearch index name, the name of Elasticsearch index object</td>
+<td>None. Data will be stored in an index named after the Document type used as schema.</td>
+</tr>
+<tr>
+<td><code>index_settings</code></td>
+<td>Other <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings">index settings</a> in a Dict for creating the index</td>
+<td>dict</td>
+</tr>
+<tr>
+<td><code>index_mappings</code></td>
+<td>Other <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html">index mappings</a> in a Dict for creating the index</td>
+<td>dict</td>
+</tr>
+<tr>
+<td><code>default_column_config</code></td>
+<td>The default configurations for every column type.</td>
+<td>dict</td>
+</tr>
+</tbody>
+</table>
+<p>You can pass any of the above as keyword arguments to the <code>__init__()</code> method or pass an entire configuration object.
+See <a href="../docindex/#configuration-options#customize-configurations">here</a> for more information.</p>
+<p><code>default_column_config</code> is the default configurations for every column type. Since there are many column types in Elasticsearch, you can also consider changing the column config when defining the schema.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">similarity</span><span class="o">=</span><span class="s1">'l2_norm'</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_candidates</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
+</span></code></pre></div>
+<h3 id="runtimeconfig">RuntimeConfig</h3>
+<p>The <code>RuntimeConfig</code> dataclass of <code>ElasticDocIndex</code> consists of <code>chunk_size</code>. You can change <code>chunk_size</code> for batch operations:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]()</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">ElasticDocIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
+</span></code></pre></div>
+<p>You can pass the above as keyword arguments to the <code>configure()</code> method or pass an entire configuration object.
+See <a href="../docindex/#configuration-options#customize-configurations">here</a> for more information.</p></div>
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/docarray/docarray" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.com/invite/WaMp6PVPgR" target="_blank" rel="noopener" title="discord.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541ZM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241Zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/docarray" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.indexes", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      
+    
+  </body>
+</html>
