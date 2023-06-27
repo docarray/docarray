@@ -40,3 +40,20 @@ def test_operators():
     assert url != 'aljdñjd'
     assert 'data' in url
     assert 'docarray' not in url
+
+
+def test_get_url_extension():
+    # Test with a URL with extension
+    assert AnyUrl._get_url_extension('https://jina.ai/hey.md?model=gpt-4') == 'md'
+    assert AnyUrl._get_url_extension('https://jina.ai/text.txt') == 'txt'
+    assert AnyUrl._get_url_extension('bla.jpg') == 'jpg'
+
+    # Test with a URL without extension
+    assert AnyUrl._get_url_extension('https://jina.ai') == None
+    assert AnyUrl._get_url_extension('https://jina.ai/?model=gpt-4') == None
+
+    # Test with a text without extension
+    assert AnyUrl._get_url_extension('some_text') == None
+
+    # Test with empty input
+    assert AnyUrl._get_url_extension('') == None

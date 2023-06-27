@@ -15,7 +15,7 @@ from docarray.typing.url.mimetypes import (
 )
 from tests import TOYDATA_DIR
 
-REMOTE_TEXT_FILE = 'https://www.gutenberg.org/files/1065/1065-0.txt'
+REMOTE_TEXT_FILE = 'https://de.wikipedia.org/wiki/Brixen'
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_TEXT_FILES = [
     str(TOYDATA_DIR / 'penal_colony.txt'),
@@ -39,13 +39,13 @@ LOCAL_TEXT_FILES_AND_BEGINNING = [
 @pytest.mark.internet
 @pytest.mark.parametrize(
     'url,expected_beginning',
-    [(REMOTE_TEXT_FILE, 'The Project Gutenberg'), *LOCAL_TEXT_FILES_AND_BEGINNING],
+    [(REMOTE_TEXT_FILE, '<!DOCTYPE html>'), *LOCAL_TEXT_FILES_AND_BEGINNING],
 )
 def test_load(url, expected_beginning):
     uri = parse_obj_as(TextUrl, url)
 
     txt = uri.load()
-    assert expected_beginning in txt
+    assert txt.startswith(expected_beginning)
 
 
 @pytest.mark.slow
@@ -61,7 +61,7 @@ def test_load_to_bytes(url):
 @pytest.mark.proto
 @pytest.mark.slow
 @pytest.mark.internet
-@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE])
+@pytest.mark.parametrize('url', [REMOTE_TEXT_FILE, *LOCAL_TEXT_FILES])
 def test_proto_text_url(url):
     uri = parse_obj_as(TextUrl, url)
 

@@ -152,7 +152,7 @@ def test_shallow_copy():
         docs=DocList[VideoDoc](
             [
                 VideoDoc(
-                    url=f'http://example.ai/videos/{i}.mp4',
+                    url=f'http://example.ai/videos/{i}',
                     tensor_video=rand(256),
                 )
                 for i in range(10)

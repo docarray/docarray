@@ -52,12 +52,30 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         return NodeProto(text=str(self), type=self._proto_type_name)
 
+    @staticmethod
+    def _get_url_extension(url):
+        """
+        Extracts and returns the file extension from a given URL.
+        If no file extension is present, the function returns None.
+
+
+        :param url: The URL to extract the file extension from.
+        :return: The file extension without the period, if one exists, otherwise None.
+        """
+
+        parsed_url = urllib.parse.urlparse(url)
+        path = parsed_url.path
+        ext = os.path.splitext(path)[1]
+        ext = ext[1:] if ext.startswith('.') else ext
+        return None if ext == '' else ext
+
     @classmethod
     def is_extension_allowed(cls, value: Any) -> bool:
         """
         Check if the file extension of the URL is allowed for this class.
         First, it guesses the mime type of the file. If it fails to detect the
         mime type, it then checks the extra file extensions.
+        Note: This method assumes that any URL without an extension is valid.
 
         :param value: The URL or file path.
         :return: True if the extension is allowed, False otherwise
@@ -65,13 +83,14 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         if cls is AnyUrl:
             return True
 
-        url_parts = value.split("?")
+        url_parts = value.split('?')
+        extension = cls._get_url_extension(value)
+        if not extension:
+            return True
+
         mimetype, _ = mimetypes.guess_type(url_parts[0])
         if mimetype and mimetype.startswith(cls.mime_type()):
             return True
-
-        filename = url_parts[0].split('.')
-        extension = filename[-1] if len(filename) > 1 else None
 
         return extension in cls.extra_extensions()
 
