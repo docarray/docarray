@@ -170,6 +170,7 @@ class DocVec(AnyDocArray[T_doc]):
                 f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
             )
         self.tensor_type = tensor_type
+        self._is_unusable = False
 
         tensor_columns: Dict[str, Optional[AbstractTensor]] = dict()
         doc_columns: Dict[str, Optional['DocVec']] = dict()
@@ -769,7 +770,14 @@ class DocVec(AnyDocArray[T_doc]):
 
         del self._storage
 
-        return DocList.__class_getitem__(self.doc_type).construct(docs)
+        doc_type = self.doc_type
+
+        # Setting _is_unusable will raise an Exception if someone interacts with this instance from hereon out.
+        # I don't like relying on this state, but we can't override the getattr/setattr directly:
+        # https://stackoverflow.com/questions/10376604/overriding-special-methods-on-an-instance
+        self._is_unusable = True
+
+        return DocList.__class_getitem__(doc_type).construct(docs)
 
     def traverse_flat(
         self,

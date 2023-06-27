@@ -21,6 +21,7 @@ import numpy as np
 
 from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
+from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name
 
@@ -31,6 +32,12 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AnyDocArray')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
+
+UNUSABLE_ERROR_MSG = (
+    'This {cls} instance is in an unusable state. \n'
+    'The most common cause of this is converting a DocVec to a DocList. '
+    'After you call `doc_vec.to_doc_list()`, `doc_vec` cannot be used anymore.'
+)
 
 
 class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
@@ -64,9 +71,17 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
                 def _property_generator(val: str):
                     def _getter(self):
+                        if getattr(self, '_is_unusable', False):
+                            raise UnusableObjectError(
+                                UNUSABLE_ERROR_MSG.format(cls=cls.__name__)
+                            )
                         return self._get_data_column(val)
 
                     def _setter(self, value):
+                        if getattr(self, '_is_unusable', False):
+                            raise UnusableObjectError(
+                                UNUSABLE_ERROR_MSG.format(cls=cls.__name__)
+                            )
                         self._set_data_column(val, value)
 
                     # need docstring for the property
