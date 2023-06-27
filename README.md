@@ -42,7 +42,7 @@ New to DocArray? Depending on your use case and background, there are multiple w
 - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
 - [Coming from Pydantic](#coming-from-pydantic)
 - [Coming from FastAPI](#coming-from-fastapi)
-- [Coming from a vector database](#coming-from-vector-database)
+- [Coming from a vector database](#coming-from-a-vector-database)
 - [Coming from Langchain](#coming-from-langchain)
 
 
