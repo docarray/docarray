@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import numpy as np
@@ -8,6 +9,13 @@ from pydantic.tools import parse_obj_as, schema_json_of
 from docarray import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AudioBytes, AudioTorchTensor, AudioUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
 
@@ -123,3 +131,25 @@ def test_load_bytes():
     assert isinstance(audio_bytes, bytes)
     assert isinstance(audio_bytes, AudioBytes)
     assert len(audio_bytes) > 0
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        (AUDIO_MIMETYPE, AUDIO_FILES[0]),
+        (AUDIO_MIMETYPE, AUDIO_FILES[1]),
+        (AUDIO_MIMETYPE, REMOTE_AUDIO_FILE),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != AudioUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(AudioUrl, file_source)
+    else:
+        parse_obj_as(AudioUrl, file_source)

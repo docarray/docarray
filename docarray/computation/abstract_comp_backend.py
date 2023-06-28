@@ -157,6 +157,19 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         """
         ...
 
+    @classmethod
+    @abstractmethod
+    def equal(cls, tensor1: 'TTensor', tensor2: 'TTensor') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first tensor
+        :param tensor2: the second tensor
+        :return: True if two tensors are equal, False otherwise.
+            If one or more of the inputs is not a tensor of this framework, return False.
+        """
+        ...
+
     class Retrieval(ABC, typing.Generic[TTensorRetrieval]):
         """
         Abstract class for retrieval and ranking functionalities

@@ -226,7 +226,7 @@ def find_batched(
     metric_fn = getattr(comp_backend.Metrics, metric)
     dists = metric_fn(query_embeddings, index_embeddings, device=device)
     top_scores, top_indices = comp_backend.Retrieval.top_k(
-        dists, k=limit, device=device, descending=descending
+        dists, k=int(limit), device=device, descending=descending
     )
 
     batched_docs: List[DocList] = []

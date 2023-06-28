@@ -24,7 +24,7 @@ class TextDoc(BaseDoc):
     from docarray.documents import TextDoc
 
     # use it directly
-    txt_doc = TextDoc(url='http://www.jina.ai/')
+    txt_doc = TextDoc(url='https://www.gutenberg.org/files/1065/1065-0.txt')
     txt_doc.text = txt_doc.url.load()
     # model = MyEmbeddingModel()
     # txt_doc.embedding = model(txt_doc.text)
@@ -51,7 +51,7 @@ class TextDoc(BaseDoc):
         second_embedding: Optional[AnyEmbedding]
 
 
-    txt_doc = MyText(url='http://www.jina.ai/')
+    txt_doc = MyText(url='https://www.gutenberg.org/files/1065/1065-0.txt')
     txt_doc.text = txt_doc.url.load()
     # model = MyEmbeddingModel()
     # txt_doc.embedding = model(txt_doc.text)
@@ -93,8 +93,8 @@ class TextDoc(BaseDoc):
     ```python
     from docarray.documents import TextDoc
 
-    doc = TextDoc(text='This is the main text', url='exampleurl.com')
-    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')
+    doc = TextDoc(text='This is the main text', url='exampleurl.com/file')
+    doc2 = TextDoc(text='This is the main text', url='exampleurl.com/file')
 
     doc == 'This is the main text'  # True
     doc == doc2  # True

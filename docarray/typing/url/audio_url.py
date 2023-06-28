@@ -1,10 +1,11 @@
 import warnings
-from typing import Optional, Tuple, TypeVar
+from typing import List, Optional, Tuple, TypeVar
 
 from docarray.typing import AudioNdArray
 from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import AUDIO_MIMETYPE
 from docarray.utils._internal.misc import is_notebook
 
 T = TypeVar('T', bound='AudioUrl')
@@ -16,6 +17,18 @@ class AudioUrl(AnyUrl):
     URL to an audio file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def mime_type(cls) -> str:
+        return AUDIO_MIMETYPE
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
+        return []
 
     def load(self: T) -> Tuple[AudioNdArray, int]:
         """

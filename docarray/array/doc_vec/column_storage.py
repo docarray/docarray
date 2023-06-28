@@ -91,6 +91,29 @@ class ColumnStorage:
             self.tensor_type,
         )
 
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, ColumnStorage):
+            return False
+        if self.tensor_type != other.tensor_type:
+            return False
+        for col_map_self, col_map_other in zip(self.columns.maps, other.columns.maps):
+            if col_map_self.keys() != col_map_other.keys():
+                return False
+            for key_self in col_map_self.keys():
+                if key_self == 'id':
+                    continue
+
+                val1, val2 = col_map_self[key_self], col_map_other[key_self]
+                if isinstance(val1, AbstractTensor):
+                    values_are_equal = val1.get_comp_backend().equal(val1, val2)
+                elif isinstance(val2, AbstractTensor):
+                    values_are_equal = val2.get_comp_backend().equal(val1, val2)
+                else:
+                    values_are_equal = val1 == val2
+                if not values_are_equal:
+                    return False
+        return True
+
 
 class ColumnStorageView(dict, MutableMapping[str, Any]):
     index: int

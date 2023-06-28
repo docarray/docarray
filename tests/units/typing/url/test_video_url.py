@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import numpy as np
@@ -14,6 +15,13 @@ from docarray.typing import (
     VideoNdArray,
     VideoTorchTensor,
     VideoUrl,
+)
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
 )
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
@@ -146,3 +154,26 @@ def test_load_bytes():
     assert isinstance(video_bytes, bytes)
     assert isinstance(video_bytes, VideoBytes)
     assert len(video_bytes) > 0
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        (VIDEO_MIMETYPE, LOCAL_VIDEO_FILE),
+        (VIDEO_MIMETYPE, REMOTE_VIDEO_FILE),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.aac')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+        (OBJ_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.glb')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != VideoUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(VideoUrl, file_source)
+    else:
+        parse_obj_as(VideoUrl, file_source)

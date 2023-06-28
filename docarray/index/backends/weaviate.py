@@ -31,6 +31,7 @@ from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResult
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
@@ -244,11 +245,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
         auth_api_key: Optional[str] = None
         embedded_options: Optional[EmbeddedOptions] = None
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
-
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {},
@@ -262,6 +258,10 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'blob': {},
             }
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
 
         batch_config: Dict[str, Any] = field(
             default_factory=lambda: DEFAULT_BATCH_CONFIG
@@ -599,7 +599,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         results = (
             self._client.query.get(index_name, self.properties)
-            .with_bm25(bm25)
+            .with_bm25(**bm25)
             .with_limit(limit)
             .with_additional(["score", "vector"])
             .do()
@@ -620,7 +620,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             q = (
                 self._client.query.get(self.index_name, self.properties)
-                .with_bm25(bm25)
+                .with_bm25(**bm25)
                 .with_limit(limit)
                 .with_additional(["score", "vector"])
                 .with_alias(f'query_{i}')
@@ -761,6 +761,26 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for res in results['data']['Get'][self._db_config.index_name]
         ]
         return ids
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        if safe_issubclass(type(item), BaseDoc):
+            result = (
+                self._client.query.get(self.index_name, ['docarrayid'])
+                .with_where(
+                    {
+                        "path": ['docarrayid'],
+                        "operator": "Equal",
+                        "valueString": f'{item.id}',
+                    }
+                )
+                .do()
+            )
+            docs = result["data"]["Get"][self.index_name]
+            return docs is not None and len(docs) > 0
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):

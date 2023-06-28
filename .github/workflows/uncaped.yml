@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
         test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
       - uses: actions/checkout@v2.5.0

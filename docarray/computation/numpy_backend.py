@@ -111,6 +111,21 @@ class NumpyCompBackend(AbstractNumpyBasedBackend):
 
         return np.clip(r, *((a, b) if a < b else (b, a)))
 
+    @classmethod
+    def equal(cls, tensor1: 'np.ndarray', tensor2: 'np.ndarray') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first array
+        :param tensor2: the second array
+        :return: True if two arrays are equal, False otherwise.
+            If one or more of the inputs is not an ndarray, return False.
+        """
+        are_np_arrays = isinstance(tensor1, np.ndarray) and isinstance(
+            tensor2, np.ndarray
+        )
+        return are_np_arrays and np.array_equal(tensor1, tensor2)
+
     class Retrieval(AbstractComputationalBackend.Retrieval[np.ndarray]):
         """
         Abstract class for retrieval and ranking functionalities
