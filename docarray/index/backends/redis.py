@@ -37,12 +37,12 @@ from docarray.utils.find import _FindResultBatched, _FindResult, FindResult
 if TYPE_CHECKING:
     import redis
     from redis.commands.search.query import Query
-    from redis.commands.search.field import (  # type: ignore[import]
+    from redis.commands.search.field import (
         NumericField,
         TextField,
         VectorField,
     )
-    from redis.commands.search.indexDefinition import IndexDefinition, IndexType  # type: ignore[import]
+    from redis.commands.search.indexDefinition import IndexDefinition, IndexType
 else:
     redis = import_library('redis')
 
