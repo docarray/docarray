@@ -80,7 +80,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             else 'index_name__' + self._random_name()
         )
         self._prefix = self._index_name + ':'
-
+        self._text_scorer = self._db_config.text_scorer
         # initialize Redis client
         self._client = redis.Redis(
             host=self._db_config.host,
@@ -104,12 +104,12 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for column, info in self._column_infos.items():
                 if info.db_type == VectorField:
                     space = info.config.get('space') or info.config.get('distance')
-                    space = space.upper()  # type: ignore[union-attr]
-                    if space not in VALID_DISTANCES:
+                    if not space or space.upper() not in VALID_DISTANCES:
                         raise ValueError(
                             f"Invalid distance metric '{space}' provided. "
                             f"Must be one of: {', '.join(VALID_DISTANCES)}"
                         )
+                    space = space.upper()
                     attributes = {
                         'TYPE': 'FLOAT32',
                         'DIM': info.n_dim or info.config.get('dim'),
@@ -274,7 +274,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         keys = list(column_to_data.keys())
         iterators = [iter(column_to_data[key]) for key in keys]
-        batch = []
+        batch: List[Dict[str, Any]] = []
 
         while True:
             item_dict = {}
@@ -518,7 +518,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         query_str = '|'.join(query.split(' '))
         q = (
             Query(f'@{search_field}:{query_str}')
-            .scorer(self._db_config.text_scorer)  # type: ignore[union-attr]
+            .scorer(self._text_scorer)
             .with_scores()
             .paging(0, limit)
         )
