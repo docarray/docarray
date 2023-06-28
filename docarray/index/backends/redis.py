@@ -37,12 +37,12 @@ from docarray.utils.find import _FindResultBatched, _FindResult, FindResult
 if TYPE_CHECKING:
     import redis
     from redis.commands.search.query import Query
-    from redis.commands.search.field import (
+    from redis.commands.search.field import (  # type: ignore[import]
         NumericField,
         TextField,
         VectorField,
     )
-    from redis.commands.search.indexDefinition import IndexDefinition, IndexType
+    from redis.commands.search.indexDefinition import IndexDefinition, IndexType  # type: ignore[import]
 else:
     redis = import_library('redis')
 
@@ -75,7 +75,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if not self._db_config.index_name:
             self._db_config.index_name = 'index_name__' + self._random_name()
-        self._prefix = self._db_config.index_name + ':'
+        self._prefix = self._db_config.index_name + ':'  # type: ignore[operator]
 
         # initialize Redis client
         self._client = redis.Redis(
@@ -93,7 +93,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return uuid.uuid4().hex
 
     def _create_index(self):
-        if not self._check_index_exists(self._db_config.index_name):
+        if not self._check_index_exists(self._db_config.index_name):  # type: ignore[arg-type]
             schema = []
             for column, info in self._column_infos.items():
                 if info.db_type == VectorField:
@@ -103,16 +103,16 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                             if space.upper() == valid_dist:
                                 space = valid_dist
                     if space not in VALID_DISTANCES:
-                        space = self._db_config.distance
+                        space = self._db_config.distance  # type: ignore[union-attr]
 
                     attributes = {
                         'TYPE': 'FLOAT32',
                         'DIM': info.n_dim or info.config.get('dim'),
                         'DISTANCE_METRIC': space,
-                        'EF_CONSTRUCTION': self._db_config.ef_construction,
-                        'EF_RUNTIME': self._db_config.ef_runtime,
-                        'M': self._db_config.m,
-                        'INITIAL_CAP': self._db_config.initial_cap,
+                        'EF_CONSTRUCTION': self._db_config.ef_construction,  # type: ignore[union-attr]
+                        'EF_RUNTIME': self._db_config.ef_runtime,  # type: ignore[union-attr]
+                        'M': self._db_config.m,  # type: ignore[union-attr]
+                        'INITIAL_CAP': self._db_config.initial_cap,  # type: ignore[union-attr]
                     }
                     attributes = {
                         name: value for name, value in attributes.items() if value
@@ -121,7 +121,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                         info.db_type(
                             '$.' + column,
                             algorithm=info.config.get(
-                                'algorithm', self._db_config.algorithm
+                                'algorithm', self._db_config.algorithm  # type: ignore[union-attr]
                             ),
                             attributes=attributes,
                             as_name=column,
@@ -131,7 +131,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     schema.append(info.db_type('$.' + column, as_name=column))
 
             # Create Redis Index
-            self._client.ft(self._db_config.index_name).create_index(
+            self._client.ft(self._db_config.index_name).create_index(  # type: ignore[arg-type]
                 schema,
                 definition=IndexDefinition(
                     prefix=[self._prefix], index_type=IndexType.JSON
@@ -287,7 +287,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return ids
 
     def num_docs(self) -> int:
-        num_docs = self._client.ft(self._db_config.index_name).info()['num_docs']
+        num_docs = self._client.ft(self._db_config.index_name).info()['num_docs']  # type: ignore[arg-type]
         return int(num_docs)
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -360,7 +360,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             'vec': np.array(query, dtype=np.float32).tobytes()  # type: ignore
         }
         results = (
-            self._client.ft(self._db_config.index_name)
+            self._client.ft(self._db_config.index_name)  # type: ignore[arg-type]
             .search(redis_query, query_params)
             .docs
         )
@@ -397,7 +397,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         q = Query(filter_query)
         q.paging(0, limit)
 
-        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs
+        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs  # type: ignore[arg-type]
         docs = [json.loads(doc.json) for doc in results]
         return docs
 
@@ -473,12 +473,12 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         query_str = '|'.join(query.split(' '))
         q = (
             Query(f'@{search_field}:{query_str}')
-            .scorer(self._db_config.text_scorer)
+            .scorer(self._db_config.text_scorer)  # type: ignore[union-attr]
             .with_scores()
             .paging(0, limit)
         )
 
-        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs
+        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs  # type: ignore[arg-type]
 
         scores: NdArray = NdArray._docarray_from_native(
             np.array([document['score'] for document in results])

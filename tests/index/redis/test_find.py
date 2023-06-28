@@ -10,6 +10,8 @@ from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray, TorchTensor
 from tests.index.redis.fixtures import start_redis  # noqa: F401
 
+pytestmark = [pytest.mark.slow, pytest.mark.index]
+
 N_DIM = 10
 
 
@@ -57,8 +59,8 @@ def test_find_empty_index():
 def test_find_limit_larger_than_index():
     schema = get_simple_schema()
     db = RedisDocumentIndex[schema](host='localhost')
-    query = schema(tens=np.ones(10))
-    index_docs = [schema(tens=np.zeros(10)) for _ in range(10)]
+    query = schema(tens=np.ones(N_DIM))
+    index_docs = [schema(tens=np.zeros(N_DIM)) for _ in range(10)]
     db.index(index_docs)
     docs, scores = db.find(query, search_field='tens', limit=20)
     assert len(docs) == 10
@@ -68,14 +70,14 @@ def test_find_limit_larger_than_index():
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_torch(space):
     db = RedisDocumentIndex[TorchDoc](host='localhost')
-    index_docs = [TorchDoc(tens=np.random.rand(10)) for _ in range(10)]
-    index_docs.append(TorchDoc(tens=np.ones(10, dtype=np.float32)))
+    index_docs = [TorchDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
+    index_docs.append(TorchDoc(tens=np.ones(N_DIM, dtype=np.float32)))
     db.index(index_docs)
 
     for doc in index_docs:
         assert isinstance(doc.tens, TorchTensor)
 
-    query = TorchDoc(tens=np.ones(10, dtype=np.float32))
+    query = TorchDoc(tens=np.ones(N_DIM, dtype=np.float32))
 
     result_docs, scores = db.find(query, search_field='tens', limit=5)
 
@@ -90,20 +92,20 @@ def test_find_torch(space):
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_flat_schema(space):
     class FlatSchema(BaseDoc):
-        tens_one: NdArray = Field(dim=10, space=space)
+        tens_one: NdArray = Field(dim=N_DIM, space=space)
         tens_two: NdArray = Field(dim=50, space=space)
 
     index = RedisDocumentIndex[FlatSchema](host='localhost')
 
     index_docs = [
-        FlatSchema(tens_one=np.random.rand(10), tens_two=np.random.rand(50))
+        FlatSchema(tens_one=np.random.rand(N_DIM), tens_two=np.random.rand(50))
         for _ in range(10)
     ]
-    index_docs.append(FlatSchema(tens_one=np.zeros(10), tens_two=np.ones(50)))
-    index_docs.append(FlatSchema(tens_one=np.ones(10), tens_two=np.zeros(50)))
+    index_docs.append(FlatSchema(tens_one=np.zeros(N_DIM), tens_two=np.ones(50)))
+    index_docs.append(FlatSchema(tens_one=np.ones(N_DIM), tens_two=np.zeros(50)))
     index.index(index_docs)
 
-    query = FlatSchema(tens_one=np.ones(10), tens_two=np.ones(50))
+    query = FlatSchema(tens_one=np.ones(N_DIM), tens_two=np.ones(50))
 
     # find on tens_one
     docs, scores = index.find(query, search_field='tens_one', limit=5)
@@ -125,47 +127,50 @@ def test_find_flat_schema(space):
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_nested_schema(space):
     class SimpleDoc(BaseDoc):
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[N_DIM] = Field(space=space)
 
     class NestedDoc(BaseDoc):
         d: SimpleDoc
-        tens: NdArray[10] = Field(space=space)
+        tens: NdArray[N_DIM] = Field(space=space)
 
     class DeepNestedDoc(BaseDoc):
         d: NestedDoc
-        tens: NdArray = Field(space=space, dim=10)
+        tens: NdArray = Field(space=space, dim=N_DIM)
 
     index = RedisDocumentIndex[DeepNestedDoc](host='localhost')
 
     index_docs = [
         DeepNestedDoc(
-            d=NestedDoc(d=SimpleDoc(tens=np.random.rand(10)), tens=np.random.rand(10)),
-            tens=np.random.rand(10),
+            d=NestedDoc(
+                d=SimpleDoc(tens=np.random.rand(N_DIM)), tens=np.random.rand(N_DIM)
+            ),
+            tens=np.random.rand(N_DIM),
         )
         for _ in range(10)
     ]
     index_docs.append(
         DeepNestedDoc(
-            d=NestedDoc(d=SimpleDoc(tens=np.ones(10)), tens=np.zeros(10)),
-            tens=np.zeros(10),
+            d=NestedDoc(d=SimpleDoc(tens=np.ones(N_DIM)), tens=np.zeros(N_DIM)),
+            tens=np.zeros(N_DIM),
         )
     )
     index_docs.append(
         DeepNestedDoc(
-            d=NestedDoc(d=SimpleDoc(tens=np.zeros(10)), tens=np.ones(10)),
-            tens=np.zeros(10),
+            d=NestedDoc(d=SimpleDoc(tens=np.zeros(N_DIM)), tens=np.ones(N_DIM)),
+            tens=np.zeros(N_DIM),
         )
     )
     index_docs.append(
         DeepNestedDoc(
-            d=NestedDoc(d=SimpleDoc(tens=np.zeros(10)), tens=np.zeros(10)),
-            tens=np.ones(10),
+            d=NestedDoc(d=SimpleDoc(tens=np.zeros(N_DIM)), tens=np.zeros(N_DIM)),
+            tens=np.ones(N_DIM),
         )
     )
     index.index(index_docs)
 
     query = DeepNestedDoc(
-        d=NestedDoc(d=SimpleDoc(tens=np.ones(10)), tens=np.ones(10)), tens=np.ones(10)
+        d=NestedDoc(d=SimpleDoc(tens=np.ones(N_DIM)), tens=np.ones(N_DIM)),
+        tens=np.ones(N_DIM),
     )
 
     # find on root level
@@ -209,7 +214,7 @@ def test_simple_usage():
 
 def test_query_builder():
     class SimpleSchema(BaseDoc):
-        tensor: NdArray[10] = Field(space='cosine')
+        tensor: NdArray[N_DIM] = Field(space='cosine')
         price: int
 
     db = RedisDocumentIndex[SimpleSchema](host='localhost')
@@ -221,7 +226,7 @@ def test_query_builder():
 
     q = (
         db.build_query()
-        .find(query=np.ones(10), search_field='tensor', limit=5)
+        .find(query=np.ones(N_DIM), search_field='tensor', limit=5)
         .filter(filter_query='@price:[-inf 3]')
         .build()
     )
