@@ -41,8 +41,9 @@ if TYPE_CHECKING:
     import pandas as pd
 
     from docarray.proto import DocListProto
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-T = TypeVar('T', bound='IOMixinArray')
+T = TypeVar('T', bound='IOMixinDocList')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array', 'json-array'}
@@ -96,7 +97,7 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[T_doc]):
+class IOMixinDocList(Iterable[T_doc]):
     doc_type: Type[T_doc]
 
     @abstractmethod
@@ -515,8 +516,6 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
-        if not isinstance(docs, cls):
-            return cls(docs)
         return docs
 
     def to_dataframe(self) -> 'pd.DataFrame':
@@ -577,11 +576,13 @@ class IOMixinArray(Iterable[T_doc]):
         protocol: Optional[str],
         compress: Optional[str],
         show_progress: bool,
+        tensor_type: Type['AbstractTensor'] = None,
     ):
         """Read a `DocList` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param tensor_type: only relevant for DocVec; tensor_type of the DocVec
         :return: a `DocList`
         """
         with file_ctx as fp:
@@ -658,6 +659,8 @@ class IOMixinArray(Iterable[T_doc]):
                     pbar.update(
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
+            if tensor_type is not None:
+                return cls(docs, tensor_type=tensor_type)
             return cls(docs)
 
     @classmethod

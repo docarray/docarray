@@ -19,7 +19,7 @@ from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
-from docarray.array.doc_list.io import IOMixinArray
+from docarray.array.doc_list.io import IOMixinDocList
 from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
@@ -41,7 +41,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 class DocList(
     ListAdvancedIndexing[T_doc],
     PushPullMixin,
-    IOMixinArray,
+    IOMixinDocList,
     AnyDocArray[T_doc],
 ):
     """
