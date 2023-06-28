@@ -119,10 +119,16 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     attributes = {
                         name: value for name, value in attributes.items() if value
                     }
+                    algorithm = info.config['algorithm'].upper()
+                    if algorithm not in VALID_ALGORITHMS:
+                        raise ValueError(
+                            f"Invalid algorithm '{algorithm}' provided. "
+                            f"Must be one of: {', '.join(VALID_ALGORITHMS)}"
+                        )
                     schema.append(
                         info.db_type(
                             '$.' + column,
-                            algorithm=info.config['algorithm'],
+                            algorithm=algorithm,
                             attributes=attributes,
                             as_name=column,
                         )
@@ -392,64 +398,6 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         results = self._client.ft(index_name=self._db_config.index_name).search(q).docs  # type: ignore[arg-type]
         docs = [json.loads(doc.json) for doc in results]
         return docs
-
-    # def _build_query_node(self, key, condition):
-    #     operator = list(condition.keys())[0]
-    #     value = condition[operator]
-    #
-    #     query_dict = {}
-    #
-    #     if operator in ['$ne', '$eq']:
-    #         if isinstance(value, bool):
-    #             query_dict[key] = equal(int(value))
-    #         elif isinstance(value, (int, float)):
-    #             query_dict[key] = equal(value)
-    #         else:
-    #             query_dict[key] = '"' + value + '"'
-    #     elif operator == '$gt':
-    #         query_dict[key] = gt(value)
-    #     elif operator == '$gte':
-    #         query_dict[key] = ge(value)
-    #     elif operator == '$lt':
-    #         query_dict[key] = lt(value)
-    #     elif operator == '$lte':
-    #         query_dict[key] = le(value)
-    #     else:
-    #         raise ValueError(
-    #             f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
-    #         )
-    #
-    #     if operator == '$ne':
-    #         return DistjunctUnion(**query_dict)
-    #     return IntersectNode(**query_dict)
-    #
-    # def _build_query_nodes(self, filter):
-    #     nodes = []
-    #     for k, v in filter.items():
-    #         if k == '$and':
-    #             children = self._build_query_nodes(v)
-    #             node = intersect(*children)
-    #             nodes.append(node)
-    #         elif k == '$or':
-    #             children = self._build_query_nodes(v)
-    #             node = union(*children)
-    #             nodes.append(node)
-    #         else:
-    #             child = self._build_query_node(k, v)
-    #             nodes.append(child)
-    #
-    #     return nodes
-    #
-    # def _get_redis_filter_query(self, filter: Union[str, Dict]):
-    #     if isinstance(filter, dict):
-    #         nodes = self._build_query_nodes(filter)
-    #         query_str = intersect(*nodes).to_string()
-    #     elif isinstance(filter, str):
-    #         query_str = filter
-    #     else:
-    #         raise ValueError(f'Unexpected type of filter: {type(filter)}, expected str')
-    #
-    #     return query_str
 
     def _filter_batched(
         self, filter_queries: Any, limit: int
