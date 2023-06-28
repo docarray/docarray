@@ -47,7 +47,6 @@ if TYPE_CHECKING:
         DataType,
         FieldSchema,
         connections,
-        loading_progress,
         utility,
     )
 else:
@@ -59,7 +58,6 @@ else:
         DataType,
         FieldSchema,
         connections,
-        loading_progress,
         utility,
     )
 
@@ -83,6 +81,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             password=self._db_config.password,
             token=self._db_config.token,
         )
+
+        self._loaded = False
 
         self._db_config.index_name = index_name
         self._validate_columns()
@@ -289,20 +289,16 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _get_items(
         self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
-        with self.loaded_collection():
-            result = self._collection.query(
-                expr="id in " + str([id for id in doc_ids]),
-                offset=0,
-                limit=self.num_docs(),
-                output_fields=["serialized"],
-            )
+        self._check_loaded()
 
-        return [
-            self._schema.from_base64(
-                result[i]["serialized"], **self._db_config.serialize_config
-            )
-            for i in range(len(result))
-        ]
+        result = self._collection.query(
+            expr="id in " + str([id for id in doc_ids]),
+            offset=0,
+            limit=self.num_docs(),
+            output_fields=["serialized"],
+        )
+
+        return self._docs_from_query_response(result)
 
     def _del_items(self, doc_ids: Sequence[str]):
         self._collection.delete(expr="id in " + str([id for id in doc_ids]))
@@ -313,14 +309,25 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> Union[DocList, List[Dict]]:
-        ...
+        self._check_loaded()
+
+        result = self._collection.query(
+            expr=filter_query,
+            offset=0,
+            limit=min(limit, self.num_docs()),
+            output_fields=["serialized"],
+        )
+
+        return self._docs_from_query_response(result)
 
     def _filter_batched(
         self,
         filter_queries: Any,
         limit: int,
     ) -> Union[List[DocList], List[List[Dict]]]:
-        ...
+        return [
+            self._filter(filter_query=query, limit=limit) for query in filter_queries
+        ]
 
     def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
         raise NotImplementedError
@@ -331,7 +338,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-        ...
+        raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _text_search_batched(
         self,
@@ -339,7 +346,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        ...
+        raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _find(
         self,
@@ -347,7 +354,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-        self._collection.load()
+        self._check_loaded()
 
         results = self._collection.search(
             data=self._convert_to_vector(query),
@@ -359,20 +366,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             consistency_level="Strong",
         )
 
-        self._collection.release()
         results = next(iter(results), None)  # Only consider the first element
 
-        return _FindResult(
-            documents=DocList[self._schema](
-                [
-                    self._schema.from_base64(
-                        hit.entity.get('serialized'), **self._db_config.serialize_config
-                    )
-                    for hit in results
-                ]
-            ),
-            scores=[hit.score for hit in results],
-        )
+        return self._docs_from_find_response(results)
 
     def _find_batched(
         self,
@@ -393,29 +389,34 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         return find_res
 
-    def loaded_collection(self, collection=None):
-        """
-        Context manager to load a collection and release it after the context is exited.
-        If the collection is already loaded when entering, it will not be released while exiting.
+    def _check_loaded(self):
+        self._collection.load() and setattr(
+            self, "_loaded", True
+        ) if not self._loaded else None
 
-        :param collection: the collection to load. If None, the main collection of this indexer is used.
-        :return: Context manager for the provided collection.
-        """
-
-        class LoadedCollectionManager:
-            def __init__(self, coll):
-                self._collection = coll
-                self._loaded_when_enter = False
-
-            def __enter__(self):
-                self._loaded_when_enter = (
-                    loading_progress(self._collection.name)['loading_progress'] != '0%'
+    def _docs_from_query_response(self, result: Sequence[Dict]) -> Sequence[TSchema]:
+        return DocList[self._schema](
+            [
+                self._schema.from_base64(
+                    result[i]["serialized"], **self._db_config.serialize_config
                 )
-                self._collection.load()
-                return self
+                for i in range(len(result))
+            ]
+        )
 
-            def __exit__(self, exc_type, exc_val, exc_tb):
-                if not self._loaded_when_enter:
-                    self._collection.release()
+    def _docs_from_find_response(self, result: str) -> _FindResult:
+        return _FindResult(
+            documents=DocList[self._schema](
+                [
+                    self._schema.from_base64(
+                        hit.entity.get('serialized'), **self._db_config.serialize_config
+                    )
+                    for hit in result
+                ]
+            ),
+            scores=[hit.score for hit in result],
+        )
 
-        return LoadedCollectionManager(collection if collection else self._collection)
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._collection.release()
+        self._loaded = False
