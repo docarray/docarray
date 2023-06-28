@@ -97,7 +97,7 @@ def test_find_tensorflow(space):
     class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
-    db = RedisDocumentIndex[TorchDoc](host='localhost')
+    db = RedisDocumentIndex[TensorFlowTensor](host='localhost')
 
     index_docs = [TfDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
     index_docs.append(TfDoc(tens=np.ones(10)))
