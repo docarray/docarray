@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Literal,
     Optional,
     Tuple,
     Type,
@@ -212,7 +213,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: str = 'pickle',
+        protocol: Literal['pickle', 'protobuf'] = 'pickle',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
