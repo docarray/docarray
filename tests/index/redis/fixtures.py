@@ -7,7 +7,9 @@ import redis
 
 @pytest.fixture(scope='session', autouse=True)
 def start_redis():
-    os.system('docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest')
+    os.system(
+        'docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest'
+    )
     time.sleep(1)
 
     yield
