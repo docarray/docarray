@@ -3,7 +3,7 @@ from typing import List, Optional
 import numpy as np
 import pytest
 
-from docarray import DocList
+from docarray import DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.typing import NdArray
 
@@ -66,8 +66,29 @@ def nested_docs():
     return nested_docs
 
 
+@pytest.fixture
+def nested_docs_docvec():
+    class SimpleDoc(BaseDoc):
+        simple_tens: NdArray[10]
+
+    class NestedDoc(BaseDoc):
+        docs: DocVec[SimpleDoc]
+        hello: str = 'world'
+
+    nested_docs = NestedDoc(
+        docs=DocList[SimpleDoc]([SimpleDoc(simple_tens=np.ones(10)) for j in range(2)]),
+    )
+
+    return nested_docs
+
+
 def test_nested_to_dict(nested_docs):
     d = nested_docs.dict()
+    assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
+
+
+def test_nested_docvec_to_dict(nested_docs_docvec):
+    d = nested_docs_docvec.dict()
     assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
 
 

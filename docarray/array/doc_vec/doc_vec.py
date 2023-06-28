@@ -18,11 +18,13 @@ from typing import (
 )
 
 import numpy as np
+import orjson
 from pydantic import BaseConfig, parse_obj_as
 from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
+from docarray.array.doc_list.io import IOMixinArray
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
@@ -33,6 +35,8 @@ from docarray.utils._internal._typing import is_tensor_union
 from docarray.utils._internal.misc import is_tf_available, is_torch_available
 
 if TYPE_CHECKING:
+    import csv
+
     from pydantic.fields import ModelField
 
     from docarray.proto import (
@@ -58,6 +62,8 @@ else:
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
+T_io_mixin = TypeVar('T_io_mixin', bound='IOMixinArray')
+
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 NONE_NDARRAY_PROTO_SHAPE = (0,)
@@ -111,7 +117,7 @@ def _is_none_list_of_docvec_proto(proto: 'ListOfDocVecProto') -> bool:
     return isinstance(proto, ListOfDocVecProto) and len(proto.data) == 0
 
 
-class DocVec(AnyDocArray[T_doc]):
+class DocVec(IOMixinArray, AnyDocArray[T_doc]):
     """
     DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -156,7 +162,7 @@ class DocVec(AnyDocArray[T_doc]):
         AnyTensor or Union of NdArray and TorchTensor
     """
 
-    doc_type: Type[T_doc]
+    doc_type: Type[T_doc] = BaseDoc  # type: ignore
 
     def __init__(
         self: T,
@@ -164,7 +170,11 @@ class DocVec(AnyDocArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
 
-        if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
+        if (
+            not hasattr(self, 'doc_type')
+            or self.doc_type == AnyDoc
+            or self.doc_type == BaseDoc
+        ):
             raise TypeError(
                 f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
                 f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
@@ -601,6 +611,92 @@ class DocVec(AnyDocArray[T_doc]):
     ####################
 
     @classmethod
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocVecProto
+
+        return DocVecProto
+
+    def _docarray_to_json_compatible(self) -> Dict[str, Dict[str, Any]]:
+        tup = self._storage.columns_json_compatible()
+        return tup._asdict()
+
+    @classmethod
+    def from_json(
+        cls: Type[T],
+        file: Union[str, bytes, bytearray],
+        tensor_type: Type[AbstractTensor] = NdArray,
+    ) -> T:
+        """Deserialize JSON strings or bytes into a `DocList`.
+
+        :param file: JSON object from where to deserialize a `DocList`
+        :param tensor_type: the tensor type to use for the tensor columns.
+            Could be NdArray, TorchTensor, or TensorFlowTensor. Defaults to NdArray.
+            All tensors of the output DocVec will be of this type.
+        :return: the deserialized `DocList`
+        """
+        json_columns = orjson.loads(file)
+        return cls._from_json_col_dict(json_columns, tensor_type=tensor_type)
+
+    @classmethod
+    def _from_json_col_dict(
+        cls: Type[T],
+        json_columns: Dict[str, Any],
+        tensor_type: Type[AbstractTensor] = NdArray,
+    ) -> T:
+
+        tensor_cols = json_columns['tensor_columns']
+        doc_cols = json_columns['doc_columns']
+        docs_vec_cols = json_columns['docs_vec_columns']
+        any_cols = json_columns['any_columns']
+
+        for key, col in tensor_cols.items():
+            if col is not None:
+                tensor_cols[key] = parse_obj_as(tensor_type, col)
+            else:
+                tensor_cols[key] = None
+
+        for key, col in doc_cols.items():
+            if col is not None:
+                col_doc_type = cls.doc_type._get_field_type(key)
+                doc_cols[key] = DocVec.__class_getitem__(
+                    col_doc_type
+                )._from_json_col_dict(col, tensor_type=tensor_type)
+            else:
+                doc_cols[key] = None
+
+        for key, col in docs_vec_cols.items():
+            if col is not None:
+                col_doc_type = cls.doc_type._get_field_type(key).doc_type
+                col_ = ListAdvancedIndexing(
+                    DocVec.__class_getitem__(col_doc_type)._from_json_col_dict(
+                        vec, tensor_type=tensor_type
+                    )
+                    for vec in col
+                )
+                docs_vec_cols[key] = col_
+            else:
+                docs_vec_cols[key] = None
+
+        for key, col in any_cols.items():
+            if col is not None:
+                col_type = cls.doc_type._get_field_type(key)
+                col_type = (
+                    col_type
+                    if cls.doc_type.__fields__[key].required
+                    else Optional[col_type]
+                )
+                col_ = ListAdvancedIndexing(parse_obj_as(col_type, val) for val in col)
+                any_cols[key] = col_
+            else:
+                any_cols[key] = None
+
+        return cls.from_columns_storage(
+            ColumnStorage(
+                tensor_cols, doc_cols, docs_vec_cols, any_cols, tensor_type=tensor_type
+            )
+        )
+
+    @classmethod
     def from_protobuf(
         cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray
     ) -> T:
@@ -792,3 +888,35 @@ class DocVec(AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    def to_csv(
+        self, file_path: str, dialect: Union[str, 'csv.Dialect'] = 'excel'
+    ) -> None:
+        """
+        DocVec does not support `.to_csv()`. This is because CSV is a row-based format
+        while DocVec has a column-based data layout.
+        To overcome this, do: `doc_vec.to_doc_list().to_csv(...)`.
+        """
+        raise NotImplementedError(
+            f'{type(self)} does not support `.to_csv()`. This is because CSV is a row-based format'
+            f'while {type(self)} has a column-based data layout. '
+            f'To overcome this, do: `doc_vec.to_doc_list().to_csv(...)`.'
+        )
+
+    @classmethod
+    def from_csv(
+        cls: Type['T'],
+        file_path: str,
+        encoding: str = 'utf-8',
+        dialect: Union[str, 'csv.Dialect'] = 'excel',
+    ) -> 'T':
+        """
+        DocVec does not support `.from_csv()`. This is because CSV is a row-based format
+        while DocVec has a column-based data layout.
+        To overcome this, do: `DocList[MyDoc].from_csv(...).to_doc_vec()`.
+        """
+        raise NotImplementedError(
+            f'{cls} does not support `.from_csv()`. This is because CSV is a row-based format while'
+            f'{cls} has a column-based data layout. '
+            f'To overcome this, do: `DocList[MyDoc].from_csv(...).to_doc_vec()`.'
+        )
