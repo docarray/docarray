@@ -20,7 +20,7 @@ def test_persist():
 
     # create index
     index = RedisDocumentIndex[SimpleDoc](host='localhost')
-    index_name = index._db_config.index_name
+    index_name = index._index_name
 
     assert index.num_docs() == 0
 

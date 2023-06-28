@@ -32,7 +32,7 @@ def test_configure_index(tmp_path):
     types = {'id': 'TEXT', 'tens': 'VECTOR', 'title': 'TEXT', 'year': 'NUMERIC'}
     index = RedisDocumentIndex[Schema](host='localhost')
 
-    attr_bytes = index._client.ft(index._db_config.index_name).info()['attributes']
+    attr_bytes = index._client.ft(index._index_name).info()['attributes']
     attr = [[byte.decode() for byte in sublist] for sublist in attr_bytes]
 
     assert len(Schema.__fields__) == len(attr)

@@ -74,9 +74,12 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(RedisDocumentIndex.DBConfig, self._db_config)
 
-        if not self._db_config.index_name:
-            self._db_config.index_name = 'index_name__' + self._random_name()
-        self._prefix = self._db_config.index_name + ':'  # type: ignore[operator]
+        self._index_name = (
+            self._db_config.index_name
+            if self._db_config.index_name
+            else 'index_name__' + self._random_name()
+        )
+        self._prefix = self._index_name + ':'
 
         # initialize Redis client
         self._client = redis.Redis(
@@ -96,7 +99,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _create_index(self) -> None:
         """Create a new index in the Redis database if it doesn't already exist."""
-        if not self._check_index_exists(self._db_config.index_name):  # type: ignore[arg-type]
+        if not self._check_index_exists(self._index_name):
             schema = []
             for column, info in self._column_infos.items():
                 if info.db_type == VectorField:
@@ -137,18 +140,16 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     schema.append(info.db_type('$.' + column, as_name=column))
 
             # Create Redis Index
-            self._client.ft(self._db_config.index_name).create_index(  # type: ignore[arg-type]
+            self._client.ft(self._index_name).create_index(
                 schema,
                 definition=IndexDefinition(
                     prefix=[self._prefix], index_type=IndexType.JSON
                 ),
             )
 
-            self._logger.info(f'index {self._db_config.index_name} has been created')
+            self._logger.info(f'index {self._index_name} has been created')
         else:
-            self._logger.info(
-                f'connected to existing {self._db_config.index_name} index'
-            )
+            self._logger.info(f'connected to existing {self._index_name} index')
 
     def _check_index_exists(self, index_name: str) -> bool:
         """
@@ -232,13 +233,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of RedisDocumentIndex."""
 
-        default_column_config: Dict[Any, Dict[str, Any]] = field(
-            default_factory=lambda: {
-                TextField: {},
-                NumericField: {},
-                VectorField: {},
-            }
-        )
+        pass
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """
@@ -264,8 +259,9 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @staticmethod
     def _generate_item(
-        column_to_data: Dict[str, Generator[Any, None, None]]
-    ) -> Iterator[Dict[str, Any]]:
+        column_to_data: Dict[str, Generator[Any, None, None]],
+        batch_size: int = 4,
+    ) -> Iterator[List[Dict[str, Any]]]:
         """
         Given a dictionary of generators, yield a dictionary where each item consists of a key and
         a single item from the corresponding generator.
@@ -278,12 +274,15 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         keys = list(column_to_data.keys())
         iterators = [iter(column_to_data[key]) for key in keys]
+        batch = []
+
         while True:
             item_dict = {}
             for key, it in zip(keys, iterators):
                 item = next(it, None)
 
                 if key == 'id' and not item:
+                    yield batch
                     return
 
                 if isinstance(item, AbstractTensor):
@@ -293,7 +292,10 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 elif item is not None:
                     item_dict[key] = item
 
-            yield item_dict
+            batch.append(item_dict)
+            if len(batch) == batch_size:
+                yield batch
+                batch = []
 
     def _index(
         self, column_to_data: Dict[str, Generator[Any, None, None]]
@@ -305,10 +307,16 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: A list of document ids that have been indexed.
         """
         ids = []
-        for item in self._generate_item(column_to_data):
-            ids.append(item['id'])
-            doc_id = self._prefix + item['id']
-            self._client.json().set(doc_id, '$', item)
+        for items in self._generate_item(column_to_data):
+            for item in items:
+                ids.append(item['id'])
+                doc_id = self._prefix + item['id']
+                self._client.json().set(doc_id, '$', item)
+
+        ## this does not work for now
+        # for items in self._generate_item(column_to_data):
+        #     self._client.json().mset(((self._prefix + item['id'], '$', item) for item in items))
+
         return ids
 
     def num_docs(self) -> int:
@@ -317,7 +325,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         :return: Number of documents in the index.
         """
-        num_docs = self._client.ft(self._db_config.index_name).info()['num_docs']  # type: ignore[arg-type]
+        num_docs = self._client.ft(self._index_name).info()['num_docs']
         return int(num_docs)
 
     def _del_items(self, doc_ids: Sequence[str]) -> None:
@@ -351,13 +359,10 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if not doc_ids:
             return []
 
-        docs = []
-        for id in doc_ids:
-            doc = self._client.json().get(self._prefix + id)
-            if doc:
-                docs.append(doc)
-
-        if len(docs) == 0:
+        ids = [self._prefix + id for id in doc_ids]
+        docs = self._client.json().mget(ids, '$')
+        docs = [doc[0] for doc in docs if doc]
+        if not docs:
             raise KeyError(f'No document with id {doc_ids} found')
         return docs
 
@@ -418,13 +423,11 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             .paging(0, limit)
             .dialect(2)
         )
-        query_params: Mapping[str, str] = {  # type: ignore
-            'vec': np.array(query, dtype=np.float32).tobytes()  # type: ignore
+        query_params: Mapping[str, str] = {
+            'vec': np.array(query, dtype=np.float32).tobytes()  # type: ignore[dict-item]
         }
         results = (
-            self._client.ft(self._db_config.index_name)  # type: ignore[arg-type]
-            .search(redis_query, query_params)
-            .docs
+            self._client.ft(self._index_name).search(redis_query, query_params).docs
         )
 
         scores: NdArray = NdArray._docarray_from_native(
@@ -482,7 +485,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         q = Query(filter_query)
         q.paging(0, limit)
 
-        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs  # type: ignore[arg-type]
+        results = self._client.ft(index_name=self._index_name).search(q).docs
         docs = [json.loads(doc.json) for doc in results]
         return docs
 
@@ -520,7 +523,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             .paging(0, limit)
         )
 
-        results = self._client.ft(index_name=self._db_config.index_name).search(q).docs  # type: ignore[arg-type]
+        results = self._client.ft(index_name=self._index_name).search(q).docs
 
         scores: NdArray = NdArray._docarray_from_native(
             np.array([document['score'] for document in results])
