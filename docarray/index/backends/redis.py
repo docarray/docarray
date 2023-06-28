@@ -1,4 +1,5 @@
 import uuid
+from collections import defaultdict
 from typing import (
     TypeVar,
     Generic,
@@ -187,6 +188,9 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ef_runtime: Optional[int] = None
         block_size: Optional[int] = None
         initial_cap: Optional[int] = None
+        default_column_config: Dict[Type, Dict[str, Any]] = field(
+            default_factory=lambda: defaultdict(dict)
+        )
 
         def __post_init__(self):
             self.algorithm = self.algorithm.upper()
