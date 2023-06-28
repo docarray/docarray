@@ -5,6 +5,7 @@ from typing import Dict, Iterable, Iterator, NoReturn, Optional, Sequence, Type,
 
 from rich import filesize
 from typing_extensions import TYPE_CHECKING, Protocol
+from typing import Literal
 
 from docarray.utils._internal.progress_bar import _get_progressbar
 
@@ -112,7 +113,7 @@ T_Elem = TypeVar('T_Elem')
 class Streamable(Protocol):
     """A protocol for streamable objects."""
 
-    def to_bytes(self, protocol: str, compress: Optional[str]) -> bytes:
+    def to_bytes(self, protocol: Literal['pickle', 'protobuf'], compress: Optional[str]) -> bytes:
         ...
 
     @classmethod
@@ -131,12 +132,27 @@ class ReadableBytes(Protocol):
 
 
 def _to_binary_stream(
+    self, protocol: Literal['pickle', 'protobuf'],
     iterator: Iterator['Streamable'],
     total: Optional[int] = None,
-    protocol: str = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator[bytes]:
+    """
+    :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+    """
+    import pickle
+
+    if protocol == 'pickle':
+        bstr = pickle.dumps(self)
+    elif protocol == 'protobuf':
+        bstr = self.to_protobuf().SerializePartialToString()
+    else:
+        raise ValueError(
+            f'protocol={protocol} is not supported. Can be only `protobuf` or '
+            f'pickle protocols 0-5.'
+        )
+
     if show_progress:
         pbar, t = _get_progressbar(
             'Serializing', disable=not show_progress, total=total
@@ -167,13 +183,28 @@ T = TypeVar('T', bound=Streamable)
 
 
 def _from_binary_stream(
+    self, protocol: Literal['pickle', 'protobuf'],
     cls: Type[T],
     stream: ReadableBytes,
     total: Optional[int] = None,
-    protocol: str = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator['T']:
+    """
+    :param protocol: protocol to use. It can be 'pickle' or 'protobuf'
+    """
+    import pickle
+
+    if protocol == 'pickle':
+        bstr = pickle.dumps(self)
+    elif protocol == 'protobuf':
+        bstr = self.to_protobuf().SerializePartialToString()
+    else:
+        raise ValueError(
+            f'protocol={protocol} is not supported. Can be only `protobuf` or '
+            f'pickle protocols 0-5.'
+        )
+    
     if show_progress:
         pbar, t = _get_progressbar(
             'Deserializing', disable=not show_progress, total=total
