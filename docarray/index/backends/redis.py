@@ -97,22 +97,24 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             schema = []
             for column, info in self._column_infos.items():
                 if info.db_type == VectorField:
-                    space = info.config.get('space')
-                    if space:
-                        for valid_dist in VALID_DISTANCES:
-                            if space.upper() == valid_dist:
-                                space = valid_dist
-                    if space not in VALID_DISTANCES:
-                        space = self._db_config.distance  # type: ignore[union-attr]
+                    space = info.config.get('space') or info.config.get('distance')
+                    for valid_dist in VALID_DISTANCES:
+                        if space.upper() == valid_dist:  # type: ignore[union-attr]
+                            space = valid_dist
+                    if not space:
+                        raise ValueError(
+                            f"Invalid distance metric '{space}' provided. "
+                            f"Must be one of: {', '.join(VALID_DISTANCES)}"
+                        )
 
                     attributes = {
                         'TYPE': 'FLOAT32',
                         'DIM': info.n_dim or info.config.get('dim'),
                         'DISTANCE_METRIC': space,
-                        'EF_CONSTRUCTION': self._db_config.ef_construction,  # type: ignore[union-attr]
-                        'EF_RUNTIME': self._db_config.ef_runtime,  # type: ignore[union-attr]
-                        'M': self._db_config.m,  # type: ignore[union-attr]
-                        'INITIAL_CAP': self._db_config.initial_cap,  # type: ignore[union-attr]
+                        'EF_CONSTRUCTION': info.config['ef_construction'],
+                        'EF_RUNTIME': info.config['ef_runtime'],
+                        'M': info.config['m'],
+                        'INITIAL_CAP': info.config['initial_cap'],
                     }
                     attributes = {
                         name: value for name, value in attributes.items() if value
@@ -120,9 +122,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     schema.append(
                         info.db_type(
                             '$.' + column,
-                            algorithm=info.config.get(
-                                'algorithm', self._db_config.algorithm  # type: ignore[union-attr]
-                            ),
+                            algorithm=info.config['algorithm'],
                             attributes=attributes,
                             as_name=column,
                         )
@@ -180,33 +180,25 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_name: Optional[str] = None
         username: Optional[str] = None
         password: Optional[str] = None
-        algorithm: str = field(default='FLAT')
-        distance: str = field(default='COSINE')
         text_scorer: str = field(default='BM25')
-        ef_construction: Optional[int] = None
-        m: Optional[int] = None
-        ef_runtime: Optional[int] = None
-        block_size: Optional[int] = None
-        initial_cap: Optional[int] = None
         default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: defaultdict(dict)
+            default_factory=lambda: defaultdict(
+                dict,
+                {
+                    VectorField: {
+                        'algorithm': 'FLAT',
+                        'distance': 'COSINE',
+                        'ef_construction': None,
+                        'm': None,
+                        'ef_runtime': None,
+                        'initial_cap': None,
+                    },
+                },
+            )
         )
 
         def __post_init__(self):
-            self.algorithm = self.algorithm.upper()
-            self.distance = self.distance.upper()
             self.text_scorer = self.text_scorer.upper()
-            if self.algorithm not in VALID_ALGORITHMS:
-                raise ValueError(
-                    f"Invalid algorithm '{self.algorithm}' provided. "
-                    f"Must be one of: {', '.join(VALID_ALGORITHMS)}"
-                )
-
-            if self.distance not in VALID_DISTANCES:
-                raise ValueError(
-                    f"Invalid distance metric '{self.distance}' provided. "
-                    f"Must be one of: {', '.join(VALID_DISTANCES)}"
-                )
 
             if self.text_scorer not in VALID_TEXT_SCORERS:
                 raise ValueError(
