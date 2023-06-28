@@ -8,6 +8,7 @@ from pydantic import parse_obj_as
 from docarray import BaseDoc, DocList
 from docarray.array import DocVec
 from docarray.documents import ImageDoc
+from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
@@ -657,3 +658,18 @@ def test_doc_vec_tensor_type():
     )
 
     assert da != da2
+
+
+def teste_unusable_state_raises_exception():
+    from docarray import DocVec
+    from docarray.documents import ImageDoc
+
+    docs = DocVec[ImageDoc]([ImageDoc(url='http://url.com/foo.png') for _ in range(10)])
+
+    docs.to_doc_list()
+
+    with pytest.raises(UnusableObjectError):
+        docs.url
+
+    with pytest.raises(UnusableObjectError):
+        docs.url = 'hi'

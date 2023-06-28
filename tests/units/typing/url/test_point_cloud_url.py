@@ -1,9 +1,18 @@
+import os
+
 import numpy as np
 import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import NdArray, PointCloud3DUrl
+from docarray.typing.url.mimetypes import (
+    OBJ_MIMETYPE,
+    AUDIO_MIMETYPE,
+    VIDEO_MIMETYPE,
+    IMAGE_MIMETYPE,
+    TEXT_MIMETYPE,
+)
 from tests import TOYDATA_DIR
 
 MESH_FILES = {
@@ -79,3 +88,28 @@ def test_validation(path_to_file):
 def test_proto_point_cloud_url():
     uri = parse_obj_as(PointCloud3DUrl, REMOTE_OBJ_FILE)
     uri._to_node_protobuf()
+
+
+@pytest.mark.parametrize(
+    'file_type, file_source',
+    [
+        (OBJ_MIMETYPE, MESH_FILES['obj']),
+        (OBJ_MIMETYPE, MESH_FILES['glb']),
+        (OBJ_MIMETYPE, MESH_FILES['ply']),
+        (OBJ_MIMETYPE, REMOTE_OBJ_FILE),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.aac')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.mp3')),
+        (AUDIO_MIMETYPE, os.path.join(TOYDATA_DIR, 'hello.ogg')),
+        (VIDEO_MIMETYPE, os.path.join(TOYDATA_DIR, 'mov_bbb.mp4')),
+        (IMAGE_MIMETYPE, os.path.join(TOYDATA_DIR, 'test.png')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.html')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'test' 'test.md')),
+        (TEXT_MIMETYPE, os.path.join(TOYDATA_DIR, 'penal_colony.txt')),
+    ],
+)
+def test_file_validation(file_type, file_source):
+    if file_type != PointCloud3DUrl.mime_type():
+        with pytest.raises(ValueError):
+            parse_obj_as(PointCloud3DUrl, file_source)
+    else:
+        parse_obj_as(PointCloud3DUrl, file_source)
