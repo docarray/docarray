@@ -101,7 +101,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for column, info in self._column_infos.items():
                 if info.db_type == VectorField:
                     space = info.config.get('space') or info.config.get('distance')
-                    space = space.upper()
+                    space = space.upper()  # type: ignore[union-attr]
                     if space not in VALID_DISTANCES:
                         raise ValueError(
                             f"Invalid distance metric '{space}' provided. "
@@ -196,6 +196,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             Default is 'BM25'.
         :param default_column_config: Default configuration for columns.
         """
+
         host: str = 'localhost'
         port: int = 6379
         index_name: Optional[str] = None
@@ -294,7 +295,9 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             yield item_dict
 
-    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]) -> List[str]:
+    def _index(
+        self, column_to_data: Dict[str, Generator[Any, None, None]]
+    ) -> List[str]:
         """
         Indexes the given data into Redis.
 

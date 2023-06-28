@@ -89,6 +89,37 @@ def test_find_torch(space):
     assert torch.allclose(result_docs[0].tens, index_docs[-1].tens)
 
 
+@pytest.mark.tensorflow
+@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
+def test_find_tensorflow(space):
+    from docarray.typing import TensorFlowTensor
+
+    class TfDoc(BaseDoc):
+        tens: TensorFlowTensor[10]
+
+    db = RedisDocumentIndex[TorchDoc](host='localhost')
+
+    index_docs = [TfDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
+    index_docs.append(TfDoc(tens=np.ones(10)))
+    db.index(index_docs)
+
+    for doc in index_docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+
+    query = TfDoc(tens=np.ones(10))
+
+    result_docs, scores = db.find(query, search_field='tens', limit=5)
+
+    assert len(result_docs) == 5
+    assert len(scores) == 5
+    for doc in result_docs:
+        assert isinstance(doc.tens, TensorFlowTensor)
+    assert result_docs[0].id == index_docs[-1].id
+    assert np.allclose(
+        result_docs[0].tens.unwrap().numpy(), index_docs[-1].tens.unwrap().numpy()
+    )
+
+
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_flat_schema(space):
     class FlatSchema(BaseDoc):
