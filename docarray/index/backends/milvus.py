@@ -19,6 +19,7 @@ from typing import (
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex
+from docarray.index.backends.helper import _execute_find_and_filter_query
 from docarray.typing import AnyTensor
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -46,6 +47,7 @@ if TYPE_CHECKING:
         DataType,
         FieldSchema,
         connections,
+        loading_progress,
         utility,
     )
 else:
@@ -57,6 +59,7 @@ else:
         DataType,
         FieldSchema,
         connections,
+        loading_progress,
         utility,
     )
 
@@ -286,19 +289,19 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _get_items(
         self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
-        self._collection.load()
-        ret = self._collection.query(
-            expr="id in " + str([id for id in doc_ids]),
-            offset=0,
-            limit=self.num_docs(),
-            output_fields=["serialized"],
-        )
+        with self.loaded_collection():
+            result = self._collection.query(
+                expr="id in " + str([id for id in doc_ids]),
+                offset=0,
+                limit=self.num_docs(),
+                output_fields=["serialized"],
+            )
 
         return [
             self._schema.from_base64(
-                ret[i]["serialized"], **self._db_config.serialize_config
+                result[i]["serialized"], **self._db_config.serialize_config
             )
-            for i in range(len(ret))
+            for i in range(len(result))
         ]
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -380,4 +383,39 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ...
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
-        ...
+        if args or kwargs:
+            raise ValueError(
+                f'args and kwargs not supported for `execute_query` on {type(self)}'
+            )
+        find_res = _execute_find_and_filter_query(
+            doc_index=self,
+            query=query,
+        )
+        return find_res
+
+    def loaded_collection(self, collection=None):
+        """
+        Context manager to load a collection and release it after the context is exited.
+        If the collection is already loaded when entering, it will not be released while exiting.
+
+        :param collection: the collection to load. If None, the main collection of this indexer is used.
+        :return: Context manager for the provided collection.
+        """
+
+        class LoadedCollectionManager:
+            def __init__(self, coll):
+                self._collection = coll
+                self._loaded_when_enter = False
+
+            def __enter__(self):
+                self._loaded_when_enter = (
+                    loading_progress(self._collection.name)['loading_progress'] != '0%'
+                )
+                self._collection.load()
+                return self
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                if not self._loaded_when_enter:
+                    self._collection.release()
+
+        return LoadedCollectionManager(collection if collection else self._collection)
