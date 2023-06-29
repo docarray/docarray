@@ -94,6 +94,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_type: str = "IVF_FLAT"
         index_metric: str = "L2"
         index_params: Dict = field(default_factory=lambda: {"nlist": 1024})
+        consistency_level: str = 'Session'
         search_params: Dict = field(
             default_factory=lambda: {
                 "metric_type": "L2",
@@ -156,9 +157,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     name="id",
                     dtype=DataType.VARCHAR,
                     is_primary=True,
-                    max_length=256,
-                ),
-            ]  # Initiliaze the id
+                    max_length=ID_VARCHAR_LEN,
+                ),  # id represents the document id
+            ]
             fields.extend(
                 [
                     FieldSchema(
@@ -278,8 +279,20 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def num_docs(self) -> int:
         """
         Get the number of documents.
+
+        !!! note
+             Cannot use Milvus' num_entities method because it's not precise
+             especially after delete ops (#15201 issue in Milvus)
         """
-        return self._collection.num_entities
+        self._check_loaded()
+
+        result = self._collection.query(
+            expr=self._always_true_expr("id"),
+            offset=0,
+            output_fields=["serialized"],
+        )
+
+        return len(result)
 
     def _get_items(
         self, doc_ids: Sequence[str]
@@ -298,8 +311,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         result = self._collection.query(
             expr="id in " + str([id for id in doc_ids]),
             offset=0,
-            limit=self.num_docs(),
             output_fields=["serialized"],
+            consistency_level=self._db_config.consistency_level,
         )
 
         self._collection.release()
@@ -311,7 +324,11 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         :param doc_ids: ids to delete from the Document Store
         """
-        self._collection.delete(expr="id in " + str([id for id in doc_ids]))
+        self._collection.delete(
+            expr="id in " + str([id for id in doc_ids]),
+            consistency_level=self._db_config.consistency_level,
+        )
+
         self._logger.info(f"{len(doc_ids)} documents has been deleted")
 
     def _filter(
@@ -375,7 +392,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             limit=limit,
             expr=None,
             output_fields=["serialized"],
-            consistency_level="Strong",
+            consistency_level=self._db_config.consistency_level,
         )
 
         self._collection.release()
@@ -399,7 +416,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             limit=limit,
             expr=None,
             output_fields=["serialized"],
-            consistency_level="Strong",
+            consistency_level=self._db_config.consistency_level,
         )
 
         self._collection.release()
@@ -453,6 +470,16 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ),
             scores=[hit.score for hit in result],
         )
+
+    def _always_true_expr(self, primary_key: str) -> str:
+        """
+        Returns a Milvus expression that is always true, thus allowing for the retrieval of all entries in a Collection
+        Assumes that the primary key is of type DataType.VARCHAR
+
+        :param primary_key: the name of the primary key
+        :return: a Milvus expression that is always true for that primary key
+        """
+        return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
 
     def __contains__(self, item) -> bool:
         self._check_loaded()
