@@ -24,20 +24,8 @@ from docarray.typing import AnyTensor
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
-from docarray.utils._internal.misc import (
-    import_library,
-    is_tf_available,
-    is_torch_available,
-)
+from docarray.utils._internal.misc import import_library
 from docarray.utils.find import _FindResult, _FindResultBatched
-
-torch_available, tf_available = is_torch_available(), is_tf_available()
-
-if torch_available:
-    import torch
-
-if tf_available:
-    import tensorflow as tf  # type: ignore
 
 if TYPE_CHECKING:
     import numpy as np
@@ -250,40 +238,12 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for j, (column_name, info) in enumerate(self._column_infos.items()):
                 column_value = docs[i].__getattr__(column_name)
                 if info.db_type == DataType.FLOAT_VECTOR:
-                    column_value = self._convert_to_vector(column_value)
+                    column_value = self._to_numpy(column_value)
                 entities[j + 1].append(column_value)
 
         self._collection.insert(entities)
         self._collection.flush()
         self._logger.info(f"{len(docs)} documents has been indexed")
-
-    def _convert_to_vector(self, column_value: AbstractTensor) -> Sequence[float]:
-        """
-        Converts a column value to a float vector.
-
-        The database can only store float vectors, so this method is used to convert
-        TensorFlow or PyTorch tensors to a format compatible with the database.
-
-        :param column_value: The column value to be converted.
-        :return: The converted float vector.
-        """
-        if type(column_value) is list:
-            return column_value
-
-        '''
-        # tensorflow don't have shape property. will change this check later
-        if len(column_value.shape) != 1:
-            raise ValueError(
-                'Unsupported: Milvus backend only supports one-dimensional vectors'
-            )
-        '''
-
-        if isinstance(column_value, np.ndarray):
-            return column_value.astype(float).tolist()
-        elif torch_available and torch.is_tensor(column_value):
-            return column_value.float().numpy().tolist()
-        elif tf_available and tf.is_tensor(column_value.tensor):
-            return column_value.tensor.numpy().astype(float).tolist()
 
     def num_docs(self) -> int:
         return self._collection.num_entities
@@ -363,7 +323,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._check_loaded()
 
         results = self._collection.search(
-            data=[self._convert_to_vector(query)],
+            data=[query],
             anns_field=search_field,
             param=self._db_config.search_params,
             limit=limit,
@@ -387,7 +347,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._check_loaded()
 
         results = self._collection.search(
-            data=[self._convert_to_vector(query) for query in queries],
+            data=queries,
             anns_field=search_field,
             param=self._db_config.search_params,
             limit=limit,
