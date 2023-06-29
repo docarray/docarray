@@ -88,7 +88,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._create_collection_name()
         self._collection = self._init_index()
         self._build_index()
-        self._logger.info(f"{self.__class__.__name__} has been initialized")
+        self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
@@ -300,6 +300,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             output_fields=["serialized"],
         )
 
+        self._collection.release()
+
         return self._docs_from_query_response(result)
 
     def _del_items(self, doc_ids: Sequence[str]):
@@ -319,6 +321,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             limit=min(limit, self.num_docs()),
             output_fields=["serialized"],
         )
+
+        self._collection.release()
 
         return self._docs_from_query_response(result)
 
