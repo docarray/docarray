@@ -56,6 +56,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, index_name=None, **kwargs):
+        """Initialize MilvusDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: MilvusDocumentIndex.DBConfig = cast(
             MilvusDocumentIndex.DBConfig, self._db_config
@@ -80,6 +81,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
+        """Dataclass that contains all "static" configurations of MilvusDocumentIndex."""
+
         collection_name: str = None
         collection_description: str = ""
         host: str = "localhost"
@@ -104,6 +107,13 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
+        """Map python type to database type.
+        Takes any python type and returns the corresponding database column type.
+
+        :param python_type: a python type.
+        :return: the corresponding database column type, or None if ``python_type``
+        is not supported.
+        """
         type_map = {
             int: DataType.INT64,
             float: DataType.FLOAT,
@@ -122,9 +132,19 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if safe_issubclass(python_type, py_type):
                 return db_type
 
-        raise ValueError("No corresponding milvus type")
+        return None
 
     def _init_index(self) -> Collection:
+        """
+        This function initializes or retrieves a Milvus collection with a specified schema,
+        storing documents as serialized data and using the document's ID as the collection's ID
+        , while inheriting other schema properties from the indexer's schema.
+
+        !!! note
+            Milvus framework currently only supports a single vector column, and multiple vector
+             columns are not supported.
+        """
+
         if not utility.has_collection(self._db_config.collection_name):
             fields = [
                 FieldSchema(
@@ -173,6 +193,11 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return Collection(self._db_config.collection_name)
 
     def _create_collection_name(self):
+        """
+        This function generates a unique and sanitized name for the collection,
+        , ensuring a unique identifier is used if the user does not specify a
+        collection name.
+        """
         if self._db_config.collection_name is None:
             id = uuid.uuid4().hex
             self._db_config.collection_name = f"{self.__class__.__name__}__" + id
@@ -194,7 +219,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if not vector_columns_exist:
             raise ValueError(
-                "No vector columns found. Ensure that at least one column is of a vector type"
+                "No vector columns found. Ensure that one column is of a vector type"
             )
 
         for column_name, info in self._column_infos.items():
@@ -206,6 +231,11 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 )
 
     def _build_index(self):
+        """
+        Sets up an index configuration for a specific column index, which is
+        required by the Milvus backend.
+        """
+
         index = {
             "index_type": self._db_config.index_type,
             "metric_type": self._db_config.index_metric,
@@ -246,11 +276,23 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.info(f"{len(docs)} documents has been indexed")
 
     def num_docs(self) -> int:
+        """
+        Get the number of documents.
+        """
         return self._collection.num_entities
 
     def _get_items(
         self, doc_ids: Sequence[str]
     ) -> Union[Sequence[TSchema], Sequence[Dict[str, Any]]]:
+        """Get Documents from the index, by `id`.
+        If no document is found, a KeyError is raised.
+
+        :param doc_ids: ids to get from the Document index
+        :param raw: if raw, output the new_schema type (with parent id)
+        :return: Sequence of Documents, sorted corresponding to the order of `doc_ids`.
+                Duplicate `doc_ids` can be omitted in the output.
+        """
+
         self._check_loaded()
 
         result = self._collection.query(
@@ -265,6 +307,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return self._docs_from_query_response(result)
 
     def _del_items(self, doc_ids: Sequence[str]):
+        """Delete Documents from the index.
+
+        :param doc_ids: ids to delete from the Document Store
+        """
         self._collection.delete(expr="id in " + str([id for id in doc_ids]))
         self._logger.info(f"{len(doc_ids)} documents has been deleted")
 
@@ -379,6 +425,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return find_res
 
     def _check_loaded(self):
+        """This function checks if the collection is loaded and loads it if necessary"""
+
         self._collection.load() and setattr(
             self, "_loaded", True
         ) if not self._loaded else None
