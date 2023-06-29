@@ -99,3 +99,14 @@ def test_del_multiple(ten_simple_docs):
         else:
             assert index[doc.id].id == doc.id
             assert np.allclose(index[doc.id].tens, doc.tens)
+
+
+def test_contains(ten_simple_docs):
+    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+    index.index(ten_simple_docs)
+
+    for doc in ten_simple_docs:
+        assert doc in index
+
+    other_doc = SimpleDoc(tens=np.random.randn(10))
+    assert other_doc not in index

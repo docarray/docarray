@@ -31,6 +31,7 @@ from docarray.index.abstract import (
 )
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import _FindResultBatched, _FindResult, FindResult
 
@@ -73,6 +74,10 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """Initialize RedisDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(RedisDocumentIndex.DBConfig, self._db_config)
+
+        self._runtime_config: RedisDocumentIndex.RuntimeConfig = cast(
+            RedisDocumentIndex.RuntimeConfig, self._runtime_config
+        )
 
         self._index_name = (
             self._db_config.index_name
@@ -231,9 +236,12 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of RedisDocumentIndex."""
+        """Dataclass that contains all "dynamic" configurations of RedisDocumentIndex.
 
-        pass
+        :param batch_size: Batch size during indexing.
+        """
+
+        batch_size: int = 100
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """
@@ -258,19 +266,21 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
     @staticmethod
-    def _generate_item(
+    def _generate_items(
         column_to_data: Dict[str, Generator[Any, None, None]],
-        batch_size: int = 4,
+        batch_size: int,
     ) -> Iterator[List[Dict[str, Any]]]:
         """
-        Given a dictionary of generators, yield a dictionary where each item consists of a key and
-        a single item from the corresponding generator.
+        Given a dictionary of generators, yield a list of dictionaries where each
+        item consists of a key and a single item from the corresponding generator.
 
         :param column_to_data: A dictionary where each key is a column and each value
             is a generator.
+        :param batch_size: Size of batch to generate each time.
 
-        :yield: A dictionary where each item consists of a column name and an item from
-            the corresponding generator. Yields until all generators are exhausted.
+        :yield: A list of dictionaries where each item consists of a column name and
+            an item from the corresponding generator. Yields until all generators
+            are exhausted.
         """
         keys = list(column_to_data.keys())
         iterators = [iter(column_to_data[key]) for key in keys]
@@ -282,7 +292,8 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 item = next(it, None)
 
                 if key == 'id' and not item:
-                    yield batch
+                    if batch:
+                        yield batch
                     return
 
                 if isinstance(item, AbstractTensor):
@@ -306,16 +317,15 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param column_to_data: A dictionary where each key is a column and each value is a generator.
         :return: A list of document ids that have been indexed.
         """
-        ids = []
-        for items in self._generate_item(column_to_data):
-            for item in items:
-                ids.append(item['id'])
-                doc_id = self._prefix + item['id']
-                self._client.json().set(doc_id, '$', item)
-
-        ## this does not work for now
-        # for items in self._generate_item(column_to_data):
-        #     self._client.json().mset(((self._prefix + item['id'], '$', item) for item in items))
+        ids: List[str] = []
+        for items in self._generate_items(
+            column_to_data, self._runtime_config.batch_size
+        ):
+            doc_id_item_pairs = [
+                (self._prefix + item['id'], '$', item) for item in items
+            ]
+            ids.extend(doc_id for doc_id, _, _ in doc_id_item_pairs)
+            self._client.json().mset(doc_id_item_pairs)  # type: ignore[attr-defined]
 
         return ids
 
@@ -423,11 +433,11 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             .paging(0, limit)
             .dialect(2)
         )
-        query_params: Mapping[str, str] = {
-            'vec': np.array(query, dtype=np.float32).tobytes()  # type: ignore[dict-item]
+        query_params: Mapping[str, bytes] = {
+            'vec': np.array(query, dtype=np.float32).tobytes()
         }
         results = (
-            self._client.ft(self._index_name).search(redis_query, query_params).docs
+            self._client.ft(self._index_name).search(redis_query, query_params).docs  # type: ignore[arg-type]
         )
 
         scores: NdArray = NdArray._docarray_from_native(
@@ -553,3 +563,18 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             scores.append(results.scores)
 
         return _FindResultBatched(documents=docs, scores=scores)
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param item: The document to check.
+            It must be an instance of BaseDoc or its subclass.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        if safe_issubclass(type(item), BaseDoc):
+            return self._doc_exists(item.id)
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )

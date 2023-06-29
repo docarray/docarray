@@ -23,7 +23,7 @@ def test_configure_dim():
     assert index.num_docs() == 10
 
 
-def test_configure_index(tmp_path):
+def test_configure_index():
     class Schema(BaseDoc):
         tens: NdArray[100] = Field(space='cosine')
         title: str
@@ -38,3 +38,14 @@ def test_configure_index(tmp_path):
     assert len(Schema.__fields__) == len(attr)
     for field, attr in zip(Schema.__fields__, attr):
         assert field in attr and types[field] in attr
+
+
+def test_runtime_config():
+    class Schema(BaseDoc):
+        tens: NdArray = Field(dim=10)
+
+    index = RedisDocumentIndex[Schema](host='localhost')
+    assert index._runtime_config.batch_size == 100
+
+    index.configure(batch_size=10)
+    assert index._runtime_config.batch_size == 10
