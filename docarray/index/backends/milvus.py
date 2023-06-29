@@ -50,7 +50,6 @@ if TYPE_CHECKING:
         utility,
     )
 else:
-    hnswlib = import_library('hnswlib', raise_error=True)
     np = import_library('numpy', raise_error=False)
     from pymilvus import (
         Collection,
@@ -250,7 +249,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
             for j, (column_name, info) in enumerate(self._column_infos.items()):
                 column_value = docs[i].__getattr__(column_name)
-                if isinstance(column_value, (tf.Tensor, torch.Tensor, np.ndarray)):
+                if info.db_type == DataType.FLOAT_VECTOR:
                     column_value = self._convert_to_vector(column_value)
                 entities[j + 1].append(column_value)
 
@@ -271,17 +270,20 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if type(column_value) is list:
             return column_value
 
+        '''
+        # tensorflow don't have shape property. will change this check later
         if len(column_value.shape) != 1:
             raise ValueError(
                 'Unsupported: Milvus backend only supports one-dimensional vectors'
             )
+        '''
 
         if isinstance(column_value, np.ndarray):
             return column_value.astype(float).tolist()
         elif torch_available and torch.is_tensor(column_value):
             return column_value.float().numpy().tolist()
-        elif tf_available and tf.is_tensor(column_value):
-            return column_value.numpy().astype(float).tolist()
+        elif tf_available and tf.is_tensor(column_value.tensor):
+            return column_value.tensor.numpy().astype(float).tolist()
 
     def num_docs(self) -> int:
         return self._collection.num_entities
@@ -357,7 +359,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._check_loaded()
 
         results = self._collection.search(
-            data=self._convert_to_vector(query),
+            data=[self._convert_to_vector(query)],
             anns_field=search_field,
             param=self._db_config.search_params,
             limit=limit,
@@ -365,6 +367,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             output_fields=["serialized"],
             consistency_level="Strong",
         )
+
+        self._collection.release()
 
         results = next(iter(results), None)  # Only consider the first element
 
@@ -376,7 +380,28 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        ...
+        self._check_loaded()
+
+        results = self._collection.search(
+            data=[self._convert_to_vector(query) for query in queries],
+            anns_field=search_field,
+            param=self._db_config.search_params,
+            limit=limit,
+            expr=None,
+            output_fields=["serialized"],
+            consistency_level="Strong",
+        )
+
+        self._collection.release()
+
+        documents, scores = zip(
+            *[self._docs_from_find_response(result) for result in results]
+        )
+
+        return _FindResultBatched(
+            documents=list(documents),
+            scores=list(scores),
+        )
 
     def execute_query(self, query: Any, *args, **kwargs) -> Any:
         if args or kwargs:
@@ -416,6 +441,17 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ),
             scores=[hit.score for hit in result],
         )
+
+    def __contains__(self, item) -> bool:
+        self._check_loaded()
+
+        result = self._collection.query(
+            expr="id in " + str([item.id]),
+            offset=0,
+            output_fields=["serialized"],
+        )
+
+        return len(result) > 0
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._collection.release()
