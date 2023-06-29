@@ -34,7 +34,7 @@ def __getattr__(name: str):
     elif name == 'WeaviateDocumentIndex':
         import_library('weaviate', raise_error=True)
         import docarray.index.backends.weaviate as lib
-    elif name == "MilvusDocumentIndex":
+    elif name == 'MilvusDocumentIndex':
         import_library('pymilvus', raise_error=True)
         import docarray.index.backends.milvus as lib
     else:
